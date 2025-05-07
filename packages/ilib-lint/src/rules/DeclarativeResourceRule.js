@@ -25,6 +25,8 @@ import ResourceRule from './ResourceRule.js';
 /** @ignore @typedef {import("ilib-tools-common").Resource} Resource */
 /** @ignore @typedef {import("ilib-lint-common").Result} Result */
 
+/** @ignore @typedef {{search: string, replace: string, flags: string}} FixDefinition */
+
 // figure out which regex flags are supported on this version of node
 let regexFlags = "g";
 
@@ -101,9 +103,9 @@ class DeclarativeResourceRule extends ResourceRule {
      * instances are created after the rule has been applied, so that the fixes
      * do not have to be regex-based. They just modify the source or target string
      * simply.
-     * @type {Array<{search: RegExp, replace: string}>|undefined}
+     * @type {Array<FixDefinition>|undefined}
      */
-    fixes = undefined;
+    fixDefinitions = undefined;
 
     /**
      * Construct a new regular expression-based declarative resource rule.
@@ -142,7 +144,7 @@ class DeclarativeResourceRule extends ResourceRule {
      * @param {boolean} [options.useStripped] if true, the string will stripped of all
      *   plurals before attempting a match. If false, the original source string with
      *   possible plurals in it will be used for the match. Default is "true".
-     * @param {Array<{search: string, replace: string}>|undefined} [options.fixes] for rules
+     * @param {Array<FixDefinition>|undefined} [options.fixes] for rules
      * that can be fixed automatically, this is an array of objects that describe how to fix the problem.
      * @constructor
      */
@@ -181,12 +183,13 @@ class DeclarativeResourceRule extends ResourceRule {
                 if (typeof(fix.search) !== 'string' || typeof(fix.replace) !== 'string') {
                     throw `Declarative rule ${this.name} fixes must have a search and a replace string`;
                 }
-                if (!this.fixes) {
-                    this.fixes = [];
+                if (!this.fixDefinitions) {
+                    this.fixDefinitions = [];
                 }
-                this.fixes.push({
-                    search: new RegExp(fix.search, regexFlags),
-                    replace: fix.replace
+                this.fixDefinitions.push({
+                    search: fix.search,
+                    replace: fix.replace,
+                    flags: fix.flags || regexFlags
                 });
             });
         }

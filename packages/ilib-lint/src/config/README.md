@@ -68,6 +68,10 @@ The `ilib-lint-config.json` file can have any of the following properties:
           specified or if the value is the empty string, then the text
           that matched the search regular expression will be removed from the
           string.
+        - flags (String) - optional flags to pass to the regular expression
+          engine. This is the same as the "flags" property in the
+          [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+          constructor.
 -   formatters (Array of Object) - a set of declarative formatters. Each array element is
     an object that contains the following properties:
     -   name - a unique name for this formatter
@@ -165,22 +169,26 @@ Here is an example of a configuration file:
         },
         // example of a declarative rule that includes auto-fixing
         {
-            "name": "resource-quote-matcher",
+            "name": "resource-no-fullwidth-digits",
             "type": "resource-target",
-            "description": "Ensure that quotes in the target string are only single quotes",
-            "note": "The quote {matchString} in the target string can only be single quote \"'\"",
-            "regexps": ["[\"`]"],
-            // this rule has an auto-fixer that will fix the quotes in the target string
+            "description": "Ensure that there are no fullwidth digits in the target string",
+            "note": "The substring {matchString} in the target string cannot contain fullwidth digits",
+            "regexps": ["[０-９]+"],
+            // this rule has an auto-fixer that will fix the digits to be ASCII digits. The search
+            // terms below will be applied only within the string that caused the rule to match in the
+            // first place. (ie. the sequence of fullwidth digits matched above)
             "fixes": [
-                {
-                    "search": "[\"`]",
-                    "replace": "'"
-                }
-            ],
-            // this rule has an option to only match quotes that are locale-specific
-            "options": {
-                "localeOnly": true
-            }
+                { "search": "０", "replace": "0" },
+                { "search": "１", "replace": "1" },
+                { "search": "２", "replace": "2" },
+                { "search": "３", "replace": "3" },
+                { "search": "４", "replace": "4" },
+                { "search": "５", "replace": "5" },
+                { "search": "６", "replace": "6" },
+                { "search": "７", "replace": "7" },
+                { "search": "８", "replace": "8" },
+                { "search": "９", "replace": "9" }
+            ]
         }
     ],
     "formatters": [
