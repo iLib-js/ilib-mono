@@ -61,7 +61,7 @@ class ResourceFixer extends Fixer {
      * @param {ResourceFixCommand[]} params.commands the commands to apply for this fix
      * @returns {ResourceFix} a new fix to apply
      */
-    createFix(params) {
+    static createFix(params) {
         const { resource, target, category, index, commands } = params;
         const locator = new ResourceStringLocator(resource, target, category, index);
         if (commands.length === 0) {
@@ -77,7 +77,7 @@ class ResourceFixer extends Fixer {
      * @param {string} value the value to set for the metadata field
      * @returns {ResourceFixCommand} the command to modify the metadata
      */
-    createMetadataCommand(name, value) {
+    static createMetadataCommand(name, value) {
         return new ResourceMetadataFixCommand({name, value});
     }
 
@@ -89,7 +89,7 @@ class ResourceFixer extends Fixer {
      * @param {string} insertContent the content to insert at the specified position
      * @returns {ResourceFixCommand} the command to modify the content
      */
-    createStringCommand(position, deleteCount, insertContent) {
+    static createStringCommand(position, deleteCount, insertContent) {
         return new ResourceStringFixCommand({position, deleteCount, insertContent});
     }
 
@@ -106,9 +106,15 @@ class ResourceFixer extends Fixer {
 
         // first partition the fixes by resource locator and also determine which ones
         // we can apply because they do not overlap with other fixes for the same locator.
+        /** @type {Record<string, ResourceFix[]>} */
         const fixCache = {};
         fixes.forEach(fix => {
-            const locator = fix.getLocator();
+            if (fix.applied) {
+                // if the fix has already been applied, skip it
+                // this should probably never happen, but just in case
+                return;
+            }
+            const locator = fix.locator;
             const hash = locator.getHash();
             if (!fixCache[hash]) {
                 fixCache[hash] = [];
@@ -122,39 +128,37 @@ class ResourceFixer extends Fixer {
         });
 
         // now we have a cache of fixes that do not overlap with each other, so we can apply them
-        Object.values(fixCache).forEach(fixes => {
-            // every locator in the cache should have at least one fix and every fix in a cache
-            // entry should have the same locator, so we can safely assume that the first fix
+        Object.values(fixCache).forEach(fixesForLocator => {
+            // every given cache bucket should have at least one fix and all fixes in this cache
+            // bucket should have the same locator, so we can safely assume that the first fix
             // has the correct locator for all fixes
-            const locator = fixes[0].getLocator();
+            const locator = fixesForLocator[0].locator;
 
-            const commands = fixes.filter(fix => !fix.applied).flatMap(fix => fix.getCommands());
+            const commands = fixesForLocator.flatMap(fix => fix.commands);
 
             // first metadata fixes
             commands.
                 filter(command => command instanceof ResourceMetadataFixCommand).
                 forEach(command => {
                     // apply metadata fixes directly to the resource
-                    if (!command.apply(locator)) {
-                        throw new Error(`Failed to apply metadata fix: ${command.getName()} = ${command.getValue()}`);
-                    }
+                    command.apply(locator);
                 });
 
             // now find the content/string fixes. Must apply all of them at once so that
             // the indexes into the content are correct.
             const stringCommands = commands.
                 filter(command => command instanceof ResourceStringFixCommand).
-                map(command => command.getStringFixCommand());
+                map(command => command.stringFix);
 
             // if there are no string commands, skip it
             if (stringCommands.length > 0) {
                 // apply the string commands to the resource content all at once
-                let content = locator.getContent();
+                const content = locator.getContent();
                 const modified = StringFixCommand.applyCommands(content, stringCommands);
                 locator.setContent(modified);
             }
 
-            fixes.forEach(fix => {
+            fixesForLocator.forEach(fix => {
                 fix.applied = true;
             });
         });

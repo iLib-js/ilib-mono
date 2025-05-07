@@ -40,30 +40,26 @@ describe("test ResourceFixer", () => {
     test("ResourceFixer create a fix", () => {
         expect.assertions(3);
 
-        const fixer = new ResourceFixer();
-
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource: new ResourceString({
                 key: "key",
                 source: "source",
                 target: "target"
             }),
             commands: [
-                fixer.createStringCommand(0, 2, "Z")
+                ResourceFixer.createStringCommand(0, 2, "Z")
             ]
         });
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(1);
+        expect(fix.commands).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with a plural resource", () => {
         expect.assertions(3);
 
-        const fixer = new ResourceFixer();
-
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource: new ResourcePlural({
                 key: "key",
                 source: {
@@ -77,21 +73,19 @@ describe("test ResourceFixer", () => {
             }),
             category: "one",
             commands: [
-                fixer.createStringCommand(0, 2, "Zs")
+                ResourceFixer.createStringCommand(0, 2, "Zs")
             ]
         });
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(1);
+        expect(fix.commands).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with an array resource", () => {
         expect.assertions(3);
 
-        const fixer = new ResourceFixer();
-
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource: new ResourceArray({
                 key: "key",
                 source: ["one", "two"],
@@ -99,19 +93,17 @@ describe("test ResourceFixer", () => {
             }),
             index: 1,
             commands: [
-                fixer.createStringCommand(0, 2, "Zt")
+                ResourceFixer.createStringCommand(0, 2, "Zt")
             ]
         });
 
         expect(fix).toBeDefined();
         expect(fix).toBeInstanceOf(ResourceFix);
-        expect(fix.getCommands()).toHaveLength(1);
+        expect(fix.commands).toHaveLength(1);
     });
 
     test("ResourceFixer create a fix with multiple commands", () => {
         expect.assertions(4);
-
-        const fixer = new ResourceFixer();
 
         const resource = new ResourceString({
             key: "key",
@@ -119,16 +111,16 @@ describe("test ResourceFixer", () => {
             target: "target"
         });
 
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("targetLocale", "de-DE"),
-                fixer.createStringCommand(0, 2, "b")
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "b")
             ]
         });
         expect(fix).toBeDefined();
 
-        const commands = fix.getCommands();
+        const commands = fix.commands;
         expect(commands).toHaveLength(2);
         expect(commands[0]).toBeInstanceOf(ResourceMetadataFixCommand);
         expect(commands[1]).toBeInstanceOf(ResourceStringFixCommand);
@@ -137,8 +129,6 @@ describe("test ResourceFixer", () => {
     test("ResourceFixer create a fix with overlapping commands", () => {
         expect.assertions(1);
 
-        const fixer = new ResourceFixer();
-
         const resource = new ResourceString({
             key: "key",
             source: "source",
@@ -146,11 +136,11 @@ describe("test ResourceFixer", () => {
         });
 
         expect(() => {
-            fixer.createFix({
+            ResourceFixer.createFix({
                 resource,
                 commands: [
-                    fixer.createStringCommand(1, 2, "x"),
-                    fixer.createStringCommand(0, 2, "b")
+                    ResourceFixer.createStringCommand(1, 2, "x"),
+                    ResourceFixer.createStringCommand(0, 2, "b")
                 ]
             });
         }).toThrow("Cannot create a fix because some of the commands overlap with each other");
@@ -179,11 +169,11 @@ describe("test ResourceFixer", () => {
             dirty: false
         });
 
-        const fix = fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("targetLocale", "de-DE"),
-                fixer.createStringCommand(0, 2, "fo")
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
             ]
         });
 
@@ -223,20 +213,20 @@ describe("test ResourceFixer", () => {
             dirty: false
         });
 
-        const fix1 = fixer.createFix({
+        const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("targetLocale", "de-DE"),
-                fixer.createStringCommand(0, 2, "fo")
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
             ]
         });
 
-        const fix2 = fixer.createFix({
+        const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("sourceLocale", "en"),
-                fixer.createStringCommand(4, 1, "o"),
-                fixer.createStringCommand(6, 0, "ten")
+                ResourceFixer.createMetadataCommand("sourceLocale", "en"),
+                ResourceFixer.createStringCommand(4, 1, "o"),
+                ResourceFixer.createStringCommand(6, 0, "ten")
             ]
         });
 
@@ -276,22 +266,22 @@ describe("test ResourceFixer", () => {
             dirty: false
         });
 
-        const fix1 = fixer.createFix({
+        const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("targetLocale", "de-DE"),
-                fixer.createStringCommand(0, 2, "fo")
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
             ]
         });
 
-        const fix2 = fixer.createFix({
+        const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("sourceLocale", "en"),
+                ResourceFixer.createMetadataCommand("sourceLocale", "en"),
                 // this first string command overlaps with the first fix so it should not be applied
-                fixer.createStringCommand(0, 2, "x"),
-                fixer.createStringCommand(4, 1, "o"),
-                fixer.createStringCommand(6, 0, "ten"),
+                ResourceFixer.createStringCommand(0, 2, "x"),
+                ResourceFixer.createStringCommand(4, 1, "o"),
+                ResourceFixer.createStringCommand(6, 0, "ten"),
             ]
         });
 
@@ -332,22 +322,22 @@ describe("test ResourceFixer", () => {
             dirty: false
         });
 
-        const fix1 = fixer.createFix({
+        const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("targetLocale", "de-DE"),
-                fixer.createStringCommand(0, 2, "fo")
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
             ]
         });
 
-        const fix2 = fixer.createFix({
+        const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("sourceLocale", "en"),
+                ResourceFixer.createMetadataCommand("sourceLocale", "en"),
                 // this first string command overlaps with the first fix so it should not be applied
-                fixer.createStringCommand(0, 2, "x"),
-                fixer.createStringCommand(4, 1, "o"),
-                fixer.createStringCommand(6, 0, "ten"),
+                ResourceFixer.createStringCommand(0, 2, "x"),
+                ResourceFixer.createStringCommand(4, 1, "o"),
+                ResourceFixer.createStringCommand(6, 0, "ten"),
             ]
         });
 
@@ -382,21 +372,21 @@ describe("test ResourceFixer", () => {
             dirty: false
         });
 
-        const fix1 = fixer.createFix({
+        const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("targetLocale", "de-DE"),
-                fixer.createStringCommand(0, 2, "fo")
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
             ]
         });
 
-        const fix2 = fixer.createFix({
+        const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                fixer.createMetadataCommand("sourceLocale", "en"),
+                ResourceFixer.createMetadataCommand("sourceLocale", "en"),
                 // no overlap with the first fix, so these should be applied
-                fixer.createStringCommand(4, 1, "o"),
-                fixer.createStringCommand(6, 0, "ten"),
+                ResourceFixer.createStringCommand(4, 1, "o"),
+                ResourceFixer.createStringCommand(6, 0, "ten"),
             ]
         });
 

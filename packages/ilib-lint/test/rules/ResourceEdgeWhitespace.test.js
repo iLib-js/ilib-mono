@@ -20,6 +20,9 @@ import { ResourceString } from 'ilib-tools-common';
 import ResourceEdgeWhitespace from '../../src/rules/ResourceEdgeWhitespace.js';
 
 import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
+import ResourceFixer from '../../src/plugins/resource/ResourceFixer.js';
+
+const fixer = new ResourceFixer();
 
 describe("testEdgeWhitespace", () => {
     test("ResourceEdgeWhitespaceEdgesMatch", () => {
@@ -72,10 +75,10 @@ describe("testEdgeWhitespace", () => {
         };
         const result = rule.matchString(subject);
 
-        const fix = rule.fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(0, 0, " ")
+                ResourceFixer.createStringCommand(0, 0, " ")
             ]
         });
         expect(result).toStrictEqual(
@@ -117,10 +120,10 @@ describe("testEdgeWhitespace", () => {
         };
         const result = rule.matchString(subject);
 
-        const fix = rule.fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(0, 1, "")
+                ResourceFixer.createStringCommand(0, 1, "")
             ]
         });
         expect(result).toStrictEqual(
@@ -162,10 +165,10 @@ describe("testEdgeWhitespace", () => {
         };
         const result = rule.matchString(subject);
 
-        const fix = rule.fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource.getTarget().length, 0, " ")
+                ResourceFixer.createStringCommand(resource.getTarget().length, 0, " ")
             ]
         });
         expect(result).toStrictEqual(
@@ -207,10 +210,10 @@ describe("testEdgeWhitespace", () => {
         };
         const result = rule.matchString(subject);
 
-        const fix = rule.fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource.getTarget().length - 1, 1, "")
+                ResourceFixer.createStringCommand(resource.getTarget().length - 1, 1, "")
             ]
         });
         expect(result).toStrictEqual(
@@ -252,10 +255,10 @@ describe("testEdgeWhitespace", () => {
         };
         const result = rule.matchString(subject);
 
-        const fix = rule.fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource.getTarget().length - 2, 2, " ")
+                ResourceFixer.createStringCommand(resource.getTarget().length - 2, 2, " ")
             ]
         });
         expect(result).toStrictEqual(
@@ -297,16 +300,16 @@ describe("testEdgeWhitespace", () => {
         };
         const result = rule.matchString(subject);
 
-        const fix1 = rule.fixer.createFix({
+        const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(0, 0, " ")
+                ResourceFixer.createStringCommand(0, 0, " ")
             ]
         });
-        const fix2 = rule.fixer.createFix({
+        const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource.getTarget().length, 0, " ")
+                ResourceFixer.createStringCommand(resource.getTarget().length, 0, " ")
             ]
         });
         expect(result).toStrictEqual([
@@ -385,10 +388,10 @@ describe("testEdgeWhitespace", () => {
         };
         const result = rule.matchString(subject);
 
-        const fix = rule.fixer.createFix({
+        const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(0, 2, " ")
+                ResourceFixer.createStringCommand(0, 2, " ")
             ]
         });
         expect(result).toStrictEqual(
@@ -482,16 +485,16 @@ describe("testEdgeWhitespace", () => {
         };
         const results = rule.matchString(subject);
 
-        const fix1 = rule.fixer.createFix({
+        const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(0, 1, "")
+                ResourceFixer.createStringCommand(0, 1, "")
             ]
         });
-        const fix2 = rule.fixer.createFix({
+        const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                rule.fixer.createStringCommand(resource.getTarget().length - 1, 1, "")
+                ResourceFixer.createStringCommand(resource.getTarget().length - 1, 1, "")
             ]
         });
         expect(results).toBeTruthy();
@@ -526,7 +529,7 @@ describe("testEdgeWhitespace", () => {
             dirty: false
         });
 
-        rule.fixer.applyFixes(ir, results.map(result => result.fix));
+        fixer.applyFixes(ir, results.map(result => result.fix));
         const fixedResource = ir.getRepresentation()[0];
         expect(fixedResource).toBeTruthy();
         expect(fixedResource.getTarget()).toBe("র করতে পারেন।");

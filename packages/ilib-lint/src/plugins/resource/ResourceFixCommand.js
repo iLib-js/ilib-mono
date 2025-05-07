@@ -23,17 +23,6 @@
  */
 export class ResourceFixCommand {
     /**
-     * The command has been applied to the resource.
-     * @type {boolean}
-     */
-    applied = false;
-
-    /**
-     * Make a new ResourceFixCommand instance.
-     */
-    constructor(params) {}
-
-    /**
      * Return true if the command overlaps with another command.
      * @abstract
      * @param {ResourceFixCommand} other the other command to compare with

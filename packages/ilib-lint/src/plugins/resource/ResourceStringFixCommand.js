@@ -19,11 +19,15 @@
 
 
 import StringFixCommand from '../string/StringFixCommand.js';
-
 import ResourceFixCommand from './ResourceFixCommand.js';
-import ResourceStringLocator from './ResourceStringLocator.js';
 
 class ResourceStringFixCommand extends ResourceFixCommand {
+    /**
+     * @readonly
+     * @type {StringFixCommand}
+     */
+    stringFix;
+
     /**
      * Contains information about a transformation that should be applied to the string content
      * within the given resource.
@@ -34,7 +38,7 @@ class ResourceStringFixCommand extends ResourceFixCommand {
      * @param {string} params.insertContent string that should be inserted
      */
     constructor(params) {
-        super(params);
+        super();
         const { position, deleteCount, insertContent = "" } = params;
         if (!Number.isInteger(position) || position < 0) {
             throw new Error("ResourceStringFixCommand position must be non-negative integer");
@@ -78,15 +82,6 @@ class ResourceStringFixCommand extends ResourceFixCommand {
             other instanceof ResourceStringFixCommand &&
             this.stringFix.overlaps(other.stringFix)
         );
-    }
-
-    /**
-     * Return the string fix command that this command is based on.
-     *
-     * @returns {StringFixCommand} the string fix command that this command is based on
-     */
-    getStringFixCommand() {
-        return this.stringFix;
     }
 }
 
