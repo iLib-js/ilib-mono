@@ -58,7 +58,7 @@ class ResourceFixer extends Fixer {
      * @param {string} [params.category] the plural category of the string for plural resources
      * @param {number} [params.index] the index of the string in the resource for array resources
      * @param {boolean} [params.target] true if the locator is for the target string, false if it
-     * @param {ResourceFixCommand[]} params.commands the commands to apply for this fix; see {@link ResourceFixer.commands}
+     * @param {ResourceFixCommand[]} params.commands the commands to apply for this fix
      * @returns {ResourceFix} a new fix to apply
      */
     static createFix(params) {
@@ -71,14 +71,26 @@ class ResourceFixer extends Fixer {
     }
 
     /**
-     * The list of commands that this fixer can apply.
-     * @readonly
+     * Factory method to create a new command to modify the metadata of a resource.
+     *
+     * @param {string} name the name of the metadata field to modify
+     * @param {string} value the value to set for the metadata field
+     * @returns {ResourceFixCommand} the command to modify the metadata
      */
-    static commands = {
-        setMetadata: ResourceMetadataFixCommand.set,
-        stringInsertAfter: ResourceStringFixCommand.insertAfter,
-        stringDeleteAfter: ResourceStringFixCommand.deleteAfter,
-        stringReplaceAfter: ResourceStringFixCommand.replaceAfter,
+    static createMetadataCommand(name, value) {
+        return new ResourceMetadataFixCommand({name, value});
+    }
+
+    /**
+     * Factory method to create a new command to modify the content of a resource.
+     *
+     * @param {number} position the position in the content to start modifying
+     * @param {number} deleteCount the number of characters to delete from the content
+     * @param {string} insertContent the content to insert at the specified position
+     * @returns {ResourceFixCommand} the command to modify the content
+     */
+    static createStringCommand(position, deleteCount, insertContent) {
+        return new ResourceStringFixCommand({position, deleteCount, insertContent});
     }
 
     /**

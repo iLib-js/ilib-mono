@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { ResourceString, ResourcePlural, ResourceArray } from "ilib-tools-common";
+import { ResourceString, ResourcePlural, ResourceArray } from 'ilib-tools-common';
 
 import ResourceStringLocator from "../../../src/plugins/resource/ResourceStringLocator.js";
 
 import ResourceFix from "../../../src/plugins/resource/ResourceFix.js";
-import ResourceMetadataFixCommand from "../../../src/plugins/resource/ResourceMetadataFixCommand.js";
-import ResourceStringFixCommand from "../../../src/plugins/resource/ResourceStringFixCommand.js";
+import ResourceMetadataFixCommand from '../../../src/plugins/resource/ResourceMetadataFixCommand.js';
+import ResourceStringFixCommand from '../../../src/plugins/resource/ResourceStringFixCommand.js';
 
 describe("test ResourceFix", () => {
     test("ResourceFix basic constructor", () => {
@@ -32,11 +32,13 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
 
-        const fix = new ResourceFix(locator, [new ResourceMetadataFixCommand({ name: "name", value: "value" })]);
+        const fix = new ResourceFix(locator, [
+            new ResourceMetadataFixCommand({name: "name", value: "value"})
+        ]);
 
         expect(fix).toBeDefined();
         expect(fix.type).toBe("resource");
@@ -48,7 +50,7 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
 
@@ -64,7 +66,9 @@ describe("test ResourceFix", () => {
         // should throw an error if no locator is provided
         expect(() => {
             // @ts-ignore
-            const fix = new ResourceFix(null, [new ResourceMetadataFixCommand({ name: "name", value: "value" })]);
+            const fix = new ResourceFix(null, [
+                new ResourceMetadataFixCommand({name: "name", value: "value"})
+            ]);
         }).toThrow();
     });
 
@@ -75,16 +79,18 @@ describe("test ResourceFix", () => {
             key: "key",
             source: {
                 one: "singular",
-                other: "plural",
+                other: "plural"
             },
             target: {
                 one: "einsellig",
-                other: "mehrzellig",
+                other: "mehrzellig"
             },
         });
         const locator = new ResourceStringLocator(resource, undefined, "one");
 
-        const fix = new ResourceFix(locator, [new ResourceMetadataFixCommand({ name: "name", value: "value" })]);
+        const fix = new ResourceFix(locator, [
+            new ResourceMetadataFixCommand({name: "name", value: "value"})
+        ]);
 
         expect(fix).toBeDefined();
         expect(fix.type).toBe("resource");
@@ -100,7 +106,9 @@ describe("test ResourceFix", () => {
         });
         const locator = new ResourceStringLocator(resource, undefined, undefined, 1);
 
-        const fix = new ResourceFix(locator, [new ResourceMetadataFixCommand({ name: "name", value: "value" })]);
+        const fix = new ResourceFix(locator, [
+            new ResourceMetadataFixCommand({name: "name", value: "value"})
+        ]);
 
         expect(fix).toBeDefined();
         expect(fix.type).toBe("resource");
@@ -112,11 +120,13 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
 
-        const fix = new ResourceFix(locator, [new ResourceMetadataFixCommand({ name: "name", value: "value" })]);
+        const fix = new ResourceFix(locator, [
+            new ResourceMetadataFixCommand({name: "name", value: "value"})
+        ]);
 
         expect(fix).toBeDefined();
         expect(fix.locator).toBe(locator);
@@ -128,13 +138,13 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
 
         const command = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value",
+            value: "value"
         });
         const fix = new ResourceFix(locator, [command]);
 
@@ -148,18 +158,22 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
 
         const command1 = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value",
+            value: "value"
         });
-        const command2 = ResourceStringFixCommand.replaceAfter(0, 2, "b");
+        const command2 = new ResourceStringFixCommand({
+            position: 0,
+            deleteCount: 2,
+            insertContent: "b"
+        });
         const command3 = new ResourceMetadataFixCommand({
             name: "otherName",
-            value: "otherValue",
+            value: "otherValue"
         });
         const fix = new ResourceFix(locator, [command1, command2, command3]);
 
@@ -177,16 +191,16 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
         const command1 = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value",
+            value: "value"
         });
         const command2 = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value",
+            value: "value"
         });
         expect(() => {
             const fix = new ResourceFix(locator, [command1, command2]);
@@ -199,11 +213,19 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
-        const command1 = ResourceStringFixCommand.replaceAfter(0, 2, "b");
-        const command2 = ResourceStringFixCommand.replaceAfter(1, 2, "x");
+        const command1 = new ResourceStringFixCommand({
+            position: 0,
+            deleteCount: 2,
+            insertContent: "b"
+        });
+        const command2 = new ResourceStringFixCommand({
+            position: 1,
+            deleteCount: 2,
+            insertContent: "x"
+        });
         expect(() => {
             const fix = new ResourceFix(locator, [command1, command2]);
         }).toThrow("Cannot create a fix because some of the commands overlap with each other");
@@ -215,16 +237,16 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
         const command1 = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value",
+            value: "value"
         });
         const command2 = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value",
+            value: "value"
         });
 
         const fix1 = new ResourceFix(locator, [command1]);
@@ -242,11 +264,19 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
-        const command1 = ResourceStringFixCommand.replaceAfter(0, 2, "b");
-        const command2 = ResourceStringFixCommand.replaceAfter(1, 2, "x");
+        const command1 = new ResourceStringFixCommand({
+            position: 0,
+            deleteCount: 2,
+            insertContent: "b"
+        });
+        const command2 = new ResourceStringFixCommand({
+            position: 1,
+            deleteCount: 2,
+            insertContent: "x"
+        });
 
         const fix1 = new ResourceFix(locator, [command1]);
         const fix2 = new ResourceFix(locator, [command2]);
@@ -263,14 +293,18 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
         const command1 = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value",
+            value: "value"
         });
-        const command2 = ResourceStringFixCommand.replaceAfter(0, 2, "b");
+        const command2 = new ResourceStringFixCommand({
+            position: 0,
+            deleteCount: 2,
+            insertContent: "b"
+        });
 
         const fix1 = new ResourceFix(locator, [command1]);
         const fix2 = new ResourceFix(locator, [command2]);
@@ -287,16 +321,16 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
         const command1 = new ResourceMetadataFixCommand({
             name: "name",
-            value: "value",
+            value: "value"
         });
         const command2 = new ResourceMetadataFixCommand({
             name: "otherName",
-            value: "otherValue",
+            value: "otherValue"
         });
 
         const fix1 = new ResourceFix(locator, [command1]);
@@ -314,11 +348,19 @@ describe("test ResourceFix", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
         const locator = new ResourceStringLocator(resource);
-        const command1 = ResourceStringFixCommand.replaceAfter(0, 2, "b");
-        const command2 = ResourceStringFixCommand.replaceAfter(2, 2, "x");
+        const command1 = new ResourceStringFixCommand({
+            position: 0,
+            deleteCount: 2,
+            insertContent: "b"
+        });
+        const command2 = new ResourceStringFixCommand({
+            position: 2,
+            deleteCount: 2,
+            insertContent: "x"
+        });
 
         const fix1 = new ResourceFix(locator, [command1]);
         const fix2 = new ResourceFix(locator, [command2]);

@@ -19,15 +19,14 @@
 
 import { Transformer, IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
 import { ResourceString, ResourceArray, ResourcePlural } from "ilib-tools-common";
-import { jest } from "@jest/globals";
+import { jest } from '@jest/globals';
 
 import ErrorFilterTransformer from "../../src/plugins/ErrorFilterTransformer.js";
 import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
-import ResourceStringFixCommand from "../../src/plugins/resource/ResourceStringFixCommand.js";
 
 const sourceFile = new SourceFile("path/to/file.xliff", {
     sourceLocale: "en-US",
-    type: "resource",
+    type: "resource"
 });
 
 describe("ErrorFilterTransformer", () => {
@@ -56,7 +55,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -66,9 +65,12 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key2",
             source: "source2",
             target: "target2",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -78,14 +80,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: "source1",
-                locale: "fr-FR",
-            }),
+                locale: "fr-FR"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -109,7 +111,7 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: "source1",
-            target: "target1",
+            target: "target1"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -118,9 +120,12 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key2",
             source: "source2",
-            target: "target2",
+            target: "target2"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -130,14 +135,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: "source1",
-                locale: "fr-FR",
-            }),
+                locale: "fr-FR"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -160,9 +165,17 @@ describe("ErrorFilterTransformer", () => {
             targetLocale: "fr-FR",
             pathName: "path/to/file.js",
             reskey: "key1",
-            source: ["source1", "source2", "source3"],
-            target: ["target1", "target2", "target3"],
-            resfile: "path/to/resfile.xliff",
+            source: [
+                "source1",
+                "source2",
+                "source3"
+            ],
+            target: [
+                "target1",
+                "target2",
+                "target3"
+            ],
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceArray({
             project: "project",
@@ -170,11 +183,22 @@ describe("ErrorFilterTransformer", () => {
             targetLocale: "fr-FR",
             pathName: "path/to/file.js",
             reskey: "key2",
-            source: ["sourceA", "sourceB", "sourceC"],
-            target: ["targetA", "targetB", "targetC"],
-            resfile: "path/to/resfile.xliff",
+            source: [
+                "sourceA",
+                "sourceB",
+                "sourceC"
+            ],
+            target: [
+                "targetA",
+                "targetB",
+                "targetC"
+            ],
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -184,14 +208,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: '["source1", "source2", "source3"]',
-                locale: "fr-FR",
-            }),
+                locale: "fr-FR"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -215,14 +239,14 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key1",
             source: {
-                one: "source1",
-                other: "source2",
+                "one": "source1",
+                "other": "source2"
             },
             target: {
-                one: "target1",
-                other: "target2",
+                "one": "target1",
+                "other": "target2"
             },
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceArray({
             project: "project",
@@ -231,17 +255,20 @@ describe("ErrorFilterTransformer", () => {
             pathName: "path/to/file.js",
             reskey: "key2",
             source: {
-                one: "sourceA",
-                other: "sourceB",
+                "one": "sourceA",
+                "other": "sourceB"
             },
             target: {
-                one: "targetA",
-                manyy: "targetB",
-                other: "targetC",
+                "one": "targetA",
+                "manyy": "targetB",
+                "other": "targetC"
             },
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -251,14 +278,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: '{"one": "source1", "other": "source2"}',
-                locale: "fr-FR",
-            }),
+                locale: "fr-FR"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -283,7 +310,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -293,9 +320,12 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key2",
             source: "source2",
             target: "target2",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 // this is a warning, not an error!
@@ -306,14 +336,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: "source1",
-                locale: "fr-FR",
-            }),
+                locale: "fr-FR"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -333,7 +363,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -343,14 +373,17 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key2",
             source: "source2",
             target: "target2",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, []);
@@ -370,7 +403,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -380,14 +413,17 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key2",
             source: "source2",
             target: "target2",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, undefined);
@@ -402,7 +438,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "not-resource",
             ir: "ir",
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, []);
@@ -417,7 +453,7 @@ describe("ErrorFilterTransformer", () => {
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: [],
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, []);
@@ -437,7 +473,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -447,9 +483,12 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key2",
             source: "source2",
             target: "target2",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -457,16 +496,16 @@ describe("ErrorFilterTransformer", () => {
                 description: "error description",
                 rule: jest.fn(() => "rule"),
                 highlight: "highlight",
-                id: "key58", // not in the resources array above
+                id: "key58",    // not in the resources array above
                 source: "source1",
-                locale: "fr-FR",
-            }),
+                locale: "fr-FR"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -486,7 +525,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -496,9 +535,12 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key2",
             source: "source2",
             target: "target2",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -508,14 +550,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: "source1",
-                locale: "de-DE",
-            }),
+                locale: "de-DE"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -524,7 +566,7 @@ describe("ErrorFilterTransformer", () => {
         const expected = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         expect(transformed).toEqual(expected);
@@ -542,7 +584,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -552,9 +594,12 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key2",
             source: "source2",
             target: "target2",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -564,14 +609,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: "source1",
-                locale: "fr-FR",
-            }),
+                locale: "fr-FR"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -580,7 +625,7 @@ describe("ErrorFilterTransformer", () => {
         const expected = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         expect(transformed).toEqual(expected);
@@ -598,7 +643,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/fr-FR.xliff",
+            resfile: "path/to/fr-FR.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -608,9 +653,12 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target2",
-            resfile: "path/to/de-DE.xliff",
+            resfile: "path/to/de-DE.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -620,14 +668,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: "source1",
-                locale: "de-DE",
-            }),
+                locale: "de-DE"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -637,7 +685,7 @@ describe("ErrorFilterTransformer", () => {
             type: "resource",
             ir: [resource1],
             sourceFile,
-            dirty: true,
+            dirty: true
         });
 
         expect(transformed).toEqual(expected);
@@ -655,7 +703,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/fr-FR.xliff",
+            resfile: "path/to/fr-FR.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -665,9 +713,12 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/other/fr-FR.xliff",
+            resfile: "path/to/other/fr-FR.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const results = [
             new Result({
                 severity: "error",
@@ -677,14 +728,14 @@ describe("ErrorFilterTransformer", () => {
                 highlight: "highlight",
                 id: "key1",
                 source: "source1",
-                locale: "fr-FR",
-            }),
+                locale: "fr-FR"
+            })
         ];
 
         const representation = new IntermediateRepresentation({
             type: "resource",
             ir: resources,
-            sourceFile,
+            sourceFile
         });
 
         const transformed = eft.transform(representation, results);
@@ -695,7 +746,7 @@ describe("ErrorFilterTransformer", () => {
             ir: [resource1],
             // @ts-ignore
             sourceFile,
-            dirty: true,
+            dirty: true
         });
 
         expect(transformed).toEqual(expected);
@@ -713,7 +764,7 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key1",
             source: "source1",
             target: "target1",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
         const resource2 = new ResourceString({
             project: "project",
@@ -723,9 +774,12 @@ describe("ErrorFilterTransformer", () => {
             reskey: "key2",
             source: "source2",
             target: "target2",
-            resfile: "path/to/resfile.xliff",
+            resfile: "path/to/resfile.xliff"
         });
-        const resources = [resource1, resource2];
+        const resources = [
+            resource1,
+            resource2
+        ];
         const fixer = new ResourceFixer();
         const results = [
             new Result({
@@ -739,9 +793,11 @@ describe("ErrorFilterTransformer", () => {
                 locale: "fr-FR",
                 fix: ResourceFixer.createFix({
                     resource: resource1,
-                    commands: [ResourceStringFixCommand.replaceAfter(0, 3, "fixedSource")],
-                }),
-            }),
+                    commands: [
+                        ResourceFixer.createStringCommand(0, 3, "fixedSource")
+                    ]
+                })
+            })
         ];
 
         // pretend that the fix has been applied
@@ -751,7 +807,7 @@ describe("ErrorFilterTransformer", () => {
             type: "resource",
             ir: resources,
             sourceFile,
-            dirty: true,
+            dirty: true
         });
 
         const transformed = eft.transform(representation, results);

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ResourceString, ResourcePlural, ResourceArray } from "ilib-tools-common";
+import { ResourceString, ResourcePlural, ResourceArray } from 'ilib-tools-common';
 
 import { IntermediateRepresentation, SourceFile } from "ilib-lint-common";
 
@@ -44,9 +44,11 @@ describe("test ResourceFixer", () => {
             resource: new ResourceString({
                 key: "key",
                 source: "source",
-                target: "target",
+                target: "target"
             }),
-            commands: [ResourceFixer.commands.stringReplaceAfter(0, 2, "Z")],
+            commands: [
+                ResourceFixer.createStringCommand(0, 2, "Z")
+            ]
         });
 
         expect(fix).toBeDefined();
@@ -62,15 +64,17 @@ describe("test ResourceFixer", () => {
                 key: "key",
                 source: {
                     one: "singular",
-                    other: "plural",
+                    other: "plural"
                 },
                 target: {
                     one: "Zingular",
-                    other: "Zplural",
+                    other: "Zplural"
                 },
             }),
             category: "one",
-            commands: [ResourceFixer.commands.stringReplaceAfter(0, 2, "Zs")],
+            commands: [
+                ResourceFixer.createStringCommand(0, 2, "Zs")
+            ]
         });
 
         expect(fix).toBeDefined();
@@ -85,10 +89,12 @@ describe("test ResourceFixer", () => {
             resource: new ResourceArray({
                 key: "key",
                 source: ["one", "two"],
-                target: ["Zone", "Ztwo"],
+                target: ["Zone", "Ztwo"]
             }),
             index: 1,
-            commands: [ResourceFixer.commands.stringReplaceAfter(0, 2, "Zt")],
+            commands: [
+                ResourceFixer.createStringCommand(0, 2, "Zt")
+            ]
         });
 
         expect(fix).toBeDefined();
@@ -102,15 +108,15 @@ describe("test ResourceFixer", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
 
         const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("targetLocale", "de-DE"),
-                ResourceFixer.commands.stringReplaceAfter(0, 2, "b"),
-            ],
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "b")
+            ]
         });
         expect(fix).toBeDefined();
 
@@ -126,16 +132,16 @@ describe("test ResourceFixer", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
 
         expect(() => {
             ResourceFixer.createFix({
                 resource,
                 commands: [
-                    ResourceFixer.commands.stringReplaceAfter(1, 2, "x"),
-                    ResourceFixer.commands.stringReplaceAfter(0, 2, "b"),
-                ],
+                    ResourceFixer.createStringCommand(1, 2, "x"),
+                    ResourceFixer.createStringCommand(0, 2, "b")
+                ]
             });
         }).toThrow("Cannot create a fix because some of the commands overlap with each other");
     });
@@ -148,27 +154,27 @@ describe("test ResourceFixer", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
 
         const source = new SourceFile("test.xliff", {
             sourceLocale: "en-US",
-            type: "resource",
+            type: "resource"
         });
 
         const ir = new IntermediateRepresentation({
             sourceFile: source,
             type: "resource",
             ir: [resource],
-            dirty: false,
+            dirty: false
         });
 
         const fix = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("targetLocale", "de-DE"),
-                ResourceFixer.commands.stringReplaceAfter(0, 2, "fo"),
-            ],
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
+            ]
         });
 
         fixer.applyFixes(ir, [fix]);
@@ -192,36 +198,36 @@ describe("test ResourceFixer", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
 
         const source = new SourceFile("test.xliff", {
             sourceLocale: "en-US",
-            type: "resource",
+            type: "resource"
         });
 
         const ir = new IntermediateRepresentation({
             sourceFile: source,
             type: "resource",
             ir: [resource],
-            dirty: false,
+            dirty: false
         });
 
         const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("targetLocale", "de-DE"),
-                ResourceFixer.commands.stringReplaceAfter(0, 2, "fo"),
-            ],
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
+            ]
         });
 
         const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("sourceLocale", "en"),
-                ResourceFixer.commands.stringReplaceAfter(4, 1, "o"),
-                ResourceFixer.commands.stringReplaceAfter(6, 0, "ten"),
-            ],
+                ResourceFixer.createMetadataCommand("sourceLocale", "en"),
+                ResourceFixer.createStringCommand(4, 1, "o"),
+                ResourceFixer.createStringCommand(6, 0, "ten")
+            ]
         });
 
         fixer.applyFixes(ir, [fix1, fix2]);
@@ -245,38 +251,38 @@ describe("test ResourceFixer", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
 
         const source = new SourceFile("test.xliff", {
             sourceLocale: "en-US",
-            type: "resource",
+            type: "resource"
         });
 
         const ir = new IntermediateRepresentation({
             sourceFile: source,
             type: "resource",
             ir: [resource],
-            dirty: false,
+            dirty: false
         });
 
         const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("targetLocale", "de-DE"),
-                ResourceFixer.commands.stringReplaceAfter(0, 2, "fo"),
-            ],
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
+            ]
         });
 
         const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("sourceLocale", "en"),
+                ResourceFixer.createMetadataCommand("sourceLocale", "en"),
                 // this first string command overlaps with the first fix so it should not be applied
-                ResourceFixer.commands.stringReplaceAfter(0, 2, "x"),
-                ResourceFixer.commands.stringReplaceAfter(4, 1, "o"),
-                ResourceFixer.commands.stringReplaceAfter(6, 0, "ten"),
-            ],
+                ResourceFixer.createStringCommand(0, 2, "x"),
+                ResourceFixer.createStringCommand(4, 1, "o"),
+                ResourceFixer.createStringCommand(6, 0, "ten"),
+            ]
         });
 
         // the second fix has overlapping commands with the first one, so the entire fix should not be applied
@@ -301,38 +307,38 @@ describe("test ResourceFixer", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
 
         const source = new SourceFile("test.xliff", {
             sourceLocale: "en-US",
-            type: "resource",
+            type: "resource"
         });
 
         const ir = new IntermediateRepresentation({
             sourceFile: source,
             type: "resource",
             ir: [resource],
-            dirty: false,
+            dirty: false
         });
 
         const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("targetLocale", "de-DE"),
-                ResourceFixer.commands.stringReplaceAfter(0, 2, "fo"),
-            ],
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
+            ]
         });
 
         const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("sourceLocale", "en"),
+                ResourceFixer.createMetadataCommand("sourceLocale", "en"),
                 // this first string command overlaps with the first fix so it should not be applied
-                ResourceFixer.commands.stringReplaceAfter(0, 2, "x"),
-                ResourceFixer.commands.stringReplaceAfter(4, 1, "o"),
-                ResourceFixer.commands.stringReplaceAfter(6, 0, "ten"),
-            ],
+                ResourceFixer.createStringCommand(0, 2, "x"),
+                ResourceFixer.createStringCommand(4, 1, "o"),
+                ResourceFixer.createStringCommand(6, 0, "ten"),
+            ]
         });
 
         // the second fix has overlapping commands with the first one
@@ -351,37 +357,37 @@ describe("test ResourceFixer", () => {
         const resource = new ResourceString({
             key: "key",
             source: "source",
-            target: "target",
+            target: "target"
         });
 
         const source = new SourceFile("test.xliff", {
             sourceLocale: "en-US",
-            type: "resource",
+            type: "resource"
         });
 
         const ir = new IntermediateRepresentation({
             sourceFile: source,
             type: "resource",
             ir: [resource],
-            dirty: false,
+            dirty: false
         });
 
         const fix1 = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("targetLocale", "de-DE"),
-                ResourceFixer.commands.stringReplaceAfter(0, 2, "fo"),
-            ],
+                ResourceFixer.createMetadataCommand("targetLocale", "de-DE"),
+                ResourceFixer.createStringCommand(0, 2, "fo")
+            ]
         });
 
         const fix2 = ResourceFixer.createFix({
             resource,
             commands: [
-                ResourceFixer.commands.setMetadata("sourceLocale", "en"),
+                ResourceFixer.createMetadataCommand("sourceLocale", "en"),
                 // no overlap with the first fix, so these should be applied
-                ResourceFixer.commands.stringReplaceAfter(4, 1, "o"),
-                ResourceFixer.commands.stringReplaceAfter(6, 0, "ten"),
-            ],
+                ResourceFixer.createStringCommand(4, 1, "o"),
+                ResourceFixer.createStringCommand(6, 0, "ten"),
+            ]
         });
 
         // pretend the second one was already applied

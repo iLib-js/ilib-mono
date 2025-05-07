@@ -17,11 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceArray, ResourcePlural, ResourceString } from "ilib-tools-common";
-import { Result, IntermediateRepresentation, SourceFile } from "ilib-lint-common";
+import { ResourceArray, ResourcePlural, ResourceString } from 'ilib-tools-common';
+import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 
-import ResourceStateChecker from "../../src/rules/ResourceStateChecker.js";
-import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
+import ResourceStateChecker from '../../src/rules/ResourceStateChecker.js';
+import ResourceFixer from '../../src/plugins/resource/ResourceFixer.js';
 
 const sourceFile = new SourceFile("a/b/c.xliff", {});
 
@@ -34,7 +34,7 @@ describe("testResourceStateChecker", () => {
 
         const rule = new ResourceStateChecker({
             // all resources should have this state:
-            param: "translated",
+            param: "translated"
         });
         expect(rule).toBeTruthy();
 
@@ -42,19 +42,17 @@ describe("testResourceStateChecker", () => {
             file: "a/b/c.xliff",
             ir: new IntermediateRepresentation({
                 type: "resource",
-                ir: [
-                    new ResourceString({
-                        key: "plural.test",
-                        sourceLocale: "en-US",
-                        source: "{count, plural, one {This is singular} other {This is plural}}",
-                        targetLocale: "de-DE",
-                        target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
-                        pathName: "a/b/c.xliff",
-                        state: "translated",
-                    }),
-                ],
-                sourceFile,
-            }),
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: '{count, plural, one {This is singular} other {This is plural}}',
+                    targetLocale: "de-DE",
+                    target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+                    pathName: "a/b/c.xliff",
+                    state: "translated"
+                })],
+                sourceFile
+            })
         });
         expect(!actual).toBeTruthy();
     });
@@ -64,7 +62,7 @@ describe("testResourceStateChecker", () => {
 
         const rule = new ResourceStateChecker({
             // all resources should have this state:
-            param: ["translated", "needs-review"],
+            param: [ "translated", "needs-review" ]
         });
         expect(rule).toBeTruthy();
 
@@ -72,19 +70,17 @@ describe("testResourceStateChecker", () => {
             file: "a/b/c.xliff",
             ir: new IntermediateRepresentation({
                 type: "resource",
-                ir: [
-                    new ResourceString({
-                        key: "plural.test",
-                        sourceLocale: "en-US",
-                        source: "{count, plural, one {This is singular} other {This is plural}}",
-                        targetLocale: "de-DE",
-                        target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
-                        pathName: "a/b/c.xliff",
-                        state: "needs-review",
-                    }),
-                ],
-                sourceFile,
-            }),
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: '{count, plural, one {This is singular} other {This is plural}}',
+                    targetLocale: "de-DE",
+                    target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+                    pathName: "a/b/c.xliff",
+                    state: "needs-review"
+                })],
+                sourceFile
+            })
         });
         expect(!actual).toBeTruthy();
     });
@@ -94,41 +90,43 @@ describe("testResourceStateChecker", () => {
 
         const rule = new ResourceStateChecker({
             // all resources should have this state:
-            param: "translated",
+            param: "translated"
         });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
             key: "plural.test",
             sourceLocale: "en-US",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
             targetLocale: "de-DE",
             target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
             pathName: "a/b/c.xliff",
-            state: "new",
-        });
+            state: "new"
+        })
         const actual = rule.match({
             file: "a/b/c.xliff",
             ir: new IntermediateRepresentation({
                 type: "resource",
                 ir: [resource],
-                sourceFile,
-            }),
+                sourceFile
+            })
         });
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceFixer.commands.setMetadata("state", "translated")],
+            commands: [
+                ResourceFixer.createMetadataCommand("state", "translated")
+            ]
         });
         const expected = new Result({
             severity: "error",
             description: "Resources must have the following state: translated",
             id: "plural.test",
-            highlight: "Resource found with disallowed state: <e0>new</e0>",
+            highlight: 'Resource found with disallowed state: <e0>new</e0>',
             rule,
             pathName: "a/b/c.xliff",
             locale: "de-DE",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
-            fix,
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            fix
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -138,41 +136,43 @@ describe("testResourceStateChecker", () => {
 
         const rule = new ResourceStateChecker({
             // all resources should have one of these states:
-            param: ["translated", "needs-review"],
+            param: [ "translated", "needs-review" ]
         });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
             key: "plural.test",
             sourceLocale: "en-US",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
             targetLocale: "de-DE",
             target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
             pathName: "a/b/c.xliff",
-            state: "new",
+            state: "new"
         });
         const actual = rule.match({
             file: "a/b/c.xliff",
             ir: new IntermediateRepresentation({
                 type: "resource",
                 ir: [resource],
-                sourceFile,
-            }),
+                sourceFile
+            })
         });
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceFixer.commands.setMetadata("state", "translated")],
+            commands: [
+                ResourceFixer.createMetadataCommand("state", "translated")
+            ]
         });
         const expected = new Result({
             severity: "error",
             description: "Resources must have one of the following states: translated, needs-review",
             id: "plural.test",
-            highlight: "Resource found with disallowed state: <e0>new</e0>",
+            highlight: 'Resource found with disallowed state: <e0>new</e0>',
             rule,
             pathName: "a/b/c.xliff",
             locale: "de-DE",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
-            fix,
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            fix
         });
         expect(actual).toEqual(expected);
     });
@@ -188,19 +188,17 @@ describe("testResourceStateChecker", () => {
             file: "a/b/c.xliff",
             ir: new IntermediateRepresentation({
                 type: "resource",
-                ir: [
-                    new ResourceString({
-                        key: "plural.test",
-                        sourceLocale: "en-US",
-                        source: "{count, plural, one {This is singular} other {This is plural}}",
-                        targetLocale: "de-DE",
-                        target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
-                        pathName: "a/b/c.xliff",
-                        state: "translated",
-                    }),
-                ],
-                sourceFile,
-            }),
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: '{count, plural, one {This is singular} other {This is plural}}',
+                    targetLocale: "de-DE",
+                    target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+                    pathName: "a/b/c.xliff",
+                    state: "translated"
+                })],
+                sourceFile
+            })
         });
         expect(!actual).toBeTruthy();
     });
@@ -214,34 +212,36 @@ describe("testResourceStateChecker", () => {
         const resource = new ResourceString({
             key: "plural.test",
             sourceLocale: "en-US",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
             targetLocale: "de-DE",
             target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
             pathName: "a/b/c.xliff",
-            state: "new",
+            state: "new"
         });
         const actual = rule.match({
             file: "a/b/c.xliff",
             ir: new IntermediateRepresentation({
                 type: "resource",
                 ir: [resource],
-                sourceFile,
-            }),
+                sourceFile
+            })
         });
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceFixer.commands.setMetadata("state", "translated")],
+            commands: [
+                ResourceFixer.createMetadataCommand("state", "translated")
+            ]
         });
         const expected = new Result({
             severity: "error",
             description: "Resources must have the following state: translated",
             id: "plural.test",
-            highlight: "Resource found with disallowed state: <e0>new</e0>",
+            highlight: 'Resource found with disallowed state: <e0>new</e0>',
             rule,
             pathName: "a/b/c.xliff",
             locale: "de-DE",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
-            fix,
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            fix
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -251,40 +251,42 @@ describe("testResourceStateChecker", () => {
 
         const rule = new ResourceStateChecker({
             // all resources should have this state:
-            param: ["translated"],
+            param: [ "translated" ]
         });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
             key: "plural.test",
             sourceLocale: "en-US",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
             targetLocale: "de-DE",
             target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
-            pathName: "a/b/c.xliff",
+            pathName: "a/b/c.xliff"
         });
         const actual = rule.match({
             file: "a/b/c.xliff",
             ir: new IntermediateRepresentation({
                 type: "resource",
                 ir: [resource],
-                sourceFile,
-            }),
+                sourceFile
+            })
         });
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceFixer.commands.setMetadata("state", "translated")],
+            commands: [
+                ResourceFixer.createMetadataCommand("state", "translated")
+            ]
         });
         const expected = new Result({
             severity: "error",
             description: "Resources must have the following state: translated",
             id: "plural.test",
-            highlight: "Resource found with no state.",
+            highlight: 'Resource found with no state.',
             rule,
             pathName: "a/b/c.xliff",
             locale: "de-DE",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
-            fix,
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            fix
         });
         expect(actual).toStrictEqual(expected);
     });
@@ -294,41 +296,43 @@ describe("testResourceStateChecker", () => {
 
         const rule = new ResourceStateChecker({
             // all resources should have this state:
-            param: "translated",
+            param: "translated"
         });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
             key: "plural.test",
             sourceLocale: "en-US",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
             targetLocale: "de-DE",
             target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
             pathName: "a/b/c.xliff",
-            state: "new",
+            state: "new"
         });
         const actual = rule.match({
             file: "a/b/c.xliff",
             ir: new IntermediateRepresentation({
                 type: "resource",
                 ir: [resource],
-                sourceFile,
-            }),
+                sourceFile
+            })
         });
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceFixer.commands.setMetadata("state", "translated")],
+            commands: [
+                ResourceFixer.createMetadataCommand("state", "translated")
+            ]
         });
         const expected = new Result({
             severity: "error",
             description: "Resources must have the following state: translated",
             id: "plural.test",
-            highlight: "Resource found with disallowed state: <e0>new</e0>",
+            highlight: 'Resource found with disallowed state: <e0>new</e0>',
             rule,
             pathName: "a/b/c.xliff",
             locale: "de-DE",
-            source: "{count, plural, one {This is singular} other {This is plural}}",
-            fix,
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            fix
         });
         expect(actual).toStrictEqual(expected);
 
@@ -336,7 +340,7 @@ describe("testResourceStateChecker", () => {
             type: "resource",
             ir: [resource],
             sourceFile: new SourceFile("a/b/c.xliff"),
-            dirty: false,
+            dirty: false
         });
 
         fixer.applyFixes(ir, [actual.fix]);

@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 
-import { Rule, Result } from "ilib-lint-common";
+import { Rule, Result } from 'ilib-lint-common';
 
-import ResourceFixer from "../plugins/resource/ResourceFixer.js";
+import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
 /**
  * @class Represent an ilib-lint rule.
@@ -64,15 +64,15 @@ class ResourceStateChecker extends Rule {
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-state-checker.md";
 
         if (options) {
-            if (typeof options.param === "string") {
+            if (typeof(options.param) === "string") {
                 // enforce the given string as the only state allowed
-                this.states = [options.param];
+                this.states = [ options.param ];
             } else if (Array.isArray(options.param)) {
                 this.states = options.param;
             }
         }
         if (!this.states) {
-            this.states = ["translated"];
+            this.states = [ "translated" ];
         }
     }
 
@@ -91,45 +91,42 @@ class ResourceStateChecker extends Rule {
 
         const resources = ir.getRepresentation();
 
-        const results = resources
-            .flatMap((resource) => {
-                if (!resource.getTarget()) return; // no target? no check!
-                const state = resource.getState()?.toLowerCase();
-                const locale = resource.getTargetLocale();
+        const results = resources.flatMap(resource => {
+            if (!resource.getTarget()) return; // no target? no check!
+            const state = resource.getState()?.toLowerCase();
+            const locale = resource.getTargetLocale();
 
-                if (state && this.states.indexOf(state) > -1) {
-                    // recognized state, so return no results
-                    return;
-                }
+            if (state && this.states.indexOf(state) > -1) {
+                // recognized state, so return no results
+                return;
+            }
 
-                // oh oh, bad state!
-                let value = {
-                    severity: "error",
-                    id: resource.getKey(),
-                    rule: this,
-                    pathName: file,
-                    highlight: state
-                        ? `Resource found with disallowed state: <e0>${state}</e0>`
-                        : "Resource found with no state.",
-                    description:
-                        this.states.length > 1
-                            ? `Resources must have one of the following states: ${this.states.join(", ")}`
-                            : `Resources must have the following state: ${this.states[0]}`,
-                    locale,
-                    source: resource.getSource(),
-                    fix: ResourceFixer.createFix({
-                        resource,
-                        commands: [ResourceFixer.commands.setMetadata("state", this.states[0])],
-                    }),
-                };
-                if (typeof resource.lineNumber !== "undefined") {
-                    value.lineNumber = resource.lineNumber;
-                    value.charNumber = resource.charNumber;
-                }
-                return new Result(value);
-            })
-            .filter((result) => result);
-        return results?.length > 1 ? results : results?.length === 1 ? results[0] : undefined;
+            // oh oh, bad state!
+            let value = {
+                severity: "error",
+                id: resource.getKey(),
+                rule: this,
+                pathName: file,
+                highlight: state ? `Resource found with disallowed state: <e0>${state}</e0>` : "Resource found with no state.",
+                description: (this.states.length > 1) ?
+                    `Resources must have one of the following states: ${this.states.join(", ")}` :
+                    `Resources must have the following state: ${this.states[0]}`,
+                locale,
+                source: resource.getSource(),
+                fix: ResourceFixer.createFix({
+                    resource,
+                    commands: [
+                        ResourceFixer.createMetadataCommand("state", this.states[0])
+                    ]
+                })
+            };
+            if (typeof(resource.lineNumber) !== 'undefined') {
+                value.lineNumber = resource.lineNumber;
+                value.charNumber = resource.charNumber;
+            }
+            return new Result(value);
+        }).filter(result => result);
+        return results?.length > 1 ? results : (results?.length === 1 ? results[0] : undefined);
     }
 }
 

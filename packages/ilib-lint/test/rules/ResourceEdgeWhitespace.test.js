@@ -16,12 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceString } from "ilib-tools-common";
-import ResourceEdgeWhitespace from "../../src/rules/ResourceEdgeWhitespace.js";
+import { ResourceString } from 'ilib-tools-common';
+import ResourceEdgeWhitespace from '../../src/rules/ResourceEdgeWhitespace.js';
 
-import { IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
-import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
-import ResourceStringFixCommand from "../../src/plugins/resource/ResourceStringFixCommand.js";
+import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
+import ResourceFixer from '../../src/plugins/resource/ResourceFixer.js';
 
 const fixer = new ResourceFixer();
 
@@ -45,7 +44,7 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
 
         const result = rule.matchString(subject);
@@ -72,13 +71,15 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
 
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(0, 0, " ")],
+            commands: [
+                ResourceFixer.createStringCommand(0, 0, " ")
+            ]
         });
         expect(result).toStrictEqual(
             new Result({
@@ -90,7 +91,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.leading-space-missing",
                 description: "Leading whitespace in target does not match leading whitespace in source",
                 highlight: `Source: <e0>⎵</e0>some… Target: <e1></e1>some…`,
-                fix,
+                fix
             })
         );
     });
@@ -115,13 +116,15 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
 
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(0, 1, "")],
+            commands: [
+                ResourceFixer.createStringCommand(0, 1, "")
+            ]
         });
         expect(result).toStrictEqual(
             new Result({
@@ -133,7 +136,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.leading-space-extra",
                 description: "Leading whitespace in target does not match leading whitespace in source",
                 highlight: `Source: <e0></e0>Some… Target: <e1>⎵</e1>Some…`,
-                fix,
+                fix
             })
         );
     });
@@ -158,13 +161,15 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
 
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(resource.getTarget().length, 0, " ")],
+            commands: [
+                ResourceFixer.createStringCommand(resource.getTarget().length, 0, " ")
+            ]
         });
         expect(result).toStrictEqual(
             new Result({
@@ -176,7 +181,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.trailing-space-missing",
                 description: "Trailing whitespace in target does not match trailing whitespace in source",
                 highlight: `Source: …ring<e0>⎵</e0> Target: …ring<e1></e1>`,
-                fix,
+                fix
             })
         );
     });
@@ -201,13 +206,15 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
 
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(resource.getTarget().length - 1, 1, "")],
+            commands: [
+                ResourceFixer.createStringCommand(resource.getTarget().length - 1, 1, "")
+            ]
         });
         expect(result).toStrictEqual(
             new Result({
@@ -219,7 +226,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.trailing-space-extra",
                 description: "Trailing whitespace in target does not match trailing whitespace in source",
                 highlight: `Source: …ing.<e0></e0> Target: …ing.<e1>⎵</e1>`,
-                fix,
+                fix
             })
         );
     });
@@ -244,13 +251,15 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
 
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(resource.getTarget().length - 2, 2, " ")],
+            commands: [
+                ResourceFixer.createStringCommand(resource.getTarget().length - 2, 2, " ")
+            ]
         });
         expect(result).toStrictEqual(
             new Result({
@@ -262,7 +271,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.trailing-space-extra-more",
                 description: "Trailing whitespace in target does not match trailing whitespace in source",
                 highlight: `Source: …ring<e0>⎵</e0> Target: …ring<e1>⎵⎵</e1>`,
-                fix,
+                fix
             })
         );
     });
@@ -287,17 +296,21 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
 
         const fix1 = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(0, 0, " ")],
+            commands: [
+                ResourceFixer.createStringCommand(0, 0, " ")
+            ]
         });
         const fix2 = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(resource.getTarget().length, 0, " ")],
+            commands: [
+                ResourceFixer.createStringCommand(resource.getTarget().length, 0, " ")
+            ]
         });
         expect(result).toStrictEqual([
             new Result({
@@ -309,7 +322,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.both-spaces-missing",
                 description: "Leading whitespace in target does not match leading whitespace in source",
                 highlight: `Source: <e0>⎵</e0>some… Target: <e1></e1>some…`,
-                fix: fix1,
+                fix: fix1
             }),
             new Result({
                 rule,
@@ -320,7 +333,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.both-spaces-missing",
                 description: "Trailing whitespace in target does not match trailing whitespace in source",
                 highlight: `Source: …ring<e0>⎵</e0> Target: …ring<e1></e1>`,
-                fix: fix2,
+                fix: fix2
             }),
         ]);
     });
@@ -345,7 +358,7 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
         expect(result).toBe(undefined); // for a valid resource match result should not be produced
@@ -371,13 +384,15 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
 
         const fix = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(0, 2, " ")],
+            commands: [
+                ResourceFixer.createStringCommand(0, 2, " ")
+            ]
         });
         expect(result).toStrictEqual(
             new Result({
@@ -389,7 +404,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.spaces-only-extra",
                 description: "Leading whitespace in target does not match leading whitespace in source",
                 highlight: `Source: <e0>⎵</e0> Target: <e1>⎵⎵</e1>`,
-                fix,
+                fix
             })
         );
     });
@@ -414,7 +429,7 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
         expect(result).toBe(undefined); // this rule should not process a resource where source is not a string
@@ -440,7 +455,7 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const result = rule.matchString(subject);
         expect(result).toBe(undefined); // this rule should not process a resource where target is not a string
@@ -466,17 +481,21 @@ describe("testEdgeWhitespace", () => {
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
-            file: "a/b/c.xliff",
+            file: "a/b/c.xliff"
         };
         const results = rule.matchString(subject);
 
         const fix1 = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(0, 1, "")],
+            commands: [
+                ResourceFixer.createStringCommand(0, 1, "")
+            ]
         });
         const fix2 = ResourceFixer.createFix({
             resource,
-            commands: [ResourceStringFixCommand.replaceAfter(resource.getTarget().length - 1, 1, "")],
+            commands: [
+                ResourceFixer.createStringCommand(resource.getTarget().length - 1, 1, "")
+            ]
         });
         expect(results).toBeTruthy();
         expect(results).toStrictEqual([
@@ -489,7 +508,7 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.trailing-space-extra",
                 description: "Leading whitespace in target does not match leading whitespace in source",
                 highlight: `Source: <e0></e0>Some… Target: <e1>⎵</e1>র কর…`,
-                fix: fix1,
+                fix: fix1
             }),
             new Result({
                 rule,
@@ -500,20 +519,17 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.trailing-space-extra",
                 description: "Trailing whitespace in target does not match trailing whitespace in source",
                 highlight: `Source: …ing.<e0></e0> Target: …রেন।<e1>⎵</e1>`,
-                fix: fix2,
-            }),
+                fix: fix2
+            })
         ]);
         const ir = new IntermediateRepresentation({
             type: "resource",
             ir: [resource],
             sourceFile: new SourceFile("a/b/c.xliff"),
-            dirty: false,
+            dirty: false
         });
 
-        fixer.applyFixes(
-            ir,
-            results.map((result) => result.fix)
-        );
+        fixer.applyFixes(ir, results.map(result => result.fix));
         const fixedResource = ir.getRepresentation()[0];
         expect(fixedResource).toBeTruthy();
         expect(fixedResource.getTarget()).toBe("র করতে পারেন।");

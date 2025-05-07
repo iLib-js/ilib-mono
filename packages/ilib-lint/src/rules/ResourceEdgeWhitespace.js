@@ -59,7 +59,7 @@ class ResourceEdgeWhitespace extends ResourceRule {
             const fix = ResourceFixer.createFix({
                 resource,
                 commands: [
-                    ResourceFixer.commands.stringReplaceAfter(
+                    ResourceFixer.createStringCommand(
                         0,
                         whitespaces.target.leading.length,
                         whitespaces.source.leading
@@ -87,7 +87,7 @@ class ResourceEdgeWhitespace extends ResourceRule {
             const fix = ResourceFixer.createFix({
                 resource,
                 commands: [
-                    ResourceFixer.commands.stringReplaceAfter(
+                    ResourceFixer.createStringCommand(
                         target.length - whitespaces.target.trailing.length,
                         whitespaces.target.trailing.length,
                         whitespaces.source.trailing
