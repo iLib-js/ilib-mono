@@ -41,7 +41,6 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
      *   param that is supported.)
      * @param {Array<string>} options.regexps an array of strings that encode regular expressions to
      *   look for
-     * @param {ResourceFixer} [options.fixer] an instance of a ResourceFixer to use
      * @constructor
      */
     constructor(options) {

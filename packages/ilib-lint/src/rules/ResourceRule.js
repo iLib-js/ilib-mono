@@ -22,15 +22,7 @@ import Locale from 'ilib-locale';
 
 import { Rule } from 'ilib-lint-common';
 
-import ResourceFixer from '../plugins/resource/ResourceFixer.js';
-
 class ResourceRule extends Rule {
-    /**
-     * @type {ResourceFixer}
-     * @protected
-     */
-    fixer;
-
     /**
      * Construct a new resource checker rule.
      *
@@ -44,17 +36,10 @@ class ResourceRule extends Rule {
      * any of the lang-specs in the set.
      *
      * @param {Object} options options as documented above
-     * @param {ResourceFixer} [options.fixer] an instance of a ResourceFixer to use
      * @constructor
      */
     constructor(options) {
         super(options);
-
-        if (options?.fixer) {
-            this.fixer = options.fixer;
-        } else {
-            this.fixer = new ResourceFixer();
-        }
 
         /**
          * Ensure that the rule is only applied to resources that match one of

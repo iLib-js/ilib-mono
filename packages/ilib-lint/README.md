@@ -396,6 +396,10 @@ Each declarative rule should have the following properties:
       specified or if the value is the empty string, then the text
       that matched the search regular expression will be removed from the
       string.
+    - flags (String) - any flags to use with the regular expression. This
+      should be a string of characters that are the same as the flags
+      used in javascript regular expressions. For example, "i" for
+      case-insensitive matching, "g" for global matching, etc.
 
 Programmatic rules are used when the requirements for the rules are more complicated
 than a simple regular expression string can handle. For example, a rule that checks
