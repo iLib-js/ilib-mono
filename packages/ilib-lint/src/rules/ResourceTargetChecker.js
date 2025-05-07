@@ -81,25 +81,28 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 endIndex = match.index+match[0].length;
             }
             let fix = undefined;
-            if (this.fixes) {
+            if (this.fixDefinitions) {
                 let commands = [];
-                // the declarative fixes array is really an array of commands to apply,
+                // the declarative fix definitions array is really an array of commands to apply,
                 // so we need to convert the search/replace pairs into commands
-                this.fixes.forEach(fix => {
-                    fix.search.lastIndex = 0;  // just in case
-                    const match = fix.search.exec(text);
-                    if (match) {
-                        fix.search.lastIndex = 0;  // just in case
-                        const text = match[0].replace(fix.search, fix.replace || '');
-                        commands.push(this.fixer.createStringCommand(
-                            startIndex+match.index,
-                            match[0].length,
-                            text
-                        ));
-                    }
+                this.fixDefinitions.forEach(fixDefinition => {
+                    const regex = new RegExp(fixDefinition.search, fixDefinition.flags);
+                    const match = regex.exec(text);
+                    if (!match) return;
+
+                    const original = match[0];
+                    const start = startIndex+match.index;
+                    const len = original.length;
+                    const replacementText = original.replace(new RegExp(fixDefinition.search, fixDefinition.flags), fixDefinition.replace || '');
+
+                    commands.push(ResourceFixer.createStringCommand(
+                        start,
+                        len,
+                        replacementText
+                    ));
                 });
                 if (commands.length > 0) {
-                    fix = this.fixer.createFix({
+                    fix = ResourceFixer.createFix({
                         resource,
                         commands
                     });
