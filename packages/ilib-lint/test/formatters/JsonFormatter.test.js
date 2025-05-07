@@ -174,6 +174,60 @@ describe('JsonFormatter', () => {
                 suggestions: 0
             },
             expected:`{"ios-app":{"stats":{"errors":1,"warnings":1,"suggestions":0},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error"},{"pathName":"test2.txt","rule":"testRule","severity":"warning"}]}}`+"\n"
+        },
+        {
+            testName: "format a single result with a fix that is applied",
+            name: "ios-app",
+            results: [
+                new Result({
+                    description: "A description for testing purposes",
+                    highlight: "This is just <e0>me</e0> testing.",
+                    id: "test.id",
+                    lineNumber: 123,
+                    pathName: "test.txt",
+                    rule: getTestRule(),
+                    severity: "error",
+                    source: "test",
+                    fix: {
+                        type: "resource",
+                        applied: true
+                    }
+                })
+            ],
+            fileStats: {
+                files: 1,
+                lines: 10,
+                bytes: 100,
+                modules: 1
+            },
+            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","fix":true,"fixApplied":true}]}}`+"\n"
+        },
+        {
+            testName: "format a single result with a fix that is not applied",
+            name: "ios-app",
+            results: [
+                new Result({
+                    description: "A description for testing purposes",
+                    highlight: "This is just <e0>me</e0> testing.",
+                    id: "test.id",
+                    lineNumber: 123,
+                    pathName: "test.txt",
+                    rule: getTestRule(),
+                    severity: "error",
+                    source: "test",
+                    fix: {
+                        type: "resource",
+                        applied: false
+                    }
+                })
+            ],
+            fileStats: {
+                files: 1,
+                lines: 10,
+                bytes: 100,
+                modules: 1
+            },
+            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","fix":true,"fixApplied":false}]}}`+"\n"
         }
     ])('$testName', ({name, results, resultStats, fileStats, expected}) => {
         const formatter = new JsonFormatter();
