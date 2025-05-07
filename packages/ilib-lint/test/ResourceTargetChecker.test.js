@@ -25,9 +25,6 @@ import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common
 
 import ResourceFixer from '../src/plugins/resource/ResourceFixer.js';
 
-// Create a shared ResourceFixer instance to use in the tests
-const fixer = new ResourceFixer();
-
 /**
  * Find a rule definition by name in the regexRules array.
  * @param {string} name the name of the rule to find
@@ -352,10 +349,7 @@ describe("testResourceTargetChecker", () => {
         const illegalPunctuations = ["？", "！", "％"];
         expect.assertions(1 + illegalPunctuations.length * 8);
 
-        const rule = new ResourceTargetChecker({
-            ...findRuleDefinition("resource-no-fullwidth-punctuation-subset"),
-            fixer
-        });
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-fullwidth-punctuation-subset"));
         expect(rule).toBeTruthy();
 
         for (const symbol of illegalPunctuations) {
@@ -391,10 +385,7 @@ describe("testResourceTargetChecker", () => {
     test("ResourceNoFullwidthPunctuationSubsetSuccess", () => {
         expect.assertions(2);
 
-        const rule = new ResourceTargetChecker({
-            ...findRuleDefinition("resource-no-fullwidth-punctuation-subset"),
-            fixer
-        });
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-fullwidth-punctuation-subset"));
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -417,10 +408,7 @@ describe("testResourceTargetChecker", () => {
     test("ResourceNoFullwidthPunctuationSubsetMultiple", () => {
         expect.assertions(21);
 
-        const rule = new ResourceTargetChecker({
-            ...findRuleDefinition("resource-no-fullwidth-punctuation-subset"),
-            fixer
-        });
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-fullwidth-punctuation-subset"));
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -466,10 +454,7 @@ describe("testResourceTargetChecker", () => {
     test("ResourceNoFullwidthPunctuationSubsetMultipleNotInChinese", () => {
         expect.assertions(2);
 
-        const rule = new ResourceTargetChecker({
-            ...findRuleDefinition("resource-no-fullwidth-punctuation-subset"),
-            fixer
-        });
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-fullwidth-punctuation-subset"));
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -492,10 +477,7 @@ describe("testResourceTargetChecker", () => {
     test("ResourceNoFullwidthPunctuation apply fixes correctly", () => {
         expect.assertions(4);
 
-        const rule = new ResourceTargetChecker({
-            ...findRuleDefinition("resource-no-fullwidth-punctuation-subset"),
-            fixer
-        });
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-fullwidth-punctuation-subset"));
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -521,6 +503,7 @@ describe("testResourceTargetChecker", () => {
             sourceFile: new SourceFile("a/b/c.xliff", {}),
             dirty: false
         });
+        const fixer = new ResourceFixer();
         fixer.applyFixes(ir, results.map(result => result.fix));
 
         const fixedResource = ir.getRepresentation()[0];
