@@ -1,6 +1,6 @@
 {
     "name": "ilib-tools-common",
-    "version": "1.16.0",
+    "version": "1.17.0",
     "main": "./lib/index.js",
     "module": "./src/index.js",
     "exports": {
