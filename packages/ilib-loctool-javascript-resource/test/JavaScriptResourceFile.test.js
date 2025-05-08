@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFile.test.js - test the JavaScript file handler object.
  *
- * Copyright © 2019-2020, 2023 Box, Inc.
+ * Copyright © 2019-2020, 2023, 2025 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,6 +74,73 @@ var p2 = new CustomProject({
             def: "zh-Hant-HK",
             spec: "zh-Hant"
         }
+    },
+    identify: true
+});
+
+var p3 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "de-AT"],
+    javascript: {
+        header: "/* This is a generated file. DO NOT EDIT THIS. */\n\nimport type ReactString from './types.d.ts';\n\nconst strings_[localeUnder] = ",
+        footer: ";\n\nexport default strings_[localeUnder];\n"
+    },
+    identify: true
+});
+
+var p4 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "de-AT"],
+    localeDefaults: {
+        "en": {
+            def: "en-US",
+            spec: "en"
+        },
+        "es": {
+            def: "es-US",
+            spec: "es"
+        },
+        "de": {
+            def: "de-DE",
+            spec: "de"
+        },
+        "zh-Hans": {
+            def: "zh-Hans-CN",
+            spec: "zh"
+        },
+        "zh-Hant": {
+            def: "zh-Hant-HK",
+            spec: "zh-Hant"
+        }
+    },
+    javascript: {
+        header: "/* This is a generated file. DO NOT EDIT THIS. */\n\nimport type ReactString from './types.d.ts';\n\nconst strings_[localeUnder] = ",
+        footer: ";\n\nexport default strings_[localeUnder];\n"
+    },
+    identify: true
+});
+
+var p5 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "de-AT"],
+    javascript: {
+        header: "/* This is a generated file. DO NOT EDIT THIS. */\n\nimport type ReactString from './types.d.ts';\n\nconst strings = ",
+        footer: ";\n\nexport default strings;\n"
     },
     identify: true
 });
@@ -1014,6 +1081,183 @@ describe("javascriptresourcefile", function() {
             '    "source text": "<span loclang=\\"javascript\\" locid=\\"source text\\">Quellentext</span>",\n' +
             '    "yet more source text": "<span loclang=\\"javascript\\" locid=\\"yet more source text\\">noch mehr Quellentext</span>"\n' +
             '};\n';
+
+        var actual = jsrf.getContent();
+        diff(actual, expected);
+
+        expect(actual).toBe(expected);
+    });
+
+    test("JavaScriptResourceFile test that we can set a custom header and footer with no replacements", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p5,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        [
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "source text",
+                sourceLocale: "en-US",
+                source: "source text",
+                target: "Quellentext"
+            }),
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "more source text",
+                sourceLocale: "en-US",
+                source: "more source text",
+                target: "mehr Quellentext"
+            }),
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "yet more source text",
+                sourceLocale: "en-US",
+                source: "yet more source text",
+                target: "noch mehr Quellentext"
+            })
+        ].forEach(function(res) {
+            jsrf.addResource(res);
+        });
+
+        // should use the default locale spec in the first line
+        var expected =
+            '/* This is a generated file. DO NOT EDIT THIS. */\n\n' +
+            "import type ReactString from './types.d.ts';\n\n" +
+            'const strings = {\n' +
+            '    "more source text": "<span loclang=\\"javascript\\" locid=\\"more source text\\">mehr Quellentext</span>",\n' +
+            '    "source text": "<span loclang=\\"javascript\\" locid=\\"source text\\">Quellentext</span>",\n' +
+            '    "yet more source text": "<span loclang=\\"javascript\\" locid=\\"yet more source text\\">noch mehr Quellentext</span>"\n' +
+            '};\n\n' +
+            'export default strings;\n';
+
+        var actual = jsrf.getContent();
+        diff(actual, expected);
+
+        expect(actual).toBe(expected);
+    });
+
+    test("JavaScriptResourceFile test that we can set a custom header and footer with replacements", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p3,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        [
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "source text",
+                sourceLocale: "en-US",
+                source: "source text",
+                target: "Quellentext"
+            }),
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "more source text",
+                sourceLocale: "en-US",
+                source: "more source text",
+                target: "mehr Quellentext"
+            }),
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "yet more source text",
+                sourceLocale: "en-US",
+                source: "yet more source text",
+                target: "noch mehr Quellentext"
+            })
+        ].forEach(function(res) {
+            jsrf.addResource(res);
+        });
+
+        // should use the default locale spec in the first line
+        var expected =
+            '/* This is a generated file. DO NOT EDIT THIS. */\n\n' +
+            "import type ReactString from './types.d.ts';\n\n" +
+            'const strings_de_DE = {\n' +
+            '    "more source text": "<span loclang=\\"javascript\\" locid=\\"more source text\\">mehr Quellentext</span>",\n' +
+            '    "source text": "<span loclang=\\"javascript\\" locid=\\"source text\\">Quellentext</span>",\n' +
+            '    "yet more source text": "<span loclang=\\"javascript\\" locid=\\"yet more source text\\">noch mehr Quellentext</span>"\n' +
+            '};\n\n' +
+            'export default strings_de_DE;\n';
+
+        var actual = jsrf.getContent();
+        diff(actual, expected);
+
+        expect(actual).toBe(expected);
+    });
+    
+    test("JavaScriptResourceFile test that we can set a custom header and footer with default locales", function() {
+        expect.assertions(2);
+    
+        var jsrf = new JavaScriptResourceFile({
+            project: p4,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        [
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "source text",
+                sourceLocale: "en-US",
+                source: "source text",
+                target: "Quellentext"
+            }),
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "more source text",
+                sourceLocale: "en-US",
+                source: "more source text",
+                target: "mehr Quellentext"
+            }),
+            p2.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "de-DE",
+                key: "yet more source text",
+                sourceLocale: "en-US",
+                source: "yet more source text",
+                target: "noch mehr Quellentext"
+            })
+        ].forEach(function(res) {
+            jsrf.addResource(res);
+        });
+
+        // should use the default locale spec in the first line
+        var expected =
+            '/* This is a generated file. DO NOT EDIT THIS. */\n\n' +
+            "import type ReactString from './types.d.ts';\n\n" +
+            'const strings_de = {\n' +
+            '    "more source text": "<span loclang=\\"javascript\\" locid=\\"more source text\\">mehr Quellentext</span>",\n' +
+            '    "source text": "<span loclang=\\"javascript\\" locid=\\"source text\\">Quellentext</span>",\n' +
+            '    "yet more source text": "<span loclang=\\"javascript\\" locid=\\"yet more source text\\">noch mehr Quellentext</span>"\n' +
+            '};\n\n' +
+            'export default strings_de;\n';
 
         var actual = jsrf.getContent();
         diff(actual, expected);

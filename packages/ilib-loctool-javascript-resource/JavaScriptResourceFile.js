@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFile.js - represents a javascript resource file
  *
- * Copyright © 2019-2022, JEDLSoft
+ * Copyright © 2019-2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,20 @@ var JavaScriptResourceFile = function(props) {
     this.logger = this.API.getLogger("loctool.plugin.JavaScriptResourceFile");
 
     this.set = this.API.newTranslationSet(this.project && this.project.sourceLocale || "en-US");
+    
+    // defaults
+    this.header = "ilib.data.strings_[localeUnder] = ";
+    this.footer = ";\n";
+
+    if (this.project && this.project.settings && this.project.settings.javascript) {
+        var settings = this.project.settings.javascript;
+        if (settings.header) {
+            this.header = settings.header;
+        }
+        if (settings.footer) {
+            this.footer = settings.footer;
+        }
+    }
 };
 
 /**
@@ -178,7 +192,7 @@ JavaScriptResourceFile.prototype.getContent = function() {
         }
     }
 
-    var defaultSpec = this.pathName ? this.locale.getSpec() : this.getDefaultSpec();
+    var defaultLocale = this.pathName ? this.locale : new Locale(this.getDefaultSpec());
 
     // allow for a project-specific prefix to the file to do things like importing modules and such
     var output = "";
@@ -186,9 +200,13 @@ JavaScriptResourceFile.prototype.getContent = function() {
     if (settings && settings.JavaScriptResourceFile && settings.JavaScriptResourceFile.prefix) {
         output = settings.JavaScriptResourceFile.prefix;
     }
-    output += 'ilib.data.strings_' + defaultSpec.replace(/-/g, "_") + " = ";
+    output += this.API.utils.formatPath(this.header, {
+        locale: defaultLocale
+    });
     output += JSON.stringify(json, undefined, 4);
-    output += ";\n";
+    output += this.API.utils.formatPath(this.footer, {
+        locale: defaultLocale
+    });
 
     // take care of double-escaped unicode chars
     output = output.replace(/\\\\u/g, "\\u");
