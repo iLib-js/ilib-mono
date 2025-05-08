@@ -1,5 +1,18 @@
 # ilib-loctool-po
 
+## 1.7.0
+
+### Minor Changes
+
+- c99ffbc: - Convert the loctool plugin to use the ilib-po library
+  - so that we can share the conversions and algorithms and make them
+    align with each other reading and writing the same type of PO files
+
+### Patch Changes
+
+- Updated dependencies [64dcd13]
+  - ilib-tools-common@1.17.0
+
 ## 1.6.5
 
 ### Patch Changes

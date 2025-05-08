@@ -1,5 +1,20 @@
 # ilib-lint
 
+## 2.11.0
+
+### Minor Changes
+
+- bdd77c0: - Add support for fixes in declarative rules
+  - you can now add fixes in the rules by
+    including a fixes array. (See the README
+    for details on how to specify those
+    fixes.)
+
+### Patch Changes
+
+- Updated dependencies [64dcd13]
+  - ilib-tools-common@1.17.0
+
 ## 2.10.0
 
 ### Minor Changes
