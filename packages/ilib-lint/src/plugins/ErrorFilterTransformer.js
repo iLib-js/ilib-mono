@@ -47,7 +47,8 @@ class ErrorFilterTransformer extends Transformer {
             return ir;
         }
         const resources = ir.getRepresentation();
-        const hashesToExclude = results.filter(result => result.id && result.severity === 'error').
+        // don't filter out results that have been auto-fixed!
+        const hashesToExclude = results.filter(result => result.id && result.severity === 'error' && !result.fix?.applied).
             map(result => [result.id, result.locale, result.pathName].join('_'));
         const filteredResources = resources.filter(/** @type Resource */ resource => {
             const filePath = resource.getResFile() ?? resource.getPath();

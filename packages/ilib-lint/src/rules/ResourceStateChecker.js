@@ -2,7 +2,7 @@
  * ResourceStateChecker.js - rule to check that state field of a
  *   resource has a particular value
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@
  */
 
 import { Rule, Result } from 'ilib-lint-common';
+
+import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
 /**
  * @class Represent an ilib-lint rule.
@@ -41,7 +43,17 @@ class ResourceStateChecker extends Rule {
      * Resource instances have the state field value of
      * "translated".
      *
-     * @param {Object} options options as documented above
+     * If the auto-fix feature is enabled, then this rule will
+     * automatically fix the state of any Resource instances. If
+     * the "param" property is a string, then the state will be
+     * set to that string. If the "param" property is an array,
+     * then the state will be set to the first string in that array.
+     *
+     * @param {Object} options options for this rule
+     * @param {String|Array<String>} [options.param] the state or states that
+     *   the resources must have. If this is a string, then all resources
+     *   must have that state. If this is an array, then all resources
+     *   must have one of the states in the array.
      * @constructor
      */
     constructor(options) {
@@ -100,7 +112,13 @@ class ResourceStateChecker extends Rule {
                     `Resources must have one of the following states: ${this.states.join(", ")}` :
                     `Resources must have the following state: ${this.states[0]}`,
                 locale,
-                source: resource.getSource()
+                source: resource.getSource(),
+                fix: ResourceFixer.createFix({
+                    resource,
+                    commands: [
+                        ResourceFixer.createMetadataCommand("state", this.states[0])
+                    ]
+                })
             };
             if (typeof(resource.lineNumber) !== 'undefined') {
                 value.lineNumber = resource.lineNumber;

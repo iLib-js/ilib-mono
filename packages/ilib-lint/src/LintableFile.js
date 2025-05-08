@@ -163,23 +163,22 @@ class LintableFile extends DirItem {
             let /** @type {Result[]} */ currentParseResults = [];
 
             try {
-                let didWrite = false;
-                let irs;
+                let changesMade = false;
+                let irs = parser.parse(this.sourceFile);
 
                 do {
-                    irs = parser.parse(this.sourceFile);
-                    // indicate that for current intermediate representations, parser did not write out modified representations yet
-                    didWrite = false;
-                    // clear the results of the current parse, because the file had been overwritten
-                    // (so the results don't match the file anymore)
+                    // indicate that for current round, we did not modify the current representations yet
+                    changesMade = false;
+                    // clear the results of the current parse in case any results were left over from the previous iteration
+                    // which do not match the current intermediate representations any more, or which repeat the same issues
                     currentParseResults = [];
 
                     for (const ir of irs) {
                         // find the rules that are appropriate for this intermediate representation and then apply them
                         const rules = this.filetype.getRules().filter((rule) => rule.getRuleType() === ir.getType());
 
-                        rules.forEach(ru => {
-                            logger.debug('Checking rule  : ' + ru.name);
+                        rules.forEach(rule => {
+                            logger.debug(`Checking rule  : ${rule.name}`);
                         });
                         logger.debug('');
 
@@ -200,8 +199,6 @@ class LintableFile extends DirItem {
                             true === this.project.getConfig().autofix &&
                             // and that any fixable results were produced
                             fixable.length > 0 &&
-                            // and that the current parser is able to write
-                            this.serializer &&
                             // and that the fixer for this type of IR is avaliable
                             (fixer = this.project.getFixerManager().get(ir.getType()))
                         ) {
@@ -215,32 +212,28 @@ class LintableFile extends DirItem {
                                 // written out to disk again after all fixes have been applied
                                 this.dirty = true;
 
-                                // fixer should modify the provided IR
-                                // so tell current parser to write out the modified representation
-                                this.sourceFile = this.serializer.serialize(irs);
+                                // indicate that the content has been modified and the re-applying the rules should occur
+                                changesMade = true;
 
-                                // after writing out the fixed content, we want to reparse to see if any new issues appeared,
+                                // after writing out the fixed content, we may need to reparse to see if any new issues appeared,
                                 // while preserving the results that have been fixed so far;
                                 // fixer should have set the `applied` flag of each applied Fix
                                 // so accumulate the corresponding results
                                 fixedResults.push(...results.filter((result) => result.fix?.applied));
-
-                                // indicate that the content has been modified and the re-parsing should occur
-                                didWrite = true;
-
-                                // don't process subsequent representations after modifying the file
-                                // because they don't match the new file
-                                break;
                             }
                         }
 
-                        // otherwise, just accumulate the results of the current parse for each IRs
-                        currentParseResults.push(...results);
+                        if (!changesMade) {
+                            // otherwise, just accumulate the results of the current parse for each IRs
+                            currentParseResults.push(...results);
+                        }
                     }
+                    // if a write had occurred for a given parser, redo the rule application
+                } while (changesMade);
 
-                    // if a write had occurred for a given parser, reparse
-                } while (didWrite);
-                this.irs = this.irs.concat(irs);
+                if (irs) {
+                    this.irs = this.irs.concat(irs);
+                }
             } catch (e) {
                 if (this.parsers.length === 1) {
                     // if this is the only parser for this file, throw an exception right away so the user
@@ -254,8 +247,8 @@ class LintableFile extends DirItem {
             }
 
             // once all intermediate representations have been processed for the given parser
-            // without any writes, finally return all of the results accumulated during auto-fixing
-            // and the remaining ones that were produced
+            // without any modifications, finally return all of the results accumulated during auto-fixing
+            // and the remaining ones that were produced by the rules which did not involve any fixes
             return [...fixedResults, ...currentParseResults];
         });
         if (this.irs.length === 0) {
@@ -348,7 +341,7 @@ class LintableFile extends DirItem {
                         const newIR = transformer.transform(this.irs[i], results);
                         if (newIR) {
                             this.irs[i] = newIR;
-                            this.dirty = newIR.isDirty();
+                            this.dirty = this.dirty || newIR.isDirty();
                         }
                     }
                 });

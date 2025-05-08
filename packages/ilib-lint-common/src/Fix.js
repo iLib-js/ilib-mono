@@ -66,21 +66,21 @@ class Fix {
      *     commandId;
      *     position;
      * }
-     *
+     * 
      * class InsertCommand extends StringFixCommand {
      *     commandId = "INSERT";
      *     content;
      * }
-     *
+     * 
      * class RemoveCommand extends StringFixCommand {
      *     commandId = "REMOVE";
      *     length;
      * }
-     *
+     * 
      * class StringFix extends Fix {
      *     commands; // StringFixCommand[]
      * }
-     *
+     * 
      * class StringFixer {
      *     applyFixes(representation, fixes) {} // applyFixes(representation: IntermediateRepresentation, fixes: StringFix[]): void
      *     createFix(commands) {}               // createFix(commands: StringFixCommand[]): StringFix

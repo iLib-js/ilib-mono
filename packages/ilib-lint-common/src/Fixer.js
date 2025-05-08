@@ -77,7 +77,7 @@ class Fixer {
      * can't tell which symbol goes first (`"!birds"` or `!"birds"`). One of those fixes
      * needs to be skipped.
      *
-     * @param {IntermediateRepresentation} ir Intermediate Representaion instance which will be
+     * @param {IntermediateRepresentation} ir Intermediate Representation instance which will be
      * modified by the fixer when the fixes are applied
      * @param {Fix[]} fixes Array of fixes which Fixer should attempt to apply
      * @returns {void}
