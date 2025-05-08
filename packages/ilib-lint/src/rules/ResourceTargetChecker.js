@@ -21,6 +21,7 @@
 import { Result } from 'ilib-lint-common';
 import DeclarativeResourceRule from './DeclarativeResourceRule.js';
 import { stripPlurals } from './utils.js';
+import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
 /**
  * @class Resource checker class that checks that any regular expressions
@@ -30,18 +31,16 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
     /**
      * Construct a new regular expression-based resource checker.
      *
-     * The options must contain the following required properties:
-     *
-     * - name - a unique name for this rule
-     * - description - a one-line description of what this rule checks for.
+     * @param {Object} options options as documented above
+     * @param {string} options.name a unique name for this rule
+     * @param {string} options.description - a one-line description of what this rule checks for.
      *   Example: "Check that URLs in the target are valid."
-     * - note - a one-line note that will be printed on screen when the
+     * @param {string} options.note - a one-line note that will be printed on screen when the
      *   check fails. Example: "The URL {matchString} is not valid."
      *   (Currently, matchString is the only replacement
      *   param that is supported.)
-     * - regexps - an array of strings that encode regular expressions to
+     * @param {Array<string>} options.regexps an array of strings that encode regular expressions to
      *   look for
-     * @param {Object} options options as documented above
      * @constructor
      */
     constructor(options) {
@@ -80,6 +79,34 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 startIndex = match.index;
                 endIndex = match.index+match[0].length;
             }
+            let fix = undefined;
+            if (this.fixDefinitions) {
+                let commands = [];
+                // the declarative fix definitions array is really an array of commands to apply,
+                // so we need to convert the search/replace pairs into commands
+                this.fixDefinitions.forEach(fixDefinition => {
+                    const regex = new RegExp(fixDefinition.search, fixDefinition.flags);
+                    const match = regex.exec(text);
+                    if (!match) return;
+
+                    const original = match[0];
+                    const start = startIndex+match.index;
+                    const len = original.length;
+                    const replacementText = original.replace(new RegExp(fixDefinition.search, fixDefinition.flags), fixDefinition.replace || '');
+
+                    commands.push(ResourceFixer.createStringCommand(
+                        start,
+                        len,
+                        replacementText
+                    ));
+                });
+                if (commands.length > 0) {
+                    fix = ResourceFixer.createFix({
+                        resource,
+                        commands
+                    });
+                }
+            }
             let value = {
                 severity: this.severity,
                 id: resource.getKey(),
@@ -90,6 +117,9 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 description: this.note.replace(/\{matchString\}/g, text),
                 locale: resource.getTargetLocale()
             };
+            if (fix) {
+                value.fix = fix;
+            }
             if (typeof(resource.lineNumber) !== 'undefined') {
                 value.lineNumber = resource.lineNumber;
             }

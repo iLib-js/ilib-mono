@@ -18,6 +18,28 @@
             "description": "Ensure that the normalize function is not called.",
             "note": "Do not call the normalize function, as it is deprecated.",
             "regexps": [ "\\.normalize\\s*\\(" ]
+        },
+        {
+            "type": "resource-target",
+            "name": "resource-no-punct-next-to-spaces",
+            "severity": "error",
+            "description": "Ensure that punctuation is not next to spaces in target resources.",
+            "note": "Punctuation should not be next to spaces in the target resources.",
+            "regexps": [
+                "[[。、「」『』〜ー・〽々※【】‥…（）［］｛｝！？＆：；]]\\s",
+                "\\s[[。、「」『』〜ー・〽々※【】‥…（）［］｛｝！？＆：；]]"
+            ],
+            "fixes": [
+                {
+                    "search": "\\s([[。、「」『』〜ー・〽々※【】‥…（）［］｛｝！？＆：；]])",
+                    "replace": "$1"
+                },
+                {
+                    "search": "([[。、「」『』〜ー・〽々※【】‥…（）［］｛｝！？＆：；]])\\s",
+                    "replace": "$1"
+                }
+
+            ]
         }
     ],
     "rulesets": {

@@ -379,6 +379,27 @@ Each declarative rule should have the following properties:
     - Suggestions are things that may not necessarily be wrong, but
       where a better way exists or where a recommended practice should
       be followed.
+* fixes (Array<Object>) - declare auto-fixes to this problem
+  This is an array of objects where that contain any parameters that the fix
+  needs to apply. The fix will be applied automatically if the
+  `--fix` command-line parameter is given. Each object in
+  the fixes array should contain the following properties:
+    - search (String) - a regular expression to match against the previously
+      matched string. The search
+      will only be run against the part of the string that caused this rule
+      to match in the first place. The regular expression should use
+      javascript syntax.
+    - replace (String) - a string to replace the matched text with. This
+      string can use the normal javascript replacement syntax (eg. `$1`,
+      `$2`, etc.) to re-insert the text that matched capturing groups in
+      the search regular expression. If the replace property is not
+      specified or if the value is the empty string, then the text
+      that matched the search regular expression will be removed from the
+      string.
+    - flags (String) - any flags to use with the regular expression. This
+      should be a string of characters that are the same as the flags
+      used in javascript regular expressions. For example, "i" for
+      case-insensitive matching, "g" for global matching, etc.
 
 Programmatic rules are used when the requirements for the rules are more complicated
 than a simple regular expression string can handle. For example, a rule that checks

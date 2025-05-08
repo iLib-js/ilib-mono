@@ -1,7 +1,7 @@
 /*
  * ResourceTargetChecker.test.js - test the built-in regular-expression-based rules
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,15 @@ import { ResourceString, ResourceArray, ResourcePlural } from 'ilib-tools-common
 import ResourceTargetChecker from '../src/rules/ResourceTargetChecker.js';
 import { regexRules } from '../src/plugins/BuiltinPlugin.js';
 
-import { Result } from 'ilib-lint-common';
+import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
 
+import ResourceFixer from '../src/plugins/resource/ResourceFixer.js';
+
+/**
+ * Find a rule definition by name in the regexRules array.
+ * @param {string} name the name of the rule to find
+ * @returns {Object} the rule definition object if found, otherwise undefined
+ */
 function findRuleDefinition(name) {
     return regexRules.find(rule => rule.name === name);
 }
@@ -465,6 +472,42 @@ describe("testResourceTargetChecker", () => {
             file: "a/b/c.xliff"
         });
         expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceNoFullwidthPunctuation apply fixes correctly", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-fullwidth-punctuation-subset"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: "Really? Yes! 100%",
+            targetLocale: "ja-JP",
+            target: "本当？ はい！ 100％",
+            pathName: "a/b/c.xliff",
+            resfile: "a/b/c.xliff"
+        });
+        const results = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(results).toBeTruthy();
+        expect(results.length).toBe(3);
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, results.map(result => result.fix));
+
+        const fixedResource = ir.getRepresentation()[0];
+        expect(fixedResource.getTarget()).toBe("本当? はい! 100%");
     });
 
     test("ResourceNoHalfWidthKana", () => {

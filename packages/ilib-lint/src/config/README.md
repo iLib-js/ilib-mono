@@ -54,7 +54,24 @@ The `ilib-lint-config.json` file can have any of the following properties:
         is, if any one of the expressions matches, the rule will create a
         single Result and the other regular expressions will not be tested. If you
         want to match multiple regular expressions, you should make multiple
-        separate declarative rules.
+    - fixes (Array<Object>) - declare auto-fixes to this problem. Each object in
+        the fixes array should contain the following properties:
+        - search (String) - a regular expression to match against the previously
+          matched string. The search
+          will only be run against the part of the string that caused this rule
+          to match in the first place. The regular expression should use
+          javascript syntax.
+        - replace (String) - a string to replace the matched text with. This
+          string can use the normal javascript replacement syntax (eg. `$1`,
+          `$2`, etc.) to re-insert the text that matched capturing groups in
+          the search regular expression. If the replace property is not
+          specified or if the value is the empty string, then the text
+          that matched the search regular expression will be removed from the
+          string.
+        - flags (String) - optional flags to pass to the regular expression
+          engine. This is the same as the "flags" property in the
+          [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+          constructor.
 -   formatters (Array of Object) - a set of declarative formatters. Each array element is
     an object that contains the following properties:
     -   name - a unique name for this formatter
@@ -149,6 +166,29 @@ Here is an example of a configuration file:
             "note": "The named parameter '{matchString}' from the source string does not appear in the target string",
             "regexps": ["\\{\\w+\\}"],
             "link": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/README.md"
+        },
+        // example of a declarative rule that includes auto-fixing
+        {
+            "name": "resource-no-fullwidth-digits",
+            "type": "resource-target",
+            "description": "Ensure that there are no fullwidth digits in the target string",
+            "note": "The substring {matchString} in the target string cannot contain fullwidth digits",
+            "regexps": ["[０-９]+"],
+            // this rule has an auto-fixer that will fix the digits to be ASCII digits. The search
+            // terms below will be applied only within the string that caused the rule to match in the
+            // first place. (ie. the sequence of fullwidth digits matched above)
+            "fixes": [
+                { "search": "０", "replace": "0" },
+                { "search": "１", "replace": "1" },
+                { "search": "２", "replace": "2" },
+                { "search": "３", "replace": "3" },
+                { "search": "４", "replace": "4" },
+                { "search": "５", "replace": "5" },
+                { "search": "６", "replace": "6" },
+                { "search": "７", "replace": "7" },
+                { "search": "８", "replace": "8" },
+                { "search": "９", "replace": "9" }
+            ]
         }
     ],
     "formatters": [
