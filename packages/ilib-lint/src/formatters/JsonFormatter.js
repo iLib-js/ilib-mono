@@ -67,12 +67,17 @@ class JsonFormatter extends Formatter {
             stats: {
             },
             results: results.map((result) => {
-                return {
+                let obj = {
                     pathName: result.pathName,
                     rule: result.rule.getName(),
                     severity: result.severity,
                     locale: result.locale
                 };
+                if (result.fix) {
+                    obj.fix = true;
+                    obj.fixApplied = result.fix.applied;
+                }
+                return obj;
             })
         };
 
