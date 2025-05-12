@@ -67,7 +67,7 @@ class JsonFormatter extends Formatter {
             stats: {
             },
             results: results.map((result) => {
-                let obj = {
+                const obj = {
                     pathName: result.pathName,
                     rule: result.rule.getName(),
                     severity: result.severity
@@ -75,7 +75,11 @@ class JsonFormatter extends Formatter {
                 if (result.fix) {
                     obj.fix = true;
                     obj.fixApplied = result.fix.applied;
+                } else {
+                    obj.fix = false;
+                    obj.fixApplied = false;
                 }
+
                 return obj;
             })
         };
