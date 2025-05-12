@@ -1,5 +1,11 @@
 # loctool
 
+## 2.29.1
+
+### Patch Changes
+
+- 575c69b: Change the duplicate option name.
+
 ## 2.29.0
 
 ### Minor Changes

@@ -1,5 +1,54 @@
 # ilib-lint
 
+## 2.11.0
+
+### Minor Changes
+
+- bdd77c0: - Add support for fixes in declarative rules
+  - you can now add fixes in the rules by
+    including a fixes array. (See the README
+    for details on how to specify those
+    fixes.)
+
+### Patch Changes
+
+- Updated dependencies [64dcd13]
+  - ilib-tools-common@1.17.0
+
+## 2.10.0
+
+### Minor Changes
+
+- b182d42: - Added ability to count source words
+  - Added support from FileStats for source words
+  - Added support to most results to output the locale of the result
+    so we can slice and dice by locale if necessary
+  - Added tests for XliffParser to make sure it is producing the right
+    file stats
+  - Added support in the json formatter for source words and for
+    target locales of results
+
+### Patch Changes
+
+- Updated dependencies [b182d42]
+  - ilib-lint-common@3.4.0
+
+## 2.9.3
+
+### Patch Changes
+
+- f6c2fc0: - the error filter transformer was filtering out any resource
+  with the same key as one of the results. However, it would do
+  this for all locales and across all files, which might represent
+  various localization batches. - now filters out only the resources for the appropriate
+  locale and file - now matches the file path to the resource file with the
+  translation unit came from instead of the source code path
+  where the string originally came from
+- Updated dependencies [f6c2fc0]
+- Updated dependencies [f6c2fc0]
+  - ilib-lint-common@3.3.0
+  - ilib-tools-common@1.16.0
+
 ## 2.9.2
 
 ### Patch Changes

@@ -70,7 +70,8 @@ class JsonFormatter extends Formatter {
                 const obj = {
                     pathName: result.pathName,
                     rule: result.rule.getName(),
-                    severity: result.severity
+                    severity: result.severity,
+                    locale: result.locale
                 };
                 if (result.fix) {
                     obj.fix = true;
@@ -95,6 +96,7 @@ class JsonFormatter extends Formatter {
             obj[name].stats.lines = fileStats.lines;
             obj[name].stats.bytes = fileStats.bytes;
             obj[name].stats.modules = fileStats.modules;
+            obj[name].stats.words = fileStats.words;
         }
 
         // write as compressed JSON to save space;

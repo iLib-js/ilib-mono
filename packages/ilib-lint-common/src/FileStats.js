@@ -1,7 +1,7 @@
 /*
  * FileStats.js - statistics about a file or a number of files
  *
- * Copyright © 2023 JEDLSoft
+ * Copyright © 2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ class FileStats {
     /** @private */ lines = 0;
     /** @private */ bytes = 0;
     /** @private */ modules = 0;
+    /** @private */ words = 0;  // number of source words
 
     /**
      * Construct an file statistics instance. Each count in the
@@ -42,11 +43,14 @@ class FileStats {
      * by the programming language and may mean things like functions
      * or classes. It is up to the parser for that programming language
      * to count these.
+     * @param {Number} [options.words] the number of source words in those
+     * source files. This is not the same as the number of words in the
+     * target strings.
      * @constructor
      */
     constructor(options) {
         if (!options) return;
-        ["files", "lines", "bytes", "modules"].forEach(property => {
+        ["files", "lines", "bytes", "modules", "words"].forEach(property => {
             if (typeof(options[property]) === 'number') this[property] = options[property];
         });
     }
@@ -60,7 +64,7 @@ class FileStats {
      */
     addStats(stats) {
         if (!stats || typeof(stats) !== 'object' || !(stats instanceof FileStats)) return this;
-        ["files", "lines", "bytes", "modules"].forEach(property => {
+        ["files", "lines", "bytes", "modules", "words"].forEach(property => {
             this[property] += stats[property] || 0;
         });
         if (typeof(stats.files) !== 'number') {
@@ -81,7 +85,7 @@ class FileStats {
     /**
      * Add the given amount to the number of files.
      * @param {Number} num the amount to add
-     * @returns {FileStats} the current instance
+     * @returns {FileStats} the current instance so you can chain the calls
      */
     addFiles(num) {
         if (typeof(num) !== 'number') return this;
@@ -102,7 +106,7 @@ class FileStats {
      * Add the given amount to the number of lines.
      *
      * @param {Number} num the amount to add
-     * @returns {FileStats} the current instance
+     * @returns {FileStats} the current instance so you can chain the calls
      */
     addLines(num) {
         if (typeof(num) !== 'number') return this;
@@ -123,7 +127,7 @@ class FileStats {
      * Add the given amount to the number of bytes.
      *
      * @param {Number} num the amount to add
-     * @returns {FileStats} the current instance
+     * @returns {FileStats} the current instance so that you can chain calls
      */
     addBytes(num) {
         if (typeof(num) !== 'number') return this;
@@ -149,11 +153,34 @@ class FileStats {
      * Add the given amount to the number of modules.
      *
      * @param {Number} num the amount to add
-     * @returns {FileStats} the current instance
+     * @returns {FileStats} the current instance so that you can chain calls
      */
     addModules(num) {
         if (typeof(num) !== 'number') return this;
         this.modules += num;
+        return this;
+    }
+
+    /**
+     * Get the number of source words being counted. This is not the same
+     * as the number of words in the target strings, which varies by
+     * locale and is not counted here.
+     *
+     * @returns {Number} the number of source words being counted
+     */
+    getWords() {
+        return this.words;
+    }
+
+    /**
+     * Add the given amount to the number of source words.
+     *
+     * @param {Number} num the amount to add
+     * @returns {FileStats} the current instance so that you can chain calls
+     */
+    addWords(num) {
+        if (typeof(num) !== 'number') return this;
+        this.words += num;
         return this;
     }
 }

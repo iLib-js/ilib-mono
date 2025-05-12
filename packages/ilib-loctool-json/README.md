@@ -96,6 +96,7 @@ used within the json property:
   load. If the json file
   does not fit any of the schema (ie. it does not validate according to
   any one of the schema), then that file will be skipped and not localized.
+  This can be a path relative to the project root or an absolute path.
 - mappings: a mapping between file matchers and an object that gives
   info used to localize the files that match it. This allows different
   json files within the project to be processed with different schema.

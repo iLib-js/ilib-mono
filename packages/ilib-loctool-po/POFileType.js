@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-var fs = require("fs");
 var path = require("path");
-var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var mm = require("micromatch");
 var POFile = require("./POFile.js");
 
@@ -233,7 +231,7 @@ POFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
     if (!template) {
         template = defaultMappings["**/*.po"].template;
     }
-    
+
     return path.normalize(this.API.utils.formatPath(template, {
         sourcepath: pathname,
         locale: l
