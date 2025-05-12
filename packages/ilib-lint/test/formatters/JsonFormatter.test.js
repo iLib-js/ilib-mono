@@ -90,7 +90,7 @@ describe('JsonFormatter', () => {
                 modules: 1,
                 words: 50
             },
-            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"fr-FR","fix":false,"fixApplied":false}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1,"words":50},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"fr-FR","fix":false,"fixApplied":false}]}}`+"\n"
         },
         {
             testName: "format a single result with file and result stats",
@@ -149,7 +149,7 @@ describe('JsonFormatter', () => {
                     locale: "en-US"
                 })
             ],
-            expected:`{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","fix":false,"fixApplied":false},{"pathName":"test2.txt","rule":"testRule","severity":"warning","locale":"en-US","fix":false,"fixApplied":false}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"en-US","fix":false,"fixApplied":false},{"pathName":"test2.txt","rule":"testRule","severity":"warning","locale":"en-US","fix":false,"fixApplied":false}]}}`+"\n"
         },
         {
             testName: "format multiple results with stats",
