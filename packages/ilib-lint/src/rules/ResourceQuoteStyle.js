@@ -1,7 +1,7 @@
 /*
  * ResourceQuoteStyle.js - rule to check quotes in the target string
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import LocaleInfo from 'ilib-localeinfo';
 import { Result } from 'ilib-lint-common';
 
 import ResourceRule from './ResourceRule.js';
+import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
 /** @ignore @typedef {import("ilib-tools-common").Resource} Resource */
 
@@ -168,14 +169,53 @@ class ResourceQuoteStyle extends ResourceRule {
             return;
         }
 
-        let highlight, description, lineNumber;
+        let highlight, description, lineNumber, fix;
         if (startQuote.test(tar) || endQuote.test(tar)) {
             highlight = tar;
             if (startQuote) { highlight = highlight.replace(startQuote, "$1<e0>$2</e0>$3"); }
             if (endQuote) { highlight = highlight.replace(endQuote, "$1<e1>$2</e1>$3"); }
             highlight = `Target: ${highlight}`;
             description = `Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
+            // create a fix to replace the quotes in the target string with the correct ones
+            let correctQuoteStart, correctQuoteEnd;
+            if (sourceStyle.ascii || sourceStyle.native) {
+                correctQuoteStart = regExps.target.quoteStart[0];
+                correctQuoteEnd = regExps.target.quoteEnd[0];
+            } else {
+                correctQuoteStart = regExps.target.quoteStartAlt[0];
+                correctQuoteEnd = regExps.target.quoteEndAlt[0];
+            }
+            let match;
+            let commands = [];
+
+            while ((match = startQuote.exec(tar)) !== null) {
+                // now that we have found a start quote, find it in the matched string so
+                // that we can get the index into that string
+                const offset = match[0].indexOf(match[2]);
+
+                commands.push(ResourceFixer.createStringCommand(
+                    match.index + offset,
+                    1,
+                    correctQuoteStart
+                ));
+            }
+
+            while ((match = endQuote.exec(tar)) !== null) {
+                // now that we have found an end quote, find it in the matched string so
+                // that we can get the index into that string
+                const offset = match[0].indexOf(match[2]);
+
+                commands.push(ResourceFixer.createStringCommand(
+                    match.index + offset,
+                    1,
+                    correctQuoteEnd
+                ));
+            }
+            if (commands.length > 0) {
+                fix = ResourceFixer.createFix({ resource, commands });
+            }
         } else {
+            // no auto-fix possible, so just highlight the problem
             highlight = `Target: ${tar}<e0></e0>`;
             description = `Quotes are missing in the target. Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
         }
@@ -184,7 +224,7 @@ class ResourceQuoteStyle extends ResourceRule {
         // (preserved for compatibility)
         if (typeof(resource.lineNumber) !== 'undefined') {lineNumber = /** @type {number} */ (resource.lineNumber); }
 
-        return new Result({
+        let params = {
             /** @type {Severity} */ severity: this.localeOnly ? "error" : "warning",
             id: resource.getKey(),
             source: src,
@@ -194,7 +234,11 @@ class ResourceQuoteStyle extends ResourceRule {
             highlight,
             description,
             lineNumber,
-        });
+        };
+        if (fix) {
+            params.fix = fix;
+        }
+        return new Result(params);
     }
 
     /**
@@ -259,8 +303,8 @@ class ResourceQuoteStyle extends ResourceRule {
 
         // now calculate the regular expressions for the target string that use quotes
         // if the source contains native quotes, then the target should also have native quotes
-        const targetQuotesNative = new RegExp(`((^|\\W)${targetQuoteStart}\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?${targetQuoteEnd}(\\W|$))`, "gu");
-        const targetQuotesNativeAlt = new RegExp(`((^|\\W)${targetQuoteStartAlt}\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?${targetQuoteEndAlt}(\\W|$))`, "gu");
+        const targetQuotesNative = new RegExp(`((^|\\W)[${targetQuoteStart}]\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEnd}](\\W|$))`, "gu");
+        const targetQuotesNativeAlt = new RegExp(`((^|\\W)[${targetQuoteStartAlt}]\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEndAlt}](\\W|$))`, "gu");
         const targetQuotesAll = this.localeOnly ?
             targetQuotesNative :
             new RegExp(`((^|\\W)[${targetQuoteStart}${targetQuoteStartAlt}"]\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEnd}${targetQuoteEndAlt}"](\\W|$))`, "gu");
@@ -273,9 +317,9 @@ class ResourceQuoteStyle extends ResourceRule {
         // you are left with the wrong ones for this locale.
         const targetNonQuoteChars = quoteChars.
                 replace(sourceQuoteStart, "").
-                replace(targetQuoteStart, "").
+                replace(new RegExp(`[${targetQuoteStart}]`, "gu"), "").
                 replace(sourceQuoteEnd, "").
-                replace(targetQuoteEnd, "");
+                replace(new RegExp(`[${targetQuoteEnd}]`, "gu"), "");
         const targetNonQuoteCharsAlt = quoteChars.
                 replace(new RegExp(`[${sourceQuoteStartAlt}]`, "gu"), "").
                 replace(new RegExp(`[${targetQuoteStartAlt}]`, "gu"), "").
