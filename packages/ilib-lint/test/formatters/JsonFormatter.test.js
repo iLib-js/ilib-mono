@@ -42,7 +42,7 @@ describe('JsonFormatter', () => {
                 })
             ],
             resultStats: undefined,
-            expected: `{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"en-US"}]}}`+"\n"
+            expected: `{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"en-US","fix":false,"fixApplied":false}]}}`+"\n"
         },
         {
             testName: "format a single result with stats",
@@ -65,7 +65,7 @@ describe('JsonFormatter', () => {
                 warnings: 0,
                 suggestions: 0
             },
-            expected:`{"ios-app":{"stats":{"errors":1,"warnings":0,"suggestions":0},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"de-DE"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{"errors":1,"warnings":0,"suggestions":0},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"de-DE","fix":false,"fixApplied":false}]}}`+"\n"
         },
         {
             testName: "format a single result with file stats",
@@ -90,7 +90,7 @@ describe('JsonFormatter', () => {
                 modules: 1,
                 words: 50
             },
-            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1,"words":50},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"fr-FR"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1,"words":50},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"fr-FR","fix":false,"fixApplied":false}]}}`+"\n"
         },
         {
             testName: "format a single result with file and result stats",
@@ -120,7 +120,7 @@ describe('JsonFormatter', () => {
                 modules: 1,
                 words: 50
             },
-            expected:`{"ios-app":{"stats":{"errors":1,"warnings":0,"suggestions":0,"files":1,"lines":10,"bytes":100,"modules":1,"words":50},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"es-ES"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{"errors":1,"warnings":0,"suggestions":0,"files":1,"lines":10,"bytes":100,"modules":1,"words":50},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"es-ES","fix":false,"fixApplied":false}]}}`+"\n"
         },
         {
             testName: "format multiple results",
@@ -149,7 +149,7 @@ describe('JsonFormatter', () => {
                     locale: "en-US"
                 })
             ],
-            expected:`{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"en-US"},{"pathName":"test2.txt","rule":"testRule","severity":"warning","locale":"en-US"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","locale":"en-US","fix":false,"fixApplied":false},{"pathName":"test2.txt","rule":"testRule","severity":"warning","locale":"en-US","fix":false,"fixApplied":false}]}}`+"\n"
         },
         {
             testName: "format multiple results with stats",
@@ -181,7 +181,61 @@ describe('JsonFormatter', () => {
                 warnings: 1,
                 suggestions: 0
             },
-            expected:`{"ios-app":{"stats":{"errors":1,"warnings":1,"suggestions":0},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error"},{"pathName":"test2.txt","rule":"testRule","severity":"warning"}]}}`+"\n"
+            expected:`{"ios-app":{"stats":{"errors":1,"warnings":1,"suggestions":0},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","fix":false,"fixApplied":false},{"pathName":"test2.txt","rule":"testRule","severity":"warning","fix":false,"fixApplied":false}]}}`+"\n"
+        },
+        {
+            testName: "format a single result with a fix that is applied",
+            name: "ios-app",
+            results: [
+                new Result({
+                    description: "A description for testing purposes",
+                    highlight: "This is just <e0>me</e0> testing.",
+                    id: "test.id",
+                    lineNumber: 123,
+                    pathName: "test.txt",
+                    rule: getTestRule(),
+                    severity: "error",
+                    source: "test",
+                    fix: {
+                        type: "resource",
+                        applied: true
+                    }
+                })
+            ],
+            fileStats: {
+                files: 1,
+                lines: 10,
+                bytes: 100,
+                modules: 1
+            },
+            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","fix":true,"fixApplied":true}]}}`+"\n"
+        },
+        {
+            testName: "format a single result with a fix that is not applied",
+            name: "ios-app",
+            results: [
+                new Result({
+                    description: "A description for testing purposes",
+                    highlight: "This is just <e0>me</e0> testing.",
+                    id: "test.id",
+                    lineNumber: 123,
+                    pathName: "test.txt",
+                    rule: getTestRule(),
+                    severity: "error",
+                    source: "test",
+                    fix: {
+                        type: "resource",
+                        applied: false
+                    }
+                })
+            ],
+            fileStats: {
+                files: 1,
+                lines: 10,
+                bytes: 100,
+                modules: 1
+            },
+            expected:`{"ios-app":{"stats":{"files":1,"lines":10,"bytes":100,"modules":1},"results":[{"pathName":"test.txt","rule":"testRule","severity":"error","fix":true,"fixApplied":false}]}}`+"\n"
         }
     ])('$testName', ({name, results, resultStats, fileStats, expected}) => {
         const formatter = new JsonFormatter();
