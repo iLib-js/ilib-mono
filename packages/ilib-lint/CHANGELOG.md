@@ -1,5 +1,12 @@
 # ilib-lint
 
+## 2.12.0
+
+### Minor Changes
+
+- 34211b9: - Added "fix" and "fixApplied" properties to each result
+  in the json formatter output
+
 ## 2.11.0
 
 ### Minor Changes
