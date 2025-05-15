@@ -147,23 +147,38 @@ class ResourceQuoteStyle extends ResourceRule {
         // verify that corresponding quote style is present in target
         // otherwise, construct regexps to pinpoint violation positions
         // (for highlighting purposes)
+        let nonQuoteStartChars = regExps.target.nonQuoteChars;
+        let nonQuoteEndChars = regExps.target.nonQuoteChars;
+        let nonQuoteStartCharsAlt = regExps.target.nonQuoteCharsAlt;
+        let nonQuoteEndCharsAlt = regExps.target.nonQuoteCharsAlt;
+        if (locale === "ja-JP") {
+            // Japanese has a special case where the quotes are different
+            nonQuoteStartChars = nonQuoteStartChars.replace(/』/g, "");
+            nonQuoteEndChars = nonQuoteEndChars.replace(/『/g, "");
+            nonQuoteStartCharsAlt = nonQuoteStartCharsAlt.replace(/』/g, "");
+            nonQuoteEndCharsAlt = nonQuoteEndCharsAlt.replace(/『/g, "");
+        }
+
+        // in the regular expressions below, [\u00A0\u202F\u2060\u3000] is used to
+        // match the all types of Unicode non-breaking spaces which are used in some
+        // locales to separate the quote from the text.
         let startQuote, endQuote;
         if (sourceStyle.ascii) {
             if (regExps.target.quotesAll.test(tar)) return;
-            startQuote = new RegExp(`(^|\\W)([${regExps.target.nonQuoteChars}'])([\\p{Letter}\\{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}\\}])([${regExps.target.nonQuoteChars}'])(\\W|$)`, "gu");
+            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartChars}'])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}']))(\\W|$)`, "gu");
         } else if (sourceStyle.asciiAlt) {
             if (regExps.target.quotesAllAlt.test(tar)) return;
-            startQuote = new RegExp(`(^|\\W)([${regExps.target.nonQuoteCharsAlt}"])([\\p{Letter}\\{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}\\}])([${regExps.target.nonQuoteCharsAlt}"])(\\W|$)`, "gu");
+            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartCharsAlt}"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndCharsAlt}"]))(\\W|$)`, "gu");
         } else if (sourceStyle.native) {
             if (regExps.target.quotesNative.test(tar)) return;
-            startQuote = new RegExp(`(^|\\W)([${regExps.target.nonQuoteChars}'"])([\\p{Letter}\\{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}\\}])([${regExps.target.nonQuoteChars}'"])(\\W|$)`, "gu");
+            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartChars}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}'"]))(\\W|$)`, "gu");
         } else if (sourceStyle.nativeAlt) {
             if (regExps.target.quotesNativeAlt.test(tar)) return;
-            startQuote = new RegExp(`(^|\\W)([${regExps.target.nonQuoteCharsAlt}'"])([\\p{Letter}\\{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}\\}])([${regExps.target.nonQuoteCharsAlt}'"])(\\W|$)`, "gu");
+            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartCharsAlt}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndCharsAlt}'"]))(\\W|$)`, "gu");
         } else {
             // no quotes detected in source string
             return;
@@ -172,8 +187,8 @@ class ResourceQuoteStyle extends ResourceRule {
         let highlight, description, lineNumber, fix;
         if (startQuote.test(tar) || endQuote.test(tar)) {
             highlight = tar;
-            if (startQuote) { highlight = highlight.replace(startQuote, "$1<e0>$2</e0>$3"); }
-            if (endQuote) { highlight = highlight.replace(endQuote, "$1<e1>$2</e1>$3"); }
+            if (startQuote) { highlight = highlight.replace(startQuote, "$1<e0>$2</e0>$4"); }
+            if (endQuote) { highlight = highlight.replace(endQuote, "$1<e1>$2</e1>$4"); }
             highlight = `Target: ${highlight}`;
             description = `Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
             // create a fix to replace the quotes in the target string with the correct ones
@@ -191,7 +206,7 @@ class ResourceQuoteStyle extends ResourceRule {
             while ((match = startQuote.exec(tar)) !== null) {
                 // now that we have found a start quote, find it in the matched string so
                 // that we can get the index into that string
-                const offset = match[0].indexOf(match[2]);
+                const offset = match[0].indexOf(match[3]);
 
                 commands.push(ResourceFixer.createStringCommand(
                     match.index + offset,
@@ -203,7 +218,7 @@ class ResourceQuoteStyle extends ResourceRule {
             while ((match = endQuote.exec(tar)) !== null) {
                 // now that we have found an end quote, find it in the matched string so
                 // that we can get the index into that string
-                const offset = match[0].indexOf(match[2]);
+                const offset = match[0].indexOf(match[3]);
 
                 commands.push(ResourceFixer.createStringCommand(
                     match.index + offset,
@@ -298,32 +313,32 @@ class ResourceQuoteStyle extends ResourceRule {
 
         // now calculate regular expressions for the source string that use those quotes
         // if the source uses ASCII quotes, then the target could have ASCII or native quotes
-        const sourceQuotesNative = new RegExp(`((^|\\W)${sourceQuoteStart}\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?${sourceQuoteEnd}(\\W|$))`, "gu");
-        const sourceQuotesNativeAlt = new RegExp(`((^|\\W)${sourceQuoteStartAlt}\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?${sourceQuoteEndAlt}(\\W|$))`, "gu");
+        const sourceQuotesNative = new RegExp(`((^|\\W)${sourceQuoteStart}\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?${sourceQuoteEnd}(\\W|$))`, "gu");
+        const sourceQuotesNativeAlt = new RegExp(`((^|\\W)${sourceQuoteStartAlt}\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?${sourceQuoteEndAlt}(\\W|$))`, "gu");
 
         // now calculate the regular expressions for the target string that use quotes
         // if the source contains native quotes, then the target should also have native quotes
-        const targetQuotesNative = new RegExp(`((^|\\W)[${targetQuoteStart}]\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEnd}](\\W|$))`, "gu");
-        const targetQuotesNativeAlt = new RegExp(`((^|\\W)[${targetQuoteStartAlt}]\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEndAlt}](\\W|$))`, "gu");
+        const targetQuotesNative = new RegExp(`((^|\\W)[${targetQuoteStart}]\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?[${targetQuoteEnd}](\\W|$))`, "gu");
+        const targetQuotesNativeAlt = new RegExp(`((^|\\W)[${targetQuoteStartAlt}]\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?[${targetQuoteEndAlt}](\\W|$))`, "gu");
         const targetQuotesAll = this.localeOnly ?
             targetQuotesNative :
-            new RegExp(`((^|\\W)[${targetQuoteStart}${targetQuoteStartAlt}"]\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEnd}${targetQuoteEndAlt}"](\\W|$))`, "gu");
+            new RegExp(`((^|\\W)[${targetQuoteStart}${targetQuoteStartAlt}"]\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?[${targetQuoteEnd}${targetQuoteEndAlt}"](\\W|$))`, "gu");
         const targetQuotesAllAlt = this.localeOnly ?
             targetQuotesNativeAlt :
-            new RegExp(`((^|\\W)[${targetQuoteStartAlt}']\\s?[\\p{Letter}\\{]|[\\p{Letter}\\}]\\s?[${targetQuoteEndAlt}'](\\W|$))`, "gu");
+            new RegExp(`((^|\\W)[${targetQuoteStartAlt}']\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?[${targetQuoteEndAlt}'](\\W|$))`, "gu");
 
         // the non quote chars are used to highlight errors in the target string where they are using quotes, but
         // they are the wrong type. Start with the superset of all quotes and then remove the valid ones so that
         // you are left with the wrong ones for this locale.
         const targetNonQuoteChars = quoteChars.
-                replace(sourceQuoteStart, "").
+                //replace(sourceQuoteStart, "").
                 replace(new RegExp(`[${targetQuoteStart}]`, "gu"), "").
-                replace(sourceQuoteEnd, "").
+                //replace(sourceQuoteEnd, "").
                 replace(new RegExp(`[${targetQuoteEnd}]`, "gu"), "");
         const targetNonQuoteCharsAlt = quoteChars.
-                replace(new RegExp(`[${sourceQuoteStartAlt}]`, "gu"), "").
+                //replace(new RegExp(`[${sourceQuoteStartAlt}]`, "gu"), "").
                 replace(new RegExp(`[${targetQuoteStartAlt}]`, "gu"), "").
-                replace(new RegExp(`[${sourceQuoteEndAlt}]`, "gu"), "").
+                //replace(new RegExp(`[${sourceQuoteEndAlt}]`, "gu"), "").
                 replace(new RegExp(`[${targetQuoteEndAlt}]`, "gu"), "");
 
         return {
