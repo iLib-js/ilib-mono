@@ -809,7 +809,7 @@ describe("testResourceTargetChecker", () => {
     });
 
     test("ResourceNoSpaceBetweenDoubleAndSingleByteCharacter", () => {
-        expect.assertions(2);
+        expect.assertions(4);
 
         const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-space-between-double-and-single-byte-character"));
         expect(rule).toBeTruthy();
@@ -823,13 +823,16 @@ describe("testResourceTargetChecker", () => {
             pathName: "a/b/c.xliff",
         });
 
-        const result = rule.matchString({
+        const results = rule.matchString({
             source: resource.getSource(),
             target: resource.getTarget(),
             resource,
             file: "a/b/c.xliff"
         });
-        expect(result).toStrictEqual([new Result({
+        expect(Array.isArray(results)).toBeTruthy();
+        expect(results.length).toBe(1);
+        const firstResult = results[0];
+        expect(firstResult).toEqual(expect.objectContaining({
             rule,
             severity: "warning",
             locale: "ja-JP",
@@ -837,8 +840,8 @@ describe("testResourceTargetChecker", () => {
             source: "Box Embed Widget",
             id: "matcher.test",
             description: 'The space character is not allowed in the target string between a double- and single-byte character. Remove the space character.',
-            highlight: 'Target: Bo<e0>x 埋</e0>め込みウィジェット',
-        })]);
+            highlight: 'Target: Bo<e0>x 埋</e0>め込みウィジェット'
+        }));
     });
 
     test("No Space Between Double And Single Byte Character, but not counting punctuation", () => {
@@ -935,4 +938,101 @@ describe("testResourceTargetChecker", () => {
         });
         expect(!actual).toBeTruthy();
     });
+
+    test("Resource no space between single and double byte character -- fix applied", () => {
+        expect.assertions(5);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-space-between-double-and-single-byte-character"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: "Box Embed Widget",
+            targetLocale: "ja-JP",
+            target: "Box 埋め込みウィジェット",
+            pathName: "a/b/c.xliff",
+        });
+
+        const results = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(Array.isArray(results)).toBeTruthy();
+        expect(results.length).toBe(1);
+        const result = results[0];
+        expect(result).toEqual(expect.objectContaining({
+            rule,
+            severity: "warning",
+            locale: "ja-JP",
+            pathName: "a/b/c.xliff",
+            source: "Box Embed Widget",
+            id: "matcher.test",
+            description: 'The space character is not allowed in the target string between a double- and single-byte character. Remove the space character.',
+            highlight: 'Target: Bo<e0>x 埋</e0>め込みウィジェット',
+        }));
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, results.map(res => res.fix));
+
+        expect(resource.getTarget()).toBe("Box埋め込みウィジェット");
+    });
+
+    test("Resource no space between double and single byte character -- fix applied", () => {
+        expect.assertions(5);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-space-between-double-and-single-byte-character"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: "Box Embed Widget",
+            targetLocale: "ja-JP",
+            target: "埋 Boxめ込みウィジェット",
+            pathName: "a/b/c.xliff",
+        });
+
+        const results = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(Array.isArray(results)).toBeTruthy();
+        expect(results.length).toBe(1);
+        const result = results[0];
+        expect(result).toEqual(expect.objectContaining({
+            rule,
+            severity: "warning",
+            locale: "ja-JP",
+            pathName: "a/b/c.xliff",
+            source: "Box Embed Widget",
+            id: "matcher.test",
+            description: 'The space character is not allowed in the target string between a double- and single-byte character. Remove the space character.',
+            highlight: 'Target: <e0>埋 B</e0>oxめ込みウィジェット',
+        }));
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, results.map(res => res.fix));
+
+        expect(resource.getTarget()).toBe("埋Boxめ込みウィジェット");
+    });
+
 });
