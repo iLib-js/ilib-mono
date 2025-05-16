@@ -1,7 +1,7 @@
 /*
  * AnsiConsoleFormatter.js - Formats result output
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,9 +56,12 @@ class AnsiConsoleFormatter extends Formatter {
             output += `  Source: ${result.source}\n`;
         }
         output += `  ${result.highlight}
-  Auto-fix: ${result.fix === undefined ? "unavailable" : result.fix.applied ? "\u001b[92mapplied" : "\u001B[91mnot applied"}\u001B[0m
+  Auto-fix: ${result.fix === undefined ? "unavailable" : result.fix.applied ? "\u001B[92mapplied\u001B[0m" : "\u001B[91mnot applied\u001B[0m"}
   Rule (${result.rule.getName()}): ${result.rule.getDescription()}
 `;
+        if (result.locale) {
+            output += `  Locale: ${result.locale}\n`;
+        }
 
         // output ascii terminal escape sequences
         output = output.replace(/<e\d><\/e\d>/g, "\u001B[91m␣\u001B[0m");
