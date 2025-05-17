@@ -159,9 +159,10 @@ var Project = function(options, root, settings) {
     }
 
     // where the translation xliff files are read from
-    this.xliffsDir = ilib.isArray(this.settings.xliffsDir) ? this.settings.xliffsDir.map(function(dir) {
+    var translationsDir = this.settings.translationsDir || this.settings.xliffsDir || '.';
+    this.translationsDir = ilib.isArray(translationsDir) ? translationsDir.map(function(dir) {
         return smartJoin(this.root, dir);
-    }.bind(this)) : [smartJoin(this.root, this.settings.xliffsDir || '.')];
+    }.bind(this)) : [smartJoin(this.root, translationsDir)];
 
     // where the xliff files are written to
     this.xliffsOut = smartJoin(this.root, this.settings.xliffsOut || '.');
@@ -188,9 +189,9 @@ var Project = function(options, root, settings) {
         this.db = new LocalRepository({
             sourceLocale: this.sourceLocale,
             pseudoLocale: this.pseudoLocale,
-            pathName: ((this.settings.xliffVersion !== 2) ? (path.join(this.xliffsDir[0], this.options.id + ".xliff")): undefined),
+            pathName: ((this.settings.xliffVersion !== 2) ? (path.join(this.translationsDir[0], this.options.id + ".xliff")): undefined),
             project: this,
-            xliffsDir: this.xliffsDir,
+            translationsDir: this.translationsDir,
             intermediateFormat: this.settings.intermediateFormat
         });
     }
@@ -666,7 +667,7 @@ Project.prototype.generateMode = function(cb) {
 
     var genMode = new GenerateMode({
         targetDir: this.settings.targetDir,
-        xliffsDir: this.settings.xliffsDir,
+        translationsDir: this.settings.translationsDir,
         settings: this.settings
     });
 

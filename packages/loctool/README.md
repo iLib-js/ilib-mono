@@ -139,9 +139,13 @@ All paths are relative to the root of the project.
 * settings - other settings which configure this project. Some important
     settings:
     * locales - an array of target locales
-    * xliffsDir - directory containing input translation xliff files
+    * translationsDir - directory containing input translation files
+    * xliffsDir - (deprecated) old name for the translationsDir setting
+      which is still supported for backwards compatibility
+        * deprecated because the dir may now contain translated files that are not
+          xliff files!)
     * xliffsOut - where to place the output xliff files, such as
-    the "new" strings files
+      the "new" strings files
 * plugins - an array of names of plugins to use that handle various file
   types in your project. Make sure you have put these plugins as dependencies
   in your package.json. See the plugins section below for more information

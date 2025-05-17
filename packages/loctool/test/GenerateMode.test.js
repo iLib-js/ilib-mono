@@ -38,7 +38,7 @@ describe("genmodemode", function() {
     test("GenerateModeProcess", function() {
         expect.assertions(1);
         var settings = {
-            xliffsDir: "./xliffs",
+            translationsDir: "./xliffs",
             rootDir: ".",
             projectType: "sample"
         };
@@ -51,30 +51,30 @@ describe("genmodemode", function() {
 
         var genmode = new GenerateMode();
         expect(genmode).toBeTruthy();
-        expect(genmode.getXliffsDir()).toStrictEqual(["."]);
+        expect(genmode.getTranslationsDir()).toStrictEqual(["."]);
     });
     test("GenerateModeWithParams", function() {
         expect.assertions(2);
 
         var genmode = new GenerateMode({
-           xliffsDir: "./xliffs"
+           translationsDir: "./xliffs"
         });
         expect(genmode).toBeTruthy();
-        expect(genmode.getXliffsDir()).toStrictEqual(["./xliffs"]);
+        expect(genmode.getTranslationsDir()).toStrictEqual(["./xliffs"]);
     });
     test("GenerateModeSetParams", function() {
         expect.assertions(2);
 
         var genmode = new GenerateMode();
         expect(genmode).toBeTruthy();
-        genmode.setXliffsDir("./test/testfiles");
-        expect(genmode.getXliffsDir()).toStrictEqual(["./test/testfiles"]);
+        genmode.setTranslationsDir("./test/testfiles");
+        expect(genmode.getTranslationsDir()).toStrictEqual(["./test/testfiles"]);
     });
     test("GenerateModeInit", function() {
         expect.assertions(2);
 
         var genmode = new GenerateMode({
-            xliffsDir: "./test/testfiles/xliff20/app1",
+            translationsDir: "./test/testfiles/xliff20/app1",
         });
         expect(genmode).toBeTruthy();
         genmode.init();
@@ -82,6 +82,18 @@ describe("genmodemode", function() {
     });
 
     test("GenerateModeInitMultipleXliffDirs", function() {
+        expect.assertions(2);
+
+        var genmode = new GenerateMode({
+            translationsDir: ["./test/testfiles/xliff20/app1", "./test/testfiles/xliff20/app2"],
+        });
+        expect(genmode).toBeTruthy();
+        genmode.init();
+        expect(genmode.getResSize()).toBe(9);
+    });
+
+    // still accepts the old name for translationsDir
+    test("GenerateModeInitMultipleXliffDirs still accepts old xliffsDir option", function() {
         expect.assertions(2);
 
         var genmode = new GenerateMode({

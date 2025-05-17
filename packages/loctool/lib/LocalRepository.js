@@ -43,16 +43,17 @@ var getIntermediateFile = iff.getIntermediateFile;
  */
 var LocalRepository = function (options) {
     logger.trace("LocalRepository constructor called");
-    var xliffsDir = ["."];
+    var translationsDir = ["."];
     this.sourceLocale = "en-US";
     if (options) {
         this.sourceLocale = options.sourceLocale || "en-US";
         this.pseudoLocale = options.pseudoLocale;
-        if (options.xliffsDir) {
-            xliffsDir = ilib.isArray(options.xliffsDir) ? options.xliffsDir : [options.xliffsDir];
+        var transDir = options.translationsDir || options.xliffsDir;
+        if (transDir) {
+            translationsDir = ilib.isArray(transDir) ? transDir : [transDir];
         }
         if (options.pathName) {
-            xliffsDir.find(function(dir) {
+            translationsDir.find(function(dir) {
                 var pathName = path.join(dir, options.pathName);
                 if (fs.existsSync(pathName)) {
                     this.pathName = pathName;
@@ -62,7 +63,7 @@ var LocalRepository = function (options) {
             }.bind(this));
         }
         this.project = options.project;
-        this.xliffsDir = !this.pathName && xliffsDir;
+        this.translationsDir = !this.pathName && translationsDir;
         this.intermediateFormat = options.intermediateFormat;
     }
     this.intermediateFormat = this.intermediateFormat || "xliff";
@@ -126,12 +127,12 @@ LocalRepository.prototype.init = function(cb) {
     var fileFormat = this.intermediateFormat;
     var fileFilter = fileFormat === "xliff" ? xliffFileFilter : poFileFilter;
 
-    if (this.xliffsDir && this.xliffsDir.length > 0) {
+    if (this.translationsDir && this.translationsDir.length > 0) {
         var files = [];
         var miniMatchExpressions = getIntermediateFileExtensions().map(function(ext) {
             return "**/*." + ext;
         });
-        this.xliffsDir.forEach(function(dir) {
+        this.translationsDir.forEach(function(dir) {
             if (!fs.existsSync(dir)) {
                logger.warn("Translation dir " + dir + " does not exist.");
                return;
