@@ -92,12 +92,12 @@ describe("localrepository", function() {
         })
     });
 
-    test("LocalRepositoryConstructorWithXliffsDir", function() {
+    test("LocalRepositoryConstructorWithTranslationsDir", function() {
         expect.assertions(31);
 
         var repo = new LocalRepository({
             sourceLocale: "en-US",
-            xliffsDir: "./test/testfiles/xliffs"
+            translationsDir: "./test/testfiles/xliffs"
         });
 
         expect(repo).toBeTruthy();
@@ -154,7 +154,58 @@ describe("localrepository", function() {
         })
     });
 
-    test("LocalRepositoryConstructorWithXliffsDirArray", function() {
+    test("LocalRepositoryConstructorWithTranslationsDirArray", function() {
+        expect.assertions(21);
+
+        // should read all xliffs from both directories
+        var repo = new LocalRepository({
+            sourceLocale: "en-US",
+            translationsDir: ["./test/testfiles/xliff20/app3", "./test/testfiles/xliff20/app4"],
+        });
+
+        expect(repo).toBeTruthy();
+
+        repo.init(function(){
+            repo.getBy({
+                reskey: "String 1a"
+            }, function(err, resources) {
+                expect(resources).toBeTruthy();
+                expect(resources.length).toBe(3);
+
+                resources.sort(function(left, right) {
+                    var leftLocale = left.getTargetLocale();
+                    var rightLocale = right.getTargetLocale();
+                    return leftLocale < rightLocale ? -1 : (leftLocale > rightLocale ? 1 : 0);
+                });
+
+                expect(resources[0].getKey()).toBe("String 1a");
+                expect(resources[0].getProject()).toBe("app3");
+                expect(resources[0].getSourceLocale()).toBe("en-KR");
+                expect(resources[0].getSource()).toBe("app3:String 1a");
+                expect(resources[0].getTargetLocale()).toBe("de-DE");
+                expect(resources[0].getTarget()).toBe("Das app3:String 1a");
+
+                expect(resources[1].getKey()).toBe("String 1a");
+                expect(resources[1].getProject()).toBe("app3");
+                expect(resources[1].getSourceLocale()).toBe("en-KR");
+                expect(resources[1].getSource()).toBe("app3:String 1a");
+                expect(resources[1].getTargetLocale()).toBe("en-US");
+                expect(resources[1].getTarget()).toBe("app3:String 1a");
+
+                expect(resources[2].getKey()).toBe("String 1a");
+                expect(resources[2].getProject()).toBe("app3");
+                expect(resources[2].getSourceLocale()).toBe("en-KR");
+                expect(resources[2].getSource()).toBe("app3:String 1a");
+                expect(resources[2].getTargetLocale()).toBe("fr-FR");
+                expect(resources[2].getTarget()).toBe("Le app3:String 1a");
+
+                repo.close(function() {
+                });
+            });
+        })
+    });
+
+    test("LocalRepositoryConstructorWith legacy xliffsDir Array", function() {
         expect.assertions(21);
 
         // should read all xliffs from both directories
@@ -211,7 +262,7 @@ describe("localrepository", function() {
         // should recursively read all xliffs from the deep directory structure
         var repo = new LocalRepository({
             sourceLocale: "en-US",
-            xliffsDir: "./test/testfiles/xliffsdeep"
+            translationsDir: "./test/testfiles/xliffsdeep"
         });
 
         expect(repo).toBeTruthy();
