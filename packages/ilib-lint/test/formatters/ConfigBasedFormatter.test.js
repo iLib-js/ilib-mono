@@ -18,6 +18,7 @@
  */
 
 import {Result} from 'ilib-lint-common';
+import dedent from 'dedent';
 
 import {ConfigBasedFormatter} from '../../src/formatters/ConfigBasedFormatter.js';
 import ResourceMatcher from "../../src/rules/ResourceMatcher.js";
@@ -28,6 +29,11 @@ describe('ConfigBasedFormatter', () => {
             name: "a pair of opening and closing tags <eX></eX>",
             highlight: "This is just <e0>me</e0> testing.",
             expected: "This is just >>me<< testing."
+        },
+        {
+            name: "multiple pairs of opening and closing tags <eX></eX>",
+            highlight: "This is just <e0>me</e0> <e1>testing</e1>.",
+            expected: "This is just >>me<< >>testing<<."
         },
         {
             name: "a self-closing tag <eX/>",
@@ -45,6 +51,8 @@ describe('ConfigBasedFormatter', () => {
             expected: "This is just me testing.<<"
         },
     ])('replaces $name with highlight markers', ({highlight, expected}) => {
+        expect.assertions(1);
+
         const formatter = new ConfigBasedFormatter({
             "name": "test-formatter",
             "description": "A formatter for testing purposes",
@@ -61,11 +69,57 @@ describe('ConfigBasedFormatter', () => {
             pathName: "test.txt",
             rule: getTestRule(),
             severity: "error",
-            source: "test"
+            source: "test",
+            locale: "de-DE"
         }));
 
-
         expect(result).toBe(expected);
+    });
+
+    test('formatting all fields of a result', () => {
+        expect.assertions(1);
+
+        const formatter = new ConfigBasedFormatter({
+            "name": "test-formatter",
+            "description": "A formatter for testing purposes",
+            "template":
+                dedent`{severity}: {pathName}({lineNumber}):
+                         {description}
+                         Highlight: {highlight}
+                         Key: {id}
+                         Source: {source}
+                         Locale: {locale}
+                         Auto-fix: {fixStatus}
+                         Rule ({ruleName}): {ruleDescription}
+                         More info: {ruleLink}
+                      `,
+            "highlightStart": ">>",
+            "highlightEnd": "<<"
+        });
+
+        const result = formatter.format(new Result({
+            description: "A description for testing purposes",
+            highlight: "This is just <e0>me</e0> testing.",
+            id: "test.id",
+            lineNumber: 123,
+            pathName: "test.txt",
+            rule: getTestRule(),
+            severity: "error",
+            source: "test",
+            locale: "de-DE"
+        }));
+
+        expect(result).toBe(
+            dedent`error: test.txt(123):
+                     A description for testing purposes
+                     Highlight: This is just >>me<< testing.
+                     Key: test.id
+                     Source: test
+                     Locale: de-DE
+                     Auto-fix: unavailable
+                     Rule (testRule): Rule for testing purposes
+                     More info: https://example.com/test
+                  `);
     });
 });
 
@@ -76,6 +130,6 @@ function getTestRule() {
         "regexps": ["test"],
         "note": "test",
         "sourceLocale": "en-US",
-        "link": ""
+        "link": "https://example.com/test",
     });
 }
