@@ -3,8 +3,9 @@
 ---
 
 - Implement fix for quote style rule
-  - only fixes quotes which exist in the target but are wrong. It cannot
-    fix missing quotes because it doesn't know where to put them.
+  - only fixes quotes which exist in the target but are not the right
+    ones for the target locale. It cannot fix missing quotes because
+    it doesn't know where to put them.
   - quote chars can be separated from the text by a non-breaking space
     (French)
   - can deal with Japanese properly too. ie. Only primary quotes, no
