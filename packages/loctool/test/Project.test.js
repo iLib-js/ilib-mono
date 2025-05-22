@@ -135,7 +135,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles', {
-            'xliffsDir': "xliffs",
+            'translationsDir': "xliffs",
             'locales': ['ja-JP']
         });
         project.addPath("md/test1.md");
@@ -162,7 +162,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/loctest-new-ja-JP.po")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.pot")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles', {
-            'xliffsDir': "xliffs",
+            'translationsDir': "xliffs",
             'locales': ['ja-JP'],
             'intermediateFormat': 'po'
         });
@@ -220,7 +220,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/ja-JP/md/test1.md")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/zh-Hans-CN/md/test1.md")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles', {
-            xliffsDir: "translations",
+            translationsDir: "translations",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN']
         });
         project.addPath("md/test1.md");
@@ -255,7 +255,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
 
         var project = ProjectFactory('./test/testfiles/project3', {
-            xliffsDir: "translations2",
+            translationsDir: "translations2",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN']
         });
         project.addPath("en-US.mock");
@@ -290,7 +290,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
 
         var project = ProjectFactory('./test/testfiles/project3', {
-            xliffsDir: "translations1",
+            translationsDir: "translations1",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN']
         });
         project.addPath("en-US.mock");
@@ -489,7 +489,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
 
         var project = ProjectFactory('./test/testfiles/project3', {
-            xliffsDir: "translations2",
+            translationsDir: "translations2",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN'],
             intermediateFormat: 'po'
         });
@@ -667,7 +667,7 @@ describe("project", function() {
         expect(!fs.existsSync("./test/testfiles/project3/ja-JP.mock")).toBeTruthy();
         expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
         var project = ProjectFactory('./test/testfiles/project3', {
-            xliffsDir: "translations2",
+            translationsDir: "translations2",
             locales: ['es-US', 'ja-JP', 'zh-Hans-CN'],
             convertPlurals: true
         });
@@ -694,6 +694,167 @@ describe("project", function() {
     });
 
     test("Project localize a mock file with plurals using plural conversions, right content", function() {
+        expect.assertions(18);
+        // set up first
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.xliff")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-ja-JP.xliff")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/es-US.mock")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/ja-JP.mock")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/project3/zh-Hans-CN.mock")).toBeTruthy();
+        var project = ProjectFactory('./test/testfiles/project3', {
+            translationsDir: "translations1",
+            locales: ['es-US', 'ja-JP', 'zh-Hans-CN'],
+            convertPlurals: true
+        });
+        project.addPath("en-US.mock");
+
+        project.init(function() {
+            project.extract(function() {
+                project.write(function() {
+                    project.save(function() {
+                        project.close(function() {
+                            var filename = "./test/testfiles/project3/loctest-new-es-US.xliff";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                                '<xliff version="1.2">\n' +
+                                '  <file original="en-US.mock" source-language="en-US" target-language="es-US" product-name="loctest">\n' +
+                                '    <body>\n' +
+                                '      <trans-unit id="1" resname="plu1" restype="string" datatype="mock">\n' +
+                                '        <source>{count, plural, one {singular} other {plural}}</source>\n' +
+                                '        <target state="new">{count, plural, one {singular} many {plural} other {plural}}</target>\n' +
+                                '      </trans-unit>\n' +
+                                '    </body>\n' +
+                                '  </file>\n' +
+                                '</xliff>';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/loctest-new-ja-JP.xliff";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                                '<xliff version="1.2">\n' +
+                                '  <file original="en-US.mock" source-language="en-US" target-language="ja-JP" product-name="loctest">\n' +
+                                '    <body>\n' +
+                                '      <trans-unit id="1" resname="plu1" restype="string" datatype="mock">\n' +
+                                '        <source>{count, plural, one {singular} other {plural}}</source>\n' +
+                                '        <target state="new">{count, plural, other {plural}}</target>\n' +
+                                '      </trans-unit>\n' +
+                                '    </body>\n' +
+                                '  </file>\n' +
+                                '</xliff>';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/loctest-new-zh-Hans-CN.xliff";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                                '<xliff version="1.2">\n' +
+                                '  <file original="en-US.mock" source-language="en-US" target-language="zh-Hans-CN" product-name="loctest">\n' +
+                                '    <body>\n' +
+                                '      <trans-unit id="1" resname="plu1" restype="string" datatype="mock">\n' +
+                                '        <source>{count, plural, one {singular} other {plural}}</source>\n' +
+                                '        <target state="new">{count, plural, other {plural}}</target>\n' +
+                                '      </trans-unit>\n' +
+                                '    </body>\n' +
+                                '  </file>\n' +
+                                '</xliff>';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/es-US.mock";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '{\n' +
+                                '    "arr1": [\n' +
+                                '        "uno",\n' +
+                                '        "dos",\n' +
+                                '        "tres"\n' +
+                                '    ],\n' +
+                                '    "arr2": [\n' +
+                                '        "quatro",\n' +
+                                '        "cinco",\n' +
+                                '        "seis"\n' +
+                                '    ],\n' +
+                                '    "foobar1": "Esta es una cadena de prueba",\n' +
+                                '    "foobar2": "Esta es una segunda cadena de prueba",\n' +
+                                '    "plu1": {\n' +
+                                '        "one": "singular",\n' +
+                                '        "other": "plural"\n' +
+                                '    },\n' +
+                                '    "plu2": {\n' +
+                                '        "one": "Hay {n} artículo.",\n' +
+                                '        "many": "Hay {n} artículos.",\n' +
+                                '        "other": "Hay {n} artículos."\n' +
+                                '    }\n' +
+                                '}';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/ja-JP.mock";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '{\n' +
+                                '    "arr1": [\n' +
+                                '        "1",\n' +
+                                '        "2",\n' +
+                                '        "3"\n' +
+                                '    ],\n' +
+                                '    "arr2": [\n' +
+                                '        "4",\n' +
+                                '        "5",\n' +
+                                '        "6"\n' +
+                                '    ],\n' +
+                                '    "foobar1": "これはテスト文字列です",\n' +
+                                '    "foobar2": "これは 2 番目のテスト文字列です",\n' +
+                                '    "plu1": {\n' +
+                                '        "one": "singular",\n' +
+                                '        "other": "plural"\n' +
+                                '    },\n' +
+                                '    "plu2": {\n' +
+                                '        "other": "項目が {n} つあります。"\n' +
+                                '    }\n' +
+                                '}';
+                            expect(actual).toBe(expected);
+
+                            filename = "./test/testfiles/project3/zh-Hans-CN.mock";
+                            expect(fs.existsSync(filename)).toBeTruthy();
+                            var actual = fs.readFileSync(filename, "utf8");
+                            var expected =
+                                '{\n' +
+                                '    "arr1": [\n' +
+                                '        "一",\n' +
+                                '        "二",\n' +
+                                '        "三"\n' +
+                                '    ],\n' +
+                                '    "arr2": [\n' +
+                                '        "四",\n' +
+                                '        "五",\n' +
+                                '        "六"\n' +
+                                '    ],\n' +
+                                '    "foobar1": "这是一个测试字符串",\n' +
+                                '    "foobar2": "这是第二个测试字符串",\n' +
+                                '    "plu1": {\n' +
+                                '        "one": "singular",\n' +
+                                '        "other": "plural"\n' +
+                                '    },\n' +
+                                '    "plu2": {\n' +
+                                '        "other": "有 {n} 个项目。"\n' +
+                                '    }\n' +
+                                '}';
+                            expect(actual).toBe(expected);
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    test("Project localize a mock file with plurals using plural conversions and still accepts the legacy xliffsDir parameter", function() {
         expect.assertions(18);
         // set up first
         expect(!fs.existsSync("./test/testfiles/project3/loctest-new-es-US.xliff")).toBeTruthy();

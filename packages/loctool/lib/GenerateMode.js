@@ -35,15 +35,16 @@ var logger = log4js.getLogger("loctool.lib.GenerateMode");
  *
  * @constructor
  * @param {String} sourceLocale the source locale for this set
- * @param {String} xliffsDir the directory that contains the intermediate files
+ * @param {String} translationsDir the directory that contains the intermediate files
  */
 var GenerateMode = function (options) {
     logger.trace("GenerateMode constructor called");
-    this.xliffsDir = ["."];
+    this.translationsDir = ["."];
 
     if (options) {
-        this.xliffsDir = options.xliffsDir ?
-            (ilib.isArray(options.xliffsDir) ? options.xliffsDir : [options.xliffsDir]) :
+        var transDir = options.translationsDir || options.xliffsDir;
+        this.translationsDir = transDir ?
+            (ilib.isArray(transDir) ? transDir : [transDir]) :
             ["."];
         this.settings = options.settings;
     }
@@ -61,7 +62,7 @@ var poFileFilter = /([.*][\-])?([a-z][a-z][a-z]?)(-([A-Z][a-z][a-z][a-z]))?(-([A
  * initialization is done
  */
 GenerateMode.prototype.init = function() {
-    var dirs = this.xliffsDir;
+    var dirs = this.translationsDir;
     var list = [];
     var fileFormat = (this.settings && this.settings.intermediateFormat) || "xliff";
     var fileFilter = fileFormat === "xliff" ? xliffFileFilter : poFileFilter;
@@ -102,12 +103,12 @@ GenerateMode.prototype.init = function() {
     }
 };
 
-GenerateMode.prototype.getXliffsDir = function() {
-    return this.xliffsDir;
+GenerateMode.prototype.getTranslationsDir = function() {
+    return this.translationsDir;
 };
 
-GenerateMode.prototype.setXliffsDir = function(dir) {
-    this.xliffsDir = ilib.isArray(dir) ? dir : [dir];
+GenerateMode.prototype.setTranslationsDir = function(dir) {
+    this.translationsDir = ilib.isArray(dir) ? dir : [dir];
 };
 
 GenerateMode.prototype.getResSize = function() {

@@ -270,7 +270,7 @@ var settings = {
     intermediateFormat: "xliff",
     nopseudo: true,
     targetDir: ".",            // target directory for all output files
-    xliffsDir: ["."],
+    translationsDir: ["."],
     xliffVersion: 1.2,
     xliffStyle: "standard",
     allowDups: true,
@@ -418,7 +418,7 @@ for (var i = 0; i < argv.length; i++) {
     } else if (val === "-x" || val === "--xliffs" || val === '-r' || val === '--translations') {
         // support the old "-x" and "--xliffs" options as well as the new "-r" and "--translations" options
         if (i+1 < argv.length && argv[i+1] && argv[i+1][0] !== "-") {
-            settings.xliffsDir = argv[++i].split(/,/g);
+            settings.translationsDir = argv[++i].split(/,/g);
         } else {
             console.error("Error: -r (--translations or -x or --xliffs) option requires a directory name argument to follow it.");
             usage();
