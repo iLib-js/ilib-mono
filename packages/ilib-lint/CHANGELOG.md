@@ -1,5 +1,17 @@
 # ilib-lint
 
+## 2.12.0
+
+### Minor Changes
+
+- 34211b9: - Added "fix" and "fixApplied" properties to each result
+  in the json formatter output
+- 17b823d: - Make sure to output locale when formatting results
+  - update the Ansi Console formatter to include the locale if it is
+    available in the result
+  - added a test for the ansi console formatter
+  - update the config-based format
+
 ## 2.11.0
 
 ### Minor Changes

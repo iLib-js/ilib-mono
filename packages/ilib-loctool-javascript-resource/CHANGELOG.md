@@ -1,5 +1,26 @@
 # ilib-loctool-javascript-resource
 
+## 1.1.0
+
+### Minor Changes
+
+- a377dd2: - Add the ability to specify a header and footer in
+  the output js file:
+
+  - Use the same replacements as in output paths
+    (See loctool utils.formatPath() for details.)
+
+  ```json
+  {
+    "settings": {
+      "javascript": {
+        "header": "const strings_[language] = ",
+        "footer": "export default strings_[language];\n"
+      }
+    }
+  }
+  ```
+
 ## 1.0.7
 
 ### Patch Changes
