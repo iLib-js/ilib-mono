@@ -159,7 +159,12 @@ var Project = function(options, root, settings) {
     }
 
     // where the translation xliff files are read from
-    var translationsDir = this.settings.translationsDir || this.settings.xliffsDir || '.';
+    var translationsDir =
+        options.xliffsDir ||
+        options.translationsDir ||
+        this.settings.xliffsDir ||
+        this.settings.translationsDir ||
+        '.';
     this.translationsDir = ilib.isArray(translationsDir) ? translationsDir.map(function(dir) {
         return smartJoin(this.root, dir);
     }.bind(this)) : [smartJoin(this.root, translationsDir)];
@@ -667,7 +672,7 @@ Project.prototype.generateMode = function(cb) {
 
     var genMode = new GenerateMode({
         targetDir: this.settings.targetDir,
-        translationsDir: this.settings.translationsDir,
+        translationsDir: this.translationsDir,
         settings: this.settings
     });
 
