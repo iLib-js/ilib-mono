@@ -71,3 +71,19 @@ Incorrectly matched snake case in a Spanish translation:
 
 Problems in the above incorrect translation:
 The "access_granted" snake-cased string was translated when it should have been treated as "Do Not Translate".
+
+## Configuration
+
+The rule can be configured to ignore certain strings using the `except` parameter:
+
+```json
+{
+    "resource-snake-case": {
+        "except": ["some_snake_case_string"]
+    }
+}
+```
+
+## Fix
+
+This rule provides an automatic fix that replaces the target string with the source string when a violation is detected. 
