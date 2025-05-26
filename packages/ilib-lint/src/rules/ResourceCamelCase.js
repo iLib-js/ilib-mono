@@ -1,5 +1,6 @@
 import ResourceRule from './ResourceRule.js';
 import {Result} from 'ilib-lint-common';
+import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
 /** @ignore @typedef {import('ilib-tools-common').Resource} Resource */
 
@@ -49,7 +50,7 @@ class ResourceCamelCase extends ResourceRule {
         }
 
         if (source !== target) {
-            return new Result({
+            const result = new Result({
                 severity: "error",
                 id: resource.getKey(),
                 source,
@@ -58,8 +59,27 @@ class ResourceCamelCase extends ResourceRule {
                 locale: resource.sourceLocale,
                 pathName: file,
                 highlight: `<e0>${target}</e0>`
-            })
+            });
+            result.fix = this.getFix(resource, source);
+            
+            return result;
         }
+    }
+
+    /**
+     * Get the fix for ResourceCamelCase rule
+     * @param {Resource} resource The resource to fix
+     * @param {string} source The source string that should be used in the target
+     * @returns {import('../plugins/resource/ResourceFix.js').default} The fix for ResourceCamelCase rule
+     */
+    getFix(resource, source) {
+        const command = ResourceFixer.createStringCommand(0, resource.getTarget().length, source);
+        
+        return ResourceFixer.createFix({
+            resource,
+            target: true,
+            commands: [command]
+        });
     }
 
     /**
