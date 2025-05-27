@@ -44,6 +44,7 @@ import ResourceSourceICUUnexplainedParams from '../rules/ResourceSourceICUUnexpl
 import ResourceXML from '../rules/ResourceXML.js';
 import ResourceCamelCase from '../rules/ResourceCamelCase.js';
 import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
+import ResourceKebabCase from '../rules/ResourceKebabCase.js';
 import StringFixer from './string/StringFixer.js';
 import ResourceFixer from './resource/ResourceFixer.js';
 
@@ -271,6 +272,7 @@ export const builtInRulesets = {
         "resource-xml": true,
         "resource-snake-case": true,
         "resource-camel-case": true,
+        "resource-kebab-case": true,
 
         // declarative rules from above
         "resource-url-match": true,
@@ -365,6 +367,7 @@ class BuiltinPlugin extends Plugin {
             ResourceXML,
             ResourceCamelCase,
             ResourceSnakeCase,
+            ResourceKebabCase,
             ...regexRules
         ];
     }
