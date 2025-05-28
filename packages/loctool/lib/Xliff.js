@@ -146,6 +146,7 @@ var Xliff = function Xliff(options) {
         if (typeof(options.version) !== 'undefined') {
             this.version = Number.parseFloat(options.version);
         }
+        this.customCategories = options.customCategories;
     }
 
     this.sourceLocale = this.sourceLocale || "en-US";
@@ -330,7 +331,8 @@ Xliff.prototype.convertTransUnit = function(tu) {
             resType: tu.resType,
             datatype: tu.datatype,
             state: tu.state,
-            flavor: tu.flavor
+            flavor: tu.flavor,
+            customMetadata: tu.customMetadata,
         });
 
         if (tu.target) {
@@ -355,7 +357,8 @@ Xliff.prototype.convertTransUnit = function(tu) {
             resType: tu.resType,
             datatype: tu.datatype,
             state: tu.state,
-            flavor: tu.flavor
+            flavor: tu.flavor,
+            customMetadata: tu.customMetadata,
         });
 
         if (tu.target) {
@@ -380,7 +383,8 @@ Xliff.prototype.convertTransUnit = function(tu) {
             resType: tu.resType,
             datatype: tu.datatype,
             state: tu.state,
-            flavor: tu.flavor
+            flavor: tu.flavor,
+            customMetadata: tu.customMetadata,
         });
 
         if (tu.target) {
@@ -534,7 +538,8 @@ Xliff.prototype._convertResource = function(res) {
                 comment: res.comment,
                 resType: res.resType,
                 datatype: res.datatype,
-                flavor: res.getFlavor ? res.getFlavor() : undefined
+                flavor: res.getFlavor ? res.getFlavor() : undefined,
+                metatada: res.getCustomMetadata(),
             });
             units.push(tu);
             break;
@@ -557,7 +562,8 @@ Xliff.prototype._convertResource = function(res) {
                 comment: res.comment,
                 resType: res.resType,
                 datatype: res.datatype,
-                flavor: res.getFlavor ? res.getFlavor() : undefined
+                flavor: res.getFlavor ? res.getFlavor() : undefined,
+                metatada: res.getCustomMetadata(),
             });
 
             for (var j = 0; j < sarr.length; j++) {
@@ -593,7 +599,8 @@ Xliff.prototype._convertResource = function(res) {
                 context: res.context,
                 resType: res.resType,
                 datatype: res.datatype,
-                flavor: res.getFlavor ? res.getFlavor() : undefined
+                flavor: res.getFlavor ? res.getFlavor() : undefined,
+                metatada: res.getCustomMetadata(),
             });
 
             var sp = res.getSourcePlurals();
@@ -1381,7 +1388,8 @@ Xliff.prototype.parse2 = function(xliff) {
                                     state: state,
                                     datatype: datatype,
                                     flavor: fileSettings.flavor,
-                                    extended: extended
+                                    extended: extended,
+                                    customMetadata: tu['mda:metadata'],
                                 });
                                 switch (restype) {
                                 case "array":

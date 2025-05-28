@@ -62,6 +62,7 @@ var Resource = function(props) {
         this.sourceHash = props.sourceHash;
         this.localize = typeof(props.localize) === "boolean" ? props.localize : true; // some files have resources we do not want to localize/translate
         this.flavor = props.flavor;
+        this.customMetadata = props.customMetadata;
         this.index = props.index;
     }
 
@@ -277,6 +278,10 @@ Resource.prototype.getFlavor = function() {
     return this.flavor;
 };
 
+Resource.prototype.getCustomMetadata = function() {
+    return this.customMetadata;
+};
+
 /**
  * Return true if the other resource represents the same resource as
  * the current one. The project, context, locale, key, flavor, and type must
@@ -289,7 +294,7 @@ Resource.prototype.getFlavor = function() {
 Resource.prototype.same = function(other) {
     if (!other) return false;
 
-    var props = ["project", "context", "sourceLocale", "targetLocale", "reskey", "resType", "flavor"];
+    var props = ["project", "context", "sourceLocale", "targetLocale", "reskey", "resType", "flavor", "customMetadata"];
     for (var i = 0; i < props.length; i++) {
         if (this[props[i]] !== other[props[i]]) {
             return false;

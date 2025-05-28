@@ -52,7 +52,7 @@ var XliffIntermediateFile = function(options) {
         allowDups: options.allowDups,
         datatype: options.datatype,
         contextInKey: options.contextInKey,
-        style: options.style
+        customCategories: options.customCategories
     });
 };
 

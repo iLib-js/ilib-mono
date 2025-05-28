@@ -90,7 +90,9 @@ var commandOptionHelp = {
         "--xliffResRoot\n" +
         "  Specify the dir where the generation output should go. (Default is resources/) \n" +
         "--xliffStyle\n" +
-        "  Specify the Xliff format style. Style can be 'standard' or 'custom'. (Default is 'standard')",
+        "  Specify the Xliff format style. Style can be 'standard' or 'custom'. (Default is 'standard')" +
+        "--customCategories\n" +
+        "  Specify the custom metadata. metadata -- metaGroup -- category and type ex) category:type (Default is null)",
 //  to be implemented
 //  report:
 //      "report\n" +
@@ -301,7 +303,8 @@ var settings = {
     localeMap: {},
     localeInherit: {},
     onlyTranslated: false,
-    convertPlurals: false
+    convertPlurals: false,
+    customCategories: "",
 };
 
 var options = [];
@@ -469,6 +472,17 @@ for (var i = 0; i < argv.length; i++) {
                 console.error("Error: --extendedAttr option requires a name=value argument to follow it.");
                 usage();
             }
+        }
+    } else if (val === "--customCategories") {
+        settings.customCategories = {};
+        if (i + 1 < argv.length && argv[i + 1]) {
+            const pairs = argv[++i].split(",");
+            pairs.forEach(pair => {
+                const [key, value] = pair.split("=");
+                if (key && value) {
+                    settings.customCategories[key.trim()] = value.trim();
+                }
+            });
         }
     } else {
         options.push(val);

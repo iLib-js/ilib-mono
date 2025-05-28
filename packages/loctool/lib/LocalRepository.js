@@ -146,6 +146,7 @@ LocalRepository.prototype.init = function(cb) {
                 var intermediateFile = getIntermediateFile({
                     sourceLocale: this.sourceLocale,
                     path: file,
+                    customCategories: this.project.settings.customCategories,
                     projectName: this.project && this.project.getProjectId()
                 });
                 logger.info("Reading in translations from the translations dir: " + file);
