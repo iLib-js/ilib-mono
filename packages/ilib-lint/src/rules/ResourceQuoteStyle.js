@@ -331,14 +331,10 @@ class ResourceQuoteStyle extends ResourceRule {
         // they are the wrong type. Start with the superset of all quotes and then remove the valid ones so that
         // you are left with the wrong ones for this locale.
         const targetNonQuoteChars = quoteChars.
-                //replace(sourceQuoteStart, "").
                 replace(new RegExp(`[${targetQuoteStart}]`, "gu"), "").
-                //replace(sourceQuoteEnd, "").
                 replace(new RegExp(`[${targetQuoteEnd}]`, "gu"), "");
         const targetNonQuoteCharsAlt = quoteChars.
-                //replace(new RegExp(`[${sourceQuoteStartAlt}]`, "gu"), "").
                 replace(new RegExp(`[${targetQuoteStartAlt}]`, "gu"), "").
-                //replace(new RegExp(`[${sourceQuoteEndAlt}]`, "gu"), "").
                 replace(new RegExp(`[${targetQuoteEndAlt}]`, "gu"), "");
 
         return {
