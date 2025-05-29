@@ -805,5 +805,29 @@ describe("testResourceICUPluralTranslation", () => {
         });
         expect(!actual).toBeTruthy();
     });
+
+    test("Rule should not match on categories that have no text to translate", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPluralTranslation();
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'Downloading {count, plural, one {{count}} other {# files}}',
+                    pathName: "a/b/c.xliff",
+                    targetLocale: "pl-PL",
+                    target: "Pobieranie {count, plural, one {{count}} other {# plików}}"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(!actual).toBeTruthy();
+    });
 });
 
