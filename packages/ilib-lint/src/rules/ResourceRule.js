@@ -88,6 +88,10 @@ class ResourceRule extends Rule {
      * @param {String} params.file the file path where the resources came from
      * @param {Resource} params.resource the resource that contains the source and/or
      * target string
+     * @param {number} [params.index] if the resource being tested is an array resource,
+     *   this represents the the index of this string in the array
+     * @param {string} [params.category] if the resource being tested is a plural resource,
+     *   this represents the plural category of this string
      * @returns {Result|Array.<Result>|undefined} any results
      * found in this string or undefined if no problems were
      * found.
@@ -126,21 +130,22 @@ class ResourceRule extends Rule {
                     });
 
                 case 'array':
-                    const srcArray = resource.getSource() ?? [];
-                    const tarArray = resource.getTarget() ?? [];
+                    const srcArray = resource.getSource() || [];
+                    const tarArray = resource.getTarget() || [];
                     results = srcArray.flatMap((item, i) => {
                         return this.matchString({
                             source: srcArray[i],
                             target: tarArray[i],
                             file,
-                            resource
+                            resource,
+                            index: i
                         });
                     }).filter(element => element);
                     return results && results.length ? results : undefined;
 
                 case 'plural':
-                    const srcPlural = resource.getSource() ?? {};
-                    const tarPlural = resource.getTarget() ?? {};
+                    const srcPlural = resource.getSource() || {};
+                    const tarPlural = resource.getTarget() || {};
                     const categorySet = new Set(Object.keys(srcPlural).concat(Object.keys(tarPlural)));
 
                     results = Array.from(categorySet).flatMap(category => {
@@ -148,7 +153,8 @@ class ResourceRule extends Rule {
                             source: srcPlural[category] ?? srcPlural.other,
                             target: tarPlural[category],
                             file,
-                            resource
+                            resource,
+                            category
                         });
                     }).filter(element => element);
                     return results && results.length ? results : undefined;
