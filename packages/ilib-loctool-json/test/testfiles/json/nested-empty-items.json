@@ -1,7 +1,18 @@
 {
+    "aNull": null,
+    "aNumber": 0,
+    "aBoolean": false,
+    "emptyString": "",
+    "nonEmptyString": "string to localize",
     "emptyObject": {},
     "emptyArray": [],
-    "emptyString": "",
-    "nullValue": null,
-    "notEmpty": "not empty"
+    "nonEmptyObject": {
+        "aNull": null,
+        "aNumber": 0,
+        "aBoolean": false,
+        "emptyString": "",
+        "nonEmptyString": "string to localize",
+        "emptyObject": {},
+        "emptyArray": []
+    }
 }
