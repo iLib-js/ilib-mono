@@ -196,19 +196,39 @@ function isPlural(node) {
     });
 }
 
-function isNotEmpty(obj) {
-    if (isPrimitive(typeof (obj))) {
-        return typeof (obj) !== 'undefined';
-    } else if (ilib.isArray(obj)) {
-        return obj.length > 0;
-    } else {
-        for (var prop in obj) {
-            if (isNotEmpty(obj[prop])) {
-                return true;
+function isEmpty(obj) {
+    if (typeof obj === "undefined") {
+        return true;
+    }
+    if (obj === null) {
+        return true;
+    }
+
+    if (typeof obj === "string") {
+        if (obj.length === 0) {
+            return true;
+        }
+    }
+
+    if (ilib.isArray(obj)) {
+        for (var i = 0; i < obj.length; i++) {
+            if (!isEmpty(obj[i])) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
+
+    if (typeof obj === "object") {
+        for (var prop in obj) {
+            if (!isEmpty(obj[prop])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -442,7 +462,11 @@ JsonFile.prototype.extractFromPrimitive = function (localizable, json, ref, tran
 }
 
 JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizable, translations, locale) {
-    if (json === undefined || !schema) return;
+    if (!schema) return;
+    
+    if (isEmpty(json)) {
+        return this.sparseValue(json);
+    }
 
     if (this.type.hasType(schema)) {
         var returnValue;
@@ -463,12 +487,6 @@ JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizab
             case "number":
             case "integer":
             case "string":
-                // don't extract empty strings, but still preserve them
-                if (json === "") {
-                    returnValue = this.sparseValue(json);
-                    break;
-                }
-
                 const __ret = this.extractFromPrimitive(localizable, json, ref, translations, locale, returnValue, type);
                 var text = __ret.text;
                 returnValue = __ret.returnValue;
@@ -614,10 +632,10 @@ JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizab
         }
     }
 
-    if (!isNotEmpty(returnValue)) {
-        return this.sparseValue(returnValue);
+    if (isEmpty(returnValue)) {
+        returnValue = this.sparseValue(json);
     }
-    
+
     return returnValue;
 };
 
