@@ -2,5 +2,6 @@
     "emptyObject": {},
     "emptyArray": [],
     "emptyString": "",
-    "nullValue": null
+    "nullValue": null,
+    "notEmpty": "not empty"
 }

@@ -2425,7 +2425,6 @@ describe("jsonfile", function () {
             pathName: "./json/nested-empty-items.json",
             type: t
         });
-        expect(jf).toBeTruthy();
 
         // should read the file
         jf.extract();
@@ -2441,7 +2440,8 @@ describe("jsonfile", function () {
             emptyObject: {},
             emptyArray: [],
             emptyString: "",
-            nullValue: null
+            nullValue: null,
+            notEmpty: "not empty"
         };
 
         expect(actualObj).toEqual(expectedObj);
