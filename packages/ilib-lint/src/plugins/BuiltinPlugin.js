@@ -72,7 +72,37 @@ export const regexRules = [
         description: "Ensure that the target does not contain any full-width Latin characters.",
         note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII letters instead.",
         regexps: [ "[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+" ],
-        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-latin.md"
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-latin.md",
+        fixes: [
+            // Uppercase A-Z
+            { search: "\\uFF21", replace: "A" }, { search: "\\uFF22", replace: "B" },
+            { search: "\\uFF23", replace: "C" }, { search: "\\uFF24", replace: "D" },
+            { search: "\\uFF25", replace: "E" }, { search: "\\uFF26", replace: "F" },
+            { search: "\\uFF27", replace: "G" }, { search: "\\uFF28", replace: "H" },
+            { search: "\\uFF29", replace: "I" }, { search: "\\uFF2A", replace: "J" },
+            { search: "\\uFF2B", replace: "K" }, { search: "\\uFF2C", replace: "L" },
+            { search: "\\uFF2D", replace: "M" }, { search: "\\uFF2E", replace: "N" },
+            { search: "\\uFF2F", replace: "O" }, { search: "\\uFF30", replace: "P" },
+            { search: "\\uFF31", replace: "Q" }, { search: "\\uFF32", replace: "R" },
+            { search: "\\uFF33", replace: "S" }, { search: "\\uFF34", replace: "T" },
+            { search: "\\uFF35", replace: "U" }, { search: "\\uFF36", replace: "V" },
+            { search: "\\uFF37", replace: "W" }, { search: "\\uFF38", replace: "X" },
+            { search: "\\uFF39", replace: "Y" }, { search: "\\uFF3A", replace: "Z" },
+            // Lowercase a-z
+            { search: "\\uFF41", replace: "a" }, { search: "\\uFF42", replace: "b" },
+            { search: "\\uFF43", replace: "c" }, { search: "\\uFF44", replace: "d" },
+            { search: "\\uFF45", replace: "e" }, { search: "\\uFF46", replace: "f" },
+            { search: "\\uFF47", replace: "g" }, { search: "\\uFF48", replace: "h" },
+            { search: "\\uFF49", replace: "i" }, { search: "\\uFF4A", replace: "j" },
+            { search: "\\uFF4B", replace: "k" }, { search: "\\uFF4C", replace: "l" },
+            { search: "\\uFF4D", replace: "m" }, { search: "\\uFF4E", replace: "n" },
+            { search: "\\uFF4F", replace: "o" }, { search: "\\uFF50", replace: "p" },
+            { search: "\\uFF51", replace: "q" }, { search: "\\uFF52", replace: "r" },
+            { search: "\\uFF53", replace: "s" }, { search: "\\uFF54", replace: "t" },
+            { search: "\\uFF55", replace: "u" }, { search: "\\uFF56", replace: "v" },
+            { search: "\\uFF57", replace: "w" }, { search: "\\uFF58", replace: "x" },
+            { search: "\\uFF59", replace: "y" }, { search: "\\uFF5A", replace: "z" }
+        ]
     },
     {
         type: "resource-target",
