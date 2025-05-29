@@ -96,6 +96,11 @@ var p = new CustomProject({
                 "method": "copy",
                 "template": "resources/[localeDir]/empty-object.json"
             },
+            "**/nested-empty-items.json": {
+                "schema": "strings-schema",
+                "method": "copy",
+                "template": "resources/[localeDir]/nested-empty-items.json"
+            },
             "**/arrays.json": {
                 "schema": "http://github.com/ilib-js/arrays.json",
                 "method": "copy",
@@ -2412,6 +2417,34 @@ describe("jsonfile", function () {
             '}\n';
         diff(content, expected);
         expect(content).toBe(expected);
+    });
+
+    test("Nested empty values should be preserved in default method", function () {
+        var jf = new JsonFile({
+            project: p,
+            pathName: "./json/nested-empty-items.json",
+            type: t
+        });
+        expect(jf).toBeTruthy();
+
+        // should read the file
+        jf.extract();
+
+        // no translations needed for this test
+        var translations = new TranslationSet();
+
+        var actual = jf.localizeText(translations, ["xx-YY"]);
+        var actualObj = JSON.parse(actual);
+
+        // all empty values should be preserved
+        var expectedObj = {
+            emptyObject: {},
+            emptyArray: [],
+            emptyString: "",
+            nullValue: null
+        };
+
+        expect(actualObj).toEqual(expectedObj);
     });
 
     test("JsonFileLocalizeExtractNewStrings", function () {

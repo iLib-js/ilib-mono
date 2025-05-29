@@ -442,7 +442,7 @@ JsonFile.prototype.extractFromPrimitive = function (localizable, json, ref, tran
 }
 
 JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizable, translations, locale) {
-    if (!json || !schema) return;
+    if (json === undefined || !schema) return;
 
     if (this.type.hasType(schema)) {
         var returnValue;
@@ -463,6 +463,12 @@ JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizab
             case "number":
             case "integer":
             case "string":
+                // don't extract empty strings, but still preserve them
+                if (json === "") {
+                    returnValue = this.sparseValue(json);
+                    break;
+                }
+
                 const __ret = this.extractFromPrimitive(localizable, json, ref, translations, locale, returnValue, type);
                 var text = __ret.text;
                 returnValue = __ret.returnValue;
