@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import {Result} from "ilib-lint-common";
+import {Result, Fix} from "ilib-lint-common";
 import {ResourceString} from "ilib-tools-common";
 
 import ResourceCamelCase from "../../src/rules/ResourceCamelCase.js";
@@ -147,6 +147,31 @@ describe("ResourceCamelCase", () => {
         expect(result).toBeInstanceOf(Result);
         expect(result.rule).toBeInstanceOf(ResourceCamelCase);
         expect(result.severity).toEqual("error");
+        expect(result.fix).toBeDefined();
+
+    });
+
+    test("provides fix that replaces target with source", () => {
+        const rule = new ResourceCamelCase({});
+        const resource = createTestResourceString({source: "camelCase", target: "differentTarget"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        const fix = result.fix;
+        expect(fix).toBeInstanceOf(Fix);
+        expect(fix.commands).toHaveLength(1);
+
+        const command = fix.commands[0];
+        expect(command.stringFix).toEqual({
+            position: 0,
+            deleteCount: resource.target.length,
+            insertContent: resource.source
+        });
     });
 });
 

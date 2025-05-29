@@ -6,6 +6,7 @@ The source string is treated as 'Do Not Translate' because camelCased strings ar
 Instead, they are commonly used in software as identifiers, variable names, or control strings.
 
 ## Rule explanation
+
 Camel case is a way of writing phrases without spaces and with capitalized words.
 The first word can start with either case, and the following words have an initial uppercase letter.
 Camel-cased words cannot contain spaces or punctuation such as dots (.), underscores (_), or dashes (-) within the word.
@@ -20,7 +21,9 @@ In this context, any string that conforms to the following rule is considered ca
 
     
 ## Examples
+
 ### Correct
+
 Correctly matched camel case variations in a Spanish (es-ES) translation, where both source and target are the same:
 
 1. lowerCamelCase
@@ -40,6 +43,7 @@ Correctly matched camel case variations in a Spanish (es-ES) translation, where 
     - target: `AccessGranted123`
 
 ### Incorrect
+
 Incorrectly matched camel case in a Spanish translation:
 
 1. lowerCamelCase
@@ -53,3 +57,19 @@ Incorrectly matched camel case in a Spanish translation:
 
 Problems in the above incorrect translation:
 The "accessGranted" and "AccessGranted" camel-cased strings were translated when it should have been treated as "Do Not Translate".
+
+## Configuration
+
+The rule can be configured to ignore certain strings using the `except` parameter:
+
+```json
+{
+    "resource-camel-case": {
+        "except": ["someCamelCaseString"]
+    }
+}
+```
+
+## Fix
+
+This rule provides an automatic fix that replaces the target string with the source string when a violation is detected. 

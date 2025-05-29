@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import {ResourceString} from 'ilib-tools-common';
-import {Result} from 'ilib-lint-common';
+import {Result, Fix} from "ilib-lint-common";
+import {ResourceString} from "ilib-tools-common";
 
 import ResourceSnakeCase from "../../src/rules/ResourceSnakeCase.js";
 
@@ -70,7 +70,6 @@ describe("ResourceSnakeCase", () => {
         });
 
         expect(result).toBeUndefined();
-
     });
 
     test.each([
@@ -148,6 +147,30 @@ describe("ResourceSnakeCase", () => {
         expect(result).toBeInstanceOf(Result);
         expect(result.rule).toBeInstanceOf(ResourceSnakeCase);
         expect(result.severity).toEqual("error");
+        expect(result.fix).toBeDefined();
+    });
+
+    test("provides fix that replaces target with source", () => {
+        const rule = new ResourceSnakeCase({});
+        const resource = createTestResourceString({source: "snake_case", target: "different_target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        const fix = result.fix;
+        expect(fix).toBeInstanceOf(Fix);
+        expect(fix.commands).toHaveLength(1);
+
+        const command = fix.commands[0];
+        expect(command.stringFix).toEqual({
+            position: 0,
+            deleteCount: resource.target.length,
+            insertContent: resource.source
+        });
     });
 });
 
