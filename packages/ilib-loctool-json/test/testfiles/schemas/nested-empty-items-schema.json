@@ -1,0 +1,20 @@
+{
+    "$id": "nested-empty-items-schema",
+    "title": "Nested empty items test JSON schema",
+    "type": "object",
+    "properties": {
+        "nonEmptyString": {
+            "type": "string",
+            "localizable": true
+        },
+        "nonEmptyObject": {
+            "type": "object",
+            "properties": {
+                "nonEmptyString": {
+                    "type": "string",
+                    "localizable": true
+                }
+            }
+        }
+    }
+}
