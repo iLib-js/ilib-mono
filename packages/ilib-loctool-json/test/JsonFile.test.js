@@ -91,6 +91,11 @@ var p = new CustomProject({
                 "template": "resources/[locale]/refs.json"
             },
             "**/str.json": {},
+            "**/empty-object.json": {
+                "schema": "strings-schema",
+                "method": "copy",
+                "template": "resources/[localeDir]/empty-object.json"
+            },
             "**/arrays.json": {
                 "schema": "http://github.com/ilib-js/arrays.json",
                 "method": "copy",
@@ -1758,6 +1763,24 @@ describe("jsonfile", function () {
             '}\n';
 
         diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("Localizing an empty object should return an empty object", function () {
+        var jf = new JsonFile({
+            project: p,
+            pathName: "json/empty-object.json",
+            type: t,
+        });
+
+        jf.extract();
+
+        var translations = new TranslationSet();
+
+        var actual = jf.localizeText(translations, "xx-YY");
+
+        var expected = "{}\n";
+
         expect(actual).toBe(expected);
     });
 

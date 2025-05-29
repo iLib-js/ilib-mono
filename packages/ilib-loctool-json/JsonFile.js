@@ -608,7 +608,11 @@ JsonFile.prototype.parseObj = function (json, root, schema, ref, name, localizab
         }
     }
 
-    return isNotEmpty(returnValue) ? returnValue : undefined;
+    if (!isNotEmpty(returnValue)) {
+        return this.sparseValue(returnValue);
+    }
+    
+    return returnValue;
 };
 
 JsonFile.prototype.parseObjArray = function (json, root, schema, ref, name, localizable, translations, locale) {
