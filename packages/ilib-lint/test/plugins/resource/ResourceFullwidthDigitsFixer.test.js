@@ -55,7 +55,7 @@ describe("ResourceFullwidthDigitsFixer", () => {
         });
         const source = getSource()
         const representation = getIntermediateRepresentation({ source, resource })
-        const fixes = getFixsesForObjectResource(resource);
+        const fixes = getFixesForObjectResource(resource);
 
         fixer.applyFixes(representation, fixes);
 
@@ -115,7 +115,7 @@ function getFixesForStringResource(resource) {
     }).filter(fix => fix !== null);
 }
 
-function getFixsesForObjectResource(resource) {
+function getFixesForObjectResource(resource) {
     return rule.fixes.map(fix => {
         const target = resource.getTarget().other
         const fullwidthChar = String.fromCharCode(parseInt(fix.search.slice(2), 16));
