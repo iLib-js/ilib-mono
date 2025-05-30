@@ -38,7 +38,7 @@ describe("test ilib plural string conversion functions", () => {
         expect.assertions(1);
         expect(isPluralString("This is not a plural string")).toBeFalsy();
     });
-    
+
     test("isPluralString works properly with an empty string", () => {
         expect.assertions(1);
         expect(isPluralString("")).toBeFalsy();
@@ -48,52 +48,52 @@ describe("test ilib plural string conversion functions", () => {
         expect.assertions(1);
         expect(isPluralString("This is not|a plural string")).toBeFalsy();
     });
-    
+
     test("isPluralString works properly with a string with no |", () => {
         expect.assertions(1);
         expect(isPluralString("other#3")).toBeTruthy();
     });
-    
+
     test("isPluralString works properly when the number of | is more than #", () => {
         expect.assertions(1);
         expect(isPluralString("|one#1|two#2|three#3|")).toBeFalsy();
     });
-    
+
     test("isPluralString works properly there are an equal number of # and |", () => {
         expect.assertions(1);
         expect(isPluralString("one#1|two#2||three#3")).toBeFalsy();
     });
-    
+
     test("isValidPluralString works properly with a valid plural string", () => {
         expect.assertions(1);
         expect(isValidPluralString("one#1|two#2|other#3")).toBeTruthy();
     });
-    
+
     test("isValidPluralString works properly with a non-plural string", () => {
         expect.assertions(1);
         expect(isValidPluralString("This is not a plural string")).toBeFalsy();
     });
-    
+
     test("isValidPluralString works properly with an empty string", () => {
         expect.assertions(1);
         expect(isValidPluralString("")).toBeFalsy();
     });
-    
+
     test("isValidPluralString works properly with a string with no #", () => {
         expect.assertions(1);
         expect(isValidPluralString("This is not|a plural string")).toBeFalsy();
     });
-    
+
     test("isValidPluralString works properly with a string with no |", () => {
         expect.assertions(1);
         expect(isValidPluralString("other#3")).toBeTruthy();
     });
-    
+
     test("isValidPluralString works properly when the number of | is more than #", () => {
         expect.assertions(1);
         expect(isValidPluralString("|one#1|two#2|three#3|")).toBeFalsy();
     });
-    
+
     test("isValidPluralString works properly there are an equal number of # and |", () => {
         expect.assertions(1);
         expect(isValidPluralString("one#1|two#2||three#3")).toBeFalsy();
@@ -113,7 +113,7 @@ describe("test ilib plural string conversion functions", () => {
         expect.assertions(1);
         expect(() => convertPluralStringToObject("This is not a plural string")).toThrow("Invalid plural string format");
     });
-    
+
     test("convertPluralStringToObject throws an error for an empty string", () => {
         expect.assertions(1);
         expect(() => convertPluralStringToObject("")).toThrow("Invalid plural string format");
@@ -123,7 +123,7 @@ describe("test ilib plural string conversion functions", () => {
         expect.assertions(1);
         expect(() => convertPluralStringToObject("This is not|a plural string")).toThrow("Invalid plural string format");
     });
-    
+
     test("convertPluralStringToObject throws an error for a string with no |", () => {
         expect.assertions(1);
         const result = convertPluralStringToObject("other#3");
@@ -134,12 +134,12 @@ describe("test ilib plural string conversion functions", () => {
         expect.assertions(1);
         expect(() => convertPluralStringToObject("|one#1|two#2|three#3|")).toThrow("Invalid plural string format");
     });
-    
+
     test("convertPluralStringToObject throws an error when there are an equal number of # and |", () => {
         expect.assertions(1);
         expect(() => convertPluralStringToObject("one#1|two#2||three#3")).toThrow("Invalid plural string format");
     });
-    
+
     test("convertObjectToPluralString works properly with a valid object", () => {
         expect.assertions(1);
         const result = convertObjectToPluralString({
@@ -149,17 +149,17 @@ describe("test ilib plural string conversion functions", () => {
         });
         expect(result).toBe("one#1|two#2|other#3");
     });
-    
+
     test("convertObjectToPluralString throws an error for a non-object input", () => {
         expect.assertions(1);
         expect(() => convertObjectToPluralString("This is not an object")).toThrow("Invalid object format");
     });
-    
+
     test("convertObjectToPluralString throws an error for a null input", () => {
         expect.assertions(1);
         expect(() => convertObjectToPluralString(null)).toThrow("Invalid object format");
     });
-    
+
     test("convertStringToPlural works properly with a valid plural string", () => {
         expect.assertions(3);
         const stringRes = new ResourceString({
@@ -184,7 +184,7 @@ describe("test ilib plural string conversion functions", () => {
             other: "drei"
         });
     });
-    
+
     test("convertStringToPlural carries over all of the other properties of string", () => {
         expect.assertions(4);
         const stringRes = new ResourceString({
@@ -217,7 +217,7 @@ describe("test ilib plural string conversion functions", () => {
         const pluralRes = convertStringToPlural(stringRes);
         expect(pluralRes).toBeUndefined();
     });
-    
+
     test("convertStringToPlural converts a minimal string properly", () => {
         expect.assertions(3);
         const stringRes = new ResourceString({
@@ -234,17 +234,17 @@ describe("test ilib plural string conversion functions", () => {
         expect(pluralRes.getSource()).toStrictEqual({ other: "3" });
         expect(pluralRes.getTarget()).toStrictEqual({ other: "drei" });
     });
-    
+
     test("convertStringToPlural returns undefined for a non-ResourceString", () => {
         expect.assertions(1);
         const notString = { key: "test", source: "This is not a plural string" };
         const pluralRes = convertStringToPlural(notString);
         expect(pluralRes).toBeUndefined();
     });
-    
+
     test("convertStringToPlural deals with implied other category properly", () => {
         expect.assertions(3);
-        
+
         const stringRes = new ResourceString({
             key: "testImpliedOther",
             context: "test",
@@ -265,7 +265,7 @@ describe("test ilib plural string conversion functions", () => {
             other: "mehrzahl"
         });
     });
-    
+
     test("convertPluralToString works properly with a valid plural object", () => {
         expect.assertions(3);
         const pluralRes = new ResourcePlural({
@@ -290,7 +290,7 @@ describe("test ilib plural string conversion functions", () => {
         expect(stringRes.getSource()).toBe("one#singular string|other#plural string");
         expect(stringRes.getTarget()).toBe("one#один|few#два|many#три|other#три");
     });
-    
+
     test("convertPluralToString carries over all of the other properties of plural", () => {
         expect.assertions(4);
         const pluralRes = new ResourcePlural({
@@ -316,7 +316,7 @@ describe("test ilib plural string conversion functions", () => {
         expect(stringRes.getContext()).toBe("test");
         expect(stringRes.getPath()).toBe("test.json");
     });
-    
+
     test("convertPluralToString returns undefined for a non-plural resource", () => {
         expect.assertions(1);
         const stringRes = new ResourceString({
@@ -331,20 +331,20 @@ describe("test ilib plural string conversion functions", () => {
         const pluralRes = convertPluralToString(stringRes);
         expect(pluralRes).toBeUndefined();
     });
-    
+
     test("convertPluralToString returns undefined for a non-ResourcePlural", () => {
         expect.assertions(1);
         const notPlural = { key: "test", source: "This is not a plural string" };
         const pluralRes = convertPluralToString(notPlural);
         expect(pluralRes).toBeUndefined();
     });
-    
+
     test("convertPluralToString returns undefined for a null input", () => {
         expect.assertions(1);
         const pluralRes = convertPluralToString(null);
         expect(pluralRes).toBeUndefined();
     });
-    
+
     test("convertPluralToString returns something appropriate if some of the plural categories are empty", () => {
         expect.assertions(3);
         const pluralRes = new ResourcePlural({

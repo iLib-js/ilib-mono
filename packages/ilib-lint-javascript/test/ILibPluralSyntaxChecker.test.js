@@ -23,7 +23,7 @@ import { IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 import ILibPluralSyntaxChecker from '../src/ILibPluralSyntaxChecker.js';
 
 const sourceFile = new SourceFile("a/b/c.xliff");
-    
+
 describe("test ilib target plural syntax checker", () => {
     test("match works properly with a valid plural string", () => {
         expect.assertions(1);
@@ -41,11 +41,11 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeUndefined();
     });
-    
+
     test("match works properly with an invalid plural string", () => {
         expect.assertions(7);
 
@@ -62,10 +62,10 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeDefined();
-        
+
         expect(actual.severity).toBe("error");
         expect(actual.id).toBe("testKey");
         expect(actual.description).toBe("The plural syntax of the target string is incorrect.");
@@ -73,7 +73,7 @@ describe("test ilib target plural syntax checker", () => {
         expect(actual.source).toBe('one#singular|other#plural');
         expect(actual.pathName).toBe("a/b/c.xliff");
     });
-    
+
     test("match works properly with a minimal plural string", () => {
         expect.assertions(1);
 
@@ -90,11 +90,11 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeUndefined();
     });
-    
+
     test("match works properly with an empty plural string", () => {
         expect.assertions(1);
 
@@ -111,11 +111,11 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeUndefined();
     });
-    
+
     test("match works properly with plural strings in an array", () => {
         expect.assertions(1);
 
@@ -132,11 +132,11 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeUndefined();
     });
-    
+
     test("match works properly with plural strings in an array with an invalid plural string", () => {
         expect.assertions(7);
 
@@ -153,10 +153,10 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeDefined();
-        
+
         expect(actual.severity).toBe("error");
         expect(actual.id).toBe("testKey");
         expect(actual.description).toBe("The plural syntax of a string in the target array is incorrect.");
@@ -164,7 +164,7 @@ describe("test ilib target plural syntax checker", () => {
         expect(actual.source).toBe('one#singular|other#plural');
         expect(actual.pathName).toBe("a/b/c.xliff");
     });
-    
+
     test("match works properly with plural strings in an array with a minimal plural string", () => {
         expect.assertions(1);
 
@@ -181,11 +181,11 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeUndefined();
     });
-    
+
     test("match works properly with plural strings in an array with an empty plural string", () => {
         expect.assertions(1);
 
@@ -202,7 +202,7 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeUndefined();
     });
@@ -223,10 +223,10 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeDefined();
-        
+
         expect(actual.severity).toBe("error");
         expect(actual.id).toBe("testKey");
         expect(actual.description).toBe("The plural syntax of a string in the target array is incorrect.");
@@ -234,7 +234,7 @@ describe("test ilib target plural syntax checker", () => {
         expect(actual.source).toBe('one#singular|other#plural');
         expect(actual.pathName).toBe("a/b/c.xliff");
     });
-    
+
     test("match works properly with plural strings nested in a plural resource", () => {
         expect.assertions(1);
 
@@ -257,11 +257,11 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeDefined();
     });
-    
+
     test("match works properly with plural strings nested in a plural resource with an invalid plural string", () => {
         expect.assertions(7);
 
@@ -284,10 +284,10 @@ describe("test ilib target plural syntax checker", () => {
             ir: [resource],
             sourceFile
         });
-        
+
         const actual = checker.match({ ir, locale: "en-US" });
         expect(actual).toBeDefined();
-        
+
         expect(actual.severity).toBe("error");
         expect(actual.id).toBe("testKey");
         expect(actual.description).toBe("The plural syntax of a string in the target plural is incorrect.");
@@ -295,5 +295,5 @@ describe("test ilib target plural syntax checker", () => {
         expect(actual.source).toBe('one#singular|other#plural');
         expect(actual.pathName).toBe("a/b/c.xliff");
     });
-    
+
 });
