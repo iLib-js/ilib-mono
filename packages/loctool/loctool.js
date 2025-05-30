@@ -270,7 +270,6 @@ var settings = {
     intermediateFormat: "xliff",
     nopseudo: true,
     targetDir: ".",            // target directory for all output files
-    translationsDir: ["."],
     xliffVersion: 1.2,
     xliffStyle: "standard",
     allowDups: true,
