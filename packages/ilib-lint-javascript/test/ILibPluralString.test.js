@@ -20,6 +20,7 @@ import { ResourceString, ResourcePlural } from 'ilib-tools-common';
 
 import {
     isPluralString,
+    isValidPluralString,
     convertPluralToString,
     convertStringToPlural
 } from '../src/ILibPluralString.js';
@@ -61,6 +62,41 @@ describe("test ilib plural string conversion functions", () => {
         expect(isPluralString("one#1|two#2||three#3")).toBeFalsy();
     });
     
+    test("isValidPluralString works properly with a valid plural string", () => {
+        expect.assertions(1);
+        expect(isValidPluralString("one#1|two#2|other#3")).toBeTruthy();
+    });
+    
+    test("isValidPluralString works properly with a non-plural string", () => {
+        expect.assertions(1);
+        expect(isValidPluralString("This is not a plural string")).toBeFalsy();
+    });
+    
+    test("isValidPluralString works properly with an empty string", () => {
+        expect.assertions(1);
+        expect(isValidPluralString("")).toBeFalsy();
+    });
+    
+    test("isValidPluralString works properly with a string with no #", () => {
+        expect.assertions(1);
+        expect(isValidPluralString("This is not|a plural string")).toBeFalsy();
+    });
+    
+    test("isValidPluralString works properly with a string with no |", () => {
+        expect.assertions(1);
+        expect(isValidPluralString("other#3")).toBeTruthy();
+    });
+    
+    test("isValidPluralString works properly when the number of | is more than #", () => {
+        expect.assertions(1);
+        expect(isValidPluralString("|one#1|two#2|three#3|")).toBeFalsy();
+    });
+    
+    test("isValidPluralString works properly there are an equal number of # and |", () => {
+        expect.assertions(1);
+        expect(isValidPluralString("one#1|two#2||three#3")).toBeFalsy();
+    });
+
     test("convertStringToPlural works properly with a valid plural string", () => {
         expect.assertions(3);
         const stringRes = new ResourceString({
