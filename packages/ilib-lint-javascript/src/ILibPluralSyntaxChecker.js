@@ -33,20 +33,20 @@ class ILibPluralSyntaxChecker extends Rule {
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-ilib-plural-syntax-checker.md";
     }
-    
+
     getRuleType() {
         return "resource";
     }
-    
+
     /**
      * @override
      */
     match(options) {
         const { ir, locale } = options;
-    
+
         if (ir.getType() !== "resource") return;  // we can only process resources
         const resources = ir.getRepresentation();
-    
+
         const results = resources.flatMap(resource => {
             switch (resource.getType()) {
                 case 'string':
@@ -66,7 +66,7 @@ class ILibPluralSyntaxChecker extends Rule {
                         })];
                     }
                     break;
-    
+
                 case 'array':
                     const srcArray = resource.getSource();
                     const tarArray = resource.getTarget();
@@ -90,7 +90,7 @@ class ILibPluralSyntaxChecker extends Rule {
                         }).filter(element => element);
                     }
                     break;
-    
+
                 case 'plural':
                     const srcPlural = resource.getSource();
                     const tarPlural = resource.getTarget();

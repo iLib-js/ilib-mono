@@ -71,11 +71,11 @@ class ILibPluralCategoriesChecker extends Rule {
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-ilib-plural-categories-checker.md";
     }
-    
+
     getRuleType() {
         return "resource";
     }
-    
+
     /**
      * Check the nodes of the source and target plural categories for equality.
      * @private
@@ -157,8 +157,15 @@ class ILibPluralCategoriesChecker extends Rule {
             return !allSourceCategories.has(category);
         });
         if (extra.length) {
-            const extras = extra.join("|");
-            const highlight = resource.getTarget().replace(new RegExp(`(${extras})\\s*` + "\\{", "g"), "<e0>$1</e0> {");
+            const highlight = Object.keys(target).map(key => {
+                let choice = `${key}#${target[key]}`;
+                if (extra.includes(key)) {
+                    // if the target has a extra category that is not in the source,
+                    // then we need to highlight it in the target string
+                    choice = `<e0>${choice}</e0>`;
+                }
+                return choice;
+            }).join("|");
             let opts = {
                 severity: "warning",
                 rule: this,
@@ -180,11 +187,11 @@ class ILibPluralCategoriesChecker extends Rule {
      */
     match(options) {
         const { ir, locale } = options;
-    
+
         if (ir.getType() !== "resource") return;  // we can only process resources
         const resources = ir.getRepresentation();
         const targetLocale = new Locale(locale);
-    
+
         const results = resources.flatMap(resource => {
             switch (resource.getType()) {
                 case 'string':
@@ -197,7 +204,7 @@ class ILibPluralCategoriesChecker extends Rule {
                         return this.matchCategories(sourcePlurals, targetPlurals, targetLocale, resource);
                     }
                     break;
-    
+
                 case 'array':
                     const srcArray = resource.getSource();
                     const tarArray = resource.getTarget();
@@ -215,7 +222,7 @@ class ILibPluralCategoriesChecker extends Rule {
                         }).filter(element => element);
                     }
                     break;
-    
+
                 case 'plural':
                     const srcPlural = resource.getSource();
                     const tarPlural = resource.getTarget();
