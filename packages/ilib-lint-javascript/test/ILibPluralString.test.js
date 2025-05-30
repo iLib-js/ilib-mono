@@ -21,6 +21,8 @@ import { ResourceString, ResourcePlural } from 'ilib-tools-common';
 import {
     isPluralString,
     isValidPluralString,
+    convertPluralStringToObject,
+    convertObjectToPluralString,
     convertPluralToString,
     convertStringToPlural
 } from '../src/ILibPluralString.js';
@@ -97,6 +99,67 @@ describe("test ilib plural string conversion functions", () => {
         expect(isValidPluralString("one#1|two#2||three#3")).toBeFalsy();
     });
 
+    test("convertPluralStringToObject works properly with a valid plural string", () => {
+        expect.assertions(1);
+        const result = convertPluralStringToObject("one#1|two#2|other#3");
+        expect(result).toEqual({
+            one: "1",
+            two: "2",
+            other: "3"
+        });
+    });
+
+    test("convertPluralStringToObject throws an error for a non-plural string", () => {
+        expect.assertions(1);
+        expect(() => convertPluralStringToObject("This is not a plural string")).toThrow("Invalid plural string format");
+    });
+    
+    test("convertPluralStringToObject throws an error for an empty string", () => {
+        expect.assertions(1);
+        expect(() => convertPluralStringToObject("")).toThrow("Invalid plural string format");
+    });
+
+    test("convertPluralStringToObject throws an error for a string with no #", () => {
+        expect.assertions(1);
+        expect(() => convertPluralStringToObject("This is not|a plural string")).toThrow("Invalid plural string format");
+    });
+    
+    test("convertPluralStringToObject throws an error for a string with no |", () => {
+        expect.assertions(1);
+        const result = convertPluralStringToObject("other#3");
+        expect(result).toEqual({ other: "3" });
+    });
+
+    test("convertPluralStringToObject throws an error when the number of | is more than #", () => {
+        expect.assertions(1);
+        expect(() => convertPluralStringToObject("|one#1|two#2|three#3|")).toThrow("Invalid plural string format");
+    });
+    
+    test("convertPluralStringToObject throws an error when there are an equal number of # and |", () => {
+        expect.assertions(1);
+        expect(() => convertPluralStringToObject("one#1|two#2||three#3")).toThrow("Invalid plural string format");
+    });
+    
+    test("convertObjectToPluralString works properly with a valid object", () => {
+        expect.assertions(1);
+        const result = convertObjectToPluralString({
+            one: "1",
+            two: "2",
+            other: "3"
+        });
+        expect(result).toBe("one#1|two#2|other#3");
+    });
+    
+    test("convertObjectToPluralString throws an error for a non-object input", () => {
+        expect.assertions(1);
+        expect(() => convertObjectToPluralString("This is not an object")).toThrow("Invalid object format");
+    });
+    
+    test("convertObjectToPluralString throws an error for a null input", () => {
+        expect.assertions(1);
+        expect(() => convertObjectToPluralString(null)).toThrow("Invalid object format");
+    });
+    
     test("convertStringToPlural works properly with a valid plural string", () => {
         expect.assertions(3);
         const stringRes = new ResourceString({
