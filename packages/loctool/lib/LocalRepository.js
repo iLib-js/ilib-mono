@@ -48,7 +48,7 @@ var LocalRepository = function (options) {
     if (options) {
         this.sourceLocale = options.sourceLocale || "en-US";
         this.pseudoLocale = options.pseudoLocale;
-        var transDir = options.xliffsDir || options.translationsDir;
+        var transDir = options.translationsDir || options.xliffsDir || ".";
         if (transDir) {
             translationsDir = ilib.isArray(transDir) ? transDir : [transDir];
         }

@@ -42,7 +42,7 @@ var GenerateMode = function (options) {
     this.translationsDir = ["."];
 
     if (options) {
-        var transDir = options.xliffsDir || options.translationsDir;
+        var transDir = options.translationsDir || options.xliffsDir;
         this.translationsDir = transDir ?
             (ilib.isArray(transDir) ? transDir : [transDir]) :
             ["."];

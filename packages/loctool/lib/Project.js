@@ -160,10 +160,10 @@ var Project = function(options, root, settings) {
 
     // where the translation xliff files are read from
     var translationsDir =
-        options.xliffsDir ||
         options.translationsDir ||
-        this.settings.xliffsDir ||
+        options.xliffsDir ||
         this.settings.translationsDir ||
+        this.settings.xliffsDir ||
         '.';
     this.translationsDir = ilib.isArray(translationsDir) ? translationsDir.map(function(dir) {
         return smartJoin(this.root, dir);
