@@ -18,8 +18,6 @@
  */
 
 import { ResourceString, ResourcePlural } from 'ilib-tools-common';
-import { Result, Rule } from 'ilib-lint-common';
-
 
 export function isPluralString(str) {
     // A plural string in ilib format contains at least one "#"
@@ -34,6 +32,24 @@ export function isPluralString(str) {
     const countPipe = (str.match(/\|/g) || []).length;
     return countHash > 0 && countPipe < countHash;
 }
+
+export function isValidPluralString(str) {
+    // A valid plural string must be a non-empty string that contains at least one "#"
+    // and possibly multiple "|" characters, where the number of "|" characters
+    // is less than the number of "#" characters. Also, each choice must have a pivot,
+    // a hash char, and a choice string.
+    if (!isPluralString(str)) {
+        return false;
+    }
+    const parts = str.split("|");
+
+    // Check if each part contains a "#"
+    return parts.every(part => {
+        if (!part || part.length === 0) return false; // empty parts are not valid
+        const [pivot, choice] = part.split("#");
+        return part.indexOf("#") > -1 && choice && choice.trim() !== "" && pivot;
+    });
+};
 
 function convertPluralStringToObject(str) {
     if (!isPluralString(str)) {
