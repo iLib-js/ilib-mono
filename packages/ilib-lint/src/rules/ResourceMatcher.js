@@ -32,6 +32,16 @@ function findMissing(source, target) {
     return missing;
 }
 
+function getHighlight(resource, index, category, target) {
+    if (resource.getType() === 'array') {
+        return `Target[${index}]: ${target}<e0></e0>`;
+    } else if (resource.getType() === 'plural') {
+        return `Target(${category}): ${target}<e0></e0>`;
+    } else {
+        return `Target: ${target}<e0></e0>`;
+    }
+}
+
 /**
  * @class Resource checker class that checks that any regular expressions
  * that matches in the source also appears in the translation.
@@ -63,7 +73,7 @@ class ResourceMatcher extends DeclarativeResourceRule {
     /**
      * @override
      */
-    checkString({re, source, target, file, resource}) {
+    checkString({re, source, target, file, resource, index, category}) {
         re.lastIndex = 0;
         let sourceMatches = [];
         const strippedSrc = stripPlurals(source);
@@ -71,7 +81,7 @@ class ResourceMatcher extends DeclarativeResourceRule {
 
         let match = re.exec(strippedSrc);
         while (match) {
-            sourceMatches.push(match[0]);
+            sourceMatches.push(match?.groups?.match ?? match[0]);
             match = re.exec(strippedSrc);
         }
 
@@ -81,7 +91,7 @@ class ResourceMatcher extends DeclarativeResourceRule {
             let targetMatches = [];
             match = re.exec(strippedTar);
             while (match) {
-                targetMatches.push(match[0]);
+                targetMatches.push(match?.groups?.match ?? match[0]);
                 match = re.exec(strippedTar);
             }
             const missing = findMissing(sourceMatches, targetMatches);
@@ -93,7 +103,7 @@ class ResourceMatcher extends DeclarativeResourceRule {
                         source: source,
                         rule: this,
                         pathName: file,
-                        highlight:`Target: ${target}<e0></e0>`,
+                        highlight: getHighlight(resource, index, category, target),
                         description: this.note.replace(/\{matchString\}/g, missing),
                         locale: resource.getTargetLocale()
                     };

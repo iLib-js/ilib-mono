@@ -130,7 +130,8 @@ describe("testResourceMatcher", () => {
             source: resource.getSource()[0],
             target: resource.getTarget()[0],
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            index: 0
         });
         expect(!actual).toBeTruthy();
     });
@@ -159,7 +160,8 @@ describe("testResourceMatcher", () => {
             source: resource.getSource().other,
             target: resource.getTarget().other,
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            category: "other"
         });
         expect(!actual).toBeTruthy();
     });
@@ -187,7 +189,8 @@ describe("testResourceMatcher", () => {
             source: resource.getSource().other,
             target: resource.getTarget().other,
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            category: "other"
         });
         expect(!actual).toBeTruthy();
     });
@@ -247,7 +250,8 @@ describe("testResourceMatcher", () => {
             source: resource.getSource()[0],
             target: resource.getTarget()[0],
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            index: 0
         });
         expect(actual).toBeTruthy();
         expect(actual.length).toBe(1);
@@ -255,7 +259,7 @@ describe("testResourceMatcher", () => {
         expect(actual[0].severity).toBe("error");
         expect(actual[0].id).toBe("url.test");
         expect(actual[0].description).toBe("URL 'http://www.box.com' from the source string does not appear in the target string");
-        expect(actual[0].highlight).toBe("Target: Dies hat ein URL http://www.yahoo.com<e0></e0>");
+        expect(actual[0].highlight).toBe("Target[0]: Dies hat ein URL http://www.yahoo.com<e0></e0>");
         expect(actual[0].source).toBe('This has an URL in it http://www.box.com');
         expect(actual[0].pathName).toBe("a/b/c.xliff");
     });
@@ -284,7 +288,8 @@ describe("testResourceMatcher", () => {
             source: resource.getSource().one,
             target: resource.getTarget().one,
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            category: "one"
         });
         expect(actual).toBeTruthy();
         expect(actual.length).toBe(1);
@@ -292,7 +297,7 @@ describe("testResourceMatcher", () => {
         expect(actual[0].severity).toBe("error");
         expect(actual[0].id).toBe("url.test");
         expect(actual[0].description).toBe("URL 'http://www.box.com' from the source string does not appear in the target string");
-        expect(actual[0].highlight).toBe("Target: Dies hat ein URL http://www.yahoo.com<e0></e0>");
+        expect(actual[0].highlight).toBe("Target(one): Dies hat ein URL http://www.yahoo.com<e0></e0>");
         expect(actual[0].source).toBe('This has an URL in it http://www.box.com');
         expect(actual[0].pathName).toBe("a/b/c.xliff");
     });

@@ -205,6 +205,10 @@ class DeclarativeResourceRule extends ResourceRule {
      * @param {String|undefined} params.target the target string to match against
      * @param {String} params.file path to the file where this resource was found
      * @param {Resource} params.resource the resource where this pair of strings is from
+     * @param {number} [params.index] if the resource being tested is an array resource,
+     *   this represents the the index of this string in the array
+     * @param {string} [params.category] if the resource being tested is a plural resource,
+     *   this represents the plural category of this string
      * @returns {Result|Array.<Result>|undefined} the Result objects detailing
      * any matches to the regular expression
      */
@@ -213,7 +217,7 @@ class DeclarativeResourceRule extends ResourceRule {
     /**
      * @override
      */
-    matchString({source, target, file, resource}) {
+    matchString({source, target, file, resource, index, category}) {
         if (this.locales || this.skipLocales) {
             const locale = new Locale(resource.getTargetLocale()).getLangSpec();
             if ((this.locales && !this.locales.has(locale)) || (this.skipLocales && this.skipLocales.has(locale))) {
@@ -226,7 +230,7 @@ class DeclarativeResourceRule extends ResourceRule {
         let results = [];
         // only need 1 regexp to match in order to trigger this rule
         for (const re of this.re) {
-            results = results.concat(this.checkString({re, source, target, file, resource}) ?? []);
+            results = results.concat(this.checkString({re, source, target, file, resource, index, category}) ?? []);
             if (results.length > 0) break;
         }
         results = results.filter(result => result);
