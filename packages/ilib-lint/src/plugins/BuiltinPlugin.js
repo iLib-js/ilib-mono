@@ -266,6 +266,14 @@ export const regexRules = [
         note: "The named parameter '{{{matchString}}}' from the source string does not appear in the target string",
         regexps: [ "\\{\\{\\s*(?<match>[^}]+?)\\s*\\}\\}" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-angular-named-params.md"
+    },
+    {
+        type: "resource-matcher",
+        name: "resource-csharp-numbered-params",
+        description: "Ensure that numbered parameters in C# that appear in the source string are also used in the translated string",
+        note: "The numbered parameter '{{matchString}}' from the source string does not appear in the target string",
+        regexps: [ "\\{\\s*(?<match>\\d[^}]*?)\\s*\\}" ],
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-csharp-numbered-params.md"
     }
 ];
 
@@ -316,6 +324,9 @@ export const builtInRulesets = {
     },
     "vue": {
         "resource-angular-named-params": true
+    },
+    "csharp": {
+        "resource-csharp-numbered-params": true
     }
 };
 
