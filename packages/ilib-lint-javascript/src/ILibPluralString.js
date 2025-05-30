@@ -51,7 +51,7 @@ export function isValidPluralString(str) {
     });
 };
 
-function convertPluralStringToObject(str) {
+export function convertPluralStringToObject(str) {
     if (!isPluralString(str)) {
         throw new Error("Invalid plural string format");
     }
@@ -67,7 +67,7 @@ function convertPluralStringToObject(str) {
     return pluralObject;
 }
 
-function convertObjectToPluralString(obj) {
+export function convertObjectToPluralString(obj) {
     if (typeof obj !== 'object' || obj === null) {
         throw new Error("Invalid object format");
     }
