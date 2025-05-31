@@ -531,7 +531,7 @@ describe("testResourceTargetChecker", () => {
             resource,
             file: "a/b/c.xliff"
         });
-        expect(result).toStrictEqual([new Result({
+        expect(result[0]).toEqual(expect.objectContaining({
             rule,
             severity: "warning",
             locale: "ja-JP",
@@ -540,11 +540,11 @@ describe("testResourceTargetChecker", () => {
             id: "matcher.test",
             description: "The half-width kana characters are not allowed in the target string. Use full-width characters.",
             highlight: "Target: <e0>ｺﾐｭﾆｹｰｼｮﾝ</e0>",
-        })]);
+        }));
     });
 
-    test("Resource fix the problem with no half width kana", () => {
-        expect.assertions(3);
+    test("Apply fixes for the problem with no half width kana", () => {
+        expect.assertions(2);
 
         const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-halfwidth-kana-characters"));
         expect(rule).toBeTruthy();
@@ -564,17 +564,7 @@ describe("testResourceTargetChecker", () => {
             resource,
             file: "a/b/c.xliff"
         });
-        expect(result).toStrictEqual([new Result({
-            rule,
-            severity: "warning",
-            locale: "ja-JP",
-            pathName: "a/b/c.xliff",
-            source: "Communication",
-            id: "matcher.test",
-            description: "The half-width kana characters are not allowed in the target string. Use full-width characters.",
-            highlight: "Target: <e0>ｺﾐｭﾆｹｰｼｮﾝ</e0>",
-        })]);
-        
+
         const ir = new IntermediateRepresentation({
             type: "resource",
             ir: [resource],
@@ -582,7 +572,7 @@ describe("testResourceTargetChecker", () => {
             dirty: false
         });
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [result.fix]);
+        fixer.applyFixes(ir, result.map(res => res.fix));
 
         expect(resource.getTarget()).toBe("コミュニケーション");
     });
@@ -628,7 +618,7 @@ describe("testResourceTargetChecker", () => {
                 resource,
                 file: "a/b/c.xliff"
             });
-            expect(result).toStrictEqual([new Result({
+            expect(result[0]).toEqual(expect.objectContaining({
                 rule,
                 severity: "warning",
                 pathName: "a/b/c.xliff",
@@ -637,8 +627,129 @@ describe("testResourceTargetChecker", () => {
                 id: "matcher.test",
                 description: "Double-byte space characters should not be used in the target string. Use ASCII symbols instead.",
                 highlight: `Target: テスト<e0>${symbol}</e0>テスト`,
-            })]);
+            }));
         }
+    });
+
+    test("apply fixes for no double byte space rule", () => {
+        const illegalCharacters = [
+            "\u1680",
+            "\u2000",
+            "\u2001",
+            "\u2002",
+            "\u2003",
+            "\u2004",
+            "\u2005",
+            "\u2006",
+            "\u2007",
+            "\u2008",
+            "\u2009",
+            "\u200A",
+            "\u202F",
+            "\u205F",
+            "\u3000",
+        ];
+        expect.assertions(1 + illegalCharacters.length);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
+        expect(rule).toBeTruthy();
+        const fixer = new ResourceFixer();
+
+        for (const symbol of illegalCharacters) {
+            const resource = new ResourceString({
+                key: "matcher.test",
+                sourceLocale: "en-US",
+                source: `test${symbol}test`,
+                targetLocale: "ja-JP",
+                target: `テスト${symbol}テスト`,
+                pathName: "a/b/c.xliff",
+            });
+
+            const result = rule.matchString({
+                source: resource.getSource(),
+                target: resource.getTarget(),
+                resource,
+                file: "a/b/c.xliff"
+            });
+
+            const ir = new IntermediateRepresentation({
+                type: "resource",
+                ir: [resource],
+                sourceFile: new SourceFile("a/b/c.xliff", {}),
+                dirty: false
+            });
+            fixer.applyFixes(ir, result.map(res => res.fix));
+            // should be replaced with a regular ascii space
+            expect(resource.getTarget()).toBe("テスト テスト");
+        }
+    });
+
+    test("apply fixes for no double byte space rule (line break)", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
+        expect(rule).toBeTruthy();
+        const fixer = new ResourceFixer();
+
+        const resource = new ResourceString({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: "test\u2028test",
+            targetLocale: "ja-JP",
+            target: "テスト\u2028テスト",
+            pathName: "a/b/c.xliff",
+        });
+
+        const result = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+        fixer.applyFixes(ir, result.map(res => res.fix));
+        // should be replaced with a regular ascii space
+        expect(resource.getTarget()).toBe("テスト\nテスト");
+    });
+
+    test("apply fixes for no double byte space rule (paragraph break)", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
+        expect(rule).toBeTruthy();
+        const fixer = new ResourceFixer();
+
+        const resource = new ResourceString({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: "test\u2029test",
+            targetLocale: "ja-JP",
+            target: "テスト\u2029テスト",
+            pathName: "a/b/c.xliff",
+        });
+
+        const result = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+        fixer.applyFixes(ir, result.map(res => res.fix));
+        // should be replaced with a regular ascii space
+        expect(resource.getTarget()).toBe("テスト\n\nテスト");
     });
 
     test("ResourceNoDoubleByteSpaceNotInChinese", () => {
@@ -709,19 +820,88 @@ describe("testResourceTargetChecker", () => {
             "〚",
             "〛",
         ];
-        expect.assertions(1 + applicableCharacters.length);
+        expect.assertions(1 + 4*applicableCharacters.length);
 
         const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-space-with-fullwidth-punctuation"));
         expect(rule).toBeTruthy();
 
         for (const symbol of applicableCharacters) {
-            const illegalSequence = symbol + " ";
             const resource = new ResourceString({
                 key: "matcher.test",
                 sourceLocale: "en-US",
-                source: `test${illegalSequence}test`,
+                source: `test${symbol} test ${symbol}test`,
                 targetLocale: "ja-JP",
-                target: `テスト${illegalSequence}テスト`,
+                target: `日本語${symbol} 日本語 ${symbol}日本語`, // test spaces before and after the symbol
+                pathName: "a/b/c.xliff",
+            });
+
+            const results = rule.matchString({
+                source: resource.getSource(),
+                target: resource.getTarget(),
+                resource,
+                file: "a/b/c.xliff"
+            });
+            expect(Array.isArray(results)).toBeTruthy();
+            expect(results.length).toBe(2);
+            expect(results[0]).toEqual(expect.objectContaining({
+                rule,
+                severity: "warning",
+                pathName: "a/b/c.xliff",
+                locale: "ja-JP",
+                source: `test${symbol} test ${symbol}test`,
+                id: "matcher.test",
+                description: `There should be no space adjacent to fullwidth punctuation characters '${symbol} '. Remove it.`,
+                highlight: `Target: 日本語<e0>${symbol} </e0>日本語 ${symbol}日本語`,
+            }));
+            expect(results[1]).toEqual(expect.objectContaining({
+                rule,
+                severity: "warning",
+                pathName: "a/b/c.xliff",
+                locale: "ja-JP",
+                source: `test${symbol} test ${symbol}test`,
+                id: "matcher.test",
+                description: `There should be no space adjacent to fullwidth punctuation characters ' ${symbol}'. Remove it.`,
+                highlight: `Target: 日本語${symbol} 日本語<e0> ${symbol}</e0>日本語`,
+            }));
+        }
+    });
+
+    test("apply fixes for the no space with fullwidth punct space after rule", () => {
+        const applicableCharacters = [
+            "、",
+            "。",
+            "〈",
+            "〉",
+            "《",
+            "》",
+            "「",
+            "」",
+            "『",
+            "』",
+            "【",
+            "】",
+            "〔",
+            "〕",
+            "〖",
+            "〗",
+            "〘",
+            "〙",
+            "〚",
+            "〛",
+        ];
+        expect.assertions(1 + applicableCharacters.length);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-space-with-fullwidth-punctuation"));
+        expect(rule).toBeTruthy();
+        const fixer = new ResourceFixer();
+
+        for (const symbol of applicableCharacters) {
+            const resource = new ResourceString({
+                key: "matcher.test",
+                sourceLocale: "en-US",
+                source: `test${symbol} test ${symbol}test`,
+                targetLocale: "ja-JP",
+                target: `日本語${symbol} 日本語 ${symbol}日本語`, // test spaces before and after the symbol
                 pathName: "a/b/c.xliff",
             });
 
@@ -731,16 +911,16 @@ describe("testResourceTargetChecker", () => {
                 resource,
                 file: "a/b/c.xliff"
             });
-            expect(result).toStrictEqual([new Result({
-                rule,
-                severity: "warning",
-                pathName: "a/b/c.xliff",
-                locale: "ja-JP",
-                source: `test${illegalSequence}test`,
-                id: "matcher.test",
-                description: `There should be no space adjacent to fullwidth punctuation characters '${illegalSequence}'. Remove it.`,
-                highlight: `Target: テスト<e0>${illegalSequence}</e0>テスト`,
-            })]);
+
+            const ir = new IntermediateRepresentation({
+                type: "resource",
+                ir: [resource],
+                sourceFile: new SourceFile("a/b/c.xliff", {}),
+                dirty: false
+            });
+            fixer.applyFixes(ir, result.map(res => res.fix));
+            // the spaces should be removed
+            expect(resource.getTarget()).toBe(`日本語${symbol}日本語${symbol}日本語`);
         }
     });
 
@@ -839,7 +1019,7 @@ describe("testResourceTargetChecker", () => {
                 resource,
                 file: "a/b/c.xliff"
             });
-            expect(result).toStrictEqual([new Result({
+            expect(result[0]).toEqual(expect.objectContaining({
                 rule,
                 severity: "warning",
                 pathName: "a/b/c.xliff",
@@ -848,7 +1028,7 @@ describe("testResourceTargetChecker", () => {
                 id: "matcher.test",
                 description: `There should be no space adjacent to fullwidth punctuation characters '${illegalSequence}'. Remove it.`,
                 highlight: `Target: テスト<e0>${illegalSequence}</e0>テスト`,
-            })]);
+            }));
         }
     });
 
