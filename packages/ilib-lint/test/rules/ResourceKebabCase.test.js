@@ -225,4 +225,4 @@ function createTestResourceString({source, target}) {
         targetLocale: "xd-XD",
         pathName: "tests/for/kebabCase.xliff"
     });
-} 
+}
