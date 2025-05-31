@@ -99,4 +99,4 @@ class ResourceKebabCase extends ResourceRule {
     }
 }
 
-export default ResourceKebabCase; 
+export default ResourceKebabCase;

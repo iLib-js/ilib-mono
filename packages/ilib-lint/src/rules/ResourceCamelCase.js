@@ -61,7 +61,7 @@ class ResourceCamelCase extends ResourceRule {
                 highlight: `<e0>${target}</e0>`
             });
             result.fix = this.getFix(resource, source);
-            
+
             return result;
         }
     }
@@ -74,7 +74,7 @@ class ResourceCamelCase extends ResourceRule {
      */
     getFix(resource, source) {
         const command = ResourceFixer.createStringCommand(0, resource.getTarget().length, source);
-        
+
         return ResourceFixer.createFix({
             resource,
             target: true,
