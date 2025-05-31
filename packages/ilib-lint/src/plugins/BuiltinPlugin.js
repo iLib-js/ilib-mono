@@ -129,7 +129,62 @@ export const regexRules = [
         note: "The half-width kana characters are not allowed in the target string. Use full-width characters.",
         regexps: [ "[ｧ-ﾝﾞﾟ]+" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-halfwidth-kana-characters.md",
-        severity: "warning"
+        severity: "warning",
+        fixes: [
+            { search: "ｧ", replace: "ァ" },
+            { search: "ｨ", replace: "ィ" },
+            { search: "ｩ", replace: "ゥ" },
+            { search: "ｪ", replace: "ェ" },
+            { search: "ｫ", replace: "ォ" },
+            { search: "ｬ", replace: "ャ" },
+            { search: "ｭ", replace: "ュ" },
+            { search: "ｮ", replace: "ョ" },
+            { search: "ｯ", replace: "ッ" },
+            { search: "ｰ", replace: "ー" },
+            { search: "ｱ", replace: "ア" },
+            { search: "ｲ", replace: "イ" },
+            { search: "ｳ", replace: "ウ" },
+            { search: "ｴ", replace: "エ" },
+            { search: "ｵ", replace: "オ" },
+            { search: "ｶ", replace: "カ" },
+            { search: "ｷ", replace: "キ" },
+            { search: "ｸ", replace: "ク" },
+            { search: "ｹ", replace: "ケ" },
+            { search: "ｺ", replace: "コ" },
+            { search: "ｻ", replace: "サ" },
+            { search: "ｼ", replace: "シ" },
+            { search: "ｽ", replace: "ス" },
+            { search: "ｾ", replace: "セ" },
+            { search: "ｿ", replace: "ソ" },
+            { search: "ﾀ", replace: "タ" },
+            { search: "ﾁ", replace: "チ" },
+            { search: "ﾂ", replace: "ツ" },
+            { search: "ﾃ", replace: "テ" },
+            { search: "ﾄ", replace: "ト" },
+            { search: "ﾅ", replace: "ナ" },
+            { search: "ﾆ", replace: "ニ" },
+            { search: "ﾇ", replace: "ヌ" },
+            { search: "ﾈ", replace: "ネ" },
+            { search: "ﾉ", replace: "ノ" },
+            { search: "ﾊ", replace: "ハ" },
+            { search: "ﾋ", replace: "ヒ" },
+            { search: "ﾌ", replace: "フ" },
+            { search: "ﾍ", replace: "ヘ" },
+            { search: "ﾎ", replace: "ホ" },
+            { search: "ﾏ", replace: "マ" },
+            { search: "ﾐ", replace: "ミ" },
+            { search: "ﾑ", replace: "ム" },
+            { search: "ﾒ", replace: "メ" },
+            { search: "ﾓ", replace: "モ" },
+            { search: "ﾗ", replace: "ラ" },
+            { search: "ﾘ", replace: "リ" },
+            { search: "ﾙ", replace: "ル" },
+            { search: "ﾚ", replace: "レ" },
+            { search: "ﾛ", replace: "ロ" },
+            { search: "ﾜ", replace: "ワ" },
+            { search: "ｦ", replace: "ヲ" },
+            { search: "ﾝ", replace: "ン" }
+        ]
     },
     {
         type: "resource-target",
@@ -140,7 +195,12 @@ export const regexRules = [
         regexps: [ "[\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000]+" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-double-byte-space.md",
         severity: "warning",
-        locales: "ja"
+        locales: "ja",
+        fixes: [
+            { search: "[\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000]", replace: " " },
+            { search: "[\\u2028]", replace: "\n" },   // U+2028 is LINE SEPARATOR
+            { search: "[\\u2029]", replace: "\n\n" }, // U+2029 is PARAGRAPH SEPARATOR
+        ]
     },
     {
         type: "resource-target",
@@ -150,7 +210,11 @@ export const regexRules = [
         regexps: [ "(\\s+[\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B]|[\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B]\\s+)" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-space-with-fullwidth-punctuation.md",
         severity: "warning",
-        locales: "ja"
+        locales: "ja",
+        fixes: [
+            { search: "\\s+([\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B])", replace: "$1" },
+            { search: "([\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B])\\s+", replace: "$1" }
+        ]
     },
     {
         type: "resource-source",

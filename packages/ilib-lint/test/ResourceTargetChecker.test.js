@@ -543,6 +543,50 @@ describe("testResourceTargetChecker", () => {
         })]);
     });
 
+    test("Resource fix the problem with no half width kana", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-halfwidth-kana-characters"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: "Communication",
+            targetLocale: "ja-JP",
+            target: "ｺﾐｭﾆｹｰｼｮﾝ",
+            pathName: "a/b/c.xliff",
+        });
+
+        const result = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(result).toStrictEqual([new Result({
+            rule,
+            severity: "warning",
+            locale: "ja-JP",
+            pathName: "a/b/c.xliff",
+            source: "Communication",
+            id: "matcher.test",
+            description: "The half-width kana characters are not allowed in the target string. Use full-width characters.",
+            highlight: "Target: <e0>ｺﾐｭﾆｹｰｼｮﾝ</e0>",
+        })]);
+        
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [result.fix]);
+
+        expect(resource.getTarget()).toBe("コミュニケーション");
+    });
+
     test("ResourceNoDoubleByteSpace", () => {
         const illegalCharacters = [
             "\u1680",
