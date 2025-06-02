@@ -89,7 +89,7 @@ describe("jsonfile", function () {
             pathName,
         });
 
-        return { jsonFile };
+        return jsonFile;
     }
 
     beforeAll(function () {
@@ -1800,7 +1800,7 @@ describe("jsonfile", function () {
     });
 
     test("Localizing an empty object should return an empty object", function () {
-        const { jsonFile } = setupTest({
+        const jsonFile = setupTest({
             mappings: {
                 "json/empty-object.json": {
                     schema: "strings-schema",
@@ -2453,7 +2453,7 @@ describe("jsonfile", function () {
     });
 
     test("Nested empty values should be preserved in default method", function () {
-        const { jsonFile } = setupTest({
+        const jsonFile = setupTest({
             mappings: {
                 "json/nested-empty-items.json": {
                     schema: "nested-empty-items-schema",
@@ -2511,7 +2511,7 @@ describe("jsonfile", function () {
     });
 
     test("Nested empty values should be removed in sparse method", function () {
-        const { jsonFile } = setupTest({
+        const jsonFile = setupTest({
             mappings: {
                 "json/nested-empty-items.json": {
                     schema: "nested-empty-items-schema",
