@@ -54,7 +54,7 @@ var XliffIntermediateFile = function(options) {
         allowDups: options.allowDups,
         datatype: options.datatype,
         contextInKey: options.contextInKey,
-        style: options.style
+        metadata: options.metadata
         });
     } else {
         this.xliff = new Xliff({
@@ -66,7 +66,6 @@ var XliffIntermediateFile = function(options) {
         allowDups: options.allowDups,
         datatype: options.datatype,
         contextInKey: options.contextInKey,
-        style: options.style
         });
     }
 };

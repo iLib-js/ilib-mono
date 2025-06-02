@@ -54,6 +54,7 @@ var webOSXliff = function webOSXliff(options) {
         this.sourceLocale = options.sourceLocale;
         this.project = options.project;
         this.allowDups = options.allowDups;
+        this.metadata = options.metadata;
         if (typeof(options.version) !== 'undefined') {
             this.version = Number.parseFloat(options.version);
         }
@@ -68,7 +69,7 @@ var webOSXliff = function webOSXliff(options) {
     this.ts = new TranslationSet(this.sourceLocale);
 }
 
-webOSXliff.prototype.parsewebOSXliff = function(xliff) {
+webOSXliff.prototype.parse = function(xliff) {
     var sourceLocale = xliff._attributes["srcLang"] || this.project.sourceLocale;
     var targetLocale = xliff._attributes["trgLang"];
     
@@ -322,7 +323,7 @@ webOSXliff.prototype.getTranslationSet = function() {
  *
  * @param {String} xml the xliff format text to parse
  */
-webOSXliff.prototype.deserialize = function(xml, style) {
+webOSXliff.prototype.deserialize = function(xml) {
     var json = xmljs.xml2js(xml, {
         trim: false,
         nativeTypeAttribute: true,
@@ -330,7 +331,7 @@ webOSXliff.prototype.deserialize = function(xml, style) {
     });
     // logger.trace("json is " + JSON.stringify(json, undefined, 4));
     this.ts = new TranslationSet(this.sourceLocale);
-    this.parsewebOSXliff(json.xliff);
+    this.parse(json.xliff);
     return this.ts;
 }
 
@@ -340,7 +341,7 @@ webOSXliff.prototype.deserialize = function(xml, style) {
  * @return {String} the current instance encoded as an customized xliff 2.0
  * format string
  */
-webOSXliff.prototype.toStringCustom = function(units) {
+webOSXliff.prototype.toStringData = function(units) {
     var sourceLocale = units[0].sourceLocale;
     var targetLocale = units[0].targetLocale;
 
@@ -534,7 +535,7 @@ webOSXliff.prototype.serialize = function(untranslated) {
         units = units.concat(this.tu);
     }
 
-    return this.toStringCustom(units);
+    return this.toStringData(units);
 
 }
 
