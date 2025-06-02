@@ -1,7 +1,7 @@
 /*
  * ProjectFactory.test.js - test class used to load Projects
  *
- * Copyright © 2017, 2023 2020, 2023 Healthtap, Inc. All Rights Reserved.
+ * Copyright © 2017, 2020, 2023, 2025 Healthtap, Inc. All Rights Reserved.
  */
 
 if (!ProjectFactory) {

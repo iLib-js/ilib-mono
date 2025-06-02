@@ -30,12 +30,12 @@ var getIntermediateFile = iff.getIntermediateFile;
 var logger = log4js.getLogger("loctool.lib.GenerateMode");
 
 /**
- * @class A class that represents the local story of a set of
+ * @class A class that represents the local store of a set of
  * translations used in a project.
  *
  * @constructor
- * @param {String} sourceLocale the source locale for this set
- * @param {String} translationsDir the directory that contains the intermediate files
+ * @param {Object} options the options for this mode
+ * @param {String} options.translationsDir the directory that contains the intermediate files
  */
 var GenerateMode = function (options) {
     logger.trace("GenerateMode constructor called");
