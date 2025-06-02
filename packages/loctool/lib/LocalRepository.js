@@ -126,6 +126,7 @@ LocalRepository.prototype.init = function(cb) {
     var numIFsRead = 0;
     var fileFormat = this.intermediateFormat;
     var fileFilter = fileFormat === "xliff" ? xliffFileFilter : poFileFilter;
+    var xliffStyle = this.project ? this.project.settings.xliffStyle : 'default';
 
     if (this.translationsDir && this.translationsDir.length > 0) {
         var files = [];
@@ -146,7 +147,8 @@ LocalRepository.prototype.init = function(cb) {
                 var intermediateFile = getIntermediateFile({
                     sourceLocale: this.sourceLocale,
                     path: file,
-                    projectName: this.project && this.project.getProjectId()
+                    projectName: this.project && this.project.getProjectId(),
+                    style: xliffStyle
                 });
                 logger.info("Reading in translations from the translations dir: " + file);
                 this.ts.addSet(intermediateFile.read());

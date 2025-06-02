@@ -20,6 +20,7 @@
 var fs = require("fs");
 var path = require("path");
 var Xliff = require("./Xliff.js");
+var webOSXliff = require("./webOSXliff.js");
 
 var log4js = require("log4js");
 var logger = log4js.getLogger("loctool.lib.XliffSplit");
@@ -40,10 +41,17 @@ var XliffSplit = function XliffSplit(settings) {
         logger.info("Reading " + file + " ...");
         if (fs.existsSync(file)) {
             var data = fs.readFileSync(file, "utf-8");
-            var xliff = new Xliff({
+            if (settings.xliffStyle == 'webOS') {
+                var xliff = new webOSXliff({
                 version: settings.xliffVersion,
                 style: settings.xliffStyle
-            });
+                });
+            } else {
+                var xliff = new Xliff({
+                version: settings.xliffVersion,
+                style: settings.xliffStyle
+                });
+            }
             xliff.deserialize(data);
             superset = superset.concat(xliff.getTranslationUnits());
         } else {
@@ -103,11 +111,19 @@ _parse2 = function(superset, settings) {
         prjXliffPath = path.join(output,key);
 
         if (!file) {
-            file = cache[key] = new Xliff({
-                path: path.join(prjXliffPath, unit.targetLocale + ".xliff"),
-                version: settings.xliffVersion,
-                style: settings.xliffStyle
-            });
+            if (settings.xliffStyle == 'webOS') {
+                file = cache[key] = new webOSXliff({
+                    path: path.join(prjXliffPath, unit.targetLocale + ".xliff"),
+                    version: settings.xliffVersion,
+                    style: settings.xliffStyle
+                });
+            } else {
+                file = cache[key] = new Xliff({
+                    path: path.join(prjXliffPath, unit.targetLocale + ".xliff"),
+                    version: settings.xliffVersion,
+                    style: settings.xliffStyle
+                });
+            }
             logger.trace("new xliff is " + JSON.stringify(file, undefined, 4));
         }
         file.addTranslationUnit(unit);

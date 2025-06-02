@@ -431,7 +431,7 @@ for (var i = 0; i < argv.length; i++) {
             usage();
         }
     } else if (val === "--xliffStyle") {
-        var candidate = ["standard", "custom"];
+        var candidate = ["standard", "webOS"];
         if (candidate.indexOf(argv[i+1]) !== -1) {
             settings.xliffStyle = argv[++i];
         }
@@ -469,6 +469,17 @@ for (var i = 0; i < argv.length; i++) {
                 console.error("Error: --extendedAttr option requires a name=value argument to follow it.");
                 usage();
             }
+        }
+    } else if (val === "--metadata") {
+        settings.metadata = {};
+        if (i + 1 < argv.length && argv[i + 1]) {
+            const pairs = argv[++i].split(",");
+            pairs.forEach(pair => {
+                const [key, value] = pair.split("=");
+                if (key && value) {
+                    settings.metadata[key.trim()] = value.trim();
+                }
+            });
         }
     } else {
         options.push(val);

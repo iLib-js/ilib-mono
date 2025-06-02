@@ -23,6 +23,7 @@ var path = require("path");
 
 var TranslationSet = require("./TranslationSet.js");
 var Xliff = require("./Xliff.js");
+var webOSXliff = require("./webOSXliff.js");
 var convert = require("./convertResources.js");
 var IntermediateFile = require("./IntermediateFile.js");
 
@@ -43,7 +44,8 @@ var IntermediateFile = require("./IntermediateFile.js");
  */
 var XliffIntermediateFile = function(options) {
     this.path = options.path;
-    this.xliff = new Xliff({
+    if (options.style == 'webOS') {
+        this.xliff = new webOSXliff({
         sourceLocale: options.sourceLocale,
         targetLocale: options.targetLocale,
         project: options.project,
@@ -53,7 +55,20 @@ var XliffIntermediateFile = function(options) {
         datatype: options.datatype,
         contextInKey: options.contextInKey,
         style: options.style
-    });
+        });
+    } else {
+        this.xliff = new Xliff({
+        sourceLocale: options.sourceLocale,
+        targetLocale: options.targetLocale,
+        project: options.project,
+        version: options.version,
+        style: options.style,
+        allowDups: options.allowDups,
+        datatype: options.datatype,
+        contextInKey: options.contextInKey,
+        style: options.style
+        });
+    }
 };
 
 XliffIntermediateFile.prototype = new IntermediateFile();

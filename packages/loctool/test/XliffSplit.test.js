@@ -160,7 +160,7 @@ describe("xliffsplit", function() {
         settings.infiles = [
             "test/testfiles/xliff20/merge-en-US-style.xliff",
         ];
-        settings.xliffStyle = "custom"
+        settings.xliffStyle = "webOS"
         var superset = XliffSplit(settings);
         var result = XliffSplit.distribute(superset, settings);
         expect(result).toBeTruthy();

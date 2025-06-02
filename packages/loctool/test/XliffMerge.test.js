@@ -226,7 +226,7 @@ describe("xliffmerge", function() {
 
         var settings = {};
         settings.xliffVersion = 2;
-        settings.xliffStyle = "custom";
+        settings.xliffStyle = "webOS";
         settings.infiles = [
             "test/testfiles/xliff20/app1/en-US.xliff",
             "test/testfiles/xliff20/app2/en-US.xliff",
