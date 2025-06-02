@@ -140,7 +140,7 @@ webOSXliff.prototype.parse = function(xliff) {
                                     resType: restype,
                                     state: state,
                                     datatype: datatype,
-                                    flavor: fileSettings.flavor
+                                    flavor: this.getFlavor(this.metadata, tu["mda:metadata"])
                                 });
                                 this.tu.push(unit);
                             } catch (e) {
@@ -155,6 +155,26 @@ webOSXliff.prototype.parse = function(xliff) {
         }
     }
 }
+
+
+/**
+ * Get the flavor data in thie unit
+ *
+ * @returns {String} the flavor info in thie unit.
+ */
+webOSXliff.prototype.getFlavor = function(metadata, tuData) {
+    if (!tuData) return undefined;
+
+    this.type = metadata["device-type"];
+    var dataArr = tuData["mda:metaGroup"]['mda:meta'];
+    var result = undefined;
+    dataArr.forEach((item) => {
+        if (item['_attributes']['type'] == this.type) {
+            result = item['_text'];
+        }
+    });
+    return result;
+};
 
 /**
  * Get the translation units in this xliff.
