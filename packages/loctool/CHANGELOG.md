@@ -1,5 +1,12 @@
 # loctool
 
+## 2.29.3
+
+### Patch Changes
+
+- b4ee2a5: - Fix incorrect handling of the deprecated xliffsDir
+  setting in a project.json file
+
 ## 2.29.2
 
 ### Patch Changes
