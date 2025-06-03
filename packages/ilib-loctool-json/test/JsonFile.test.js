@@ -42,100 +42,6 @@ function diff(a, b) {
     }
 }
 
-var p = new CustomProject({
-    name: "foo",
-    id: "foo",
-    sourceLocale: "en-US"
-}, "./test/testfiles", {
-    locales: ["en-GB"],
-    targetDir: ".",
-    nopseudo: true,
-    json: {
-        schemas: [
-            "./schemas"
-        ],
-        mappings: {
-            "resources/en/US/strings.json": {
-                "schema": "./testfiles/schema/strings-schema.json",
-                "method": "copy",
-                "template": "resources/[localeDir]/strings.json"
-            },
-            "**/messages.json": {
-                "schema": "http://github.com/ilib-js/messages.json",
-                "method": "copy",
-                "template": "resources/[localeDir]/messages.json"
-            },
-            "**/sparse.json": {
-                "schema": "strings-schema",
-                "method": "sparse",
-                "template": "resources/[localeDir]/sparse.json"
-            },
-            "**/sparse2.json": {
-                "schema": "http://github.com/ilib-js/messages.json",
-                "method": "sparse",
-                "template": "resources/[localeDir]/sparse2.json"
-            },
-            "**/spread.json": {
-                "schema": "strings-schema",
-                "method": "spread",
-                "template": "resources/[localeDir]/spread.json"
-            },
-            "**/deep.json": {
-                "schema": "http://github.com/ilib-js/deep.json",
-                "method": "copy",
-                "template": "resources/deep_[locale].json"
-            },
-            "**/refs.json": {
-                "schema": "http://github.com/ilib-js/refs.json",
-                "method": "copy",
-                "template": "resources/[locale]/refs.json"
-            },
-            "**/str.json": {},
-            "**/arrays.json": {
-                "schema": "http://github.com/ilib-js/arrays.json",
-                "method": "copy",
-                "template": "resources/[localeDir]/arrays.json"
-            },
-            "**/arrays2.json": {
-                "schema": "http://github.com/ilib-js/arrays2.json",
-                "method": "copy",
-                "template": "resources/[localeDir]/arrays2.json"
-            },
-            "**/array-refs.json": {
-                "schema": "http://github.com/ilib-js/array-refs.json",
-                "method": "copy",
-                "template": "resources/[localeDir]/array-refs.json"
-            }
-        }
-    }
-});
-var t = new JsonFileType(p);
-
-var p2 = new CustomProject({
-    name: "foo",
-    id: "foo",
-    sourceLocale: "en-US"
-}, "./test/testfiles", {
-    locales: ["en-GB"],
-    identify: true,
-    targetDir: "testfiles",
-    nopseudo: false,
-    json: {
-        schemas: [
-            "./schemas"
-        ],
-        mappings: {
-            "**/messages.json": {
-                "schema": "http://github.com/ilib-js/messages.json",
-                "method": "copy",
-                "template": "resources/[localeDir]/messages.json"
-            }
-        }
-    }
-});
-
-var t2 = new JsonFileType(p2);
-
 function rmrf(path) {
     if (fs.existsSync(path)) {
         fs.unlinkSync(path);
@@ -150,11 +56,143 @@ afterEach(function () {
         "test/testfiles/resources/fr/FR/str.json",
         "test/testfiles/resources/fr/FR/sparse2.json",
         "test/testfiles/resources/deep_de-DE.json",
-        "test/testfiles/resources/deep_fr-FR.json"
+        "test/testfiles/resources/deep_fr-FR.json",
     ].forEach(rmrf);
 });
 
 describe("jsonfile", function () {
+    // older tests use a single, shared project
+    var p, t, p2, t2;
+
+    function setupTest({ mappings, pathName }) {
+        const project = new CustomProject(
+            {
+                name: "foo",
+                id: "foo",
+                sourceLocale: "en-US",
+            },
+            "./test/testfiles",
+            {
+                locales: ["en-GB"],
+                targetDir: ".",
+                nopseudo: true,
+                json: {
+                    schemas: ["./schemas"],
+                    mappings,
+                },
+            }
+        );
+        const jsonFileType = new JsonFileType(project);
+        const jsonFile = new JsonFile({
+            project: project,
+            type: jsonFileType,
+            pathName,
+        });
+
+        return jsonFile;
+    }
+
+    beforeAll(function () {
+        // TODO: break this apart
+        p = new CustomProject(
+            {
+                name: "foo",
+                id: "foo",
+                sourceLocale: "en-US",
+            },
+            "./test/testfiles",
+            {
+                locales: ["en-GB"],
+                targetDir: ".",
+                nopseudo: true,
+                json: {
+                    schemas: ["./schemas"],
+                    mappings: {
+                        "resources/en/US/strings.json": {
+                            schema: "./testfiles/schema/strings-schema.json",
+                            method: "copy",
+                            template: "resources/[localeDir]/strings.json",
+                        },
+                        "**/messages.json": {
+                            schema: "http://github.com/ilib-js/messages.json",
+                            method: "copy",
+                            template: "resources/[localeDir]/messages.json",
+                        },
+                        "**/sparse.json": {
+                            schema: "strings-schema",
+                            method: "sparse",
+                            template: "resources/[localeDir]/sparse.json",
+                        },
+                        "**/sparse2.json": {
+                            schema: "http://github.com/ilib-js/messages.json",
+                            method: "sparse",
+                            template: "resources/[localeDir]/sparse2.json",
+                        },
+                        "**/spread.json": {
+                            schema: "strings-schema",
+                            method: "spread",
+                            template: "resources/[localeDir]/spread.json",
+                        },
+                        "**/deep.json": {
+                            schema: "http://github.com/ilib-js/deep.json",
+                            method: "copy",
+                            template: "resources/deep_[locale].json",
+                        },
+                        "**/refs.json": {
+                            schema: "http://github.com/ilib-js/refs.json",
+                            method: "copy",
+                            template: "resources/[locale]/refs.json",
+                        },
+                        "**/str.json": {},
+                        "**/arrays.json": {
+                            schema: "http://github.com/ilib-js/arrays.json",
+                            method: "copy",
+                            template: "resources/[localeDir]/arrays.json",
+                        },
+                        "**/arrays2.json": {
+                            schema: "http://github.com/ilib-js/arrays2.json",
+                            method: "copy",
+                            template: "resources/[localeDir]/arrays2.json",
+                        },
+                        "**/array-refs.json": {
+                            schema: "http://github.com/ilib-js/array-refs.json",
+                            method: "copy",
+                            template: "resources/[localeDir]/array-refs.json",
+                        },
+                    },
+                },
+            }
+        );
+        t = new JsonFileType(p);
+
+        p2 = new CustomProject(
+            {
+                name: "foo",
+                id: "foo",
+                sourceLocale: "en-US",
+            },
+            "./test/testfiles",
+            {
+                locales: ["en-GB"],
+                identify: true,
+                targetDir: "testfiles",
+                nopseudo: false,
+                json: {
+                    schemas: ["./schemas"],
+                    mappings: {
+                        "**/messages.json": {
+                            schema: "http://github.com/ilib-js/messages.json",
+                            method: "copy",
+                            template: "resources/[localeDir]/messages.json",
+                        },
+                    },
+                },
+            }
+        );
+
+        t2 = new JsonFileType(p2);
+    });
+
     test("JsonFileConstructor", function () {
         expect.assertions(1);
 
@@ -1761,6 +1799,29 @@ describe("jsonfile", function () {
         expect(actual).toBe(expected);
     });
 
+    test("Localizing an empty object should return an empty object", function () {
+        const jsonFile = setupTest({
+            mappings: {
+                "json/empty-object.json": {
+                    schema: "strings-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/empty-object.json",
+                },
+            },
+            pathName: "json/empty-object.json",
+        });
+
+        jsonFile.extract();
+
+        const translations = new TranslationSet();
+
+        const actual = jsonFile.localizeText(translations, "xx-YY");
+
+        const expected = "{}\n";
+
+        expect(actual).toBe(expected);
+    });
+
     test("Localize an array of objects that includes an empty object", function () {
         expect.assertions(2);
 
@@ -2391,6 +2452,110 @@ describe("jsonfile", function () {
         expect(content).toBe(expected);
     });
 
+    test("Nested empty values should be preserved in default method", function () {
+        const jsonFile = setupTest({
+            mappings: {
+                "json/nested-empty-items.json": {
+                    schema: "nested-empty-items-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/nested-empty-items.json",
+                },
+            },
+            pathName: "json/nested-empty-items.json",
+        });
+
+        jsonFile.extract();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "nonEmptyString",
+            source: "string to localize",
+            sourceLocale: "en-US",
+            target: "a localized string",
+            targetLocale: "xx-YY",
+            datatype: "json",
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "nonEmptyObject/nonEmptyString",
+            source: "string to localize",
+            sourceLocale: "en-US",
+            target: "a localized string",
+            targetLocale: "xx-YY",
+            datatype: "json",
+        }));
+
+        const actual = jsonFile.localizeText(translations, ["xx-YY"]);
+        const actualObj = JSON.parse(actual);
+        const expectedObj = {
+            "aNull": null,
+            "aNumber": 0,
+            "aBoolean": false,
+            "emptyString": "",
+            "nonEmptyString": "a localized string",
+            "emptyObject": {},
+            "emptyArray": [],
+            "nonEmptyObject": {
+                "aNull": null,
+                "aNumber": 0,
+                "aBoolean": false,
+                "emptyString": "",
+                "nonEmptyString": "a localized string",
+                "emptyObject": {},
+                "emptyArray": []
+            }
+        };
+
+        expect(actualObj).toEqual(expectedObj);
+    });
+
+    test("Nested empty values should be removed in sparse method", function () {
+        const jsonFile = setupTest({
+            mappings: {
+                "json/nested-empty-items.json": {
+                    schema: "nested-empty-items-schema",
+                    method: "sparse",
+                    template: "resources/[localeDir]/nested-empty-items.json",
+                },
+            },
+            pathName: "json/nested-empty-items.json",
+        });
+
+        jsonFile.extract();
+
+        const translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "nonEmptyString",
+            source: "string to localize",
+            sourceLocale: "en-US",
+            target: "a localized string",
+            targetLocale: "xx-YY",
+            datatype: "json",
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "nonEmptyObject/nonEmptyString",
+            source: "string to localize",
+            sourceLocale: "en-US",
+            target: "a localized string",
+            targetLocale: "xx-YY",
+            datatype: "json",
+        }));
+
+        const actual = jsonFile.localizeText(translations, ["xx-YY"]);
+        const actualObj = JSON.parse(actual);
+        const expectedObj = {
+            nonEmptyString: "a localized string",
+            nonEmptyObject: {
+                nonEmptyString: "a localized string",
+            }
+        };
+
+        expect(actualObj).toEqual(expectedObj);
+    });
+
     test("JsonFileLocalizeExtractNewStrings", function () {
         expect.assertions(43);
 
@@ -2877,6 +3042,40 @@ describe("jsonfile", function () {
 });
 
 describe("schema 'localizable'", () => {
+    function setupTest({ schema }) {
+        const project = new CustomProject(
+            {
+                name: "localizable-test",
+                id: "localizable-test",
+                sourceLocale: "en-US",
+            },
+            "./test/testfiles",
+            {
+                locales: ["en-GB"],
+                targetDir: ".",
+                nopseudo: true,
+                json: {
+                    schemas: ["./schemas"],
+                    mappings: {
+                        "**/localizable.json": {
+                            schema: schema,
+                            method: "copy",
+                            template: "resources/[localeDir]/localizable.json",
+                        },
+                    },
+                },
+            }
+        );
+        const jsonFileType = new JsonFileType(project);
+        const jsonFile = new JsonFile({
+            project: project,
+            type: jsonFileType,
+            pathName: "./json/localizable.json",
+        });
+
+        return { jsonFile };
+    }
+
     const base = path.dirname(module.id);
     const paths = [
         `${base}/testfiles/resources/mi/MI/localizable.json`
@@ -2989,37 +3188,5 @@ describe("schema 'localizable'", () => {
         const content = fs.readFileSync(path.join(base, "testfiles/resources/mi/MI/localizable.json"), "utf-8");
 
         expect(content).toMatchSnapshot();
-    })
+    });
 });
-
-function setupTest({schema}) {
-    const project = new CustomProject({
-        name: 'localizable-test',
-        id: 'localizable-test',
-        sourceLocale: 'en-US'
-    }, './test/testfiles', {
-        locales: ['en-GB'],
-        targetDir: '.',
-        nopseudo: true,
-        json: {
-            schemas: [
-                "./schemas"
-            ],
-            mappings: {
-                "**/localizable.json": {
-                    "schema": schema,
-                    "method": "copy",
-                    "template": "resources/[localeDir]/localizable.json"
-                }
-            }
-        }
-    });
-    const jsonFileType = new JsonFileType(project);
-    const jsonFile = new JsonFile({
-        project: project,
-        type: jsonFileType,
-        pathName: "./json/localizable.json"
-    });
-
-    return {jsonFile};
-}
