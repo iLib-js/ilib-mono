@@ -1,5 +1,5 @@
 {
-    "name": "ilib-lint-box",
+    "name": "ilib-lint-javascript",
     "version": "0.0.0",
     "type": "module",
     "main": "./src/index.js",

@@ -3,7 +3,7 @@
         "allowUnknownTags": true,
         "dictionaries": ["jsdoc", "closure"]
     },
-    "copyright": "Copyright (c) 2025 Box, Inc. All rights reserved.",
+    "copyright": "Copyright (c) 2025 JEDLSoft. All rights reserved.",
     "linenums": true,
     "sort": true,
     "search": true,

@@ -1,2 +1,2 @@
-# ilib-lint-box
+# ilib-lint-javascript
 

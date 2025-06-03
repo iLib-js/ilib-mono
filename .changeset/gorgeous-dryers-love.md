@@ -1,5 +1,5 @@
 ---
-"ilib-lint-box": major
+"ilib-lint-javascript": major
 ---
 
 - New linter plugin for javascript-based stacks

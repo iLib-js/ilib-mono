@@ -1,24 +1,24 @@
-# ilib-lint-box
+# ilib-lint-javascript
 
-An ilib-lint plugin that provides rules and rulesets for Box
-projects.
+An ilib-lint plugin that provides rules and rulesets for
+linting strings from JavaScript files.
 
 
 ## Installation
 
 ```
-npm install --save-dev ilib-lint-box
+npm install --save-dev ilib-lint-javascript
 
 or
 
-yarn add --dev ilib-lint-box
+yarn add --dev ilib-lint-javascript
 ```
 
 Then, in your `ilib-lib-config.json`, add a script:
 
 ```
     "plugins": [
-        "ilib-lint-box"
+        "ilib-lint-javascript"
     ],
 ```
 
@@ -30,15 +30,17 @@ is written with ESM modules.
 The following rules apply to any resources from any file type, but are
 designed to check resources:
 
-- resource-box-php-param-match check that any PHP-style substitutions match in
-  the source and target. These are similar to printf-style parameters but
-  only use numbers. eg. "%1 and %2"
+- resource-ilib-plural-syntax-checker - Checks that the ilib-style plural
+  syntax of a plural string in the target is correct.
+- resource-ilib-plural-categories-checker - Checks that the plural categories
+  in the target ilib-style plural string are the ones that are expected for
+  the target locale.
 
 ## RuleSets
 
 This plugin defines the following rulesets:
 
-- box-php
+- ilib - All rules that apply to strings in an ilib/javascript project.
 
 ## License
 
