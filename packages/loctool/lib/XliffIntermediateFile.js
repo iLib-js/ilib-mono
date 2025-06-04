@@ -21,12 +21,8 @@
 var fs = require("fs");
 var path = require("path");
 
-var TranslationSet = require("./TranslationSet.js");
-var Xliff = require("./Xliff.js");
-var webOSXliff = require("./webOSXliff.js");
-var convert = require("./convertResources.js");
 var IntermediateFile = require("./IntermediateFile.js");
-
+var XliffFactory = require("./XliffFactory.js");
 /**
  * @class An intermediate file in xliff format.
  * @inherits IntermediateFile
@@ -44,30 +40,7 @@ var IntermediateFile = require("./IntermediateFile.js");
  */
 var XliffIntermediateFile = function(options) {
     this.path = options.path;
-    if (options.style == 'webOS') {
-        this.xliff = new webOSXliff({
-        sourceLocale: options.sourceLocale,
-        targetLocale: options.targetLocale,
-        project: options.project,
-        version: options.version,
-        style: options.style,
-        allowDups: options.allowDups,
-        datatype: options.datatype,
-        contextInKey: options.contextInKey,
-        metadata: options.metadata
-        });
-    } else {
-        this.xliff = new Xliff({
-        sourceLocale: options.sourceLocale,
-        targetLocale: options.targetLocale,
-        project: options.project,
-        version: options.version,
-        style: options.style,
-        allowDups: options.allowDups,
-        datatype: options.datatype,
-        contextInKey: options.contextInKey,
-        });
-    }
+    this.xliff = XliffFactory(options);
 };
 
 XliffIntermediateFile.prototype = new IntermediateFile();

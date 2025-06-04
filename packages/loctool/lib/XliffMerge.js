@@ -19,8 +19,9 @@
 
 var fs = require('fs');
 var log4js = require("log4js");
-const Xliff = require("./Xliff");
-const webOSXliff = require("./webOSXliff");
+var Xliff = require("./Xliff");
+var webOSXliff = require("./webOSXliff");
+var XliffFactory = require("./XliffFactory.js");
 var logger = log4js.getLogger("loctool.lib.XliffMerge");
 
 /**
@@ -32,34 +33,21 @@ var logger = log4js.getLogger("loctool.lib.XliffMerge");
  */
 var XliffMerge = function XliffMerge(settings) {
     if (!settings) return;
-    if (settings.xliffStyle == 'webOS') {
-        var target = new webOSXliff({
-            path: settings.outfile,
-            version: settings.xliffVersion,
-            style: settings.xliffStyle
-        });
-    } else {
-        var target = new Xliff({
-            path: settings.outfile,
-            version: settings.xliffVersion,
-            style: settings.xliffStyle
-        });
-    }
+
+    var target = XliffFactory({
+        path: settings.outfile,
+        version: settings.xliffVersion,
+        xliffStyle: settings.xliffStyle
+    });
+
     settings.infiles.forEach(function (file) {
         if (fs.existsSync(file)) {
             logger.info("Merging " + file + " ...");
             var data = fs.readFileSync(file, "utf-8");
-            if (settings.xliffStyle == 'webOS') {
-                var xliff = new webOSXliff({
-                    version: settings.xliffVersion,
-                    style: settings.xliffStyle
-                });
-            } else {
-                var xliff = new Xliff({
-                    version: settings.xliffVersion,
-                    style: settings.xliffStyle
-                });
-            }
+            var xliff = XliffFactory({
+                version: settings.xliffVersion,
+                xliffStyle: settings.xliffStyle
+            });
             xliff.deserialize(data);
             target.addTranslationUnits(xliff.getTranslationUnits());
         } else {

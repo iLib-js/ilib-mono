@@ -26,7 +26,7 @@ var itc = require("ilib-tools-common");
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
 var iff = require("./IntermediateFileFactory.js");
-
+var XliffFactory = require("./XliffFactory.js");
 var getIntermediateFile = iff.getIntermediateFile;
 var getIntermediateFileExtensions = iff.getIntermediateFileExtensions;
 var logger = log4js.getLogger("loctool.lib.LocalRepository");
@@ -126,7 +126,7 @@ LocalRepository.prototype.init = function(cb) {
     var numIFsRead = 0;
     var fileFormat = this.intermediateFormat;
     var fileFilter = fileFormat === "xliff" ? xliffFileFilter : poFileFilter;
-    var xliffStyle = this.project ? this.project.settings.xliffStyle : 'default';
+    var xliffStyle = this.project ? this.project.settings.xliffStyle : XliffFactory.defaultStyle;
     var projectMetadata = this.project ? this.project.settings.metadata : undefined;
 
     if (this.translationsDir && this.translationsDir.length > 0) {

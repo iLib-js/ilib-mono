@@ -61,7 +61,7 @@ var webOSXliff = function webOSXliff(options) {
     }
 
     this.sourceLocale = this.sourceLocale || "en-US";
-    this.versopm = this.sourceLocale || 2.0;
+    this.version = this.version || 2.0;
     // place to store the translation units
     this.tu = [];
     this.tuhash = {};
@@ -608,6 +608,31 @@ webOSXliff.prototype.convertResource = function(res) {
     return this._convertResource(res);
 };
 
+/**
+ * Return the number of translation units in this xliff
+ * file.
+ *
+ * @return {number} the number of translation units in this xliff file
+ */
+webOSXliff.prototype.size = function() {
+    return this.ts.size();
+};
+
+/**
+ * Get the path to this xliff file.
+ * @returns {String|undefined} the path to this xliff file
+ */
+webOSXliff.prototype.getPath = function() {
+    return this.path;
+};
+
+/**
+ * Set the path to this xliff file.
+ * @param {String} the path to the xliff file
+ */
+webOSXliff.prototype.setPath = function(pathName) {
+    this.path = pathName;
+};
 
 function makeArray(arrayOrObject) {
     return ilib.isArray(arrayOrObject) ? arrayOrObject : [ arrayOrObject ];

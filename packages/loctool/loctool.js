@@ -29,7 +29,7 @@ var mm = require("micromatch");
 
 var ProjectFactory = require("./lib/ProjectFactory.js");
 var GenerateModeProcess = require("./lib/GenerateModeProcess.js");
-
+var XliffFactory = require("./lib/XliffFactory.js");
 var XliffMerge = require("./lib/XliffMerge.js");
 var XliffSplit = require("./lib/XliffSplit.js");
 var XliffSelect = require("./lib/XliffSelect.js");
@@ -431,8 +431,8 @@ for (var i = 0; i < argv.length; i++) {
             usage();
         }
     } else if (val === "--xliffStyle") {
-        var candidate = ["standard", "webOS"];
-        if (candidate.indexOf(argv[i+1]) !== -1) {
+        var candidate = XliffFactory.getAllStyles();
+        if (candidate.includes(argv[i+1])) {
             settings.xliffStyle = argv[++i];
         }
     } else if (val === "--noxliffDups") {
