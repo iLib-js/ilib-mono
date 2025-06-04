@@ -67,7 +67,9 @@ export function top() {
             //console.log("top: top is " + (typeof(global) !== 'undefined' ? "global" : "this"));
             break;
         default:
-            topScope = window;
+            // in a browser, the top scope is always window
+            topScope = typeof(window) !== 'undefined' ? window :
+                (typeof(global) !== 'undefined' ? global : this);
             break;
     }
 
