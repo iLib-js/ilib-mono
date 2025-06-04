@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="md/en-US/README.md" source-language="en-US" target-language="ko-KR" product-name="sample-md">
+    <body>
+      <trans-unit id="1" resname="Title" restype="string" datatype="x-yaml">
+        <source>Readme for the Github-Flavored Markdown Sample</source>
+        <target>Github 기반 Markdown Sample Readme</target>
+      </trans-unit>
+      <trans-unit id="2" resname="r911920644" restype="string" datatype="markdown">
+        <source>ilib-loctool-ghfm</source>
+        <target>ilib-loctool-ghfm</target>
+      </trans-unit>
+      <trans-unit id="4" resname="r73969288" restype="string" datatype="markdown">
+        <source>Ilib loctool plugin to parse and localize Github-flavored markdown</source>
+        <target>Ilib loctool plugin 은 Github-flavored markdown을 파싱하고 현지화 합니다.</target>
+      </trans-unit>
+      <trans-unit id="5" resname="Description" restype="string" datatype="x-yaml">
+        <source>this is a sample of frontmatter that can be extracted and localized</source>
+        <target>이 예제는 frontmatter 예제를 추출하고 현지화 합니다.</target>
+      </trans-unit>
+      <trans-unit id="5" resname="r342091031" restype="string" datatype="markdown">
+        <source>Whenever there is syntax in the markdown that translators should
+not touch, this plugin converts them into xml-like components.</source>
+        <target>마크 다운에 번역자가 번역하지 않아야하는 구문이있을 때마다 이 플러그인은 그것들을 xml과 같은 구성 요소로 변환합니다.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

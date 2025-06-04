@@ -1,0 +1,22 @@
+{
+    "name": "sample-arb",
+    "id": "sample-arb",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale":  ["zxx-XX", "zxx-Hebr-XX", "zxx-Cyrl-XX", "zxx-Hans-XX"],
+    "plugins": [
+        "ilib-loctool-arb"
+    ],
+    "excludes": [
+        ".*",
+        "test",
+        "xliffs"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "es-ES",
+            "ko-KR"
+        ]
+    }
+}

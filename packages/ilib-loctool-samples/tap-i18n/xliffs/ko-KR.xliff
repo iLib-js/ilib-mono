@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="languages/en.i18n.yml" source-language="en-US" target-language="ko-KR" product-name="sample-tap-i18n">
+    <body>
+      <trans-unit id="1" resname="toplevel.first.loading" restype="string" datatype="x-yaml">
+        <source>Loading...</source>
+        <target>로딩 중 ...</target>
+      </trans-unit>
+      <trans-unit id="2" resname="toplevel.first.pageLoading" restype="string" datatype="x-yaml">
+        <source>Loading the page...</source>
+        <target>페이지를 로딩하는 중 ...</target>
+      </trans-unit>
+      <trans-unit id="4" resname="toplevel.second.cancel" restype="string" datatype="x-yaml">
+        <source>Cancel</source>
+        <target>취소</target>
+      </trans-unit>
+      <trans-unit id="5" resname="toplevel.second.create" restype="string" datatype="x-yaml">
+        <source>Create</source>
+        <target>만들다</target>
+      </trans-unit>
+      <trans-unit id="5" resname="toplevel.plurals.plural1" restype="plural" datatype="x-yaml" extype="other">
+        <source>{{count}} items</source>
+        <target>{{count}}개 항목</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
