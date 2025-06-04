@@ -1,18 +1,9 @@
 {
-    "name": "sample",
-    "description": "Sample localization project",
-    "repository": "git@github.com:iLib-js/ilib-loctool-samples.git",
-    "license": "Apache-2.0",
-    "version": "1.0.0",
-    "scripts": {
-        "loc": "loctool",
-        "debug": "node --inspect-brk node_modules/loctool/loctool.js",
-        "clean": "rm -rf *.xliff res/values-* res/values/strings-auto.xml",
-        "test": "echo success"
-    },
-    "devDependencies": {
-        "ilib-loctool-android-layout": "^1.0.2",
-        "ilib-loctool-android-resource": "^1.0.2",
-        "loctool": "^2.20.2"
-    }
+  "private": true,
+  "description": "Sample localization project",
+  "devDependencies": {
+    "ilib-loctool-android-layout": "workspace:^",
+    "ilib-loctool-android-resource": "workspace:^",
+    "loctool": "workspace:^"
+  }
 }
