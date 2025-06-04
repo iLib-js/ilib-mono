@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="res/values/strings.xml" source-language="en-US" target-language="ko-KR" product-name="sample">
+    <body>
+      <trans-unit id="1" resname="thank" restype="string" datatype="x-android-resource">
+        <source>Thank</source>
+        <target state="translated">고마워</target>
+      </trans-unit>
+      <trans-unit id="11" resname="days" restype="array" datatype="x-android-resource" extype="0">
+        <source>Sunday</source>
+        <target>일요일</target>
+      </trans-unit>
+      <trans-unit id="12" resname="days" restype="array" datatype="x-android-resource" extype="1">
+        <source>Monday</source>
+        <target>월요일</target>
+      </trans-unit>
+      <trans-unit id="13" resname="days" restype="array" datatype="x-android-resource" extype="2">
+        <source>Tuesday</source>
+        <target>화요일</target>
+      </trans-unit>
+      <trans-unit id="14" resname="days" restype="array" datatype="x-android-resource" extype="3">
+        <source>Wednesday</source>
+        <target>수요일</target>
+      </trans-unit>
+      <trans-unit id="15" resname="days" restype="array" datatype="x-android-resource" extype="4">
+        <source>Thursday</source>
+        <target>목요일</target>
+      </trans-unit>
+      <trans-unit id="16" resname="days" restype="array" datatype="x-android-resource" extype="5">
+        <source>Friday</source>
+        <target>금요일</target>
+      </trans-unit>
+      <trans-unit id="17" resname="days" restype="array" datatype="x-android-resource" extype="6">
+        <source>Saturday</source>
+        <target>토요일</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="res/layout/t1.xml" source-language="en-US" target-language="ko-KR" product-name="sample">
+    <body>
+      <trans-unit id="11" resname="text_Unlimited_Gigabytes_of_Data" restype="string" datatype="x-android-resource">
+        <source>Unlimited Gigabytes of Data</source>
+        <target>무제한 기가 바이트 데이터</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
