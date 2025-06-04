@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>iLib Test Sample</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <script src="./ilib.js"></script>
+    <!--<script src="./outResDir/ilib-translation.js"></script>-->
+    <script src="./outResDir/ko-KR.js"></script>
+    <script src="./outResDir/es-ES.js"></script>
+    <script src="./lib/localize.js"></script>
+    </head>
+    <body>
+    <p>iLib Sample</p>
+    <table cellpadding="0" cellspacing="0" class="display" >
+        <thead>
+            <tr><th width=100px;>Locale</th><th>Result</th></tr>
+            <tr><td style="text-align:center">ko-KR</td><td id="loc_ko" /></tr>
+            <tr><td style="text-align:center">es-ES</td><td id="loc_es" /></tr>
+            <tr><td style="text-align:center">zxx-XX</td><td id="loc_xx" /></tr>
+            <tr><td style="text-align:center">ko-KR</td><td id="ilib_date" /></tr>
+            <tr><td style="text-align:center">es-ES</td><td id="ilib_date2" /></tr>
+        </thead>
+    </table>
+    </body>
+    <script>
+        document.getElementById("loc_ko").innerHTML = jsStr_ko;
+        document.getElementById("loc_es").innerHTML = jsStr_es;
+        document.getElementById("loc_xx").innerHTML = jsStr_xx;
+        document.getElementById("ilib_date").innerHTML = dateString;
+        document.getElementById("ilib_date2").innerHTML = dateString2;
+    </script>
+</html>

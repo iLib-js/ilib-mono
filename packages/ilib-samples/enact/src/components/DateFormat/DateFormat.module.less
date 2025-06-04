@@ -1,0 +1,34 @@
+@import '~@enact/sandstone/styles/mixins.less';
+@import '~@enact/sandstone/styles/variables.less';
+
+.formattedDateList {
+    height: 630px;
+}
+
+.formattedDateListItem {
+    width: 97%;
+    margin-left: 36px;
+    padding-left: 36px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    border-radius: 12px;
+    .focus({
+        color: #4c5059;
+        opacity: 1;
+        background-color: #e6e6e6;
+        filter+: drop-shadow(0 36px 18px fade(#000, 30%));
+    });
+}
+
+.convertedDateText {
+    padding-left: 36px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    border-radius: 12px;
+    .focus({
+        color: #4c5059;
+        opacity: 1;
+        background-color: #e6e6e6;
+        filter+: drop-shadow(0 36px 18px fade(#000, 30%));
+    });
+}
