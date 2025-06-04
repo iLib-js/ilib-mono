@@ -19,8 +19,6 @@
 
 var fs = require('fs');
 var log4js = require("log4js");
-var Xliff = require("./Xliff");
-var webOSXliff = require("./webOSXliff");
 var XliffFactory = require("./XliffFactory.js");
 var logger = log4js.getLogger("loctool.lib.XliffMerge");
 
