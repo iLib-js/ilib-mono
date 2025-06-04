@@ -1,9 +1,0 @@
-{
-    "files": [
-        "es/strings.json",
-        "fa/strings.json",
-        "fr/strings.json",
-        "ko/strings.json"
-    ],
-    "l10n_timestamp": "123"
-}
