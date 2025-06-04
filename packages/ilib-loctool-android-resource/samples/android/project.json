@@ -1,0 +1,28 @@
+{
+    "name": "sample",
+    "id": "sample",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "resourceDirs": {
+        "java":"res"
+    },
+    "resourceFileTypes": {
+        "java":"ilib-loctool-android-resource"
+    },
+    "plugins": [
+        "ilib-loctool-android-resource",
+        "ilib-loctool-android-layout"
+    ],
+    "excludes": [
+        ".*",
+        "xliffs",
+        "res"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "ko-KR","ru-RU"
+        ]
+    }
+}
