@@ -37,6 +37,7 @@ jobs:
         run: |
           echo "Listing affected packages"
           LIST=$(pnpm turbo ls --affected --output=json)
+          echo "LIST: $LIST"
           echo list=$(echo "$LIST" | jq -c .) >> "$GITHUB_OUTPUT"
           echo "Running tests and generating coverage reports for affected packages"
           pnpm coverage:ci:affected

@@ -71,8 +71,6 @@ const junitFiles = affected.packages.items
 
 // Write to GitHub Actions output
 try {
-  console.log({ coverageFiles, junitFiles });
-
   fs.appendFileSync(GITHUB_OUTPUT,`coverage-files<<EOF\n${coverageFiles}\nEOF\n`);
   fs.appendFileSync(GITHUB_OUTPUT, `junit-files<<EOF\n${junitFiles}\nEOF\n`);
   
