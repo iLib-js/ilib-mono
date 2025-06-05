@@ -88,7 +88,8 @@ describe("testResourceTargetChecker", () => {
             source: resource.getSource()[0],
             target: resource.getTarget()[0],
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            index: 0
         });
         expect(actual).toBeTruthy();
         expect(actual.length).toBe(1);
@@ -96,7 +97,7 @@ describe("testResourceTargetChecker", () => {
         expect(actual[0].severity).toBe("error");
         expect(actual[0].id).toBe("matcher.test");
         expect(actual[0].description).toBe("The full-width characters 'Ｂｏｘ' are not allowed in the target string. Use ASCII letters instead.");
-        expect(actual[0].highlight).toBe("Target: <e0>Ｂｏｘ</e0>にアップロード");
+        expect(actual[0].highlight).toBe("Target[0]: <e0>Ｂｏｘ</e0>にアップロード");
         expect(actual[0].source).toBe('Upload to Box');
         expect(actual[0].pathName).toBe("a/b/c.xliff");
     });
@@ -124,7 +125,8 @@ describe("testResourceTargetChecker", () => {
             source: resource.getSource().other,
             target: resource.getTarget().other,
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            category: "other"
         });
         expect(actual).toBeTruthy();
         expect(actual.length).toBe(1);
@@ -132,7 +134,7 @@ describe("testResourceTargetChecker", () => {
         expect(actual[0].severity).toBe("error");
         expect(actual[0].id).toBe("matcher.test");
         expect(actual[0].description).toBe("The full-width characters 'Ｂｏｘ' are not allowed in the target string. Use ASCII letters instead.");
-        expect(actual[0].highlight).toBe("Target: <e0>Ｂｏｘ</e0>にアップロード");
+        expect(actual[0].highlight).toBe("Target(other): <e0>Ｂｏｘ</e0>にアップロード");
         expect(actual[0].source).toBe('Upload to Box');
         expect(actual[0].pathName).toBe("a/b/c.xliff");
     });
@@ -633,7 +635,7 @@ describe("testResourceTargetChecker", () => {
             sourceFile: new SourceFile("a/b/c.xliff", {}),
             dirty: false
         });
-        
+
         const result = rule.match({ir, file: "a/b/c.xliff"});
         expect(result).toBeTruthy();
         expect(result).toEqual(expect.objectContaining({
@@ -676,7 +678,7 @@ describe("testResourceTargetChecker", () => {
             sourceFile: new SourceFile("a/b/c.xliff", {}),
             dirty: false
         });
-        
+
         const result = rule.match({ir, file: "a/b/c.xliff"});
         expect(result).toBeTruthy();
         expect(result).toEqual(expect.objectContaining({
@@ -722,13 +724,14 @@ describe("testResourceTargetChecker", () => {
             dirty: false
         });
         fixer.applyFixes(ir, result.map(res => res.fix));
+        const expected = "テスト               テスト"; // 15 spaces to replace the illegal characters
         // should be replaced with a regular ascii space
-        expect(resource.getTarget()).toBe("テスト                テスト");
+        expect(resource.getTarget()).toBe(expected);
     });
 
     test("apply fixes for no double byte space rule in an array resource", () => {
         const illegalCharacters = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000";
-        expect.assertions(1);
+        expect.assertions(3);
 
         const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
         expect(rule).toBeTruthy();
@@ -751,7 +754,8 @@ describe("testResourceTargetChecker", () => {
         });
 
         const result = rule.match({ir, file: "a/b/c.xliff"});
-        fixer.applyFixes(ir, result.map(res => res.fix));
+        expect(result).toBeTruthy();
+        fixer.applyFixes(ir, [result.fix]);
         // should be replaced with a regular ascii space
         expect(resource.getTarget()).toStrictEqual([
             "bar",
@@ -761,7 +765,7 @@ describe("testResourceTargetChecker", () => {
 
     test("apply fixes for no double byte space rule in a plural resource", () => {
         const illegalCharacters = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000";
-        expect.assertions(1);
+        expect.assertions(3);
 
         const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
         expect(rule).toBeTruthy();
@@ -791,10 +795,11 @@ describe("testResourceTargetChecker", () => {
 
         const result = rule.match({ir, file: "a/b/c.xliff"});
         expect(result).toBeTruthy();
+        fixer.applyFixes(ir, [result.fix]);
         // should be replaced with a regular ascii space
         expect(resource.getTarget()).toStrictEqual({
             "one": "bar",
-            "other": "テスト                テスト"
+            "other": "テスト               テスト"
         });
     });
 
