@@ -93,7 +93,7 @@ export class ResourceSourceICUPluralParams extends ResourceRule {
      * @param {string} params.file
      * @returns {Result | undefined}
      */
-    matchString({ source, resource, file }) {
+    matchString({ source, resource, file, index, category }) {
         if (!source) return; // no source, no checks needed
         const sourceLocale = new Locale(resource.getSourceLocale() ?? this.sourceLocale).getSpec();
 

@@ -154,7 +154,7 @@ class ResourceXML extends ResourceRule {
     /**
      * @override
      */
-    matchString({source, target, resource}) {
+    matchString({source, target, resource, index, category}) {
         if (!target) return; // can't check "nothing" !
         let srcObj, tgtObj;
         let problems = [];

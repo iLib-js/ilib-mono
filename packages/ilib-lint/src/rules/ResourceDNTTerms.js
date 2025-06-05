@@ -96,7 +96,7 @@ class ResourceDNTTerms extends ResourceRule {
      * @param {string} props.file the file where the resource came from
      * @returns {Array.<Result>|undefined} the results
      */
-    matchString({ source, target, resource, file }) {
+    matchString({ source, target, resource, file, index, category }) {
         const resultProps = {
             id: resource.getKey(),
             rule: this,
