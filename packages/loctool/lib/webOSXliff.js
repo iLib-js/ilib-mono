@@ -47,7 +47,6 @@ var TranslationUnit = require("./Xliff.js").TranslationUnit;
  * @param {Array.<Object>|undefined} options options to
  * initialize the file, or undefined for a new empty file
  */
-
 var webOSXliff = function webOSXliff(options) {
     if (options) {
         this.path = options.path;
@@ -55,6 +54,8 @@ var webOSXliff = function webOSXliff(options) {
         this.project = options.project;
         this.allowDups = options.allowDups;
         this.metadata = options.metadata;
+        this.mode = options.mode;
+
         if (typeof(options.version) !== 'undefined') {
             this.version = Number.parseFloat(options.version);
         }
@@ -114,17 +115,18 @@ webOSXliff.prototype.parse = function(xliff) {
                                     source += segment.source["_text"];
                                     if (segment.target) {
                                         target += segment.target["_text"];
-                                         if (segment.target.state) {
+                                        if (segment.target.state) {
                                             state = segment.target._attributes.state;
                                         }
                                     }
                                 }
                             }
                         }
-                         if (!resname) {
+                        if (!resname) {
                             resname = source;
                         }
-                         if (source.trim()) {
+
+                        if (source.trim()) {
                             try {
                                 var unit = new TranslationUnit({
                                     file: fileSettings.pathName,
@@ -136,11 +138,11 @@ webOSXliff.prototype.parse = function(xliff) {
                                     context: tu._attributes["l:context"],
                                     comment: comment,
                                     targetLocale: targetLocale,
-                                    target: target,
+                                    target: this.getMetadataTarget(this.metadata, tu["mda:metadata"]) ?? target,
                                     resType: restype,
                                     state: state,
                                     datatype: datatype,
-                                    flavor: this.getFlavor(this.metadata, tu["mda:metadata"])
+                                    flavor: fileSettings.flavor
                                 });
                                 this.tu.push(unit);
                             } catch (e) {
@@ -156,14 +158,13 @@ webOSXliff.prototype.parse = function(xliff) {
     }
 }
 
-
 /**
  * Get the flavor data in thie unit
  *
  * @returns {String} the flavor info in thie unit.
  */
-webOSXliff.prototype.getFlavor = function(metadata, tuData) {
-    if (!tuData) return undefined;
+webOSXliff.prototype.getMetadataTarget = function(metadata, tuData) {
+    if (! (metadata && tuData)) return undefined;
 
     this.type = metadata["device-type"];
     var dataArr = tuData["mda:metaGroup"]['mda:meta'];
@@ -383,11 +384,9 @@ webOSXliff.prototype.toStringData = function(units) {
     }
 
     json.xliff._attributes["xmlns:l"] = "http://ilib-js.com/loctool";
-
     logger.trace("Units to write out is " + JSON.stringify(units, undefined, 4));
 
     // now finally add each of the units to the json
-
     var files = {};
     var index = 1;
     var fileIndex = 1;

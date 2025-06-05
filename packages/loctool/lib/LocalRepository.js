@@ -150,7 +150,8 @@ LocalRepository.prototype.init = function(cb) {
                     path: file,
                     projectName: this.project && this.project.getProjectId(),
                     style: xliffStyle,
-                    metadata: projectMetadata
+                    metadata: projectMetadata,
+                    mode: (this.project && this.project.settings.mode) ?? 'localize'
                 });
                 logger.info("Reading in translations from the translations dir: " + file);
                 this.ts.addSet(intermediateFile.read());

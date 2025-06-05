@@ -1,7 +1,7 @@
 /*
  * XliffSplit.js - test the split of Xliff object.
  *
- * Copyright © 2020, JEDLSoft
+ * Copyright © 2020, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ _parse2 = function(superset, settings) {
             file = cache[key] = XliffFactory({
                 path: path.join(prjXliffPath, unit.targetLocale + ".xliff"),
                 version: settings.xliffVersion,
-                xliffStyle: settings.xliffStyle
+                style: settings.xliffStyle
             });
             logger.trace("new xliff is " + JSON.stringify(file, undefined, 4));
         }

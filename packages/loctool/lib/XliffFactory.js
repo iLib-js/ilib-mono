@@ -18,9 +18,6 @@
  * limitations under the License.
  */
 
-var log4js = require("log4js");
-var logger = log4js.getLogger("loctool.lib.XliffFactory");
-
 var Xliff = require("./Xliff.js");
 var webOSXliff = require("./webOSXliff.js");
 /**
@@ -31,7 +28,7 @@ var webOSXliff = require("./webOSXliff.js");
  * actual resource subclass' constructor
  */
 var XliffFactory = function(props) {
-    var style = XliffFactory.availableStyles.includes(props.xliffStyle) ? props.xliffStyle : XliffFactory.defaultStyle;
+    var style = XliffFactory.availableStyles.includes(props.style) ? props.style : XliffFactory.defaultStyle;
 
     switch (style) {
         case 'webOS':
@@ -46,8 +43,13 @@ var XliffFactory = function(props) {
 XliffFactory.availableStyles = ['default', 'standard', 'webOS'];
 XliffFactory.defaultStyle = 'standard';
 
+/**
+ * Get the available xliff style
+ *
+ * @returns {Array.<Object>} Returns a list of possible XLIFF styles.
+ */
 XliffFactory.getAllStyles = function () {
-    return ['default', 'standard', 'webOS'];
+    return this.availableStyles;
 }
 
 module.exports = XliffFactory;

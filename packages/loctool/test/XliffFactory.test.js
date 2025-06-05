@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-if (!XliffFactory) {
-    var XliffFactory = require("../lib/XliffFactory.js");
-    var Xliff = require("../lib/Xliff.js");
-    var webOSXliff = require("../lib/webOSXliff.js");
-}
+var XliffFactory = require("../lib/XliffFactory.js");
+var Xliff = require("../lib/Xliff.js");
+var webOSXliff = require("../lib/webOSXliff.js");
 
 describe("ResourceFactory", function() {
     test("ResourceFactoryString", function() {
@@ -33,7 +31,7 @@ describe("ResourceFactory", function() {
     test("ResourceFactoryArray", function() {
         expect.assertions(2);
         var ra = XliffFactory({
-            xliffStyle: "standard"
+            style: "standard"
         });
         expect(ra).toBeTruthy();
         expect(ra instanceof Xliff).toBeTruthy();
@@ -41,7 +39,7 @@ describe("ResourceFactory", function() {
     test("ResourceFactoryArray", function() {
         expect.assertions(2);
         var ra = XliffFactory({
-            xliffStyle: "webOS"
+            style: "webOS"
         });
         expect(ra).toBeTruthy();
 

@@ -1,7 +1,7 @@
 /*
  * XliffMerge.js - Merge multiple xliff files into one
  *
- * Copyright © 2020, JEDLSoft
+ * Copyright © 2020, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,8 @@ var XliffMerge = function XliffMerge(settings) {
     var target = XliffFactory({
         path: settings.outfile,
         version: settings.xliffVersion,
-        xliffStyle: settings.xliffStyle
+        style: settings.xliffStyle,
+        mode: settings.mode
     });
 
     settings.infiles.forEach(function (file) {
