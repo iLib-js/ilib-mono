@@ -611,10 +611,90 @@ describe("testResourceTargetChecker", () => {
         }));
     });
 
+    test("ResourceNoDoubleByteSpace test rule against array resources", () => {
+        const illegalCharacters = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000";
+        expect.assertions(3);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceArray({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: ["foo", `test${illegalCharacters}test`],
+            targetLocale: "ja-JP",
+            target: ["bar", `テスト${illegalCharacters}テスト`],
+            pathName: "a/b/c.xliff",
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+        
+        const result = rule.match({ir, file: "a/b/c.xliff"});
+        expect(result).toBeTruthy();
+        expect(result).toEqual(expect.objectContaining({
+            rule,
+            severity: "warning",
+            pathName: "a/b/c.xliff",
+            locale: "ja-JP",
+            source: `test${illegalCharacters}test`,
+            id: "matcher.test",
+            description: "Double-byte space characters should not be used in the target string. Use ASCII symbols instead.",
+            highlight: `Target[1]: テスト<e0>${illegalCharacters}</e0>テスト`,
+        }));
+    });
+
+    test("ResourceNoDoubleByteSpace test rule against plural resources", () => {
+        const illegalCharacters = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000";
+        expect.assertions(3);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourcePlural({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: {
+                one: "foo",
+                other: `test${illegalCharacters}test`
+            },
+            targetLocale: "ja-JP",
+            target: {
+                "one": "bar",
+                "other": `テスト${illegalCharacters}テスト`
+            },
+            pathName: "a/b/c.xliff",
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+        
+        const result = rule.match({ir, file: "a/b/c.xliff"});
+        expect(result).toBeTruthy();
+        expect(result).toEqual(expect.objectContaining({
+            rule,
+            severity: "warning",
+            pathName: "a/b/c.xliff",
+            locale: "ja-JP",
+            source: `test${illegalCharacters}test`,
+            id: "matcher.test",
+            description: "Double-byte space characters should not be used in the target string. Use ASCII symbols instead.",
+            highlight: `Target(other): テスト<e0>${illegalCharacters}</e0>テスト`,
+        }));
+    });
+
     test("apply fixes for no double byte space rule", () => {
         const illegalCharacters = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000";
-        expect.assertions(1);
-debugger;
+        expect.assertions(2);
+
         const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
         expect(rule).toBeTruthy();
         const fixer = new ResourceFixer();
@@ -644,6 +724,78 @@ debugger;
         fixer.applyFixes(ir, result.map(res => res.fix));
         // should be replaced with a regular ascii space
         expect(resource.getTarget()).toBe("テスト                テスト");
+    });
+
+    test("apply fixes for no double byte space rule in an array resource", () => {
+        const illegalCharacters = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000";
+        expect.assertions(1);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
+        expect(rule).toBeTruthy();
+        const fixer = new ResourceFixer();
+
+        const resource = new ResourceArray({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: ["foo", `test${illegalCharacters}test`],
+            targetLocale: "ja-JP",
+            target: ["bar", `テスト${illegalCharacters}テスト`],
+            pathName: "a/b/c.xliff",
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+
+        const result = rule.match({ir, file: "a/b/c.xliff"});
+        fixer.applyFixes(ir, result.map(res => res.fix));
+        // should be replaced with a regular ascii space
+        expect(resource.getTarget()).toStrictEqual([
+            "bar",
+            "テスト               テスト"
+        ]);
+    });
+
+    test("apply fixes for no double byte space rule in a plural resource", () => {
+        const illegalCharacters = "\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000";
+        expect.assertions(1);
+
+        const rule = new ResourceTargetChecker(findRuleDefinition("resource-no-double-byte-space"));
+        expect(rule).toBeTruthy();
+        const fixer = new ResourceFixer();
+
+        const resource = new ResourcePlural({
+            key: "matcher.test",
+            sourceLocale: "en-US",
+            source: {
+                one: "foo",
+                other: `test${illegalCharacters}test`
+            },
+            targetLocale: "ja-JP",
+            target: {
+                "one": "bar",
+                "other": `テスト${illegalCharacters}テスト`
+            },
+            pathName: "a/b/c.xliff",
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+
+        const result = rule.match({ir, file: "a/b/c.xliff"});
+        expect(result).toBeTruthy();
+        // should be replaced with a regular ascii space
+        expect(resource.getTarget()).toStrictEqual({
+            "one": "bar",
+            "other": "テスト                テスト"
+        });
     });
 
     test("apply fixes for no double byte space rule (line break)", () => {
