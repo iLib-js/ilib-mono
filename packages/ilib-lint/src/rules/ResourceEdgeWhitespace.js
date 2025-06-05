@@ -36,7 +36,7 @@ class ResourceEdgeWhitespace extends ResourceRule {
     /**
      * @override
      */
-    matchString({ source, target, file, resource }) {
+    matchString({ source, target, file, resource, index, category }) {
         if ("string" !== typeof source || "string" !== typeof target) {
             return /* don't check when either source or target string is not defined */;
         }
@@ -64,7 +64,9 @@ class ResourceEdgeWhitespace extends ResourceRule {
                         whitespaces.target.leading.length,
                         whitespaces.source.leading
                     )
-                ]
+                ],
+                category,
+                index
             });
             results.push(
                 new Result({
@@ -92,7 +94,9 @@ class ResourceEdgeWhitespace extends ResourceRule {
                         whitespaces.target.trailing.length,
                         whitespaces.source.trailing
                     )
-                ]
+                ],
+                category,
+                index
             });
             results.push(
                 new Result({

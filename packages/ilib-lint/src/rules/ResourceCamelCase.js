@@ -54,7 +54,7 @@ class ResourceCamelCase extends ResourceRule {
      * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}} params
      * @returns {Result|undefined} A Result with severity 'error' if the source string is in camel case and target string is not the same as the source string, otherwise undefined.
      */
-    matchString({source, target, file, resource}) {
+    matchString({source, target, file, resource, index, category}) {
         if (!source || !target) {
             return;
         }
@@ -80,7 +80,7 @@ class ResourceCamelCase extends ResourceRule {
                 pathName: file,
                 highlight: `<e0>${target}</e0>`
             });
-            result.fix = this.getFix(resource, source);
+            result.fix = this.getFix(resource, source, index, category);
             
             return result;
         }
@@ -92,13 +92,15 @@ class ResourceCamelCase extends ResourceRule {
      * @param {string} source The source string that should be used in the target
      * @returns {import('../plugins/resource/ResourceFix.js').default} The fix for ResourceCamelCase rule
      */
-    getFix(resource, source) {
+    getFix(resource, source, index, category) {
         const command = ResourceFixer.createStringCommand(0, resource.getTarget().length, source);
         
         return ResourceFixer.createFix({
             resource,
             target: true,
-            commands: [command]
+            commands: [command],
+            category,
+            index
         });
     }
 

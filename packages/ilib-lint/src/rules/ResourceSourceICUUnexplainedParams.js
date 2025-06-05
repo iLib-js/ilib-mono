@@ -62,7 +62,7 @@ export class ResourceSourceICUUnexplainedParams extends ResourceRule {
      * @returns {Result[] | undefined}
      * @override
      */
-    matchString({ source, resource, file }) {
+    matchString({ source, resource, file, index, category }) {
         if (!source) return; // no source, no checks needed
 
         const sourceLocale = new Locale(

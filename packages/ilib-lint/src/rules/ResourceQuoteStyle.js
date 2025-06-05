@@ -128,8 +128,10 @@ class ResourceQuoteStyle extends ResourceRule {
      * @param {Resource} resource
      * @param {string} file
      * @param {string} locale
+     * @param {number} index
+     * @param {string} category
      */
-    checkString(src, tar, resource, file, locale) {
+    checkString(src, tar, resource, file, locale, index, category) {
         const regExps = this.getRegExps(locale);
 
         const sourceStyle = {
@@ -227,7 +229,7 @@ class ResourceQuoteStyle extends ResourceRule {
                 ));
             }
             if (commands.length > 0) {
-                fix = ResourceFixer.createFix({ resource, commands });
+                fix = ResourceFixer.createFix({ resource, commands, index, category });
             }
         } else {
             // no auto-fix possible, so just highlight the problem
@@ -371,11 +373,11 @@ class ResourceQuoteStyle extends ResourceRule {
      * @param {Resource} params.resource
      * @param {string} params.file
      */
-    matchString({source, target, resource, file}) {
+    matchString({source, target, resource, file, index, category}) {
         if (!source || !target) return; // cannot match in strings that don't exist!
         const locale = resource.getTargetLocale();
         if (!locale) return; // nothing to do if there is no target locale specified
-        return this.checkString(source, target, resource, file, locale);
+        return this.checkString(source, target, resource, file, locale, index, category);
     }
 }
 
