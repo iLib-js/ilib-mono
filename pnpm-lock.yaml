@@ -947,6 +947,24 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
 
+  packages/ilib-lint/samples/lint:
+    devDependencies:
+      ilib-lint:
+        specifier: workspace:^
+        version: link:../..
+      ilib-lint-common:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-common
+      ilib-lint-python:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-python
+      ilib-lint-python-gnu:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-python-gnu
+      ilib-lint-react:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-react
+
   packages/ilib-loader:
     dependencies:
       '@log4js-node/log4js-api':
@@ -1257,6 +1275,18 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-loctool-android-layout/samples/android:
+    devDependencies:
+      ilib-loctool-android-layout:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-android-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-android-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-android-resource:
     dependencies:
       ilib:
@@ -1275,6 +1305,18 @@ importers:
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-android-resource/samples/android:
+    devDependencies:
+      ilib-loctool-android-layout:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-android-layout
+      ilib-loctool-android-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-csv:
     dependencies:
@@ -1408,6 +1450,15 @@ importers:
         specifier: ^0.11.3
         version: 0.11.3
 
+  packages/ilib-loctool-ghfm/samples/markdown:
+    devDependencies:
+      ilib-loctool-ghfm:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-haml:
     dependencies:
       ilib:
@@ -1497,6 +1548,69 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-loctool-javascript-resource/samples/js:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript-resource/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-regex
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/js:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/js-json:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-json
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/php-resource:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-json:
     dependencies:
       ilib:
@@ -1515,6 +1629,27 @@ importers:
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-json/samples/js-json:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-json/samples/json:
+    devDependencies:
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-jst:
     dependencies:
@@ -1576,6 +1711,15 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-loctool-mrkdwn/samples/slack:
+    devDependencies:
+      ilib-loctool-mrkdwn:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-objectivec:
     dependencies:
       ilib:
@@ -1605,6 +1749,33 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-loctool-php-resource/samples/php-resource:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-php-resource/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-regex
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-po:
     dependencies:
       ilib-locale:
@@ -1626,6 +1797,15 @@ importers:
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-po/samples/po:
+    devDependencies:
+      ilib-loctool-po:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-properties:
     dependencies:
@@ -1665,6 +1845,21 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-loctool-regex/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-ruby-ilib:
     dependencies:
       ilib:
@@ -1699,6 +1894,15 @@ importers:
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-salesforce-metaxml/samples/salesforce:
+    devDependencies:
+      ilib-loctool-salesforce-metaxml:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-strings:
     dependencies:
@@ -1748,6 +1952,15 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-loctool-tap-i18n/samples/tap-i18n:
+    devDependencies:
+      ilib-loctool-tap-i18n:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-xml:
     dependencies:
       ilib:
@@ -1766,6 +1979,15 @@ importers:
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-xml/samples/xml:
+    devDependencies:
+      ilib-loctool-xml:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-yaml:
     dependencies:
