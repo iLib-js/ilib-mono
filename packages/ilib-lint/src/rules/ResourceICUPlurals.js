@@ -243,7 +243,7 @@ class ResourceICUPlurals extends ResourceRule {
         return problems;
     }
 
-    matchString({source, target, file, resource}) {
+    matchString({source, target, file, resource, index, category}) {
         if (!target) return; // can't check "nothing" !
 
         const sLoc = new Locale(resource.getSourceLocale());

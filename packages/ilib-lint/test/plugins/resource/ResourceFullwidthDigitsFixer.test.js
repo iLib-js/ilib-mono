@@ -156,4 +156,4 @@ function getFixesForArrayResource(resource) {
             return null;
         }).filter(fix => fix !== null);
     });
-} 
+}

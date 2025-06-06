@@ -45,7 +45,7 @@ class ResourceCompleteness extends ResourceRule {
      * @param {string} params.file the file where the resource came from
      * @returns {Array.<Result>|undefined} the results
      */
-    matchString({ source, target, resource, file }) {
+    matchString({ source, target, resource, file, index, category }) {
         // note: language specifiers for comparison - "en-US" should match "en-GB" (same language, only different region)
         const sourceLangSpec = new Locale(resource.sourceLocale).getLangSpec();
         const targetLangSpec = new Locale(resource.targetLocale).getLangSpec();

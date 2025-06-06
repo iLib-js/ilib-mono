@@ -45,7 +45,7 @@ class ResourceNoTranslation extends ResourceRule {
     /**
      * @override
      */
-    matchString({source, target, file, resource}) {
+    matchString({source, target, file, resource, index, category}) {
         const sourceLocale = new Locale(resource.getSourceLocale());
         const targetLocale = new Locale(resource.getTargetLocale());
         const sourceWords = source.split(/\s+/g).length; // does not work for Asian languages
