@@ -213,7 +213,7 @@ class ResourceICUPluralTranslation extends ResourceRule {
      * Check a string in a resource for missing translations of plurals or selects.
      * @override
      */
-    matchString({source, target, file, resource, index, category}) {
+    matchString({source, target, file, resource}) {
         const sLoc = new Locale(resource.getSourceLocale());
         const tLoc = new Locale(resource.getTargetLocale());
 
