@@ -1,5 +1,40 @@
 # ilib-lint
 
+## 2.14.0
+
+### Minor Changes
+
+- e05d249: - Added auto-fixes for various rules:
+  - resource-no-halfwidth-kana-characters
+    - map the halfwidth kana to fullwidth kana
+    - added test to verify that the fix works
+  - resource-no-double-byte-space
+    - map most types of space to an ASCII space
+    - map the line break character to an ASCII \n
+    - map the paragraph break character to ASCII \n\n
+    - add tests to verify that all
+  - resource-no-space-with-fullwidth-punctuation
+    - remove the space before or after the fullwidth punctuation characters
+    - modify the current tests to test both before and after. (Previously it was only before.)
+    - add tests to verify all that
+- 9c03b14: - Added new rules:
+  - resource-csharp-numbered-params - match source and target C# style of params `{0}` or `{1:D}`
+  - resource-angular-named-params - match source and target for Angular/Vue style of params `{{ param }}`
+  - Added new rulesets:
+    - angular - for strings from JS/Angular stacks
+    - vue - for strings from JS/Vue stacks
+    - csharp - for strings from C#
+- 8281e0f: - Implement fix for quote style rule
+  - only fixes quotes which exist in the target but are not the right
+    ones for the target locale. It cannot fix missing quotes because
+    it doesn't know where to put them.
+  - quote chars can be separated from the text by a non-breaking space
+    (French)
+  - can deal with Japanese properly too. ie. Only primary quotes, no
+    secondary, but also [square brackets] are accepted as quotes.
+  - Added fix for a declarative rule resource-no-space-between-double-and-single-byte-character
+    - the extra spaces are removed
+
 ## 2.13.0
 
 ### Minor Changes
