@@ -82,7 +82,7 @@ describe("resource-no-fullwidth-digits rule", () => {
         expect(result.severity).toBe("error");
         expect(result.id).toBe("matcher.test");
         expect(result.description).toBe("The full-width characters '１２３４５' are not allowed in the target string. Use ASCII digits instead.");
-        expect(result.highlight).toBe("Target: Box<e0>１２３４５</e0>");
+        expect(result.highlight).toBe("Target[0]: Box<e0>１２３４５</e0>");
         expect(result.source).toBe('Box12345');
         expect(result.pathName).toBe("a/b/c.xliff");
     });
@@ -115,7 +115,7 @@ describe("resource-no-fullwidth-digits rule", () => {
         expect(result.severity).toBe("error");
         expect(result.id).toBe("matcher.test");
         expect(result.description).toBe("The full-width characters '１２３４５' are not allowed in the target string. Use ASCII digits instead.");
-        expect(result.highlight).toBe("Target: Box<e0>１２３４５</e0>");
+        expect(result.highlight).toBe("Target(other): Box<e0>１２３４５</e0>");
         expect(result.source).toBe('Box12345');
         expect(result.pathName).toBe("a/b/c.xliff");
     });
