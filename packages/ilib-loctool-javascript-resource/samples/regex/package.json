@@ -6,5 +6,8 @@
     "ilib-loctool-php-resource": "workspace:^",
     "ilib-loctool-regex": "workspace:^",
     "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
   }
 }

@@ -4,5 +4,8 @@
   "devDependencies": {
     "ilib-loctool-json": "workspace:^",
     "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
   }
 }

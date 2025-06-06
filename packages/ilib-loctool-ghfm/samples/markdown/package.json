@@ -4,5 +4,8 @@
   "devDependencies": {
     "ilib-loctool-ghfm": "workspace:^",
     "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
   }
 }
