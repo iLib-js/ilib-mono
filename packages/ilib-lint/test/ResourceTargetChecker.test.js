@@ -88,7 +88,8 @@ describe("testResourceTargetChecker", () => {
             source: resource.getSource()[0],
             target: resource.getTarget()[0],
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            index: 0
         });
         expect(actual).toBeTruthy();
         expect(actual.length).toBe(1);
@@ -124,7 +125,8 @@ describe("testResourceTargetChecker", () => {
             source: resource.getSource().other,
             target: resource.getTarget().other,
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            category: "other"
         });
         expect(actual).toBeTruthy();
         expect(actual.length).toBe(1);
