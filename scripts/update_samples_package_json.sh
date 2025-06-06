@@ -31,7 +31,10 @@ for sample in packages/*/samples/*; do
         {
             "private": true,
             "description": $description,
-            "devDependencies": $allDeps
+            "devDependencies": $allDeps,
+            "scripts": {
+                "run:sample": "node node_modules/loctool/loctool.js localize ."
+            }
         }
         ' \
         > "$sample/package.json"
