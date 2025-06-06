@@ -73,7 +73,8 @@ describe("resource-no-fullwidth-digits rule", () => {
             source: resource.getSource()[0],
             target: resource.getTarget()[0],
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            index: 0
         });
         const result = results[0];
 
@@ -105,7 +106,8 @@ describe("resource-no-fullwidth-digits rule", () => {
             source: resource.getSource().other,
             target: resource.getTarget().other,
             resource,
-            file: "a/b/c.xliff"
+            file: "a/b/c.xliff",
+            category: "other"
         });
         const result = results[0];
 
