@@ -4,5 +4,8 @@
   "devDependencies": {
     "ilib-loctool-salesforce-metaxml": "workspace:^",
     "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
   }
 }

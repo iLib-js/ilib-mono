@@ -7,5 +7,8 @@
     "ilib-lint-python": "workspace:^",
     "ilib-lint-python-gnu": "workspace:^",
     "ilib-lint-react": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "ilib-lint . || echo \"ilib-lint finished with code $?\""
   }
 }
