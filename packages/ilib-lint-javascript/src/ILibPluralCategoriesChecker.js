@@ -157,12 +157,14 @@ class ILibPluralCategoriesChecker extends Rule {
             return !allSourceCategories.has(category);
         });
         if (extra.length) {
+            let highlightIndex = 0;
             const highlight = Object.keys(target).map(key => {
                 let choice = `${key}#${target[key]}`;
                 if (extra.includes(key)) {
                     // if the target has a extra category that is not in the source,
                     // then we need to highlight it in the target string
-                    choice = `<e0>${choice}</e0>`;
+                    choice = `<e${highlightIndex}>${choice}</e${highlightIndex}>`;
+                    highlightIndex++;
                 }
                 return choice;
             }).join("|");

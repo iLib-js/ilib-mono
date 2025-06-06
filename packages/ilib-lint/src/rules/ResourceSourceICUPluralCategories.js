@@ -87,7 +87,7 @@ export class ResourceSourceICUPluralCategories extends ResourceRule {
      * @param {string} params.file
      * @returns {Result[]}
      */
-    matchString({ source: maybeSource, resource, file, index, category }) {
+    matchString({ source: maybeSource, resource, file }) {
         const source = maybeSource ?? "";
         const sourceLocale = new Locale(resource.getSourceLocale() ?? this.sourceLocale).getSpec();
 
