@@ -259,6 +259,22 @@ export const regexRules = [
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-manual-date-formatting.md",
         severity: "error"
     },
+    {
+        type: "resource-matcher",
+        name: "resource-angular-named-params",
+        description: "Ensure that named parameters in Angular that appear in the source string are also used in the translated string",
+        note: "The named parameter '{{{matchString}}}' from the source string does not appear in the target string",
+        regexps: [ "\\{\\{\\s*(?<match>[^}]+?)\\s*\\}\\}" ],
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-angular-named-params.md"
+    },
+    {
+        type: "resource-matcher",
+        name: "resource-csharp-numbered-params",
+        description: "Ensure that numbered parameters in C# that appear in the source string are also used in the translated string",
+        note: "The numbered parameter '{{matchString}}' from the source string does not appear in the target string",
+        regexps: [ "\\{\\s*(?<match>\\d[^}]*?)\\s*\\}" ],
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-csharp-numbered-params.md"
+    }
 ];
 
 // built-in ruleset that contains all the built-in rules
@@ -303,6 +319,15 @@ export const builtInRulesets = {
         "source-icu-plural-params": true,
         "source-icu-unexplained-params": true
     },
+    "angular": {
+        "resource-angular-named-params": true
+    },
+    "vue": {
+        "resource-angular-named-params": true
+    },
+    "csharp": {
+        "resource-csharp-numbered-params": true
+    }
 };
 
 /**

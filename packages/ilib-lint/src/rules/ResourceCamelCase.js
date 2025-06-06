@@ -1,3 +1,23 @@
+/*
+ * ResourceCamelCase.js - Check that camel cased strings in the source
+ * are not translated in the target.
+ *
+ * Copyright © 2024-2025 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import ResourceRule from './ResourceRule.js';
 import {Result} from 'ilib-lint-common';
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
@@ -34,7 +54,7 @@ class ResourceCamelCase extends ResourceRule {
      * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}} params
      * @returns {Result|undefined} A Result with severity 'error' if the source string is in camel case and target string is not the same as the source string, otherwise undefined.
      */
-    matchString({source, target, file, resource}) {
+    matchString({source, target, file, resource, index, category}) {
         if (!source || !target) {
             return;
         }
@@ -60,7 +80,7 @@ class ResourceCamelCase extends ResourceRule {
                 pathName: file,
                 highlight: `<e0>${target}</e0>`
             });
-            result.fix = this.getFix(resource, source);
+            result.fix = this.getFix(resource, source, index, category);
             
             return result;
         }
@@ -72,13 +92,15 @@ class ResourceCamelCase extends ResourceRule {
      * @param {string} source The source string that should be used in the target
      * @returns {import('../plugins/resource/ResourceFix.js').default} The fix for ResourceCamelCase rule
      */
-    getFix(resource, source) {
+    getFix(resource, source, index, category) {
         const command = ResourceFixer.createStringCommand(0, resource.getTarget().length, source);
         
         return ResourceFixer.createFix({
             resource,
             target: true,
-            commands: [command]
+            commands: [command],
+            category,
+            index
         });
     }
 

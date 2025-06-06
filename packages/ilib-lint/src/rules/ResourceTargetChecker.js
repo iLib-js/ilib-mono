@@ -50,7 +50,7 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
     /**
      * @override
      */
-    checkString({re, source, target, file, resource}) {
+    checkString({re, source, target, file, resource, index, category}) {
         re.lastIndex = 0;
         let matches = [];
         const strippedTar = this.useStripped ? stripPlurals(target) : target;
@@ -103,7 +103,9 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 if (commands.length > 0) {
                     fix = ResourceFixer.createFix({
                         resource,
-                        commands
+                        commands,
+                        category,
+                        index
                     });
                 }
             }
