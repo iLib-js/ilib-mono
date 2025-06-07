@@ -1,5 +1,13 @@
 # ilib-env
 
+## 1.4.2
+
+### Patch Changes
+
+- 4e11892: - Fixed ilib-env to get the right top scope when the platform
+  is set to "mock" for testing. It will guess the top scope
+  of the actual platform by trying things in the right order.
+
 ## 1.4.1
 
 ### Patch Changes
