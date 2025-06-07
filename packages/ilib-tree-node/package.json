@@ -41,6 +41,7 @@
     },
     "scripts": {
         "build": "grunt babel",
+        "coverage": "pnpm test:cli --coverage",
         "test": "npm-run-all --npm-path pnpm build test:cli",
         "test:cli": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js  --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
