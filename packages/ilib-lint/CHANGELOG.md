@@ -1,5 +1,55 @@
 # ilib-lint
 
+## 2.14.0
+
+### Minor Changes
+
+- e05d249: - Added auto-fixes for various rules:
+  - resource-no-halfwidth-kana-characters
+    - map the halfwidth kana to fullwidth kana
+    - added test to verify that the fix works
+  - resource-no-double-byte-space
+    - map most types of space to an ASCII space
+    - map the line break character to an ASCII \n
+    - map the paragraph break character to ASCII \n\n
+    - add tests to verify that all
+  - resource-no-space-with-fullwidth-punctuation
+    - remove the space before or after the fullwidth punctuation characters
+    - modify the current tests to test both before and after. (Previously it was only before.)
+    - add tests to verify all that
+- 9c03b14: - Added new rules:
+  - resource-csharp-numbered-params - match source and target C# style of params `{0}` or `{1:D}`
+  - resource-angular-named-params - match source and target for Angular/Vue style of params `{{ param }}`
+  - Added new rulesets:
+    - angular - for strings from JS/Angular stacks
+    - vue - for strings from JS/Vue stacks
+    - csharp - for strings from C#
+- 8281e0f: - Implement fix for quote style rule
+  - only fixes quotes which exist in the target but are not the right
+    ones for the target locale. It cannot fix missing quotes because
+    it doesn't know where to put them.
+  - quote chars can be separated from the text by a non-breaking space
+    (French)
+  - can deal with Japanese properly too. ie. Only primary quotes, no
+    secondary, but also [square brackets] are accepted as quotes.
+  - Added fix for a declarative rule resource-no-space-between-double-and-single-byte-character
+    - the extra spaces are removed
+
+## 2.13.0
+
+### Minor Changes
+
+- 8b80b36: Added auto-fix functionality for the resource-no-fullwidth-punctuation-subset rule. The fixer automatically converts specific fullwidth punctuation marks (？！％) to their ASCII equivalents (?!%) in resource strings.
+- bb08093: Added auto-fix functionality for the resource-no-fullwidth-digits rule. The fixer automatically converts fullwidth digits (１２３４５) to their ASCII equivalents (12345) in resource strings.
+
+  Added auto-fix functionality for the resource-no-fullwidth-latin rule. The fixer automatically converts fullwidth Latin characters (ＡＢＣ) to their ASCII equivalents (ABC) in resource strings.
+
+  Added auto-fix functionality for the resource-camel-case rule. The fixer automatically converts target strings to match source strings that contain only camel case (e.g., "myVariable", "someFunction").
+
+  Added auto-fix functionality for the resource-snake-case rule. The fixer automatically converts target strings to match source strings that contain only snake case (e.g., "my_variable", "some_function").
+
+  Added the kebab case match rule with auto-fix functionality. If source strings contain only kebab case and no whitespace (e.g., "my-variable", "some-function"), then the targets must be the same. It is treated as Do Not Translate. If the target is different from the source, it is an error. The fixer automatically converts target strings to match source strings.
+
 ## 2.12.0
 
 ### Minor Changes

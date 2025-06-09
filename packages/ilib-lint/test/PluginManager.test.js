@@ -358,15 +358,14 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
     });
 
     test("PluginManagerGetBuiltInRuleSets", () => {
-        expect.assertions(10);
+        expect.assertions(14);
 
         const plgmgr = new PluginManager();
         expect(plgmgr).toBeTruthy();
         const rm = plgmgr.getRuleManager();
         expect(rm).toBeTruthy();
-        const size = rm.sizeRuleSetDefinitions();
 
-        expect(rm.sizeRuleSetDefinitions()).toBe(2);
+        expect(rm.sizeRuleSetDefinitions()).toBe(5);
 
         const genericRuleset = rm.getRuleSetDefinition("generic");
         expect(genericRuleset).toBeTruthy();
@@ -378,6 +377,14 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
         const sourceRuleset = rm.getRuleSetDefinition("source");
         expect(sourceRuleset).toBeTruthy();
         expect(typeof(sourceRuleset["resource-source-icu-plural-syntax"])).toBe('boolean');
+
+        const angularRuleset = rm.getRuleSetDefinition("angular");
+        expect(angularRuleset).toBeTruthy();
+        expect(typeof(angularRuleset["resource-angular-named-params"])).toBe('boolean');
+
+        const csharpRuleset = rm.getRuleSetDefinition("csharp");
+        expect(csharpRuleset).toBeTruthy();
+        expect(typeof(csharpRuleset["resource-csharp-numbered-params"])).toBe('boolean');
     });
 
     test("PluginManagerGetLoadPluginRightFixer", () => {

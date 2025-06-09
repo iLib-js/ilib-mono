@@ -1781,18 +1781,62 @@ describe("project", function() {
         expect(project.getLocaleInherit("ko-KR")).toBeUndefined();
         expect(project.getLocaleInherit()).toBeUndefined();
     });
+
     test("GetProjectType", function() {
         expect.assertions(1);
         var project = ProjectFactory('./test/testfiles', {});
         expect(project.getProjectType()).toBe("web");
     });
+
     test("GetProjectTypeCustom", function() {
         expect.assertions(1);
-        var settings = {
+        var options = {
             rootDir: ".",
             projectType: "custom"
-        }
-        var project = ProjectFactory.newProject(settings);
+        };
+        var project = ProjectFactory.newProject(options);
         expect(project.getProjectType()).toBe("custom");
+    });
+
+    test("Project creation supports translationsDir option", function() {
+        expect.assertions(1);
+        var options = {
+            rootDir: "./test/testfiles/project2",
+            projectType: "custom",
+            translationsDir: "res"
+        };
+        var project = ProjectFactory.newProject(options);
+        expect(project.translationsDir).toStrictEqual(["test/testfiles/project2/res"]);
+    });
+
+    test("Project creation still supports the deprecated xliffsDir option", function() {
+        expect.assertions(1);
+        var options = {
+            rootDir: "./test/testfiles/project2",
+            projectType: "custom",
+            xliffsDir: "res"
+        };
+        var project = ProjectFactory.newProject(options);
+        expect(project.translationsDir).toStrictEqual(["test/testfiles/project2/res"]);
+    });
+
+    test("Project creation supports translationsDir using the settings", function() {
+        expect.assertions(1);
+        var settings = {
+            projectType: "custom",
+            translationsDir: "xliffs"
+        }
+        var project = ProjectFactory('./test/testfiles', settings);
+        expect(project.translationsDir).toStrictEqual(["test/testfiles/xliffs"]);
+    });
+
+    test("Project creation still supports the deprecated xliffsDir using the settings", function() {
+        expect.assertions(1);
+        var settings = {
+            projectType: "custom",
+            xliffsDir: "xliffs"
+        }
+        var project = ProjectFactory('./test/testfiles', settings);
+        expect(project.translationsDir).toStrictEqual(["test/testfiles/xliffs"]);
     });
 });

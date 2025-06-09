@@ -72,7 +72,37 @@ export const regexRules = [
         description: "Ensure that the target does not contain any full-width Latin characters.",
         note: "The full-width characters '{matchString}' are not allowed in the target string. Use ASCII letters instead.",
         regexps: [ "[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+" ],
-        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-latin.md"
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-fullwidth-latin.md",
+        fixes: [
+            // Uppercase A-Z
+            { search: "\\uFF21", replace: "A" }, { search: "\\uFF22", replace: "B" },
+            { search: "\\uFF23", replace: "C" }, { search: "\\uFF24", replace: "D" },
+            { search: "\\uFF25", replace: "E" }, { search: "\\uFF26", replace: "F" },
+            { search: "\\uFF27", replace: "G" }, { search: "\\uFF28", replace: "H" },
+            { search: "\\uFF29", replace: "I" }, { search: "\\uFF2A", replace: "J" },
+            { search: "\\uFF2B", replace: "K" }, { search: "\\uFF2C", replace: "L" },
+            { search: "\\uFF2D", replace: "M" }, { search: "\\uFF2E", replace: "N" },
+            { search: "\\uFF2F", replace: "O" }, { search: "\\uFF30", replace: "P" },
+            { search: "\\uFF31", replace: "Q" }, { search: "\\uFF32", replace: "R" },
+            { search: "\\uFF33", replace: "S" }, { search: "\\uFF34", replace: "T" },
+            { search: "\\uFF35", replace: "U" }, { search: "\\uFF36", replace: "V" },
+            { search: "\\uFF37", replace: "W" }, { search: "\\uFF38", replace: "X" },
+            { search: "\\uFF39", replace: "Y" }, { search: "\\uFF3A", replace: "Z" },
+            // Lowercase a-z
+            { search: "\\uFF41", replace: "a" }, { search: "\\uFF42", replace: "b" },
+            { search: "\\uFF43", replace: "c" }, { search: "\\uFF44", replace: "d" },
+            { search: "\\uFF45", replace: "e" }, { search: "\\uFF46", replace: "f" },
+            { search: "\\uFF47", replace: "g" }, { search: "\\uFF48", replace: "h" },
+            { search: "\\uFF49", replace: "i" }, { search: "\\uFF4A", replace: "j" },
+            { search: "\\uFF4B", replace: "k" }, { search: "\\uFF4C", replace: "l" },
+            { search: "\\uFF4D", replace: "m" }, { search: "\\uFF4E", replace: "n" },
+            { search: "\\uFF4F", replace: "o" }, { search: "\\uFF50", replace: "p" },
+            { search: "\\uFF51", replace: "q" }, { search: "\\uFF52", replace: "r" },
+            { search: "\\uFF53", replace: "s" }, { search: "\\uFF54", replace: "t" },
+            { search: "\\uFF55", replace: "u" }, { search: "\\uFF56", replace: "v" },
+            { search: "\\uFF57", replace: "w" }, { search: "\\uFF58", replace: "x" },
+            { search: "\\uFF59", replace: "y" }, { search: "\\uFF5A", replace: "z" }
+        ]
     },
     {
         type: "resource-target",
@@ -116,7 +146,11 @@ export const regexRules = [
         regexps: [ "[\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF]\\s+[\\x00-\\x20\\x30-\\x39\\x41-\\x5A\\x61-\\x7A\\x8A\\x8C\\x8E\\x9A\\x9C\\x9E\\x9F\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\xFF]|[\\x00-\\x20\\x30-\\x39\\x41-\\x5A\\x61-\\x7A\\x8A\\x8C\\x8E\\x9A\\x9C\\x9E\\x9F\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\xFF]\\s+[\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF]" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-space-between-double-and-single-byte-character.md",
         severity: "warning",
-        locales: "ja"
+        locales: "ja",
+        fixes: [
+            { search: "([\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF])\\s+", replace: "$1" },
+            { search: "\\s+([\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF])", replace: "$1" }
+        ]
     },
     {
         type: "resource-target",
@@ -125,7 +159,62 @@ export const regexRules = [
         note: "The half-width kana characters are not allowed in the target string. Use full-width characters.",
         regexps: [ "[ｧ-ﾝﾞﾟ]+" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-halfwidth-kana-characters.md",
-        severity: "warning"
+        severity: "warning",
+        fixes: [
+            { search: "ｧ", replace: "ァ" },
+            { search: "ｨ", replace: "ィ" },
+            { search: "ｩ", replace: "ゥ" },
+            { search: "ｪ", replace: "ェ" },
+            { search: "ｫ", replace: "ォ" },
+            { search: "ｬ", replace: "ャ" },
+            { search: "ｭ", replace: "ュ" },
+            { search: "ｮ", replace: "ョ" },
+            { search: "ｯ", replace: "ッ" },
+            { search: "ｰ", replace: "ー" },
+            { search: "ｱ", replace: "ア" },
+            { search: "ｲ", replace: "イ" },
+            { search: "ｳ", replace: "ウ" },
+            { search: "ｴ", replace: "エ" },
+            { search: "ｵ", replace: "オ" },
+            { search: "ｶ", replace: "カ" },
+            { search: "ｷ", replace: "キ" },
+            { search: "ｸ", replace: "ク" },
+            { search: "ｹ", replace: "ケ" },
+            { search: "ｺ", replace: "コ" },
+            { search: "ｻ", replace: "サ" },
+            { search: "ｼ", replace: "シ" },
+            { search: "ｽ", replace: "ス" },
+            { search: "ｾ", replace: "セ" },
+            { search: "ｿ", replace: "ソ" },
+            { search: "ﾀ", replace: "タ" },
+            { search: "ﾁ", replace: "チ" },
+            { search: "ﾂ", replace: "ツ" },
+            { search: "ﾃ", replace: "テ" },
+            { search: "ﾄ", replace: "ト" },
+            { search: "ﾅ", replace: "ナ" },
+            { search: "ﾆ", replace: "ニ" },
+            { search: "ﾇ", replace: "ヌ" },
+            { search: "ﾈ", replace: "ネ" },
+            { search: "ﾉ", replace: "ノ" },
+            { search: "ﾊ", replace: "ハ" },
+            { search: "ﾋ", replace: "ヒ" },
+            { search: "ﾌ", replace: "フ" },
+            { search: "ﾍ", replace: "ヘ" },
+            { search: "ﾎ", replace: "ホ" },
+            { search: "ﾏ", replace: "マ" },
+            { search: "ﾐ", replace: "ミ" },
+            { search: "ﾑ", replace: "ム" },
+            { search: "ﾒ", replace: "メ" },
+            { search: "ﾓ", replace: "モ" },
+            { search: "ﾗ", replace: "ラ" },
+            { search: "ﾘ", replace: "リ" },
+            { search: "ﾙ", replace: "ル" },
+            { search: "ﾚ", replace: "レ" },
+            { search: "ﾛ", replace: "ロ" },
+            { search: "ﾜ", replace: "ワ" },
+            { search: "ｦ", replace: "ヲ" },
+            { search: "ﾝ", replace: "ン" }
+        ]
     },
     {
         type: "resource-target",
@@ -136,7 +225,12 @@ export const regexRules = [
         regexps: [ "[\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000]+" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-double-byte-space.md",
         severity: "warning",
-        locales: "ja"
+        locales: "ja",
+        fixes: [
+            { search: "[\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000]", replace: " " },
+            { search: "[\\u2028]", replace: "\n" },   // U+2028 is LINE SEPARATOR
+            { search: "[\\u2029]", replace: "\n\n" }, // U+2029 is PARAGRAPH SEPARATOR
+        ]
     },
     {
         type: "resource-target",
@@ -146,7 +240,11 @@ export const regexRules = [
         regexps: [ "(\\s+[\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B]|[\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B]\\s+)" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-space-with-fullwidth-punctuation.md",
         severity: "warning",
-        locales: "ja"
+        locales: "ja",
+        fixes: [
+            { search: "\\s+([\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B])", replace: "$1" },
+            { search: "([\\u3001\\u3002\\u3008-\\u3011\\u3014-\\u301B])\\s+", replace: "$1" }
+        ]
     },
     {
         type: "resource-source",
@@ -255,6 +353,22 @@ export const regexRules = [
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/source-no-manual-date-formatting.md",
         severity: "error"
     },
+    {
+        type: "resource-matcher",
+        name: "resource-angular-named-params",
+        description: "Ensure that named parameters in Angular that appear in the source string are also used in the translated string",
+        note: "The named parameter '{{{matchString}}}' from the source string does not appear in the target string",
+        regexps: [ "\\{\\{\\s*(?<match>[^}]+?)\\s*\\}\\}" ],
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-angular-named-params.md"
+    },
+    {
+        type: "resource-matcher",
+        name: "resource-csharp-numbered-params",
+        description: "Ensure that numbered parameters in C# that appear in the source string are also used in the translated string",
+        note: "The numbered parameter '{{matchString}}' from the source string does not appear in the target string",
+        regexps: [ "\\{\\s*(?<match>\\d[^}]*?)\\s*\\}" ],
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-csharp-numbered-params.md"
+    }
 ];
 
 // built-in ruleset that contains all the built-in rules
@@ -299,6 +413,15 @@ export const builtInRulesets = {
         "source-icu-plural-params": true,
         "source-icu-unexplained-params": true
     },
+    "angular": {
+        "resource-angular-named-params": true
+    },
+    "vue": {
+        "resource-angular-named-params": true
+    },
+    "csharp": {
+        "resource-csharp-numbered-params": true
+    }
 };
 
 /**

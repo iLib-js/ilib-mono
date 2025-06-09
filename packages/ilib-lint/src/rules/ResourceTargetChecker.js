@@ -50,7 +50,7 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
     /**
      * @override
      */
-    checkString({re, source, target, file, resource}) {
+    checkString({re, source, target, file, resource, index, category}) {
         re.lastIndex = 0;
         let matches = [];
         const strippedTar = this.useStripped ? stripPlurals(target) : target;
@@ -86,34 +86,42 @@ class ResourceTargetChecker extends DeclarativeResourceRule {
                 // so we need to convert the search/replace pairs into commands
                 this.fixDefinitions.forEach(fixDefinition => {
                     const regex = new RegExp(fixDefinition.search, fixDefinition.flags);
-                    const match = regex.exec(text);
-                    if (!match) return;
+                    let match = regex.exec(text);
+                    while (match) {
+                        const original = match[0];
+                        const start = startIndex+match.index;
+                        const len = original.length;
+                        const replacementText = original.replace(new RegExp(fixDefinition.search, fixDefinition.flags), fixDefinition.replace || '');
 
-                    const original = match[0];
-                    const start = startIndex+match.index;
-                    const len = original.length;
-                    const replacementText = original.replace(new RegExp(fixDefinition.search, fixDefinition.flags), fixDefinition.replace || '');
+                        commands.push(ResourceFixer.createStringCommand(
+                            start,
+                            len,
+                            replacementText
+                        ));
 
-                    commands.push(ResourceFixer.createStringCommand(
-                        start,
-                        len,
-                        replacementText
-                    ));
+                        // continue to find all matches in the text
+                        match = regex.exec(text);
+                    }
                 });
                 if (commands.length > 0) {
                     fix = ResourceFixer.createFix({
                         resource,
-                        commands
+                        commands,
+                        category,
+                        index
                     });
                 }
             }
+            const highlight = "Target" + (resource.getType() === 'array' ? `[${index}]` :
+                (resource.getType() === 'plural' ? `(${category})`: "")) +
+                `: ${target.substring(0, startIndex)}<e0>${text}</e0>${target.substring(endIndex)}`;
             let value = {
                 severity: this.severity,
                 id: resource.getKey(),
                 source,
                 rule: this,
                 pathName: file,
-                highlight: `Target: ${target.substring(0, startIndex)}<e0>${text}</e0>${target.substring(endIndex)}`,
+                highlight,
                 description: this.note.replace(/\{matchString\}/g, text),
                 locale: resource.getTargetLocale()
             };

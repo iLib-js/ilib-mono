@@ -1,5 +1,16 @@
 # ilib-localedata
 
+## 1.5.3
+
+### Patch Changes
+
+- 4e11892: - re-enabled unit tests which weren't working properly
+  after the migration to ilib-mono
+- Updated dependencies [4e11892]
+- Updated dependencies [4e11892]
+  - ilib-env@1.4.2
+  - ilib-loader@1.3.6
+
 ## 1.5.2
 
 ### Patch Changes

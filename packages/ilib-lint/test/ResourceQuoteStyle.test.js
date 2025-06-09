@@ -2,7 +2,7 @@
  * ResourceQuoteStyle.test.js - test the rule that checks the quote style
  * of the translations
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 import { ResourceString } from 'ilib-tools-common';
+import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
 
 import ResourceQuoteStyle from "../src/rules/ResourceQuoteStyle.js";
-
-import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
+import ResourceFixer from "../src/plugins/resource/ResourceFixer.js";
 
 const sourceFile = new SourceFile("a/b/c.xliff", {});
 
@@ -94,7 +94,7 @@ describe("testResourceQuoteStyle", () => {
             file: "x"
         });
         // if the source contains native quotes, the target must too
-        const expected = new Result({
+        const expected = expect.objectContaining({
             severity: "warning",
             description: "Quote style for the locale de-DE should be „text“",
             id: "quote.test",
@@ -104,7 +104,53 @@ describe("testResourceQuoteStyle", () => {
             locale: "de-DE",
             pathName: "x"
         });
-        expect(actual).toStrictEqual(expected);
+        expect(actual).toEqual(expected);
+    });
+
+    test("ResourceQuoteStyleMatchSimpleNative -- apply fix", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains “quotes” in it.',
+            targetLocale: "de-DE",
+            target: "Diese Zeichenfolge enthält 'Anführungszeichen'.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "x"
+        });
+        // if the source contains native quotes, the target must too
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale de-DE should be „text“",
+            id: "quote.test",
+            source: 'This string contains “quotes” in it.',
+            highlight: 'Target: Diese Zeichenfolge enthält <e0>\'</e0>Anführungszeichen<e1>\'</e1>.',
+            rule,
+            locale: "de-DE",
+            pathName: "x"
+        });
+        expect(actual).toEqual(expected);
+        expect(actual.fix).toBeTruthy();
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual.fix]);
+
+        expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
 
     test("ResourceQuoteStyleMatchSimpleNativeLocaleOnlyOptions", () => {
@@ -130,7 +176,7 @@ describe("testResourceQuoteStyle", () => {
             file: "x"
         });
         // if the source contains native quotes, the target must too
-        const expected = new Result({
+        const expected = expect.objectContaining({
             severity: "error",
             description: "Quote style for the locale de-DE should be „text“",
             id: "quote.test",
@@ -140,7 +186,54 @@ describe("testResourceQuoteStyle", () => {
             locale: "de-DE",
             pathName: "x"
         });
-        expect(actual).toStrictEqual(expected);
+        expect(actual).toEqual(expected);
+    });
+
+    test("ResourceQuoteStyleMatchSimpleNativeLocaleOnlyOptions -- apply fixes", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle({
+            param: "localeOnly"
+        });
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains “quotes” in it.',
+            targetLocale: "de-DE",
+            target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "x"
+        });
+        // if the source contains native quotes, the target must too
+        const expected = expect.objectContaining({
+            severity: "error",
+            description: "Quote style for the locale de-DE should be „text“",
+            id: "quote.test",
+            source: 'This string contains “quotes” in it.',
+            highlight: 'Target: Diese Zeichenfolge enthält <e0>"</e0>Anführungszeichen<e1>"</e1>.',
+            rule,
+            locale: "de-DE",
+            pathName: "x"
+        });
+        expect(actual).toEqual(expected);
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual.fix]);
+
+        expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
 
     test("ResourceQuoteStyleMatchAsciiToNative", () => {
@@ -332,17 +425,62 @@ describe("testResourceQuoteStyle", () => {
             file: "a/b/c.xliff"
         });
         // if the source contains alternate quotes, the target should still have main quotes only
-        const expected = new Result({
+        const expected = expect.objectContaining({
             severity: "warning",
             description: "Quote style for the locale ja-JP should be 「text」",
             id: "quote.test",
             source: "Click on 'My Documents' to see more",
-            highlight: "Target: <e0>『</e0>マイドキュメント<e0>』</e0>をクリックすると詳細が表示されます",
+            highlight: "Target: <e0>『</e0>マイドキュメント<e1>』</e1>をクリックすると詳細が表示されます",
             rule,
             locale: "ja-JP",
             pathName: "a/b/c.xliff"
         });
-        expect(actual).toStrictEqual(expected);
+        expect(actual).toEqual(expected);
+    });
+
+    test("ResourceQuoteStyleMatchAltAsciiQuotesMismatch Japanese -- apply fixes", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "Click on 'My Documents' to see more",
+            targetLocale: "ja-JP",
+            target: "『マイドキュメント』をクリックすると詳細が表示されます",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // if the source contains alternate quotes, the target should still have main quotes only
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale ja-JP should be 「text」",
+            id: "quote.test",
+            source: "Click on 'My Documents' to see more",
+            highlight: "Target: <e0>『</e0>マイドキュメント<e1>』</e1>をクリックすると詳細が表示されます",
+            rule,
+            locale: "ja-JP",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual.fix]);
+
+        expect(resource.getTarget()).toBe("「マイドキュメント」をクリックすると詳細が表示されます");
     });
 
     test("ResourceQuoteStyleMatchAltAsciiQuotesMismatch Japanese with primary quotes", () => {
@@ -365,18 +503,62 @@ describe("testResourceQuoteStyle", () => {
             resource,
             file: "a/b/c.xliff"
         });
-        // if the source contains alternate quotes, the target should still have main quotes only
-        const expected = new Result({
+        // if the source contains regular quotes, the target should still have main quotes only
+        const expected = expect.objectContaining({
             severity: "warning",
             description: "Quote style for the locale ja-JP should be 「text」",
             id: "quote.test",
             source: 'Click on "My Documents" to see more',
-            highlight: "Target: <e0>『</e0>マイドキュメント<e0>』</e0>をクリックすると詳細が表示されます",
+            highlight: "Target: <e0>『</e0>マイドキュメント<e1>』</e1>をクリックすると詳細が表示されます",
             rule,
             locale: "ja-JP",
             pathName: "a/b/c.xliff"
         });
-        expect(actual).toStrictEqual(expected);
+        expect(actual).toEqual(expected);
+    });
+
+    test("ResourceQuoteStyleMatchAltAsciiQuotesMismatch Japanese with primary quotes -- apply fixes", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'Click on "My Documents" to see more',
+            targetLocale: "ja-JP",
+            target: "『マイドキュメント』をクリックすると詳細が表示されます",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // if the source contains regular quotes, the target should still have main quotes only
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale ja-JP should be 「text」",
+            id: "quote.test",
+            source: 'Click on "My Documents" to see more',
+            highlight: "Target: <e0>『</e0>マイドキュメント<e1>』</e1>をクリックすると詳細が表示されます",
+            rule,
+            locale: "ja-JP",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual.fix]);
+
+        expect(resource.getTarget()).toBe("「マイドキュメント」をクリックすると詳細が表示されます");
     });
 
     test("ResourceQuoteStyleMatchAsciiQuotes", () => {
@@ -423,7 +605,7 @@ describe("testResourceQuoteStyle", () => {
             file: "a/b/c.xliff"
         });
         // if the source contains ascii quotes, the target should match
-        const expected = new Result({
+        const expected = expect.objectContaining({
             severity: "warning",
             description: "Quote style for the locale de-DE should be „text“",
             id: "quote.test",
@@ -433,7 +615,52 @@ describe("testResourceQuoteStyle", () => {
             locale: "de-DE",
             pathName: "a/b/c.xliff"
         });
-        expect(actual).toStrictEqual(expected);
+        expect(actual).toEqual(expected);
+    });
+
+    test("ResourceQuoteStyleMatchAsciiQuotesMismatch -- apply fix", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "de-DE",
+            target: "Diese Zeichenfolge enthält 'Anführungszeichen'.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // if the source contains ascii quotes, the target should match
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale de-DE should be „text“",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: "Target: Diese Zeichenfolge enthält <e0>'</e0>Anführungszeichen<e1>'</e1>.",
+            rule,
+            locale: "de-DE",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual.fix]);
+
+        expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
 
     test("ResourceQuoteStyleMatchAsciiQuotesDutch", () => {
@@ -479,7 +706,7 @@ describe("testResourceQuoteStyle", () => {
             resource,
             file: "a/b"
         });
-        const expected = new Result({
+        const expected = expect.objectContaining({
             severity: "warning",
             description: "Quote style for the locale de-DE should be ‚text‘",
             id: "quote.test",
@@ -489,8 +716,51 @@ describe("testResourceQuoteStyle", () => {
             locale: "de-DE",
             pathName: "a/b"
         });
+        expect(actual).toEqual(expected);
+    });
 
-        expect(actual).toStrictEqual(expected);
+    test("ResourceQuoteStyleMatchAlternate -- apply fixes", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains ‘quotes’ in it.',
+            targetLocale: "de-DE",
+            target: "Diese Zeichenfolge enthält 'Anführungszeichen'.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b"
+        });
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale de-DE should be ‚text‘",
+            id: "quote.test",
+            source: "This string contains ‘quotes’ in it.",
+            highlight: 'Target: Diese Zeichenfolge enthält <e0>\'</e0>Anführungszeichen<e1>\'</e1>.',
+            rule,
+            locale: "de-DE",
+            pathName: "a/b"
+        });
+        expect(actual).toEqual(expected);
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual.fix]);
+
+        expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält ‚Anführungszeichen‘.");
     });
 
     test("ResourceQuoteStyleMatchAlternate2", () => {
@@ -513,7 +783,7 @@ describe("testResourceQuoteStyle", () => {
             resource,
             file: "a/b"
         });
-        const expected = new Result({
+        const expected = expect.objectContaining({
             severity: "warning",
             description: "Quote style for the locale af-ZA should be ‘text’",
             id: "quote.test",
@@ -524,7 +794,51 @@ describe("testResourceQuoteStyle", () => {
             pathName: "a/b"
         });
 
-        expect(actual).toStrictEqual(expected);
+        expect(actual).toEqual(expected);
+    });
+
+    test("ResourceQuoteStyleMatchAlternate2 -- apply fixes", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "Please set your PIN code from 'Menu > PIN Code'.",
+            targetLocale: "af-ZA",
+            target: 'Stel asseblief u PIN-kode vanaf “Kieslys > PIN-kode”.',
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b"
+        });
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale af-ZA should be ‘text’",
+            id: "quote.test",
+            source: "Please set your PIN code from 'Menu > PIN Code'.",
+            highlight: "Target: Stel asseblief u PIN-kode vanaf <e0>“</e0>Kieslys > PIN-kode<e1>”</e1>.",
+            rule,
+            locale: "af-ZA",
+            pathName: "a/b"
+        });
+
+        expect(actual).toEqual(expected);
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual.fix]);
+
+        expect(resource.getTarget()).toBe('Stel asseblief u PIN-kode vanaf ‘Kieslys > PIN-kode’.');
     });
 
     test("ResourceQuoteStyleMatchSimpleNoError", () => {
@@ -618,6 +932,7 @@ describe("testResourceQuoteStyle", () => {
     });
 
     test("ResourceQuoteStyleQuotesAdjacentReplacementParamBracket no quotes in translation", () => {
+        expect.assertions(3);
         const rule = new ResourceQuoteStyle();
 
         const resource = new ResourceString({
@@ -638,7 +953,7 @@ describe("testResourceQuoteStyle", () => {
 
         expect(result).toBeTruthy();
 
-        const expected = new Result({
+        const expected = expect.objectContaining({
             severity: "warning",
             description: "Quotes are missing in the target. Quote style for the locale fr-FR should be «text»",
             id: "quote.test",
@@ -649,10 +964,14 @@ describe("testResourceQuoteStyle", () => {
             pathName: "a/b/c.xliff"
         });
 
-        expect(result).toStrictEqual(expected);
+        expect(result).toEqual(expected);
+
+        // if the target does not contain quotes, then we can't fix it
+        expect(result.fix).toBeFalsy();
     });
 
     test("ResourceQuoteStyleQuotesAdjacentReplacementParamBracket fancy quotes in source and no quotes in translation", () => {
+        expect.assertions(3);
         const rule = new ResourceQuoteStyle();
 
         const resource = new ResourceString({
@@ -673,7 +992,7 @@ describe("testResourceQuoteStyle", () => {
 
         expect(result).toBeTruthy();
 
-        const expected = new Result({
+        const expected = expect.objectContaining({
             severity: "warning",
             description: "Quotes are missing in the target. Quote style for the locale fr-FR should be «text»",
             id: "quote.test",
@@ -684,7 +1003,10 @@ describe("testResourceQuoteStyle", () => {
             pathName: "a/b/c.xliff"
         });
 
-        expect(result).toStrictEqual(expected);
+        expect(result).toEqual(expected);
+
+        // if the target does not contain quotes, then we can't fix it
+        expect(result.fix).toBeFalsy();
     });
 
     test("ResourceQuoteStyleQuotesAdjacentReplacementParamBracket with single quotes in source", () => {
@@ -1036,6 +1358,90 @@ describe("testResourceQuoteStyle", () => {
         expect(!actual).toBeTruthy();
     });
 
+    test("ResourceQuoteStyleApostropheInTargetWithNBSpace and wrong type of quotes", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "fr-FR",
+            target: "L'expression contient de “ quotations incorrectes ”. C'est tres bizarre !",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        // should only complain about the incorrect double quotes and not the apostrophes
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale fr-FR should be «text»",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: 'Target: L\'expression contient de <e0>“ </e0>quotations incorrectes<e1> ”</e1>. C\'est tres bizarre !',
+            rule,
+            locale: "fr-FR",
+            pathName: "a/b/c.xliff"
+        });
+
+        expect(actual).toEqual(expected);
+    });
+
+    test("ResourceQuoteStyleApostropheInTargetWithNBSpace and wrong type of quotes -- apply fix", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "fr-FR",
+            target: "L'expression contient de “ quotations incorrectes ”. C'est tres bizarre !",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale fr-FR should be «text»",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: 'Target: L\'expression contient de <e0>“ </e0>quotations incorrectes<e1> ”</e1>. C\'est tres bizarre !',
+            rule,
+            locale: "fr-FR",
+            pathName: "a/b/c.xliff"
+        });
+
+        expect(actual).toEqual(expected);
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual.fix]);
+
+        // should only fix the incorrect double quotes and not the apostrophes
+        expect(resource.getTarget()).toBe("L'expression contient de « quotations incorrectes ». C'est tres bizarre !");
+    });
+
     test("ResourceQuoteStyleQuoteApostropheInTargetNoneInSource", () => {
         expect.assertions(2);
 
@@ -1216,4 +1622,3 @@ describe("testResourceQuoteStyle", () => {
         expect(!actual).toBeTruthy();
     });
 });
-

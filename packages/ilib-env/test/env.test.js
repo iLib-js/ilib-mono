@@ -993,4 +993,19 @@ describe("testEnv", () => {
         expect(ilibEnv.isGlobal("locale")).toBeFalsy();
         expect(ilibEnv.globalVar("locale")).toBeUndefined();
     });
+
+    test("test setting the platform to mock on nodejs in case we need to test in a mock platform in packages that depend on this one", () => {
+        if (ilibEnv.getPlatform() !== "nodejs") {
+            // only test this in nodejs
+            return;
+        }
+        expect.assertions(3);
+        ilibEnv.clearCache();
+        expect(ilibEnv.platform).toBeUndefined();
+
+        ilibEnv.setPlatform("mock");
+
+        expect(ilibEnv.top()).toBe(global);
+        expect(ilibEnv.getPlatform()).toBe("mock");
+    });
 });
