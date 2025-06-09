@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/resource/snake_case.py" source-language="en-US" target-language="es-ES" product-name="lint-test">
+    <body>
+
+      <!-- resource-snake-case declarative rule -->
+      <!-- correct -->
+      <trans-unit id="30" resname="30" restype="string" datatype="python">
+        <source>snake_case</source>
+        <target state="translated">snake_case</target>
+      </trans-unit>
+      <trans-unit id="31" resname="31" restype="string" datatype="python">
+        <source>    MIXED_sNake123_456    </source>
+        <target state="translated">    MIXED_sNake123_456    </target>
+      </trans-unit>
+      <trans-unit id="32" resname="32" restype="string" datatype="python">
+        <source>_test</source>
+        <target state="translated">_test</target>
+      </trans-unit>
+      <trans-unit id="33" resname="33" restype="string" datatype="python">
+        <source>_123</source>
+        <target state="translated">_123</target>
+      </trans-unit>
+      <trans-unit id="34" resname="34" restype="string" datatype="python">
+        <source>_test_And_REtest123_456</source>
+        <target state="translated">_test_And_REtest123_456</target>
+      </trans-unit>
+
+      <!-- exceptions -->
+      <trans-unit id="35" resname="35" restype="string" datatype="tap">
+        <source>some_exception</source>
+        <target state="translated">this_can_be_translated_because_it_is_an_exception</target>
+      </trans-unit>
+
+      <!-- incorrect -->
+      <trans-unit id="36" resname="36" restype="string" datatype="python">
+        <source>two_words_in_english</source>
+        <target state="translated">dos_palabras_en_español</target>
+      </trans-unit>
+      <trans-unit id="37" resname="37" restype="string" datatype="python">
+        <source>Summer_SHORTS</source>
+        <target state="translated">Pantalones_CORTOS</target>
+      </trans-unit>
+      <!-- end of resource-snake-case declarative rule -->
+
+
+      <!-- resource-camel-case declarative rule -->
+      <!-- correct -->
+      <trans-unit id="40" resname="40" restype="string" datatype="python">
+        <source>camelCase</source>
+        <target state="translated">camelCase</target>
+      </trans-unit>
+      <trans-unit id="41" resname="41" restype="string" datatype="python">
+        <source> CamelCase </source>
+        <target state="translated"> CamelCase </target>
+      </trans-unit>
+      <trans-unit id="42" resname="42" restype="string" datatype="python">
+        <source>1Camel2Case3</source>
+        <target state="translated">1Camel2Case3</target>
+      </trans-unit>
+
+      <!-- exceptions -->
+      <trans-unit id="43" resname="43" restype="string" datatype="tap">
+        <source>SomeException</source>
+        <target state="translated">ThisCanBeTranslatedBecauseItIsAnException</target>
+      </trans-unit>
+
+      <!-- incorrect -->
+      <trans-unit id="44" resname="44" restype="string" datatype="python">
+        <source>twoWordsInEnglish</source>
+        <target state="translated">dosPalabrasEnEspañol</target>
+      </trans-unit>
+      <!-- end of resource-camel-case declarative rule -->
+
+    </body>
+  </file>
+</xliff>

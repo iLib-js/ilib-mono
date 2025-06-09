@@ -17,7 +17,9 @@
     "doc": "pnpm -F '[origin/main]' doc",
     "release": "pnpm build && pnpm changeset publish",
     "run:loctool": "NODE_PATH=packages node --inspect packages/loctool/loctool.js",
-    "run:lint": "NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js"
+    "run:lint": "NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js",
+    "run:samples": "pnpm -F '{packages/*/samples/*}' run:sample",
+    "run:samples:affected": "pnpm -F '{packages/*/samples/*}[origin/main]' run:sample"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9",

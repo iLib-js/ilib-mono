@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "description": "Sample localization project that localizes strings into php resource files.",
+  "devDependencies": {
+    "ilib-loctool-javascript": "workspace:^",
+    "ilib-loctool-php-resource": "workspace:^",
+    "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
+  }
+}
