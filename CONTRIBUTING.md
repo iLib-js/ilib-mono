@@ -1,11 +1,11 @@
 # Contributing
 
-We welcome contributions to the ilib-mono project!
-Please follow guidelines defined in this file to contribute and follow the existing code style and conventions.
+We welcome contributions to the `ilib-mono` project!
+Please follow the guidelines defined in this file to contribute and adhere to the existing code style and conventions.
 Ensure your code is documented and passes all linting and tests before submitting a pull request.
 
 This repository is a monorepo for the [iLib-js project](https://github.com/iLib-js).
-Project status and project structure are described in the [README.md](./README.md) file.
+The project status and structure are described in the [README.md](./README.md) file.
 
 ## Table of Contents
 
@@ -13,8 +13,8 @@ Project status and project structure are described in the [README.md](./README.m
 - [Environment](#environment)
 - [Coding Guidelines](#coding-guidelines)
 - [Adding a New Package](#adding-a-new-package)
-- [Running scripts](#running-scripts)
-- [Debugging pluggable CLI applications](#debugging-pluggable-cli-applications)
+- [Running Scripts](#running-scripts)
+- [Debugging Pluggable CLI Applications](#debugging-pluggable-cli-applications)
 - [Code Coverage](#code-coverage)
 - [Documentation](#documentation)
 - [Versioning](#versioning)
@@ -24,38 +24,37 @@ Project status and project structure are described in the [README.md](./README.m
 
 ## Getting Started
 
-If you're internal contributor, follow your internal guidelines.
+If you're an internal contributor, follow your internal guidelines.
 
 External contributors can contribute to the project by following these steps:
 
 1. Fork the repository.
-2. Clone the forked repository to the local machine.
-3. Create a new branch for the feature or bugfix.
+2. Clone the forked repository to your local machine.
+3. Create a new branch for the feature or bug fix.
 4. Make your changes.
-5. Commit changes with a descriptive commit message.
-6. Push changes to the forked repository.
+5. Commit the changes with a descriptive commit message.
+6. Push the changes to your forked repository.
 7. Create a pull request to the main repository.
 
-Before contributing, please set up the project on the local machine by following the instructions in
-the [SETUP.md](./SETUP.md) file.
+Before contributing, please set up the project on your local machine by following the instructions in the [SETUP.md](./SETUP.md) file.
 
 ### Pull Requests
 
-Every pull request should contain the following:
+Every pull request should include the following:
 
-- documentation in the code (following the JSDoc/TSDoc standard)
-- tests
-- changelog entry.
+- Documentation in the code (following the JSDoc/TSDoc standard).
+- Tests.
+- A changelog entry.
 
 ## Environment
 
-This project is developed using the following tools:
+This project uses the following tools:
 
 - Node.js for running JavaScript code.
-- pnpm package manager for package management and package workspaces support.
-- Turborepo for monorepo task running (caching, parallelization).
+- `pnpm` as the package manager for managing dependencies and supporting workspaces.
+- Turborepo for monorepo task management (caching, parallelization).
 
-Common commands are aliased in [root `package.json`](./package.json) scripts.
+Common commands are aliased in the root [`package.json`](./package.json) scripts.
 
 ## Coding Guidelines
 
@@ -65,8 +64,7 @@ TBD
 
 ### Package Template
 
-Currently, there is no package template as we are moving existing `iLib-js` packages into the monorepo without
-unification.
+Currently, there is no package template as we are migrating existing `iLib-js` packages into the monorepo without unification.
 This will be addressed in the future.
 
 ### Manual Package Creation
@@ -75,39 +73,39 @@ To manually create a new package, follow these steps:
 
 1. Create a new directory under `packages/`.
 2. In the new directory, create a `package.json` file.
-3. Add the following scripts to the new package's `package.json` file to plug into monorepo tasks (defined in
-   `turbo.json` in the monorepo root directory):
-    - `build`
-    - `test`
-    - `doc`
+3. Add the following scripts to the new package's `package.json` file to integrate with monorepo tasks (defined in `turbo.json` in the monorepo root directory):
+
+   - `build`
+   - `test`
+   - `doc`
 
    These scripts are optional.
-4. If the new package depends on another package in the monorepo, define this dependency using the workspace protocol in
-   the `dependencies` section of your `packages/<packageName>/package.json`, like this:
-    ```json
-    {
-        "dependencies": {
-            "ilib-common": "workspace:^"
-        }
-    }
-    ```
-   When you run `pnpm publish`, pnpm will automatically substitute this protocol with a proper semver version.
-   You can learn more about pnpm workspaces [here](https://pnpm.io/workspaces).
+
+4. If the new package depends on another package in the monorepo, define this dependency using the workspace protocol in the `dependencies` section of your `packages/<packageName>/package.json`, like this:
+   ```json
+   {
+     "dependencies": {
+       "ilib-common": "workspace:^"
+     }
+   }
+   ```
+   When you run `pnpm publish`, `pnpm` will automatically replace this protocol with the appropriate semver version.
+   You can learn more about `pnpm` workspaces [here](https://pnpm.io/workspaces).
 
 ## Running Scripts
 
-To run scripts for a single package run commands from the package root directory.
+To run scripts for a single package, execute commands from the package's root directory.
 
 ```bash
-# cd packages/loctool
-pnpm [script-name] 
+# cd packages/package-name
+pnpm [script-name]
 ```
 
 ### Build
 
 TBD
 
-To run the build, use:
+To build, use:
 
 ```bash
 pnpm build
@@ -117,7 +115,7 @@ pnpm build
 
 TBD
 
-To run the doc, use:
+To generate documentation, use:
 
 ```bash
 pnpm doc
@@ -129,10 +127,10 @@ TBD
 
 ### Test
 
-There are few ways to run tests:
+There are several ways to run tests:
 
-* for an affected package(s) solely or
-* for all packages in the monorepo.
+- For affected package(s) only.
+- For all packages in the monorepo.
 
 #### 1. Run tests for affected package(s)
 
@@ -145,7 +143,7 @@ pnpm test
 
 #### 2. Run tests for all packages
 
-To run all the tests for all packages in the monorepo, use:
+To run tests for all packages in the monorepo, use:
 
 ```bash
 pnpm test:all
@@ -153,70 +151,69 @@ pnpm test:all
 
 #### 3. Other options
 
-These may be useful for development and/or debugging purposes.
-These commands should be run from the root directory of the package you're interested in.
+These may be useful for development or debugging purposes.
+Run these commands from the root directory of the package you're interested in.
 
-1. Run all the tests for a single package in the monorepo:
+1. Run all tests for a single package in the monorepo:
 
 ```bash
-pnpm --filter loctool test
+pnpm --filter package-name test
 ```
 
-or `cd` into the package directory and run:
+Or `cd` into the package directory and run:
 
 ```bash
-# cd packages/loctool
+# cd packages/package-name
 pnpm test
 ```
 
-2. Run all tests for a single file, by passing the path to the file as an argument to the `pnpm test` command, like
-   this:
+2. Run tests for a single file by passing the file path as an argument to the `pnpm test` command, like this:
 
 ```bash
 pnpm --filter loctool test -- "ResourceConvert.test.js"
 ```
 
-or `cd` into the package directory and run:
+Or `cd` into the package directory and run:
 
 ```bash
-# cd packages/loctool
+# cd packages/package-name
 pnpm test -- "ResourceConvert.test.js"
 ```
 
-## Debugging pluggable CLI applications
+## Debugging Pluggable CLI Applications
 
-This monorepo publishes some CLI applications that support plugins; alongside, it also publishes those plugins. For example:
+This monorepo publishes some CLI applications that support plugins; it also publishes those plugins. For example:
+
 - [`loctool`](./packages/loctool)
   - [`ilib-loctool-json`](./packages/ilib-loctool-json)
 - [`ilib-lint`](./packages/ilib-lint)
   - [`ilib-lint-react`](./packages/ilib-lint-react)
 
-To easily debug those CLI applications with plugins directly within monorepo, you can use the environment variable [`NODE_PATH`](https://nodejs.org/api/modules.html#loading-from-the-global-folders).
+To debug these CLI applications with plugins directly within the monorepo, you can use the environment variable [`NODE_PATH`](https://nodejs.org/api/modules.html#loading-from-the-global-folders).
 
-For example, to debug `loctool` with `ilib-loctool-json` plugin, you can run:
+For example, to debug `loctool` with the `ilib-loctool-json` plugin, you can run:
 
 ```bash
-# first make sure you have built all packages within the monorepo
+# First, ensure all packages in the monorepo are built
 pnpm build
-# set NODE_PATH to monorepo context to allow loading plugins directly from the monorepo
+# Set NODE_PATH to the monorepo context to allow loading plugins directly from the monorepo
 export NODE_PATH=$(pwd)/packages
-# run the app from the monorepo on a project that uses the plugin ilib-loctool-json
+# Run the app from the monorepo on a project that uses the plugin ilib-loctool-json
 node loctool/lib/loctool.js localize ~/ilib-loctool-samples/js-json
 ```
 
-This way, you can easily test your changes to both the CLI application and the plugin at the same time without the need to publish them or otherwise link them manually (e.g. with `yarn link`).
+This allows you to test changes to both the CLI application and the plugin simultaneously without needing to publish or manually link them (e.g., with `yarn link`).
 
-To make this even easier, monorepo provides `run:*` scripts which set `NODE_PATH` for you. The above example can be simplified to:
+To simplify this process, the monorepo provides `run:*` scripts that set `NODE_PATH` for you. The above example can be simplified to:
 
 ```bash
-# build is still required
+# Build is still required
 pnpm build
-# run the app from monorepo using script
+# Run the app from the monorepo using the script
 pnpm run:loctool localize ~/ilib-loctool-samples/js-json
 ```
 
-Those scripts also embed the `--inspect` flag to allow debugging with e.g. VSCode's _Auto Attach: With Flag_ feature.
-
+These scripts also embed the `--inspect` flag to enable debugging with tools like VSCode's _Auto Attach: With Flag_ feature.
 
 ## Code Coverage
 
@@ -308,5 +305,4 @@ To report a bug or submit a feature request, please create an issue on the GitHu
 
 ## License
 
-By contributing to `ilib-mono`, it is understood and acknowledged that contributions will be licensed under the Apache
-License.
+By contributing to `ilib-mono`, it is understood and acknowledged that contributions will be licensed under the Apache License.
