@@ -41,7 +41,8 @@ var XliffSplit = function XliffSplit(settings) {
             var data = fs.readFileSync(file, "utf-8");
             var xliff = XliffFactory({
                 version: settings.xliffVersion,
-                style: settings.xliffStyle
+                style: settings.xliffStyle,
+                mode: settings.mode
             });
             xliff.deserialize(data);
             superset = superset.concat(xliff.getTranslationUnits());

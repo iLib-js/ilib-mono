@@ -30,14 +30,18 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffConstructorIsEmpty", function() {
         expect.assertions(2);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
         expect(x.size()).toBe(0);
     });
+    test("webOSXliffVersion", function() {
+        expect.assertions(2);
+        var x = new webOSXliff();
+        expect(x).toBeTruthy();
+        expect(x.getVersion()).toBe(2.0);
+    });
     test("webOSXliffConstructorFull", function() {
         expect.assertions(5);
-
         var x = new webOSXliff({
             project: "test-project",
             sourceLocale: "en-KR",
@@ -53,7 +57,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffGetPath", function() {
         expect.assertions(2);
-
         var x = new webOSXliff({
             path: "foo/bar/x.xliff"
         });
@@ -62,7 +65,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffSetPath", function() {
         expect.assertions(3);
-
         var x = new webOSXliff({
             path: "foo/bar/x.xliff"
         });
@@ -73,7 +75,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffSetPathInitiallyEmpty", function() {
         expect.assertions(3);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
         expect(!x.getPath()).toBeTruthy();
@@ -82,7 +83,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffAddResource", function() {
         expect.assertions(11);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
         var res = new ResourceString({
@@ -115,7 +115,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffSize", function() {
         expect.assertions(3);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
         var res = new ResourceString({
@@ -136,7 +135,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffAddMultipleResources", function() {
         expect.assertions(8);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
 
@@ -149,7 +147,6 @@ describe("webOSxliff", function() {
         });
 
         x.addResource(res);
-
         res = new ResourceString({
             source: "baby baby",
             sourceLocale: "en-KR",
@@ -159,13 +156,11 @@ describe("webOSxliff", function() {
         });
 
         x.addResource(res);
-
         var reslist = x.getResources({
             reskey: "foobar"
         });
 
         expect(reslist).toBeTruthy();
-
         expect(reslist.length).toBe(1);
         expect(reslist[0].getSource()).toBe("Asdf asdf");
         expect(reslist[0].getSourceLocale()).toBe("en-KR");
@@ -175,7 +170,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffAddMultipleResourcesRightSize", function() {
         expect.assertions(3);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
         expect(x.size()).toBe(0);
@@ -189,7 +183,6 @@ describe("webOSxliff", function() {
         });
 
         x.addResource(res);
-
         res = new ResourceString({
             source: "baby baby",
             sourceLocale: "en-KR",
@@ -203,7 +196,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffAddMultipleResourcesOverwrite", function() {
         expect.assertions(9);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
 
@@ -247,7 +239,6 @@ describe("webOSxliff", function() {
 
     test("webOSXliffAddMultipleResourcesOverwriteRightSize", function() {
         expect.assertions(4);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
 
@@ -282,7 +273,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffAddMultipleResourcesNoOverwrite", function() {
         expect.assertions(13);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
 
@@ -363,7 +353,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffGetResourcesMultiple", function() {
         expect.assertions(11);
-
         var x = new webOSXliff();
         expect(x).toBeTruthy();
 
@@ -377,7 +366,6 @@ describe("webOSxliff", function() {
         });
 
         x.addResource(res);
-
         res = new ResourceString({
             source: "baby baby",
             sourceLocale: "en-KR",
@@ -408,7 +396,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffDeserialize", function() {
         expect.assertions(8);
-
         var x = new webOSXliff();
         x.deserialize(
         '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -479,7 +466,6 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffDeserialize_metadata_undefined", function() {
         expect.assertions(8);
-
         var x = new webOSXliff();
         x.deserialize(
         '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -607,6 +593,123 @@ describe("webOSxliff", function() {
         '    </group>\n' +
         '  </file>\n' +
         '</xliff>';
+        expect(actual).toBe(expected);
+    });
+    test("webOSXliffMerge_write_ko_KR_Style", function() {
+        expect.assertions(2);
+
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.xliffStyle = "webOS";
+        settings.mode = 'merge';
+        settings.infiles = [
+            "test/testfiles/xliff_webOS/app1/ko-KR.xliff",
+            "test/testfiles/xliff_webOS/app2/ko-KR.xliff",
+        ];
+        var target = XliffMerge(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file id="sample1_f1" original="sample1">\n' +
+        '    <group id="sample1_g1" name="c">\n' +
+        '      <unit id="3">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="4">\n' +
+        '        <segment>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '  <file id="sample2_f2" original="sample2">\n' +
+        '    <group id="sample2_g2" name="c">\n' +
+        '      <unit id="1">\n' +
+        '        <segment>\n' +
+        '          <source>No</source>\n' +
+        '          <target>아니오</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="2">\n' +
+        '        <segment>\n' +
+        '          <source>Yes</source>\n' +
+        '          <target>예</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="7">\n' +
+        '        <mda:metadata>\n' +
+        '          <mda:metaGroup category="device-type">\n' +
+        '            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
+        '            <mda:meta type="Box">"Box" 이용이 불가능합니다</mda:meta>\n' +
+        '            <mda:meta type="SoundBar">"SoundBar" 이용이 불가능합니다</mda:meta>\n' +
+        '          </mda:metaGroup>\n' +
+        '        </mda:metadata>\n' +
+        '        <segment>\n' +
+        '          <source>NOT AVAILABLE</source>\n' +
+        '          <target>이용이 불가능합니다</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+    test("webOSXliffSplitdistritueSerialize_xliffStyle2", function() {
+        expect.assertions(2);
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.infiles = [
+            "test/testfiles/xliff_webOS/merge-ko-KR.xliff",
+        ];
+
+        settings.xliffStyle = "webOS"
+        settings.mode = "split"
+        var superset = XliffSplit(settings);
+        var result = XliffSplit.distribute(superset, settings);
+        expect(result).toBeTruthy();
+
+        var actual = result["sample2"].serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file id="sample2_f1" original="sample2">\n' +
+        '    <group id="sample2_g1" name="c">\n' +
+        '      <unit id="1">\n' +
+        '        <segment>\n' +
+        '          <source>No</source>\n' +
+        '          <target>아니오</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="2">\n' +
+        '        <segment>\n' +
+        '          <source>Yes</source>\n' +
+        '          <target>예</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="7">\n' +
+        '        <mda:metadata>\n' +
+        '          <mda:metaGroup category="device-type">\n' +
+        '            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
+        '            <mda:meta type="Box">"Box" 이용이 불가능합니다</mda:meta>\n' +
+        '            <mda:meta type="SoundBar">"SoundBar" 이용이 불가능합니다</mda:meta>\n' +
+        '          </mda:metaGroup>\n' +
+        '        </mda:metadata>\n' +
+        '        <segment>\n' +
+        '          <source>NOT AVAILABLE</source>\n' +
+        '          <target>이용이 불가능합니다</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
         expect(actual).toBe(expected);
     });
     test("webOSXliffSplitdistritueSerialize_xliffStyle", function() {

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">
+  <file id="sample1_f1" original="sample1">
+    <group id="sample1_g1" name="c">
+      <unit id="3">
+        <segment>
+          <source>OK</source>
+          <target>확인</target>
+        </segment>
+      </unit>
+      <unit id="4">
+        <segment>
+          <source>Time Settings</source>
+          <target>시간 설정</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+  <file id="sample2_f2" original="sample2">
+    <group id="sample2_g2" name="c">
+      <unit id="1">
+        <segment>
+          <source>No</source>
+          <target>아니오</target>
+        </segment>
+      </unit>
+      <unit id="2">
+        <segment>
+          <source>Yes</source>
+          <target>예</target>
+        </segment>
+      </unit>
+      <unit id="7">
+        <mda:metadata>
+          <mda:metaGroup category="device-type">
+            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>
+            <mda:meta type="Box">"Box" 이용이 불가능합니다</mda:meta>
+            <mda:meta type="SoundBar">"SoundBar" 이용이 불가능합니다</mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment>
+          <source>NOT AVAILABLE</source>
+          <target>이용이 불가능합니다</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

@@ -128,7 +128,7 @@ webOSXliff.prototype.parse = function(xliff) {
 
                         if (source.trim()) {
                             try {
-                                var unit = new TranslationUnit({
+                                var commonProperties = {
                                     file: fileSettings.pathName,
                                     sourceLocale: fileSettings.locale,
                                     project: fileSettings.project,
@@ -138,12 +138,19 @@ webOSXliff.prototype.parse = function(xliff) {
                                     context: tu._attributes["l:context"],
                                     comment: comment,
                                     targetLocale: targetLocale,
-                                    target: this.getMetadataTarget(this.metadata, tu["mda:metadata"]) ?? target,
                                     resType: restype,
                                     state: state,
                                     datatype: datatype,
                                     flavor: fileSettings.flavor
-                                });
+                                };
+
+                                if (this._isLocalizeMode()) {
+                                    commonProperties.target = this.getMetadataTarget(this.metadata, tu["mda:metadata"]) ?? target;
+                                } else {
+                                    commonProperties.target = target;
+                                    commonProperties.metadata = tu['mda:metadata'] || undefined;
+                                }
+                                var unit = new TranslationUnit(commonProperties);
                                 this.tu.push(unit);
                             } catch (e) {
                                 logger.warn("Skipping invalid translation unit found in xliff file.\n" + e);
@@ -159,22 +166,18 @@ webOSXliff.prototype.parse = function(xliff) {
 }
 
 /**
- * Get the flavor data in thie unit
+ * Get the target string corresponding to the metadata
  *
- * @returns {String} the flavor info in thie unit.
+ * @returns {String} The target string corresponding to the metadata.
  */
 webOSXliff.prototype.getMetadataTarget = function(metadata, tuData) {
-    if (! (metadata && tuData)) return undefined;
+    if (!metadata || !tuData) return undefined;
 
     this.type = metadata["device-type"];
     var dataArr = tuData["mda:metaGroup"]['mda:meta'];
-    var result = undefined;
-    dataArr.forEach((item) => {
-        if (item['_attributes']['type'] == this.type) {
-            result = item['_text'];
-        }
-    });
-    return result;
+
+    var matchItem = dataArr.find(item => item['_attributes']['type'] === this.type);
+    return matchItem ? matchItem['_text'] : undefined;
 };
 
 /**
@@ -311,7 +314,7 @@ webOSXliff.prototype.getTranslationSet = function() {
 
     if (this.tu) {
         for (var j = 0; j < this.tu.length; j++) {
-            var comment, tu = this.tu[j];
+            var tu = this.tu[j];
             res = ResourceFactory({
                 pathName: tu.file,
                 project: tu.project,
@@ -421,9 +424,13 @@ webOSXliff.prototype.toStringData = function(units) {
         var tujson = {
             _attributes: {
                 "id": (tu.id || index++),
-                "name": (tu.source !== tu.key) ? escapeAttr(tu.key) : undefined,
+                 "name": (tu.source !== tu.key) ? escapeAttr(tu.key) : undefined,
             }
         };
+
+        if (tu.metadata) {
+            tujson["mda:metadata"] = tu.metadata
+        }
 
         if (tu.comment) {
             tujson.notes = {
@@ -559,6 +566,16 @@ webOSXliff.prototype.serialize = function(untranslated) {
 }
 
 /**
+ * Return true if the current proejct is in localize mode
+ *
+ * @private
+ * @return {boolean} true if the current project is in localize mode and false if not
+ */
+webOSXliff.prototype._isLocalizeMode = function() {
+    return !['split', 'merge'].includes(this.mode);;
+}
+
+/**
  * Convert a resource into one or more translation units.
  *
  * @private
@@ -607,15 +624,6 @@ webOSXliff.prototype.convertResource = function(res) {
     return this._convertResource(res);
 };
 
-/**
- * Return the number of translation units in this xliff
- * file.
- *
- * @return {number} the number of translation units in this xliff file
- */
-webOSXliff.prototype.size = function() {
-    return this.ts.size();
-};
 
 /**
  * Get the path to this xliff file.
@@ -633,8 +641,43 @@ webOSXliff.prototype.setPath = function(pathName) {
     this.path = pathName;
 };
 
+/**
+ * Return the number of translation units in this xliff
+ * file.
+ *
+ * @return {number} the number of translation units in this xliff file
+ */
+webOSXliff.prototype.size = function() {
+    return this.ts.size();
+};
+
+/**
+ * Return the version of this xliff file. If you deserialize a string into this
+ * instance of Xliff, the version will be reset to whatever is found inside of
+ * the xliff file.
+ *
+ * @returns {number} the version of this xliff
+ */
+webOSXliff.prototype.getVersion = function() {
+    return this.version || 2.0;
+};
+
 function makeArray(arrayOrObject) {
-    return ilib.isArray(arrayOrObject) ? arrayOrObject : [ arrayOrObject ];
+    return ilib.isArray(arrayOrObject) ? arrayOrObject : [arrayOrObject];
+}
+
+/**
+ * Return a string that can be used as an HTML attribute value.
+ * @param {string} str the string to escape
+ * @returns {string} the escaped string
+ */
+function escapeAttr(str) {
+    if (!str) return;
+    return str.
+        replace(/&/g, "&amp;").
+        replace(/"/g, "&quot;").
+        replace(/'/g, "&apos;").
+        replace(/</g, "&lt;");
 }
 
 /**

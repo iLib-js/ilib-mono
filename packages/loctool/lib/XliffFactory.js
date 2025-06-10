@@ -20,6 +20,13 @@
 
 var Xliff = require("./Xliff.js");
 var webOSXliff = require("./webOSXliff.js");
+
+var xliffClasses = {
+    webOS: webOSXliff,
+    standard: Xliff,
+    default: Xliff
+};
+
 /**
  * @class Create the right type of xliff subclass
  * for the given arguments.
@@ -29,15 +36,9 @@ var webOSXliff = require("./webOSXliff.js");
  */
 var XliffFactory = function(props) {
     var style = XliffFactory.availableStyles.includes(props.style) ? props.style : XliffFactory.defaultStyle;
+    var XliffClass = xliffClasses[style];
 
-    switch (style) {
-        case 'webOS':
-            return new webOSXliff(props);
-        case 'standard':
-        case 'default':
-            return new Xliff(props);
-    }
-    return undefined;
+    return XliffClass ? new XliffClass(props) : undefined;
 };
 
 XliffFactory.availableStyles = ['default', 'standard', 'webOS'];
