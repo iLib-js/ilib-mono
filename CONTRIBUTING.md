@@ -220,66 +220,73 @@ Those scripts also embed the `--inspect` flag to allow debugging with e.g. VSCod
 
 ## Code Coverage
 
-Currently, only some of the packages use has code coverage reporting enabled. For the other packages, code coverage will be
-added in the future.
+Code coverage is configured at the monorepo level in the root `jest.config.js`. Each package that wants to participate in code coverage reporting needs to follow the steps in the [Adding Code Coverage](#adding-code-coverage) section.
 
 ### Running Code Coverage
 
-For the packages that already use code coverage, it has been integrated into the `ilib-mono` GitHub Actions workflow for
-pull requests. Code coverage is calculated with Jest for selected packages, and the coverage report is automatically
-added as a comment to each pull request.
+For packages that already use code coverage, it is integrated into the `ilib-mono` GitHub Actions workflow for pull requests. Code coverage is calculated with Jest for selected packages, and the coverage report is automatically added as a comment to each pull request.
 
-The comment contains detailed information about the code coverage for the files changed in a PR, along with information
-about uncovered lines and direct links to them. Additionally, overall information for each package is also added as a
-comment to each pull request. This includes details about the percentage of covered lines (statements, branches, and
-functions) and information about the number of tests (total, skipped, failures, errors) along with their execution time.
+The comment contains detailed information about the code coverage for the files changed in a PR, along with information about uncovered lines and direct links to them. Additionally, overall information for each package is also added as a comment to each pull request. This includes details about the percentage of covered lines (statements, branches, and functions) and information about the number of tests (total, skipped, failures, errors) along with their execution time.
 
-A full code coverage report is saved as an artifact and is available for download from the GitHub Actions CI workflow
-for pull requests.
+A full code coverage report is saved as an artifact and is available for download from the GitHub Actions CI workflow for pull requests.
 
 To run code coverage locally for all packages in the monorepo, run the following command from the root directory:
 
 ```bash
-pnpm coverage
+pnpm run coverage
 ```
+
 To run it only for affected package(s), use:
 
 ```bash
-pnpm coverage:affected
+pnpm run coverage:affected
 ```
 
-Additionally, code coverage can be run for a single package in the monorepo by navigating to the package directory:
+Additionally, code coverage can be run for a single package in the monorepo from the root directory:
+
+```bash
+pnpm --filter package-name test
+```
+
+Or by navigating to the package directory:
 
 ```bash
 # cd packages/package-name
-pnpm coverage
+pnpm run coverage
 ```
-The `coverage` script in all of these cases produces, in the root of the package,  a `coverage/` directory, as well as `coverage.txt` and `junit.xml` files containing the code coverage details.
+
+The `coverage` script in all of these cases produces a `coverage/` directory in the root of the package, as well as `coverage.txt` and `junit.xml` files containing the code coverage details.
 
 ### Adding Code Coverage
-To include a new package in the code coverage comment in a pull request, follow these steps:  
 
-1. Define the `coverage` script in `package.json`. This script should generate the coverage report.
-     ```bash
-    "scripts": {
-        # ...
-        "coverage": "pnpm test -- --coverage --coverageReporters json-summary --coverageReporters html --coverageReporters text > ./coverage.txt --reporters=default --reporters=jest-junit",
-    }
-    ```
-    
-2. .Update GitHub Actions Workflow for pull request. Add the package coverage source to the `test-affected` workflow in the `.github/workflows/test-affected.yml` file.
-Specifically, update the Jest Code Coverage Comment step to include the new package in both `multiple-files` and `multiple-junitxml-files`.
-    ```yml
-    - name: Jest Code Coverage Comment
-      # ...
-      with:
-        multiple-files: |
-          # ...
-          package-name, ./packages/package-name/coverage/coverage-summary.json
-        multiple-junitxml-files: |
-          #...
-          package-name, ./packages/package-name/junit.xml
-    ```
+Each package that wants to participate in code coverage reporting needs to:
+
+1. Have a `jest.config.cjs` file that extends the root configuration:
+
+```javascript
+const baseConfig = require("../../jest.config.js");
+
+const config = {
+  ...baseConfig,
+  displayName: {
+    name: "package-name",
+    color: "blue", // Choose your color from chalk's palette
+  },
+  // Package-specific Jest configuration (if needed)
+};
+
+module.exports = config;
+```
+
+The `color` property uses [chalk's color palette](https://github.com/chalk/chalk#colors).
+
+2. Have a `coverage` script in its `package.json`:
+```json
+"scripts": {
+  // ...
+  "coverage": "pnpm test -- --coverage"
+}
+```
 
 By following these steps, the package will be included in the code coverage report, and the results will be automatically commented on each pull request to `ilib-mono`.
 
