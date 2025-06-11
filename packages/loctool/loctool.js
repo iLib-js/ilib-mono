@@ -29,7 +29,7 @@ var mm = require("micromatch");
 
 var ProjectFactory = require("./lib/ProjectFactory.js");
 var GenerateModeProcess = require("./lib/GenerateModeProcess.js");
-
+var XliffFactory = require("./lib/XliffFactory.js");
 var XliffMerge = require("./lib/XliffMerge.js");
 var XliffSplit = require("./lib/XliffSplit.js");
 var XliffSelect = require("./lib/XliffSelect.js");
@@ -430,8 +430,8 @@ for (var i = 0; i < argv.length; i++) {
             usage();
         }
     } else if (val === "--xliffStyle") {
-        var candidate = ["standard", "custom"];
-        if (candidate.indexOf(argv[i+1]) !== -1) {
+        var candidate = XliffFactory.getAllStyles();
+        if (candidate.includes(argv[i+1])) {
             settings.xliffStyle = argv[++i];
         }
     } else if (val === "--noxliffDups") {
@@ -468,6 +468,17 @@ for (var i = 0; i < argv.length; i++) {
                 console.error("Error: --extendedAttr option requires a name=value argument to follow it.");
                 usage();
             }
+        }
+    } else if (val === "--metadata") {
+        settings.metadata = {};
+        if (i + 1 < argv.length && argv[i + 1]) {
+            const pairs = argv[++i].split(",");
+            pairs.forEach(pair => {
+                const [key, value] = pair.split("=");
+                if (key && value) {
+                    settings.metadata[key.trim()] = value.trim();
+                }
+            });
         }
     } else {
         options.push(val);

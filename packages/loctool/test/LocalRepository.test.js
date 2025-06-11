@@ -69,7 +69,6 @@ describe("localrepository", function() {
         });
 
         expect(repo).toBeTruthy();
-
         repo.init(function(){
             repo.getBy({
                 reskey: "foobar"
