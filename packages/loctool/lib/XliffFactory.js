@@ -35,7 +35,7 @@ var xliffClasses = {
  * actual resource subclass' constructor
  */
 var XliffFactory = function(props) {
-    var style = XliffFactory.availableStyles.includes(props.style) ? props.style : XliffFactory.defaultStyle;
+    var style = props && XliffFactory.availableStyles.includes(props.style) ? props.style : XliffFactory.defaultStyle;
     var XliffClass = xliffClasses[style];
 
     return XliffClass ? new XliffClass(props) : undefined;
@@ -45,9 +45,9 @@ XliffFactory.availableStyles = ['default', 'standard', 'webOS'];
 XliffFactory.defaultStyle = 'standard';
 
 /**
- * Get the available xliff style
+ * Get the available xliff styles
  *
- * @returns {Array.<Object>} Returns a list of possible XLIFF styles.
+ * @returns {Array.<String>} Returns an array of possible XLIFF styles.
  */
 XliffFactory.getAllStyles = function () {
     return this.availableStyles;

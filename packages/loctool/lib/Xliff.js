@@ -243,7 +243,7 @@ Xliff.prototype.addTranslationUnit = function(unit) {
 /**
  * Add translation units to this xliff.
  *
- * @param {Array.<Object>} files the translation units to add to this xliff
+ * @param {Array.<Object>} units the translation units to add to this xliff
  */
 Xliff.prototype.addTranslationUnits = function(units) {
     for (var i = 0; i < units.length; i++) {
@@ -966,7 +966,7 @@ Xliff.prototype.toString2 = function(units) {
  * the xliff format xml text.
  *
  * @param {boolean} untranslated if true, add the untranslated resources
- * to the xliff file without target tags. Otherwiwe, untranslated
+ * to the xliff file without target tags. Otherwise, untranslated
  * resources are skipped.
  * @return {String} the current instance encoded as an xliff format
  * xml text

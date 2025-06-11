@@ -27,7 +27,7 @@ var TranslationSet = require("./TranslationSet.js");
 var TranslationUnit = require("./Xliff.js").TranslationUnit;
 
 /**
- * @class A class that represents an webOS  file.
+ * @class A class that represents a webOS file.
  * The options may be undefined, which represents a new,
  * clean Xliff instance. The options object may also
  * be an object with the following properties:
@@ -239,7 +239,7 @@ webOSXliff.prototype.addTranslationUnit = function(unit) {
 /**
  * Add translation units to this xliff.
  *
- * @param {Array.<Object>} files the translation units to add to this xliff
+ * @param {Array.<Object>} units the translation units to add to this xliff
  */
 webOSXliff.prototype.addTranslationUnits = function(units) {
     for (var i = 0; i < units.length; i++) {
@@ -513,7 +513,7 @@ webOSXliff.prototype.toStringData = function(units) {
  * the xliff format xml text.
  *
  * @param {boolean} untranslated if true, add the untranslated resources
- * to the xliff file without target tags. Otherwiwe, untranslated
+ * to the xliff file without target tags. Otherwise, untranslated
  * resources are skipped.
  * @return {String} the current instance encoded as an xliff format
  * xml text
@@ -566,10 +566,10 @@ webOSXliff.prototype.serialize = function(untranslated) {
 }
 
 /**
- * Return true if the current proejct is in localize mode
+ * Return true if the current project is in localize mode
  *
  * @private
- * @return {boolean} true if the current project is in localize mode and false if not
+ * @return {boolean} Return true if the current project is in localize mode; otherwise, false.
  */
 webOSXliff.prototype._isLocalizeMode = function() {
     return !['split', 'merge'].includes(this.mode);;
@@ -695,9 +695,9 @@ function unescapeAttr(str) {
 }
 
 function versionString(num) {
-    parts = ("" + num).split(".");
-    integral = parts[0].toString();
-    fraction = parts[1] || "0";
+    var parts = ("" + num).split(".");
+    var integral = parts[0].toString();
+    var fraction = parts[1] || "0";
     return integral + '.' + fraction;
 }
 
