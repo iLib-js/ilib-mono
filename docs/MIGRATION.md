@@ -24,6 +24,30 @@ Below is a list of aspect that need to be accounted for when migrating existing 
     -   **CI**: Leftover CI configuration (like CircleCI) should be removed from the package directory after migration; CI is handled by the monorepo through GitHub Actions workflows common for the whole monorepo
     -   **Build**: If the package requires a build step, it should be added as `build` in its `package.json`; it should produce artifacts in `lib` directory which are ready for publishing; note that monorepo packages depend on each other so the build script (called automatically before tests) should produce complete ouptut as if the package was published to npm (so that it can be depended upon)
     -   **Test**: The package should define a `test` script that runs all tests; if using jest, make sure to invoke it with `node node_modules/jest/bin/jest.js` instead of the binary wrapper (to mitigate risk of incorrectly hoisted dependencies - see [pnpm issue #8863](https://github.com/pnpm/pnpm/issues/8863)); build script is called automatically before running tests, so remove it from the test script if it's already there; for now, all tests run in Node 20 with Chrome, we're planning to set up additional workflows for environment matrix testing soon
+    -   **Coverage**: The package should be configured to report code coverage in PR comments. To enable this:
+        1. Create a `jest.config.cjs` file that extends the root configuration:
+           ```javascript
+           const baseConfig = require("../../jest.config.js");
+           
+           const config = {
+             ...baseConfig,
+             displayName: {
+               name: "package-name",
+               color: "blue", // Choose your color from chalk's palette
+             },
+             // Package-specific Jest configuration (if needed)
+           };
+           
+           module.exports = config;
+           ```
+        2. Add a `coverage` script to `package.json`:
+           ```json
+           {
+             "scripts": {
+               "coverage": "pnpm test -- --coverage"
+             }
+           }
+           ```
     -   **Doc**: The package can define a `doc` script to generate HTML documentation; it should produce artifacts in `docs` directory; this is not called automatically at any point - remember to run it manually in a PR and commit the generated files
     -   **Publish**: Package should NOT define any custom `version` or `publish` scripts as it will be handled by the monorepo (using changesets and pnpm release, see [release CI workflow](../.github/workflows/release.yml)); while pnpm should call `prepublish` script implicitly, it's recommended that all things needed for publishing should be handled in the `build` script
 -   **Package**
@@ -115,6 +139,9 @@ Package migration checklist:
 - [ ] Create patchbump changeset for migrated packages
 - [ ] Regenerate lockfile
 - [ ] Regenerate docs
+- [ ] Configure code coverage reporting
+  - [ ] Add `jest.config.cjs` extending root config
+  - [ ] Add `coverage` script to package.json
 
 After merge:
 
