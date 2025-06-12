@@ -44,6 +44,7 @@
     },
     "scripts": {
         "build": "pnpm pack",
+        "coverage": "pnpm test -- --coverage",
         "test": "jest",
         "test:watch": "jest --watch",
         "debug": "NODE_OPTIONS=\"$NODE_OPTIONS --inspect-brk\" jest -i",

@@ -17,21 +17,25 @@
  * limitations under the License.
  */
 var semver = require('semver');
+var baseConfig = require("../../jest.config.js");
+
+var config = Object.assign({}, baseConfig, {
+    displayName: {
+        name: "message-accumulator",
+        color: "blueBright",
+    },
+});
 
 var settings = semver.major(process.versions.node) < 14 ?
-    {
+    Object.assign(config, {
         transformIgnorePatterns: ['/node_modules/'],
-
         moduleDirectories: ['node_modules', 'src']
-    } :
-    {
+    }) :
+    Object.assign(config, {
         moduleFileExtensions: ['js', 'jsx', 'json'],
-
         transform: {},
-
         transformIgnorePatterns: ['/node_modules/'],
-
         moduleDirectories: ['node_modules', 'src']
-    };
+    });
 
 module.exports = settings;

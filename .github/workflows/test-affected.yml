@@ -1,4 +1,8 @@
-name: Test Affected
+name: Test affected
+# Test Affected workflow
+# This workflow runs tests and generates coverage reports for packages affected by changes in a pull request.
+# It uses Turborepo to determine affected packages and runs their tests in parallel.
+# Coverage reports are merged and processed for coverage reporting in PR comments.
 
 on: pull_request
 
@@ -28,13 +32,27 @@ jobs:
         uses: browser-actions/setup-chrome@v1
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Affected packages test and coverage
-        run: pnpm coverage:ci:affected
+      - name: List and test affected packages
+        id: affected-packages
+        run: |
+          echo "Listing affected packages"
+          LIST=$(pnpm turbo ls --affected --output=json)
+          echo "LIST: $LIST"
+          echo list=$(echo "$LIST" | jq -c .) >> "$GITHUB_OUTPUT"
+          echo "Running tests and generating coverage reports for affected packages"
+          pnpm coverage:ci:affected
         env:
           # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
           # manually set PR base commit ref
           # per https://github.com/vercel/turborepo/issues/9320#issuecomment-2499219314
           TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+      - name: Generate coverage paths
+        id: coverage-paths
+        env: 
+          AFFECTED_PACKAGES: ${{steps.affected-packages.outputs.list}}
+        run: |
+          echo "Generating coverage paths"
+          node scripts/generate-coverage-paths.js
       - name: Merge coverage reports
         run: |
           echo "Merging coverage reports"
@@ -42,24 +60,13 @@ jobs:
       - name: Jest Code Coverage Comment
         uses: MishaKav/jest-coverage-comment@main
         with:
-          multiple-files: |
-            ilib-lint-python, ./packages/ilib-lint-python/coverage/coverage-summary.json
-            ilib-lint-python-gnu, ./packages/ilib-lint-python-gnu/coverage/coverage-summary.json
-            ilib-lint-react, ./packages/ilib-lint-react/coverage/coverage-summary.json
-            ilib-lint, ./packages/ilib-lint/coverage/coverage-summary.json
-            loctool, ./packages/loctool/coverage/coverage-summary.json
+          multiple-files: ${{ steps.coverage-paths.outputs.coverage-files }}
           title: Jest Code Coverage
           coverage-path: ./coverage.txt
           coverage-title: Code Coverage for changed files
           create-new-comment: false
           report-only-changed-files: true
-          multiple-junitxml-files: |
-            ilib-lint-python, ./packages/ilib-lint-python/junit.xml
-            ilib-lint-python-gnu, ./packages/ilib-lint-python-gnu/junit.xml
-            ilib-lint-react, ./packages/ilib-lint-react/junit.xml
-            ilib-lint, ./packages/ilib-lint/junit.xml
-            loctool, ./packages/loctool/junit.xml
-
+          multiple-junitxml-files: ${{ steps.coverage-paths.outputs.junit-files }}
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
