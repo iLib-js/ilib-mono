@@ -432,7 +432,9 @@ describe("webOSxliff", function() {
         });
         x.deserialize(
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0"\n' +
+        'xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0"\n' +
+        'srcLang="en-KR" trgLang="ko-KR">\n' +
         '  <file id="sample-webos-cs_f1" original="sample-webos-c">\n' +
         '      <group id="sample-webos-c_g1" name="c">\n' +
         '        <unit id="1">\n' +
@@ -469,7 +471,9 @@ describe("webOSxliff", function() {
         var x = new webOSXliff();
         x.deserialize(
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0"\n' +
+        '       xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0"\n' +
+        '       srcLang="en-KR" trgLang="ko-KR">\n' +
         '  <file id="sample-webos-cs_f1" original="sample-webos-c">\n' +
         '      <group id="sample-webos-c_g1" name="c">\n' +
         '        <unit id="1">\n' +
