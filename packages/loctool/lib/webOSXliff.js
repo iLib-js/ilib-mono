@@ -368,6 +368,7 @@ webOSXliff.prototype.deserialize = function(xml) {
 webOSXliff.prototype.toStringData = function(units) {
     var sourceLocale = units[0].sourceLocale;
     var targetLocale = units[0].targetLocale;
+    var hasMetadata = false;
 
     units = units.filter(function(unit) {
         return unit.sourceLocale === sourceLocale && (!targetLocale || unit.targetLocale === targetLocale);
@@ -376,6 +377,7 @@ webOSXliff.prototype.toStringData = function(units) {
     var json = {
         xliff: {
             _attributes: {
+                "xmlns": "urn:oasis:names:tc:xliff:document:2.0",
                 "version": versionString(this.version),
                 "srcLang": sourceLocale,
             }
@@ -386,7 +388,6 @@ webOSXliff.prototype.toStringData = function(units) {
         json.xliff._attributes.trgLang = targetLocale;
     }
 
-    json.xliff._attributes["xmlns:l"] = "http://ilib-js.com/loctool";
     logger.trace("Units to write out is " + JSON.stringify(units, undefined, 4));
 
     // now finally add each of the units to the json
@@ -430,6 +431,7 @@ webOSXliff.prototype.toStringData = function(units) {
 
         if (tu.metadata) {
             tujson["mda:metadata"] = tu.metadata
+            hasMetadata = true;
         }
 
         if (tu.comment) {
@@ -499,6 +501,10 @@ webOSXliff.prototype.toStringData = function(units) {
     Object.keys(files).sort().forEach(function(fileHashKey) {
         json.xliff.file.push(files[fileHashKey]);
     });
+
+    if (hasMetadata) {
+        json.xliff._attributes["xmlns:mda"] = "urn:oasis:names:tc:xliff:metadata:2.0";
+    }
 
     var xml = '<?xml version="1.0" encoding="utf-8"?>\n' + xmljs.js2xml(json, {
         compact: true,

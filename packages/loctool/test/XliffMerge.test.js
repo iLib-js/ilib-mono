@@ -235,7 +235,7 @@ describe("xliffmerge", function() {
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="en-US">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_1">\n' +

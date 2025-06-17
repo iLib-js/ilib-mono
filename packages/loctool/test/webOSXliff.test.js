@@ -399,7 +399,7 @@ describe("webOSxliff", function() {
         var x = new webOSXliff();
         x.deserialize(
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="de-DE" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="de-DE" xmlns="urn:oasis:names:tc:xliff:document:2.0">\n' +
         '  <file id="sample-webos-cs_f1" original="sample-webos-c">\n' +
         '      <group id="sample-webos-c_g1" name="c">\n' +
         '        <unit id="1">\n' +
@@ -513,7 +513,7 @@ describe("webOSxliff", function() {
         });
         x.deserialize(
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns="urn:oasis:names:tc:xliff:document:2.0">\n' +
         '  <file id="sample-webos-cs_f1" original="sample-webos-c">\n' +
         '      <group id="sample-webos-c_g1" name="c">\n' +
         '        <unit id="1">\n' +
@@ -555,7 +555,7 @@ describe("webOSxliff", function() {
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="en-US">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_1">\n' +
@@ -616,7 +616,7 @@ describe("webOSxliff", function() {
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
         '      <unit id="3">\n' +
@@ -665,6 +665,42 @@ describe("webOSxliff", function() {
         '</xliff>';
         expect(actual).toBe(expected);
     });
+    test("webOSXliffSplitdistritueSerialize_xliffStyle", function() {
+        expect.assertions(2);
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.infiles = [
+            "test/testfiles/xliff20/merge-en-US-style.xliff",
+        ];
+        settings.xliffStyle = "webOS"
+        var superset = XliffSplit(settings);
+        var result = XliffSplit.distribute(superset, settings);
+        expect(result).toBeTruthy();
+
+        var actual = result["app2"].serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="en-US">\n' +
+        '  <file id="app2_f1" original="app2">\n' +
+        '    <group id="app2_g1" name="javascript">\n' +
+        '      <unit id="app2_1">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2a</source>\n' +
+        '          <target>app2: String 2a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app2_2">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2b</source>\n' +
+        '          <target>app2: String 2b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
     test("webOSXliffSplitdistritueSerialize_xliffStyle2", function() {
         expect.assertions(2);
         var settings = {};
@@ -682,7 +718,7 @@ describe("webOSxliff", function() {
         var actual = result["sample2"].serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0">\n' +
         '  <file id="sample2_f1" original="sample2">\n' +
         '    <group id="sample2_g1" name="c">\n' +
         '      <unit id="1">\n' +
@@ -716,34 +752,36 @@ describe("webOSxliff", function() {
 
         expect(actual).toBe(expected);
     });
-    test("webOSXliffSplitdistritueSerialize_xliffStyle", function() {
+    test("webOSXliffSplitdistritueSerialize_xliffStyle3", function() {
         expect.assertions(2);
         var settings = {};
         settings.xliffVersion = 2;
         settings.infiles = [
-            "test/testfiles/xliff20/merge-en-US-style.xliff",
+            "test/testfiles/xliff_webOS/merge-ko-KR.xliff",
         ];
+
         settings.xliffStyle = "webOS"
+        settings.mode = "split"
         var superset = XliffSplit(settings);
         var result = XliffSplit.distribute(superset, settings);
         expect(result).toBeTruthy();
 
-        var actual = result["app2"].serialize();
+        var actual = result["sample1"].serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
-        '  <file id="app2_f1" original="app2">\n' +
-        '    <group id="app2_g1" name="javascript">\n' +
-        '      <unit id="app2_1">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR">\n' +
+        '  <file id="sample1_f1" original="sample1">\n' +
+        '    <group id="sample1_g1" name="c">\n' +
+        '      <unit id="3">\n' +
         '        <segment>\n' +
-        '          <source>app2: String 2a</source>\n' +
-        '          <target>app2: String 2a</target>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2">\n' +
+        '      <unit id="4">\n' +
         '        <segment>\n' +
-        '          <source>app2: String 2b</source>\n' +
-        '          <target>app2: String 2b</target>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
         '    </group>\n' +
@@ -812,4 +850,4 @@ describe("webOSxliff", function() {
         '</xliff>';
         expect(actual).toBe(expected);
     });
-});
+})
