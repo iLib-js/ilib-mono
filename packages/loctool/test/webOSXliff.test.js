@@ -539,9 +539,51 @@ describe("webOSxliff", function() {
         expect(result[0].getTarget()).toBe("이용이 불가능합니다");
     });
     //xliff split/merge
+    test("webOSXliffMerge_write", function() {
+        expect.assertions(2);
+
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.xliffStyle = "webOS";
+        settings.infiles = [
+            "test/testfiles/xliff_webOS/app1/ko-KR.xliff",
+            "test/testfiles/xliff_webOS/app1_new/ko-KR.xliff",
+        ];
+        var target = XliffMerge(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR">\n' +
+        '  <file id="sample1_f1" original="sample1">\n' +
+        '    <group id="sample1_g1" name="c">\n' +
+        '      <unit id="3">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>(updated) 확인!</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="4">\n' +
+        '        <segment>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="5">\n' +
+        '        <segment>\n' +
+        '          <source>New String</source>\n' +
+        '          <target>(new) 신규 문구</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
     test("webOSXliffMerge_write_en_US_Style", function() {
         expect.assertions(2);
-    
+
         var settings = {};
         settings.xliffVersion = 2;
         settings.xliffStyle = "webOS";
@@ -551,7 +593,7 @@ describe("webOSxliff", function() {
         ];
         var target = XliffMerge(settings);
         expect(target).toBeTruthy();
-    
+
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +

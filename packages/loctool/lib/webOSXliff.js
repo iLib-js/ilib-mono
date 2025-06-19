@@ -20,11 +20,13 @@
 var log4js = require("log4js");
 var xmljs = require("xml-js");
 var ilib = require("ilib");
+var JSUtils = require("ilib/lib/JSUtils");
 
-var logger = log4js.getLogger("loctool.lib.Xliff");
 var ResourceFactory = require("./ResourceFactory.js");
 var TranslationSet = require("./TranslationSet.js");
 var TranslationUnit = require("./Xliff.js").TranslationUnit;
+
+var logger = log4js.getLogger("loctool.lib.Xliff");
 
 /**
  * @class A class that represents a webOS file.
