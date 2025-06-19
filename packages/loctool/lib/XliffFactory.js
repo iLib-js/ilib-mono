@@ -18,9 +18,11 @@
  * limitations under the License.
  */
 
+var log4js = require("log4js");
 var Xliff = require("./Xliff.js");
 var webOSXliff = require("./webOSXliff.js");
 
+var logger = log4js.getLogger("loctool.lib.XliffFactory");
 var xliffClasses = {
     webOS: webOSXliff,
     standard: Xliff,
@@ -38,6 +40,7 @@ var XliffFactory = function(props) {
     var style = props && XliffFactory.availableStyles.includes(props.style) ? props.style : XliffFactory.defaultStyle;
     var XliffClass = xliffClasses[style];
 
+    logger.trace("xliff style " + style + " with class " + XliffClass.name + " registered to class ");
     return XliffClass ? new XliffClass(props) : undefined;
 };
 

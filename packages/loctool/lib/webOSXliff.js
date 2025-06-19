@@ -26,7 +26,7 @@ var ResourceFactory = require("./ResourceFactory.js");
 var TranslationSet = require("./TranslationSet.js");
 var TranslationUnit = require("./Xliff.js").TranslationUnit;
 
-var logger = log4js.getLogger("loctool.lib.Xliff");
+var logger = log4js.getLogger("loctool.lib.webOSXliff");
 
 /**
  * @class A class that represents a webOS file.
