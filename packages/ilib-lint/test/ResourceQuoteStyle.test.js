@@ -686,6 +686,52 @@ describe("testResourceQuoteStyle", () => {
         expect(!actual).toBeTruthy();
     });
 
+    test("ResourceQuoteStyleMatchAsciiQuotesKorean", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: 'You can launch the Instant Game Response by setting HDMI ULTRA HD Deep Color "On".',
+            targetLocale: "ko-KR",
+            target: "HDMI UHD Deep Color를 '켜짐'으로 설정해야 게임 최적화 모드를 실행할 수 있습니다",
+            pathName: "a/b/ko-KR.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/ko-KR.xliff"
+        });
+        expect(actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleMatchAsciiQuotesChines", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "Prevent Input Delay (Input Lag) setting will return to Standard if 'Game Optimizer' is not used.",
+            targetLocale: "zh-Hans-CN",
+            target: '如果未使用“游戏优化器”，则“防止输入延迟（输入滞后）”设置将返回“标准”',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+        expect(actual).toBeTruthy();
+    });
+
     test("ResourceQuoteStyleMatchAlternate", () => {
         expect.assertions(2);
 

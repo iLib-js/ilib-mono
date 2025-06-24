@@ -228,6 +228,9 @@ class ResourceQuoteStyle extends ResourceRule {
                     correctQuoteEnd
                 ));
             }
+
+            commands = this._removeDuplicatedCommands(commands);
+
             if (commands.length > 0) {
                 fix = ResourceFixer.createFix({ resource, commands, index, category });
             }
@@ -256,6 +259,20 @@ class ResourceQuoteStyle extends ResourceRule {
             params.fix = fix;
         }
         return new Result(params);
+    }
+
+    _removeDuplicatedCommands(commands) {
+        if (commands.length < 2) return commands;
+
+        const checkItem = new Set();
+        return commands.filter(command => {
+            const key = `cmd_${command.stringFix.position}_${command.stringFix.deleteCount}`;
+            if (!checkItem.has(key)) {
+                checkItem.add(key);
+                return true;
+            }
+            return false;
+        });
     }
 
     /**
