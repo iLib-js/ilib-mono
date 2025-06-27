@@ -555,7 +555,7 @@ describe("webOSxliff", function() {
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
         '      <unit id="3">\n' +
@@ -571,6 +571,9 @@ describe("webOSxliff", function() {
         '        </segment>\n' +
         '      </unit>\n' +
         '      <unit id="5">\n' +
+        '        <notes>\n' +
+        '          <note>new</note>\n' +
+        '        </notes>\n' +
         '        <segment>\n' +
         '          <source>New String</source>\n' +
         '          <target>(new) 신규 문구</target>\n' +
@@ -597,7 +600,7 @@ describe("webOSxliff", function() {
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="en-US">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_1">\n' +
@@ -658,7 +661,7 @@ describe("webOSxliff", function() {
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
         '      <unit id="3">\n' +
@@ -707,6 +710,75 @@ describe("webOSxliff", function() {
         '</xliff>';
         expect(actual).toBe(expected);
     });
+    test("webOSXliffMerge_with_different_unit", function() {
+        expect.assertions(2);
+
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.xliffStyle = "webOS";
+        settings.infiles = [
+            "test/testfiles/xliff_webOS/app1/ko-KR.xliff",
+            "test/testfiles/xliff_webOS/app3/ko-KR.xliff",
+        ];
+        var target = XliffMerge(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '  <file id="sample1_f1" original="sample1">\n' +
+        '    <group id="sample1_g1" name="c">\n' +
+        '      <unit id="3">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="4">\n' +
+        '        <segment>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '  <file id="sample3_f2" original="sample3">\n' +
+        '    <group id="sample3_g2" name="x-qml">\n' +
+        '      <unit id="sample3_1">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="sample3_2" name="login">\n' +
+        '        <segment>\n' +
+        '          <source>Device Sign In</source>\n' +
+        '          <target>기기 로그인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="sample3_3" name="login">\n' +
+        '        <segment>\n' +
+        '          <source>Sign In</source>\n' +
+        '          <target>로그인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="sample3_g3" name="x-json">\n' +
+        '      <unit id="sample3_10">\n' +
+        '        <notes>\n' +
+        '          <note>for json</note>\n' +
+        '        </notes>\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
     test("webOSXliffSplitdistritueSerialize_xliffStyle", function() {
         expect.assertions(2);
         var settings = {};
@@ -722,7 +794,7 @@ describe("webOSxliff", function() {
         var actual = result["app2"].serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="en-US">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app2_f1" original="app2">\n' +
         '    <group id="app2_g1" name="javascript">\n' +
         '      <unit id="app2_1">\n' +
@@ -760,7 +832,7 @@ describe("webOSxliff", function() {
         var actual = result["sample2"].serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample2_f1" original="sample2">\n' +
         '    <group id="sample2_g1" name="c">\n' +
         '      <unit id="1">\n' +
@@ -811,7 +883,7 @@ describe("webOSxliff", function() {
         var actual = result["sample1"].serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
         '      <unit id="3">\n' +

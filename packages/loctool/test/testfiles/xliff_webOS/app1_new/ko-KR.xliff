@@ -15,6 +15,9 @@
         </segment>
       </unit>
       <unit id="5">
+        <notes>
+          <note>new</note>
+        </notes>
         <segment>
           <source>New String</source>
           <target>(new) 신규 문구</target>

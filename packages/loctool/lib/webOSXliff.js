@@ -81,7 +81,7 @@ webOSXliff.prototype.parse = function(xliff) {
          for (var i = 0; i < files.length; i++) {
             var fileSettings = {};
             var file = files[i];
-            var unitsElement = [];
+            var groups = [];
              fileSettings = {
                 pathName: file._attributes["original"],
                 locale: sourceLocale,
@@ -89,15 +89,15 @@ webOSXliff.prototype.parse = function(xliff) {
                 targetLocale: targetLocale,
                 flavor: file._attributes["l:flavor"]
             };
-            unitsElement = (typeof (file["group"]) != 'undefined') ? file.group : file;
-            unitsElement = makeArray(unitsElement);
-             for (var j=0; j < unitsElement.length; j++) {
-                if (unitsElement[j].unit) {
-                    var transUnits = makeArray(unitsElement[j].unit);
-                    var unitElementName = unitsElement[j]["_attributes"].name;
+            groups = (typeof (file["group"]) != 'undefined') ? file.group : file;
+            groups = makeArray(groups);
+            for (var j=0; j < groups.length; j++) {
+                if (groups[j].unit) {
+                    var transUnits = makeArray(groups[j].unit);
+                    var groupName = groups[j]["_attributes"].name;
                     transUnits.forEach(function(tu) {
                         var comment, state;
-                        var datatype = tu._attributes["l:datatype"] || unitElementName;
+                        var datatype = tu._attributes["l:datatype"] || groupName;
                         var source = "", target = "";
                          if (tu.notes && tu.notes.note) {
                             comment = ilib.isArray(tu.notes.note) ?
@@ -191,12 +191,11 @@ webOSXliff.prototype.getTranslationUnits = function() {
     return this.tu;
 };
 
-webOSXliff.prototype._hashKey = function(project, context, sourceLocale, targetLocale, key, type, path, ordinal, quantity, flavor) {
-    var key = [key, type || "string", sourceLocale || this.sourceLocale, targetLocale || "", context || "", project, path || "", ordinal || "", quantity || "", flavor || ""].join("_");
+webOSXliff.prototype._hashKey = function(project, context, sourceLocale, targetLocale, source, key, type, path, ordinal, quantity, flavor, datatype) {
+    var key = [source, key, type || "string", sourceLocale || this.sourceLocale, targetLocale || "", context || "", project, path || "", ordinal || "", quantity || "", flavor || "", datatype].join("_");
     logger.trace("Hashkey is " + key);
     return key;
 };
-
 
 /**
  * Add this translation unit to this xliff.
@@ -206,8 +205,8 @@ webOSXliff.prototype._hashKey = function(project, context, sourceLocale, targetL
 webOSXliff.prototype.addTranslationUnit = function(unit) {
     logger.trace("Xliff " + this.path + ": Adding translation unit: " + JSON.stringify(unit, undefined, 4));
 
-    var hashKeySource = this._hashKey(unit.project, unit.context, unit.sourceLocale, "", unit.key, unit.resType, unit.file, unit.ordinal, unit.quantity, unit.flavor),
-        hashKeyTarget = this._hashKey(unit.project, unit.context, unit.sourceLocale, unit.targetLocale, unit.key, unit.resType, unit.file, unit.ordinal, unit.quantity, unit.flavor);
+    var hashKeySource = this._hashKey(unit.project, unit.context, unit.sourceLocale, "", unit.source, unit.key, unit.resType, unit.file, unit.ordinal, unit.quantity, unit.flavor, unit.datatype),
+        hashKeyTarget = this._hashKey(unit.project, unit.context, unit.sourceLocale, unit.targetLocale, unit.source, unit.key, unit.resType, unit.file, unit.ordinal, unit.quantity, unit.flavor, unit.datatype);
 
     if (unit.targetLocale) {
         var oldUnit = this.tuhash[hashKeySource];
@@ -380,15 +379,9 @@ webOSXliff.prototype.toStringData = function(units) {
         xliff: {
             _attributes: {
                 "xmlns": "urn:oasis:names:tc:xliff:document:2.0",
-                "version": versionString(this.version),
-                "srcLang": sourceLocale,
             }
         }
     };
-
-    if (targetLocale) {
-        json.xliff._attributes.trgLang = targetLocale;
-    }
 
     logger.trace("Units to write out is " + JSON.stringify(units, undefined, 4));
 
@@ -440,9 +433,6 @@ webOSXliff.prototype.toStringData = function(units) {
             tujson.notes = {
                 "note": [
                     {
-                        _attributes: {
-                            "appliesTo": "source"
-                        },
                         "_text": tu.comment
                     }
                 ]
@@ -507,6 +497,11 @@ webOSXliff.prototype.toStringData = function(units) {
     if (hasMetadata) {
         json.xliff._attributes["xmlns:mda"] = "urn:oasis:names:tc:xliff:metadata:2.0";
     }
+    json.xliff._attributes.srcLang = sourceLocale;
+    if (targetLocale) {
+        json.xliff._attributes.trgLang = targetLocale;
+    }
+    json.xliff._attributes.version = versionString(this.version);
 
     var xml = '<?xml version="1.0" encoding="utf-8"?>\n' + xmljs.js2xml(json, {
         compact: true,
