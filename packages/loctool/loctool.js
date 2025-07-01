@@ -433,6 +433,10 @@ for (var i = 0; i < argv.length; i++) {
         var candidate = XliffFactory.getAllStyles();
         if (candidate.includes(argv[i+1])) {
             settings.xliffStyle = argv[++i];
+        } else {
+            ++i;
+            logger.info("Warning: '" + argv[i] + "' is an invalid xliffStyle: set to 'standard'");
+            settings.xliffStyle = "standard";
         }
     } else if (val === "--noxliffDups") {
         settings.allowDups = false;
