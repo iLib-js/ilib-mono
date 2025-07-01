@@ -435,7 +435,7 @@ for (var i = 0; i < argv.length; i++) {
             settings.xliffStyle = argv[++i];
         } else {
             ++i;
-            logger.info("Warning: '" + argv[i] + "' is an invalid xliffStyle: set to 'standard'");
+            logger.warn("Warning: '" + argv[i] + "' is an invalid xliffStyle: set to 'standard'");
             settings.xliffStyle = "standard";
         }
     } else if (val === "--noxliffDups") {
