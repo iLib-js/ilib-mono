@@ -1,6 +1,7 @@
 {
     "name": "loctool",
     "version": "2.34.0",
+    "type": "module",
     "main": "./dist/loctool.js",
     "bin": "./dist/loctool.js",
     "types": "./dist/loctool.d.ts",
@@ -80,6 +81,7 @@
         "ilib-po": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "ilib-tree-node": "workspace:^",
+        "ilib-xliff": "^1.4.0",
         "js-stl": "^0.0.6",
         "js-yaml": "^4.1.0",
         "log4js": "^6.9.1",
@@ -101,6 +103,7 @@
     },
     "devDependencies": {
         "@types/jest": "^29.5.14",
+        "@types/node": "^22.15.30",
         "cldr-core": "46.1.0",
         "ilib-internal": "workspace:^",
         "ilib-loctool-mock": "file:test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz",
