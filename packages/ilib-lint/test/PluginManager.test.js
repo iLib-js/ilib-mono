@@ -358,14 +358,14 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
     });
 
     test("PluginManagerGetBuiltInRuleSets", () => {
-        expect.assertions(14);
+        expect.assertions(16);
 
         const plgmgr = new PluginManager();
         expect(plgmgr).toBeTruthy();
         const rm = plgmgr.getRuleManager();
         expect(rm).toBeTruthy();
 
-        expect(rm.sizeRuleSetDefinitions()).toBe(5);
+        expect(rm.sizeRuleSetDefinitions()).toBe(6);
 
         const genericRuleset = rm.getRuleSetDefinition("generic");
         expect(genericRuleset).toBeTruthy();
@@ -385,6 +385,10 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
         const csharpRuleset = rm.getRuleSetDefinition("csharp");
         expect(csharpRuleset).toBeTruthy();
         expect(typeof(csharpRuleset["resource-csharp-numbered-params"])).toBe('boolean');
+
+        const tapRuleset = rm.getRuleSetDefinition("tap");
+        expect(tapRuleset).toBeTruthy();
+        expect(typeof(tapRuleset["resource-tap-named-params"])).toBe('boolean');
     });
 
     test("PluginManagerGetLoadPluginRightFixer", () => {

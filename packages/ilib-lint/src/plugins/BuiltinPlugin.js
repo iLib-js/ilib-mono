@@ -55,7 +55,7 @@ export const regexRules = [
         name: "resource-url-match",
         description: "Ensure that URLs that appear in the source string are also used in the translated string",
         note: "URL '{matchString}' from the source string does not appear in the target string",
-        regexps: [ "((https?|github|ftps?|mailto|file|data|irc):\\/\\/)([\\da-zA-Z\\.-]+)\\.([a-zA-Z\\.]{2,6})([\\/\w\\.-]*)*\\/?" ],
+        regexps: [ "((https?|github|ftps?|mailto|file|data|irc):\\/\\/)([\\da-zA-Z\\.-]+)\\.([a-zA-Z\\.]{2,6})([\\/#\\?=%&\\w\\.-]*)*[\\/#\\?=%&\\w-]" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-url-match.md"
     },
     {
@@ -368,6 +368,14 @@ export const regexRules = [
         note: "The numbered parameter '{{matchString}}' from the source string does not appear in the target string",
         regexps: [ "\\{\\s*(?<match>\\d[^}]*?)\\s*\\}" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-csharp-numbered-params.md"
+    },
+    {
+        type: "resource-matcher",
+        name: "resource-tap-named-params",
+        description: "Ensure that named parameters in Tap I18n that appear in the source string are also used in the translated string",
+        note: "The named parameter '__{matchString}__' from the source string does not appear in the target string",
+        regexps: [ "__(?<match>[a-zA-Z_][a-zA-Z0-9_.]*?)__" ],
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-tap-named-params.md"
     }
 ];
 
@@ -421,6 +429,9 @@ export const builtInRulesets = {
     },
     "csharp": {
         "resource-csharp-numbered-params": true
+    },
+    "tap": {
+        "resource-tap-named-params": true
     }
 };
 
