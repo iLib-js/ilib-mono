@@ -55,7 +55,7 @@ export const regexRules = [
         name: "resource-url-match",
         description: "Ensure that URLs that appear in the source string are also used in the translated string",
         note: "URL '{matchString}' from the source string does not appear in the target string",
-        regexps: [ "((https?|github|ftps?|mailto|file|data|irc):\\/\\/)([\\da-zA-Z\\.-]+)\\.([a-zA-Z\\.]{2,6})([\\/#\\?=%&\\w\\.-]*)*[\\/#\\?=%&\\w-]" ],
+        regexps: [ "((https?|github|ftps?|mailto|file|data|irc):\\/\\/)([\\da-zA-Z\\.-]+)\\.([a-zA-Z\\.]{2,6})([\\/\w\\.-]*)*\\/?" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-url-match.md"
     },
     {
