@@ -358,14 +358,14 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
     });
 
     test("PluginManagerGetBuiltInRuleSets", () => {
-        expect.assertions(16);
+        expect.assertions(19);
 
         const plgmgr = new PluginManager();
         expect(plgmgr).toBeTruthy();
         const rm = plgmgr.getRuleManager();
         expect(rm).toBeTruthy();
 
-        expect(rm.sizeRuleSetDefinitions()).toBe(6);
+        expect(rm.sizeRuleSetDefinitions()).toBe(7);
 
         const genericRuleset = rm.getRuleSetDefinition("generic");
         expect(genericRuleset).toBeTruthy();
@@ -373,6 +373,11 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
         expect(genericRuleset["resource-url-match"]).toBeTruthy();
         expect(typeof(genericRuleset["resource-icu-plurals"])).toBe('boolean');
         expect(typeof(genericRuleset["resource-url-match"])).toBe('boolean');
+
+        const gnuRuleset = rm.getRuleSetDefinition("gnu");
+        expect(gnuRuleset).toBeTruthy();
+        expect(gnuRuleset["resource-gnu-printf-match"]).toBeTruthy();
+        expect(typeof(gnuRuleset["resource-gnu-printf-match"])).toBe('boolean');
 
         const sourceRuleset = rm.getRuleSetDefinition("source");
         expect(sourceRuleset).toBeTruthy();

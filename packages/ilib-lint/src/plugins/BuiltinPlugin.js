@@ -45,6 +45,7 @@ import ResourceXML from '../rules/ResourceXML.js';
 import ResourceCamelCase from '../rules/ResourceCamelCase.js';
 import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
 import ResourceKebabCase from '../rules/ResourceKebabCase.js';
+import ResourceGNUPrintfMatch from '../rules/ResourceGNUPrintfMatch.js';
 import StringFixer from './string/StringFixer.js';
 import ResourceFixer from './resource/ResourceFixer.js';
 
@@ -409,6 +410,11 @@ export const builtInRulesets = {
         "resource-no-space-with-fullwidth-punctuation": true,
     },
 
+    gnu: {
+        // GNU printf style parameter matching
+        "resource-gnu-printf-match": true,
+    },
+
     source: {
         "resource-source-icu-plural-syntax": true,
         "resource-source-icu-plural-categories": true,
@@ -502,6 +508,7 @@ class BuiltinPlugin extends Plugin {
             ResourceCamelCase,
             ResourceSnakeCase,
             ResourceKebabCase,
+            ResourceGNUPrintfMatch,
             ...regexRules
         ];
     }
