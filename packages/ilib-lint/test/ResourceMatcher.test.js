@@ -1,7 +1,7 @@
 /*
  * ResourceMatcher.test.js - test the built-in regular-expression-based rules
  *
- * Copyright © 2022-2024 JEDLSoft
+ * Copyright © 2022-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,6 +97,29 @@ describe("testResourceMatcher", () => {
             source: 'This has an URL in it http://www.box.com',
             targetLocale: "de-DE",
             target: "Dies hat ein URL http://www.box.com",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceURLMatch with query and hash", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceMatcher(findRuleDefinition("resource-url-match"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "url.test",
+            sourceLocale: "en-US",
+            source: 'This has an URL in it http://www.box.com/api?q=asdf&s=34534#hash',
+            targetLocale: "de-DE",
+            target: "Dies hat ein URL http://www.box.com/api?q=asdf&s=34534#hash",
             pathName: "a/b/c.xliff"
         });
         const actual = rule.matchString({
@@ -416,6 +439,116 @@ describe("testResourceMatcher", () => {
             file: "a/b/c.xliff"
         });
         expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceURLMatch at the end of a sentence at the end of the string", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceMatcher(findRuleDefinition("resource-url-match"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "url.test",
+            sourceLocale: "en-US",
+            source: 'This has an URL in it http://www.box.com.',
+            targetLocale: "ja-JP",
+            target: "この中にURLがあります http://www.box.com。",
+            pathName: "a/b/c.xliff"
+        });
+        // should not give an error because the period at the end of the source string
+        // is not part of the URL. The URL ends with the "m" in "com".
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceURLMatch at the end of a sentence in the middle of the string", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceMatcher(findRuleDefinition("resource-url-match"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "url.test",
+            sourceLocale: "en-US",
+            source: 'This has an URL in it http://www.box.com. This sentence does not.',
+            targetLocale: "ja-JP",
+            target: "この中にURLがあります http://www.box.com。 この文はありません。",
+            pathName: "a/b/c.xliff"
+        });
+        // should not give an error because the period at the end of the URL
+        // is not part of the URL. The URL ends with the "m" in "com".
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceURLMatch correctly gives result for mismatch in the query", () => {
+        expect.assertions(8);
+
+        const rule = new ResourceMatcher(findRuleDefinition("resource-url-match"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "url.test",
+            sourceLocale: "en-US",
+            source: 'This has an URL in it http://www.box.com/api?q=asdf%20&s=34534#hash',
+            targetLocale: "de-DE",
+            target: "Dies hat ein URL http://www.box.com/api?q=asdf%20&s=34534877#hash",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(actual.length).toBe(1);
+
+        expect(actual[0].severity).toBe("error");
+        expect(actual[0].id).toBe("url.test");
+        expect(actual[0].highlight).toBe("Target: Dies hat ein URL http://www.box.com/api?q=asdf%20&s=34534877#hash<e0></e0>");
+        expect(actual[0].source).toBe('This has an URL in it http://www.box.com/api?q=asdf%20&s=34534#hash');
+        expect(actual[0].pathName).toBe("a/b/c.xliff");
+    });
+
+    test("ResourceURLMatch correctly gives result for mismatch in the hash", () => {
+        expect.assertions(8);
+
+        const rule = new ResourceMatcher(findRuleDefinition("resource-url-match"));
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "url.test",
+            sourceLocale: "en-US",
+            source: 'This has an URL in it http://www.box.com/api?q=asdf%20&s=34534#hashone',
+            targetLocale: "de-DE",
+            target: "Dies hat ein URL http://www.box.com/api?q=asdf%20&s=34534#hashtwo",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(actual.length).toBe(1);
+
+        expect(actual[0].severity).toBe("error");
+        expect(actual[0].id).toBe("url.test");
+        expect(actual[0].highlight).toBe("Target: Dies hat ein URL http://www.box.com/api?q=asdf%20&s=34534#hashtwo<e0></e0>");
+        expect(actual[0].source).toBe('This has an URL in it http://www.box.com/api?q=asdf%20&s=34534#hashone');
+        expect(actual[0].pathName).toBe("a/b/c.xliff");
     });
 
     test("ResourceNamedParamsMatch", () => {
