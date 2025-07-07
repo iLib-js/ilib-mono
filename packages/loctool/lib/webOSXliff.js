@@ -371,9 +371,13 @@ webOSXliff.prototype.toStringData = function(units) {
     var targetLocale = units[0].targetLocale;
     var hasMetadata = false;
 
-    units = units.filter(function(unit) {
-        return unit.sourceLocale === sourceLocale && (!targetLocale || unit.targetLocale === targetLocale);
-    });
+    units = units
+        .filter(unit => unit.sourceLocale === sourceLocale && (!targetLocale || unit.targetLocale === targetLocale))
+        .sort((a, b) => {
+            if (a.project < b.project) return -1;
+            if (a.project > b.project) return 1;
+            return 0;
+        });
 
     var json = {
         xliff: {

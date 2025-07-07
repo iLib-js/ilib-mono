@@ -710,6 +710,73 @@ describe("webOSxliff", function() {
         '</xliff>';
         expect(actual).toBe(expected);
     });
+    test("webOSXliffMerge_write_sorted_by_project", function() {
+        expect.assertions(2);
+
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.xliffStyle = "webOS";
+        settings.mode = 'merge';
+        // The order of 'infiles' is intentional (app2 before app1)
+        settings.infiles = [
+            "test/testfiles/xliff_webOS/app2/ko-KR.xliff",
+            "test/testfiles/xliff_webOS/app1/ko-KR.xliff",
+        ];
+        var target = XliffMerge(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '  <file id="sample1_f1" original="sample1">\n' +
+        '    <group id="sample1_g1" name="c">\n' +
+        '      <unit id="3">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="4">\n' +
+        '        <segment>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '  <file id="sample2_f2" original="sample2">\n' +
+        '    <group id="sample2_g2" name="c">\n' +
+        '      <unit id="1">\n' +
+        '        <segment>\n' +
+        '          <source>No</source>\n' +
+        '          <target>아니오</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="2">\n' +
+        '        <segment>\n' +
+        '          <source>Yes</source>\n' +
+        '          <target>예</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="7">\n' +
+        '        <mda:metadata>\n' +
+        '          <mda:metaGroup category="device-type">\n' +
+        '            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
+        '            <mda:meta type="Box">"Box" 이용이 불가능합니다</mda:meta>\n' +
+        '            <mda:meta type="SoundBar">"SoundBar" 이용이 불가능합니다</mda:meta>\n' +
+        '          </mda:metaGroup>\n' +
+        '        </mda:metadata>\n' +
+        '        <segment>\n' +
+        '          <source>NOT AVAILABLE</source>\n' +
+        '          <target>이용이 불가능합니다</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
     test("webOSXliffMerge_with_different_unit", function() {
         expect.assertions(2);
 
