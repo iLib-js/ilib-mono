@@ -253,31 +253,126 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual === null).toBeTruthy();
     });
 
-    test("Unicode ellipsis is recognized in English", () => {
-        expect.assertions(2);
+    test("English: source can end with ... or …, but target must end with Unicode ellipsis", () => {
+        expect.assertions(4);
 
         const rule = new ResourceSentenceEnding();
 
-        const resource = new ResourceString({
-            key: "unicode.ellipsis.test",
+        // Source: ..., Target: … (should not trigger)
+        const resource1 = new ResourceString({
+            key: "en.ellipsis.1",
+            sourceLocale: "en-US",
+            source: "This is a sentence...",
+            targetLocale: "en-US",
+            target: "This is a sentence…",
+            pathName: "a/b/c.xliff",
+            lineNumber: 201
+        });
+        const result1 = rule.matchString({
+            source: resource1.getSource(),
+            target: resource1.getTarget(),
+            resource: resource1,
+            file: resource1.pathName
+        });
+        expect(result1).toBeNull();
+
+        // Source: …, Target: … (should not trigger)
+        const resource2 = new ResourceString({
+            key: "en.ellipsis.2",
             sourceLocale: "en-US",
             source: "This is a sentence…",
             targetLocale: "en-US",
+            target: "This is a sentence…",
+            pathName: "a/b/c.xliff",
+            lineNumber: 202
+        });
+        const result2 = rule.matchString({
+            source: resource2.getSource(),
+            target: resource2.getTarget(),
+            resource: resource2,
+            file: resource2.pathName
+        });
+        expect(result2).toBeNull();
+
+        // Source: ..., Target: ... (should trigger warning)
+        const resource3 = new ResourceString({
+            key: "en.ellipsis.3",
+            sourceLocale: "en-US",
+            source: "This is a sentence...",
+            targetLocale: "en-US",
             target: "This is a sentence...",
             pathName: "a/b/c.xliff",
-            lineNumber: 101
+            lineNumber: 203
         });
-
-        const result = rule.matchString({
-            source: resource.getSource(),
-            target: resource.getTarget(),
-            resource: resource,
-            file: resource.pathName
+        const result3 = rule.matchString({
+            source: resource3.getSource(),
+            target: resource3.getTarget(),
+            resource: resource3,
+            file: resource3.pathName
         });
+        expect(result3).toBeTruthy();
+        expect(result3?.description).toContain('Sentence ending punctuation should be "…" for en-US locale');
+    });
 
-        // Should trigger a warning because the target uses "..." instead of "…"
-        expect(result).toBeTruthy();
-        expect(result?.description).toContain('Sentence ending punctuation should be "…" for en-US locale');
+    test("English: source can end with ... or …, but target must end with Unicode ellipsis", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceSentenceEnding();
+
+        // Source: ..., Target: … (should not trigger)
+        const resource1 = new ResourceString({
+            key: "en.ellipsis.1",
+            sourceLocale: "en-US",
+            source: "This is a sentence...",
+            targetLocale: "en-US",
+            target: "This is a sentence…",
+            pathName: "a/b/c.xliff",
+            lineNumber: 201
+        });
+        const result1 = rule.matchString({
+            source: resource1.getSource(),
+            target: resource1.getTarget(),
+            resource: resource1,
+            file: resource1.pathName
+        });
+        expect(result1).toBeNull();
+
+        // Source: …, Target: … (should not trigger)
+        const resource2 = new ResourceString({
+            key: "en.ellipsis.2",
+            sourceLocale: "en-US",
+            source: "This is a sentence…",
+            targetLocale: "en-US",
+            target: "This is a sentence…",
+            pathName: "a/b/c.xliff",
+            lineNumber: 202
+        });
+        const result2 = rule.matchString({
+            source: resource2.getSource(),
+            target: resource2.getTarget(),
+            resource: resource2,
+            file: resource2.pathName
+        });
+        expect(result2).toBeNull();
+
+        // Source: ..., Target: ... (should trigger warning)
+        const resource3 = new ResourceString({
+            key: "en.ellipsis.3",
+            sourceLocale: "en-US",
+            source: "This is a sentence...",
+            targetLocale: "en-US",
+            target: "This is a sentence...",
+            pathName: "a/b/c.xliff",
+            lineNumber: 203
+        });
+        const result3 = rule.matchString({
+            source: resource3.getSource(),
+            target: resource3.getTarget(),
+            resource: resource3,
+            file: resource3.pathName
+        });
+        expect(result3).toBeTruthy();
+        expect(result3?.description).toContain('Sentence ending punctuation should be "…" for en-US locale');
     });
 
     test("Japanese colon is converted to fullwidth", () => {

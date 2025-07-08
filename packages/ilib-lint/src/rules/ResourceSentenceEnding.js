@@ -74,7 +74,7 @@ class ResourceSentenceEnding extends ResourceRule {
         // Patterns to match, in order of specificity (longer patterns first)
         const patterns = [
             // Ellipsis patterns (three dots or Unicode ellipsis)
-            { regex: /\.\.\.$/, type: 'ellipsis', original: '...' },
+            { regex: /\.{3}$/, type: 'ellipsis', original: '...' },
             { regex: /…$/, type: 'ellipsis', original: '…' },
             
             // Punctuation followed by quotes
@@ -103,23 +103,19 @@ class ResourceSentenceEnding extends ResourceRule {
      * Get the expected punctuation for the given locale and punctuation type
      * @param {Locale} localeObj - The parsed locale object
      * @param {string} type - The punctuation type
-     * @param {string} sourceOriginal - The original punctuation from the source
-     * @returns {string|string[]|null} - The expected punctuation(s) for the locale, or null if punctuation is optional
+     * @returns {string|null} - The expected punctuation for the locale, or null if punctuation is optional
      */
-    getExpectedPunctuation(localeObj, type, sourceOriginal) {
+    getExpectedPunctuation(localeObj, type) {
         const baseLocale = localeObj.getLanguage();
         if (!baseLocale) return null;
         // Custom config
         if (this.customPunctuationMap[baseLocale] && this.customPunctuationMap[baseLocale][type]) {
             return this.customPunctuationMap[baseLocale][type];
         }
-        // For English ellipsis, allow both forms (return array)
+        // For English ellipsis, only accept the default (Unicode ellipsis) in the target
         if (baseLocale === 'en' && type === 'ellipsis') {
-            if (sourceOriginal === '...') return ['...', '…'];
-            if (sourceOriginal === '…') return ['…', '...'];
-            return ['...', '…'];
+            return '…';
         }
-        // For all other cases, always return a string
         const punctuationMap = {
             'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
             'zh': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
@@ -265,7 +261,7 @@ class ResourceSentenceEnding extends ResourceRule {
         const optionalPunctuationLanguages = ['th', 'lo', 'my', 'km'];
         if (optionalPunctuationLanguages.includes(baseLocale)) return null;
         // Pass sourceEnding.original to getExpectedPunctuation for ellipsis
-        const expectedPunctuation = this.getExpectedPunctuation(localeObj, sourceEnding.type, sourceEnding.original);
+        const expectedPunctuation = this.getExpectedPunctuation(localeObj, sourceEnding.type);
         if (expectedPunctuation && this.hasExpectedEnding(target, expectedPunctuation, sourceEnding.original)) {
             return null;
         }
@@ -288,19 +284,16 @@ class ResourceSentenceEnding extends ResourceRule {
         }
         // For English ellipsis, prefer the form used in the source for the fix
         let fix = null;
-        if (Array.isArray(expectedPunctuation) && actualPunctuation && !expectedPunctuation.includes(actualPunctuation)) {
-            // Prefer the first form in expectedPunctuation (source form)
-            fix = this.createPunctuationFix(resource, target, actualPunctuation, expectedPunctuation[0]);
-        } else if (actualPunctuation && actualPunctuation !== expectedPunctuation) {
-            fix = this.createPunctuationFix(resource, target, actualPunctuation, Array.isArray(expectedPunctuation) ? expectedPunctuation[0] : expectedPunctuation);
+        if (actualPunctuation && actualPunctuation !== expectedPunctuation) {
+            fix = this.createPunctuationFix(resource, target, actualPunctuation, expectedPunctuation);
         }
         return new Result({
             rule: this,
             severity: "warning",
             id: "sentence-ending-punctuation",
-            description: `Sentence ending punctuation should be "${Array.isArray(expectedPunctuation) ? expectedPunctuation[0] : expectedPunctuation}" for ${targetLocale} locale, not "${actualPunctuation || sourceEnding.original}"`,
+            description: `Sentence ending punctuation should be "${expectedPunctuation}" for ${targetLocale} locale, not "${actualPunctuation || sourceEnding.original}"`,
             source: source,
-            highlight: `Target should end with "${Array.isArray(expectedPunctuation) ? expectedPunctuation[0] : expectedPunctuation}"`,
+            highlight: `Target should end with "${expectedPunctuation}"`,
             pathName: file,
             fix,
             lineNumber: typeof(resource.lineNumber) !== 'undefined' ? resource.lineNumber : undefined
