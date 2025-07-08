@@ -8,7 +8,7 @@ Sometimes translators accidentally translate
 the name of the parameter or they forget to include the parameter in
 the target string, and this rule helps to catch those cases.
 
-Tap I18n parameter names can include:
+[Tap I18n parameter names can include](https://i18next.github.io/i18next/pages/doc_features.html#interpolation):
 - Letters (a-z, A-Z)
 - Numbers (0-9, but not as the first character)
 - Underscores (_)
