@@ -4,6 +4,7 @@
 
 # Build Outputs
 packages/*/lib/
+packages/internal/*/lib/
 *.tgz
 
 # Dependencies

@@ -26,22 +26,6 @@ importers:
         specifier: ^2.2.3
         version: 2.2.3
 
-  packages/e2e-test:
-    dependencies:
-      '@jest/globals':
-        specifier: ^29.7.0
-        version: 29.7.0
-    devDependencies:
-      '@tsconfig/node12':
-        specifier: ^12.1.4
-        version: 12.1.4
-      '@types/node':
-        specifier: '12'
-        version: 12.20.55
-      typescript:
-        specifier: ^5.3.3
-        version: 5.6.3
-
   packages/ilib-address:
     dependencies:
       ilib-common:
@@ -1669,7 +1653,7 @@ importers:
     devDependencies:
       '@ilib-mono/e2e-test':
         specifier: workspace:^
-        version: link:../e2e-test
+        version: link:../internal/e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
@@ -1681,7 +1665,7 @@ importers:
     devDependencies:
       '@ilib-mono/e2e-test':
         specifier: workspace:^
-        version: link:../../../e2e-test
+        version: link:../../../internal/e2e-test
       ilib-loctool-javascript:
         specifier: workspace:^
         version: link:../../../ilib-loctool-javascript
@@ -2510,6 +2494,22 @@ importers:
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
+
+  packages/internal/e2e-test:
+    dependencies:
+      '@jest/globals':
+        specifier: ^29.7.0
+        version: 29.7.0
+    devDependencies:
+      '@tsconfig/node12':
+        specifier: ^12.1.4
+        version: 12.1.4
+      '@types/node':
+        specifier: '12'
+        version: 12.20.55
+      typescript:
+        specifier: ^5.3.3
+        version: 5.6.3
 
   packages/loctool:
     dependencies:
