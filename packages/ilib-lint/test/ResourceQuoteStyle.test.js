@@ -1543,9 +1543,9 @@ describe("testResourceQuoteStyle", () => {
         const resource = new ResourceString({
             key: "quote.test",
             sourceLocale: "en-US",
-            source: "This string’s contents do not contain quotes in it.",
+            source: 'This string contains "quotes" in it.',
             targetLocale: "fr-FR",
-            target: "L’expression ne contient pas de guillemets.",
+            target: "L'expression contient de «guillemets». C'est tres bizarre !",
             pathName: "a/b/c.xliff"
         });
         const actual = rule.matchString({
@@ -1554,6 +1554,54 @@ describe("testResourceQuoteStyle", () => {
             resource,
             file: "a/b/c.xliff"
         });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleIgnorePossessiveApostropheInSource", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "Maintaining your enterprises' security policies. Let's put another quote char used as an apostrophe in here to see if it triggers an error.",
+            targetLocale: "zh-CN",
+            target: "维护企业的安全策略。",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because "enterprises'" is a possessive apostrophe, not a quote
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleIgnoreContractionApostropheInSource", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "Don't forget to check the user's settings.",
+            targetLocale: "zh-CN",
+            target: "不要忘记检查用户的设置。",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because "Don't" and "user's" are contractions/possessives, not quotes
         expect(!actual).toBeTruthy();
     });
 
@@ -1568,7 +1616,7 @@ describe("testResourceQuoteStyle", () => {
             sourceLocale: "en-US",
             source: "These strings' contents do not contain quotes in it.",
             targetLocale: "fr-FR",
-            target: "L'expressions ne contient pas de guillemets.",
+            target: "L'expressions ne contient pas de guillemets. Quelqu'un a dit ça. Qu'est-ce que c'est ?",
             pathName: "a/b/c.xliff"
         });
         const actual = rule.matchString({
