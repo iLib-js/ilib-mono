@@ -50,15 +50,22 @@ If you need different punctuation rules for your project, add this to your confi
 
 ```json
 {
-  "rules": {
-    "resource-sentence-ending": {
-      "fr": {
-        "period": "!",
-        "question": "?",
-        "exclamation": "!",
-        "ellipsis": "...",
-        "colon": ":"
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "fr": {
+          "period": "!",
+          "question": "?",
+          "exclamation": "!",
+          "ellipsis": "...",
+          "colon": ":"
+        }
       }
+    }
+  },
+  "filetypes": {
+    "mytype": {
+      "ruleset": [ "myset" ]
     }
   }
 }
