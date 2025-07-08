@@ -5,10 +5,6 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "description": "Internal package for E2E testing of ilib packages",
-  "bin": {
-    "e2e-test": "lib/e2e-test.js",
-    "e2e-test-ci": "lib/e2e-test-ci.js"
-  },
   "scripts": {
     "build": "tsc"
   },
