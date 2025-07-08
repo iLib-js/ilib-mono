@@ -27,6 +27,10 @@ importers:
         version: 2.2.3
 
   packages/e2e-test:
+    dependencies:
+      '@jest/globals':
+        specifier: ^29.7.0
+        version: 29.7.0
     devDependencies:
       '@tsconfig/node12':
         specifier: ^12.1.4
@@ -164,7 +168,7 @@ importers:
         version: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -231,7 +235,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
+        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -1663,6 +1667,9 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
@@ -1672,6 +1679,9 @@ importers:
 
   packages/ilib-loctool-json/samples/js-json:
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../../../e2e-test
       ilib-loctool-javascript:
         specifier: workspace:^
         version: link:../../../ilib-loctool-javascript

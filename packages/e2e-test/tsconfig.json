@@ -1,11 +1,6 @@
 {
     "extends": "@tsconfig/node12",
     "compilerOptions": {
-        "allowJs": true,
-        "noEmit": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitOverride": true,
-        "noImplicitAny": true,
         "outDir": "lib",
         "declaration": true,
         "declarationMap": true
