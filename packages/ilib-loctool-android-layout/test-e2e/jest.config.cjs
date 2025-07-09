@@ -4,7 +4,7 @@ const config = {
     ...baseConfig,
     displayName: {
         name: "ilib-loctool-android-layout e2e",
-        color: "redBright",
+        color: "blackBright",
     },
 };
 

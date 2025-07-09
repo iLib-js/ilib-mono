@@ -4,7 +4,7 @@ const config = {
     ...baseConfig,
     displayName: {
         name: "ilib-loctool-ghfm e2e",
-        color: "red",
+        color: "blackBright",
     },
 };
 
