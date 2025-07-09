@@ -1,0 +1,4 @@
+{
+    "Hello": "Hola",
+    "Current locale is '{localeStr}'": "La configuración regional actual es '{localeStr}'"
+}

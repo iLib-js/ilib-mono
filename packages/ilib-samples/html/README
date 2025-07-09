@@ -1,0 +1,16 @@
+Steps to generate files to work correctly.
+
+step 1)
+ `npm install`
+
+step 2)
+ `npm run scan`
+
+step 3)
+`npm run build`
+
+step 4)
+ choose between `npm run gen-res-assemble` or `npm run gen-res-dynamic`
+
+step 5)
+ launch `index.html`

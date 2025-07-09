@@ -1,0 +1,64 @@
+{
+    "name": "ilib-sample",
+    "version": "2.2.0",
+    "main": "./src/index.js",
+    "description": "Sample application that demostrates how to use the ilib-lint tool with python strings",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "date",
+        "time",
+        "format",
+        "locale",
+        "translation"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-sample",
+    "bugs": "https://github.com/iLib-js/ilib-sample/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "src",
+        "README.md",
+        "LICENSE"
+    ],
+    "engines": {
+        "node": ">=16.11.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:iLib-js/iLib-sample.git"
+    },
+    "scripts": {
+        "lint": "ilib-lint",
+        "lint:fix": "ilib-lint --overwrite",
+        "debug": "node --inspect-brk node_modules/ilib-lint/src/index.js",
+        "clean": "git clean -f -d *",
+        "test": "echo success"
+    },
+    "dependencies": {
+        "ilib-lint": "^2.8.0",
+        "ilib-lint-common": "^3.2.0",
+        "ilib-lint-python": "^2.0.3",
+        "ilib-lint-python-gnu": "^2.0.3",
+        "ilib-lint-react": "^2.0.3"
+    }
+}

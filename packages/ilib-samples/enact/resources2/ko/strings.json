@@ -1,0 +1,4 @@
+{
+    "Hello": "안녕",
+    "Current locale is '{localeStr}'": "res2 현재 설정된 로케일: '{localeStr}' "
+}

@@ -1,0 +1,9 @@
+{
+    "files": [
+        "strings.json",
+        "es/strings.json",
+        "fr/strings.json",
+        "ko/strings.json"
+    ],
+    "l10n_timestamp": "1234"
+}

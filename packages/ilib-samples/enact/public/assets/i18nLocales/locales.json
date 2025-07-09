@@ -1,0 +1,10 @@
+{
+    "locales": [
+        {"code": "en-US"},
+        {"code": "am-ET"},
+        {"code": "es-ES"},
+        {"code": "fa-IR"},
+        {"code": "ko-KR"},
+        {"code": "zxx-XX"}
+    ]
+}
