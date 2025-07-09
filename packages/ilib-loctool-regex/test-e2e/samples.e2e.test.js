@@ -11,7 +11,7 @@ describe("samples", () => {
         });
 
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "xliffs", "sample-regex-extracted.xliff");
+            const xliffPath = path.resolve(projectPath, "sample-regex-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });

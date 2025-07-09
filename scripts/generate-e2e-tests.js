@@ -52,16 +52,24 @@ module.exports = config;
 `;
 }
 
-function createE2ETestFile(packageName, sampleDirs) {
+function createE2ETestFile(packageName, sampleDirs, samplesPath) {
     let testContent = `const path = require("path");
 const { expectFileToMatchSnapshot, LoctoolRunner } = require("@ilib-mono/e2e-test");
 
 describe("samples", () => {`;
 
     sampleDirs.forEach((sampleDir, index) => {
-        const sampleName = sampleDir.replace(/[-_]/g, "");
+        const projectPath = path.join(samplesPath, sampleDir);
+        const projectJsonPath = path.join(projectPath, "project.json");
+        let projectName = sampleDir;
+        try {
+            const projectJson = JSON.parse(fs.readFileSync(projectJsonPath, "utf8"));
+            if (projectJson.name) projectName = projectJson.name;
+        } catch (e) {
+            // fallback to defaults
+        }
         testContent += `
-    describe("${sampleName}", () => {
+    describe("${sampleDir}", () => {
         const projectPath = path.resolve(__dirname, "..", "samples", "${sampleDir}");
 
         beforeAll(async () => {
@@ -70,7 +78,7 @@ describe("samples", () => {`;
         });
 
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "xliffs", "sample-${sampleName}-extracted.xliff");
+            const xliffPath = path.resolve(projectPath, "${projectName}-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });`;
@@ -135,7 +143,7 @@ function generateE2ETests() {
 
         // Create e2e test file
         const testFilePath = path.join(testE2EPath, "samples.e2e.test.js");
-        fs.writeFileSync(testFilePath, createE2ETestFile(packageName, sampleDirs));
+        fs.writeFileSync(testFilePath, createE2ETestFile(packageName, sampleDirs, samplesPath));
 
         // Update package.json
         updatePackageJson(packagePath);

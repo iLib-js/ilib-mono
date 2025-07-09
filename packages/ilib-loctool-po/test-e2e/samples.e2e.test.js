@@ -11,7 +11,7 @@ describe("samples", () => {
         });
 
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "xliffs", "sample-po-extracted.xliff");
+            const xliffPath = path.resolve(projectPath, "sample-po-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });

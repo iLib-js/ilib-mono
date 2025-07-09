@@ -11,7 +11,7 @@ describe("samples", () => {
         });
 
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "xliffs", "sample-arb-extracted.xliff");
+            const xliffPath = path.resolve(projectPath, "arb-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });
@@ -24,7 +24,7 @@ describe("samples", () => {
         });
 
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "xliffs", "sample-salesforce-extracted.xliff");
+            const xliffPath = path.resolve(projectPath, "sample-metaxml-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });
