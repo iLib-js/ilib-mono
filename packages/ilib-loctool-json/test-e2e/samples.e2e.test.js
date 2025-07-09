@@ -15,4 +15,18 @@ describe("samples", () => {
             expectFileToMatchSnapshot(xliffPath);
         });
     });
+
+    describe("json", () => {
+        const projectPath = path.resolve(__dirname, "..", "samples", "json");
+
+        beforeAll(async () => {
+            const loctool = new LoctoolRunner(projectPath);
+            await loctool.run("localize");
+        });
+
+        it("should produce an extracted XLIFF file", () => {
+            const xliffPath = path.resolve(projectPath, "sample-json-extracted.xliff");
+            expectFileToMatchSnapshot(xliffPath);
+        });
+    });
 });
