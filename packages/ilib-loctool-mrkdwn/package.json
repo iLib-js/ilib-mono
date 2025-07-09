@@ -50,7 +50,8 @@
         "test": "node node_modules/jest/bin/jest.js",
         "test:watch": "node node_modules/jest/bin/jest.js --watch",
         "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i",
-        "clean": "git clean -f -d * ; rm -rf test/testfiles/fr-FR test/testfiles/de-DE"
+        "clean": "git clean -f -d * ; rm -rf test/testfiles/fr-FR test/testfiles/de-DE",
+        "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
     },
     "engines": {
         "node": ">=10.0"
@@ -64,6 +65,7 @@
     },
     "devDependencies": {
         "jest": "^29.7.0",
-        "loctool": "workspace:^"
+        "loctool": "workspace:^",
+        "@ilib-mono/e2e-test": "workspace:^"
     }
 }
