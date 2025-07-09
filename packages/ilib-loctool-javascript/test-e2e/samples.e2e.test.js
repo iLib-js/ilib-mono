@@ -11,7 +11,7 @@ describe("samples", () => {
         });
 
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "xliffs", "sample-js-extracted.xliff");
+            const xliffPath = path.resolve(projectPath, "sample-js-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });
@@ -25,7 +25,7 @@ describe("samples", () => {
         });
 
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "xliffs", "sample-js-json-extracted.xliff");
+            const xliffPath = path.resolve(projectPath, "sample-js-json-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });
@@ -39,7 +39,7 @@ describe("samples", () => {
         });
 
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "xliffs", "sample-php-resource-extracted.xliff");
+            const xliffPath = path.resolve(projectPath, "sample-php-resource-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });

@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples markdown should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="md/en-US/README.md" source-language="en-US" product-name="sample-md">
+    <body>
+      <trans-unit id="1" resname="r926895493.Title" restype="string" datatype="x-yaml">
+        <source>Readme for the Github-Flavored Markdown Sample</source>
+      </trans-unit>
+      <trans-unit id="2" resname="r911920644" restype="string" datatype="markdown">
+        <source>ilib-loctool-ghfm</source>
+      </trans-unit>
+      <trans-unit id="3" resname="r73969288" restype="string" datatype="markdown">
+        <source>Ilib loctool plugin to parse and localize Github-flavored markdown</source>
+      </trans-unit>
+      <trans-unit id="4" resname="r926895493.Description" restype="string" datatype="x-yaml">
+        <source>this is a sample of frontmatter that can be extracted and localized</source>
+      </trans-unit>
+      <trans-unit id="5" resname="r319626336" restype="string" datatype="markdown">
+        <source>Markdown is broken into paragraphs and phrases using the
+&lt;c0&gt;remark&lt;/c0&gt; family of parsers.
+Here is a &lt;c1&gt;link&lt;/c1&gt; that is not localized.
+Here is a &lt;c2&gt;footnote&lt;/c2&gt; that is localized.
+Here is a &lt;c3&gt;link&lt;/c3&gt; that is is localized as well.</source>
+      </trans-unit>
+      <trans-unit id="6" resname="r185975191" restype="string" datatype="markdown">
+        <source>Escapes</source>
+      </trans-unit>
+      <trans-unit id="7" resname="r342091031" restype="string" datatype="markdown">
+        <source>Whenever there is syntax in the markdown that translators should
+not touch, this plugin converts them into xml-like components.</source>
+      </trans-unit>
+      <trans-unit id="8" resname="r327998478" restype="string" datatype="markdown">
+        <source>Becomes the string:</source>
+      </trans-unit>
+      <trans-unit id="9" resname="r708014411" restype="string" datatype="markdown">
+        <source>for the translators.</source>
+      </trans-unit>
+      <trans-unit id="10" resname="r156483976" restype="string" datatype="markdown">
+        <source>In this way, translators only have to deal with xml-like syntax
+(which they are probably already familiar with) instead of the
+various methods of marking up text using markdown.</source>
+      </trans-unit>
+      <trans-unit id="11" resname="r664047074" restype="string" datatype="markdown">
+        <source>Each component is numbered so that the translators can switch
+them around as appropriate for the grammar of their target
+language.</source>
+      </trans-unit>
+      <trans-unit id="12" resname="r138585290" restype="string" datatype="markdown">
+        <source>&lt;c0&gt;footnote1&lt;/c0&gt;: This is a footnote
+&lt;c1&gt;footnote2&lt;/c1&gt;: &lt;c2&gt;http://www.sample.com/url/that/is/not/localized&lt;/c2&gt;</source>
+      </trans-unit>
+      <trans-unit id="13" resname="r906565896" restype="string" datatype="markdown">
+        <source>http://www.sample.com/url/that/will/be/localized</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

@@ -1314,6 +1314,9 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -1345,6 +1348,9 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -1431,6 +1437,9 @@ importers:
         specifier: ^2.0.0
         version: 2.0.3
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -1568,6 +1577,9 @@ importers:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       ilib-loctool-json:
         specifier: workspace:^
         version: link:../ilib-loctool-json
@@ -1587,6 +1599,9 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -1756,6 +1771,9 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -1794,6 +1812,9 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -1843,6 +1864,9 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -1887,6 +1911,9 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       ilib-loctool-javascript-resource:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
@@ -1940,6 +1967,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -1997,6 +2027,9 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -2025,6 +2058,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
