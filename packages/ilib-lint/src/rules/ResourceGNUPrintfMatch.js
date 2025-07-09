@@ -48,7 +48,7 @@ class ResourceGNUPrintfMatch extends ResourceRule {
      */
     extractParameters(str) {
         if (!str || typeof str !== 'string') return [];
-        
+
         // GNU printf regex pattern:
         // % - literal percent
         // (?:(\d+)\$)? - optional positional parameter (1$, 2$, etc.)
@@ -57,14 +57,14 @@ class ResourceGNUPrintfMatch extends ResourceRule {
         // (?:[hlL]|hh|ll)? - optional length modifier (h, l, L, hh, ll)
         // [diouxXfFeEgGaAcCsSpn%m'#0I] - format specifier including GNU extensions
         const gnuPrintfRegex = /%(?:(\d+)\$)?(?:(\*))?(?:\.(?:\*|\d+))?(?:[hlL]|hh|ll)?[diouxXfFeEgGaAcCsSpn%m'#0I]/g;
-        
+
         const matches = [];
         let match;
-        
+
         while ((match = gnuPrintfRegex.exec(str)) !== null) {
             matches.push(match[0]);
         }
-        
+
         return matches;
     }
 
@@ -155,4 +155,4 @@ class ResourceGNUPrintfMatch extends ResourceRule {
     }
 }
 
-export default ResourceGNUPrintfMatch; 
+export default ResourceGNUPrintfMatch;

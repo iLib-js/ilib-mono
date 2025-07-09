@@ -166,4 +166,4 @@ For plural resources, parameters are checked for each category:
 
 - `resource-csharp-numbered-params` - For C# numbered parameters
 - `resource-angular-named-params` - For Angular named parameters
-- `resource-tap-named-params` - For Tap I18n named parameters 
+- `resource-tap-named-params` - For Tap I18n named parameters

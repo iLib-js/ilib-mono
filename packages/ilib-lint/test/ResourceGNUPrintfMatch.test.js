@@ -373,7 +373,7 @@ describe("testResourceGNUPrintfMatch", () => {
         const descriptions = Array.isArray(actual) ? actual.map(r => r.description) : [];
         expect(descriptions).toContain("Source string GNU printf parameter %2$d not found in the target string.");
         expect(descriptions).toContain("Extra target string GNU printf parameter %2$s not found in the source string.");
-        
+
         // Check that highlights are correct
         const highlights = Array.isArray(actual) ? actual.map(r => r.highlight) : [];
         expect(highlights).toContain('<e0>Hallo %1$s, Sie haben %2$s Artikel.</e0>'); // Missing parameter - entire string highlighted
@@ -421,7 +421,7 @@ describe("testResourceGNUPrintfMatch", () => {
         const descriptions = Array.isArray(actual) ? actual.map(r => r.description) : [];
         expect(descriptions).toContain("Source string GNU printf parameter %1$s not found in the target string.");
         expect(descriptions).toContain("Extra target string GNU printf parameter %1$d not found in the source string.");
-        
+
         // Check that highlights are correct
         const highlights = Array.isArray(actual) ? actual.map(r => r.highlight) : [];
         expect(highlights).toContain('<e0>Sie haben %1$d Element.</e0>'); // Missing parameter - entire string highlighted
@@ -513,7 +513,7 @@ describe("testResourceGNUPrintfMatch", () => {
         const descriptions = Array.isArray(actual) ? actual.map(r => r.description) : [];
         expect(descriptions).toContain("Source string GNU printf parameter %2$d not found in the target string.");
         expect(descriptions).toContain("Extra target string GNU printf parameter %2$s not found in the source string.");
-        
+
         // Check that highlights are correct
         const highlights = Array.isArray(actual) ? actual.map(r => r.highlight) : [];
         expect(highlights).toContain('<e0>У вас %1$s элемента и %2$s категории.</e0>'); // Missing parameter - entire string highlighted
@@ -546,4 +546,4 @@ describe("testResourceGNUPrintfMatch", () => {
         expect(result && result.lineNumber).toBe(10);
         expect(result && result.charNumber).toBe(5);
     });
-}); 
+});
