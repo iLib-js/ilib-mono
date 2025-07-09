@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources 
+  xmlns:tools="http://schemas.android.com/tools">
+  <string name="app_id" i18n="Do not translate">151779581544891</string>
+  <string name="disclaimer">Disclaimer</string>
+  <string name="description_imgVw">imageView</string>
+  <string name="thanks_friend_pre">Send a thank you note to\n{name}</string>
+  <string name="thanks_news">{name} appreciates your gratitude :)</string>
+  <string name="thanks">Thank you!</string>
+  <string name="talk_to_friend">Get help now</string>
+  <string name="ask_question">Ask friends</string>
+  <string name="thank">Thank</string>
+  <string name="thanked">Thanked</string>
+  <string name="thanked_note">Leave a note?</string>
+  <string name="r707551335">{meeting_time} with {friend_name}</string>
+  <plurals name="app_recommend2" i18n="Make sure {start} and {end} are surrounding the translated words of '1 friend' or '%d friends'.">
+    <item quantity="one">
+      {start}1 friend{end} recommends this app
+    </item>
+    <item quantity="other">
+      {start}%d friends{end} recommend this app
+    </item>
+  </plurals>
+  <string-array name="days">
+    <item>Sunday</item>
+    <item>Monday</item>
+    <item>Tuesday</item>
+    <item>Wednesday</item>
+    <item>Thursday</item>
+    <item>Friday</item>
+    <item>Saturday</item>
+  </string-array>
+</resources>
+  

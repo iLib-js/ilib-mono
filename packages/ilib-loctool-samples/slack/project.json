@@ -1,0 +1,32 @@
+{
+    "name": "sample-slack-json",
+    "id": "sample-slack-json",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "resourceDirs": {
+        "json": "resources"
+    },
+    "plugins": [
+        "ilib-loctool-mrkdwn"
+    ],
+    "excludes": [
+        ".*",
+        "xliffs",
+        "resources"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "ko-KR",
+            "de-DE"
+        ],
+        "mrkdwn": {
+            "mappings": {
+                "**/*.js": {
+                    "template": "[dir]/[localeDir]/[filename]"
+                }
+            }
+        }
+    }
+}

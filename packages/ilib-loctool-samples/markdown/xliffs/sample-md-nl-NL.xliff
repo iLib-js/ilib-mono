@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="md/en-US/README.md" source-language="en-US" target-language="nl-NL" product-name="sample-md">
+    <body>
+      <trans-unit id="1" resname="Title" restype="string" datatype="x-yaml">
+        <source>Readme for the Github-Flavored Markdown Sample</source>
+        <target>Readme voor het Github-flavored markdown voorbeeld</target>
+      </trans-unit>
+      <trans-unit id="1" resname="r911920644" restype="string" datatype="markdown">
+        <source>ilib-loctool-ghfm</source>
+        <target>ilib-loctool-ghfm</target>
+      </trans-unit>
+      <trans-unit id="2" resname="r73969288" restype="string" datatype="markdown">
+        <source>Ilib loctool plugin to parse and localize Github-flavored markdown</source>
+        <target>Een plug-in voor ilib loctool om Github-flavored markdown te ontleden en te lokaliseren</target>
+      </trans-unit>
+      <trans-unit id="3" resname="r319626336" restype="string" datatype="markdown">
+        <source>Markdown is broken into paragraphs and phrases using the
+&lt;c0&gt;remark&lt;/c0&gt; family of parsers.
+Here is a &lt;c1&gt;link&lt;/c1&gt; that is not localized.
+Here is a &lt;c2&gt;footnote&lt;/c2&gt; that is localized.
+Here is a &lt;c3&gt;link&lt;/c3&gt; that is is localized as well.</source>
+        <target>Markdown wordt opgedeeld in alinea's en zinnen met behulp van de
+&lt;c0&gt;remark&lt;/c0&gt; familie van ontledeners.
+Hier is een &lt;c1&gt;link&lt;/c1&gt; die niet gelokaliseerd is.
+Hier is een &lt;c2&gt;voetnoot&lt;/c2&gt; die is gelokaliseerd.
+Hier is een &lt;c3&gt;link&lt;/c3&gt; dat is ook gelokaliseerd.</target>
+      </trans-unit>
+      <trans-unit id="4" resname="r185975191" restype="string" datatype="markdown">
+        <source>Escapes</source>
+        <target>Ontsnappingen</target>
+      </trans-unit>
+      <trans-unit id="5" resname="r342091031" restype="string" datatype="markdown">
+        <source>Whenever there is syntax in the markdown that translators should
+not touch, this plugin converts them into xml-like components.</source>
+        <target>Wanneer er syntaxis in markdown die de vertalers niet aanraken
+zouden moeten, zet deze plug-in ze om in xml-achtige componenten.</target>
+      </trans-unit>
+      <trans-unit id="6" resname="r906565896" restype="string" datatype="markdown">
+        <source>http://www.sample.com/url/that/will/be/localized</source>
+        <target state="translated">http://www.sample.nl/url/that/will/be/localized</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

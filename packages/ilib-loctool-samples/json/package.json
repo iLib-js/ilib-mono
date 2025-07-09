@@ -1,0 +1,17 @@
+{
+    "name": "sample-json",
+    "type": "module",
+    "description": "Sample localization project for ilib-loctool-json",
+    "repository": "git@github.com:iLib-js/ilib-loctool-samples.git",
+    "license": "Apache-2.0",
+    "version": "1.0.0",
+    "scripts": {
+        "loc": "loctool",
+        "debug": "node --inspect-brk node_modules/loctool/loctool.js",
+        "clean": "rm -rf *.xliff resources"
+    },
+    "devDependencies": {
+        "ilib-loctool-json": "^1.5.7",
+        "loctool": "^2.20.2"
+    }
+}

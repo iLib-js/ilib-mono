@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="force-app/all/labels/MyLabels.labels-meta.xml" source-language="en-US" target-language="de-DE" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="6" resname="Show_Sender_in_Recipient_List" restype="string" datatype="xml">
+        <source>Show Sender in Recipient List</source>
+        <target>Den Absender in der Empfängerliste anzeigen</target>
+        <note>Whether or not the sender should be shown in the recipient list of the email.</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/application/MyApp.app-meta.xml" source-language="en-US" target-language="de-DE" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="1" resname="MyApp" restype="string" datatype="xml">
+        <source>My Application</source>
+        <target>Meine App</target>
+        <note>The best way to do X on the Internet!</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/objects/Foo__c/fields/Allocation_status__c.field-meta.xml" target-language="de-DE" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="3" resname="Allocation_status__c" restype="string" datatype="xml">
+        <source>Allocation status</source>
+        <target>Zuordnungsstatus</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/quickActions/SendEmail.quickAction-meta.xml" source-language="en-US" target-language="de-DE" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="8" resname="SendEmail" restype="string" datatype="xml">
+        <source>Send Email</source>
+        <target>Email schicken</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/translations/en_US.translation-meta.xml" source-language="en-US" target-language="de-DE" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="18" resname="Flow Interview Log Entries" restype="string" datatype="xml">
+        <source></source>
+        <target>Flow Interview Log-Einträge</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

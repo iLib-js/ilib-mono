@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.0" srcLang="en-KR" trgLang="es-ES" xmlns:l="http://ilib-js.com/loctool">
+  <file id="sample-arb_f1" original="sample-arb">
+    <group id="sample-arb_g1" name="arb">
+      <unit id="1" name="_title">
+        <segment>
+          <source>Thank you</source>
+          <target>Gracias</target>
+        </segment>
+      </unit>
+      <unit id="2" name="_incrementButton">
+        <segment>
+          <source>Incremento</source>
+          <target>Incremento</target>
+        </segment>
+      </unit>
+      <unit id="3" name="_hello">
+        <segment>
+          <source>Hello, {yourName}</source>
+          <target>Hola, {yourName}</target>
+        </segment>
+      </unit>
+      <unit id="4" name="remainingEmailsMessage">
+        <segment>
+          <source>{howMany,plural, =0{There are no emails left for {userName}.}=1{There is {howMany} email left for {userName}.}other{There are {howMany} emails left for {userName}.}}</source>
+          <target>{howMany,plural, =0{No quedan correos electrónicos para {userName}.}=1{Queda {howMany} correo electrónico para {userName}.}other{Queda {howMany} correos electrónico para {userName}.}}</target>
+        </segment>
+      </unit> 
+    </group>
+  </file>
+</xliff>

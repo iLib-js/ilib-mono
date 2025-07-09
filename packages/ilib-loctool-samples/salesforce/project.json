@@ -1,0 +1,25 @@
+{
+    "name": "sample-metaxml",
+    "id": "sample-metaxml",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "plugins": [
+        "ilib-loctool-salesforce-metaxml"
+    ],
+    "excludes": [
+        "xliffs",
+        "locale",
+        "schemas"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "de-DE",
+            "nl-NL"
+        ],
+        "metaxml": {
+            "resourceFile": "force-app/main/default/translations/[localeUnder].translation-meta.xml"
+        }
+    }
+}

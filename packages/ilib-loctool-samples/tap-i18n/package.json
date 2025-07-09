@@ -1,0 +1,19 @@
+{
+    "name": "sample-tap-i18n",
+    "description": "Sample localization project",
+    "repository": "git@github.com:iLib-js/ilib-loctool-samples.git",
+    "license": "Apache-2.0",
+    "version": "1.0.0",
+    "scripts": {
+        "loc": "loctool",
+        "loc:po": "loctool --intermediateFormat po",
+        "debug": "node --inspect-brk node_modules/loctool/loctool.js",
+        "clean": "rm -rf *.xliff locale",
+	"test": "echo Success!"
+    },
+    "devDependencies": {
+        "ilib-loctool-tap-i18n": "^1.1.2",
+        "loctool": "^2.28.0",
+        "ilib-po": "^1.1.0"
+    }
+}

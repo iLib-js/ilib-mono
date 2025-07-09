@@ -1,0 +1,41 @@
+{
+  "@@last_modified": "2023-08-28T13:51:31.807702",
+  "_title": "Thank you",
+  "@_title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "_incrementButton": "Increment",
+  "@_incrementButton": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "_bodyText": "You have pushed the button this many times:",
+  "@_bodyText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "_hello": "Hello, {yourName}",
+  "@_hello": {
+    "description": "Say hello",
+    "type": "text",
+    "placeholders": {
+      "yourName": {
+        "example": "Sparky"
+      }
+    }
+  },
+  "remainingEmailsMessage": "{howMany,plural, =0{There are no emails left for {userName}.}=1{There is {howMany} email left for {userName}.}other{There are {howMany} emails left for {userName}.}}",
+  "@remainingEmailsMessage": {
+    "description": "How many emails remain after archiving.",
+    "type": "text",
+    "placeholders": {
+      "howMany": {
+        "example": 42
+      },
+      "userName": {
+        "example": "Fred"
+      }
+    }
+  }
+}

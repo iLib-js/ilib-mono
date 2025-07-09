@@ -1,0 +1,18 @@
+{
+    "name": "sample-slack-js",
+    "type": "module",
+    "description": "Sample localization project",
+    "repository": "git@github.com:iLib-js/ilib-loctool-samples.git",
+    "license": "Apache-2.0",
+    "version": "1.0.0",
+    "scripts": {
+        "loc": "loctool",
+        "debug": "node --inspect-brk node_modules/loctool/loctool.js",
+        "clean": "rm -rf *.xliff resources",
+        "test": "echo success"
+    },
+    "devDependencies": {
+        "ilib-loctool-mrkdwn": "^1.0.0",
+        "loctool": "^2.25.2"
+    }
+}

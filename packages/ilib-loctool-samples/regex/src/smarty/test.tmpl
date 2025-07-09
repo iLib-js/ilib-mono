@@ -1,0 +1,11 @@
+{* set strict *}
+{strip}
+    <div class="left-nav-bar">
+        {foreach from=$viewers item=viewer key=index}
+            <NavBarItem values={$viewers} label={'Navigation'|t:'nav_button_label_text'} />
+        {/foreach}
+    </div>
+    <div class="nav-bar-footer">
+        { 'Copyright 2024 ACME Inc., All rights reserved.' | t : 'copyright_notice' }
+    </div>
+{/strip}

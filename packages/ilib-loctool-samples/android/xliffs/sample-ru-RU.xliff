@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="res/values/strings.xml" source-language="en-US" target-language="ru-RU" product-name="sample">
+    <body>
+      <trans-unit id="12" resname="days" restype="array" datatype="x-android-resource" extype="0">
+        <source>Sunday</source>
+        <target>Воскресенье</target>
+      </trans-unit>
+      <trans-unit id="13" resname="days" restype="array" datatype="x-android-resource" extype="1">
+        <source>Monday</source>
+        <target>понедельник</target>
+      </trans-unit>
+      <trans-unit id="14" resname="days" restype="array" datatype="x-android-resource" extype="2">
+        <source>Tuesday</source>
+        <target>вторник</target>
+      </trans-unit>
+      <trans-unit id="15" resname="days" restype="array" datatype="x-android-resource" extype="3">
+        <source>Wednesday</source>
+        <target>среда</target>
+      </trans-unit>
+      <trans-unit id="16" resname="days" restype="array" datatype="x-android-resource" extype="4">
+        <source>Thursday</source>
+        <target>Четверг</target>
+      </trans-unit>
+      <trans-unit id="17" resname="days" restype="array" datatype="x-android-resource" extype="5">
+        <source>Friday</source>
+        <target>Пятница</target>
+      </trans-unit>
+      <trans-unit id="18" resname="days" restype="array" datatype="x-android-resource" extype="6">
+        <source>Saturday</source>
+        <target>Суббота</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
