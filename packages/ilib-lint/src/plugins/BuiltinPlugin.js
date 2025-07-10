@@ -31,6 +31,7 @@ import JsonFormatter from '../formatters/JsonFormatter.js';
 import ResourceICUPlurals from '../rules/ResourceICUPlurals.js';
 import ResourceICUPluralTranslation from '../rules/ResourceICUPluralTranslation.js';
 import ResourceQuoteStyle from '../rules/ResourceQuoteStyle.js';
+import ResourceSentenceEnding from '../rules/ResourceSentenceEnding.js';
 import ResourceUniqueKeys from '../rules/ResourceUniqueKeys.js';
 import ResourceEdgeWhitespace from '../rules/ResourceEdgeWhitespace.js';
 import ResourceCompleteness from '../rules/ResourceCompleteness.js';
@@ -440,6 +441,9 @@ export const builtInRulesets = {
     "windows": {
         "resource-return-char": true
     },
+    "punctuation-checks": {
+        "resource-sentence-ending": true
+    },
     "tap": {
         "resource-tap-named-params": true
     }
@@ -498,6 +502,7 @@ class BuiltinPlugin extends Plugin {
             ResourceICUPlurals,
             ResourceICUPluralTranslation,
             ResourceQuoteStyle,
+            ResourceSentenceEnding,
             ResourceUniqueKeys,
             ResourceEdgeWhitespace,
             ResourceCompleteness,
