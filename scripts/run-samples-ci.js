@@ -1,4 +1,5 @@
-// This is a WIP script to run all sample projects in CI.
+// Note: this script is currently not used
+// This is a WIP script with a possible solution to run sample projects in CI.
 // It will:
 // 1. Build all publishable packages in the monorepo
 // 2. Pack all publishable packages into tarballs in a common directory `packs` (to emulate a publish)
