@@ -2102,7 +2102,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect.assertions(3);
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
-debugger;
+
         // Incorrect: quoted question at end missing inverted mark at start of the quoted question
         const resource = new ResourceString({
             key: "spanish.quoted.question.missing",
