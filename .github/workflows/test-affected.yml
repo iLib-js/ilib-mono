@@ -73,5 +73,3 @@ jobs:
                   name: code-coverage
                   path: ./packages/*/coverage/
                   retention-days: 3
-            - name: Run E2E tests
-              run: pnpm test:e2e:ci

@@ -1,4 +1,4 @@
-name: Test All
+name: E2E Test All
 
 on:
     push:
@@ -27,4 +27,4 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run tests
-              run: pnpm test:ci
+              run: pnpm test:e2e:ci
