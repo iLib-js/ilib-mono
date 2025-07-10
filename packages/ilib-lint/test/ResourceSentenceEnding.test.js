@@ -54,7 +54,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Japanese target already has correct maru (。)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Japanese period triggers warning if not maru", () => {
@@ -103,7 +103,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Japanese target already has correct question mark (？)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Japanese question mark triggers warning if not fullwidth", () => {
@@ -152,7 +152,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Japanese target already has correct exclamation mark (！)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Japanese exclamation mark triggers warning if not fullwidth", () => {
@@ -201,7 +201,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Japanese target already has correct ellipsis (…)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Japanese ellipsis triggers warning if not Unicode ellipsis", () => {
@@ -250,7 +250,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because both source and target have Unicode ellipsis
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("English: source can end with ... or …, but target must end with Unicode ellipsis", () => {
@@ -274,7 +274,7 @@ describe("ResourceSentenceEnding rule", function() {
             resource: resource1,
             file: resource1.pathName
         });
-        expect(result1).toBeNull();
+        expect(result1).toBeUndefined();
 
         // Source: …, Target: … (should not trigger)
         const resource2 = new ResourceString({
@@ -292,7 +292,7 @@ describe("ResourceSentenceEnding rule", function() {
             resource: resource2,
             file: resource2.pathName
         });
-        expect(result2).toBeNull();
+        expect(result2).toBeUndefined();
 
         // Source: ..., Target: ... (should trigger warning)
         const resource3 = new ResourceString({
@@ -335,7 +335,7 @@ describe("ResourceSentenceEnding rule", function() {
             resource: resource1,
             file: resource1.pathName
         });
-        expect(result1).toBeNull();
+        expect(result1).toBeUndefined();
 
         // Source: …, Target: … (should not trigger)
         const resource2 = new ResourceString({
@@ -353,7 +353,7 @@ describe("ResourceSentenceEnding rule", function() {
             resource: resource2,
             file: resource2.pathName
         });
-        expect(result2).toBeNull();
+        expect(result2).toBeUndefined();
 
         // Source: ..., Target: ... (should trigger warning)
         const resource3 = new ResourceString({
@@ -396,7 +396,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Japanese target already has correct colon (：)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Japanese colon triggers warning if not fullwidth", () => {
@@ -445,7 +445,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Chinese target already has correct period (。)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Chinese period triggers warning if not ideographic full stop", () => {
@@ -473,33 +473,8 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual.description).toContain("Sentence ending punctuation should be \"。\" for zh-CN locale");
     });
 
-    test("Korean period is converted to ideographic full stop", () => {
+    test("Korean period is the same as a Western period", () => {
         expect.assertions(2);
-
-        const rule = new ResourceSentenceEnding();
-        expect(rule).toBeTruthy();
-
-        const resource = new ResourceString({
-            key: "korean.period.test",
-            sourceLocale: "en-US",
-            source: "This is a sentence.",
-            targetLocale: "ko-KR",
-            target: "이것은 문장입니다。",
-            pathName: "a/b/c.xliff",
-            lineNumber: 1
-        });
-        const actual = rule.matchString({
-            source: resource.getSource(),
-            target: resource.getTarget(),
-            resource,
-            file: "a/b/c.xliff"
-        });
-        // Should not trigger because Korean target already has correct period (。)
-        expect(actual === null).toBeTruthy();
-    });
-
-    test("Korean period triggers warning if not ideographic full stop", () => {
-        expect.assertions(3);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -511,6 +486,31 @@ describe("ResourceSentenceEnding rule", function() {
             targetLocale: "ko-KR",
             target: "이것은 문장입니다.",
             pathName: "a/b/c.xliff",
+            lineNumber: 1
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger because Korean target already has correct Western period (.)
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Korean period triggers warning if not Western period", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "korean.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "ko-KR",
+            target: "이것은 문장입니다。",
+            pathName: "a/b/c.xliff",
             lineNumber: 2
         });
         const actual = rule.matchString({
@@ -519,9 +519,9 @@ describe("ResourceSentenceEnding rule", function() {
             resource,
             file: "a/b/c.xliff"
         });
-        // Should trigger because Korean target has English period instead of Korean one
+        // Should trigger because Korean target has Japanese period instead of Western one
         expect(actual).toBeTruthy();
-        expect(actual.description).toContain("Sentence ending punctuation should be \"。\" for ko-KR locale");
+        expect(actual.description).toContain("Sentence ending punctuation should be \".\" for ko-KR locale");
     });
 
     test("English to English does not trigger", () => {
@@ -545,7 +545,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because English to English uses same punctuation
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("No ending punctuation does not trigger", () => {
@@ -569,7 +569,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because source has no ending punctuation
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Correct punctuation inside quotes is accepted", () => {
@@ -593,7 +593,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Japanese target has correct punctuation inside quotes and sentence-ending maru
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Incorrect punctuation after quotes triggers warning", () => {
@@ -642,7 +642,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Japanese target has correct punctuation and sentence-ending maru
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("No target locale does not trigger", () => {
@@ -666,7 +666,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because there's no target locale
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Empty strings do not trigger", () => {
@@ -690,7 +690,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because strings are empty
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Whitespace only does not trigger", () => {
@@ -714,7 +714,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because strings are only whitespace
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Greek period is accepted", () => {
@@ -736,7 +736,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Greek target has correct period
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Greek question mark is accepted (semicolon)", () => {
@@ -758,7 +758,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Greek target has correct question mark (semicolon)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Greek exclamation mark is accepted", () => {
@@ -780,7 +780,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Greek target has correct exclamation mark
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Greek ellipsis is accepted", () => {
@@ -802,7 +802,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Greek target has correct ellipsis
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Greek colon is accepted", () => {
@@ -824,7 +824,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Greek target has correct colon
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Arabic period is accepted", () => {
@@ -846,7 +846,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Arabic target has correct period
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Arabic question mark is accepted", () => {
@@ -868,7 +868,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Arabic target has correct question mark
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Arabic exclamation mark is accepted", () => {
@@ -890,7 +890,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Arabic target has correct exclamation mark
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Arabic ellipsis is accepted", () => {
@@ -912,7 +912,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Arabic target has correct ellipsis
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Arabic colon is accepted", () => {
@@ -934,7 +934,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Arabic target has correct colon
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Tibetan period is accepted", () => {
@@ -956,7 +956,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Tibetan target has correct period
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Tibetan question mark is accepted", () => {
@@ -978,7 +978,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Tibetan target has correct question mark (shad)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Tibetan exclamation mark is accepted", () => {
@@ -1000,7 +1000,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Tibetan target has correct exclamation mark (shad)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Tibetan ellipsis is accepted", () => {
@@ -1022,7 +1022,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Tibetan target has correct ellipsis
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Tibetan colon is accepted", () => {
@@ -1044,7 +1044,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Tibetan target has correct colon (shad)
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Amharic period is accepted", () => {
@@ -1066,7 +1066,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Amharic target has correct period
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Amharic question mark is accepted", () => {
@@ -1088,7 +1088,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Amharic target has correct question mark
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Amharic exclamation mark is accepted", () => {
@@ -1110,7 +1110,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Amharic target has correct exclamation mark
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Amharic ellipsis is accepted", () => {
@@ -1132,7 +1132,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Amharic target has correct ellipsis
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Amharic colon is accepted", () => {
@@ -1154,7 +1154,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Amharic target has correct colon
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Urdu period is accepted", () => {
@@ -1176,7 +1176,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Urdu target has correct period
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Urdu question mark is accepted", () => {
@@ -1198,7 +1198,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Urdu target has correct question mark
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Urdu exclamation mark is accepted", () => {
@@ -1220,7 +1220,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Urdu target has correct exclamation mark
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Urdu ellipsis is accepted", () => {
@@ -1242,7 +1242,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Urdu target has correct ellipsis
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Urdu colon is accepted", () => {
@@ -1264,7 +1264,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Urdu target has correct colon
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Thai punctuation is optional and does not trigger", () => {
@@ -1286,7 +1286,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Thai punctuation is optional
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Lao punctuation is optional and does not trigger", () => {
@@ -1308,7 +1308,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Lao punctuation is optional
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Burmese punctuation is optional and does not trigger", () => {
@@ -1330,7 +1330,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Burmese punctuation is optional
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Khmer punctuation is optional", () => {
@@ -1354,7 +1354,254 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because Khmer punctuation is optional
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Assamese period is accepted", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "assamese.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "as-IN",
+            target: "এইটো এটা বাক্য।",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger because Assamese target has correct period (।)
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Assamese period triggers warning if not correct", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "assamese.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "as-IN",
+            target: "এইটো এটা বাক্য.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should trigger because Assamese target has English period instead of Assamese one
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain("Sentence ending punctuation should be \"।\" for as-IN locale");
+    });
+
+
+
+    test("Hindi period is accepted", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "hindi.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "hi-IN",
+            target: "यह एक वाक्य है।",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger because Hindi target has correct period (।)
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Hindi period triggers warning if not correct", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "hindi.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "hi-IN",
+            target: "यह एक वाक्य है.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should trigger because Hindi target has English period instead of Hindi one
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain("Sentence ending punctuation should be \"।\" for hi-IN locale");
+    });
+
+    test("Oriya period is accepted", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "oriya.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "or-IN",
+            target: "ଏହା ଏକ ବାକ୍ୟ ଅଟେ।",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger because Oriya target has correct period (।)
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Oriya period triggers warning if not correct", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "oriya.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "or-IN",
+            target: "ଏହା ଏକ ବାକ୍ୟ ଅଟେ.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should trigger because Oriya target has English period instead of Oriya one
+        expect(actual).toBeTruthy();
+        expect(actual.description).toContain("Sentence ending punctuation should be \"।\" for or-IN locale");
+    });
+
+    test("Punjabi period is accepted", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "punjabi.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "pa-IN",
+            target: "ਇਹ ਇੱਕ ਵਾਕ ਹੈ।",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger because Punjabi target has correct period (।)
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Punjabi period triggers warning if not correct", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "punjabi.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "pa-IN",
+            target: "ਇਹ ਇੱਕ ਵਾਕ ਹੈ.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should trigger because Punjabi target has English period instead of Punjabi one
+        expect(actual).toBeTruthy();
+        expect(actual.description).toContain("Sentence ending punctuation should be \"।\" for pa-IN locale");
+    });
+
+    test("Kannada period is accepted", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "kannada.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "kn-IN",
+            target: "ಇದು ಒಂದು ವಾಕ್ಯವಾಗಿದೆ।",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger because Kannada target has correct period (।)
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Kannada period triggers warning if not correct", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "kannada.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "kn-IN",
+            target: "ಇದು ಒಂದು ವಾಕ್ಯವಾಗಿದೆ.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should trigger because Kannada target has English period instead of Kannada one
+        expect(actual).toBeTruthy();
+        expect(actual.description).toContain("Sentence ending punctuation should be \"।\" for kn-IN locale");
     });
 
     test("French guillemets at end are handled correctly", () => {
@@ -1379,7 +1626,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         // Should not trigger because French target has correct punctuation with guillemets at the end
-        expect(actual === null).toBeTruthy();
+        expect(actual === undefined).toBeTruthy();
     });
 
     test("Custom punctuation mappings from configuration are applied", () => {
@@ -1417,7 +1664,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         // Should not trigger a warning because the custom config allows "!" for periods in French
-        expect(result).toBeNull();
+        expect(result).toBeUndefined();
 
         // Test with incorrect punctuation
         const resource2 = new ResourceString({
@@ -1440,6 +1687,107 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger a warning because the target uses "." instead of "!" (custom config)
         expect(result2).toBeTruthy();
         expect(result2?.description).toContain('Sentence ending punctuation should be "!" for fr-FR locale');
+    });
+
+    test("Custom punctuation mappings merge with defaults correctly", () => {
+        expect.assertions(5);
+
+        // Test that custom punctuation only overrides specific punctuation types
+        // without requiring all punctuation types to be specified
+        const customPunctuationConfig = {
+            "es": {
+                "period": "¡"  // Only override period, leave others as default
+            }
+        };
+
+        const rule = new ResourceSentenceEnding({
+            param: customPunctuationConfig
+        });
+
+        // Test that custom period is applied
+        const resource1 = new ResourceString({
+            key: "custom.merge.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "es-ES",
+            target: "Esto es una frase¡",
+            pathName: "a/b/c.xliff",
+            lineNumber: 8
+        });
+
+        const result1 = rule.matchString({
+            source: resource1.getSource(),
+            target: resource1.getTarget(),
+            resource: resource1,
+            file: "a/b/c.xliff"
+        });
+
+        // Should not trigger because custom config allows "¡" for periods in Spanish
+        expect(result1).toBeUndefined();
+
+        // Test that default question mark is still applied (not overridden)
+        const resource2 = new ResourceString({
+            key: "custom.merge.question.test",
+            sourceLocale: "en-US",
+            source: "Is this a question?",
+            targetLocale: "es-ES",
+            target: "¿Es esto una pregunta?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 9
+        });
+
+        const result2 = rule.matchString({
+            source: resource2.getSource(),
+            target: resource2.getTarget(),
+            resource: resource2,
+            file: "a/b/c.xliff"
+        });
+
+        // Should not trigger because default question mark "?" is still valid for Spanish
+        expect(result2).toBeUndefined();
+
+        // Test that default exclamation mark is still applied
+        const resource3 = new ResourceString({
+            key: "custom.merge.exclamation.test",
+            sourceLocale: "en-US",
+            source: "This is exciting!",
+            targetLocale: "es-ES",
+            target: "¡Esto es emocionante!",
+            pathName: "a/b/c.xliff",
+            lineNumber: 10
+        });
+
+        const result3 = rule.matchString({
+            source: resource3.getSource(),
+            target: resource3.getTarget(),
+            resource: resource3,
+            file: "a/b/c.xliff"
+        });
+
+        // Should not trigger because default exclamation mark "!" is still valid for Spanish
+        expect(result3).toBeUndefined();
+
+        // Test that incorrect punctuation still triggers warnings
+        const resource4 = new ResourceString({
+            key: "custom.merge.incorrect.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "es-ES",
+            target: "Esto es una frase.",
+            pathName: "a/b/c.xliff",
+            lineNumber: 11
+        });
+
+        const result4 = rule.matchString({
+            source: resource4.getSource(),
+            target: resource4.getTarget(),
+            resource: resource4,
+            file: "a/b/c.xliff"
+        });
+
+        // Should trigger because target uses "." instead of custom "¡"
+        expect(result4).toBeTruthy();
+        expect(result4?.description).toContain('Sentence ending punctuation should be "¡" for es-ES locale');
     });
 
     test("Auto-fix replaces incorrect punctuation with correct punctuation", () => {
@@ -1467,7 +1815,7 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger a warning because the target uses "." instead of "。"
         expect(result).toBeTruthy();
         expect(result?.description).toContain('Sentence ending punctuation should be "。" for ja-JP locale');
-        
+
         // Check that auto-fix is available
         expect(result?.fix).toBeTruthy();
         // At this point we know result and result.fix exist
@@ -1518,4 +1866,260 @@ describe("ResourceSentenceEnding rule", function() {
         expect(fixedResource).toBeTruthy();
         expect(fixedResource.getTarget()).toBe("これは文です。");
     });
-}); 
+
+    test("Spanish question mark requires inverted punctuation at beginning", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "spanish.question.test",
+            sourceLocale: "en-US",
+            source: "What is this?",
+            targetLocale: "es-ES",
+            target: "¿Qué es esto?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 12
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource: resource,
+            file: "a/b/c.xliff"
+        });
+
+        // Should not trigger because Spanish target has correct inverted question mark at beginning
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Spanish question mark triggers warning if missing inverted punctuation at beginning", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "spanish.question.missing.test",
+            sourceLocale: "en-US",
+            source: "What is this?",
+            targetLocale: "es-ES",
+            target: "Qué es esto?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 13
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource: resource,
+            file: "a/b/c.xliff"
+        });
+
+        // Should trigger because Spanish target is missing inverted question mark at beginning
+        expect(actual).toBeTruthy();
+        expect(actual.description).toContain('Spanish question should start with "¿" for es-ES locale');
+    });
+
+    test("Spanish exclamation mark requires inverted punctuation at beginning", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "spanish.exclamation.test",
+            sourceLocale: "en-US",
+            source: "This is amazing!",
+            targetLocale: "es-ES",
+            target: "¡Esto es increíble!",
+            pathName: "a/b/c.xliff",
+            lineNumber: 14
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource: resource,
+            file: "a/b/c.xliff"
+        });
+
+        // Should not trigger because Spanish target has correct inverted exclamation mark at beginning
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Spanish exclamation mark triggers warning if missing inverted punctuation at beginning", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "spanish.exclamation.missing.test",
+            sourceLocale: "en-US",
+            source: "This is amazing!",
+            targetLocale: "es-ES",
+            target: "Esto es increíble!",
+            pathName: "a/b/c.xliff",
+            lineNumber: 15
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource: resource,
+            file: "a/b/c.xliff"
+        });
+
+        // Should trigger because Spanish target is missing inverted exclamation mark at beginning
+        expect(actual).toBeTruthy();
+        expect(actual.description).toContain('Spanish exclamation should start with "¡" for es-ES locale');
+    });
+
+    test("Spanish period does not require inverted punctuation", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "spanish.period.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "es-ES",
+            target: "Esto es una frase.",
+            pathName: "a/b/c.xliff",
+            lineNumber: 16
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource: resource,
+            file: "a/b/c.xliff"
+        });
+
+        // Should not trigger because Spanish period doesn't require inverted punctuation
+        expect(actual === undefined).toBeTruthy();
+    });
+
+    test("Spanish: only last sentence requires inverted question mark", () => {
+        expect.assertions(2);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        // Correct: only last sentence is a question, and has inverted mark at start of last sentence
+        const resource = new ResourceString({
+            key: "spanish.multisentence.question.correct",
+            sourceLocale: "en-US",
+            source: "This is a statement. Is this a question?",
+            targetLocale: "es-ES",
+            target: "Esto es una declaración. ¿Es esto una pregunta?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 20
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
+
+    test("Spanish: missing inverted question mark at start of last sentence triggers warning", () => {
+        expect.assertions(3);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        // Incorrect: last sentence is a question, but missing inverted mark at start of last sentence
+        const resource = new ResourceString({
+            key: "spanish.multisentence.question.missing",
+            sourceLocale: "en-US",
+            source: "This is a statement. Is this a question?",
+            targetLocale: "es-ES",
+            target: "Esto es una declaración. Es esto una pregunta?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 21
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(actual.description).toContain('Spanish question should start with "¿" for es-ES locale');
+    });
+
+    test("Spanish: inverted question mark at start of first sentence does not affect last sentence", () => {
+        expect.assertions(3);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        // Incorrect: inverted mark at start of first sentence, not at start of last question sentence
+        const resource = new ResourceString({
+            key: "spanish.multisentence.question.wrongplace",
+            sourceLocale: "en-US",
+            source: "This is a statement. Is this a question?",
+            targetLocale: "es-ES",
+            target: "¿Esto es una declaración. Es esto una pregunta?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 22
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(actual.description).toContain('Spanish question should start with "¿" for es-ES locale');
+    });
+
+    test("Spanish: quoted question at end requires inverted punctuation", () => {
+        expect.assertions(2);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        // Correct: quoted question at end has inverted mark at start of the quoted question
+        const resource = new ResourceString({
+            key: "spanish.quoted.question.correct",
+            sourceLocale: "en-US",
+            source: "She said, \"Where is it?\"",
+            targetLocale: "es-ES",
+            target: "Ella dijo, \"¿Dónde está?\"",
+            pathName: "a/b/c.xliff",
+            lineNumber: 23
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
+
+    test("Spanish: quoted question at end missing inverted punctuation triggers warning", () => {
+        expect.assertions(3);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+debugger;
+        // Incorrect: quoted question at end missing inverted mark at start of the quoted question
+        const resource = new ResourceString({
+            key: "spanish.quoted.question.missing",
+            sourceLocale: "en-US",
+            source: "She said, \"Where is it?\"",
+            targetLocale: "es-ES",
+            target: "Ella dijo, \"Dónde está?\"",
+            pathName: "a/b/c.xliff",
+            lineNumber: 24
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(actual.description).toContain('Spanish question should start with "¿" for es-ES locale');
+    });
+});

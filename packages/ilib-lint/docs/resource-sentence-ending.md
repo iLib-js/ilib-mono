@@ -4,18 +4,18 @@
 
 This rule ensures that sentence-ending punctuation in translated strings matches the conventions of the target language.
 
-**Example Issue:**
+**Example Issues:**
 ```
 Sentence ending punctuation should be "。" for ja-JP locale, not "."
 ```
 
 ## How to Fix
 
-### For Japanese, Chinese, and Korean
+### For Japanese and Chinese
 Replace English punctuation with the appropriate full-width characters:
 
-| English | Japanese/Chinese/Korean |
-|---------|------------------------|
+| English | Japanese/Chinese |
+|---------|-----------------|
 | `.` | `。` |
 | `?` | `？` |
 | `!` | `！` |
@@ -40,8 +40,13 @@ Replace English punctuation with the appropriate full-width characters:
 | Tibetan | `།` | `།` | `།` |
 | Amharic | `።` | `፧` | `!` |
 | Urdu | `۔` | `؟` | `!` |
+| Assamese | `।` | `?` | `!` |
+| Hindi | `।` | `?` | `!` |
+| Oriya | `।` | `?` | `!` |
+| Punjabi | `।` | `?` | `!` |
+| Kannada | `।` | `?` | `!` |
 
-### For Unsupported Languages
+### For Other Languages
 The rule defaults to English punctuation. If you need different punctuation for your language, use custom configuration.
 
 ## Custom Configuration
@@ -91,7 +96,7 @@ The rule handles quotes correctly. Focus on the punctuation before the quotes:
 ### Ellipsis
 Replace `...` with the appropriate character for your language:
 
-**Japanese/Chinese/Korean:**
+**Japanese/Chinese:**
 ```xml
 <source>Loading...</source>
 <target>読み込み中…</target>
