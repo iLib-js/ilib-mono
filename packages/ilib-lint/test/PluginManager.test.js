@@ -358,14 +358,14 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
     });
 
     test("PluginManagerGetBuiltInRuleSets", () => {
-        expect.assertions(19);
+        expect.assertions(21);
 
         const plgmgr = new PluginManager();
         expect(plgmgr).toBeTruthy();
         const rm = plgmgr.getRuleManager();
         expect(rm).toBeTruthy();
 
-        expect(rm.sizeRuleSetDefinitions()).toBe(7);
+        expect(rm.sizeRuleSetDefinitions()).toBe(8);
 
         const genericRuleset = rm.getRuleSetDefinition("generic");
         expect(genericRuleset).toBeTruthy();
@@ -394,6 +394,10 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
         const tapRuleset = rm.getRuleSetDefinition("tap");
         expect(tapRuleset).toBeTruthy();
         expect(typeof(tapRuleset["resource-tap-named-params"])).toBe('boolean');
+
+        const windowsRuleset = rm.getRuleSetDefinition("windows");
+        expect(windowsRuleset).toBeTruthy();
+        expect(typeof(windowsRuleset["resource-return-char"])).toBe('boolean');
     });
 
     test("PluginManagerGetLoadPluginRightFixer", () => {

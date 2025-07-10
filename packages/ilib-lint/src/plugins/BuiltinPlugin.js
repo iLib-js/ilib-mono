@@ -46,6 +46,7 @@ import ResourceCamelCase from '../rules/ResourceCamelCase.js';
 import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
 import ResourceKebabCase from '../rules/ResourceKebabCase.js';
 import ResourceGNUPrintfMatch from '../rules/ResourceGNUPrintfMatch.js';
+import ResourceReturnChar from '../rules/ResourceReturnChar.js';
 import StringFixer from './string/StringFixer.js';
 import ResourceFixer from './resource/ResourceFixer.js';
 
@@ -436,6 +437,9 @@ export const builtInRulesets = {
     "csharp": {
         "resource-csharp-numbered-params": true
     },
+    "windows": {
+        "resource-return-char": true
+    },
     "tap": {
         "resource-tap-named-params": true
     }
@@ -509,6 +513,7 @@ class BuiltinPlugin extends Plugin {
             ResourceSnakeCase,
             ResourceKebabCase,
             ResourceGNUPrintfMatch,
+            ResourceReturnChar,
             ...regexRules
         ];
     }
