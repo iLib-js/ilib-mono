@@ -1,0 +1,21 @@
+{
+    "source": {
+        "include": ["src"],
+        "includePattern": ".js$",
+        "excludePattern": "(node_modules/|docs)"
+    },
+    "plugins": ["plugins/markdown"],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "default": {
+            "outputSourceFiles": true
+        },
+        "path": "node_modules/docdash"
+    },
+    "opts": {
+        "destination": "./docs/",
+        "recurse": true,
+        "readme": "./README.md"
+    }
+} 
