@@ -9,6 +9,6 @@
     "ilib-lint-react": "workspace:^"
   },
   "scripts": {
-    "run:sample": "ilib-lint . || echo \"ilib-lint finished with code $?\""
+    "run:sample": "ilib-lint ."
   }
 }
