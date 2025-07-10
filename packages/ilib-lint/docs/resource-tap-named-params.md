@@ -80,4 +80,4 @@ Multiple levels of property access are supported:
     "source": "Your __account.settings.notifications.email__ is enabled.",
     "target": "Votre __account.settings.notifications.email__ est activé."
 }
-``` 
+```
