@@ -26,6 +26,24 @@ importers:
         specifier: ^2.2.3
         version: 2.2.3
 
+  packages/e2e-test:
+    devDependencies:
+      '@tsconfig/node12':
+        specifier: ^12.1.4
+        version: 12.1.4
+      '@types/jest':
+        specifier: ^29
+        version: 29.5.14
+      '@types/node':
+        specifier: '12'
+        version: 12.20.55
+      jest:
+        specifier: ^29
+        version: 29.7.0(@types/node@12.20.55)(node-notifier@8.0.2)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.6.3
+
   packages/ilib-address:
     dependencies:
       ilib-common:
@@ -152,7 +170,7 @@ importers:
         version: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -219,7 +237,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -319,7 +337,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -419,7 +437,7 @@ importers:
         version: link:../ilib-data-utils
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -498,7 +516,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -561,7 +579,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jest-mock:
         specifier: ^29.7.0
         version: 29.7.0
@@ -607,7 +625,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
@@ -763,6 +781,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       '@tsconfig/node14':
         specifier: ^14.1.2
         version: 14.1.2
@@ -847,7 +868,7 @@ importers:
         version: 2.0.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -875,7 +896,7 @@ importers:
         version: 2.0.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -906,7 +927,7 @@ importers:
         version: 2.0.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -964,7 +985,7 @@ importers:
         version: 10.7.6
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -974,6 +995,24 @@ importers:
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
+
+  packages/ilib-lint/samples/lint:
+    devDependencies:
+      ilib-lint:
+        specifier: workspace:^
+        version: link:../..
+      ilib-lint-common:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-common
+      ilib-lint-python:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-python
+      ilib-lint-python-gnu:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-python-gnu
+      ilib-lint-react:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-react
 
   packages/ilib-loader:
     dependencies:
@@ -1040,7 +1079,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jest-mock:
         specifier: ^29.7.0
         version: 29.7.0
@@ -1131,7 +1170,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jest-mock:
         specifier: ^29.7.0
         version: 29.7.0
@@ -1278,12 +1317,27 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-android-layout/samples/android:
+    devDependencies:
+      ilib-loctool-android-layout:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-android-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-android-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-android-resource:
     dependencies:
@@ -1297,12 +1351,27 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-android-resource/samples/android:
+    devDependencies:
+      ilib-loctool-android-layout:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-android-layout
+      ilib-loctool-android-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-csv:
     dependencies:
@@ -1315,7 +1384,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1371,9 +1440,12 @@ importers:
         specifier: ^2.0.0
         version: 2.0.3
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1436,6 +1508,15 @@ importers:
         specifier: ^0.11.3
         version: 0.11.3
 
+  packages/ilib-loctool-ghfm/samples/markdown:
+    devDependencies:
+      ilib-loctool-ghfm:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-haml:
     dependencies:
       ilib:
@@ -1447,7 +1528,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1472,7 +1553,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1485,7 +1566,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1499,12 +1580,15 @@ importers:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       ilib-loctool-json:
         specifier: workspace:^
         version: link:../ilib-loctool-json
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1518,12 +1602,78 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-javascript-resource/samples/js:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript-resource/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-regex
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/js:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/js-json:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-json
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/php-resource:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-json:
     dependencies:
@@ -1537,12 +1687,39 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-json/samples/js-json:
+    devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../../../e2e-test
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-json/samples/json:
+    devDependencies:
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-jst:
     dependencies:
@@ -1561,7 +1738,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1574,7 +1751,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1597,12 +1774,24 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-mrkdwn/samples/slack:
+    devDependencies:
+      ilib-loctool-mrkdwn:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-objectivec:
     dependencies:
@@ -1612,7 +1801,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1626,12 +1815,42 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-php-resource/samples/php-resource:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-php-resource/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-regex
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-po:
     dependencies:
@@ -1648,12 +1867,24 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-po/samples/po:
+    devDependencies:
+      ilib-loctool-po:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-properties:
     dependencies:
@@ -1663,7 +1894,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1683,15 +1914,33 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       ilib-loctool-javascript-resource:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-regex/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-ruby-ilib:
     dependencies:
@@ -1701,7 +1950,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1721,12 +1970,24 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-salesforce-metaxml/samples/salesforce:
+    devDependencies:
+      ilib-loctool-salesforce-metaxml:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-strings:
     dependencies:
@@ -1736,7 +1997,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1749,7 +2010,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1769,12 +2030,24 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-tap-i18n/samples/tap-i18n:
+    devDependencies:
+      ilib-loctool-tap-i18n:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-xml:
     dependencies:
@@ -1788,12 +2061,24 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-xml/samples/xml:
+    devDependencies:
+      ilib-loctool-xml:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-yaml:
     dependencies:
@@ -1809,7 +2094,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1825,7 +2110,7 @@ importers:
     devDependencies:
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
@@ -1929,7 +2214,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -2020,7 +2305,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.3
         version: 4.0.4
@@ -2083,7 +2368,7 @@ importers:
         version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -2165,7 +2450,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -2250,7 +2535,7 @@ importers:
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jest-mock:
         specifier: ^29.7.0
         version: 29.7.0
@@ -2368,7 +2653,7 @@ importers:
         version: file:packages/loctool/test/ilib-loctool-mock-resource/ilib-loctool-mock-resource-1.0.0.tgz
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
 
   packages/message-accumulator:
     dependencies:
@@ -2420,7 +2705,7 @@ importers:
         version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -2457,7 +2742,7 @@ importers:
         version: link:../ilib-tools-common
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -3433,9 +3718,6 @@ packages:
 
   '@types/node@20.17.4':
     resolution: {integrity: sha512-Fi1Bj8qTJr4f1FDdHFR7oMlOawEYSzkHNdBJK+aRjcDDNHwEV3jPPjuZP2Lh2QNgXeqzM8Y+U6b6urKAog2rZw==}
-
-  '@types/node@22.10.2':
-    resolution: {integrity: sha512-Xxr6BBRCAOQixvonOye19wnzyDiUtTeqldOOmj3CkeblonbccA12PFwlufvRdrpjXxqnmUaeiU5EOA+7s5diUQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -8287,9 +8569,6 @@ packages:
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
-  undici-types@6.20.0:
-    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
-
   unherit@1.1.3:
     resolution: {integrity: sha512-Ft16BJcnapDKp0+J/rqFC3Rrk6Y/Ng4nzsC028k2jdDII/rdZ7Wd3pPT/6+vIIxRagwRc9K0IUX0Ra4fKvw+WQ==}
 
@@ -9791,7 +10070,7 @@ snapshots:
   '@jest/console@29.7.0':
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -9804,14 +10083,14 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@22.10.2)
+      jest-config: 29.7.0(@types/node@20.17.4)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -9878,7 +10157,7 @@ snapshots:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.25
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -10094,7 +10373,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
 
   '@types/hast@2.3.10':
     dependencies:
@@ -10154,10 +10433,6 @@ snapshots:
   '@types/node@20.17.4':
     dependencies:
       undici-types: 6.19.8
-
-  '@types/node@22.10.2':
-    dependencies:
-      undici-types: 6.20.0
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -11110,6 +11385,21 @@ snapshots:
       pify: 4.0.1
       safe-buffer: 5.2.1
 
+  create-jest@29.7.0:
+    dependencies:
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      exit: 0.1.2
+      graceful-fs: 4.2.11
+      jest-config: 29.7.0
+      jest-util: 29.7.0
+      prompts: 2.4.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
   create-jest@29.7.0(@types/node@12.20.55):
     dependencies:
       '@jest/types': 29.6.3
@@ -11147,21 +11437,6 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-config: 29.7.0(@types/node@20.17.4)
-      jest-util: 29.7.0
-      prompts: 2.4.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  create-jest@29.7.0(@types/node@22.10.2):
-    dependencies:
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@22.10.2)
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -12116,15 +12391,6 @@ snapshots:
       chalk: 4.1.2
       hooker: 0.2.3
       jshint: 2.13.6
-
-  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
-    dependencies:
-      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
-    transitivePeerDependencies:
-      - flow-remove-types
-      - supports-color
-      - ts-node
-      - typescript
 
   grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
@@ -13099,7 +13365,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -13182,16 +13448,16 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-cli@29.7.0(@types/node@22.10.2)(node-notifier@8.0.2):
+  jest-cli@29.7.0(node-notifier@8.0.2):
     dependencies:
       '@jest/core': 29.7.0(node-notifier@8.0.2)
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@22.10.2)
+      create-jest: 29.7.0
       exit: 0.1.2
       import-local: 3.2.0
-      jest-config: 29.7.0(@types/node@22.10.2)
+      jest-config: 29.7.0
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -13202,6 +13468,34 @@ snapshots:
       - babel-plugin-macros
       - supports-color
       - ts-node
+
+  jest-config@29.7.0:
+    dependencies:
+      '@babel/core': 7.26.0
+      '@jest/test-sequencer': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.26.0)
+      chalk: 4.1.2
+      ci-info: 3.9.0
+      deepmerge: 4.3.1
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-circus: 29.7.0
+      jest-environment-node: 29.7.0
+      jest-get-type: 29.6.3
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-runner: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      micromatch: 4.0.8
+      parse-json: 5.2.0
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-json-comments: 3.1.1
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
 
   jest-config@29.7.0(@types/node@12.20.55):
     dependencies:
@@ -13293,36 +13587,6 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-config@29.7.0(@types/node@22.10.2):
-    dependencies:
-      '@babel/core': 7.26.0
-      '@jest/test-sequencer': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.26.0)
-      chalk: 4.1.2
-      ci-info: 3.9.0
-      deepmerge: 4.3.1
-      glob: 7.2.3
-      graceful-fs: 4.2.11
-      jest-circus: 29.7.0
-      jest-environment-node: 29.7.0
-      jest-get-type: 29.6.3
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-runner: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      micromatch: 4.0.8
-      parse-json: 5.2.0
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    optionalDependencies:
-      '@types/node': 22.10.2
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-
   jest-diff@29.7.0:
     dependencies:
       chalk: 4.1.2
@@ -13347,7 +13611,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -13357,7 +13621,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -13403,7 +13667,7 @@ snapshots:
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@29.7.0):
@@ -13438,7 +13702,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -13466,7 +13730,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       cjs-module-lexer: 1.4.1
       collect-v8-coverage: 1.0.2
@@ -13531,7 +13795,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -13546,7 +13810,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -13593,12 +13857,12 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest@29.7.0(@types/node@22.10.2)(node-notifier@8.0.2):
+  jest@29.7.0(node-notifier@8.0.2):
     dependencies:
       '@jest/core': 29.7.0(node-notifier@8.0.2)
       '@jest/types': 29.6.3
       import-local: 3.2.0
-      jest-cli: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+      jest-cli: 29.7.0(node-notifier@8.0.2)
     optionalDependencies:
       node-notifier: 8.0.2
     transitivePeerDependencies:
@@ -14419,16 +14683,6 @@ snapshots:
       nodemailer-smtp-transport: 2.7.2
       socks: 1.1.9
     optional: true
-
-  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
-    dependencies:
-      ejs: 3.1.10
-      tap: 15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
-    transitivePeerDependencies:
-      - flow-remove-types
-      - supports-color
-      - ts-node
-      - typescript
 
   nodeunit-x@0.15.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
@@ -15946,36 +16200,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tap@15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
-    dependencies:
-      chokidar: 3.6.0
-      coveralls: 3.1.1
-      findit: 2.0.0
-      foreground-child: 2.0.0
-      fs-exists-cached: 1.0.0
-      glob: 7.2.3
-      isexe: 2.0.0
-      istanbul-lib-processinfo: 2.0.3
-      jackspeak: 1.4.2
-      libtap: 1.4.1
-      minipass: 3.3.6
-      mkdirp: 1.0.4
-      nyc: 15.1.0
-      opener: 1.5.2
-      rimraf: 3.0.2
-      signal-exit: 3.0.7
-      source-map-support: 0.5.21
-      tap-mocha-reporter: 5.0.4
-      tap-parser: 11.0.2
-      tap-yaml: 1.0.2
-      tcompare: 5.0.7
-      which: 2.0.2
-    optionalDependencies:
-      ts-node: 8.10.2(typescript@3.9.10)
-      typescript: 3.9.10
-    transitivePeerDependencies:
-      - supports-color
-
   tap@15.2.3(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
       chokidar: 3.6.0
@@ -16345,8 +16569,6 @@ snapshots:
     optional: true
 
   undici-types@6.19.8: {}
-
-  undici-types@6.20.0: {}
 
   unherit@1.1.3:
     dependencies:

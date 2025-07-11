@@ -1,0 +1,60 @@
+{
+    "name": "sample-regex",
+    "id": "sample-regex",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "plugins": [ "ilib-loctool-regex" ],
+    "excludes": [
+        "xliffs"
+    ],
+    "resourceFileTypes": {
+        "javascript": "ilib-loctool-javascript-resource",
+        "php": "ilib-loctool-php-resource"
+    },
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "ko-KR",
+            "de-DE"
+        ],
+        "regex": {
+            "mappings": {
+                "src/**/*.jsx": {
+                    "resourceFileType": "javascript",
+                    "template": "resources/[locale].json",
+                    "sourceLocale": "en-US",
+                    "expressions": [
+                        {
+                            "expression": "\\bRB.getString\\s*\\(\\s*(?<source>\"([^\"]|\\\\\")*\"|'([^']|\\\\')*')\\s*\\)",
+                            "flags": "g",
+                            "datatype": "javascript",
+                            "resourceType": "string",
+                            "keyStrategy": "hash"
+                        },
+                        {
+                            "expression": "\\bRB.getString\\s*\\(\\s*(?<source>\"([^\"]|\\\\\")*\"|'([^']|\\\\')*')\\s*,\\s*(?<key>\"([^\"]|\\\\\")*\"|'([^']|\\\\')*')\\s*\\)",
+                            "flags": "g",
+                            "datatype": "javascript",
+                            "resourceType": "string"
+                        }
+                    ]
+                },
+                "src/**/*.tmpl": {
+                    "resourceFileType": "php",
+                    "template": "resources/translations-[locale].php",
+                    "sourceLocale": "en-US",
+                    "expressions": [
+                        {
+                            "expression": "\\{\\s*(?<source>'([^']|\\\\')*')\\s*\\|\\s*t\\s*:\\s*(?<key>'([^']|\\\\')*')\\s*\\}",
+                            "flags": "gi",
+                            "datatype": "php",
+                            "resourceType": "string",
+                            "keyStrategy": "truncated"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
