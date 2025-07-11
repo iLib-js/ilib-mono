@@ -90,7 +90,9 @@ var commandOptionHelp = {
         "--xliffResRoot\n" +
         "  Specify the dir where the generation output should go. (Default is resources/) \n" +
         "--xliffStyle\n" +
-        "  Specify the Xliff format style. Style can be 'standard' or 'custom'. (Default is 'standard')",
+        "  Specify the Xliff format style. Style can be 'standard', 'default' or 'webOS'. (Default is 'standard')\n" +
+        "--metadata\n" +
+        "  Accepts any value in the form of 'aaa=bbb' and can be used as needed. i.e) type=Monitor",
 //  to be implemented
 //  report:
 //      "report\n" +

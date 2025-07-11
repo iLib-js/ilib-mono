@@ -35,6 +35,7 @@ var xliffClasses = {
  *
  * @param {Object} props properties of the resource to be passed to the
  * actual resource subclass' constructor
+ * @param {string} [props.style] the xliff format style
  */
 var XliffFactory = function(props) {
     var style = props && XliffFactory.availableStyles.includes(props.style) ? props.style : XliffFactory.defaultStyle;

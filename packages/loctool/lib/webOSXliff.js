@@ -46,8 +46,11 @@ var logger = log4js.getLogger("loctool.lib.webOSXliff");
  * </ul>
  *
  * @constructor
- * @param {Array.<Object>|undefined} options options to
- * initialize the file, or undefined for a new empty file
+ * @param {Array.<Object>|undefined} options options to initialize the file, or undefined for a new empty file
+ * @param {Object} options Options controlling the construction of this object
+ * @param {string} [options.path] The path to the xliff file on disk
+ * @param {string} [options.sourceLocale] specify the default source locale if a resource doesn't have a locale itself
+ * @param {string} [options.version] The version of xliff
  */
 var webOSXliff = function webOSXliff(options) {
     if (options) {
