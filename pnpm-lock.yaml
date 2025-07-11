@@ -800,6 +800,19 @@ importers:
         specifier: ^5.5.4
         version: 5.6.3
 
+  packages/ilib-lint-apple:
+    dependencies:
+      ilib-lint-common:
+        specifier: file:../ilib-lint-common
+        version: link:../ilib-lint-common
+      ilib-tools-common:
+        specifier: file:../ilib-tools-common
+        version: file:packages/ilib-tools-common
+    devDependencies:
+      jest:
+        specifier: ^29.0.0
+        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+
   packages/ilib-lint-common:
     devDependencies:
       '@jest/globals':
@@ -5582,6 +5595,10 @@ packages:
 
   ilib-tools-common@1.16.0:
     resolution: {integrity: sha512-0vKj3NDD7gXYTIwwZYcLNu0JSdeMN2uOde8g2AwsA6X3uXCPZmVaU26KoFMq+YBONRvYrIxtAK6fKgEK3gB4iA==}
+    engines: {node: '>=10.0.0'}
+
+  ilib-tools-common@file:packages/ilib-tools-common:
+    resolution: {directory: packages/ilib-tools-common, type: directory}
     engines: {node: '>=10.0.0'}
 
   ilib-xliff@1.4.0:
@@ -12704,6 +12721,16 @@ snapshots:
       ilib-istring: 1.1.1
       ilib-locale: 1.2.4
       ilib-xliff: 1.4.0
+      intl-messageformat: 10.7.11
+      micromatch: 4.0.8
+
+  ilib-tools-common@file:packages/ilib-tools-common:
+    dependencies:
+      '@log4js-node/log4js-api': 1.0.2
+      ilib-ctype: link:packages/ilib-ctype
+      ilib-istring: link:packages/ilib-istring
+      ilib-locale: link:packages/ilib-locale
+      ilib-xliff: link:packages/ilib-xliff
       intl-messageformat: 10.7.11
       micromatch: 4.0.8
 
