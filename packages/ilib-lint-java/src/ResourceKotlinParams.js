@@ -43,27 +43,27 @@ class ResourceKotlinParams extends Rule {
      */
     extractKotlinParams(str) {
         if (!str || typeof str !== 'string') return [];
-        
+
         const params = [];
-        
+
         // Match simple variable interpolation: $variable
         // This regex matches $ followed by a valid Kotlin identifier, but not preceded by ${{
         const simpleParamRegex = /\$([a-zA-Z_][a-zA-Z0-9_]*)\b(?![\w.]*\})/g;
         let match;
-        
+
         while ((match = simpleParamRegex.exec(str)) !== null) {
             params.push(match[1]); // Extract the variable name
         }
-        
+
         // Match expression interpolation: ${expression}
         // This regex matches ${...} where ... can contain anything except }
         const expressionParamRegex = /\$\{([^}]+)\}/g;
-        
+
         while ((match = expressionParamRegex.exec(str)) !== null) {
             const expression = match[1].trim();
             params.push(expression);
         }
-        
+
         return [...new Set(params)]; // Remove duplicates
     }
 
@@ -92,22 +92,22 @@ class ResourceKotlinParams extends Rule {
         const results = [];
         const sourceParams = this.extractKotlinParams(source);
         const targetParams = this.extractKotlinParams(target);
-        
+
         // Check for missing parameters (error)
         if (sourceParams.length > 0) {
             if (!this.hasAllRequiredParams(sourceParams, targetParams)) {
-                const missingParams = sourceParams.filter(param => 
+                const missingParams = sourceParams.filter(param =>
                     !targetParams.includes(param)
                 );
-                
-                const description = context 
+
+                const description = context
                     ? `Missing Kotlin string template parameters in target ${context}: $${missingParams.join(', $')}`
                     : `Missing Kotlin string template parameters in target: $${missingParams.join(', $')}`;
-                
-                const highlight = context 
+
+                const highlight = context
                     ? `${context} <e0>${target}</e0>`
                     : `<e0>${target}</e0>`;
-                
+
                 results.push(new Result({
                     severity: "error",
                     id: resource.getKey(),
@@ -121,29 +121,42 @@ class ResourceKotlinParams extends Rule {
                 }));
             }
         }
-        
+
         // Check for extra parameters (warning)
         const extraParams = targetParams.filter(param => !sourceParams.includes(param));
         if (extraParams.length > 0) {
             let highlightedTarget = target;
-            extraParams.forEach(param => {
-                // For simple parameters ($variable), replace with highlighted version
-                const simpleParamRegex = new RegExp(`\\$${param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b(?!\\w*\\.\\w*\\})`, 'g');
-                highlightedTarget = highlightedTarget.replace(simpleParamRegex, `<e0>$${param}</e0>`);
-                
-                // For expression parameters (${expression}), replace with highlighted version
-                const expressionParamRegex = new RegExp(`\\$\\{${param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\}`, 'g');
-                highlightedTarget = highlightedTarget.replace(expressionParamRegex, `<e0>\${${param}}</e0>`);
+            extraParams.forEach((param, index) => {
+                // Highlight the specific extra parameter in the target string
+                if (typeof target === 'string') {
+                    // For simple parameters ($variable), find and replace
+                    const simpleParam = `$${param}`;
+                    const simpleParamIndex = highlightedTarget.indexOf(simpleParam);
+                    if (simpleParamIndex !== -1) {
+                        highlightedTarget = highlightedTarget.substring(0, simpleParamIndex) +
+                                          `<e${index}>${simpleParam}</e${index}>` +
+                                          highlightedTarget.substring(simpleParamIndex + simpleParam.length);
+                    } else {
+                        // For expression parameters (${expression}), find and replace
+                        const expressionParam = `\${${param}}`;
+                        const expressionParamIndex = highlightedTarget.indexOf(expressionParam);
+                        if (expressionParamIndex !== -1) {
+                            highlightedTarget = highlightedTarget.substring(0, expressionParamIndex) +
+                                              `<e${index}>${expressionParam}</e${index}>` +
+                                              highlightedTarget.substring(expressionParamIndex + expressionParam.length);
+                        }
+                    }
+                }
             });
-            
-            const description = context 
+
+            const description = context
                 ? `Extra Kotlin string template parameters in target ${context}: $${extraParams.join(', $')}`
                 : `Extra Kotlin string template parameters in target: $${extraParams.join(', $')}`;
-            
-            const highlight = context 
-                ? `${context} <e0>${highlightedTarget}</e0>`
+
+            const highlight = context
+                ? `${context} ${highlightedTarget}`
                 : highlightedTarget;
-            
+
             results.push(new Result({
                 severity: "warning",
                 id: resource.getKey(),
@@ -156,7 +169,7 @@ class ResourceKotlinParams extends Rule {
                 lineNumber: options.lineNumber
             }));
         }
-        
+
         return results;
     }
 
@@ -174,7 +187,7 @@ class ResourceKotlinParams extends Rule {
                 case 'string':
                     const source = resource.getSource();
                     const target = resource.getTarget();
-                    
+
                     if (source && target) {
                         return this.checkParameters(source, target, resource, ir, options);
                     }
@@ -211,9 +224,9 @@ class ResourceKotlinParams extends Rule {
 
             return [];
         });
-        
+
         return results.length > 1 ? results : results[0];
     }
 }
 
-export default ResourceKotlinParams; 
+export default ResourceKotlinParams;

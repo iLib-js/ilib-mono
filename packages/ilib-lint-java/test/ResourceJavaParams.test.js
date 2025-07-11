@@ -52,10 +52,10 @@ describe('ResourceJavaParams', () => {
     test('should detect missing parameters in string resources', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello {0}, you have {1} messages', target: 'Hola {0}, tienes mensajes' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         const error = Array.isArray(results) ? results.find(r => r && r.severity === 'error') : results;
-        
+
         expect(error).toBeTruthy();
         expect(error.description).toContain('Missing Java MessageFormat parameters in target: {1}');
     });
@@ -63,7 +63,7 @@ describe('ResourceJavaParams', () => {
     test('should not trigger when all parameters are present', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello {0}, you have {1} messages', target: 'Hola {0}, tienes {1} mensajes' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         expect(results).toBeUndefined();
     });
@@ -71,7 +71,7 @@ describe('ResourceJavaParams', () => {
     test('should not trigger when no parameters are present', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello world', target: 'Hola mundo' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         expect(results).toBeUndefined();
     });
@@ -79,10 +79,10 @@ describe('ResourceJavaParams', () => {
     test('should detect mismatched parameter formatting', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Price: {0,number,currency}', target: 'Precio: {0}' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         const error = Array.isArray(results) ? results.find(r => r && r.severity === 'error') : results;
-        
+
         expect(error).toBeTruthy();
         expect(error.description).toContain('Missing Java MessageFormat parameters in target: {0,number,currency}');
     });
@@ -90,7 +90,7 @@ describe('ResourceJavaParams', () => {
     test('should handle array resources', () => {
         const resource = new ResourceArray({ key: 'test.key', source: ['Hello {0}', 'You have {1} messages'], target: ['Hola {0}', 'Tienes mensajes'] });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         const error = Array.isArray(results) && results.find(r => r && r.severity === 'error');
         expect(error).toBeTruthy();
@@ -98,13 +98,13 @@ describe('ResourceJavaParams', () => {
     });
 
     test('should handle plural resources', () => {
-        const resource = new ResourcePlural({ 
-            key: 'test.key', 
+        const resource = new ResourcePlural({
+            key: 'test.key',
             source: { one: 'You have {0} message', other: 'You have {0} messages' },
             target: { one: 'Tienes {0} mensaje', other: 'Tienes mensajes' }
         });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         const error = Array.isArray(results) && results.find(r => r && r.severity === 'error');
         expect(error).toBeTruthy();
@@ -114,7 +114,7 @@ describe('ResourceJavaParams', () => {
     test('should warn if there are extra parameters in the target (string)', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello {0}', target: 'Hola {0} y {1}' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         const warning = Array.isArray(results) ? results.find(r => r && r.severity === 'warning') : results;
         expect(warning).toBeTruthy();
@@ -125,7 +125,7 @@ describe('ResourceJavaParams', () => {
     test('should warn if there are extra parameters in the target (array)', () => {
         const resource = new ResourceArray({ key: 'test.key', source: ['Hello {0}', 'You have {1} messages'], target: ['Hola {0} y {2}', 'Tienes {1} mensajes'] });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         const warning = Array.isArray(results) && results.find(r => r && r.severity === 'warning');
         expect(warning).toBeTruthy();
@@ -133,13 +133,13 @@ describe('ResourceJavaParams', () => {
     });
 
     test('should warn if there are extra parameters in the target (plural)', () => {
-        const resource = new ResourcePlural({ 
-            key: 'test.key', 
+        const resource = new ResourcePlural({
+            key: 'test.key',
             source: { one: 'You have {0} message', other: 'You have {0} messages' },
             target: { one: 'Tienes {0} mensaje', other: 'Tienes {0} mensajes y {1}' }
         });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const results = rule.match({ ir, locale: 'es-ES' });
         const warning = Array.isArray(results) && results.find(r => r && r.severity === 'warning');
         expect(warning).toBeTruthy();
@@ -167,8 +167,8 @@ describe('ResourceJavaParams', () => {
     });
 
     test('should highlight extra parameter in the target (plural)', () => {
-        const resource = new ResourcePlural({ 
-            key: 'test.key', 
+        const resource = new ResourcePlural({
+            key: 'test.key',
             source: { one: 'You have {0} message', other: 'You have {0} messages' },
             target: { one: 'Tienes {0} mensaje', other: 'Tienes {0} mensajes y {1}' }
         });
@@ -187,7 +187,7 @@ describe('ResourceJavaParams', () => {
         const warning = Array.isArray(results) ? results.find(r => r && r.severity === 'warning') : results;
         expect(warning).toBeTruthy();
         expect(warning.highlight).toContain('<e0>{1}</e0>');
-        expect(warning.highlight).toContain('<e0>{2}</e0>');
-        expect(warning.highlight).toContain('Hola {0} y <e0>{1}</e0> y <e0>{2}</e0>');
+        expect(warning.highlight).toContain('<e1>{2}</e1>');
+        expect(warning.highlight).toContain('Hola {0} y <e0>{1}</e0> y <e1>{2}</e1>');
     });
-}); 
+});

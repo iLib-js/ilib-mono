@@ -52,4 +52,4 @@ class JavaPlugin extends Plugin {
     }
 }
 
-export default JavaPlugin; 
+export default JavaPlugin;

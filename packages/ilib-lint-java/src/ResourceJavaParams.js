@@ -43,17 +43,17 @@ class ResourceJavaParams extends Rule {
      */
     extractJavaParams(str) {
         if (!str || typeof str !== 'string') return [];
-        
+
         // Match Java MessageFormat parameters: {0}, {1}, {2}, etc.
         // Also handles complex format: {0,number,currency}, {1,date,short}, etc.
         const paramRegex = /\{(\d+)(?:,[^}]*)?\}/g;
         const params = [];
         let match;
-        
+
         while ((match = paramRegex.exec(str)) !== null) {
             params.push(match[0]); // Extract the full parameter specification
         }
-        
+
         return [...new Set(params)]; // Remove duplicates
     }
 
@@ -82,22 +82,22 @@ class ResourceJavaParams extends Rule {
         const results = [];
         const sourceParams = this.extractJavaParams(source);
         const targetParams = this.extractJavaParams(target);
-        
+
         // Check for missing parameters (error)
         if (sourceParams.length > 0) {
             if (!this.hasAllRequiredParams(sourceParams, targetParams)) {
-                const missingParams = sourceParams.filter(param => 
+                const missingParams = sourceParams.filter(param =>
                     !targetParams.includes(param)
                 );
-                
-                const description = context 
+
+                const description = context
                     ? `Missing Java MessageFormat parameters in target ${context}: ${missingParams.join(', ')}`
                     : `Missing Java MessageFormat parameters in target: ${missingParams.join(', ')}`;
-                
-                const highlight = context 
+
+                const highlight = context
                     ? `${context} <e0>${target}</e0>`
                     : `<e0>${target}</e0>`;
-                
+
                 results.push(new Result({
                     severity: "error",
                     id: resource.getKey(),
@@ -111,25 +111,32 @@ class ResourceJavaParams extends Rule {
                 }));
             }
         }
-        
+
         // Check for extra parameters (warning)
         const extraParams = targetParams.filter(param => !sourceParams.includes(param));
         if (extraParams.length > 0) {
             let highlightedTarget = target;
-            extraParams.forEach(param => {
-                // Escape regex special characters in param
-                const paramRegex = new RegExp(param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-                highlightedTarget = highlightedTarget.replace(paramRegex, `<e0>${param}</e0>`);
+            extraParams.forEach((param, index) => {
+                // Highlight the specific extra parameter in the target string
+                if (typeof target === 'string') {
+                    // Use a more robust approach to find and replace the parameter
+                    const paramIndex = highlightedTarget.indexOf(param);
+                    if (paramIndex !== -1) {
+                        highlightedTarget = highlightedTarget.substring(0, paramIndex) +
+                                          `<e${index}>${param}</e${index}>` +
+                                          highlightedTarget.substring(paramIndex + param.length);
+                    }
+                }
             });
-            
-            const description = context 
+
+            const description = context
                 ? `Extra Java MessageFormat parameters in target ${context}: ${extraParams.join(', ')}`
                 : `Extra Java MessageFormat parameters in target: ${extraParams.join(', ')}`;
-            
-            const highlight = context 
-                ? `${context} <e0>${highlightedTarget}</e0>`
+
+            const highlight = context
+                ? `${context} ${highlightedTarget}`
                 : highlightedTarget;
-            
+
             results.push(new Result({
                 severity: "warning",
                 id: resource.getKey(),
@@ -142,7 +149,7 @@ class ResourceJavaParams extends Rule {
                 lineNumber: options.lineNumber
             }));
         }
-        
+
         return results;
     }
 
@@ -160,7 +167,7 @@ class ResourceJavaParams extends Rule {
                 case 'string':
                     const source = resource.getSource();
                     const target = resource.getTarget();
-                    
+
                     if (source && target) {
                         return this.checkParameters(source, target, resource, ir, options);
                     }
@@ -197,9 +204,9 @@ class ResourceJavaParams extends Rule {
 
             return [];
         }).filter(element => element);
-        
+
         return results.length > 0 ? results : undefined;
     }
 }
 
-export default ResourceJavaParams; 
+export default ResourceJavaParams;

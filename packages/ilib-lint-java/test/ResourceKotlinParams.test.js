@@ -55,9 +55,9 @@ describe('ResourceKotlinParams', () => {
     test('should detect missing parameters in string resources', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello $name, you have $count messages', target: 'Hola $name, tienes mensajes' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.description).toContain('Missing Kotlin string template parameters in target: $count');
     });
@@ -65,41 +65,41 @@ describe('ResourceKotlinParams', () => {
     test('should not trigger when all parameters are present', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello $name, you have $count messages', target: 'Hola $name, tienes $count mensajes' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeUndefined();
     });
 
     test('should not trigger when no parameters are present', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello world', target: 'Hola mundo' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeUndefined();
     });
 
     test('should handle array resources', () => {
         const resource = new ResourceArray({ key: 'test.key', source: ['Hello $name', 'You have $count messages'], target: ['Hola $name', 'Tienes mensajes'] });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.description).toContain('Missing Kotlin string template parameters in target array item [1]: $count');
     });
 
     test('should handle plural resources', () => {
-        const resource = new ResourcePlural({ 
-            key: 'test.key', 
+        const resource = new ResourcePlural({
+            key: 'test.key',
             source: { one: 'You have $count message', other: 'You have $count messages' },
             target: { one: 'Tienes $count mensaje', other: 'Tienes mensajes' }
         });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.description).toContain('Missing Kotlin string template parameters in target plural (other): $count');
     });
@@ -107,9 +107,9 @@ describe('ResourceKotlinParams', () => {
     test('should handle mixed simple and expression parameters', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello $name, you have ${messages.size} messages', target: 'Hola $name, tienes mensajes' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.description).toContain('Missing Kotlin string template parameters in target: $messages');
     });
@@ -117,9 +117,9 @@ describe('ResourceKotlinParams', () => {
     test('should warn about extra parameters in target string', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello $name', target: 'Hola $name, tienes $count mensajes' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.severity).toBe('warning');
         expect(result.description).toContain('Extra Kotlin string template parameters in target: $count');
@@ -129,9 +129,9 @@ describe('ResourceKotlinParams', () => {
     test('should warn about extra parameters in target array', () => {
         const resource = new ResourceArray({ key: 'test.key', source: ['Hello $name'], target: ['Hola $name, tienes $count mensajes'] });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.severity).toBe('warning');
         expect(result.description).toContain('Extra Kotlin string template parameters in target array item [0]: $count');
@@ -139,15 +139,15 @@ describe('ResourceKotlinParams', () => {
     });
 
     test('should warn about extra parameters in target plural', () => {
-        const resource = new ResourcePlural({ 
-            key: 'test.key', 
+        const resource = new ResourcePlural({
+            key: 'test.key',
             source: { one: 'You have $count message', other: 'You have $count messages' },
             target: { one: 'Tienes $count mensaje, $extra', other: 'Tienes $count mensajes' }
         });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.severity).toBe('warning');
         expect(result.description).toContain('Extra Kotlin string template parameters in target plural (one): $extra');
@@ -157,25 +157,25 @@ describe('ResourceKotlinParams', () => {
     test('should handle multiple extra parameters', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello $name', target: 'Hola $name, tienes $count $extra mensajes' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.severity).toBe('warning');
         expect(result.description).toContain('Extra Kotlin string template parameters in target: $count, $extra');
         expect(result.highlight).toContain('<e0>$count</e0>');
-        expect(result.highlight).toContain('<e0>$extra</e0>');
+        expect(result.highlight).toContain('<e1>$extra</e1>');
     });
 
     test('should handle extra expression parameters', () => {
         const resource = new ResourceString({ key: 'test.key', source: 'Hello $name', target: 'Hola $name, tienes ${messages.size} mensajes' });
         const ir = new IntermediateRepresentation({ type: 'resource', ir: [resource], sourceFile });
-        
+
         const result = rule.match({ ir, locale: 'es-ES' });
-        
+
         expect(result).toBeTruthy();
         expect(result.severity).toBe('warning');
         expect(result.description).toContain('Extra Kotlin string template parameters in target: $messages');
         expect(result.highlight).toContain('<e0>${messages.size}</e0>');
     });
-}); 
+});
