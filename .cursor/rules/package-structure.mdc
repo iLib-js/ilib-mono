@@ -1,0 +1,43 @@
+# Package Structure Standards
+
+## Package Organization
+Each package in the `packages/` directory should follow this structure:
+- `package.json` - Package configuration and dependencies
+- `src/` - Source code files
+- `lib/` - Compiled/built files (generated)
+- `test/` - Test files
+- `docs/` - Documentation files
+- `CHANGELOG.md` - Version history and changes
+- `README.md` - Package-specific documentation
+
+## Package.json Requirements
+- Include standard scripts: `build`, `test`, `doc` (optional)
+- Use workspace protocol for internal dependencies: `"ilib-common": "workspace:^"`
+- Include proper `main`, `module`, and `types` fields for different module systems
+- Specify Node.js version compatibility (>=12.0.0)
+- Include appropriate keywords for npm discovery
+
+## Source Code Organization
+- Place main entry points in `src/index.js`
+- Organize code by functionality in subdirectories
+- Use consistent file naming conventions
+- Include a `src/index.js` file that exports the public API
+
+## Testing Structure
+- Mirror the source directory structure in `test/`
+- Include unit tests for all public APIs
+- Use descriptive test file names that match the source files
+- Include integration tests for complex workflows
+- Maintain good test coverage (aim for >80%)
+
+## Documentation
+- Include JSDoc comments for all public APIs
+- Provide usage examples in README.md
+- Document configuration options and environment variables
+- Include migration guides for breaking changes
+
+## Build Configuration
+- Use Babel for transpilation when needed
+- Configure build tools to target Node.js >=12.0.0
+- Generate source maps for debugging
+- Optimize bundle size for browser usage when applicable

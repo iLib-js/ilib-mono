@@ -1,0 +1,56 @@
+# Linting Tools Development Standards
+
+## Linting Architecture
+The ilib-lint system provides internationalization and localization linting:
+- `ilib-lint` - Main linting framework
+- `ilib-lint-common` - Common linting utilities
+- `ilib-lint-javascript` - ilib-lint plugin containing JavaScript-specific linting rules
+- `ilib-lint-react` - ilib-lint plugin containing React-specific linting rules
+- `ilib-lint-python` - ilib-lint plugin containing Python-specific linting rules
+- `ilib-lint-python-gnu` - ilib-lint plugin containing GNU gettext for Python linting rules
+
+## Rule Development
+When creating or modifying linting rules:
+- Extend the base rule class from `ilib-lint-common`
+- Implement required methods: `check()`, `getRuleName()`, `getDescription()`
+- Provide clear error messages with actionable suggestions
+- Include severity levels (error, warning, suggestion)
+- Support rule configuration options
+
+## Internationalization Checks
+Focus on common i18n issues:
+- Hardcoded strings that should be externalized
+- Missing locale-specific formatting
+- Incorrect date/time/number formatting
+- Missing pluralization handling
+- Inconsistent string concatenation
+- Missing RTL/LTR support
+
+## Language-Specific Rules
+Each language plugin should:
+- Parse the target language syntax correctly
+- Identify translatable strings
+- Check for proper resource usage
+- Validate locale-specific patterns
+- Handle language-specific i18n patterns
+
+## Testing Linting Rules
+- Test with various code patterns and edge cases
+- Verify rule severity levels
+- Test configuration options
+- Include positive and negative test cases
+- Test rule performance with large files
+
+## Debugging
+Use the provided debugging commands:
+```bash
+# Debug ilib-lint
+NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js
+```
+
+## Configuration
+- Support rule-specific configuration
+- Allow rule enabling/disabling
+- Support custom severity levels
+- Provide rule documentation and examples
+- Support project-specific rule sets
