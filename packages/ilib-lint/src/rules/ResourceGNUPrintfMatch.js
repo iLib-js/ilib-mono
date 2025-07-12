@@ -2,7 +2,7 @@
  * ResourceGNUPrintfMatch.js - rule to check if GNU printf-style parameters in the source string
  * also appear in the target string with the same format specifiers
  *
- * Copyright © 2023-2025 JEDLSoft
+ * Copyright © 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ class ResourceGNUPrintfMatch extends ResourceRule {
     /**
      * Extract GNU printf-style parameters from a string.
      * Supports positional parameters (%1$s, %2$d), width/precision from arguments (%*s, %.*f),
-     * and GNU extensions (%m, %'d, %I, etc.)
+     * and GNU extensions (%m, %'d, %I, etc.) as well as Swift/Objective-C %@ specifiers
      * @private
      * @param {string} str the string to extract parameters from
      * @returns {Array<string>} array of parameter strings found
@@ -55,8 +55,9 @@ class ResourceGNUPrintfMatch extends ResourceRule {
         // (?:(\d+))? - optional width/precision from argument (*)
         // (?:\.(?:\*|\d+))? - optional precision (.* or .123)
         // (?:[hlL]|hh|ll)? - optional length modifier (h, l, L, hh, ll)
-        // [diouxXfFeEgGaAcCsSpn%m'#0I] - format specifier including GNU extensions
-        const gnuPrintfRegex = /%(?:(\d+)\$)?(?:(\*))?(?:\.(?:\*|\d+))?(?:[hlL]|hh|ll)?[diouxXfFeEgGaAcCsSpn%m'#0I]/g;
+        // [diouxXfFeEgGaAcCsSpn%m'#0I@] - format specifier including GNU extensions and Swift/Objective-C @
+        const gnuPrintfRegex =
+            /%(?:(\d+)\$)?(?:(\*))?(?:\.(?:\*|\d+))?(?:[hlL]|hh|ll)?[diouxXfFeEgGaAcCsSpn%m'#0I@]/g;
 
         const matches = [];
         let match;
@@ -104,51 +105,98 @@ class ResourceGNUPrintfMatch extends ResourceRule {
         const lineNumber = location?.line;
         const charNumber = location?.char;
 
-        // Check for missing parameters in target
-        const missingInTarget = sourceParams.filter(param => !targetParams.includes(param));
-        if (missingInTarget.length > 0) {
-            const highlight = `<e0>${target}</e0>`;
-            missingInTarget.forEach(param => {
+        // Count occurrences of each parameter
+        function countParams(params) {
+            const counts = {};
+            for (const param of params) {
+                counts[param] = (counts[param] || 0) + 1;
+            }
+            return counts;
+        }
+        const sourceCounts = countParams(sourceParams);
+        const targetCounts = countParams(targetParams);
+
+        // Check for missing parameters in target (by count)
+        // Create separate Result for each different missing parameter
+        for (const param of Object.keys(sourceCounts)) {
+            const missingCount = sourceCounts[param] - (targetCounts[param] || 0);
+            if (missingCount > 0) {
                 const resultFields = {
                     severity: /** @type {const} */ ("error"),
                     description: `Source string GNU printf parameter ${param} not found in the target string.`,
                     rule: this,
                     id: resourceKey,
                     source: source,
-                    highlight: highlight,
+                    highlight: `<e0>${target}</e0>`,
                     pathName: file,
                     lineNumber: lineNumber,
-                    charNumber: charNumber
+                    charNumber: charNumber,
                 };
                 results.push(new Result(resultFields));
-            });
+            }
         }
 
-        // Check for extra parameters in target
-        const extraInTarget = targetParams.filter(param => !sourceParams.includes(param));
-        if (extraInTarget.length > 0) {
-            extraInTarget.forEach(param => {
-                // Highlight only the first occurrence of the extra param in the target string
-                let highlight;
-                if (typeof target === 'string') {
-                    const re = new RegExp(param.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-                    highlight = target.replace(re, '<e0>' + param + '</e0>');
-                } else {
-                    highlight = `<e0>${param}</e0>`;
+        // Check for extra parameters in target (by count)
+        // Group extra parameters by type to handle multiple of same type together
+        const extraParamsByType = {};
+        for (const param of Object.keys(targetCounts)) {
+            const extraCount = targetCounts[param] - (sourceCounts[param] || 0);
+            if (extraCount > 0) {
+                extraParamsByType[param] = extraCount;
+            }
+        }
+
+        // Create separate Result for each different extra parameter type
+        for (const [param, extraCount] of Object.entries(extraParamsByType)) {
+            let highlight = target;
+
+            if (extraCount === 1) {
+                // Single extra parameter - highlight the rightmost occurrence
+                const lastIndex = highlight.lastIndexOf(param);
+                if (lastIndex !== -1) {
+                    highlight =
+                        highlight.substring(0, lastIndex) +
+                        `<e0>${param}</e0>` +
+                        highlight.substring(lastIndex + param.length);
                 }
-                const resultFields = {
-                    severity: /** @type {const} */ ("error"),
-                    description: `Extra target string GNU printf parameter ${param} not found in the source string.`,
-                    rule: this,
-                    id: resourceKey,
-                    source: source,
-                    highlight: highlight,
-                    pathName: file,
-                    lineNumber: lineNumber,
-                    charNumber: charNumber
-                };
-                results.push(new Result(resultFields));
-            });
+            } else {
+                // Multiple extra parameters of same type - highlight only the last N occurrences (left-to-right)
+                // Find all indices of the param in the string
+                let allIndices = [];
+                let searchStart = 0;
+                while (true) {
+                    const idx = highlight.indexOf(param, searchStart);
+                    if (idx === -1) break;
+                    allIndices.push(idx);
+                    searchStart = idx + param.length;
+                }
+                // Only tag the last 'extraCount' occurrences
+                const indices = allIndices.slice(-extraCount);
+                // Apply tags in left-to-right order, adjusting for offset as we insert tags
+                let offset = 0;
+                for (let i = 0; i < indices.length; i++) {
+                    const idx = indices[i] + offset;
+                    const tag = `<e${i}>${param}</e${i}>`;
+                    highlight =
+                        highlight.substring(0, idx) +
+                        tag +
+                        highlight.substring(idx + param.length);
+                    offset += tag.length - param.length;
+                }
+            }
+
+            const resultFields = {
+                severity: /** @type {const} */ ("error"),
+                description: `Extra target string GNU printf parameter ${param} not found in the source string.`,
+                rule: this,
+                id: resourceKey,
+                source: source,
+                highlight: highlight,
+                pathName: file,
+                lineNumber: lineNumber,
+                charNumber: charNumber,
+            };
+            results.push(new Result(resultFields));
         }
 
         return results.length > 0 ? results : undefined;
