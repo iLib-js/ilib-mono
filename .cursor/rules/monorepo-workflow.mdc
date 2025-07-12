@@ -1,0 +1,60 @@
+# Monorepo Development Workflow
+
+## Package Management
+- Use `pnpm` as the package manager (version specified in [package.json](mdc:package.json))
+- All packages are managed through pnpm workspaces defined in [pnpm-workspace.yaml](mdc:pnpm-workspace.yaml)
+- Use workspace protocol for internal dependencies: `"ilib-common": "workspace:^"`
+
+## Build System
+- Use Turborepo for task orchestration and caching
+- Configuration in [turbo.json](mdc:turbo.json) defines build, test, and coverage tasks
+- Build tasks depend on dependencies (`^build`)
+- Test tasks depend on build and test dependencies (`^test`)
+
+## Development Commands
+From the root directory:
+- `pnpm build` - Build all packages
+- `pnpm test` - Test affected packages only (recommended)
+- `pnpm test:all` - Test all packages
+- `pnpm doc` - Generate documentation for affected packages
+- `pnpm coverage` - Generate coverage reports
+
+## Package-Specific Commands
+From individual package directories:
+- `pnpm build` - Build the current package
+- `pnpm test` - Test the current package
+- `pnpm doc` - Generate documentation for the current package
+
+## Affected Packages
+- Turborepo automatically detects which packages are affected by changes
+- Use `pnpm test` in the root to only test packages that have changed
+- This significantly speeds up the development workflow
+- CI can use `--affected` flag to optimize build times
+
+## Debugging
+For debugging CLI applications with plugins:
+```bash
+# Set NODE_PATH to allow loading plugins from monorepo
+export NODE_PATH=$(pwd)/packages
+
+# Debug loctool
+NODE_PATH=packages node --inspect packages/loctool/loctool.js
+
+# Debug ilib-lint
+NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js
+```
+
+## Versioning and Publishing
+- Use Changesets for version management
+- Each package in packages/ is published independently to npm
+- Follow semantic versioning for all packages
+- Include changelog entries for all changes in .changesets
+
+## Code Quality
+- All packages should have comprehensive tests
+- Maintain good test coverage (>80%)
+- Follow consistent coding standards across all packages
+- Use JSDoc for documentation
+- Always remove extraneous whitespace at the end of lines
+- Always remove "debugger;" statements from tests before committing code to git
+

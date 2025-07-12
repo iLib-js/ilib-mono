@@ -1,0 +1,51 @@
+# Core Libraries Development Standards
+
+## Core Library Architecture
+The core ilib libraries provide fundamental internationalization functionality:
+- `ilib-common` - Common utilities and base classes
+- `ilib-locale` - Locale handling and normalization
+- `ilib-ctype` - Character type classification
+- `ilib-istring` - Internationalized string operations
+- `ilib-address` - Address formatting and validation
+
+## API Design Principles
+- Provide consistent APIs across all core libraries
+- Use factory patterns for locale-specific objects
+- Support both synchronous and asynchronous operations
+- Include comprehensive parameter validation
+- Provide fallback mechanisms for unsupported locales
+
+## Locale Handling
+- Use BCP 47 locale identifiers (e.g., "en-US", "zh-Hans-CN")
+- Support locale fallback chains
+- Handle locale-specific data loading
+- Provide locale normalization and validation
+- Support locale-specific formatting rules
+
+## Character and String Operations
+- Support Unicode standards (UTF-8, UTF-16, UTF-32)
+- Handle locale-specific collation and sorting
+- Support bidirectional text (RTL/LTR)
+- Provide proper case mapping for different locales
+- Handle locale-specific number and date formatting
+
+## Performance Considerations
+- Lazy-load locale data when possible
+- Cache frequently used objects and calculations
+- Minimize memory footprint for large datasets
+- Use efficient algorithms for string operations
+- Support streaming for large text processing
+
+## Testing Core Libraries
+- Test with multiple locales and scripts
+- Include edge cases and error conditions
+- Test performance with large datasets
+- Verify Unicode compliance
+- Test locale fallback mechanisms
+
+## Documentation
+- Provide comprehensive JSDoc documentation
+- Include usage examples for common scenarios
+- Document locale-specific behavior
+- Provide migration guides for API changes
+- Include performance considerations

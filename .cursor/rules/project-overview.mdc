@@ -1,0 +1,35 @@
+# iLib-Mono Project Overview
+
+This is a monorepo for the [iLib-js project](https://github.com/iLib-js) containing internationalization (i18n) and localization (l10n) libraries and tools. The project is managed using pnpm workspaces and Turborepo.
+
+## Project Structure
+- **Root Configuration**: [package.json](mdc:package.json) contains monorepo scripts and dependencies
+- **Workspace Config**: [pnpm-workspace.yaml](mdc:pnpm-workspace.yaml) defines the workspace structure
+- **Build System**: [turbo.json](mdc:turbo.json) configures Turborepo tasks (build, test, coverage)
+- **Packages**: All packages are located in the `packages/` directory
+- **Documentation**: [README.md](mdc:README.md) and [CONTRIBUTING.md](mdc:CONTRIBUTING.md) provide project overview and contribution guidelines
+
+## Key Package Categories
+1. **Core Libraries**: `ilib-common`, `ilib-loader`, `ilib-localedata`, `ilib-locale`, `ilib-ctype`, `ilib-istring`, `ilib-address`
+2. **Build Tools**: `ilib-assemble`, `ilib-scanner`
+3. **Linting Tools**: `ilib-lint`, `ilib-lint-common`, `ilib-lint-javascript`, `ilib-lint-react`, `ilib-lint-python`, `ilib-lint-python-gnu`
+4. **Localization Tools**: `loctool` and various `ilib-loctool-*` plugins for different file formats
+5. **Data Formats**: `ilib-tmx`, `ilib-xliff`, `ilib-po`, `ilib-yaml`, `ilib-json`
+6. **Utilities**: `ilib-env`, `ilib-data-utils`, `ilib-tools-common`, `ilib-tree-node`, `message-accumulator`
+
+## Development Workflow
+- Always use `pnpm` as the package manager
+- Always run tests with `pnpm test` (affected packages only) or `pnpm test:all`. Do not use plain npm.
+- Build with `pnpm build`
+- Generate docs with `pnpm doc`
+- Target Node.js versions >=12.0.0
+
+## Package Dependencies
+When packages depend on other packages in the monorepo, use the workspace protocol:
+```json
+{
+  "dependencies": {
+    "ilib-common": "workspace:^"
+  }
+}
+```

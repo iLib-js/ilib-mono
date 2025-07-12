@@ -1,0 +1,52 @@
+# Loctool Development Standards
+
+## Plugin Architecture
+Loctool uses a plugin-based architecture where each file format has its own plugin:
+- `loctool` - Main CLI application
+- `ilib-loctool-*` - Format-specific plugins (JSON, XML, JavaScript, etc.)
+
+## Plugin Development
+When creating or modifying loctool plugins:
+- Extend the base plugin class from `loctool`
+- Implement required methods: `parse()`, `write()`, `getDataType()`
+- Handle locale-specific resource files properly
+- Support both source and target locale processing
+- Include proper error handling for malformed files
+- Plugins should be written with commonjs and ES2015 Javascript code unless already upgraded
+
+## Resource Handling
+- Parse source files to extract translatable strings
+- Generate resource files for target locales
+- Handle pluralization rules correctly
+- Support context and comments for translators
+- Validate resource data integrity
+- Resource, ResourceArray, ResourcePlural, and ResourceString are different in loctool than
+  the ones in ilib-tools-common which should not be used in the plugins (yet)
+
+## File Format Support
+Each plugin should support:
+- Reading source files in the target format
+- Writing localized files in the same format
+- Preserving file structure and formatting
+- Handling encoding issues (UTF-8 preferred)
+- Supporting locale-specific file naming
+
+## Testing Loctool Plugins
+- Test with various file formats and encodings
+- Verify locale-specific behavior
+- Test error handling for malformed files
+- Include integration tests with the main loctool CLI
+- Test plugin loading and registration
+
+## Debugging
+Use the provided debugging commands:
+```bash
+# Debug loctool with plugins
+NODE_PATH=packages node --inspect packages/loctool/loctool.js
+```
+
+## Configuration
+- Support plugin-specific configuration options
+- Handle default locale settings
+- Support custom output directories
+- Allow format-specific options in project configuration

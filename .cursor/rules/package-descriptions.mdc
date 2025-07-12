@@ -1,0 +1,280 @@
+# Monorepo Package Descriptions
+
+This document provides a one-line description of each package in the ilib-mono monorepo, along with a section listing all exported functions, classes, and objects for quick reference.
+
+---
+
+## Package Descriptions
+
+### Tools
+
+- **ilib-assemble**: Utility to assemble locale data and resource files into single files for webpack to include; provides a CLI and programmatic API.
+- **ilib-lint**: A static analysis linter for many types of source files that looks for i18n problems.
+- **ilib-scanner**: Command-line utility that generates a webpack metafile to include only those ilib classes that your code actually needs.
+- **loctool**: Reads source files in various formats, extracts strings for translation, and writes out the translated strings in various resource file formats needed by each project.
+- **tmxtool**: A command-line tool to diff, merge, or split tmx files.
+
+### Libraries
+
+- **ilib-common**: Various utility classes for the ilib packages.
+- **ilib-data-utils**: Utilities used to generate locale data for ilib packages.
+- **ilib-env**: Common environment detection functions for ilib.
+- **ilib-es6**: ES6 wrappers around iLib classes, re-exporting most iLib functionality as ES6 modules.
+- **ilib-lint-common**: Common ilib-lint routines and classes/interfaces that the ilib-lint plugins will need to implement the plugin functionality.
+- **ilib-localedata**: Utilities to load ilib locale data.
+- **ilib-loader**: Factory for creating loader objects appropriate for the current platform.
+- **ilib-po**: A parser and generator for GNU po format files.
+- **ilib-tools-common**: Common code shared between the command-line tools such as loctool and ilib-lint.
+- **ilib-tmx**: A parser and generator for tmx files (Translation Memory eXchange).
+- **ilib-tree-node**: Simple class to build, construct, and deconstruct an arbitrary tree structure.
+- **ilib-xliff**: Library for parsing and generating XLIFF files.
+- **ilib-yaml**: Library to turn yaml files into Resources and vice-versa.
+- **message-accumulator**: Helps transform localizable messages in a variety of syntaxes into a form that translators can easily translate and back again for programmatic use.
+
+### Independent Ilib Packages
+
+- **ilib-address**: Classes to parse and format mailing addresses.
+- **ilib-casemapper**: Locale-sensitive class to map strings to upper- or lower-case.
+- **ilib-ctype**: Common utility functions for ilib, including character type checks (isAlpha, isDigit, etc.).
+- **ilib-istring**: A formattable string class that extends JavaScript String with internationalization capabilities.
+- **ilib-locale**: A BCP-47 locale specifier parser and validator.
+
+### Plugins for ilib-lint
+
+- **ilib-lint-apple**: ilib-lint plugin for strings extracted from files from the Apple platforms.
+- **ilib-lint-java**: ilib-lint plugin for strings extracted from Java or Kotlin code.
+- **ilib-lint-javascript**: ilib-lint plugin providing rules and rulesets for linting strings from JavaScript files.
+- **ilib-lint-react**: ilib-lint plugin for parsing React files and checking resources from React code.
+- **ilib-lint-python**: ilib-lint plugin for parsing PO files and checking resources from Python code.
+- **ilib-lint-python-gnu**: ilib-lint plugin for checking resources from Python code using the GNU gettext library.
+
+### Plugins for Loctool
+
+- **ilib-loctool-android-layout**: Plugin for loctool to handle Android layout files.
+- **ilib-loctool-android-resource**: Plugin for loctool to handle Android resource files.
+- **ilib-loctool-csv**: Plugin for loctool to handle CSV files.
+- **ilib-loctool-django**: Plugin for loctool to handle Django files.
+- **ilib-loctool-ghfm**: Plugin for loctool to handle GitHub Flavored Markdown files.
+- **ilib-loctool-ghfm-readmeio**: Plugin for loctool to handle GitHub Flavored Markdown for ReadMe.io.
+- **ilib-loctool-haml**: Plugin for loctool to handle HAML files.
+- **ilib-loctool-html**: Plugin for loctool to handle HTML files.
+- **ilib-loctool-java**: Plugin for loctool to handle Java files.
+- **ilib-loctool-javascript**: Plugin for loctool to handle JavaScript files.
+- **ilib-loctool-javascript-resource**: Plugin for loctool to handle JavaScript resource files.
+- **ilib-loctool-json**: Plugin for loctool to handle JSON files.
+- **ilib-loctool-jsx**: Plugin for loctool to handle JSX files.
+- **ilib-loctool-jst**: Plugin for loctool to handle JST files.
+- **ilib-loctool-mrkdwn**: Plugin for loctool to handle Mrkdwn files.
+- **ilib-loctool-objectivec**: Plugin for loctool to handle Objective-C files.
+- **ilib-loctool-php-resource**: Plugin for loctool to handle PHP resource files.
+- **ilib-loctool-po**: Plugin for loctool to handle PO files.
+- **ilib-loctool-properties**: Plugin for loctool to handle .properties files.
+- **ilib-loctool-regex**: Plugin for loctool to handle regex-based files.
+- **ilib-loctool-ruby-ilib**: Plugin for loctool to handle Ruby ilib files.
+- **ilib-loctool-salesforce-metaxml**: Plugin for loctool to handle Salesforce MetaXML files.
+- **ilib-loctool-strings**: Plugin for loctool to handle .strings files.
+- **ilib-loctool-swift**: Plugin for loctool to handle Swift files.
+- **ilib-loctool-tap-i18n**: Plugin for loctool to handle tap:i18n files.
+- **ilib-loctool-xml**: Plugin for loctool to handle XML files.
+- **ilib-loctool-yaml**: Plugin for loctool to handle YAML files.
+- **ilib-loctool-yaml-resource**: Plugin for loctool to handle YAML resource files.
+
+---
+
+## Exported Functions, Classes, and Objects
+
+### ilib-address
+- Address
+- AddressFmt
+
+### ilib-casemapper
+- CaseMapper (default export)
+
+### ilib-ctype
+- withinRange
+- isAlnum
+- isAlpha
+- isAscii
+- isBlank
+- isCntrl
+- isDigit
+- isGraph
+- isIdeo
+- isLower
+- isPrint
+- isPunct
+- isScript
+- isSpace
+- isUpper
+- isXdigit
+
+### ilib-data-utils
+- CharacterInfo
+- CharmapFile
+- Trie
+- UnicodeData
+- UnicodeFile
+- Utils (namespace)
+- WeightVector
+
+### ilib-env
+- top
+- getPlatform
+- setPlatform
+- getBrowser
+- globalVar
+- isGlobal
+- getLocale
+- setLocale
+- getTimeZone
+- setTimeZone
+- clearCache
+
+### ilib-es6
+- AddressFmt
+- Address
+- AlphabeticIndex
+- AreaUnit
+- CalendarFactory
+- CalendarFactoryAsync
+- CaseMapper
+- CharmapFactory
+- CharmapFactoryAsync
+- Charmap
+- Charset
+- Collator
+- CopticCal
+- CopticDate
+- Country
+- CType
+- Currency
+- DateFactory
+- DateFactoryAsync
+- DateFmt
+- DateRngFmt
+- DigitalSpeedUnit
+- DigitalStorageUnit
+- DurationFmt
+- EnergyUnit
+- EthiopicCal
+- EthiopicDate
+- FuelConsumptionUnit
+- GlyphString
+- GregorianCal
+- GregorianDate
+- HanCal
+- HanDate
+- HebrewCal
+- HebrewDate
+- INumber
+- isAlnum
+- isAlpha
+- isAscii
+- isBlank
+- isCntrl
+- isDigit
+- isGraph
+- isIdeo
+- IslamicCal
+- IslamicDate
+- isLower
+- isPrint
+- isPunct
+- isScript
+- isSpace
+- IString
+- isUpper
+- isXdigit
+- JulianCal
+- JulianDate
+- JulianDay
+- LengthUnit
+- ListFmt
+- LocaleInfo
+- Locale
+- LocaleMatcher
+- MassUnit
+- MeasurementFactory
+- NameFmt
+- Name
+- NormString
+- NumberingPlan
+- NumFmt
+- PersianAlgoCal
+- PersianAlgoDate
+- PersianCal
+- PersianDate
+- PhoneFmt
+- PhoneGeoLocator
+- PhoneNumber
+- ResBundle
+- ScriptInfo
+- TemperatureUnit
+- ThaiSolarCal
+- ThaiSolarDate
+- TimeUnit
+- TimeZone
+- UnitFmt
+- UnknownUnit
+- UTF16BE
+- UTF16LE
+- UTF8
+- VelocityUnit
+- VolumeUnit
+- ilib (default export)
+
+### ilib-istring
+- IString (default export)
+- IString.create (static method)
+
+### ilib-lint-common
+- Plugin
+- Rule
+- Formatter
+- Parser
+- Fixer
+- Transformer
+- Serializer
+- Result
+
+### ilib-loader
+- LoaderFactory (default export)
+- Loader
+- registerLoader
+
+### ilib-locale
+- Locale (default export)
+
+### ilib-localedata
+- getLocaleData (default export)
+- clearLocaleData
+- LocaleData
+
+### ilib-po
+- POFile
+- POFileOptions
+- SyntaxError
+- Parser
+- Generator
+- GeneratorOptions
+
+### ilib-tools-common
+- ResourceString
+- ResourceArray
+- ResourcePlural
+
+### ilib-tmx
+- (See API docs for exports)
+
+### ilib-tree-node
+- Node (main export)
+
+### ilib-xliff
+- Xliff
+- TranslationUnit
+
+### ilib-yaml
+- YamlFile (main export)
+
+### message-accumulator
+- MessageAccumulator (main export)
