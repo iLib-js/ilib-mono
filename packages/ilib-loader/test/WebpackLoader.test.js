@@ -1,7 +1,7 @@
 /*
  * Webpackloader.test.js - test the loader under webpack
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import { getPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index.js';
 
 describe("testWebpackLoader", () => {
-    if (getPlatform() === "browser") {
         test("LoaderGetName", () => {
             expect.assertions(1);
             var loader = LoaderFactory();
@@ -544,9 +543,4 @@ describe("testWebpackLoader", () => {
                 });
             });
         });
-    } else {
-        test("fake", () => {
-            expect(1+1).toBe(2);
-        });
-    }
 });
