@@ -18882,7 +18882,7 @@ snapshots:
       which: 2.0.2
     optionalDependencies:
       coveralls: 3.1.1
-      typescript: 5.9.2
+      typescript: 5.6.3
     transitivePeerDependencies:
       - supports-color
 
