@@ -12969,14 +12969,28 @@ snapshots:
       loader-utils: 2.0.4
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 5.106.2(webpack-cli@5.1.4)
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
-  babel-loader@9.2.1(@babel/core@7.29.0)(webpack@5.106.2):
+  babel-loader@9.2.1(@babel/core@7.26.0)(webpack@5.101.3):
     dependencies:
-      '@babel/core': 7.29.0
+      '@babel/core': 7.26.0
       find-cache-dir: 4.0.0
-      schema-utils: 4.3.3
-      webpack: 5.106.2(webpack-cli@5.1.4)
+      schema-utils: 4.2.0
+      webpack: 5.101.3
+
+  babel-loader@9.2.1(@babel/core@7.26.0)(webpack@5.95.0):
+    dependencies:
+      '@babel/core': 7.26.0
+      find-cache-dir: 4.0.0
+      schema-utils: 4.2.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
+
+  babel-loader@9.2.1(@babel/core@7.28.4)(webpack@5.101.3):
+    dependencies:
+      '@babel/core': 7.28.4
+      find-cache-dir: 4.0.0
+      schema-utils: 4.2.0
+      webpack: 5.101.3
 
   babel-plugin-add-module-exports@1.0.4: {}
 
@@ -14635,9 +14649,9 @@ snapshots:
       hooker: 0.2.3
       jshint: 2.13.6
 
-  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@5.9.3))(typescript@5.9.3):
+  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
-      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@5.9.3))(typescript@5.9.3)
+      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2)
     transitivePeerDependencies:
       - flow-remove-types
       - supports-color
@@ -17676,10 +17690,10 @@ snapshots:
       socks: 1.1.9
     optional: true
 
-  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@5.9.3))(typescript@5.9.3):
+  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
       ejs: 3.1.10
-      tap: 15.2.3(ts-node@8.10.2(typescript@5.9.3))(typescript@5.9.3)
+      tap: 15.2.3(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2)
     transitivePeerDependencies:
       - flow-remove-types
       - supports-color
@@ -19340,7 +19354,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tap@15.2.3(ts-node@8.10.2(typescript@5.9.3))(typescript@5.9.3):
+  tap@15.2.3(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
       chokidar: 3.6.0
       coveralls: 3.1.1
@@ -19365,12 +19379,12 @@ snapshots:
       tcompare: 5.0.7
       which: 2.0.2
     optionalDependencies:
-      ts-node: 8.10.2(typescript@5.9.3)
-      typescript: 5.9.3
+      ts-node: 8.10.2(typescript@5.9.2)
+      typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
 
-  tap@16.3.10(coveralls@3.1.1)(typescript@5.9.2):
+  tap@16.3.10(coveralls@3.1.1)(typescript@5.6.3):
     dependencies:
       chokidar: 3.6.0
       findit: 2.0.0
@@ -19422,14 +19436,24 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
-      schema-utils: 4.3.3
-      terser: 5.47.1
-      webpack: 5.106.2(webpack-cli@5.1.4)
+      schema-utils: 3.3.0
+      serialize-javascript: 6.0.2
+      terser: 5.36.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
-  terser@5.47.1:
+  terser-webpack-plugin@5.3.14(webpack@5.101.3):
     dependencies:
-      '@jridgewell/source-map': 0.3.11
-      acorn: 8.16.0
+      '@jridgewell/trace-mapping': 0.3.25
+      jest-worker: 27.5.1
+      schema-utils: 4.3.2
+      serialize-javascript: 6.0.2
+      terser: 5.36.0
+      webpack: 5.101.3
+
+  terser@5.36.0:
+    dependencies:
+      '@jridgewell/source-map': 0.3.6
+      acorn: 8.14.0
       commander: 2.20.3
       source-map-support: 0.5.21
 
@@ -19550,13 +19574,13 @@ snapshots:
       typescript: 3.9.10
       yn: 3.1.1
 
-  ts-node@8.10.2(typescript@5.9.3):
+  ts-node@8.10.2(typescript@5.9.2):
     dependencies:
       arg: 4.1.3
       diff: 4.0.4
       make-error: 1.3.6
       source-map-support: 0.5.21
-      typescript: 5.9.3
+      typescript: 5.9.2
       yn: 3.1.1
     optional: true
 
@@ -20065,20 +20089,22 @@ snapshots:
 
   webpack-sources@3.4.1: {}
 
-  webpack@5.106.2:
+  webpack-sources@3.3.3: {}
+
+  webpack@5.101.3:
     dependencies:
       '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
       '@webassemblyjs/ast': 1.14.1
       '@webassemblyjs/wasm-edit': 1.14.1
       '@webassemblyjs/wasm-parser': 1.14.1
-      acorn: 8.16.0
-      acorn-import-phases: 1.0.4(acorn@8.16.0)
-      browserslist: 4.28.2
+      acorn: 8.15.0
+      acorn-import-phases: 1.0.4(acorn@8.15.0)
+      browserslist: 4.24.2
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.21.3
-      es-module-lexer: 2.1.0
+      enhanced-resolve: 5.18.3
+      es-module-lexer: 1.5.4
       eslint-scope: 5.1.1
       events: 3.3.0
       glob-to-regexp: 0.4.1
@@ -20086,11 +20112,11 @@ snapshots:
       loader-runner: 4.3.2
       mime-db: 1.54.0
       neo-async: 2.6.2
-      schema-utils: 4.3.3
-      tapable: 2.3.3
-      terser-webpack-plugin: 5.6.0(webpack@5.106.2)
-      watchpack: 2.5.1
-      webpack-sources: 3.4.1
+      schema-utils: 4.3.2
+      tapable: 2.2.1
+      terser-webpack-plugin: 5.3.14(webpack@5.101.3)
+      watchpack: 2.4.2
+      webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/core'
