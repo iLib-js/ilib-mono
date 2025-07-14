@@ -229,9 +229,6 @@ importers:
       grunt-contrib-jshint:
         specifier: ^3.2.0
         version: 3.2.0
-      grunt-contrib-nodeunit:
-        specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -426,9 +423,6 @@ importers:
       grunt-contrib-jshint:
         specifier: ^3.2.0
         version: 3.2.0
-      grunt-contrib-nodeunit:
-        specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -571,9 +565,6 @@ importers:
       grunt-contrib-jshint:
         specifier: ^3.2.0
         version: 3.2.0
-      grunt-contrib-nodeunit:
-        specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -2404,9 +2395,6 @@ importers:
       grunt-contrib-jshint:
         specifier: ^3.2.0
         version: 3.2.0
-      grunt-contrib-nodeunit:
-        specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -2741,9 +2729,6 @@ importers:
       grunt-contrib-jshint:
         specifier: ^3.2.0
         version: 3.2.0
-      grunt-contrib-nodeunit:
-        specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
@@ -5510,10 +5495,6 @@ packages:
     resolution: {integrity: sha512-pLLDrTKfitBn2b1U9ecX+nkECcQ12tsiW58Y0SaZcsQgjljthPs78N5D24Y3b34dD8QKBAEW1J0VgO7cW0QcVQ==}
     engines: {node: '>=0.12.0'}
 
-  grunt-contrib-nodeunit@5.0.0:
-    resolution: {integrity: sha512-6PeUhAAOAgao+s5fqRirb8uArqT9Xdamr3+dVSp9HHgAWmnT0w9oNILlyh8bQ/j36/B3oYRBL0O3CuW+PdH+vA==}
-    engines: {node: '>=14.0'}
-
   grunt-contrib-uglify@5.2.2:
     resolution: {integrity: sha512-ITxiWxrjjP+RZu/aJ5GLvdele+sxlznh+6fK9Qckio5ma8f7Iv8woZjRkGfafvpuygxNefOJNc+hfjjBayRn2Q==}
     engines: {node: '>=12'}
@@ -7046,10 +7027,6 @@ packages:
     resolution: {integrity: sha512-g3XCZ3Gh1Fxr9NPPo0PtmEooZ2jSJF+tP0DPtqCZmFA22uQ0N2clAew6+GIAIMnjH4eX9BS0ixxpb45IAYHnVA==}
     hasBin: true
 
-  nodeunit-x@0.16.0:
-    resolution: {integrity: sha512-9HLrnteQBYDOrx2RP2KlRRcIkxkTogQ/3e75Qk1yUVZjNzAUAVZ/n+Fcv4UgWsxJ5mqMFwMWQo4biZP79o00HQ==}
-    hasBin: true
-
   nodeunit@0.11.3:
     resolution: {integrity: sha512-gDNxrDWpx07BxYNO/jn1UrGI1vNhDQZrIFphbHMcTCDc5mrrqQBWfQMXPHJ5WSgbFwD1D6bv4HOsqtTrPG03AA==}
     deprecated: you are strongly encouraged to use other testing options
@@ -8224,31 +8201,6 @@ packages:
       ts-node: '>=8.5.2'
       typescript: '>=3.7.2'
     peerDependenciesMeta:
-      flow-remove-types:
-        optional: true
-      ts-node:
-        optional: true
-      typescript:
-        optional: true
-    bundledDependencies:
-      - ink
-      - treport
-      - '@types/react'
-      - '@isaacs/import-jsx'
-      - react
-
-  tap@16.3.10:
-    resolution: {integrity: sha512-q5Am+PpGHS6JSjk/Zn4bCRBihmZVM15v/MYXUy60wenw5HDe7pVrevLCEoMEz7tuw6jaPOJJqni1y8apN23IGw==}
-    engines: {node: '>=12'}
-    hasBin: true
-    peerDependencies:
-      coveralls: ^3.1.1
-      flow-remove-types: '>=2.112.0'
-      ts-node: '>=8.5.2'
-      typescript: '>=3.7.2'
-    peerDependenciesMeta:
-      coveralls:
-        optional: true
       flow-remove-types:
         optional: true
       ts-node:
@@ -10289,7 +10241,7 @@ snapshots:
 
   '@jridgewell/source-map@0.3.6':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
@@ -10861,14 +10813,14 @@ snapshots:
       loader-utils: 2.0.4
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 5.95.0(webpack-cli@5.1.4)
+      webpack: 5.95.0(webpack-cli@4.10.0)
 
   babel-loader@9.2.1(@babel/core@7.26.0)(webpack@5.95.0):
     dependencies:
       '@babel/core': 7.26.0
       find-cache-dir: 4.0.0
       schema-utils: 4.2.0
-      webpack: 5.95.0(webpack-cli@5.1.4)
+      webpack: 5.95.0
 
   babel-plugin-add-module-exports@1.0.4: {}
 
@@ -12439,16 +12391,6 @@ snapshots:
       - ts-node
       - typescript
 
-  grunt-contrib-nodeunit@5.0.0(coveralls@3.1.1)(typescript@5.6.3):
-    dependencies:
-      nodeunit-x: 0.16.0(coveralls@3.1.1)(typescript@5.6.3)
-    transitivePeerDependencies:
-      - coveralls
-      - flow-remove-types
-      - supports-color
-      - ts-node
-      - typescript
-
   grunt-contrib-uglify@5.2.2:
     dependencies:
       chalk: 4.1.2
@@ -13838,7 +13780,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 20.17.4
+      '@types/node': 22.10.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -14723,17 +14665,6 @@ snapshots:
       ejs: 3.1.10
       tap: 15.2.3(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
     transitivePeerDependencies:
-      - flow-remove-types
-      - supports-color
-      - ts-node
-      - typescript
-
-  nodeunit-x@0.16.0(coveralls@3.1.1)(typescript@5.6.3):
-    dependencies:
-      ejs: 3.1.10
-      tap: 16.3.10(coveralls@3.1.1)(typescript@5.6.3)
-    transitivePeerDependencies:
-      - coveralls
       - flow-remove-types
       - supports-color
       - ts-node
@@ -16264,35 +16195,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tap@16.3.10(coveralls@3.1.1)(typescript@5.6.3):
-    dependencies:
-      chokidar: 3.6.0
-      findit: 2.0.0
-      foreground-child: 2.0.0
-      fs-exists-cached: 1.0.0
-      glob: 7.2.3
-      isexe: 2.0.0
-      istanbul-lib-processinfo: 2.0.3
-      jackspeak: 1.4.2
-      libtap: 1.4.1
-      minipass: 3.3.6
-      mkdirp: 1.0.4
-      nyc: 15.1.0
-      opener: 1.5.2
-      rimraf: 3.0.2
-      signal-exit: 3.0.7
-      source-map-support: 0.5.21
-      tap-mocha-reporter: 5.0.4
-      tap-parser: 11.0.2
-      tap-yaml: 1.0.2
-      tcompare: 5.0.7
-      which: 2.0.2
-    optionalDependencies:
-      coveralls: 3.1.1
-      typescript: 5.6.3
-    transitivePeerDependencies:
-      - supports-color
-
   tapable@2.2.1: {}
 
   tcompare@5.0.7:
@@ -16319,7 +16221,7 @@ snapshots:
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
       terser: 5.36.0
-      webpack: 5.95.0(webpack-cli@5.1.4)
+      webpack: 5.95.0(webpack-cli@4.10.0)
 
   terser@5.36.0:
     dependencies:
@@ -16906,6 +16808,36 @@ snapshots:
       wildcard: 2.0.1
 
   webpack-sources@3.2.3: {}
+
+  webpack@5.95.0:
+    dependencies:
+      '@types/estree': 1.0.6
+      '@webassemblyjs/ast': 1.12.1
+      '@webassemblyjs/wasm-edit': 1.12.1
+      '@webassemblyjs/wasm-parser': 1.12.1
+      acorn: 8.14.0
+      acorn-import-attributes: 1.9.5(acorn@8.14.0)
+      browserslist: 4.24.2
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.17.1
+      es-module-lexer: 1.5.4
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 3.3.0
+      tapable: 2.2.1
+      terser-webpack-plugin: 5.3.10(webpack@5.95.0)
+      watchpack: 2.4.2
+      webpack-sources: 3.2.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
 
   webpack@5.95.0(webpack-cli@4.10.0):
     dependencies:
