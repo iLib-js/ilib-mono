@@ -1,7 +1,7 @@
 /*
  * karma.conf.js - configure the karma testing environment
  *
- * Copyright © 2023, JEDLSoft
+ * Copyright © 2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,11 @@ module.exports = function (config) {
         frameworks: ["jasmine"],
 
         // list of files / patterns to load in the browser
-        // Here I'm including all of the the Jest tests which are all under the __tests__ directory.
-        // You may need to tweak this patter to find your test files/
+        // Include common tests and browser-specific tests, exclude Node.js-specific tests
         files: [
             "./karma-setup.js",
-            "./test/**/*.test.js"
+            "./test/env.test.js",
+            "./test/env-browser.test.js"
         ],
 
         // preprocess matching files before serving them to the browser
@@ -47,7 +47,8 @@ module.exports = function (config) {
         preprocessors: {
             // Use webpack to bundle our tests files
             "./karma-setup.js": ["webpack"],
-            "./test/**/*.test.js": ["webpack"],
+            "./test/env.test.js": ["webpack"],
+            "./test/env-browser.test.js": ["webpack"],
         },
 
         browsers: ["ChromeHeadless"],
