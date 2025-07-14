@@ -1,7 +1,7 @@
 /*
  * index.js - detect various things in the runtime environment
  *
- * Copyright © 2021-2024, JEDLSoft
+ * Copyright © 2021-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,26 +54,54 @@ function getPlatformValue() {
 export function top() {
     let topScope;
     const platformValue = typeof(platform) !== 'undefined' ? platform : getPlatformValue();
+    function hasGlobal() {
+        try {
+            return typeof global !== 'undefined';
+        } catch (e) {
+            return false;
+        }
+    }
     switch (platformValue) {
         case "rhino":
             topScope = (function() {
-                return (typeof global === 'object') ? global : this;
+                let val;
+                if (hasGlobal()) {
+                    val = global;
+                } else {
+                    val = this;
+                }
+                return val;
             })();
             break;
         case "nodejs":
         case "qt":
         case "trireme":
-            topScope = typeof(global) !== 'undefined' ? global : this;
-            //console.log("top: top is " + (typeof(global) !== 'undefined' ? "global" : "this"));
+            if (hasGlobal()) {
+                topScope = global;
+            } else {
+                topScope = this;
+            }
             break;
+
         default:
-            // In a browser, the top scope is always window, but in a mocked environment,
-            // it could be something else, so we check for that too
-            topScope = typeof(window) !== 'undefined' ? window :
-                (typeof(global) !== 'undefined' ? global : this);
+            if (typeof(window) !== 'undefined') {
+                topScope = window;
+            } else if (hasGlobal()) {
+                topScope = global;
+            } else if (typeof(globalThis) !== 'undefined') {
+                // globalThis is the standardized way to access the global object in ESM modules
+                // It works in both browser and Node.js environments
+                topScope = globalThis;
+            } else {
+                topScope = this;
+            }
             break;
     }
-
+    if (!topScope && typeof globalThis !== 'undefined') {
+        // globalThis is the standardized way to access the global object in ESM modules
+        // It works in both browser and Node.js environments
+        topScope = globalThis;
+    }
     return topScope;
 };
 
