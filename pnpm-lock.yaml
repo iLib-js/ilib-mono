@@ -18852,8 +18852,8 @@ snapshots:
       tcompare: 5.0.7
       which: 2.0.2
     optionalDependencies:
-      ts-node: 8.10.2(typescript@5.6.3)
-      typescript: 5.6.3
+      ts-node: 8.10.2(typescript@5.9.2)
+      typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
 
