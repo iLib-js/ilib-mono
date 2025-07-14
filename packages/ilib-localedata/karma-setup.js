@@ -1,7 +1,8 @@
 /*
- * testSuiteFiles.js - list the test files in this directory
+ * karma-setup.js - set up the karma testing environment before
+ * running the tests
  *
- * Copyright © 2022, JEDLSoft
+ * Copyright © 2025, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Add missing Jest functions
+window.test = window.it;
+window.test.each = (inputs) => (testName, test) =>
+  inputs.forEach((args) => window.it(testName, () => test(...args)));
+window.test.todo = function () {
+  return undefined;
+};
 
-export const files = [
-    "testDataCache.js",
-    "testLocaleData.js",
-    "testGetLocaleData.js",
-    "testLocaleDataNode.js"
-];
+window.expect.assertions = (num) => { return undefined; };
