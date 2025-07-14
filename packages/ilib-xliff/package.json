@@ -75,7 +75,6 @@
         "@babel/register": "^7.28.3",
         "@babel/runtime": "^7.28.4",
         "@open-wc/webpack-import-meta-loader": "^0.4.7",
-        "assertextras": "^1.1.0",
         "babel-loader": "^10.0.0",
         "babel-plugin-add-module-exports": "^1.0.4",
         "babel-plugin-module-resolver": "^5.0.2",
