@@ -1,6 +1,5 @@
 /*
- * LoaderFactory.js - create new loader objects or return existing
- * ones
+ * jest.config.cjs - Jest configuration for ilib-loader
  *
  * Copyright © 2022, 2025 JEDLSoft
  *
@@ -18,19 +17,22 @@
  * limitations under the License.
  */
 
-import { getPlatform } from 'ilib-env';
-import { Loader, registerLoader, LoaderFactory } from './LoaderFactory.js';
-import NodeLoader from './NodeLoader.js';
-import WebpackLoader from './WebpackLoader.js';
+module.exports = {
+    testEnvironment: 'node',
+    testMatch: [
+        '**/test/**/*.test.js'
+    ],
+    testPathIgnorePatterns: [
+        '.*/test/WebpackLoader\\.test\\.js$'
+    ],
+    transform: {
+        '^.+\\.js$': ['babel-jest', {
+            presets: [['@babel/preset-env', {
+                targets: {
+                    node: 'current'
+                }
+            }]]
+        }]
+    },
 
-switch (getPlatform()) {
-    case 'nodejs':
-        registerLoader(NodeLoader);
-        break;
-    case 'browser':
-        registerLoader(WebpackLoader);
-        break;
-}
-
-export { Loader, registerLoader };
-export default LoaderFactory;
+}; 
