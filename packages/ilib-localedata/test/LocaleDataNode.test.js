@@ -1,7 +1,7 @@
 /*
- * testLocaleData.js - test the locale data class on nodejs
+ * LocaleDataNode.test.js - test the locale data class on nodejs
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,10 @@ import { setPlatform } from 'ilib-env';
 
 import LocaleData from '../src/LocaleData.js';
 
-export const testLocaleDataNode = {
-    testLocaleDataNodeSyncRoot: function(test) {
+describe("LocaleDataNode", () => {
+    test("should load sync root data", () => {
+        expect.assertions(2);
         setPlatform();
-
-        test.expect(2);
 
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
@@ -35,13 +34,13 @@ export const testLocaleDataNode = {
             sync: true
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "root"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b",
             "c": "d",
             "x": {
@@ -49,26 +48,24 @@ export const testLocaleDataNode = {
                 "o": "p"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeSyncen: function(test) {
+    test("should load sync en data", () => {
+        expect.assertions(2);
         setPlatform();
-
-        test.expect(2);
 
         const locData = new LocaleData({
             path: "./test/files",
             sync: true
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "en"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b en",
             "c": "d",
             "x": {
@@ -76,26 +73,24 @@ export const testLocaleDataNode = {
                 "o": "p en"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeSyncenUS: function(test) {
+    test("should load sync en-US data", () => {
+        expect.assertions(2);
         setPlatform();
-
-        test.expect(2);
 
         const locData = new LocaleData({
             path: "./test/files",
             sync: true
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "en-US"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b en",
             "c": "d en-US",
             "x": {
@@ -103,94 +98,87 @@ export const testLocaleDataNode = {
                 "o": "p en-US"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeAsyncRoot: function(test) {
+    test("should load async root data", async () => {
+        expect.assertions(2);
         setPlatform();
-
-        test.expect(2);
 
         const locData = new LocaleData({
             path: "./test/files",
             sync: false
         });
 
-        test.ok(locData);
-        locData.loadData({
+        expect(locData).toBeTruthy();
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "root"
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "b",
-                "c": "d",
-                "x": {
-                    "m": "n",
-                    "o": "p"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeAsyncen: function(test) {
+        expect(actual).toEqual({
+            "a": "b",
+            "c": "d",
+            "x": {
+                "m": "n",
+                "o": "p"
+            }
+        });
+    });
+
+    test("should load async en data", async () => {
+        expect.assertions(2);
         setPlatform();
-
-        test.expect(2);
 
         const locData = new LocaleData({
             path: "./test/files",
             sync: false
         });
 
-        test.ok(locData);
-        locData.loadData({
+        expect(locData).toBeTruthy();
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "en"
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "b en",
-                "c": "d",
-                "x": {
-                    "m": "n",
-                    "o": "p en"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeAsyncenUS: function(test) {
+        expect(actual).toEqual({
+            "a": "b en",
+            "c": "d",
+            "x": {
+                "m": "n",
+                "o": "p en"
+            }
+        });
+    });
+
+    test("should load async en-US data", async () => {
+        expect.assertions(2);
         setPlatform();
-
-        test.expect(2);
 
         const locData = new LocaleData({
             path: "./test/files",
             sync: false
         });
-        test.ok(locData);
+        expect(locData).toBeTruthy();
 
-        locData.loadData({
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "en-US"
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "b en",
-                "c": "d en-US",
-                "x": {
-                    "m": "n",
-                    "o": "p en-US"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeSyncWithRoots: function(test) {
+        expect(actual).toEqual({
+            "a": "b en",
+            "c": "d en-US",
+            "x": {
+                "m": "n",
+                "o": "p en-US"
+            }
+        });
+    });
+
+    test("should load sync data with roots", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -200,13 +188,13 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "en-US"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b en from files2",
             "c": "d en-US",
             "x": {
@@ -214,13 +202,12 @@ export const testLocaleDataNode = {
                 "o": "p en-US"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeAsyncWithRoots: function(test) {
+    test("should load async data with roots", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -228,30 +215,29 @@ export const testLocaleDataNode = {
             path: "./test/files",
             sync: false
         });
-        test.ok(locData);
+        expect(locData).toBeTruthy();
 
         LocaleData.addGlobalRoot("./test/files2");
 
-        locData.loadData({
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "en-US"
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "b en from files2",
-                "c": "d en-US",
-                "x": {
-                    "m": "n",
-                    "o": "p en-US"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeSyncWithRootsjaJP: function(test) {
+        expect(actual).toEqual({
+            "a": "b en from files2",
+            "c": "d en-US",
+            "x": {
+                "m": "n",
+                "o": "p en-US"
+            }
+        });
+    });
+
+    test("should load sync data with roots for ja-JP", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -261,13 +247,13 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "ja-JP"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b ja-JP from files2",
             "c": "d ja",
             "x": {
@@ -275,13 +261,12 @@ export const testLocaleDataNode = {
                 "o": "p ja"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeAsyncWithRootsjaJP: function(test) {
+    test("should load async data with roots for ja-JP", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -289,30 +274,29 @@ export const testLocaleDataNode = {
             path: "./test/files",
             sync: false
         });
-        test.ok(locData);
+        expect(locData).toBeTruthy();
 
         LocaleData.addGlobalRoot("./test/files2");
 
-        locData.loadData({
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "ja-JP"
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "b ja-JP from files2",
-                "c": "d ja",
-                "x": {
-                    "m": "n ja-JP from files2",
-                    "o": "p ja"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataCacheData: function(test) {
+        expect(actual).toEqual({
+            "a": "b ja-JP from files2",
+            "c": "d ja",
+            "x": {
+                "m": "n ja-JP from files2",
+                "o": "p ja"
+            }
+        });
+    });
+
+    test("should cache data", () => {
+        expect.assertions(3);
         setPlatform();
 
-        test.expect(3);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -320,7 +304,7 @@ export const testLocaleDataNode = {
             path: "./test/files",
             sync: true
         });
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         LocaleData.addGlobalRoot("./test/files2");
 
         let actual = locData.loadData({
@@ -329,7 +313,7 @@ export const testLocaleDataNode = {
         });
 
         // root data because there is no de-DE data
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b",
             "c": "d",
             "x": {
@@ -363,7 +347,7 @@ export const testLocaleDataNode = {
             locale: "de-DE"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b de-DE",
             "c": "d",
             "x": {
@@ -371,13 +355,12 @@ export const testLocaleDataNode = {
                 "o": "p de-DE"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataCheckCache: function(test) {
+    test("should check cache", () => {
+        expect.assertions(3);
         setPlatform();
 
-        test.expect(3);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -385,12 +368,12 @@ export const testLocaleDataNode = {
             path: "./test/files",
             sync: true
         });
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         LocaleData.addGlobalRoot("./test/files2");
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
-        test.ok(!LocaleData.checkCache("de-DE", "tester"));
+        expect(LocaleData.checkCache("de-DE", "tester")).toBe(false);
 
         LocaleData.cacheData({
             "de": {
@@ -411,15 +394,13 @@ export const testLocaleDataNode = {
             }
         }, "./test/files2");
 
-        test.ok(LocaleData.checkCache("de-DE", "tester"));
+        expect(LocaleData.checkCache("de-DE", "tester")).toBe(true);
+    });
 
-        test.done();
-    },
-
-    testLocaleDataCheckCacheLoadingFilesFillsCache: function(test) {
+    test("should check cache loading files fills cache", () => {
+        expect.assertions(4);
         setPlatform();
 
-        test.expect(4);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -431,15 +412,15 @@ export const testLocaleDataNode = {
 
         // there is no en-US data, but there is root data which we
         // should ignore for the purposes of cache checking
-        test.ok(!LocaleData.checkCache("en-US", "tester"));
+        expect(LocaleData.checkCache("en-US", "tester")).toBe(false);
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "en-US"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b en from files2",
             "c": "d en-US",
             "x": {
@@ -449,15 +430,13 @@ export const testLocaleDataNode = {
         });
 
         // the loadData above should have populated the cache
-        test.ok(LocaleData.checkCache("en-US", "tester"));
+        expect(LocaleData.checkCache("en-US", "tester")).toBe(true);
+    });
 
-        test.done();
-    },
-
-    testLocaleDataCheckCacheDataLoadedButNoContentAvailable: function(test) {
+    test("should check cache data loaded but no content available", () => {
+        expect.assertions(3);
         setPlatform();
 
-        test.expect(3);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -465,12 +444,12 @@ export const testLocaleDataNode = {
             path: "./test/files",
             sync: true
         });
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         LocaleData.addGlobalRoot("./test/files2");
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
-        test.ok(!LocaleData.checkCache("de-DE", "tester"));
+        expect(LocaleData.checkCache("de-DE", "tester")).toBe(false);
 
         // null indicates that we attempted to load the data, but there
         // isn't any to load, so we shouldn't try again
@@ -484,15 +463,13 @@ export const testLocaleDataNode = {
         }, "./test/files2");
 
         // true = everything that can be loaded is loaded
-        test.ok(LocaleData.checkCache("de-DE", "tester"));
+        expect(LocaleData.checkCache("de-DE", "tester")).toBe(true);
+    });
 
-        test.done();
-    },
-
-    testLocaleDataDataIsCached: function(test) {
+    test("should cache data", () => {
+        expect.assertions(4);
         setPlatform();
 
-        test.expect(4);
         LocaleData.clearCache();
 
         const locData = new LocaleData({
@@ -501,13 +478,13 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         let actual = locData.loadData({
             basename: "tester",
             locale: "ja-JP"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b ja-JP from files2",
             "c": "d ja",
             "x": {
@@ -522,14 +499,14 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
 
         actual = locData.loadData({
             basename: "tester",
             locale: "ja-JP"
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b ja-JP from files2",
             "c": "d ja",
             "x": {
@@ -537,13 +514,12 @@ export const testLocaleDataNode = {
                "o": "p ja"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataClearCache: function(test) {
+    test("should clear cache", () => {
+        expect.assertions(4);
         setPlatform();
 
-        test.expect(4);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -551,12 +527,12 @@ export const testLocaleDataNode = {
             path: "./test/files",
             sync: true
         });
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         LocaleData.addGlobalRoot("./test/files2");
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
-        test.ok(!LocaleData.checkCache("de-DE", "tester"));
+        expect(LocaleData.checkCache("de-DE", "tester")).toBe(false);
 
         LocaleData.cacheData({
             "de": {
@@ -577,20 +553,18 @@ export const testLocaleDataNode = {
             }
         }, "./test/files2");
 
-        test.ok(LocaleData.checkCache("de-DE", "tester"));
+        expect(LocaleData.checkCache("de-DE", "tester")).toBe(true);
 
         // dangerous: clears the cache for all the packages!
         LocaleData.clearCache();
 
-        test.ok(!LocaleData.checkCache("de-DE", "tester"));
+        expect(LocaleData.checkCache("de-DE", "tester")).toBe(false);
+    });
 
-        test.done();
-    },
-
-    testLocaleDataCheckCacheNoBasename: function(test) {
+    test("should check cache no basename", () => {
+        expect.assertions(3);
         setPlatform();
 
-        test.expect(3);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -598,12 +572,12 @@ export const testLocaleDataNode = {
             path: "./test/files",
             sync: true
         });
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         LocaleData.addGlobalRoot("./test/files2");
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
-        test.ok(!LocaleData.checkCache("de-DE"));
+        expect(LocaleData.checkCache("de-DE")).toBe(false);
 
         LocaleData.cacheData({
             "de": {
@@ -626,16 +600,13 @@ export const testLocaleDataNode = {
 
         // should work even without the basename by checking for
         // any data for any basename
-        test.ok(LocaleData.checkCache("de-DE"));
+        expect(LocaleData.checkCache("de-DE")).toBe(true);
+    });
 
-        test.done();
-    },
-
-
-    testLocaleDataNodeSyncMostSpecificFullLocale: function(test) {
+    test("should load sync most specific full locale", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -644,7 +615,7 @@ export const testLocaleDataNode = {
             sync: true
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "ja-JP",
@@ -653,19 +624,18 @@ export const testLocaleDataNode = {
 
         // should not merge. It should only get the most specific
         // file
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b ja-JP",
             "x": {
                "m": "n ja-JP"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeSyncMostSpecificPartLocale: function(test) {
+    test("should load sync most specific part locale", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -674,7 +644,7 @@ export const testLocaleDataNode = {
             sync: true
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "ja",
@@ -683,7 +653,7 @@ export const testLocaleDataNode = {
 
         // should not merge. It should only get the most specific
         // file
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b ja",
             "c": "d ja",
             "x": {
@@ -691,13 +661,12 @@ export const testLocaleDataNode = {
                "o": "p ja"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeAsyncMostSpecific: function(test) {
+    test("should load async most specific", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -706,29 +675,28 @@ export const testLocaleDataNode = {
             sync: false
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
 
         // should not merge. It should only get the most specific
         // file
-        locData.loadData({
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "ja-JP",
             mostSpecific: true
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "b ja-JP",
-                "x": {
-                   "m": "n ja-JP"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeAsyncMostSpecificPartLocale: function(test) {
+        expect(actual).toEqual({
+            "a": "b ja-JP",
+            "x": {
+               "m": "n ja-JP"
+            }
+        });
+    });
+
+    test("should load async most specific part locale", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -737,31 +705,30 @@ export const testLocaleDataNode = {
             sync: false
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
 
         // should not merge. It should only get the most specific
         // file
-        locData.loadData({
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "ja",
             mostSpecific: true
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "b ja",
-                "c": "d ja",
-                "x": {
-                   "m": "n ja",
-                   "o": "p ja"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeSyncReturnOneFullLocale: function(test) {
+        expect(actual).toEqual({
+            "a": "b ja",
+            "c": "d ja",
+            "x": {
+               "m": "n ja",
+               "o": "p ja"
+            }
+        });
+    });
+
+    test("should load sync return one full locale", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -770,7 +737,7 @@ export const testLocaleDataNode = {
             sync: true
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "ja-JP",
@@ -778,7 +745,7 @@ export const testLocaleDataNode = {
         });
 
         // should not merge. It should only get the root file
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b",
             "c": "d",
             "x": {
@@ -786,13 +753,12 @@ export const testLocaleDataNode = {
                "o": "p"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeSyncReturnOnePartLocale: function(test) {
+    test("should load sync return one part locale", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -801,7 +767,7 @@ export const testLocaleDataNode = {
             sync: true
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "tester",
             locale: "ja",
@@ -809,7 +775,7 @@ export const testLocaleDataNode = {
         });
 
         // should not merge. It should only return the root
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "b",
             "c": "d",
             "x": {
@@ -817,13 +783,12 @@ export const testLocaleDataNode = {
                "o": "p"
             }
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeAsyncReturnOne: function(test) {
+    test("should load async return one", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -832,32 +797,31 @@ export const testLocaleDataNode = {
             sync: false
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
 
         // should not merge. It should only get the most specific
         // file
-        locData.loadData({
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "ja-JP",
             returnOne: true
-        }).then((actual) => {
-            // should not merge. It should only get the root file
-            test.deepEqual(actual, {
-                "a": "b",
-                "c": "d",
-                "x": {
-                   "m": "n",
-                   "o": "p"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeAsyncReturnOnePartLocale: function(test) {
+        // should not merge. It should only get the root file
+        expect(actual).toEqual({
+            "a": "b",
+            "c": "d",
+            "x": {
+               "m": "n",
+               "o": "p"
+            }
+        });
+    });
+
+    test("should load async return one part locale", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -866,49 +830,46 @@ export const testLocaleDataNode = {
             sync: false
         });
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
 
         // should not merge. It should only get the most specific
         // file
-        locData.loadData({
+        const actual = await locData.loadData({
             basename: "tester",
             locale: "ja",
             returnOne: true
-        }).then((actual) => {
-            // should not merge. It should only get the root file
-            test.deepEqual(actual, {
-                "a": "b",
-                "c": "d",
-                "x": {
-                   "m": "n",
-                   "o": "p"
-                }
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataEnsureLocaleBadRoot: function(test) {
+        // should not merge. It should only get the root file
+        expect(actual).toEqual({
+            "a": "b",
+            "c": "d",
+            "x": {
+               "m": "n",
+               "o": "p"
+            }
+        });
+    });
+
+    test("should ensure locale bad root", async () => {
+        expect.assertions(1);
         setPlatform();
 
         // webpack loader does not use roots, so we don't need this test
         // on the browser
 
-        test.expect(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
         LocaleData.addGlobalRoot("./test/filesasfdasfd");
-        LocaleData.ensureLocale("ja-JP").then(result => {
-            test.ok(!result);
-            test.done();
-        });
-    },
+        const result = await LocaleData.ensureLocale("ja-JP");
+        expect(!result).toBe(true);
+    });
 
-    testLocaleDataNodeSyncWithCrossRoots: function(test) {
+    test("should load sync with cross roots", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -918,27 +879,26 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "merge",
             locale: "en-US",
             crossRoots: true
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "a from files2 en-US",
             "b": "b from files en-US",
             "c": "c from files en",
             "d": "d from files2 en-US",
             "e": "e from files2 en"
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeSyncWithCrossRootsOnlyRootLocale: function(test) {
+    test("should load sync with cross roots only root locale", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -948,26 +908,25 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "merge2",
             locale: "en-US",
             crossRoots: true
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "a from files2",
             "b": "b from files",
             "c": "c from files2",
             "d": "d from files2"
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeSyncWithCrossRootsNoOverride: function(test) {
+    test("should load sync with cross roots no override", () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -977,24 +936,23 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
+        expect(locData).toBeTruthy();
         const actual = locData.loadData({
             basename: "merge3",
             locale: "en-US",
             crossRoots: true
         });
 
-        test.deepEqual(actual, {
+        expect(actual).toEqual({
             "a": "a from files",
             "b": "b from files"
         });
-        test.done();
-    },
+    });
 
-    testLocaleDataNodeAsyncWithCrossRoots: function(test) {
+    test("should load async with cross roots", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -1004,27 +962,26 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
-        locData.loadData({
+        expect(locData).toBeTruthy();
+        const actual = await locData.loadData({
             basename: "merge",
             locale: "en-US",
             crossRoots: true
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "a from files2 en-US",
-                "b": "b from files en-US",
-                "c": "c from files en",
-                "d": "d from files2 en-US",
-                "e": "e from files2 en"
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeASyncWithCrossRootsJS: function(test) {
+        expect(actual).toEqual({
+            "a": "a from files2 en-US",
+            "b": "b from files en-US",
+            "c": "c from files en",
+            "d": "d from files2 en-US",
+            "e": "e from files2 en"
+        });
+    });
+
+    test("should load async with cross roots JS", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -1034,27 +991,25 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files5");
 
-        test.ok(locData);
-        locData.loadData({
+        expect(locData).toBeTruthy();
+        const actual = await locData.loadData({
             basename: "info",
             locale: "en-US",
             crossRoots: true
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "b en",
-                "n": "m from files5",
-                "c": "d en",
-                "x": "y from files5"
-            });
-            test.done();
         });
-    },
 
+        expect(actual).toEqual({
+            "a": "b en",
+            "n": "m from files5",
+            "c": "d en",
+            "x": "y from files5"
+        });
+    });
 
-    testLocaleDataNodeAsyncWithCrossRootsOnlyRootLocale: function(test) {
+    test("should load async with cross roots only root locale", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -1064,26 +1019,25 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
-        locData.loadData({
+        expect(locData).toBeTruthy();
+        const actual = await locData.loadData({
             basename: "merge2",
             locale: "en-US",
             crossRoots: true
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "a from files2",
-                "b": "b from files",
-                "c": "c from files2",
-                "d": "d from files2"
-            });
-            test.done();
         });
-    },
 
-    testLocaleDataNodeAsyncWithCrossRootsNoOverride: function(test) {
+        expect(actual).toEqual({
+            "a": "a from files2",
+            "b": "b from files",
+            "c": "c from files2",
+            "d": "d from files2"
+        });
+    });
+
+    test("should load async with cross roots no override", async () => {
+        expect.assertions(2);
         setPlatform();
 
-        test.expect(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
@@ -1093,18 +1047,16 @@ export const testLocaleDataNode = {
         });
         LocaleData.addGlobalRoot("./test/files2");
 
-        test.ok(locData);
-        locData.loadData({
+        expect(locData).toBeTruthy();
+        const actual = await locData.loadData({
             basename: "merge3",
             locale: "en-US",
             crossRoots: true
-        }).then((actual) => {
-            test.deepEqual(actual, {
-                "a": "a from files",
-                "b": "b from files"
-            });
-            test.done();
         });
-    }
 
-};
+        expect(actual).toEqual({
+            "a": "a from files",
+            "b": "b from files"
+        });
+    });
+}); 
