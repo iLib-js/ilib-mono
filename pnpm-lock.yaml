@@ -216,7 +216,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.9.2)
+        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -416,7 +416,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.9.2)
+        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -567,7 +567,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.9.2)
+        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -2665,10 +2665,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.9.2)
-      ilib-internal:
-        specifier: workspace:^
-        version: link:../ilib-internal
+        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -3020,10 +3017,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.9.2)
-      ilib-internal:
-        specifier: workspace:^
-        version: link:../ilib-internal
+        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -16210,9 +16204,9 @@ snapshots:
       - ts-node
       - typescript
 
-  grunt-contrib-nodeunit@5.0.0(coveralls@3.1.1)(typescript@5.9.2):
+  grunt-contrib-nodeunit@5.0.0(coveralls@3.1.1)(typescript@5.6.3):
     dependencies:
-      nodeunit-x: 0.16.0(coveralls@3.1.1)(typescript@5.9.2)
+      nodeunit-x: 0.16.0(coveralls@3.1.1)(typescript@5.6.3)
     transitivePeerDependencies:
       - coveralls
       - flow-remove-types
@@ -18837,10 +18831,10 @@ snapshots:
       - ts-node
       - typescript
 
-  nodeunit-x@0.16.0(coveralls@3.1.1)(typescript@5.9.2):
+  nodeunit-x@0.16.0(coveralls@3.1.1)(typescript@5.6.3):
     dependencies:
       ejs: 3.1.10
-      tap: 16.3.10(coveralls@3.1.1)(typescript@5.9.2)
+      tap: 16.3.10(coveralls@3.1.1)(typescript@5.6.3)
     transitivePeerDependencies:
       - coveralls
       - flow-remove-types
@@ -20443,7 +20437,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tap@16.3.10(coveralls@3.1.1)(typescript@5.9.2):
+  tap@16.3.10(coveralls@3.1.1)(typescript@5.6.3):
     dependencies:
       chokidar: 3.6.0
       findit: 2.0.0
@@ -20468,7 +20462,7 @@ snapshots:
       which: 2.0.2
     optionalDependencies:
       coveralls: 3.1.1
-      typescript: 5.9.2
+      typescript: 5.6.3
     transitivePeerDependencies:
       - supports-color
 
