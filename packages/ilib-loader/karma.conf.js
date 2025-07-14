@@ -1,7 +1,7 @@
 /*
  * karma.conf.js - configure the karma testing environment
  *
- * Copyright © 2023, JEDLSoft
+ * Copyright © 2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,11 @@ module.exports = function (config) {
         files: [
             "./karma-setup.js",
             "./test/**/*.test.js"
+        ],
+
+        // list of files to exclude
+        exclude: [
+            "./test/NodeLoader.test.js"
         ],
 
         // preprocess matching files before serving them to the browser
