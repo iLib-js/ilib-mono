@@ -58,7 +58,7 @@
         "husky": "^9.1.5",
         "jest": "^29.7.0",
         "lint-staged": "^15.2.10",
-        "loctool": "^2.25.2",
+        "loctool": "workspace:^",
         "prettier": "^3.3.3",
         "require-self": "^0.2.3",
         "ts-jest": "^29.2.5",
@@ -80,6 +80,6 @@
         "unist-util-visit": "^2"
     },
     "peerDependencies": {
-        "loctool": "^2.25.2"
+        "loctool": "workspace:^"
     }
 }
