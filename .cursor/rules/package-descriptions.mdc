@@ -2,6 +2,14 @@
 
 This document provides a one-line description of each package in the ilib-mono monorepo, along with a section listing all exported functions, classes, and objects for quick reference.
 
+Instructions for Cursor:
+- Keep this list up-to-date automatically
+    - When a new package is added to the repo, add it to the package descriptions below
+    - If in doubt about what section the new repo goes into or what it does, ask the user for clarification
+    - For new libraries or independent ilib packages, add a section in the "Exported Functions, Classes, and Objects" section for it
+- When modifying existing packages
+    - Keep the public API up-to-date below in the "Exported Functions, Classes, and Objects" section
+
 ---
 
 ## Package Descriptions

@@ -48,13 +48,18 @@ NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js
 - Use Changesets for version management
 - Each package in packages/ is published independently to npm
 - Follow semantic versioning for all packages
-- Include changelog entries for all changes in .changesets
+- Include changelog entries for all changes in .changesets.
+- Changesets should be written for external engineer who only wants to know the important differences from the last release that may affect them and what they are doing with their own code. They do not need to know all the implementation details.
 
 ## Code Quality
 - All packages should have comprehensive tests
 - Maintain good test coverage (>80%)
 - Follow consistent coding standards across all packages
-- Use JSDoc for documentation
+- Use JSDoc or TSDoc for API documentation
 - Always remove extraneous whitespace at the end of lines
-- Always remove "debugger;" statements from tests before committing code to git
+- When problems such as unit test failures are successfully resolved:
+    - Always remove "debugger;" statements from tests before committing code to git
+    - Remove any debugging console.log statements added during debugging
+    - Remove any test files that were created to try things out
+- Whenever Cursor AI in doubt or where a clarification would be really useful for another package that is in ilib-mono, Cursor AI should consult the `README.md` and the `CONTRIBUTING.md` files in the root of ilib-mono and in the root of the package in question
 

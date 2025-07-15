@@ -1,4 +1,4 @@
-# JavaScript Coding Standards
+# JavaScript and Typescript Coding Standards
 
 ## Code Style
 - Follow JSDoc standards for documentation in javascript files
@@ -16,6 +16,7 @@
 - For CommonJS compatibility, use `module.exports` and `require()`
 - Place imports at the top of the file
 - Group imports: external libraries first, then internal packages, then relative imports. Separate each group with a blank line.
+- Wherever possible, import classes from other packages within this monorepo instead of implementing functionality locally
 
 ## Testing
 - Write unit tests for all new functionality
@@ -23,12 +24,16 @@
 - Place test files in the `test/` directory
 - Name test files with `.test.js` suffix
 - Use descriptive English test names that explain the expected behavior
+- Wherever possible, import real classes from other packages inside of this monorepo instead of implementing mock objects
 
 ## Documentation
-- Document all public APIs with JSDoc comments
+- Document all public APIs with JSDoc/TSDoc comments
 - Include parameter types, return types, and examples
 - Document complex algorithms and business logic
 - Keep documentation up to date with code changes
+- All source files should have the standard Apache2 header at the top of them
+- When updating an existing file, update the copyright statement at the top to add the current year. When creating a
+  new file, make sure to put a copyright notice with the current year.
 
 ## Error Handling
 - Use try-catch blocks for error-prone operations
@@ -40,4 +45,3 @@
 - Avoid unnecessary object creation in loops
 - Use appropriate data structures for the task
 - Consider memory usage for large datasets
-- Profile code when performance is critical

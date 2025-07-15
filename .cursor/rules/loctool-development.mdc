@@ -9,10 +9,14 @@ Loctool uses a plugin-based architecture where each file format has its own plug
 When creating or modifying loctool plugins:
 - Extend the base plugin class from `loctool`
 - Implement required methods: `parse()`, `write()`, `getDataType()`
+- Read [How to Write a Loctool Plugin](./packages/loctool/dos/Plugin.md) for more details
 - Handle locale-specific resource files properly
 - Support both source and target locale processing
 - Include proper error handling for malformed files
-- Plugins should be written with commonjs and ES2015 Javascript code unless already upgraded
+- Existing plugins should continue to be updated with commonjs modules and ES2015 Javascript code until we update them to Typescript later
+- New plugins should be written in Typescript and use ESM from the very beginning
+    - The `build` script in the package should be responsible for transpiling TS code into the `lib/` directory
+    - The `lib/` directory should be included in the `files` section of the package.json for shipping
 
 ## Resource Handling
 - Parse source files to extract translatable strings

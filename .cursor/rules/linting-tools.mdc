@@ -9,10 +9,13 @@ The ilib-lint system provides internationalization and localization linting:
 - `ilib-lint-python` - ilib-lint plugin containing Python-specific linting rules
 - `ilib-lint-python-gnu` - ilib-lint plugin containing GNU gettext for Python linting rules
 
+Ilib-lint is capable of linting both source code looking for internationalization issues,
+and translations in resource files, looking for translation problems and inconsistencies.
+
 ## Rule Development
 When creating or modifying linting rules:
-- Extend the base rule class from `ilib-lint-common`
-- Implement required methods: `check()`, `getRuleName()`, `getDescription()`
+- Extend the base Rule class from `ilib-lint-common`
+- Implement required methods: `getRuleName()`, `getDescription()`
 - Provide clear error messages with actionable suggestions
 - Include severity levels (error, warning, suggestion)
 - Support rule configuration options
@@ -26,7 +29,18 @@ Focus on common i18n issues:
 - Inconsistent string concatenation
 - Missing RTL/LTR support
 
-## Language-Specific Rules
+## Localization/Translation Checks
+Focus on consistency:
+- That the translation matches the source in various ways, including, but not limited to:
+    - They say the same thing in different languages
+    - They have the same type and number of replacement parameters
+    - They use similar syntax for things like ICU plurals or XML tags
+    - They have the same leading and trailing whitespace
+- Syntax of translations depends on the programming language that the source string was extracted from
+    - Need to apply the rules for strings from that programming language plus any generic non-language-specific rules
+    - Programming languages should have their own ruleset to collect these rule and make it easy to configure a filetype that uses those rules
+
+## Programming Language-Specific Rules
 Each language plugin should:
 - Parse the target language syntax correctly
 - Identify translatable strings
@@ -52,5 +66,5 @@ NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js
 - Support rule-specific configuration
 - Allow rule enabling/disabling
 - Support custom severity levels
-- Provide rule documentation and examples
+- Provide rule documentation and examples as md files in the `doc/` directory of the package
 - Support project-specific rule sets

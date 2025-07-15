@@ -44,7 +44,7 @@ The core ilib libraries provide fundamental internationalization functionality:
 - Test locale fallback mechanisms
 
 ## Documentation
-- Provide comprehensive JSDoc documentation
+- Provide comprehensive JSDoc/TSDoc documentation
 - Include usage examples for common scenarios
 - Document locale-specific behavior
 - Provide migration guides for API changes
