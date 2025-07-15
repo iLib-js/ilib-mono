@@ -96,7 +96,7 @@
         "ilib-env": "workspace:^",
         "ilib-loader": "workspace:^",
         "ilib-locale": "workspace:^",
-        "ilib-localematcher": "^1.2.2",
+        "ilib-localematcher": "workspace:^",
         "json5": "^2.2.1"
     }
 }
