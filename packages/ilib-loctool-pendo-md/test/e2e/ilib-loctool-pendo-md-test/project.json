@@ -1,0 +1,24 @@
+{
+    "name": "ilib-loctool-pendo-md-test",
+    "id": "ilib-loctool-pendo-md-test",
+    "description": "translate strings exported from Pendo",
+    "projectType": "custom",
+    "sourceLocale": "en",
+    "includes": ["l10n/xliff/guides/*.xl(if)?f"],
+    "excludes": [],
+    "settings": {
+        "xliffsDir": "translations",
+        "locales": ["pl-PL"],
+        "localeMap": {
+            "pl-PL": "pl"
+        },
+        "pendo": {
+            "mappings": {
+                "l10n/xliff/guides/*.xl(if)?f": {
+                    "template": "[dir]/[basename]_[locale].[extension]"
+                }
+            }
+        }
+    },
+    "plugins": ["ilib-loctool-pendo-md"]
+}

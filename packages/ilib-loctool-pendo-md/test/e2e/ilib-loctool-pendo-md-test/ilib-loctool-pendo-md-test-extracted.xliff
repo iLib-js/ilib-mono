@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="" source-language="en" product-name="ilib-loctool-pendo-md-test">
+    <body>
+      <trans-unit id="1" resname="73e6c197-f1c0-4bb1-9b31-a40ce2270870|ariaLabel" restype="string" datatype="plaintext">
+        <source>Close</source>
+        <note>CloseButton</note>
+      </trans-unit>
+      <trans-unit id="2" resname="8de49842-c1fd-4536-905e-8817673b4c24|md" restype="string" datatype="plaintext">
+        <source>&lt;c0&gt;Callout!&lt;/c0&gt;</source>
+        <note>TextView [c0: strong]</note>
+      </trans-unit>
+      <trans-unit id="3" resname="a165c0e2-11de-40b4-9209-55bcdff6d67b|md" restype="string" datatype="plaintext">
+        <source>First paragraph of a multi-paragraph string.
+
+Second paragraph of a multi-paragraph string.</source>
+        <note>TextView</note>
+      </trans-unit>
+      <trans-unit id="4" resname="5f8bec10-d663-43d7-a185-49824564060c|md" restype="string" datatype="plaintext">
+        <source>String with &lt;c0&gt;a link in it&lt;/c0&gt;</source>
+        <note>TextView [c0: link]</note>
+      </trans-unit>
+      <trans-unit id="5" resname="cff9a58d-39e6-4562-8b39-96a137d0bfd1|url" restype="string" datatype="plaintext">
+        <source>https://example.com/linkOnly</source>
+        <note>ButtonLink</note>
+      </trans-unit>
+      <trans-unit id="6" resname="7542337f-62c3-44c3-9a4a-d0f7944dd5b4|md" restype="string" datatype="plaintext">
+        <source>First paragraph of a multi-paragraph string with list.
+
+This is a list:
+
+&lt;c0&gt;
+
+&lt;c1&gt;
+
+first item
+
+&lt;/c1&gt;
+
+&lt;c2&gt;
+
+second item
+
+&lt;/c2&gt;
+
+&lt;c3&gt;
+
+third item
+
+&lt;/c3&gt;
+
+&lt;/c0&gt;</source>
+        <note>TextView [c0: list, c1: listItem, c2: listItem, c3: listItem]</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
