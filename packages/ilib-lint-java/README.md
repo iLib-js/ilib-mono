@@ -29,20 +29,29 @@ Checks that Kotlin string template parameters in source strings are properly mat
 ## Installation
 
 ```bash
-npm install ilib-lint-java
+npm install --save-dev ilib-lint-java
+# or
+yarn add --dev ilib-lint-apple
 ```
 
 ## Usage
 
-Add the plugin to your ilib-lint configuration:
+Add the plugin to your ilib-lint-config.json configuration:
 
-```javascript
-import JavaPlugin from 'ilib-lint-java';
-
-const config = {
+```json
+{
+    // [...]
     plugins: [
-        JavaPlugin
-    ]
+        "ilib-lint-java"
+    ],
+    filetypes: {
+        "properties": {
+            "rulesets": [ "generic", "java" ]
+        }
+    },
+    "paths": {
+        "locales/**/*.xliff": "properties"
+    }
 };
 ```
 

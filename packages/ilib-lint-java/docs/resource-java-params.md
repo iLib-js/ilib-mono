@@ -36,10 +36,16 @@ Java MessageFormat uses indexed parameters with curly braces:
 
 ## Error Messages
 
-- `"Missing Java MessageFormat parameters in target: {1}, {2}"`
+### Errors (Missing Parameters)
+- `"Missing Java MessageFormat parameters in target: {0}, {1}"`
 - `"Missing Java MessageFormat parameters in target: {0,number,currency}"` (for formatted parameters)
 - `"Missing Java MessageFormat parameters in target array item [0]: {1}"`
 - `"Missing Java MessageFormat parameters in target plural (other): {0}"`
+
+### Warnings (Extra Parameters)
+- `"Extra Java MessageFormat parameters in target: {1}"`
+- `"Extra Java MessageFormat parameters in target array item [0]: {2}"`
+- `"Extra Java MessageFormat parameters in target plural (other): {1}"`
 
 ## Important Notes
 

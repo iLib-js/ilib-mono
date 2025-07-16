@@ -36,9 +36,15 @@ Kotlin uses string templates with dollar signs:
 
 ## Error Messages
 
+### Errors (Missing Parameters)
 - `"Missing Kotlin string template parameters in target: $count, $price"`
-- `"Missing Kotlin string template parameters in target array item [0]: $name"`
+- `"Missing Kotlin string template parameters in target array item [1]: $count"`
 - `"Missing Kotlin string template parameters in target plural (other): $count"`
+
+### Warnings (Extra Parameters)
+- `"Extra Kotlin string template parameters in target: $count, $extra"`
+- `"Extra Kotlin string template parameters in target array item [0]: $count"`
+- `"Extra Kotlin string template parameters in target plural (one): $extra"`
 
 ## Configuration
 
