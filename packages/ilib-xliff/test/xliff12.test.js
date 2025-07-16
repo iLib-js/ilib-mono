@@ -1,5 +1,5 @@
 /*
- * testXliff12.js - test the Xliff object with v1.2 xliff files
+ * xliff12.test.js - test the Xliff object with v1.2 xliff files
  *
  * Copyright © 2016-2017, 2019-2025 HealthTap, Inc. and JEDLSoft
  *
@@ -33,30 +33,22 @@ function diff(a, b) {
     }
 }
 
-export const testXliff12 = {
-    testXliffConstructor: function(test) {
-        test.expect(1);
-
+describe("XLIFF 1.2", () => {
+    test("should create Xliff instance with default constructor", () => {
+        expect.assertions(1);
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
+    });
 
-        test.done();
-    },
-
-    testXliffConstructorIsEmpty: function(test) {
-        test.expect(2);
-
+    test("should create empty Xliff instance", () => {
+        expect.assertions(2);
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
+        expect(x.size()).toBe(0);
+    });
 
-        test.equal(x.size(), 0);
-
-        test.done();
-    },
-
-    testXliffConstructorFull: function(test) {
-        test.expect(7);
-
+    test("should create Xliff instance with full configuration", () => {
+        expect.assertions(7);
         const x = new Xliff({
             "tool-id": "loctool",
             "tool-name": "Localization Tool",
@@ -65,60 +57,44 @@ export const testXliff12 = {
             copyright: "Copyright 2016, My Company, Inc. All rights reserved.",
             path: "a/b/c.xliff"
         });
-        test.ok(x);
+        expect(x).toBeTruthy();
+        expect(x["tool-id"]).toBe("loctool");
+        expect(x["tool-name"]).toBe("Localization Tool");
+        expect(x["tool-version"]).toBe("1.2.34");
+        expect(x["tool-company"]).toBe("My Company, Inc.");
+        expect(x.copyright).toBe("Copyright 2016, My Company, Inc. All rights reserved.");
+        expect(x.path).toBe("a/b/c.xliff");
+    });
 
-        test.equal(x["tool-id"], "loctool");
-        test.equal(x["tool-name"], "Localization Tool"),
-        test.equal(x["tool-version"], "1.2.34"),
-        test.equal(x["tool-company"], "My Company, Inc."),
-        test.equal(x.copyright, "Copyright 2016, My Company, Inc. All rights reserved."),
-        test.equal(x.path, "a/b/c.xliff");
-
-        test.done();
-    },
-
-    testXliffGetVersionDefault: function(test) {
-        test.expect(2);
-
+    test("should get default version 1.2", () => {
+        expect.assertions(2);
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
+        expect(x.getVersion()).toBe(1.2);
+    });
 
-        test.equal(x.getVersion(), "1.2");
-
-        test.done();
-    },
-
-    testXliffGetVersion12: function(test) {
-        test.expect(2);
-
+    test("should get version 1.2 when explicitly set", () => {
+        expect.assertions(2);
         const x = new Xliff({
             version: "1.2"
         });
-        test.ok(x);
+        expect(x).toBeTruthy();
+        expect(x.getVersion()).toBe(1.2);
+    });
 
-        test.equal(x.getVersion(), "1.2");
-
-        test.done();
-    },
-
-    testXliffGetVersion20: function(test) {
-        test.expect(2);
-
+    test("should get version 2.0 when explicitly set", () => {
+        expect.assertions(2);
         const x = new Xliff({
             version: "2.0"
         });
-        test.ok(x);
+        expect(x).toBeTruthy();
+        expect(x.getVersion()).toBe(2.0);
+    });
 
-        test.equal(x.getVersion(), "2.0");
-
-        test.done();
-    },
-
-    testXliffAddTranslationUnit: function(test) {
-        test.expect(11);
-
+    test("should add single translation unit", () => {
+        expect.assertions(11);
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         let tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -136,26 +112,22 @@ export const testXliff12 = {
 
         const tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].state).toBe("new");
+        expect(tulist[0].comment).toBe("This is a comment");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].datatype).toBe("java");
+    });
 
-        test.equal(tulist.length, 1);
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].state, "new");
-        test.equal(tulist[0].comment, "This is a comment");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].datatype, "java");
-
-        test.done();
-    },
-
-    testXliffAddTranslationUnitMultiple: function(test) {
-        test.expect(19);
-
+    test("should add multiple translation units", () => {
+        expect.assertions(19);
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         let tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -187,35 +159,64 @@ export const testXliff12 = {
 
         const tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].state).toBe("new");
+        expect(tulist[0].comment).toBe("This is a comment");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].datatype).toBe("java");
 
-        test.equal(tulist.length, 2);
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].state, "new");
-        test.equal(tulist[0].comment, "This is a comment");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].datatype, "java");
+        expect(tulist[1].source).toBe("foobar");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("asdf");
+        expect(tulist[1].file).toBe("x.java");
+        expect(tulist[1].state).toBe("translated");
+        expect(tulist[1].comment).toBe("No comment");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].datatype).toBe("javascript");
+    });
 
-        test.equal(tulist[1].source, "foobar");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "asdf");
-        test.equal(tulist[1].file, "x.java");
-        test.equal(tulist[1].state, "translated");
-        test.equal(tulist[1].comment, "No comment");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].datatype, "javascript");
-
-        test.done();
-    },
-
-    testXliffAddTranslationUnitAddSameTUTwice: function(test) {
-        test.expect(11);
-
+    test("should handle adding same translation unit twice", () => {
+        expect.assertions(11);
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
+
+        let tu = new TranslationUnit({
+            source: "Asdf asdf",
+            sourceLocale: "en-US",
+            key: "foobar",
+            file: "foo/bar/asdf.java",
+            project: "webapp",
+            resType: "string",
+            state: "new",
+            comment: "This is a comment",
+            datatype: "java"
+        });
+
+        x.addTranslationUnit(tu);
+        x.addTranslationUnit(tu);
+
+        const tulist = x.getTranslationUnits();
+
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].state).toBe("new");
+        expect(tulist[0].comment).toBe("This is a comment");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].datatype).toBe("java");
+    });
+
+    test('should add translation unit with same TU twice without duplication', () => {
+        const x = new Xliff();
+        expect(x).toBeTruthy();
 
         let tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -234,27 +235,21 @@ export const testXliff12 = {
 
         const tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].state).toBe("new");
+        expect(tulist[0].comment).toBe("This is a comment");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].datatype).toBe("java");
+    });
 
-        test.equal(tulist.length, 1);
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].state, "new");
-        test.equal(tulist[0].comment, "This is a comment");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].datatype, "java");
-
-        test.done();
-    },
-
-    testXliffAddTranslationUnits: function(test) {
-        test.expect(19);
-
+    test('should add multiple translation units at once', () => {
         const x = new Xliff();
-        test.ok(x);
-
+        expect(x).toBeTruthy();
 
         x.addTranslationUnits([
             new TranslationUnit({
@@ -283,37 +278,31 @@ export const testXliff12 = {
 
         const tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].state).toBe("new");
+        expect(tulist[0].comment).toBe("This is a comment");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].datatype).toBe("java");
 
-        test.equal(tulist.length, 2);
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].state, "new");
-        test.equal(tulist[0].comment, "This is a comment");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].datatype, "java");
+        expect(tulist[1].source).toBe("foobar");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("asdf");
+        expect(tulist[1].file).toBe("x.java");
+        expect(tulist[1].state).toBe("translated");
+        expect(tulist[1].comment).toBe("No comment");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].datatype).toBe("javascript");
+    });
 
-        test.equal(tulist[1].source, "foobar");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "asdf");
-        test.equal(tulist[1].file, "x.java");
-        test.equal(tulist[1].state, "translated");
-        test.equal(tulist[1].comment, "No comment");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].datatype, "javascript");
-
-        test.done();
-    },
-
-    testXliffSize: function(test) {
-        test.expect(3);
-
+    test('should return correct size of translation units', () => {
         const x = new Xliff();
-        test.ok(x);
-
-        test.equal(x.size(), 0);
+        expect(x).toBeTruthy();
+        expect(x.size()).toBe(0);
 
         x.addTranslationUnits([
             new TranslationUnit({
@@ -340,16 +329,12 @@ export const testXliff12 = {
             })
         ]);
 
-        test.equal(x.size(), 2);
+        expect(x.size()).toBe(2);
+    });
 
-        test.done();
-    },
-
-    testXliffSerializeSourceOnly: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with source only', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         const tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -361,7 +346,7 @@ export const testXliff12 = {
             state: "new",
             comment: "This is a comment",
             datatype: "java"
-        })
+        });
 
         x.addTranslationUnit(tu);
 
@@ -379,16 +364,12 @@ export const testXliff12 = {
             '  </file>\n' +
             '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffSerializeFull: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with source and target', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         const tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -402,7 +383,7 @@ export const testXliff12 = {
             state: "new",
             comment: "This is a comment",
             datatype: "java"
-        })
+        });
 
         x.addTranslationUnit(tu);
 
@@ -421,16 +402,12 @@ export const testXliff12 = {
             '  </file>\n' +
             '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffSerializeWithSourceAndTargetAndComment: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with source, target and comments', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         let tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -482,18 +459,12 @@ export const testXliff12 = {
                 '</xliff>';
 
         let actual = x.serialize();
+        expect(actual).toBe(expected);
+    });
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testXliffSerializeWithExtendedAttributes: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with extended attributes', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         let tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -551,18 +522,13 @@ export const testXliff12 = {
                 '</xliff>';
 
         let actual = x.serialize();
+        expect(actual).toBe(expected);
+    });
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-
-        test.done();
-    },
-
-    testXliffSerializeWithSourceOnlyAndPlurals: function(test) {
-        test.expect(2);
-
+    test("should serialize with source only and plurals", () => {
+        expect.assertions(2);
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         let tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -645,14 +611,10 @@ export const testXliff12 = {
             '  </file>\n' +
             '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffSerializeWithHeader: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with header information', () => {
         const x = new Xliff({
             "tool-id": "loctool",
             "tool-name": "Localization Tool",
@@ -661,7 +623,7 @@ export const testXliff12 = {
             copyright: "Copyright 2016, My Company, Inc. All rights reserved.",
             path: "a/b/c.xliff"
         });
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         const tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -694,16 +656,12 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffSerializeWithXMLEscaping: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with XML escaping', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.addTranslationUnits([
             new TranslationUnit({
@@ -752,16 +710,12 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffSerializeWithXMLEscapingInResname: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with XML escaping in resname', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.addTranslationUnits([
             new TranslationUnit({
@@ -810,16 +764,12 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffSerializeWithXMLEscapingWithQuotes: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with XML escaping with quotes', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         const tu = new TranslationUnit({
             source: "Here are \"double\" and 'single' quotes.",
@@ -835,7 +785,7 @@ export const testXliff12 = {
 
         x.addTranslationUnit(tu);
 
-        test.equal(x.serialize(),
+        expect(x.serialize()).toBe(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
                 '<xliff version="1.2">\n' +
                 '  <file original="foo/bar/asdf.java" source-language="en-US" target-language="nl-NL" product-name="androidapp">\n' +
@@ -847,15 +797,11 @@ export const testXliff12 = {
                 '    </body>\n' +
                 '  </file>\n' +
                 '</xliff>');
+    });
 
-        test.done();
-    },
-
-    testXliffSerializeWithEscapeCharsInResname: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with escape characters in resname', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.addTranslationUnits([
             new TranslationUnit({
@@ -904,16 +850,12 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffSerializeWithTranslationUnitsDifferentLocales: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with translation units in different locales', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.addTranslationUnit(new TranslationUnit({
             "source": "bababa",
@@ -969,17 +911,12 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
+        expect(actual).toBe(expected);
+    });
 
-        test.done();
-    },
-
-    testXliffSerializeWithTranslateFlagFalse: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with translate flag set to false', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         const tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -994,7 +931,7 @@ export const testXliff12 = {
             comment: "This is a comment",
             datatype: "java",
             translate: false
-        })
+        });
 
         x.addTranslationUnit(tu);
 
@@ -1013,16 +950,12 @@ export const testXliff12 = {
             '  </file>\n' +
             '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffSerializeWithTranslateFlagTrue: function(test) {
-        test.expect(2);
-
+    test('should serialize XLIFF with translate flag set to true', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         const tu = new TranslationUnit({
             source: "Asdf asdf",
@@ -1037,7 +970,7 @@ export const testXliff12 = {
             comment: "This is a comment",
             datatype: "java",
             translate: true
-        })
+        });
 
         x.addTranslationUnit(tu);
 
@@ -1056,16 +989,12 @@ export const testXliff12 = {
             '  </file>\n' +
             '</xliff>';
 
-        diff(actual, expected);
-        test.equal(actual, expected);
-        test.done();
-    },
+        expect(actual).toBe(expected);
+    });
 
-    testXliffDeserializeWithSourceOnly: function(test) {
-        test.expect(23);
-
+    test('should deserialize XLIFF with source only', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1088,40 +1017,35 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].target).toBeFalsy();
+        expect(tulist[0].targetLocale).toBe("de-DE");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].location).toEqual({line: 4, char: 7});
 
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.ok(!tulist[0].target);
-        test.equal(tulist[0].targetLocale, "de-DE");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.deepEqual(tulist[0].location, {line: 4, char: 7});
+        expect(tulist[1].source).toBe("baby baby");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].target).toBeFalsy();
+        expect(tulist[1].targetLocale).toBe("fr-FR");
+        expect(tulist[1].key).toBe("huzzah");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+        expect(tulist[1].location).toEqual({line: 11, char: 7});
+    });
 
-        test.equal(tulist[1].source, "baby baby");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.ok(!tulist[1].target);
-        test.equal(tulist[1].targetLocale, "fr-FR");
-        test.equal(tulist[1].key, "huzzah");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-        test.deepEqual(tulist[1].location, {line: 11, char: 7});
-
-        test.done();
-    },
-
-    testXliffDeserializeWithSourceAndTarget: function(test) {
-        test.expect(25);
-
+    test('should deserialize XLIFF with source and target', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1144,46 +1068,39 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>');
 
-        // console.log("x is " + JSON.stringify(x, undefined, 4));
         let tulist = x.getTranslationUnits();
-        // console.log("x is now " + JSON.stringify(x, undefined, 4));
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].target).toBe("foobarfoo");
+        expect(tulist[0].targetLocale).toBe("de-DE");
+        expect(tulist[0].translate).toBeUndefined();
+        expect(tulist[0].location).toEqual({line: 4, char: 7});
 
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.equal(tulist[0].target, "foobarfoo");
-        test.equal(tulist[0].targetLocale, "de-DE");
-        test.equal(typeof(tulist[0].translate), 'undefined');
-        test.deepEqual(tulist[0].location, {line: 4, char: 7});
+        expect(tulist[1].source).toBe("baby baby");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("huzzah");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+        expect(tulist[1].target).toBe("bebe bebe");
+        expect(tulist[1].targetLocale).toBe("fr-FR");
+        expect(tulist[1].translate).toBeUndefined();
+        expect(tulist[1].location).toEqual({line: 12, char: 7});
+    });
 
-        test.equal(tulist[1].source, "baby baby");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "huzzah");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-        test.equal(tulist[1].target, "bebe bebe");
-        test.equal(tulist[1].targetLocale, "fr-FR");
-        test.equal(typeof(tulist[1].translate), 'undefined');
-        test.deepEqual(tulist[1].location, {line: 12, char: 7});
-
-        test.done();
-    },
-
-    testXliffDeserializeWithResfile: function(test) {
-        test.expect(27);
-
+    test('should deserialize XLIFF with resfile', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1206,48 +1123,41 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>', "a/b/c/resfile.xliff");
 
-        // console.log("x is " + JSON.stringify(x, undefined, 4));
         let tulist = x.getTranslationUnits();
-        // console.log("x is now " + JSON.stringify(x, undefined, 4));
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].target).toBe("foobarfoo");
+        expect(tulist[0].targetLocale).toBe("de-DE");
+        expect(tulist[0].translate).toBeUndefined();
+        expect(tulist[0].location).toEqual({line: 4, char: 7});
+        expect(tulist[0].resfile).toBe("a/b/c/resfile.xliff");
 
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.equal(tulist[0].target, "foobarfoo");
-        test.equal(tulist[0].targetLocale, "de-DE");
-        test.equal(typeof(tulist[0].translate), 'undefined');
-        test.deepEqual(tulist[0].location, {line: 4, char: 7});
-        test.equal(tulist[0].resfile, "a/b/c/resfile.xliff");
+        expect(tulist[1].source).toBe("baby baby");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("huzzah");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+        expect(tulist[1].target).toBe("bebe bebe");
+        expect(tulist[1].targetLocale).toBe("fr-FR");
+        expect(tulist[1].translate).toBeUndefined();
+        expect(tulist[1].location).toEqual({line: 12, char: 7});
+        expect(tulist[1].resfile).toBe("a/b/c/resfile.xliff");
+    });
 
-        test.equal(tulist[1].source, "baby baby");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "huzzah");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-        test.equal(tulist[1].target, "bebe bebe");
-        test.equal(tulist[1].targetLocale, "fr-FR");
-        test.equal(typeof(tulist[1].translate), 'undefined');
-        test.deepEqual(tulist[1].location, {line: 12, char: 7});
-        test.equal(tulist[1].resfile, "a/b/c/resfile.xliff");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithExtendedAttributes: function(test) {
-        test.expect(27);
-
+    test('should deserialize XLIFF with extended attributes', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1270,48 +1180,41 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>');
 
-        // console.log("x is " + JSON.stringify(x, undefined, 4));
         let tulist = x.getTranslationUnits();
-        // console.log("x is now " + JSON.stringify(x, undefined, 4));
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].target).toBe("foobarfoo");
+        expect(tulist[0].targetLocale).toBe("de-DE");
+        expect(tulist[0].translate).toBeUndefined();
+        expect(tulist[0].location).toEqual({line: 4, char: 7});
+        expect(tulist[0].extended).toEqual({ "extension": "arbitrary data" });
 
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.equal(tulist[0].target, "foobarfoo");
-        test.equal(tulist[0].targetLocale, "de-DE");
-        test.equal(typeof(tulist[0].translate), 'undefined');
-        test.deepEqual(tulist[0].location, {line: 4, char: 7});
-        test.deepEqual(tulist[0].extended, { "extension": "arbitrary data" });
+        expect(tulist[1].source).toBe("baby baby");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("huzzah");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+        expect(tulist[1].target).toBe("bebe bebe");
+        expect(tulist[1].targetLocale).toBe("fr-FR");
+        expect(tulist[1].translate).toBeUndefined();
+        expect(tulist[1].location).toEqual({line: 12, char: 7});
+        expect(tulist[1].extended).toEqual({ "extension": "more arbitrary data" });
+    });
 
-        test.equal(tulist[1].source, "baby baby");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "huzzah");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-        test.equal(tulist[1].target, "bebe bebe");
-        test.equal(tulist[1].targetLocale, "fr-FR");
-        test.equal(typeof(tulist[1].translate), 'undefined');
-        test.deepEqual(tulist[1].location, {line: 12, char: 7});
-        test.deepEqual(tulist[1].extended, { "extension": "more arbitrary data" });
-
-        test.done();
-    },
-
-    testXliffDeserializeWithXMLUnescaping: function(test) {
-        test.expect(21);
-
+    test('should deserialize XLIFF with XML unescaping', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1334,38 +1237,33 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("Asdf <b>asdf</b>");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].target).toBeFalsy();
+        expect(tulist[0].location).toEqual({line: 4, char: 7});
 
-        test.equal(tulist[0].source, "Asdf <b>asdf</b>");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.ok(!tulist[0].target);
-        test.deepEqual(tulist[0].location, {line: 4, char: 7});
+        expect(tulist[1].source).toBe("baby &lt;b&gt;baby&lt;/b&gt;");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("huzzah");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+        expect(tulist[1].target).toBeFalsy();
+        expect(tulist[1].location).toEqual({line: 11, char: 7});
+    });
 
-        test.equal(tulist[1].source, "baby &lt;b&gt;baby&lt;/b&gt;");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "huzzah");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-        test.ok(!tulist[1].target);
-        test.deepEqual(tulist[1].location, {line: 11, char: 7});
-
-        test.done();
-    },
-
-    testXliffDeserializeWithXMLUnescapingInResname: function(test) {
-        test.expect(19);
-
+    test('should deserialize XLIFF with XML unescaping in resname', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1388,36 +1286,33 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("Asdf <b>asdf</b>");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar <a>link</a>");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].target).toBeFalsy();
+        expect(tulist[0].location).toEqual({line: 4, char: 7});
 
-        test.equal(tulist[0].source, "Asdf <b>asdf</b>");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar <a>link</a>");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.ok(!tulist[0].target);
+        expect(tulist[1].source).toBe("baby &lt;b&gt;baby&lt;/b&gt;");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("<b>huzzah</b>");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+        expect(tulist[1].target).toBeFalsy();
+        expect(tulist[1].location).toEqual({line: 11, char: 7});
+    });
 
-        test.equal(tulist[1].source, "baby &lt;b&gt;baby&lt;/b&gt;");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "<b>huzzah</b>");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-        test.ok(!tulist[1].target);
-
-        test.done();
-    },
-
-    testXliffDeserializeWithEscapedNewLines: function(test) {
-        test.expect(17);
-
+    test('should deserialize XLIFF with escaped newlines', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1440,34 +1335,29 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("a\\nb");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
 
-        test.equal(tulist[0].source, "a\\nb");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
+        expect(tulist[1].source).toBe("e\\nh");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("huzzah");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+    });
 
-        test.equal(tulist[1].source, "e\\nh");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "huzzah");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithEscapedNewLinesInResname: function(test) {
-        test.expect(17);
-
+    test('should deserialize XLIFF with escaped newlines in resname', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1490,34 +1380,29 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("a\\nb");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar\\n\\nasdf");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
 
-        test.equal(tulist[0].source, "a\\nb");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar\\n\\nasdf");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
+        expect(tulist[1].source).toBe("e\\nh");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("huzzah\\t\\n");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+    });
 
-        test.equal(tulist[1].source, "e\\nh");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "huzzah\\t\\n");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithContext: function(test) {
-        test.expect(19);
-
+    test('should deserialize XLIFF with context', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1540,36 +1425,31 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].context).toBe("na na na");
 
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.equal(tulist[0].context, "na na na");
+        expect(tulist[1].source).toBe("baby baby");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("huzzah");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+        expect(tulist[1].context).toBe("asdf");
+    });
 
-        test.equal(tulist[1].source, "baby baby");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "huzzah");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-        test.equal(tulist[1].context, "asdf");
-
-        test.done();
-    },
-
-    testXliffDeserializeEmptySource: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with empty source', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1594,29 +1474,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("baby baby");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBe("bebe bebe");
+        expect(tulist[0].targetLocale).toBe("fr-FR");
+    });
 
-        test.equal(tulist[0].source, "baby baby");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.equal(tulist[0].target, "bebe bebe");
-        test.equal(tulist[0].targetLocale, "fr-FR");
-
-        test.done();
-    },
-
-    testXliffDeserializeEmptyTarget: function(test) {
-        test.expect(17);
-
+    test('should deserialize XLIFF with empty target', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1640,34 +1514,29 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
 
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
+        expect(tulist[1].source).toBe("baby baby");
+        expect(tulist[1].sourceLocale).toBe("en-US");
+        expect(tulist[1].key).toBe("huzzah");
+        expect(tulist[1].file).toBe("foo/bar/j.java");
+        expect(tulist[1].project).toBe("webapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2");
+    });
 
-        test.equal(tulist[1].source, "baby baby");
-        test.equal(tulist[1].sourceLocale, "en-US");
-        test.equal(tulist[1].key, "huzzah");
-        test.equal(tulist[1].file, "foo/bar/j.java");
-        test.equal(tulist[1].project, "webapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].id, "2");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithMrkTagInTarget: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with mrk tag in target', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1683,29 +1552,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("baby baby");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBe("bebe bebe");
+        expect(tulist[0].targetLocale).toBe("fr-FR");
+    });
 
-        test.equal(tulist[0].source, "baby baby");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.equal(tulist[0].target, "bebe bebe");
-        test.equal(tulist[0].targetLocale, "fr-FR");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithEmptyMrkTagInTarget: function(test) {
-        test.expect(10);
-
+    test('should deserialize XLIFF with empty mrk tag in target', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1721,26 +1584,21 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("baby baby");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+    });
 
-        test.equal(tulist[0].source, "baby baby");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithMultipleMrkTagsInTarget: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with multiple mrk tags in target', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1756,29 +1614,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("baby baby");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBe("This is segment 1. This is segment 2. This is segment 3.");
+        expect(tulist[0].targetLocale).toBe("fr-FR");
+    });
 
-        test.equal(tulist[0].source, "baby baby");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.equal(tulist[0].target, "This is segment 1. This is segment 2. This is segment 3.");
-        test.equal(tulist[0].targetLocale, "fr-FR");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithMultipleMrkTagsInTargetAsian: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with multiple mrk tags in target for Asian languages', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1794,29 +1646,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("baby baby");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBe("This is segment 1. This is segment 2. This is segment 3.");
+        expect(tulist[0].targetLocale).toBe("zh-Hans-CN");
+    });
 
-        test.equal(tulist[0].source, "baby baby");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-        // regardless of the target locale, preserve whitespace between mrk tags if it exists
-        test.equal(tulist[0].target, "This is segment 1. This is segment 2. This is segment 3.");
-        test.equal(tulist[0].targetLocale, "zh-Hans-CN");
-
-        test.done();
-    },
-
-    testXliffDeserializePreserveWhitespaceBetweenInlineElementsInSource: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF preserving whitespace between inline elements in source', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1832,29 +1678,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("This is group 1.\nThis is group 2. This is group 3.");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBeFalsy();
+        expect(tulist[0].targetLocale).toBe("");
+    });
 
-        test.equal(tulist[0].source, "This is group 1.\nThis is group 2. This is group 3.");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.ok(!tulist[0].target);
-        test.equal(tulist[0].targetLocale, "");
-
-        test.done();
-    },
-
-    testXliffDeserializePreserveWhitespaceBetweenInlineElementsInTarget: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF preserving whitespace between inline elements in target', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1873,29 +1713,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("baby baby");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBe("This is segment 1.\nThis is segment 2. This is segment 3.");
+        expect(tulist[0].targetLocale).toBe("fr-FR");
+    });
 
-        test.equal(tulist[0].source, "baby baby");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.equal(tulist[0].target, "This is segment 1.\nThis is segment 2. This is segment 3.");
-        test.equal(tulist[0].targetLocale, "fr-FR");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithXTagInSource: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with x tag in source', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1911,29 +1745,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("Less-than sign (<) is not allowed in XLIFF.");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBeFalsy();
+        expect(tulist[0].targetLocale).toBe("");
+    });
 
-        test.equal(tulist[0].source, "Less-than sign (<) is not allowed in XLIFF.");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.ok(!tulist[0].target);
-        test.equal(tulist[0].targetLocale, "");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithXTagInSourceAndTarget: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with x tag in source and target', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -1950,29 +1778,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("Less-than sign (<) is not allowed in XLIFF.");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBe("Le signe inférieur (<) n'est pas autorisé dans XLIFF.");
+        expect(tulist[0].targetLocale).toBe("fr-FR");
+    });
 
-        test.equal(tulist[0].source, "Less-than sign (<) is not allowed in XLIFF.");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.equal(tulist[0].target, "Le signe inférieur (<) n\'est pas autorisé dans XLIFF.");
-        test.equal(tulist[0].targetLocale, "fr-FR");
-
-        test.done();
-    },
-
-    testXliffDeserializeInlineTagWithContent: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with inline tag with content', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         // example based on https://www.gala-global.org/tmx-14b:
         // <B>Bold <I>Bold and Italic</B> Italics</I>
@@ -1992,29 +1814,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("<B>Bold <I>Bold and Italic</B> Italics</I>");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBeFalsy();
+        expect(tulist[0].targetLocale).toBe("");
+    });
 
-        test.equal(tulist[0].source, "<B>Bold <I>Bold and Italic</B> Italics</I>");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.ok(!tulist[0].target);
-        test.equal(tulist[0].targetLocale, "");
-
-        test.done();
-    },
-
-    testXliffDeserializeInlineTagPreferContentOverEquivText: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with inline tag preferring content over equiv-text', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         // example based on https://www.gala-global.org/tmx-14b:
         // The icon <img src="testNode.gif"/> represents a conditional node.
@@ -2032,29 +1848,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("The icon <img src=\"testNode.gif\"/> represents a conditional node.");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBeFalsy();
+        expect(tulist[0].targetLocale).toBe("");
+    });
 
-        test.equal(tulist[0].source, "The icon <img src=\"testNode.gif\"/> represents a conditional node.");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.ok(!tulist[0].target);
-        test.equal(tulist[0].targetLocale, "");
-
-        test.done();
-    },
-
-    testXliffDeserializeWithCdata: function(test) {
-        test.expect(12);
-
+    test('should deserialize XLIFF with CDATA', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2070,29 +1880,23 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("In CDATA sections, even the less-than sign < is allowed.");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("huzzah");
+        expect(tulist[0].file).toBe("foo/bar/j.java");
+        expect(tulist[0].project).toBe("webapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2");
+        expect(tulist[0].target).toBeFalsy();
+        expect(tulist[0].targetLocale).toBe("");
+    });
 
-        test.equal(tulist[0].source, "In CDATA sections, even the less-than sign < is allowed.");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "huzzah");
-        test.equal(tulist[0].file, "foo/bar/j.java");
-        test.equal(tulist[0].project, "webapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "2");
-
-        test.ok(!tulist[0].target);
-        test.equal(tulist[0].targetLocale, "");
-
-        test.done();
-    },
-
-    testXliffDeserializePreserveSourceWhitespace: function(test) {
-        test.expect(10);
-
+    test('should deserialize XLIFF preserving source whitespace', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2109,26 +1913,21 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("      Add Another");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("      Add Another");
+        expect(tulist[0].file).toBe("UI/AddAnotherButtonView.m");
+        expect(tulist[0].project).toBe("iosapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].location).toEqual({line: 4, char: 7});
+    });
 
-        test.equal(tulist[0].source, "      Add Another");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "      Add Another");
-        test.equal(tulist[0].file, "UI/AddAnotherButtonView.m");
-        test.equal(tulist[0].project, "iosapp");
-        test.equal(tulist[0].resType, "string");
-        test.deepEqual(tulist[0].location, {line: 4, char: 7});
-
-        test.done();
-    },
-
-    testXliffDeserializePreserveTargetWhitespace: function(test) {
-        test.expect(9);
-
+    test('should deserialize XLIFF preserving target whitespace', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2145,27 +1944,22 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].target).toBe(" Añadir    Otro  ");
+        expect(tulist[0].targetLocale).toBe("es-US");
+        expect(tulist[0].key).toBe("      Add Another");
+        expect(tulist[0].file).toBe("UI/AddAnotherButtonView.m");
+        expect(tulist[0].project).toBe("iosapp");
+        expect(tulist[0].resType).toBe("string");
+    });
 
-        test.equal(tulist[0].target, " Añadir    Otro  ");
-        test.equal(tulist[0].targetLocale, "es-US");
-        test.equal(tulist[0].key, "      Add Another");
-        test.equal(tulist[0].file, "UI/AddAnotherButtonView.m");
-        test.equal(tulist[0].project, "iosapp");
-        test.equal(tulist[0].resType, "string");
-
-        test.done();
-    },
-
-    testXliffDeserializeStillAcceptsAnnotatesAttr: function(test) {
-        test.expect(21);
-
+    test('should deserialize XLIFF still accepting annotates attribute', () => {
         const x = new Xliff({
             allowDups: true
         });
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
             '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2188,68 +1982,52 @@ export const testXliff12 = {
 
         let tulist = x.getTranslationUnits();
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(2);
 
-        test.equal(tulist.length, 2);
+        expect(tulist[0].target).toBe("ababab");
+        expect(tulist[0].targetLocale).toBe("fr-FR");
+        expect(tulist[0].key).toBe("asdf");
+        expect(tulist[0].file).toBe("/a/b/asdf.js");
+        expect(tulist[0].project).toBe("iosapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("2333");
+        expect(tulist[0].context).toBe("asdfasdf");
+        expect(tulist[0].comment).toBe("this is a comment");
 
-        test.equal(tulist[0].target, "ababab");
-        test.equal(tulist[0].targetLocale, "fr-FR");
-        test.equal(tulist[0].key, "asdf");
-        test.equal(tulist[0].file, "/a/b/asdf.js");
-        test.equal(tulist[0].project, "iosapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].context, "asdfasdf");
-        test.equal(tulist[0].comment, "this is a comment");
-        test.deepEqual(tulist[0].location, {line: 4, char: 7});
+        expect(tulist[1].target).toBe("ababab");
+        expect(tulist[1].targetLocale).toBe("fr-FR");
+        expect(tulist[1].key).toBe("asdf");
+        expect(tulist[1].file).toBe("/a/b/asdf.js");
+        expect(tulist[1].project).toBe("iosapp");
+        expect(tulist[1].resType).toBe("string");
+        expect(tulist[1].id).toBe("2334");
+        expect(tulist[1].context).toBe("asdfasdf");
+        expect(tulist[1].comment).toBe("this is a different comment");
+    });
 
-        test.equal(tulist[1].target, "ababab");
-        test.equal(tulist[1].targetLocale, "fr-FR");
-        test.equal(tulist[1].key, "asdf");
-        test.equal(tulist[1].file, "/a/b/asdf.js");
-        test.equal(tulist[1].project, "iosapp");
-        test.equal(tulist[1].resType, "string");
-        test.equal(tulist[1].context, "asdfasdf");
-        test.equal(tulist[1].comment, "this is a different comment");
-        test.deepEqual(tulist[1].location, {line: 9, char: 7});
-
-        test.done();
-    },
-
-    testXliffGetLinesDefault: function(test) {
-        test.expect(2);
-
+    test('should get default lines count', () => {
         const x = new Xliff({
             allowDups: true
         });
-        test.ok(x);
+        expect(x).toBeTruthy();
+        expect(x.getLines()).toBe(0);
+    });
 
-        // default value
-        test.equal(x.getLines(), 0);
-        test.done();
-    },
-
-    testXliffGetBytesDefault: function(test) {
-        test.expect(2);
-
+    test('should get default bytes count', () => {
         const x = new Xliff({
             allowDups: true
         });
-        test.ok(x);
+        expect(x).toBeTruthy();
+        expect(x.getBytes()).toBe(0);
+    });
 
-        // default value
-        test.equal(x.getBytes(), 0);
-        test.done();
-    },
-
-    testXliffGetLinesDeserialize: function(test) {
-        test.expect(3);
-
+    test('should get lines count after deserialization', () => {
         const x = new Xliff({
             allowDups: true
         });
-        test.ok(x);
-
-        test.equal(x.getLines(), 0);
+        expect(x).toBeTruthy();
+        expect(x.getLines()).toBe(0);
 
         x.deserialize(
             '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2270,17 +2048,13 @@ export const testXliff12 = {
             '  </file>\n' +
             '</xliff>');
 
-        test.equal(x.getLines(), 17);
-        test.done();
-    },
+        expect(x.getLines()).toBe(17);
+    });
 
-    testXliffGetLinesSerialize: function(test) {
-        test.expect(4);
-
+    test('should get lines count after serialization', () => {
         const x = new Xliff();
-        test.ok(x);
-
-        test.equal(x.getLines(), 0);
+        expect(x).toBeTruthy();
+        expect(x.getLines()).toBe(0);
 
         x.addTranslationUnits([
             new TranslationUnit({
@@ -2308,21 +2082,16 @@ export const testXliff12 = {
         ]);
 
         let actual = x.serialize();
-        test.ok(actual);
-        test.equal(x.getLines(), 19);
+        expect(actual).toBeTruthy();
+        expect(x.getLines()).toBe(19);
+    });
 
-        test.done();
-    },
-
-    testXliffGetBytesDeserialize: function(test) {
-        test.expect(3);
-
+    test('should get bytes count after deserialization', () => {
         const x = new Xliff({
             allowDups: true
         });
-        test.ok(x);
-
-        test.equal(x.getBytes(), 0);
+        expect(x).toBeTruthy();
+        expect(x.getBytes()).toBe(0);
 
         x.deserialize(
             '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2343,17 +2112,13 @@ export const testXliff12 = {
             '  </file>\n' +
             '</xliff>');
 
-        test.equal(x.getBytes(), 663);
-        test.done();
-    },
+        expect(x.getBytes()).toBe(663);
+    });
 
-    testXliffGetBytesSerialize: function(test) {
-        test.expect(4);
-
+    test('should get bytes count after serialization', () => {
         const x = new Xliff();
-        test.ok(x);
-
-        test.equal(x.getBytes(), 0);
+        expect(x).toBeTruthy();
+        expect(x.getBytes()).toBe(0);
 
         x.addTranslationUnits([
             new TranslationUnit({
@@ -2381,17 +2146,13 @@ export const testXliff12 = {
         ]);
 
         let actual = x.serialize();
-        test.ok(actual);
-        test.equal(x.getBytes(), 699);
+        expect(actual).toBeTruthy();
+        expect(x.getBytes()).toBe(699);
+    });
 
-        test.done();
-    },
-
-    testXliffDeserializeWithTranslateFlagFalse: function(test) {
-        test.expect(13);
-
+    test('should deserialize XLIFF with translate flag set to false', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2406,33 +2167,26 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>');
 
-        // console.log("x is " + JSON.stringify(x, undefined, 4));
         let tulist = x.getTranslationUnits();
-        // console.log("x is now " + JSON.stringify(x, undefined, 4));
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].target).toBe("foobarfoo");
+        expect(tulist[0].targetLocale).toBe("de-DE");
+        expect(tulist[0].translate).toBe(false);
+    });
 
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.equal(tulist[0].target, "foobarfoo");
-        test.equal(tulist[0].targetLocale, "de-DE");
-        test.equal(tulist[0].translate, false);
-
-        test.done();
-    },
-
-    testXliffDeserializeWithTranslateFlagTrue: function(test) {
-        test.expect(13);
-
+    test('should deserialize XLIFF with translate flag set to true', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2447,33 +2201,26 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>');
 
-        // console.log("x is " + JSON.stringify(x, undefined, 4));
         let tulist = x.getTranslationUnits();
-        // console.log("x is now " + JSON.stringify(x, undefined, 4));
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].target).toBe("foobarfoo");
+        expect(tulist[0].targetLocale).toBe("de-DE");
+        expect(tulist[0].translate).toBeUndefined();
+    });
 
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.equal(tulist[0].target, "foobarfoo");
-        test.equal(tulist[0].targetLocale, "de-DE");
-        test.equal(typeof(tulist[0].translate), 'undefined');
-
-        test.done();
-    },
-
-    testXliffDeserializeWithTranslateFlagNo: function(test) {
-        test.expect(13);
-
+    test('should deserialize XLIFF with translate flag set to no', () => {
         const x = new Xliff();
-        test.ok(x);
+        expect(x).toBeTruthy();
 
         x.deserialize(
                 '<?xml version="1.0" encoding="utf-8"?>\n' +
@@ -2488,25 +2235,20 @@ export const testXliff12 = {
                 '  </file>\n' +
                 '</xliff>');
 
-        // console.log("x is " + JSON.stringify(x, undefined, 4));
         let tulist = x.getTranslationUnits();
-        // console.log("x is now " + JSON.stringify(x, undefined, 4));
 
-        test.ok(tulist);
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
 
-        test.equal(tulist.length, 1);
-
-        test.equal(tulist[0].source, "Asdf asdf");
-        test.equal(tulist[0].sourceLocale, "en-US");
-        test.equal(tulist[0].key, "foobar");
-        test.equal(tulist[0].file, "foo/bar/asdf.java");
-        test.equal(tulist[0].project, "androidapp");
-        test.equal(tulist[0].resType, "string");
-        test.equal(tulist[0].id, "1");
-        test.equal(tulist[0].target, "foobarfoo");
-        test.equal(tulist[0].targetLocale, "de-DE");
-        test.equal(tulist[0].translate, false);
-
-        test.done();
-    }
-};
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(tulist[0].target).toBe("foobarfoo");
+        expect(tulist[0].targetLocale).toBe("de-DE");
+        expect(tulist[0].translate).toBe(false);
+    });
+}); 
