@@ -1,6 +1,6 @@
 {
     "name": "ilib-lint-java",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "main": "./src/index.js",
     "module": "./src/index.js",
@@ -39,4 +39,4 @@
         "ilib-locale": "workspace:^",
         "ilib-tools-common": "workspace:^"
     }
-} 
+}
