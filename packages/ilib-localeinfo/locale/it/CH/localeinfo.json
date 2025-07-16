@@ -1,0 +1,11 @@
+{
+    "locale": "it-CH",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "{s}-{n}"
+        },
+        "decimalChar": ".",
+        "groupChar": "’"
+    }
+}

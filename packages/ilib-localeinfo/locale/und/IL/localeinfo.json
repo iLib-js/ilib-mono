@@ -1,0 +1,10 @@
+{
+    "clock": "24",
+    "currency": "ILS",
+    "firstDayOfWeek": 0,
+    "locale": "und-IL",
+    "region.name": "Israel",
+    "timezone": "Asia/Jerusalem",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

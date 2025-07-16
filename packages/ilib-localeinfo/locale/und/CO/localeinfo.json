@@ -1,0 +1,11 @@
+{
+    "clock": "12",
+    "currency": "COP",
+    "firstDayOfWeek": 0,
+    "locale": "und-CO",
+    "paperSizes": {
+        "regular": "8x11"
+    },
+    "region.name": "Colombia",
+    "timezone": "America/Bogota"
+}

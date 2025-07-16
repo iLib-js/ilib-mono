@@ -1,0 +1,11 @@
+{
+    "language.name": "Kaingang",
+    "locale": "kgp",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

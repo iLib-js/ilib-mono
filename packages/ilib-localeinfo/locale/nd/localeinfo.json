@@ -1,0 +1,13 @@
+{
+    "language.name": "North Ndebele",
+    "locale": "nd",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

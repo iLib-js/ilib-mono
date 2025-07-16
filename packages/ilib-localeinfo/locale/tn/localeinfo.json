@@ -1,0 +1,14 @@
+{
+    "language.name": "Tswana",
+    "locale": "tn",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

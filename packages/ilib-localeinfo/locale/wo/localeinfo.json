@@ -1,0 +1,12 @@
+{
+    "language.name": "Wolof",
+    "locale": "wo",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn",
+        "Arab"
+    ]
+}

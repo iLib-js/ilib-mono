@@ -1,0 +1,6 @@
+{
+    "locale": "en-IN",
+    "numfmt": {
+        "secgroupSize": 2
+    }
+}

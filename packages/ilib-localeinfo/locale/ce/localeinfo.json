@@ -1,0 +1,15 @@
+{
+    "language.name": "Chechen",
+    "locale": "ce",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Cyrl"
+    ]
+}

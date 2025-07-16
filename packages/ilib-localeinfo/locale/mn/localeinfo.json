@@ -1,0 +1,9 @@
+{
+    "language.name": "Mongolian",
+    "locale": "mn",
+    "scripts": [
+        "Cyrl",
+        "Mong",
+        "Phag"
+    ]
+}

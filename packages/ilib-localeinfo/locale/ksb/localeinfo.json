@@ -1,0 +1,13 @@
+{
+    "language.name": "Shambala",
+    "locale": "ksb",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

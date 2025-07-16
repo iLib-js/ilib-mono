@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "SAR",
+    "firstDayOfWeek": 0,
+    "locale": "und-SA",
+    "region.name": "Saudi Arabia",
+    "timezone": "Asia/Riyadh",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

@@ -1,0 +1,13 @@
+{
+    "language.name": "Irish",
+    "locale": "ga",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

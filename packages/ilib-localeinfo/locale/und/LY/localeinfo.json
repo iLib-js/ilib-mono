@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "LYD",
+    "firstDayOfWeek": 6,
+    "locale": "und-LY",
+    "region.name": "Libya",
+    "timezone": "Africa/Tripoli",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

@@ -1,0 +1,25 @@
+{
+    "language.name": "Tibetan",
+    "locale": "bo",
+    "native_numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        },
+        "decimalChar": ".",
+        "digits": "༠༡༢༣༤༥༦༧༨༩",
+        "exponential": "E",
+        "groupChar": ",",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "prigroupSize": 3,
+        "roundingMode": "halfdown",
+        "script": "Tibt",
+        "useNative": true
+    },
+    "scripts": [
+        "Tibt"
+    ]
+}

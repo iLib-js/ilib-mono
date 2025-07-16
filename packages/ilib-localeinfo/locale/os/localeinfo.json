@@ -1,0 +1,17 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "“",
+        "alternateQuotationStart": "„",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Ossetic",
+    "locale": "os",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Cyrl"
+    ]
+}
