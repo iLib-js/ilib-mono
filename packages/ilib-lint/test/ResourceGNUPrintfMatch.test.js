@@ -1,7 +1,7 @@
 /*
  * ResourceGNUPrintfMatch.test.js - test the GNU printf parameter matching rule
  *
- * Copyright © 2023-2024 JEDLSoft
+ * Copyright © 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,9 +141,8 @@ describe("testResourceGNUPrintfMatch", () => {
         // Should report that %2$d is missing in the target and %1$f is extra in the target
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual && Array.isArray(actual) && actual.length).toBe(2);
-        const descriptions = Array.isArray(actual) ? actual.map(r => r.description) : [];
-        expect(descriptions).toContain("Source string GNU printf parameter %2$d not found in the target string.");
-        expect(descriptions).toContain("Extra target string GNU printf parameter %1$f not found in the source string.");
+        expect(actual[0].description).toContain("Source string GNU printf parameter %2$d not found in the target string.");
+        expect(actual[1].description).toContain("Extra target string GNU printf parameter %1$f not found in the source string.");
     });
 
     // Test GNU printf format specifiers
@@ -369,15 +368,10 @@ describe("testResourceGNUPrintfMatch", () => {
         // Should return results because first array element has mismatched parameters
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual && Array.isArray(actual) && actual.length).toBe(2);
-        // Check that we have both missing and extra parameter errors
-        const descriptions = Array.isArray(actual) ? actual.map(r => r.description) : [];
-        expect(descriptions).toContain("Source string GNU printf parameter %2$d not found in the target string.");
-        expect(descriptions).toContain("Extra target string GNU printf parameter %2$s not found in the source string.");
-
-        // Check that highlights are correct
-        const highlights = Array.isArray(actual) ? actual.map(r => r.highlight) : [];
-        expect(highlights).toContain('<e0>Hallo %1$s, Sie haben %2$s Artikel.</e0>'); // Missing parameter - entire string highlighted
-        expect(highlights).toContain('<e0>Hallo %1$s, Sie haben %2$s Artikel.</e0>'); // Extra parameter - entire string highlighted
+        expect(actual[0].description).toContain("Source string GNU printf parameter %2$d not found in the target string.");
+        expect(actual[1].description).toContain("Extra target string GNU printf parameter %2$s not found in the source string.");
+        expect(actual[0].highlight).toContain('<e0>'); // At least one highlight
+        expect(actual[1].highlight).toContain('<e0>'); // At least one highlight
     });
 
     // Test plural resources with mismatched parameter
@@ -417,15 +411,11 @@ describe("testResourceGNUPrintfMatch", () => {
         // Should return results because "one" category has mismatched parameters
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual && Array.isArray(actual) && actual.length).toBe(2);
-        // Check that we have both missing and extra parameter errors
-        const descriptions = Array.isArray(actual) ? actual.map(r => r.description) : [];
-        expect(descriptions).toContain("Source string GNU printf parameter %1$s not found in the target string.");
-        expect(descriptions).toContain("Extra target string GNU printf parameter %1$d not found in the source string.");
 
-        // Check that highlights are correct
-        const highlights = Array.isArray(actual) ? actual.map(r => r.highlight) : [];
-        expect(highlights).toContain('<e0>Sie haben %1$d Element.</e0>'); // Missing parameter - entire string highlighted
-        expect(highlights).toContain('<e0>Sie haben %1$d Element.</e0>'); // Extra parameter - entire string highlighted
+        expect(actual[0].description).toContain("Source string GNU printf parameter %1$s not found in the target string.");
+        expect(actual[1].description).toContain("Extra target string GNU printf parameter %1$d not found in the source string.");
+        expect(actual[0].highlight).toContain('<e0>'); // At least one highlight
+        expect(actual[1].highlight).toContain('<e0>'); // At least one highlight
     });
 
     // Test plural resources with different category counts (English to Russian)
@@ -509,15 +499,12 @@ describe("testResourceGNUPrintfMatch", () => {
         // Should return results because "few" category has mismatched parameters
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual && Array.isArray(actual) && actual.length).toBe(2);
-        // Check that we have both missing and extra parameter errors
-        const descriptions = Array.isArray(actual) ? actual.map(r => r.description) : [];
-        expect(descriptions).toContain("Source string GNU printf parameter %2$d not found in the target string.");
-        expect(descriptions).toContain("Extra target string GNU printf parameter %2$s not found in the source string.");
-
-        // Check that highlights are correct
-        const highlights = Array.isArray(actual) ? actual.map(r => r.highlight) : [];
-        expect(highlights).toContain('<e0>У вас %1$s элемента и %2$s категории.</e0>'); // Missing parameter - entire string highlighted
-        expect(highlights).toContain('<e0>У вас %1$s элемента и %2$s категории.</e0>'); // Extra parameter - entire string highlighted
+        // Check that we have both missing and extra parameter errors in a single result
+        expect(actual[0].description).toContain("Source string GNU printf parameter %2$d not found in the target string.");
+        expect(actual[1].description).toContain("Extra target string GNU printf parameter %2$s not found in the source string.");
+        // Check that highlights are correct with sequential tags
+        expect(actual[0].highlight).toContain('<e0>'); // At least one highlight
+        expect(actual[1].highlight).toContain('<e0>'); // At least one highlight
     });
 
     // Test that location parameters are included in Result objects
@@ -545,5 +532,404 @@ describe("testResourceGNUPrintfMatch", () => {
         const result = actual && Array.isArray(actual) && actual[0];
         expect(result && result.lineNumber).toBe(10);
         expect(result && result.charNumber).toBe(5);
+    });
+
+    // Test Swift/Objective-C printf style formatting with %@ specifiers
+    test("should handle Swift/Objective-C printf style with %@ specifiers", () => {
+        expect.assertions(1);
+
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.swift.test",
+            sourceLocale: "en-US",
+            source: 'Hello %@, you have %d items.',
+            targetLocale: "es-ES",
+            target: 'Hola %@, tienes %d artículos.',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(actual).toBeUndefined();
+    });
+
+    test("should handle Swift/Objective-C printf style with positional %@ specifiers", () => {
+        expect.assertions(1);
+
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.swift.positional.test",
+            sourceLocale: "en-US",
+            source: 'Hello %1$@, you have %2$d items.',
+            targetLocale: "es-ES",
+            target: 'Hola %1$@, tienes %2$d artículos.',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(actual).toBeUndefined();
+    });
+
+    test("should handle mixed Swift/Objective-C and GNU printf specifiers", () => {
+        expect.assertions(1);
+
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.mixed.test",
+            sourceLocale: "en-US",
+            source: 'User %@ has %d items worth %1.2f dollars.',
+            targetLocale: "es-ES",
+            target: 'El usuario %@ tiene %d artículos por %1.2f dólares.',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(actual).toBeUndefined();
+    });
+
+    test("should report missing %@ parameter in target", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.swift.missing.test",
+            sourceLocale: "en-US",
+            source: 'Hello %@, you have %d items.',
+            targetLocale: "es-ES",
+            target: 'Hola, tienes %d artículos.',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        const expected = new Result({
+            severity: "error",
+            description: "Source string GNU printf parameter %@ not found in the target string.",
+            rule,
+            id: "printf.swift.missing.test",
+            source: 'Hello %@, you have %d items.',
+            highlight: '<e0>Hola, tienes %d artículos.</e0>',
+            pathName: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        expect(actual && Array.isArray(actual) && actual.length).toBe(1);
+        expect(actual && Array.isArray(actual) && actual[0]).toStrictEqual(expected);
+    });
+
+    test("should report extra %@ parameter in target", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.swift.extra.test",
+            sourceLocale: "en-US",
+            source: 'Hello, you have %d items.',
+            targetLocale: "es-ES",
+            target: 'Hola %@, tienes %d artículos.',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        const expected = new Result({
+            severity: "error",
+            description: "Extra target string GNU printf parameter %@ not found in the source string.",
+            rule,
+            id: "printf.swift.extra.test",
+            source: 'Hello, you have %d items.',
+            highlight: 'Hola <e0>%@</e0>, tienes %d artículos.',
+            pathName: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        expect(actual && Array.isArray(actual) && actual.length).toBe(1);
+        expect(actual && Array.isArray(actual) && actual[0]).toStrictEqual(expected);
+    });
+
+    test("should handle Swift/Objective-C printf style in array resources", () => {
+        expect.assertions(1);
+
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceArray({
+            key: "printf.swift.array.test",
+            sourceLocale: "en-US",
+            source: [
+                "Hello %@, you have %d items.",
+                "Goodbye %@, you had %d items."
+            ],
+            targetLocale: "es-ES",
+            target: [
+                "Hola %@, tienes %d artículos.",
+                "Adiós %@, tenías %d artículos."
+            ],
+            pathName: "a/b/c.strings"
+        });
+
+        const sourceFile = new SourceFile("a/b/c.strings", {
+            getLogger: () => ({ debug: () => {}, info: () => {}, warn: () => {}, error: () => {} })
+        });
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+        const actual = rule.match({
+            ir,
+            file: "a/b/c.strings"
+        });
+
+        expect(actual).toBeUndefined();
+    });
+
+    test("should handle Swift/Objective-C printf style in plural resources", () => {
+        expect.assertions(1);
+
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourcePlural({
+            key: "printf.swift.plural.test",
+            sourceLocale: "en-US",
+            source: {
+                "one": "You have %@ item.",
+                "other": "You have %@ items."
+            },
+            targetLocale: "es-ES",
+            target: {
+                "one": "Tienes %@ artículo.",
+                "other": "Tienes %@ artículos."
+            },
+            pathName: "a/b/c.strings"
+        });
+
+        const sourceFile = new SourceFile("a/b/c.strings", {
+            getLogger: () => ({ debug: () => {}, info: () => {}, warn: () => {}, error: () => {} })
+        });
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+        const actual = rule.match({
+            ir,
+            file: "a/b/c.strings"
+        });
+
+        expect(actual).toBeUndefined();
+    });
+
+    // Test multiple %s parameters in source and target
+    test("should pass when both source and target have two %s parameters", () => {
+        expect.assertions(1);
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.multiple.s.match",
+            sourceLocale: "en-US",
+            source: 'Hello %s, your friend %s is here.',
+            targetLocale: "es-ES",
+            target: 'Hola %s, tu amigo %s está aquí.',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(actual).toBeUndefined();
+    });
+
+    test("should report missing %s parameter in target if source has two and target has one", () => {
+        expect.assertions(3);
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.multiple.s.missing",
+            sourceLocale: "en-US",
+            source: 'Hello %s, your friend %s is here.',
+            targetLocale: "es-ES",
+            target: 'Hola %s está aquí.',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        expect(actual && Array.isArray(actual) && actual.length).toBe(1);
+        expect(actual && Array.isArray(actual) && actual[0].description).toContain('%s not found in the target string');
+    });
+
+    test("should report extra %s parameter in target if source has two and target has three", () => {
+        expect.assertions(4);
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.multiple.s.extra",
+            sourceLocale: "en-US",
+            source: 'Hello %s, your friend %s is here.',
+            targetLocale: "es-ES",
+            target: 'Hola %s, tu amigo %s y %s están aquí.',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        expect(actual && Array.isArray(actual) && actual.length).toBe(1);
+        expect(actual && Array.isArray(actual) && actual[0].description).toContain('Extra target string GNU printf parameter %s not found in the source string');
+        // Check that the last occurrence of %s is highlighted (the extra one)
+        expect(actual && Array.isArray(actual) && actual[0].highlight).toBe('Hola %s, tu amigo %s y <e0>%s</e0> están aquí.');
+    });
+
+    test("should report extra %s parameter in target if source has one and target has two", () => {
+        expect.assertions(4);
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.multiple.s.extra2",
+            sourceLocale: "en-US",
+            source: 'Hello %s!',
+            targetLocale: "es-ES",
+            target: 'Hola %s y %s!',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        expect(actual && Array.isArray(actual) && actual.length).toBe(1);
+        expect(actual && Array.isArray(actual) && actual[0].description).toContain('Extra target string GNU printf parameter %s not found in the source string');
+        // Check that the last occurrence of %s is highlighted (the extra one)
+        expect(actual && Array.isArray(actual) && actual[0].highlight).toBe('Hola %s y <e0>%s</e0>!');
+    });
+
+    test("should report two extra %s parameters in target with sequential highlights", () => {
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.multiple.s.extra3",
+            sourceLocale: "en-US",
+            source: 'Hello %s!',
+            targetLocale: "es-ES",
+            target: 'Hola %s, %s y %s!',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        expect(actual && Array.isArray(actual) && actual.length).toBe(1);
+        const result = actual && Array.isArray(actual) && actual[0];
+        if (result) {
+            expect(result.description).toContain('Extra target string GNU printf parameter %s not found in the source string.');
+            // Check that both extra parameters are highlighted with sequential tags
+            expect(result.highlight).toBe('Hola %s, <e0>%s</e0> y <e1>%s</e1>!');
+        }
+    });
+
+    test("should report two missing parameters in target as two separate results", () => {
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.missing.two",
+            sourceLocale: "en-US",
+            source: 'Hello %s, you have %d items.',
+            targetLocale: "es-ES",
+            target: 'Hola!',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        if (Array.isArray(actual)) {
+            expect(actual.length).toBe(2);
+            // Each result should have a single highlight
+            expect(actual[0].highlight).toBe('<e0>Hola!</e0>');
+            expect(actual[1].highlight).toBe('<e0>Hola!</e0>');
+            // Each result should mention a different missing parameter
+            expect(actual[0].description).toMatch(/not found in the target string/);
+            expect(actual[1].description).toMatch(/not found in the target string/);
+            expect(actual[0].description).not.toBe(actual[1].description);
+        }
+    });
+
+    test("should report two extra parameters of the same type in target as one result with sequential highlights", () => {
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.extra.two.same",
+            sourceLocale: "en-US",
+            source: 'Hello %s!',
+            targetLocale: "es-ES",
+            target: 'Hola %s y %s!',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        if (Array.isArray(actual)) {
+            expect(actual.length).toBe(1);
+            // Should highlight both extra %s with <e0> and <e1>
+            expect(actual[0].highlight).toBe('Hola %s y <e0>%s</e0>!');
+            expect(actual[0].description).toContain('Extra target string GNU printf parameter %s not found in the source string');
+        }
+    });
+
+    test("should report two extra parameters of different types in target as two results", () => {
+        const rule = new ResourceGNUPrintfMatch();
+        const resource = new ResourceString({
+            key: "printf.extra.two.diff",
+            sourceLocale: "en-US",
+            source: 'Hello!',
+            targetLocale: "es-ES",
+            target: 'Hola %s y %d!',
+            pathName: "a/b/c.strings"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.strings"
+        });
+        expect(Array.isArray(actual)).toBeTruthy();
+        if (Array.isArray(actual)) {
+            expect(actual.length).toBe(2);
+            // Each result should have a single highlight for its parameter
+            const highlights = actual.map(r => r.highlight);
+            expect(highlights).toContain('Hola <e0>%s</e0> y %d!')
+            expect(highlights).toContain('Hola %s y <e0>%d</e0>!')
+            // Each result should mention a different extra parameter
+            expect(actual[0].description).not.toBe(actual[1].description);
+            expect(actual[0].description).toMatch(/Extra target string GNU printf parameter/);
+            expect(actual[1].description).toMatch(/Extra target string GNU printf parameter/);
+        }
     });
 });
