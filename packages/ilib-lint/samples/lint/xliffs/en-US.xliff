@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/prime.py" source-language="en-US" product-name="lint-test">
+    <body>
+      <trans-unit id="1" resname="My name is %(name)s and I am %(age)d years old." restype="string" datatype="python">
+        <source>My name is %(name)s and I am %(age)d years old.</source>
+      </trans-unit>
+      <trans-unit id="2" resname="My name is $name and I am $age years old." restype="string" datatype="python">
+        <source>My name is $name and I am $age years old.</source>
+      </trans-unit>
+      <trans-unit id="3" resname="My name is %s and I am %d years old." restype="string" datatype="python">
+        <source>My name is %s and I am %d years old.</source>
+      </trans-unit>
+      <trans-unit id="4" resname="My name is {name} and I am {age} years old." restype="string" datatype="python">
+        <source>My name is {name} and I am {age} years old.</source>
+      </trans-unit>
+      <trans-unit id="5" resname="My name is &quot;{name}&quot; and I am {age} years old." restype="string" datatype="python">
+        <source>My name is "{name}" and I am {age} years old.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

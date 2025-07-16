@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "description": "Sample Salesforce app localization project",
+  "devDependencies": {
+    "ilib-loctool-salesforce-metaxml": "workspace:^",
+    "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
+  }
+}

@@ -53,6 +53,7 @@
         "test": "pnpm test:jest",
         "test:jest": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test:jest --watch",
+        "test:e2e": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
         "lint": "node src/index.js",
         "clean": "git clean -f -d src test",
@@ -61,6 +62,7 @@
         "types": "tsc -p ./jsconfig.json"
     },
     "devDependencies": {
+        "@ilib-mono/e2e-test": "workspace:^",
         "@tsconfig/node14": "^14.1.2",
         "@types/jest": "^29.5.14",
         "@types/node": "^14.0.0",

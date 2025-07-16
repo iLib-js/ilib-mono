@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples slack should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="translations/strings.js" source-language="en-US" product-name="sample-slack-json">
+    <body>
+      <trans-unit id="1" resname="string1" restype="string" datatype="mrkdwn">
+        <source>Hello</source>
+        <note> comment for string1</note>
+      </trans-unit>
+      <trans-unit id="2" resname="string2" restype="string" datatype="mrkdwn">
+        <source>Thank &lt;c0&gt;you&lt;/c0&gt;</source>
+        <note> comment for string2</note>
+      </trans-unit>
+      <trans-unit id="3" resname="string3" restype="string" datatype="mrkdwn">
+        <source>This &lt;c0&gt;is a &lt;c1&gt;test&lt;/c1&gt; with a unique id&lt;/c0&gt;</source>
+        <note> another comment, this time for string3</note>
+      </trans-unit>
+      <trans-unit id="4" resname="string4" restype="string" datatype="mrkdwn">
+        <source>This is a &lt;c0&gt;test&lt;/c0&gt; with a slack &lt;c1&gt;link&lt;/c1&gt; in it and a &lt;c2&gt;User&lt;/c2&gt; reference.</source>
+        <note> string4 is the target of this comment</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;
