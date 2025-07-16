@@ -31,39 +31,6 @@ The following rule is designed to check resources that come from Apple platform 
 
 This rule checks for Swift string interpolation syntax like `\(name)` and `\(expression)` in localized strings. If parameters are found in the source string, the target string must contain the same parameters.
 
-### Examples
-
-**No Lint Error**
-
-Target matches the source, so no lint error:
-
-```json
-{
-    "source": "Hello \(name), you have \(count) items.",
-    "target": "Bonjour \(name), vous avez \(count) articles."
-}
-```
-
-**Errors**
-
-Missing parameter in the target:
-
-```json
-{
-    "source": "Hello \(name), you have \(count) items.",
-    "target": "Bonjour \(name)"
-}
-```
-
-Different parameter names:
-
-```json
-{
-    "source": "Hello \(name), you have \(count) items.",
-    "target": "Bonjour \(user), vous avez \(items) articles."
-}
-```
-
 ## Rule Sets
 
 This plugin defines one ruleset `apple` that will turn on all the rules

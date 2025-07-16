@@ -1,8 +1,10 @@
+import baseConfig from '../../jest.config.js';
+
 export default {
-  testEnvironment: "node",
-  globals: {
-    "ts-jest": {
-      useESM: true
+    ...baseConfig,
+    testEnvironment: "node",
+    displayName: {
+        name: "ilib-lint-apple",
+        color: "blue"
     }
-  }
 }; 
