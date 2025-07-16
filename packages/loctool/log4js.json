@@ -221,6 +221,14 @@
             "appenders": [ "default" ],
             "level": "info"
         },
+        "loctool.lib.XliffFactory": {
+            "appenders": [ "default" ],
+            "level": "info"
+        },
+        "loctool.lib.webOSXliff": {
+            "appenders": [ "default" ],
+            "level": "info"
+        },
         "loctool.lib.YamlFile": {
             "appenders": [ "default" ],
             "level": "info"

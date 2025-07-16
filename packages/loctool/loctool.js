@@ -29,7 +29,7 @@ var mm = require("micromatch");
 
 var ProjectFactory = require("./lib/ProjectFactory.js");
 var GenerateModeProcess = require("./lib/GenerateModeProcess.js");
-
+var XliffFactory = require("./lib/XliffFactory.js");
 var XliffMerge = require("./lib/XliffMerge.js");
 var XliffSplit = require("./lib/XliffSplit.js");
 var XliffSelect = require("./lib/XliffSelect.js");
@@ -90,7 +90,9 @@ var commandOptionHelp = {
         "--xliffResRoot\n" +
         "  Specify the dir where the generation output should go. (Default is resources/) \n" +
         "--xliffStyle\n" +
-        "  Specify the Xliff format style. Style can be 'standard' or 'custom'. (Default is 'standard')",
+        "  Specify the Xliff format style. Style can be 'standard', 'default' or 'webOS'. (Default is 'standard')\n" +
+        "--metadata\n" +
+        "  Accepts any value in the form of 'aaa=bbb' and can be used as needed. i.e) type=Monitor",
 //  to be implemented
 //  report:
 //      "report\n" +
@@ -430,9 +432,13 @@ for (var i = 0; i < argv.length; i++) {
             usage();
         }
     } else if (val === "--xliffStyle") {
-        var candidate = ["standard", "custom"];
-        if (candidate.indexOf(argv[i+1]) !== -1) {
+        var candidate = XliffFactory.getAllStyles();
+        if (candidate.includes(argv[i+1])) {
             settings.xliffStyle = argv[++i];
+        } else {
+            ++i;
+            logger.warn("Warning: '" + argv[i] + "' is an invalid xliffStyle: set to 'standard'");
+            settings.xliffStyle = "standard";
         }
     } else if (val === "--noxliffDups") {
         settings.allowDups = false;
@@ -468,6 +474,17 @@ for (var i = 0; i < argv.length; i++) {
                 console.error("Error: --extendedAttr option requires a name=value argument to follow it.");
                 usage();
             }
+        }
+    } else if (val === "--metadata") {
+        settings.metadata = {};
+        if (i + 1 < argv.length && argv[i + 1]) {
+            const pairs = argv[++i].split(",");
+            pairs.forEach(pair => {
+                const [key, value] = pair.split("=");
+                if (key && value) {
+                    settings.metadata[key.trim()] = value.trim();
+                }
+            });
         }
     } else {
         options.push(val);
