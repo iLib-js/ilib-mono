@@ -464,7 +464,7 @@ describe("webOSxliff", function() {
         expect(result[0].getSourceLocale()).toBe("en-KR");
         expect(result[0].getTargetLocale()).toBe("ko-KR");
         expect(result[0].getKey()).toBe("NOT AVAILABLE");
-        expect(result[0].getTarget()).toBe("\"SoundBar\" 이용이 불가능합니다");
+        expect(result[0].getTarget()).toBe("이용이 불가능합니다");
     });
     test("webOSXliffDeserialize_metadata_undefined", function() {
         expect.assertions(8);
@@ -650,7 +650,6 @@ describe("webOSxliff", function() {
         var settings = {};
         settings.xliffVersion = 2;
         settings.xliffStyle = "webOS";
-        settings.mode = 'merge';
         settings.infiles = [
             "test/testfiles/xliff_webOS/app1/ko-KR.xliff",
             "test/testfiles/xliff_webOS/app2/ko-KR.xliff",
@@ -716,7 +715,6 @@ describe("webOSxliff", function() {
         var settings = {};
         settings.xliffVersion = 2;
         settings.xliffStyle = "webOS";
-        settings.mode = 'merge';
         // The order of 'infiles' is intentional (app2 before app1)
         settings.infiles = [
             "test/testfiles/xliff_webOS/app2/ko-KR.xliff",
@@ -891,7 +889,6 @@ describe("webOSxliff", function() {
         ];
 
         settings.xliffStyle = "webOS"
-        settings.mode = "split"
         var superset = XliffSplit(settings);
         var result = XliffSplit.distribute(superset, settings);
         expect(result).toBeTruthy();
@@ -942,7 +939,6 @@ describe("webOSxliff", function() {
         ];
 
         settings.xliffStyle = "webOS"
-        settings.mode = "split"
         var superset = XliffSplit(settings);
         var result = XliffSplit.distribute(superset, settings);
         expect(result).toBeTruthy();

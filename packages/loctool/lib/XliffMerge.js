@@ -35,8 +35,7 @@ var XliffMerge = function XliffMerge(settings) {
     var target = XliffFactory({
         path: settings.outfile,
         version: settings.xliffVersion,
-        style: settings.xliffStyle,
-        mode: settings.mode
+        style: settings.xliffStyle
     });
 
     settings.infiles.forEach(function (file) {
@@ -45,8 +44,7 @@ var XliffMerge = function XliffMerge(settings) {
             var data = fs.readFileSync(file, "utf-8");
             var xliff = XliffFactory({
                 version: settings.xliffVersion,
-                style: settings.xliffStyle,
-                mode: settings.mode
+                style: settings.xliffStyle
             });
             xliff.deserialize(data);
             target.addTranslationUnits(xliff.getTranslationUnits());

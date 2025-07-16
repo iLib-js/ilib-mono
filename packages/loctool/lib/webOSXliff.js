@@ -143,18 +143,14 @@ webOSXliff.prototype.parse = function(xliff) {
                                     context: tu._attributes["l:context"],
                                     comment: comment,
                                     targetLocale: targetLocale,
+                                    target: target,
                                     resType: restype,
                                     state: state,
                                     datatype: datatype,
-                                    flavor: fileSettings.flavor
+                                    flavor: fileSettings.flavor,
+                                    metadata: tu['mda:metadata'] || undefined
                                 };
 
-                                if (this._isLocalizeMode()) {
-                                    commonProperties.target = this.getMetadataTarget(this.metadata, tu["mda:metadata"]) ?? target;
-                                } else {
-                                    commonProperties.target = target;
-                                    commonProperties.metadata = tu['mda:metadata'] || undefined;
-                                }
                                 var unit = new TranslationUnit(commonProperties);
                                 this.tu.push(unit);
                             } catch (e) {
@@ -573,16 +569,6 @@ webOSXliff.prototype.serialize = function(untranslated) {
 
     return this.toStringData(units);
 
-}
-
-/**
- * Return true if the current project is in localize mode
- *
- * @private
- * @return {boolean} Return true if the current project is in localize mode; otherwise, false.
- */
-webOSXliff.prototype._isLocalizeMode = function() {
-    return !['split', 'merge'].includes(this.mode);;
 }
 
 /**
