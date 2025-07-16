@@ -76,6 +76,8 @@
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/iliblocaleinfo.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
+    "devDependencies": {
+        "@babel/core": "^7.23.3",
         "@babel/plugin-transform-modules-umd": "^7.23.3",
         "@babel/preset-env": "^7.23.3",
         "@babel/register": "^7.22.15",
