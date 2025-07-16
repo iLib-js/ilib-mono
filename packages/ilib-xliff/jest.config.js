@@ -9,4 +9,8 @@ const config = {
     }
 };
 
+<<<<<<< HEAD
 module.exports = config;
+=======
+module.exports = config;
+>>>>>>> 17b9e1399 (Updated as per review comments)
