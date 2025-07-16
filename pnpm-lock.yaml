@@ -2188,9 +2188,6 @@ importers:
       grunt-contrib-jshint:
         specifier: ^3.2.0
         version: 3.2.0
-      grunt-contrib-nodeunit:
-        specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
