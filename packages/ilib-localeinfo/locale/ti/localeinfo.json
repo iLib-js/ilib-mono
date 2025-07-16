@@ -1,0 +1,19 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Tigrinya",
+    "locale": "ti",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Ethi"
+    ]
+}

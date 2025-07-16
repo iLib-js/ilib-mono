@@ -1,0 +1,24 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "alternateQuotationStart": "‚",
+        "quotationEnd": "“",
+        "quotationStart": "„"
+    },
+    "language.name": "Estonian",
+    "locale": "et",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "−{n} {s}"
+        },
+        "decimalChar": ",",
+        "exponential": "×10^",
+        "groupChar": " ",
+        "negativenumFmt": "−{n}",
+        "negativepctFmt": "−{n}%"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

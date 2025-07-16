@@ -1,0 +1,22 @@
+{
+    "delimiter": {
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Norwegian",
+    "locale": "no",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": " ",
+        "negativenumFmt": "−{n}",
+        "negativepctFmt": "−{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "delimiter": {
+        "quotationEnd": "’",
+        "quotationStart": "‘"
+    },
+    "language.name": "Dutch",
+    "locale": "nl",
+    "numfmt": {
+        "currencyFormats": {
+            "commonNegative": "{s} -{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

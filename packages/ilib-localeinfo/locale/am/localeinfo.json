@@ -1,0 +1,20 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "›",
+        "alternateQuotationStart": "‹",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Amharic",
+    "locale": "am",
+    "meridiems": "ethiopic",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Ethi"
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "language.name": "Punjabi",
+    "locale": "pa",
+    "native_numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ".",
+        "digits": "੦੧੨੩੪੫੬੭੮੯",
+        "exponential": "E",
+        "groupChar": ",",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "prigroupSize": 3,
+        "roundingMode": "halfdown",
+        "script": "Guru",
+        "secgroupSize": 2,
+        "useNative": true
+    },
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "secgroupSize": 2
+    },
+    "scripts": [
+        "Guru",
+        "Arab"
+    ]
+}

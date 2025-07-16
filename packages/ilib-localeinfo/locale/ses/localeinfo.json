@@ -1,0 +1,14 @@
+{
+    "language.name": "Koyraboro Senni",
+    "locale": "ses",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        },
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

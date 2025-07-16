@@ -1,0 +1,33 @@
+{
+    "language.name": "Tamil",
+    "locale": "ta",
+    "native_numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ".",
+        "digits": "௦௧௨௩௪௫௬௭௮௯",
+        "exponential": "E",
+        "groupChar": ",",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "prigroupSize": 3,
+        "roundingMode": "halfdown",
+        "script": "Taml",
+        "secgroupSize": 2,
+        "useNative": true
+    },
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "secgroupSize": 2
+    },
+    "scripts": [
+        "Taml"
+    ]
+}

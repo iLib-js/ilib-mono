@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "QAR",
+    "firstDayOfWeek": 6,
+    "locale": "und-QA",
+    "region.name": "Qatar",
+    "timezone": "Asia/Qatar",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

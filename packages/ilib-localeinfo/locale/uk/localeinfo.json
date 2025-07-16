@@ -1,0 +1,22 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "“",
+        "alternateQuotationStart": "„",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Ukrainian",
+    "locale": "uk",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "exponential": "Е",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Cyrl"
+    ]
+}

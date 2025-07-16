@@ -1,0 +1,9 @@
+{
+    "locale": "ta-SG",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        }
+    }
+}

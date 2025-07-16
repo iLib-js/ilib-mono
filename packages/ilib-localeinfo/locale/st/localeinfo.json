@@ -1,0 +1,15 @@
+{
+    "language.name": "Southern Sotho",
+    "locale": "st",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "»",
+        "alternateQuotationStart": "«",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Occitan",
+    "locale": "oc",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        },
+        "decimalChar": ",",
+        "groupChar": " ",
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

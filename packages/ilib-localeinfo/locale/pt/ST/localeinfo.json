@@ -1,0 +1,16 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "locale": "pt-ST",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "groupChar": " "
+    }
+}

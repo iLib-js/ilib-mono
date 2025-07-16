@@ -1,0 +1,32 @@
+{
+    "language.name": "Telugu",
+    "locale": "te",
+    "native_numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ".",
+        "digits": "౦౧౨౩౪౫౬౭౮౯",
+        "exponential": "E",
+        "groupChar": ",",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "prigroupSize": 3,
+        "roundingMode": "halfdown",
+        "script": "Telu",
+        "useNative": true
+    },
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "secgroupSize": 2
+    },
+    "scripts": [
+        "Telu"
+    ]
+}

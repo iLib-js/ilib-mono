@@ -1,0 +1,9 @@
+{
+    "language.name": "Talysh",
+    "locale": "tly",
+    "scripts": [
+        "Arab",
+        "Cyrl",
+        "Latn"
+    ]
+}

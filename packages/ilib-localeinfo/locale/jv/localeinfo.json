@@ -1,0 +1,30 @@
+{
+    "language.name": "Javanese",
+    "locale": "jv",
+    "native_numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        },
+        "decimalChar": ",",
+        "digits": "꧐꧑꧒꧓꧔꧕꧖꧗꧘꧙",
+        "exponential": "E",
+        "groupChar": ".",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "prigroupSize": 3,
+        "roundingMode": "halfdown",
+        "script": "Java",
+        "useNative": true
+    },
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn",
+        "Java"
+    ]
+}

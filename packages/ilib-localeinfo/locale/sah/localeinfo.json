@@ -1,0 +1,21 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "“",
+        "alternateQuotationStart": "„",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Yakut",
+    "locale": "sah",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Cyrl"
+    ]
+}

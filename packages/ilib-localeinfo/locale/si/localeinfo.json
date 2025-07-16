@@ -1,0 +1,13 @@
+{
+    "language.name": "Sinhala",
+    "locale": "si",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Sinh"
+    ]
+}

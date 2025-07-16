@@ -1,0 +1,13 @@
+{
+    "language.name": "Asu",
+    "locale": "asa",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

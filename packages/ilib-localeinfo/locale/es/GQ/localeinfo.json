@@ -1,0 +1,9 @@
+{
+    "locale": "es-GQ",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    }
+}

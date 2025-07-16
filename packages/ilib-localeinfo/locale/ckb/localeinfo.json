@@ -1,0 +1,23 @@
+{
+    "language.name": "Central Kurdish",
+    "locale": "ckb",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "‏-{n} {s}"
+        },
+        "decimalChar": "٫",
+        "digits": "٠١٢٣٤٥٦٧٨٩",
+        "exponential": "اس",
+        "groupChar": "٬",
+        "negativenumFmt": "‏-{n}",
+        "negativepctFmt": "‏-{n} ٪",
+        "pctChar": "٪",
+        "pctFmt": "{n} ٪",
+        "script": "Arab",
+        "useNative": true
+    },
+    "scripts": [
+        "Arab"
+    ]
+}

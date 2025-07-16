@@ -1,0 +1,13 @@
+{
+    "language.name": "Nuer",
+    "locale": "nus",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

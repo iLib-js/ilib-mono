@@ -1,0 +1,8 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "alternateQuotationStart": "‚",
+        "quotationEnd": "“"
+    },
+    "locale": "bs-Cyrl"
+}

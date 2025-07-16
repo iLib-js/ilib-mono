@@ -1,0 +1,11 @@
+{
+    "calendar": "persian",
+    "clock": "24",
+    "currency": "AFN",
+    "firstDayOfWeek": 6,
+    "locale": "und-AF",
+    "region.name": "Afghanistan",
+    "timezone": "Asia/Kabul",
+    "weekendEnd": 5,
+    "weekendStart": 4
+}

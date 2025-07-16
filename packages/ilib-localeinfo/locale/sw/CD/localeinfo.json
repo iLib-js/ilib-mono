@@ -1,0 +1,7 @@
+{
+    "locale": "sw-CD",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    }
+}

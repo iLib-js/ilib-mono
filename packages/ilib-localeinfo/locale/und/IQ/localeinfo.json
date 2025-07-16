@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "IQD",
+    "firstDayOfWeek": 6,
+    "locale": "und-IQ",
+    "region.name": "Iraq",
+    "timezone": "Asia/Baghdad",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

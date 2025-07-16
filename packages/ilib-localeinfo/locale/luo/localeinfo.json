@@ -1,0 +1,13 @@
+{
+    "language.name": "Luo",
+    "locale": "luo",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

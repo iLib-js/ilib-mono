@@ -1,0 +1,11 @@
+{
+    "clock": "12",
+    "currency": "MXN",
+    "firstDayOfWeek": 0,
+    "locale": "und-MX",
+    "paperSizes": {
+        "regular": "8x11"
+    },
+    "region.name": "Mexico",
+    "timezone": "America/Mexico_City"
+}

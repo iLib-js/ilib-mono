@@ -1,0 +1,11 @@
+{
+    "language.name": "Makhuwa-Meetto",
+    "locale": "mgh",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

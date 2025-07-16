@@ -1,0 +1,14 @@
+{
+    "language.name": "Koyra Chiini",
+    "locale": "khq",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        },
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

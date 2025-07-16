@@ -1,0 +1,11 @@
+{
+    "clock": "12",
+    "currency": "PHP",
+    "firstDayOfWeek": 0,
+    "locale": "und-PH",
+    "paperSizes": {
+        "regular": "8x11"
+    },
+    "region.name": "Philippines",
+    "timezone": "Asia/Manila"
+}

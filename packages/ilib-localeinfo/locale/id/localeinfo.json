@@ -1,0 +1,16 @@
+{
+    "language.name": "Indonesian",
+    "locale": "id",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn",
+        "Arab"
+    ]
+}

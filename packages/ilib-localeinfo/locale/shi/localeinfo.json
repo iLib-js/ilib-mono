@@ -1,0 +1,23 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "„",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Tachelhit",
+    "locale": "shi",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Arab",
+        "Latn",
+        "Tfng"
+    ]
+}

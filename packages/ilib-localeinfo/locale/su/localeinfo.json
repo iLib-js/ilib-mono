@@ -1,0 +1,16 @@
+{
+    "language.name": "Sundanese",
+    "locale": "su",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn",
+        "Sund"
+    ]
+}

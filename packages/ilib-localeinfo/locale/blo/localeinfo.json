@@ -1,0 +1,22 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Anii",
+    "locale": "blo",
+    "numfmt": {
+        "currencyFormats": {
+            "commonNegative": "{s} -{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": " ",
+        "negativepctFmt": "% {n}",
+        "pctFmt": "% -{n}"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

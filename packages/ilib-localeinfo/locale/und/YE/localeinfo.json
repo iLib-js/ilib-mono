@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "YER",
+    "firstDayOfWeek": 0,
+    "locale": "und-YE",
+    "region.name": "Yemen",
+    "timezone": "Asia/Aden",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

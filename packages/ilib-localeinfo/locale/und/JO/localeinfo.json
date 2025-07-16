@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "JOD",
+    "firstDayOfWeek": 6,
+    "locale": "und-JO",
+    "region.name": "Jordan",
+    "timezone": "Asia/Amman",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

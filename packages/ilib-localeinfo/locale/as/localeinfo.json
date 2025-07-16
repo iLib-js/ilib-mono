@@ -1,0 +1,13 @@
+{
+    "language.name": "Assamese",
+    "locale": "as",
+    "numfmt": {
+        "digits": "০১২৩৪৫৬৭৮৯",
+        "script": "Beng",
+        "secgroupSize": 2,
+        "useNative": true
+    },
+    "scripts": [
+        "Beng"
+    ]
+}

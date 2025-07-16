@@ -1,0 +1,17 @@
+{
+    "delimiter": {
+        "alternateQuotationStart": "’",
+        "quotationStart": "”"
+    },
+    "language.name": "Shona",
+    "locale": "sn",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}
