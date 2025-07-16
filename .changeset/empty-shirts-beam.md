@@ -9,4 +9,3 @@
   - Ignores any quotation marks or whitespace at the end of the string
   - Added support for both Unicode ellipsis (…) and three dots (...) in English
   - Added configuration parameter support for custom punctuation mappings per locale
-  - Added documentation with developer-focused troubleshooting guide

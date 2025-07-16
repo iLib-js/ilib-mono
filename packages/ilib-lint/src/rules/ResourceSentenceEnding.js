@@ -57,7 +57,7 @@ class ResourceSentenceEnding extends ResourceRule {
     constructor(options) {
         super(options);
         this.name = "resource-sentence-ending";
-        this.description = "Checks that sentence-ending punctuation is appropriate for the target locale";
+        this.description = "Checks that sentence-ending punctuation is appropriate for the locale of the target string and matches the punctuation in the source string";
         this.link = "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-sentence-ending.md";
 
         // Initialize custom punctuation mappings from configuration
@@ -122,15 +122,15 @@ class ResourceSentenceEnding extends ResourceRule {
      * @returns {string|null} - The expected punctuation for the locale, or null if punctuation is optional
      */
     getExpectedPunctuation(localeObj, type) {
-        const baseLocale = localeObj.getLanguage();
-        if (!baseLocale) return null;
+        const language = localeObj.getLanguage();
+        if (!language) return null;
         // Custom config
-        if (this.customPunctuationMap[baseLocale] && this.customPunctuationMap[baseLocale][type]) {
-            return this.customPunctuationMap[baseLocale][type];
+        if (this.customPunctuationMap[language] && this.customPunctuationMap[language][type]) {
+            return this.customPunctuationMap[language][type];
         }
         // For English ellipsis, only accept the default (Unicode ellipsis) in the target
-        if (baseLocale === 'en' && type === 'ellipsis') {
-            return '…';
+        if (language === 'en' && type === 'ellipsis') {
+            return defaults['ellipsis'];
         }
         const punctuationMap = {
             'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
@@ -144,9 +144,10 @@ class ResourceSentenceEnding extends ResourceRule {
             'hi': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
             'or': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
             'pa': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'kn': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' }
+            'kn': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+            'km': { 'period': '។', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' }
         };
-        const result = punctuationMap[baseLocale]?.[type] || this.getDefaultPunctuation(type);
+        const result = punctuationMap[language]?.[type] || this.getDefaultPunctuation(type);
         return result;
     }
 
@@ -156,7 +157,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @returns {string} - The default punctuation
      */
     getDefaultPunctuation(type) {
-        return defaults[type] || '.';
+        return defaults[type] || defaults['period'];
     }
 
     // Superset of quote characters from ResourceQuoteStyle.js, plus ASCII quotes
@@ -357,17 +358,17 @@ class ResourceSentenceEnding extends ResourceRule {
         const targetLocale = resource.getTargetLocale();
         if (!targetLocale) return undefined;
         const localeObj = new Locale(targetLocale);
-        const baseLocale = localeObj.getLanguage();
-        if (!baseLocale) return undefined;
-        const optionalPunctuationLanguages = ['th', 'lo', 'my', 'km'];
-        if (optionalPunctuationLanguages.includes(baseLocale)) return undefined;
+        const language = localeObj.getLanguage();
+        if (!language) return undefined;
+        const optionalPunctuationLanguages = ['th', 'lo', 'my'];
+        if (optionalPunctuationLanguages.includes(language)) return undefined;
         // Pass sourceEnding.original to getExpectedPunctuation for ellipsis
         const expectedPunctuation = this.getExpectedPunctuation(localeObj, sourceEnding.type);
         if (!expectedPunctuation) return undefined;
 
         const strippedTarget = ResourceSentenceEnding.stripTrailingQuotesAndWhitespace(target.trim());
         if (this.hasExpectedEnding(strippedTarget, expectedPunctuation, sourceEnding.original)) {
-            if (baseLocale !== 'es') {
+            if (language !== 'es') {
                 return undefined;
             }
 
