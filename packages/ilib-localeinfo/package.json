@@ -24,8 +24,8 @@
         "locale",
         "translation"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-localeinfo",
-    "bugs": "https://github.com/iLib-js/ilib-localeinfo/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-localeinfo",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
@@ -48,7 +48,6 @@
         "locale",
         "src",
         "lib",
-        "docs",
         "README.md",
         "LICENSE"
     ],
@@ -77,8 +76,6 @@
         "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/iliblocaleinfo.md",
         "doc:html": "jsdoc -c jsdoc.json"
     },
-    "devDependencies": {
-        "@babel/core": "^7.23.3",
         "@babel/plugin-transform-modules-umd": "^7.23.3",
         "@babel/preset-env": "^7.23.3",
         "@babel/register": "^7.22.15",
@@ -103,6 +100,7 @@
         "grunt-contrib-uglify": "^5.2.2",
         "ilib-assemble": "workspace:^",
         "ilib-data-utils": "workspace:^",
+        "ilib-loader": "workspace:^",
         "jsdoc": "^4.0.2",
         "jsdoc-to-markdown": "^8.0.0",
         "json-stable-stringify": "^1.1.0",
