@@ -1830,6 +1830,121 @@ importers:
         specifier: workspace:^
         version: link:../loctool
 
+  packages/ilib-name:
+    dependencies:
+      '@log4js-node/log4js-api':
+        specifier: ^1.0.2
+        version: 1.0.2
+      ilib-common:
+        specifier: workspace:^
+        version: link:../ilib-common
+      ilib-ctype:
+        specifier: workspace:^
+        version: link:../ilib-ctype
+      ilib-env:
+        specifier: workspace:^
+        version: link:../ilib-env
+      ilib-istring:
+        specifier: workspace:^
+        version: link:../ilib-istring
+      ilib-locale:
+        specifier: workspace:^
+        version: link:../ilib-locale
+      ilib-localedata:
+        specifier: workspace:^
+        version: link:../ilib-localedata
+      json5:
+        specifier: ^2.2.1
+        version: 2.2.3
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.19.6
+        version: 7.26.0
+      '@babel/preset-env':
+        specifier: ^7.19.4
+        version: 7.26.0(@babel/core@7.26.0)
+      '@babel/register':
+        specifier: ^7.18.9
+        version: 7.25.9(@babel/core@7.26.0)
+      '@babel/runtime':
+        specifier: ^7.19.4
+        version: 7.26.0
+      '@open-wc/webpack-import-meta-loader':
+        specifier: ^0.4.7
+        version: 0.4.7
+      assertextras:
+        specifier: ^1.1.0
+        version: 1.1.0(nodeunit@0.11.3)
+      babel-loader:
+        specifier: ^8.2.5
+        version: 8.4.1(@babel/core@7.26.0)(webpack@5.95.0)
+      babel-plugin-add-module-exports:
+        specifier: ^1.0.4
+        version: 1.0.4
+      babel-plugin-module-resolver:
+        specifier: ^4.1.0
+        version: 4.1.0
+      babel-plugin-transform-import-meta:
+        specifier: ^2.2.0
+        version: 2.2.1(@babel/core@7.26.0)
+      docdash:
+        specifier: ^1.2.0
+        version: 1.2.0
+      grunt:
+        specifier: ^1.5.3
+        version: 1.6.1
+      grunt-babel:
+        specifier: ^8.0.0
+        version: 8.0.0(@babel/core@7.26.0)(grunt@1.6.1)
+      grunt-cli:
+        specifier: ^1.4.3
+        version: 1.5.0
+      grunt-contrib-clean:
+        specifier: ^2.0.1
+        version: 2.0.1(grunt@1.6.1)
+      grunt-contrib-jshint:
+        specifier: ^3.2.0
+        version: 3.2.0
+      grunt-contrib-nodeunit:
+        specifier: ^4.0.0
+        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
+      grunt-contrib-uglify:
+        specifier: ^5.2.2
+        version: 5.2.2
+      ilib-assemble:
+        specifier: workspace:^
+        version: link:../ilib-assemble
+      ilib-data-utils:
+        specifier: workspace:^
+        version: link:../ilib-data-utils
+      jsdoc:
+        specifier: ^3.6.11
+        version: 3.6.11
+      jsdoc-to-markdown:
+        specifier: ^7.1.1
+        version: 7.1.1
+      json-stable-stringify:
+        specifier: ^1.0.1
+        version: 1.2.1
+      load-grunt-tasks:
+        specifier: ^5.1.0
+        version: 5.1.0(grunt@1.6.1)
+      nodeunit:
+        specifier: ^0.11.3
+        version: 0.11.3
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      open-cli:
+        specifier: ^7.1.0
+        version: 7.2.0
+      webpack:
+        specifier: ^5.74.0
+        version: 5.95.0(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack@5.95.0)
+
   packages/ilib-po:
     dependencies:
       ilib-ctype:
@@ -2165,7 +2280,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+        version: 4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -12117,15 +12232,6 @@ snapshots:
       hooker: 0.2.3
       jshint: 2.13.6
 
-  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
-    dependencies:
-      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
-    transitivePeerDependencies:
-      - flow-remove-types
-      - supports-color
-      - ts-node
-      - typescript
-
   grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
       nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
@@ -12559,7 +12665,7 @@ snapshots:
 
   ilib-ctype@1.2.1:
     dependencies:
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
 
   ilib-ctype@1.2.2:
     dependencies:
@@ -12572,10 +12678,10 @@ snapshots:
   ilib-istring@1.1.0:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-env: 1.4.1
       ilib-locale: 1.2.4
-      ilib-localedata: 1.5.0
+      ilib-localedata: 1.5.2
 
   ilib-istring@1.1.1:
     dependencies:
@@ -12605,7 +12711,7 @@ snapshots:
   ilib-loader@1.3.2:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-env: 1.4.1
       promise.allsettled: 1.0.7
 
@@ -12623,7 +12729,7 @@ snapshots:
   ilib-localedata@1.5.0:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-env: 1.4.1
       ilib-loader: 1.3.2
       ilib-locale: 1.2.4
@@ -14420,16 +14526,6 @@ snapshots:
       socks: 1.1.9
     optional: true
 
-  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
-    dependencies:
-      ejs: 3.1.10
-      tap: 15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
-    transitivePeerDependencies:
-      - flow-remove-types
-      - supports-color
-      - ts-node
-      - typescript
-
   nodeunit-x@0.15.0(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
       ejs: 3.1.10
@@ -15943,36 +16039,6 @@ snapshots:
       typescript: 3.9.10
       write-file-atomic: 2.4.3
       yapool: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
-
-  tap@15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
-    dependencies:
-      chokidar: 3.6.0
-      coveralls: 3.1.1
-      findit: 2.0.0
-      foreground-child: 2.0.0
-      fs-exists-cached: 1.0.0
-      glob: 7.2.3
-      isexe: 2.0.0
-      istanbul-lib-processinfo: 2.0.3
-      jackspeak: 1.4.2
-      libtap: 1.4.1
-      minipass: 3.3.6
-      mkdirp: 1.0.4
-      nyc: 15.1.0
-      opener: 1.5.2
-      rimraf: 3.0.2
-      signal-exit: 3.0.7
-      source-map-support: 0.5.21
-      tap-mocha-reporter: 5.0.4
-      tap-parser: 11.0.2
-      tap-yaml: 1.0.2
-      tcompare: 5.0.7
-      which: 2.0.2
-    optionalDependencies:
-      ts-node: 8.10.2(typescript@3.9.10)
-      typescript: 3.9.10
     transitivePeerDependencies:
       - supports-color
 
