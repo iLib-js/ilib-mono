@@ -612,6 +612,121 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
 
+  packages/ilib-glyphstring:
+    dependencies:
+      '@log4js-node/log4js-api':
+        specifier: ^1.0.2
+        version: 1.0.2
+      ilib-common:
+        specifier: ^1.1.3
+        version: 1.1.6
+      ilib-env:
+        specifier: ^1.3.2
+        version: 1.4.1
+      ilib-locale:
+        specifier: ^1.2.2
+        version: 1.2.4
+      ilib-localedata:
+        specifier: ^1.5.0
+        version: 1.5.2
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.23.3
+        version: 7.26.0
+      '@babel/plugin-transform-regenerator':
+        specifier: ^7.23.3
+        version: 7.25.9(@babel/core@7.26.0)
+      '@babel/preset-env':
+        specifier: ^7.23.3
+        version: 7.26.0(@babel/core@7.26.0)
+      '@babel/register':
+        specifier: ^7.22.15
+        version: 7.25.9(@babel/core@7.26.0)
+      '@babel/runtime':
+        specifier: ^7.23.4
+        version: 7.26.0
+      '@open-wc/webpack-import-meta-loader':
+        specifier: ^0.4.7
+        version: 0.4.7
+      assertextras:
+        specifier: ^1.1.0
+        version: 1.1.0(nodeunit@0.11.3)
+      babel-loader:
+        specifier: ^9.1.3
+        version: 9.2.1(@babel/core@7.26.0)(webpack@5.95.0)
+      babel-plugin-add-module-exports:
+        specifier: ^1.0.4
+        version: 1.0.4
+      babel-plugin-module-resolver:
+        specifier: ^5.0.0
+        version: 5.0.2
+      babel-plugin-transform-import-meta:
+        specifier: ^2.2.1
+        version: 2.2.1(@babel/core@7.26.0)
+      cldr-core:
+        specifier: ^44.0.1
+        version: 44.1.0
+      docdash:
+        specifier: ^2.0.2
+        version: 2.0.2
+      grunt:
+        specifier: ^1.6.1
+        version: 1.6.1
+      grunt-babel:
+        specifier: ^8.0.0
+        version: 8.0.0(@babel/core@7.26.0)(grunt@1.6.1)
+      grunt-cli:
+        specifier: ^1.4.3
+        version: 1.5.0
+      grunt-contrib-clean:
+        specifier: ^2.0.1
+        version: 2.0.1(grunt@1.6.1)
+      grunt-contrib-uglify:
+        specifier: ^5.2.2
+        version: 5.2.2
+      ilib-assemble:
+        specifier: ^1.2.0
+        version: 1.3.2
+      ilib-data-utils:
+        specifier: ^1.2.0
+        version: 1.2.4
+      iso-15924:
+        specifier: ^3.2.0
+        version: 3.2.0
+      jsdoc:
+        specifier: ^4.0.2
+        version: 4.0.4
+      jsdoc-to-markdown:
+        specifier: ^8.0.0
+        version: 8.0.3
+      json-stable-stringify:
+        specifier: ^1.1.1
+        version: 1.2.1
+      load-grunt-tasks:
+        specifier: ^5.1.0
+        version: 5.1.0(grunt@1.6.1)
+      nodeunit:
+        specifier: ^0.11.3
+        version: 0.11.3
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      open-cli:
+        specifier: ^7.2.0
+        version: 7.2.0
+      regenerator-runtime:
+        specifier: ^0.14.0
+        version: 0.14.1
+      ucd-full:
+        specifier: ^15.1.0
+        version: 15.1.0
+      webpack:
+        specifier: ^5.89.0
+        version: 5.95.0(webpack-cli@5.1.4)
+      webpack-cli:
+        specifier: ^5.1.4
+        version: 5.1.4(webpack@5.95.0)
+
   packages/ilib-istring:
     dependencies:
       '@log4js-node/log4js-api':
@@ -5519,6 +5634,11 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
+  ilib-assemble@1.3.2:
+    resolution: {integrity: sha512-ewVtIYSlt/cpbpTJPfGJGe8WyTI81nkYVorAEkbIVKYnujyQBuFEhM7lKH2ZTYWfXwBlZpqTBwdRttxKyK3Tbg==}
+    engines: {node: '>=16.0'}
+    hasBin: true
+
   ilib-common@1.1.3:
     resolution: {integrity: sha512-lsE6Xcprl0HQeIK1WCaanr4zhaMKIVEKUCEUWLzwxMCxnEoB65R37cRY/WreGtfp8pnj6jduamJ5RAt/JaNcjQ==}
 
@@ -5531,8 +5651,8 @@ packages:
   ilib-ctype@1.2.2:
     resolution: {integrity: sha512-g5fh+9plC8fE5hugQnKcYM4DmD56aRj5bTyPTtqNeT2JFtxVQmLfuPNAS87QhUeioeOlHbkO6474OD0wW8t3Aw==}
 
-  ilib-env@1.4.0:
-    resolution: {integrity: sha512-zDpTmrGMvg9P40TtelR3k+eIFPd1VZA9TmB/5dXKEona6TQBObe6/D9zgmoLf17mI0kBg8ho+q1T42EJGvB5mg==}
+  ilib-data-utils@1.2.4:
+    resolution: {integrity: sha512-jWDcmUirAlP5h76ziwqKBmUD4LpoVcWS/++n5MaXZVvjI6deTYjKrrDT+uRN5fBNYtiBroFDIOQHFS+0e/KARg==}
 
   ilib-env@1.4.1:
     resolution: {integrity: sha512-lhXj5AaOT6AAft3eSFTqncNSYhqMdXAq9RpAeCral1tJpZDmzxhxpnKcFghgbjk9NkFFBRxFxTIAkgSq9NfEfQ==}
@@ -5907,6 +6027,9 @@ packages:
 
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
+
+  iso-15924@3.2.0:
+    resolution: {integrity: sha512-MHjWc+yIdAqx5w5d0+KdHzOaA+jJUGhP7BSKvIkSarRQzDURbmHSjO6B2Ea2TWdFZwb845d5OG2kotApIHkJtQ==}
 
   isobject@3.0.1:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
@@ -12574,6 +12697,14 @@ snapshots:
 
   ignore@5.3.2: {}
 
+  ilib-assemble@1.3.2:
+    dependencies:
+      ilib-common: 1.1.6
+      ilib-locale: 1.2.4
+      json5: 2.2.3
+      options-parser: 0.4.0
+      uglify-js-export: 3.19.3
+
   ilib-common@1.1.3:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
@@ -12588,23 +12719,25 @@ snapshots:
 
   ilib-ctype@1.2.1:
     dependencies:
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
 
   ilib-ctype@1.2.2:
     dependencies:
       ilib-common: 1.1.6
 
-  ilib-env@1.4.0: {}
+  ilib-data-utils@1.2.4:
+    dependencies:
+      ilib-common: 1.1.6
 
   ilib-env@1.4.1: {}
 
   ilib-istring@1.1.0:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-env: 1.4.1
       ilib-locale: 1.2.4
-      ilib-localedata: 1.5.0
+      ilib-localedata: 1.5.2
 
   ilib-istring@1.1.1:
     dependencies:
@@ -12634,7 +12767,7 @@ snapshots:
   ilib-loader@1.3.2:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-env: 1.4.1
       promise.allsettled: 1.0.7
 
@@ -12652,7 +12785,7 @@ snapshots:
   ilib-localedata@1.5.0:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-env: 1.4.1
       ilib-loader: 1.3.2
       ilib-locale: 1.2.4
@@ -12672,16 +12805,16 @@ snapshots:
   ilib-localeinfo@1.1.0:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
-      ilib-env: 1.4.0
+      ilib-common: 1.1.6
+      ilib-env: 1.4.1
       ilib-locale: 1.2.4
-      ilib-localedata: 1.5.0
+      ilib-localedata: 1.5.2
       ilib-localematcher: 1.3.1
       json5: 2.2.3
 
   ilib-localematcher@1.3.1:
     dependencies:
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-locale: 1.2.4
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
@@ -12990,6 +13123,8 @@ snapshots:
       punycode: 2.3.1
 
   isexe@2.0.0: {}
+
+  iso-15924@3.2.0: {}
 
   isobject@3.0.1: {}
 
