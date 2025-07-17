@@ -24,8 +24,8 @@
         "translation",
         "name"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-resbundle",
-    "bugs": "https://github.com/iLib-js/ilib-resbundle/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-resbundle",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
