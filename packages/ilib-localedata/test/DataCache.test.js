@@ -1,7 +1,7 @@
 /*
- * testDataCache.js - test the data cache class
+ * DataCache.test.js - test the data cache class
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,125 +21,115 @@ import Locale from 'ilib-locale';
 
 import DataCache from '../src/DataCache.js';
 
-export const testDataCache = {
-    testDataCacheConstructor: function(test) {
-        test.expect(1);
+describe("DataCache", () => {
+    beforeEach(() => {
+        // Clear the singleton cache before each test
+        DataCache.clearDataCache();
+    });
+    test("should create DataCache instance", () => {
+        expect.assertions(1);
         let cache = DataCache.getDataCache();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testDataCacheConstructorIsGlobal: function(test) {
-        test.expect(1);
+    test("should return global singleton instance", () => {
+        expect.assertions(1);
         let cache1 = DataCache.getDataCache();
 
         let cache2 = DataCache.getDataCache();
 
         // should be the exact same instance
-        test.equal(cache1, cache2);
+        expect(cache1).toBe(cache2);
+    });
 
-        test.done();
-    },
-
-    testDataCacheGetDataEmpty: function(test) {
-        test.expect(1);
+    test("should get empty data", () => {
+        expect.assertions(1);
         let cache = DataCache.getDataCache();
 
         const data = cache.getData("root", "basename", new Locale("en-US"));
 
         // undefined = no cached information exists
-        test.equal(typeof(data), 'undefined');
+        expect(typeof(data)).toBe('undefined');
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreData: function(test) {
-        test.expect(2);
+    test("should store and retrieve data", () => {
+        expect.assertions(2);
         let cache = DataCache.getDataCache();
 
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
         const data = cache.getData("root", "basename", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
+    });
 
-        test.done();
-    },
-
-    testDataCacheClearData: function(test) {
-        test.expect(2);
+    test("should clear data", () => {
+        expect.assertions(2);
         let cache = DataCache.getDataCache();
 
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
         let data = cache.getData("root", "basename", new Locale("en-US"));
-        test.ok(data);
+        expect(data).toBeTruthy();
 
         cache.clearData();
 
         data = cache.getData("root", "basename", new Locale("en-US"));
 
-        test.ok(!data);
+        expect(!data).toBe(true);
+    });
 
-        test.done();
-    },
-
-    testDataCacheClearDataMultiple: function(test) {
-        test.expect(12);
+    test("should clear multiple data entries", () => {
+        expect.assertions(12);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
         cache.storeData("root", "basename", new Locale("da-DK"), { x: "string" });
         cache.storeData("root", "basename", new Locale("ja"), { x: "string" });
-        test.equal(cache.size(), 3);
+        expect(cache.size()).toBe(3);
 
         let data = cache.getData("root", "basename", new Locale("en-US"));
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
         data = cache.getData("root", "basename", new Locale("da-DK"));
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
         data = cache.getData("root", "basename", new Locale("ja"));
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
 
         cache.clearData();
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
 
         data = cache.getData("root", "basename", new Locale("en-US"));
-        test.equal(typeof(data), 'undefined');
+        expect(typeof(data)).toBe('undefined');
         data = cache.getData("root", "basename", new Locale("da-DK"));
-        test.equal(typeof(data), 'undefined');
+        expect(typeof(data)).toBe('undefined');
         data = cache.getData("root", "basename", new Locale("ja"));
-        test.equal(typeof(data), 'undefined');
+        expect(typeof(data)).toBe('undefined');
+    });
 
-        test.done();
-    },
-
-    testDataCacheClearDataRightSize: function(test) {
-        test.expect(3);
+    test("should clear data with correct size", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
         cache.storeData("root", "basename", new Locale("da-DK"), { x: "string" });
         cache.storeData("root", "basename", new Locale("ja"), { x: "string" });
-        test.equal(cache.size(), 3);
+        expect(cache.size()).toBe(3);
 
         cache.clearData();
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataDifferentLocales: function(test) {
-        test.expect(4);
+    test("should store data for different locales", () => {
+        expect.assertions(4);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
@@ -148,19 +138,17 @@ export const testDataCache = {
 
         let data = cache.getData("root", "basename", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
 
         data = cache.getData("root", "basename", new Locale("en"));
 
-        test.ok(data);
-        test.deepEqual(data, { y: "string1" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ y: "string1" });
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataDifferentBasenames: function(test) {
-        test.expect(4);
+    test("should store data for different basenames", () => {
+        expect.assertions(4);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
@@ -169,19 +157,17 @@ export const testDataCache = {
 
         let data = cache.getData("root", "basename1", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
 
         data = cache.getData("root", "basename2", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { y: "string1" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ y: "string1" });
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataDifferentRoots: function(test) {
-        test.expect(4);
+    test("should store data for different roots", () => {
+        expect.assertions(4);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
@@ -190,53 +176,47 @@ export const testDataCache = {
 
         let data = cache.getData("root1", "basename", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
 
         data = cache.getData("root2", "basename", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { y: "string1" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ y: "string1" });
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataNoBasename: function(test) {
-        test.expect(3);
+    test("should not store data without basename", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", undefined, new Locale("en-US"), { x: "string" });
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
 
         const data = cache.getData("root", undefined, new Locale("en-US"));
 
-        test.equal(typeof(data), 'undefined');
+        expect(typeof(data)).toBe('undefined');
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataNoLocaleMeansRoot: function(test) {
-        test.expect(4);
+    test("should store data without locale as root", () => {
+        expect.assertions(4);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         // empty locale = root
         cache.storeData("root", "basename", undefined, { x: "string" });
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
 
         const data = cache.getData("root", "basename", undefined);
 
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataNull: function(test) {
-        test.expect(2);
+    test("should store null data", () => {
+        expect.assertions(2);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
@@ -245,28 +225,24 @@ export const testDataCache = {
         const data = cache.getData("root", "basename", new Locale("en-US"));
 
         // null = files for this locale do not exist
-        test.ok(typeof(data) !== 'undefined');
-        test.deepEqual(data, null);
+        expect(typeof(data) !== 'undefined').toBe(true);
+        expect(data).toEqual(null);
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataRightSize: function(test) {
-        test.expect(3);
+    test("should store data with correct size", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
         cache.storeData("root", "basename", new Locale("en-CA"), { x: "string" });
-        test.equal(cache.size(), 2);
+        expect(cache.size()).toBe(2);
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataOverride: function(test) {
-        test.expect(4);
+    test("should override stored data", () => {
+        expect.assertions(4);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
@@ -274,39 +250,35 @@ export const testDataCache = {
 
         let data = cache.getData("root", "basename", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
 
         cache.storeData("root", "basename", new Locale("en-US"), { z: true });
 
         data = cache.getData("root", "basename", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { z: true });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ z: true });
+    });
 
-        test.done();
-    },
-
-    testDataCacheStoreDataOverrideRightSize: function(test) {
-        test.expect(3);
+    test("should override data with correct size", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
 
         cache.storeData("root", "basename", new Locale("en-US"), { z: true });
 
         // overrides do not increase the size
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testDataCacheRemoveData: function(test) {
-        test.expect(3);
+    test("should remove data", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
@@ -314,150 +286,132 @@ export const testDataCache = {
 
         let data = cache.getData("root", "basename", new Locale("en-US"));
 
-        test.ok(data);
-        test.deepEqual(data, { x: "string" });
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
 
         cache.removeData("root", "basename", new Locale("en-US"));
 
         data = cache.getData("root", "basename", new Locale("en-US"));
 
-        test.equal(typeof(data), 'undefined');
+        expect(typeof(data)).toBe('undefined');
+    });
 
-        test.done();
-    },
-
-    testDataCacheRemoveDataRightSize: function(test) {
-        test.expect(3);
+    test("should remove data with correct size", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
 
         cache.removeData("root", "basename", new Locale("en-US"));
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
+    });
 
-        test.done();
-    },
-
-    testDataCacheRemoveDataNoBasename: function(test) {
-        test.expect(3);
+    test("should not remove data without basename", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
 
         cache.removeData("root", undefined, new Locale("en-US"));
 
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testDataCacheRemoveDataNoLocale: function(test) {
-        test.expect(3);
+    test("should not remove data without locale", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
 
         cache.removeData("root", "basename");
 
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
+    });
 
-        test.done();
-    },
-
-    testDataCacheRemoveDataRootLocale: function(test) {
-        test.expect(5);
+    test("should remove root locale data", () => {
+        expect.assertions(5);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
         cache.storeData("root", "basename", undefined, { x: "string" });
 
-        test.equal(cache.size(), 1);
+        expect(cache.size()).toBe(1);
         let data = cache.getData("root", "basename", undefined);
 
-        test.deepEqual(data, { x: 'string' });
+        expect(data).toEqual({ x: 'string' });
 
         cache.removeData("root", "basename");
 
-        test.equal(cache.size(), 0);
+        expect(cache.size()).toBe(0);
 
         data = cache.getData("root", "basename", new Locale("en-US"));
 
-        test.equal(typeof(data), 'undefined');
+        expect(typeof(data)).toBe('undefined');
+    });
 
-        test.done();
-    },
-
-    testDataCachemarkFileAsLoaded: function(test) {
-        test.expect(2);
+    test("should mark file as loaded", () => {
+        expect.assertions(2);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.ok(!cache.isLoaded("a"));
+        expect(!cache.isLoaded("a")).toBe(true);
 
         cache.markFileAsLoaded("a");
 
-        test.ok(cache.isLoaded("a"));
+        expect(cache.isLoaded("a")).toBe(true);
+    });
 
-        test.done();
-    },
-
-    testDataCachemarkFileAsLoadedClear: function(test) {
-        test.expect(3);
+    test("should clear loaded file markers", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
-        test.ok(!cache.isLoaded("a"));
+        expect(!cache.isLoaded("a")).toBe(true);
 
         cache.markFileAsLoaded("a");
 
-        test.ok(cache.isLoaded("a"));
+        expect(cache.isLoaded("a")).toBe(true);
 
         cache.clearData();
-        test.ok(!cache.isLoaded("a"));
+        expect(!cache.isLoaded("a")).toBe(true);
+    });
 
-        test.done();
-    },
-
-    testDataCachemarkFileAsLoadedEmpty: function(test) {
-        test.expect(1);
+    test("should not mark empty file as loaded", () => {
+        expect.assertions(1);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
         cache.markFileAsLoaded("");
 
-        test.ok(!cache.isLoaded(""));
+        expect(!cache.isLoaded("")).toBe(true);
+    });
 
-        test.done();
-    },
-
-    testDataCachemarkFileAsLoadedUndefined: function(test) {
-        test.expect(1);
+    test("should not mark undefined file as loaded", () => {
+        expect.assertions(1);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
         cache.markFileAsLoaded();
 
-        test.ok(!cache.isLoaded());
+        expect(!cache.isLoaded()).toBe(true);
+    });
 
-        test.done();
-    },
-
-    testDataCachemarkFileAsLoadedNonString: function(test) {
-        test.expect(3);
+    test("should not mark non-string file as loaded", () => {
+        expect.assertions(3);
         let cache = DataCache.getDataCache();
         cache.clearData();
 
@@ -465,10 +419,8 @@ export const testDataCache = {
         cache.markFileAsLoaded(true);
         cache.markFileAsLoaded(function() { return true; });
 
-        test.ok(!cache.isLoaded(2));
-        test.ok(!cache.isLoaded(true));
-        test.ok(!cache.isLoaded(function() { return true; }));
-
-        test.done();
-    }
-};
+        expect(!cache.isLoaded(2)).toBe(true);
+        expect(!cache.isLoaded(true)).toBe(true);
+        expect(!cache.isLoaded(function() { return true; })).toBe(true);
+    });
+}); 
