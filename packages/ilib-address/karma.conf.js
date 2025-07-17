@@ -32,13 +32,14 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ["jasmine"],
+        frameworks: ["jasmine", "webpack"],
 
         // list of files / patterns to load in the browser
-        // Only test the simplified browser test for now
+        // Here I'm including all of the the Jest tests which are all under the test directory.
+        // You may need to tweak this pattern to find your test files/
         files: [
             "./karma-setup.js",
-            "./test/browser-test.js"
+            "./test/**/*.test.js"
         ],
 
         // preprocess matching files before serving them to the browser
@@ -46,7 +47,7 @@ module.exports = function (config) {
         preprocessors: {
             // Use webpack to bundle our tests files
             "./karma-setup.js": ["webpack"],
-            "./test/browser-test.js": ["webpack"],
+            "./test/**/*.test.js": ["webpack"],
         },
 
         browsers: ["ChromeHeadless"],
@@ -56,43 +57,6 @@ module.exports = function (config) {
             target: "web",
             externals: {
                 "log4js": "log4js"
-            },
-            resolve: {
-                fallback: {
-                    "fs": false,
-                    "path": false,
-                    "crypto": false,
-                    "os": false,
-                    "util": false,
-                    "stream": false,
-                    "events": false,
-                    "assert": false,
-                    "buffer": false,
-                    "url": false,
-                    "querystring": false,
-                    "http": false,
-                    "https": false,
-                    "zlib": false,
-                    "tty": false,
-                    "child_process": false,
-                    "cluster": false,
-                    "dgram": false,
-                    "dns": false,
-                    "domain": false,
-                    "module": false,
-                    "net": false,
-                    "punycode": false,
-                    "readline": false,
-                    "repl": false,
-                    "string_decoder": false,
-                    "sys": false,
-                    "timers": false,
-                    "tls": false,
-                    "tty": false,
-                    "v8": false,
-                    "vm": false,
-                    "worker_threads": false
-                }
             },
             module: {
                 rules: [
@@ -120,6 +84,17 @@ module.exports = function (config) {
                         }
                     }
                 ]
+            },
+            resolve: {
+                fallback: {
+                    buffer: require.resolve("buffer")
+                },
+                alias: {
+                    "calling-module": path.resolve(__dirname, "./test"),
+                    "ilib-loader": "ilib-loader/browser",
+                    "fs": false,
+                    "path": false
+                }
             }
         }
     });
