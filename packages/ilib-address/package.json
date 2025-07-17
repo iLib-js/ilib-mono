@@ -112,6 +112,7 @@
         "ilib-ctype": "workspace:^",
         "ilib-env": "workspace:^",
         "ilib-istring": "workspace:^",
+        "ilib-loader": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-localedata": "workspace:^",
         "ilib-resbundle": "^1.0.2"
