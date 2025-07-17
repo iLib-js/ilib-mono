@@ -107,6 +107,6 @@
         "ilib-istring": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-localedata": "workspace:^",
-        "ilib-resbundle": "^1.0.2"
+        "ilib-resbundle": "workspace:^"
     }
 }
