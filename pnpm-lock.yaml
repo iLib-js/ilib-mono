@@ -812,6 +812,19 @@ importers:
         specifier: ^5.5.4
         version: 5.6.3
 
+  packages/ilib-lint-apple:
+    dependencies:
+      ilib-lint-common:
+        specifier: workspace:^
+        version: link:../ilib-lint-common
+      ilib-tools-common:
+        specifier: workspace:^
+        version: link:../ilib-tools-common
+    devDependencies:
+      jest:
+        specifier: ^29.0.0
+        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+
   packages/ilib-lint-common:
     devDependencies:
       '@jest/globals':
