@@ -17,16 +17,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Add missing Jest functions
+
+var ilibEnv = require('ilib-env');
+
+// Add missing Jest functions for browser compatibility
 window.test = window.it;
-window.test.each = (inputs) => (testName, test) => {
-    inputs.forEach((input, index) => {
-        const name = typeof testName === 'string' ? testName.replace('$name', input.name || `test case ${index}`) : `test case ${index}`;
-        window.it(name, () => test(input));
-    });
+window.test.each = function(inputs) {
+    return function(testName, test) {
+        inputs.forEach(function(input) {
+            const name = typeof testName === 'string' ? testName.replace('$name', input.name || 'test case') : 'test case';
+            window.it(name, function() {
+                test(input);
+            });
+        });
+    };
 };
-window.test.todo = function () {
-  return undefined;
+window.test.todo = function() {
+    return undefined;
 };
 
-window.expect.assertions = (num) => { return undefined; }; 
+window.expect.assertions = function(num) {
+    return undefined;
+};
+
+// Set locale for testing
+ilibEnv.setLocale("en-US"); 
