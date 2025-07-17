@@ -26,7 +26,9 @@ import ResBundle from 'ilib-resbundle';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
 
-import Address from './Address.js';
+/**
+ * @typedef {import('./Address.js')} Address
+ */
 
 /**
  * @private

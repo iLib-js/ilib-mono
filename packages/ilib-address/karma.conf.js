@@ -16,86 +16,82 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var path = require('path');
 
-module.exports = function (config) {
+module.exports = function(config) {
     config.set({
         plugins: [
             "karma-webpack",
             "karma-jasmine",
             "karma-chrome-launcher",
+            "karma-firefox-launcher",
             "karma-assert"
         ],
-
-        // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: "",
-
-        // frameworks to use
-        // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ["jasmine", "webpack"],
-
-        // list of files / patterns to load in the browser
-        // Here I'm including all of the the Jest tests which are all under the test directory.
-        // You may need to tweak this pattern to find your test files/
+        basePath: '',
+        frameworks: ['jasmine', 'webpack'],
         files: [
-            "./karma-setup.js",
-            "./test/**/*.test.js"
+            'karma-setup.js',
+            'test/*.test.js'
         ],
-
-        // preprocess matching files before serving them to the browser
-        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+        exclude: [
+            'test/nodeunit/**/*',
+            'test/testSuite.js',
+            'test/testSuite.cjs',
+            'test/testSuiteWeb.js',
+            'test/testSuiteFiles.js',
+            'test/testSuite.sh',
+            'test/testSuite.html',
+            'test/webpack-testSuite.config.cjs',
+            'test/package.json'
+        ],
         preprocessors: {
-            // Use webpack to bundle our tests files
-            "./karma-setup.js": ["webpack"],
-            "./test/**/*.test.js": ["webpack"],
+            'karma-setup.js': ['webpack'],
+            'test/*.test.js': ['webpack']
         },
-
-        browsers: ["ChromeHeadless"],
-        
         webpack: {
-            mode: "development",
-            target: "web",
+            mode: 'development',
+            target: 'web',
+            entry: {
+                test: './karma-setup.js'
+            },
             externals: {
                 "log4js": "log4js"
             },
-            module: {
-                rules: [
-                    {
-                        test: /\.js$/,
-                        exclude: /\/node_modules\//,
-                        use: {
-                            loader: 'babel-loader',
-                            options: {
-                                minified: false,
-                                compact: false,
-                                presets: [[
-                                    '@babel/preset-env',
-                                    {
-                                        "targets": {
-                                            "node": process.versions.node,
-                                            "browsers": "cover 99.5%"
-                                        }
-                                    }
-                                ]],
-                                plugins: [
-                                    "add-module-exports"
-                                ]
-                            }
-                        }
-                    }
-                ]
+            optimization: {
+                moduleIds: 'named',
+                chunkIds: 'named'
             },
             resolve: {
                 fallback: {
                     buffer: require.resolve("buffer")
                 },
                 alias: {
-                    "calling-module": path.resolve(__dirname, "./test"),
                     "ilib-loader": "ilib-loader/browser",
-                    "fs": false,
-                    "path": false
-                }
+                    "calling-module": require('path').resolve(__dirname, "assembled")
+                },
+                extensions: ['.js', '.json']
+            },
+            module: {
+                rules: [
+                    {
+                        test: /\.js$/,
+                        include: require('path').resolve(__dirname, "assembled"),
+                        type: "javascript/auto"
+                    }
+                ]
             }
-        }
+        },
+        reporters: ['progress', 'coverage'],
+        coverageReporter: {
+            type: 'lcov',
+            dir: 'coverage/',
+            subdir: 'browser'
+        },
+        port: 9876,
+        colors: true,
+        logLevel: config.LOG_INFO,
+        autoWatch: false,
+        browsers: ['ChromeHeadless', 'FirefoxHeadless'],
+        singleRun: true,
+        concurrency: Infinity
     });
 }; 
