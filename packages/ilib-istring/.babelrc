@@ -5,7 +5,7 @@
                 "node": "current"
             }
         }
-    ]]
+    ]],
     "plugins": [
         "add-module-exports",
         "@babel/plugin-transform-regenerator"

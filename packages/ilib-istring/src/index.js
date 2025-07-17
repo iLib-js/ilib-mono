@@ -728,8 +728,16 @@ class IString {
                 return (limit === "true" && index === true) || (limit === "false" && index === false);
 
             case 'string':
-                const regexp = new RegExp(limit, "i");
-                return regexp.test(index);
+                // Check if this is a regex pattern (starts and ends with /)
+                if (limit.startsWith('/') && limit.endsWith('/')) {
+                    // Extract the pattern between the slashes
+                    const pattern = limit.substring(1, limit.length - 1);
+                    const regexp = new RegExp(pattern, "i");
+                    return regexp.test(index);
+                } else {
+                    // Static string match (case-insensitive)
+                    return limit.toLowerCase() === index.toLowerCase();
+                }
 
             case 'object':
                 throw "syntax error: formatChoice parameter for the argument index cannot be an object";
