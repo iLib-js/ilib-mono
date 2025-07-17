@@ -19,8 +19,12 @@
  */
 // Add missing Jest functions
 window.test = window.it;
-window.test.each = (inputs) => (testName, test) =>
-  inputs.forEach((args) => window.it(testName, () => test(...args)));
+window.test.each = (inputs) => (testName, test) => {
+    inputs.forEach((input, index) => {
+        const name = typeof testName === 'string' ? testName.replace('$name', input.name || `test case ${index}`) : `test case ${index}`;
+        window.it(name, () => test(input));
+    });
+};
 window.test.todo = function () {
   return undefined;
 };
