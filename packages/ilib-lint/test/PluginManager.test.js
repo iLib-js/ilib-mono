@@ -365,7 +365,7 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
         const rm = plgmgr.getRuleManager();
         expect(rm).toBeTruthy();
 
-        expect(rm.sizeRuleSetDefinitions()).toBe(8);
+        expect(rm.sizeRuleSetDefinitions()).toBe(9);
 
         const genericRuleset = rm.getRuleSetDefinition("generic");
         expect(genericRuleset).toBeTruthy();
