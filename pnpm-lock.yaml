@@ -113,6 +113,9 @@ importers:
       jsdoc-to-markdown:
         specifier: ^9.0.4
         version: 9.1.1
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
       karma:
         specifier: ^6.4.2
         version: 6.4.4

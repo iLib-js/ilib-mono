@@ -33,14 +33,6 @@ module.exports = function(config) {
             'test/*.test.js'
         ],
         exclude: [
-            'test/nodeunit/**/*',
-            'test/testSuite.js',
-            'test/testSuite.cjs',
-            'test/testSuiteWeb.js',
-            'test/testSuiteFiles.js',
-            'test/testSuite.sh',
-            'test/testSuite.html',
-            'test/webpack-testSuite.config.cjs',
             'test/package.json'
         ],
         preprocessors: {
@@ -66,6 +58,11 @@ module.exports = function(config) {
                 },
                 alias: {
                     "ilib-loader": "ilib-loader/browser",
+                    "ilib-localedata": require('path').resolve(__dirname, "../ilib-localedata/src"),
+                    "ilib-locale": require('path').resolve(__dirname, "../ilib-locale/src/Locale.js"),
+                    "ilib-common": require('path').resolve(__dirname, "../ilib-common/src"),
+                    "ilib-env": require('path').resolve(__dirname, "../ilib-env/src"),
+                    "ilib-istring": require('path').resolve(__dirname, "../ilib-istring/src"),
                     "calling-module": require('path').resolve(__dirname, "assembled")
                 },
                 extensions: ['.js', '.json']

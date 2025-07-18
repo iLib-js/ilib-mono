@@ -36,11 +36,11 @@ function getLocFiles(name, locale, locData, here, mostSpecific) {
             locData[loc] = {};
         }
         if (cache[file]) {
-            locData[loc][name] = cache[file];
+            locData[loc][name] = JSUtils.merge(locData[loc][name] || {}, cache[file], true);
         } else if (existsSync(file)) {
             const data = readFileSync(file, "utf-8");
             const json = JSON5.parse(data);
-            locData[loc][name] = json;
+            locData[loc][name] = JSUtils.merge(locData[loc][name] || {}, json, true);
             cache[file] = json;
         }
     });
@@ -61,6 +61,7 @@ function assemble(options) {
         ["ctrynames", "regionnames"].forEach(name => {
             getLocFiles(name, locale, locData, here, true);
         });
+        
         localeData[locale] = locData;
     });
 

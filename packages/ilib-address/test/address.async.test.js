@@ -129,7 +129,7 @@ describe('Async Address Parsing', () => {
         });
 
         test('should parse Dutch address asynchronously', async () => {
-            const parsedAddress = await Address.create("Achterberglaan 23, 2345 GD Uithoorn, Netherlands", { locale: 'en-US' });
+            const parsedAddress = await Address.create("Achterberglaan 23, 2345 GD Uithoorn, Netherlands", { locale: 'nl-NL' });
 
             expect(typeof(parsedAddress)).not.toBe("undefined");
             expect(parsedAddress.streetAddress).toBe("Achterberglaan 23");

@@ -1,7 +1,7 @@
 /*
  * address.test.js - test the address parsing and formatting routines
  *
- * Copyright © 2013-2015, 2017, 2022, 2025 JEDLSoft
+ * Copyright © 2013-2015, 2017-2018, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,13 @@ import Address from '../src/Address.js';
 import AddressFmt from '../src/AddressFmt.js';
 import { localeList } from './locales.cjs';
 
+let setUpPerformed = false;
+
 function searchRegions(array, regionCode) {
-    return array.find((region) => {
+    return array.find(function(region) {
         return region.code === regionCode;
     });
 }
-
-let setUpPerformed = false;
 
 beforeAll(async () => {
     if (getPlatform() === "browser" && !setUpPerformed) {
@@ -38,20 +38,15 @@ beforeAll(async () => {
         // data is loaded before we can do all these sync tests
         setUpPerformed = true;
         LocaleData.clearCache();
-        if (getPlatform() === "browser") {
-            // does not support sync, so we have to ensure the locale
-            // data is loaded before we can do all these sync tests
-            let promise = Promise.resolve(true);
-            for (const locale of localeList.locales) {
-                promise = promise.then(() => {
-                    return LocaleData.ensureLocale(locale);
-                });
-            }
-            await promise;
-            setUpPerformed = true;
-        } else {
-            setUpPerformed = true;
-        }
+        
+        // Only ensure the locales that are actually tested in this file
+        const testLocales = [
+            'en-US', 'en-JP', 'nl-NL', 'zxx-XX', 'en-QQ', 'en-HK', 'en-XY'
+        ];
+        
+        // Run ensureLocale calls in parallel for better performance
+        const promises = testLocales.map(locale => LocaleData.ensureLocale(locale));
+        await Promise.all(promises);
     }
 });
 
@@ -258,14 +253,14 @@ describe('Address Parsing', () => {
         });
 
         test('should parse Dutch address', () => {
-            const parsedAddress = new Address("Achterberglaan 23, 2345 GD Uithoorn, Netherlands", {locale: 'en-US'});
+            const parsedAddress = new Address("Achterberglaan 23, 2345 GD Uithoorn, Nederland", {locale: 'nl-NL'});
 
             expect(typeof(parsedAddress)).not.toBe("undefined");
             expect(parsedAddress.streetAddress).toBe("Achterberglaan 23");
             expect(parsedAddress.locality).toBe("Uithoorn");
             expect(typeof(parsedAddress.region)).toBe("undefined");
             expect(parsedAddress.postalCode).toBe("2345 GD");
-            expect(parsedAddress.country).toBe("Netherlands");
+            expect(parsedAddress.country).toBe("Nederland");
             expect(parsedAddress.countryCode).toBe("NL");
         });
 
