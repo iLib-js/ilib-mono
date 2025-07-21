@@ -629,4 +629,4 @@ describe("LocaleData", () => {
             "c": "d ja"
         });
     });
-}); 
+});
