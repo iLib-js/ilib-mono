@@ -74,7 +74,7 @@ describe('Massive Concurrent Locale Loading', () => {
             'hu-HU': { region: 'Megye', postalCode: 'Irányítószám', country: 'Ország' }
         };
 
-        // Run the test 100 times to catch any intermittent race conditions
+        // Run the test 1000 times to catch any intermittent race conditions
         for (let iteration = 0; iteration < 1000; iteration++) {
             // Clear cache before each iteration
             LocaleData.clearCache();
