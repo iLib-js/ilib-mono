@@ -1,7 +1,7 @@
 /*
  * karma.conf.js - configure the karma testing environment
  *
- * Copyright © 2023, 2025 JEDLSoft
+ * Copyright © 2025, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ["jasmine"],
+        frameworks: ["jasmine", "webpack"],
 
         // list of files / patterns to load in the browser
         // Here I'm including all of the the Jest tests which are all under the __tests__ directory.
@@ -44,7 +44,7 @@ module.exports = function (config) {
 
         // list of files to exclude
         exclude: [
-            "./test/NodeLoader.test.js"
+            "./test/LocaleDataNode.test.js"
         ],
 
         // preprocess matching files before serving them to the browser
@@ -56,7 +56,7 @@ module.exports = function (config) {
         },
 
         browsers: ["ChromeHeadless"],
-
+        
         webpack: {
             mode: "development",
             target: "web",
@@ -83,8 +83,7 @@ module.exports = function (config) {
                                     }
                                 ]],
                                 plugins: [
-                                    "add-module-exports",
-                                    "@babel/plugin-transform-regenerator"
+                                    "add-module-exports"
                                 ]
                             }
                         }
@@ -96,14 +95,12 @@ module.exports = function (config) {
                     buffer: require.resolve("buffer")
                 },
                 alias: {
-                    "calling-module": "../test/locale",
-                    "./NodeLoader.js": "./FakeLoader.js",
-                    "./QtLoader.js": "./FakeLoader.js",
-                    "./RhinoLoader.js": "./FakeLoader.js",
-                    "./NashornLoader.js": "./FakeLoader.js",
-                    "./RingoLoader.js": "./FakeLoader.js",
+                    "calling-module": path.resolve(__dirname, "./test/files3"),
+                    "ilib-loader": "ilib-loader/browser",
+                    "fs": false,
+                    "path": false
                 }
             },
         }
     });
-};
+}; 
