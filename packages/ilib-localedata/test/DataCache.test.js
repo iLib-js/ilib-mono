@@ -423,4 +423,4 @@ describe("DataCache", () => {
         expect(!cache.isLoaded(true)).toBe(true);
         expect(!cache.isLoaded(function() { return true; })).toBe(true);
     });
-}); 
+});
