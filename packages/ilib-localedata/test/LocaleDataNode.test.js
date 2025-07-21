@@ -1059,4 +1059,4 @@ describe("LocaleDataNode", () => {
             "b": "b from files"
         });
     });
-}); 
+});

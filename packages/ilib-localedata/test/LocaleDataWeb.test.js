@@ -146,4 +146,4 @@ describe("LocaleDataWeb", () => {
             "c": "d ja"
         });
     });
-}); 
+});

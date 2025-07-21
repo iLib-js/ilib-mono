@@ -694,6 +694,9 @@ class LocaleData {
         const spec = loc.getSpec();
 
         const loader = LoaderFactory();
+        if (!loader) {
+            throw new Error("No loader available for this platform");
+        }
         const cache = DataCache.getDataCache();
         const subLocales = Utils.getSublocales(locale);
         let files = [];
@@ -726,24 +729,44 @@ class LocaleData {
                     (file.data || cache.isLoaded(file.path)) ? undefined : file.path
                 );
                 return loader.loadFiles(fileNames).then(data => {
-                    return data.reduce((previous, datum, i) => {
-                        cache.markFileAsLoaded(files[i].path);
-                        if (!datum) return previous;
-                        if (!files[i].data) {
-                            // null indicates we attempted to load the file, but
-                            // there was no data or the file did not exist
-                            let localeData = parseData(datum, files[i].path);
-                            if (localeData) {
-                                LocaleData.cacheData(localeData, files[i].root);
-                                files[i].data = localeData;
-                                return true;
+
+                    let dataLoaded = false;
+                    if (data && Array.isArray(data)) {
+                        data.forEach((datum, i) => {
+                            cache.markFileAsLoaded(files[i].path);
+
+                            if (!datum) return;
+                            if (!files[i].data) {
+                                // null indicates we attempted to load the file, but
+                                // there was no data or the file did not exist
+                                let localeData = parseData(datum, files[i].path);
+
+                                if (localeData) {
+                                    LocaleData.cacheData(localeData, files[i].root);
+                                    files[i].data = localeData;
+                                    dataLoaded = true;
+                                }
                             }
-                        }
-                        return previous;
-                    }, false);
+                        });
+                    }
+
+
+                    return dataLoaded;
                 });
             } else {
-                return true;
+                // Check if the data is actually available in the cache, not just marked as loaded
+                let dataAvailable = false;
+                for (const spec of subLocales) {
+                    for (const root of roots) {
+                        const data = cache.getData(root, undefined, new Locale(spec));
+                        if (data && Object.keys(data).length > 0) {
+                            dataAvailable = true;
+                            break;
+                        }
+                    }
+                    if (dataAvailable) break;
+                }
+                return dataAvailable;
             }
         });
     }
