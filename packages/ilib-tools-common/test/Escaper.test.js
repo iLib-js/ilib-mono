@@ -774,6 +774,203 @@ describe("test the Escaper class and its subclasses", () => {
         expect(escaper.unescape(input)).toBe(expected);
     });
 
+    // C++ Tests
+    test("the cpp escape handles basic functionality", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        const input = "Hello World";
+        const expected = "Hello World";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp unescape handles basic functionality", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        const input = "Hello World";
+        const expected = "Hello World";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp escape handles all standard escape sequences", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        const input = "null" + String.fromCharCode(0) + "alert" + String.fromCharCode(7) + "backspace" + String.fromCharCode(8) + "formfeed" + String.fromCharCode(12) + "newline\nreturn\r" + "tab\tvertical" + String.fromCharCode(11);
+        const expected = "null\\0alert\\abackspace\\bformfeed\\fnewline\\nreturn\\rtab\\tvertical\\v";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp unescape handles all standard escape sequences", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        const input = "null\\0alert\\abackspace\\bformfeed\\fnewline\\nreturn\\rtab\\tvertical\\v";
+        const expected = "null" + String.fromCharCode(0) + "alert" + String.fromCharCode(7) + "backspace" + String.fromCharCode(8) + "formfeed" + String.fromCharCode(12) + "newline\nreturn\r" + "tab\tvertical" + String.fromCharCode(11);
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp escape handles quotes and backslashes", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        const input = "single ' and double \" quotes with backslash \\";
+        const expected = "single \\' and double \\\" quotes with backslash \\\\";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp unescape handles quotes and backslashes", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        const input = "single \\' and double \\\" quotes with backslash \\\\";
+        const expected = "single ' and double \" quotes with backslash \\";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp escape handles mixed content with Unicode", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        const input = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        const expected = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp unescape handles mixed content with Unicode", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        const input = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        const expected = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp escape handles empty input", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        expect(escaper.escape("")).toBe("");
+    });
+
+    test("the cpp unescape handles empty input", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        expect(escaper.unescape("")).toBe("");
+    });
+
+    test("the cpp escape handles null input", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        expect(escaper.escape(null)).toBe("");
+    });
+
+    test("the cpp unescape handles null input", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        expect(escaper.unescape(null)).toBe("");
+    });
+
+    test("the cpp escape handles undefined input", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        expect(escaper.escape()).toBe("");
+    });
+
+    test("the cpp unescape handles undefined input", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp");
+        expect(escaper.unescape()).toBe("");
+    });
+
+    test("the cpp char escape handles all character literal escapes", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-char");
+        const input = "'" + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + "ㅽ";
+        const expected = "\\'\\0\\a\\b\\f\\n\\r\\t\\v\\u317D";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp char unescape handles all character literal escapes", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-char");
+        const input = "\\'\\0\\a\\b\\f\\n\\r\\t\\v\\u317D";
+        const expected = "'" + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + "ㅽ";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp raw escape handles raw strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-raw");
+        const input = "Hello 'world' with \"quotes\" and \n\t\r escapes plus ㅽ𝄞";
+        const expected = "Hello 'world' with \"quotes\" and \n\t\r escapes plus ㅽ𝄞";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp raw unescape handles raw strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-raw");
+        const input = "Hello 'world' with \"quotes\" and \n\t\r escapes plus ㅽ𝄞";
+        const expected = "Hello 'world' with \"quotes\" and \n\t\r escapes plus ㅽ𝄞";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp wide escape handles wide strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-wide");
+        const input = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        const expected = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp wide unescape handles wide strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-wide");
+        const input = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        const expected = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp utf8 escape handles UTF-8 strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-utf8");
+        const input = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        const expected = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp utf8 unescape handles UTF-8 strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-utf8");
+        const input = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        const expected = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp utf16 escape handles UTF-16 strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-utf16");
+        const input = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        const expected = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp utf16 unescape handles UTF-16 strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-utf16");
+        const input = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        const expected = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the cpp utf32 escape handles UTF-32 strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-utf32");
+        const input = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        const expected = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the cpp utf32 unescape handles UTF-32 strings", () => {
+        expect.assertions(1);
+        const escaper = escaperFactory("cpp-utf32");
+        const input = "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E";
+        const expected = "Hello 'world' with \"quotes\" and " + String.fromCharCode(0) + String.fromCharCode(7) + String.fromCharCode(8) + String.fromCharCode(12) + "\n\r\t" + String.fromCharCode(11) + " escapes plus ㅽ𝄞";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
     test.each([
         { style: "csharp", str: "This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\0\\a\\b\\e\\f\\n\\r\\t\\v \\u317D \\U0001D11E" },
         { style: "csharp-raw", str: "This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \\u317D \\U0001D11E" },
@@ -797,6 +994,13 @@ describe("test the Escaper class and its subclasses", () => {
         { style: "smarty-single", str: "abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞" },
         { style: "swift", str: "This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\n\\r\\t\\0 \\u{1D11E}" },
         { style: "swift-multi", str: "This string uses all the escapes!\n\'single\' \"double\" \\\\ \n\r\t\x00 \u317D \u{1D11E}" },
+        { style: "cpp", str: "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E" },
+        { style: "cpp-char", str: "\\'\\0\\a\\b\\f\\n\\r\\t\\v\\u317D" },
+        { style: "cpp-raw", str: "fo\"o'b\\n\u317D" },
+        { style: "cpp-wide", str: "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E" },
+        { style: "cpp-utf8", str: "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E" },
+        { style: "cpp-utf16", str: "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E" },
+        { style: "cpp-utf32", str: "Hello \\'world\\' with \\\"quotes\\\" and \\0\\a\\b\\f\\n\\r\\t\\v escapes plus \\u317D\\uD834\\uDD1E" },
         { style: "scala", str: "Hello \\'world\\' with \\\"quotes\\\" and \\n\\t\\r\\b\\f escapes plus \\u317D\\uD834\\uDD1E" },
         { style: "scala-raw", str: "fo\"o'b\\n\u317D" },
         { style: "scala-triple", str: "fo\\\"o\\'b\\\\n\u317D" },
