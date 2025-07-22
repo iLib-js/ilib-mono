@@ -21,6 +21,9 @@ import {Result, Fix} from "ilib-lint-common";
 import {ResourceString} from "ilib-tools-common";
 
 import ResourceCamelCase from "../../src/rules/ResourceCamelCase.js";
+import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
+import RuleManager from "../../src/RuleManager.js";
+import BuiltinPlugin from "../../src/plugins/BuiltinPlugin.js";
 
 describe("ResourceCamelCase", () => {
     test("creates ResourceCamelCase rule instance", () => {
@@ -39,7 +42,7 @@ describe("ResourceCamelCase", () => {
         {},
         () => {},
     ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
-        const rule = new ResourceCamelCase({param: {except: invalidExcept}});
+        const rule = new ResourceCamelCase({except: invalidExcept});
 
         const resource = createTestResourceString({source: "camelCaseException", target: "someCamelCaseTarget"});
         const result = rule.matchString({
@@ -91,7 +94,7 @@ describe("ResourceCamelCase", () => {
     });
 
     test("returns `undefined` if source string is an exception", () => {
-        const options = {param: {except: ["camelCaseException"]}}
+        const options = {except: ["camelCaseException"]}
         const rule = new ResourceCamelCase(options);
         const resource = createTestResourceString({source: "camelCaseException", target: "some_target"});
 
@@ -103,6 +106,54 @@ describe("ResourceCamelCase", () => {
         });
 
         expect(result).toBeUndefined();
+    });
+
+    test("returns `undefined` if source string is an exception when instantiated via RuleManager", () => {
+        // This test verifies that the exception functionality works correctly when the rule is instantiated
+        // through the RuleManager.get() method, which is the actual code path used in the system
+        const ruleManager = new RuleManager();
+        const builtinPlugin = new BuiltinPlugin();
+        ruleManager.add(builtinPlugin.getRules());
+
+        const rule = ruleManager.get("resource-camel-case", {except: ["camelCaseException"]});
+
+        expect(rule).toBeInstanceOf(ResourceCamelCase);
+
+        const resource = createTestResourceString({source: "camelCaseException", target: "some_target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeUndefined();
+    });
+
+    test("returns error when source string is NOT an exception (showing exception functionality works)", () => {
+        // This test verifies that the exception functionality is actually working by showing that
+        // without the except parameter, the same test case would produce an error
+        const ruleManager = new RuleManager();
+        const builtinPlugin = new BuiltinPlugin();
+        ruleManager.add(builtinPlugin.getRules());
+
+        const rule = ruleManager.get("resource-camel-case", {}); // No except parameter
+
+        expect(rule).toBeInstanceOf(ResourceCamelCase);
+
+        const resource = createTestResourceString({source: "camelCaseException", target: "some_target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        expect(result.rule).toBeInstanceOf(ResourceCamelCase);
+        expect(result.severity).toEqual("error");
     });
 
     test("returns `undefined` if source string is NOT in camel case", () => {

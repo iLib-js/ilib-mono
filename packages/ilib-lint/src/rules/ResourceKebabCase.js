@@ -12,8 +12,7 @@ class ResourceKebabCase extends ResourceRule {
     /**
      * Create a ResourceKebabCase rule instance.
      * @param {object} options
-     * @param {object} [options.param]
-     * @param {string[]} [options.param.except] An array of strings to exclude from the rule.
+     * @param {string[]} [options.except] An array of strings to exclude from the rule.
      */
     constructor(options) {
         super(options);
@@ -25,7 +24,7 @@ class ResourceKebabCase extends ResourceRule {
             "^\\s*[a-zA-Z0-9]*(-[a-zA-Z0-9]+)+\\s*$",
             "^\\s*[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*-\\s*$"
         ];
-        this.exceptions = Array.isArray(options?.param?.except) ? options.param.except : [];
+        this.exceptions = Array.isArray(options?.except) ? options.except : [];
     }
 
     /**
