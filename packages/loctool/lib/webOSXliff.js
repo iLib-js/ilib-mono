@@ -167,21 +167,6 @@ webOSXliff.prototype.parse = function(xliff) {
 }
 
 /**
- * Get the target string corresponding to the metadata
- *
- * @returns {String} The target string corresponding to the metadata.
- */
-webOSXliff.prototype.getMetadataTarget = function(metadata, tuData) {
-    if (!metadata || !tuData) return undefined;
-
-    this.type = metadata["device-type"];
-    var dataArr = tuData["mda:metaGroup"]['mda:meta'];
-
-    var matchItem = dataArr.find(item => item['_attributes']['type'] === this.type);
-    return matchItem ? matchItem['_text'] : undefined;
-};
-
-/**
  * Get the translation units in this xliff.
  *
  * @returns {Array.<Object>} the translation units in this xliff
@@ -328,7 +313,8 @@ webOSXliff.prototype.getTranslationSet = function() {
                 resType: tu.resType,
                 datatype: tu.datatype,
                 state: tu.state,
-                flavor: tu.flavor
+                flavor: tu.flavor,
+                metadata: tu.metadata
             });
             
             if (tu.target) {
