@@ -16,12 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import CppEscaper from "./escapes/CppEscaper.js";
 import CSharpEscaper from "./escapes/CSharpEscaper.js";
 import JavaEscaper from "./escapes/JavaEscaper.js";
 import JavascriptEscaper from "./escapes/JavascriptEscaper.js";
 import JsonEscaper from "./escapes/JsonEscaper.js";
 import RegexBasedEscaper from "./escapes/RegexBasedEscaper.js";
 import PHPEscaper from "./escapes/PHPEscaper.js";
+import ScalaEscaper from "./escapes/ScalaEscaper.js";
 import SmartyEscaper from "./escapes/SmartyEscaper.js";
 import PythonEscaper from "./escapes/PythonEscaper.js";
 import SwiftEscaper from "./escapes/SwiftEscaper.js";
@@ -33,6 +35,13 @@ const escaperCache = {};
  * Return an Escaper instance for the given style. The style must be one of the
  * following:
  * <ul>
+ * <li>cpp - escape for C++ regular strings</li>
+ * <li>cpp-char - escape for C++ character literals</li>
+ * <li>cpp-raw - escape for C++ raw strings</li>
+ * <li>cpp-wide - escape for C++ wide strings</li>
+ * <li>cpp-utf8 - escape for C++ UTF-8 strings</li>
+ * <li>cpp-utf16 - escape for C++ UTF-16 strings</li>
+ * <li>cpp-utf32 - escape for C++ UTF-32 strings</li>
  * <li>csharp - escape for C#</li>
  * <li>csharp-raw - escape for C# raw strings</li>
  * <li>csharp-verbatim - escape for C# verbatim strings</li>
@@ -53,6 +62,10 @@ const escaperCache = {};
  * <li>python-byte - escape for Python byte strings</li>
  * <li>python-multi - escape for Python multi-line strings</li>
  * <li>regexp - escape for regular expressions</li>
+ * <li>scala - escape for Scala regular strings</li>
+ * <li>scala-raw - escape for Scala raw strings</li>
+ * <li>scala-triple - escape for Scala triple-quoted strings</li>
+ * <li>scala-char - escape for Scala character literals</li>
  * <li>smarty - escape for Smarty templates (default, same as smarty-double)</li>
  * <li>smarty-double - escape for double-quoted Smarty strings</li>
  * <li>smarty-single - escape for single-quoted Smarty strings</li>
@@ -75,6 +88,16 @@ function escaperFactory(style) {
         return escaperCache[style];
     }
     switch (style) {
+        case 'cpp':
+        case 'cpp-char':
+        case 'cpp-raw':
+        case 'cpp-wide':
+        case 'cpp-utf8':
+        case 'cpp-utf16':
+        case 'cpp-utf32':
+            escaperCache[style] = new CppEscaper(style);
+            break;
+
         case 'csharp':
         case 'c#':
         case 'csharp-raw':
@@ -108,6 +131,13 @@ function escaperFactory(style) {
         case 'php-heredoc':
         case 'php-nowdoc':
             escaperCache[style] = new PHPEscaper(style);
+            break;
+
+        case 'scala':
+        case 'scala-raw':
+        case 'scala-triple':
+        case 'scala-char':
+            escaperCache[style] = new ScalaEscaper(style);
             break;
 
         case 'smarty':
