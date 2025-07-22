@@ -24,6 +24,7 @@ module.exports = function (config) {
             "karma-webpack",
             "karma-jasmine",
             "karma-chrome-launcher",
+            "karma-firefox-launcher",
             "karma-assert"
         ],
 
@@ -55,7 +56,7 @@ module.exports = function (config) {
             "./test/**/*.test.js": ["webpack"],
         },
 
-        browsers: ["ChromeHeadless"],
+        browsers: ["ChromeHeadless", "FirefoxHeadless"],
         
         webpack: {
             mode: "development",
