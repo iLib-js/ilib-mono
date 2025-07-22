@@ -451,6 +451,90 @@ export const escapeRegexes = {
             "\x07": "\\a"
          }
     },
+    "scala": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',                   // unescape double quotes
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\b": "\x08",
+            "\\\\f": "\f",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\x08": "\\b",
+            "\f": "\\f",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t"
+        }
+    },
+    "scala-raw": {
+        "unescape": {
+            // raw strings don't unescape anything
+        },
+        "escape": {
+            // raw strings don't escape anything
+        }
+    },
+    "scala-triple": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\'": "$1'",
+            '^\\\\"': '"',                   // unescape double quotes
+            '([^\\\\])\\\\"': '$1"',
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"',
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\n": "\\\\n",
+            "\r": "\\\\r",
+            "\t": "\\\\t"
+        }
+    },
+    "scala-char": {
+        "unescape": {
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            "^\\\\'": "'",                   // unescape single quotes
+            "([^\\\\])\\\\'": "$1'",
+            "\\\\b": "\x08",
+            "\\\\f": "\f",
+            "\\\\n": "\n",
+            "\\\\r": "\r",
+            "\\\\t": "\t"
+        },
+        "escape": {
+            "^\\\\": "\\\\",
+            "([^\\\\])\\\\": "$1\\\\",
+            "^'": "\\'",
+            "([^\\\\])'": "$1\\'",
+            "\x08": "\\b",
+            "\f": "\\f",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\t": "\\t"
+        }
+    },
     // from https://docs.swift.org/swift-book/documentation/the-swift-programming-language/stringsandcharacters
     "swift": {
         "unescape": {
@@ -686,6 +770,27 @@ export function escapeUnicodeAsSurrogatePairs(string) {
     for (let i = 0; i < string.length; i++) {
         const ch = string[i];
         const code = ch.charCodeAt(0);
+        
+        // Check if this is a high surrogate (first part of surrogate pair)
+        if (code >= 0xD800 && code <= 0xDBFF) {
+            // This is a high surrogate, get the low surrogate
+            const lowCode = string.charCodeAt(i + 1);
+            if (lowCode >= 0xDC00 && lowCode <= 0xDFFF) {
+                // Calculate the full code point
+                const fullCode = (code - 0xD800) * 0x400 + (lowCode - 0xDC00) + 0x10000;
+                const high = Math.floor((fullCode - 0x10000) / 0x400) + 0xD800;
+                const low = (fullCode - 0x10000) % 0x400 + 0xDC00;
+                output += "\\u" + high.toString(16).toUpperCase() + "\\u" + low.toString(16).toUpperCase();
+                i++; // Skip the low surrogate
+                continue;
+            }
+        }
+        
+        // Check if this is a low surrogate (shouldn't happen in valid UTF-16)
+        if (code >= 0xDC00 && code <= 0xDFFF) {
+            continue; // Skip low surrogates that weren't paired
+        }
+        
         if (code < 0x10000 && code > 0x00FF) {
             const str = code.toString(16).toUpperCase();
             output += "\\u" + str;

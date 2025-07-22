@@ -22,6 +22,7 @@ import JavascriptEscaper from "./escapes/JavascriptEscaper.js";
 import JsonEscaper from "./escapes/JsonEscaper.js";
 import RegexBasedEscaper from "./escapes/RegexBasedEscaper.js";
 import PHPEscaper from "./escapes/PHPEscaper.js";
+import ScalaEscaper from "./escapes/ScalaEscaper.js";
 import SmartyEscaper from "./escapes/SmartyEscaper.js";
 import PythonEscaper from "./escapes/PythonEscaper.js";
 import SwiftEscaper from "./escapes/SwiftEscaper.js";
@@ -53,6 +54,10 @@ const escaperCache = {};
  * <li>python-byte - escape for Python byte strings</li>
  * <li>python-multi - escape for Python multi-line strings</li>
  * <li>regexp - escape for regular expressions</li>
+ * <li>scala - escape for Scala regular strings</li>
+ * <li>scala-raw - escape for Scala raw strings</li>
+ * <li>scala-triple - escape for Scala triple-quoted strings</li>
+ * <li>scala-char - escape for Scala character literals</li>
  * <li>smarty - escape for Smarty templates (default, same as smarty-double)</li>
  * <li>smarty-double - escape for double-quoted Smarty strings</li>
  * <li>smarty-single - escape for single-quoted Smarty strings</li>
@@ -108,6 +113,13 @@ function escaperFactory(style) {
         case 'php-heredoc':
         case 'php-nowdoc':
             escaperCache[style] = new PHPEscaper(style);
+            break;
+
+        case 'scala':
+        case 'scala-raw':
+        case 'scala-triple':
+        case 'scala-char':
+            escaperCache[style] = new ScalaEscaper(style);
             break;
 
         case 'smarty':

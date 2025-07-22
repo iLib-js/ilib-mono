@@ -598,6 +598,182 @@ describe("test the Escaper class and its subclasses", () => {
         expect(escaper.getStyle()).toBe("uri");
     });
 
+    test("the scala escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        expect(escaper.escape("fo\"o'b\\aㅽr𝄞")).toBe("fo\\\"o\\'b\\\\a\\u317Dr\\uD834\\uDD1E");
+    });
+
+    test("the scala unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        expect(escaper.unescape("fo\\\"o\\'b\\\\a\\u317dr\\uD834\\uDD1E")).toBe("fo\"o'b\\aㅽr𝄞");
+    });
+
+    test("the scala raw escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala-raw");
+        // raw strings don't escape backslashes or quotes, but do escape Unicode
+        expect(escaper.escape("fo\"o'b\\n\u317D")).toBe("fo\"o'b\\n\u317D");
+    });
+
+    test("the scala raw unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala-raw");
+        expect(escaper.unescape("fo\"o'b\\n\u317D")).toBe("fo\"o'b\\n\u317D");
+    });
+
+    test("the scala triple escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala-triple");
+        // triple-quoted strings don't escape Unicode but do escape quotes and backslashes
+        expect(escaper.escape("fo\"o'b\\n\u317D")).toBe("fo\\\"o\\'b\\\\n\u317D");
+    });
+
+    test("the scala triple unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala-triple");
+        expect(escaper.unescape("fo\\\"o\\'b\\\\n\u317D")).toBe("fo\"o'b\n\u317D");
+    });
+
+    test("the scala char escape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala-char");
+        // character literals only escape single quotes and backslashes, plus Unicode
+        expect(escaper.escape("'\\aㅽ")).toBe("\\'\\\\a\\u317D");
+    });
+
+    test("the scala char unescape works properly", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala-char");
+        expect(escaper.unescape("\\'\\\\a\\u317d")).toBe("'\\aㅽ");
+    });
+
+    test("the scala escape handles all standard escape sequences", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        // Test all standard Scala escape sequences: \b \f \n \r \t
+        const input = "backspace\bformfeed\fnewline\nreturn\r\ttab";
+        const expected = "backspace\\bformfeed\\fnewline\\nreturn\\r\\ttab";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the scala unescape handles all standard escape sequences", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        // Test unescaping all standard Scala escape sequences
+        const input = "backspace\\bformfeed\\fnewline\\nreturn\\r\\ttab";
+        const expected = "backspace\bformfeed\fnewline\nreturn\r\ttab";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the scala escape handles quotes and backslashes", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        const input = "single ' and double \" quotes with backslash \\";
+        const expected = "single \\' and double \\\" quotes with backslash \\\\";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the scala unescape handles quotes and backslashes", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        const input = "single \\' and double \\\" quotes with backslash \\\\";
+        const expected = "single ' and double \" quotes with backslash \\";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the scala escape handles mixed content with Unicode", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        const input = "Hello 'world' with \"quotes\" and \n\t\r\b\f escapes plus ㅽ𝄞";
+        const expected = "Hello \\'world\\' with \\\"quotes\\\" and \\n\\t\\r\\b\\f escapes plus \\u317D\\uD834\\uDD1E";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the scala unescape handles mixed content with Unicode", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        const input = "Hello \\'world\\' with \\\"quotes\\\" and \\n\\t\\r\\b\\f escapes plus \\u317D\\uD834\\uDD1E";
+        const expected = "Hello 'world' with \"quotes\" and \n\t\r\b\f escapes plus ㅽ𝄞";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
+    test("the scala escape handles empty string", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        expect(escaper.escape("")).toBe("");
+    });
+
+    test("the scala unescape handles empty string", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        expect(escaper.unescape("")).toBe("");
+    });
+
+    test("the scala escape handles undefined input", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        expect(escaper.escape()).toBe("");
+    });
+
+    test("the scala unescape handles undefined input", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        expect(escaper.unescape()).toBe("");
+    });
+
+    test("the scala escape handles null input", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        expect(escaper.escape(null)).toBe("");
+    });
+
+    test("the scala unescape handles null input", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala");
+        expect(escaper.unescape(null)).toBe("");
+    });
+
+    test("the scala char escape handles all character literal escapes", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala-char");
+        // Character literals support: \b \f \n \r \t and Unicode
+        const input = "'\b\f\n\r\tㅽ";
+        const expected = "\\'\\b\\f\\n\\r\\t\\u317D";
+        expect(escaper.escape(input)).toBe(expected);
+    });
+
+    test("the scala char unescape handles all character literal escapes", () => {
+        expect.assertions(1);
+
+        const escaper = escaperFactory("scala-char");
+        const input = "\\'\\b\\f\\n\\r\\t\\u317D";
+        const expected = "'\b\f\n\r\tㅽ";
+        expect(escaper.unescape(input)).toBe(expected);
+    });
+
     test.each([
         { style: "csharp", str: "This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\0\\a\\b\\e\\f\\n\\r\\t\\v \\u317D \\U0001D11E" },
         { style: "csharp-raw", str: "This string uses\nall the escapes! \'single\' \"double\" \\ \x00\x07\x08\x1B\f\n\r\t\v \\u317D \\U0001D11E" },
@@ -621,6 +797,10 @@ describe("test the Escaper class and its subclasses", () => {
         { style: "smarty-single", str: "abc \\'d\\' \\\\ \"e\" $\n\r\t\e\f\v\x54\\\\u{317d} ㅽr𝄞" },
         { style: "swift", str: "This string uses all the escapes! \\\'single\\\' \\\"double\\\" \\\\ \\n\\r\\t\\0 \\u{1D11E}" },
         { style: "swift-multi", str: "This string uses all the escapes!\n\'single\' \"double\" \\\\ \n\r\t\x00 \u317D \u{1D11E}" },
+        { style: "scala", str: "Hello \\'world\\' with \\\"quotes\\\" and \\n\\t\\r\\b\\f escapes plus \\u317D\\uD834\\uDD1E" },
+        { style: "scala-raw", str: "fo\"o'b\\n\u317D" },
+        { style: "scala-triple", str: "fo\\\"o\\'b\\\\n\u317D" },
+        { style: "scala-char", str: "\\'\\\\a\\u317D" },
         { style: "swift-extended", str: "This string uses all the escapes! \'single\' \"double\" \\\\ \n\r\t\x00 \u{1D11E}" },
         { style: "uri", str: "https://github.com/ilib-js/ilib-mono?q=foo%20bar&%E3%85%BD=%F0%9D%84%9E&%C3%BC=ue#%C5%82" },
         { style: "xml", str: "This is &lt;b&gt;bold&lt;/b&gt; &amp; uses &apos;single&apos; and &quot;double&quot; quotes" },
