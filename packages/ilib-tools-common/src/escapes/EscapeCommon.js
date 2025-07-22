@@ -199,6 +199,7 @@ export const escapeRegexes = {
             // none
         }
     },
+    // from https://en.cppreference.com/w/cpp/language/string_literal
     "cpp": {
         "unescape": {
             "^\\\\\\\\": "\\",               // unescape backslashes
@@ -659,6 +660,7 @@ export const escapeRegexes = {
             "\x07": "\\a"
          }
     },
+    // from https://docs.scala-lang.org/scala3/book/strings.html
     "scala": {
         "unescape": {
             "^\\\\\\\\": "\\",               // unescape backslashes
