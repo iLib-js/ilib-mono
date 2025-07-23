@@ -1,7 +1,7 @@
 /*
  * ResourcePlural.test.js - test the resource plural object.
  *
- * Copyright © 2016-2017, 2023 2019-2020, 2023 2023 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2020, 2023 HealthTap, Inc. 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -239,6 +239,86 @@ describe("resourceplural", function() {
         expect(rp.getTarget("two")).toBe("Dies ist doppelt");
         expect(rp.getTarget("few")).toBe("Dies ist der wenige Fall");
         expect(rp.getTarget("many")).toBe("Dies ist der viele Fall");
+    });
+
+    test("ResourcePluralGetMetadata", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            },
+            metadata:  {
+                "test": "test-abcd"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getMetadata()).toStrictEqual({"test": "test-abcd"});
+    });
+
+    test("ResourcePluralGetMetadata2", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getMetadata()).toBeFalsy();
+    });
+
+    test("ResourcePluralSetMetadata", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            },
+            metadata:{}
+        });
+        expect(rp).toBeTruthy();
+        rp.setMetadata({"test": "test-xyz"});
+        expect(rp.getMetadata()).toStrictEqual({"test": "test-xyz"});
     });
 
     test("ResourcePluralGetNonExistent", function() {

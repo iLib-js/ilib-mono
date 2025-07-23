@@ -425,7 +425,7 @@ describe("webOSxliff", function() {
         expect(result[0].getTarget()).toBe("foobarfoo");
     });
     test("webOSXliffDeserialize_metadata", function() {
-        expect.assertions(8);
+        expect.assertions(9);
 
         var x = new webOSXliff({
             metadata: {"device-type": "SoundBar"}
@@ -441,7 +441,7 @@ describe("webOSxliff", function() {
         '          <mda:metadata>\n' +
         '            <mda:metaGroup category="device-type">\n' +
         '              <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
-        '              <mda:meta type="Boxc">"Box" 이용이 불가능합니다</mda:meta>\n' +
+        '              <mda:meta type="Box">"Box" 이용이 불가능합니다</mda:meta>\n' +
         '              <mda:meta type="SoundBar">"SoundBar" 이용이 불가능합니다</mda:meta>\n' +
         '            </mda:metaGroup>\n' +
         '          </mda:metadata>\n' +
@@ -460,11 +460,34 @@ describe("webOSxliff", function() {
         expect(result).toBeTruthy();
         expect(result.length).toBe(1);
 
+        var expectedMetadata = {
+                "mda:metaGroup": {
+                    "mda:meta": [
+                        {
+                            "_attributes" : {"type": "Monitor"},
+                            "_text": "\"Monitor\" 이용이 불가능합니다"
+                        },
+                        {
+                            "_attributes" : {"type": "Box"},
+                            "_text": "\"Box\" 이용이 불가능합니다"
+                        },
+                        {
+                            "_attributes" : {"type": "SoundBar"},
+                            "_text": "\"SoundBar\" 이용이 불가능합니다"
+                        }
+                    ],
+                    "_attributes": {
+                        "category": "device-type"
+                    }
+                }
+            }
+
         expect(result[0].getSource()).toBe("NOT AVAILABLE");
         expect(result[0].getSourceLocale()).toBe("en-KR");
         expect(result[0].getTargetLocale()).toBe("ko-KR");
         expect(result[0].getKey()).toBe("NOT AVAILABLE");
         expect(result[0].getTarget()).toBe("이용이 불가능합니다");
+        expect(result[0].getMetadata()).toStrictEqual(expectedMetadata);
     });
     test("webOSXliffDeserialize_metadata_undefined", function() {
         expect.assertions(8);
@@ -480,7 +503,7 @@ describe("webOSxliff", function() {
         '          <mda:metadata>\n' +
         '            <mda:metaGroup category="device-type">\n' +
         '              <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
-        '              <mda:meta type="Boxc">"Box" 이용이 불가능합니다</mda:meta>\n' +
+        '              <mda:meta type="Box">"Box" 이용이 불가능합니다</mda:meta>\n' +
         '              <mda:meta type="SoundBar">"SoundBar" 이용이 불가능합니다</mda:meta>\n' +
         '            </mda:metaGroup>\n' +
         '          </mda:metadata>\n' +
