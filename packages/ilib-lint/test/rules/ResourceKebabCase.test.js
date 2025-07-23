@@ -22,6 +22,8 @@ import {ResourceString} from "ilib-tools-common";
 
 import ResourceKebabCase from "../../src/rules/ResourceKebabCase.js";
 import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
+import RuleManager from "../../src/RuleManager.js";
+import BuiltinPlugin from "../../src/plugins/BuiltinPlugin.js";
 
 describe("ResourceKebabCase", () => {
     test("creates ResourceKebabCase rule instance", () => {
@@ -40,7 +42,7 @@ describe("ResourceKebabCase", () => {
         {},
         () => {},
     ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
-        const rule = new ResourceKebabCase({param: {except: Array.isArray(invalidExcept) ? invalidExcept : undefined}});
+        const rule = new ResourceKebabCase({except: Array.isArray(invalidExcept) ? invalidExcept : undefined});
 
         const resource = createTestResourceString({source: "kebab-case-exception", target: "some-kebab-case-target"});
         const result = rule.matchString({
@@ -92,7 +94,7 @@ describe("ResourceKebabCase", () => {
     });
 
     test("returns `undefined` if source string is an exception", () => {
-        const options = {param: {except: ["kebab-case-exception"]}}
+        const options = {except: ["kebab-case-exception"]}
         const rule = new ResourceKebabCase(options);
         const resource = createTestResourceString({source: "kebab-case-exception", target: "some-target"});
 
@@ -104,6 +106,54 @@ describe("ResourceKebabCase", () => {
         });
 
         expect(result).toBeUndefined();
+    });
+
+    test("returns `undefined` if source string is an exception when instantiated via RuleManager", () => {
+        // This test verifies that the exception functionality works correctly when the rule is instantiated
+        // through the RuleManager.get() method, which is the actual code path used in the system
+        const ruleManager = new RuleManager();
+        const builtinPlugin = new BuiltinPlugin();
+        ruleManager.add(builtinPlugin.getRules());
+
+        const rule = ruleManager.get("resource-kebab-case", {except: ["kebab-case-exception"]});
+
+        expect(rule).toBeInstanceOf(ResourceKebabCase);
+
+        const resource = createTestResourceString({source: "kebab-case-exception", target: "some-target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeUndefined();
+    });
+
+    test("returns error when source string is NOT an exception (showing exception functionality works)", () => {
+        // This test verifies that the exception functionality is actually working by showing that
+        // without the except parameter, the same test case would produce an error
+        const ruleManager = new RuleManager();
+        const builtinPlugin = new BuiltinPlugin();
+        ruleManager.add(builtinPlugin.getRules());
+
+        const rule = ruleManager.get("resource-kebab-case", {}); // No except parameter
+
+        expect(rule).toBeInstanceOf(ResourceKebabCase);
+
+        const resource = createTestResourceString({source: "kebab-case-exception", target: "some-target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        expect(result.rule).toBeInstanceOf(ResourceKebabCase);
+        expect(result.severity).toEqual("error");
     });
 
     test("returns `undefined` if source string is NOT in kebab case", () => {

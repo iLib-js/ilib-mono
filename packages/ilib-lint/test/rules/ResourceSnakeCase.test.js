@@ -21,6 +21,9 @@ import {Result, Fix} from "ilib-lint-common";
 import {ResourceString} from "ilib-tools-common";
 
 import ResourceSnakeCase from "../../src/rules/ResourceSnakeCase.js";
+import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
+import RuleManager from "../../src/RuleManager.js";
+import BuiltinPlugin from "../../src/plugins/BuiltinPlugin.js";
 
 describe("ResourceSnakeCase", () => {
     test("creates ResourceSnakeCase rule instance", () => {
@@ -39,7 +42,7 @@ describe("ResourceSnakeCase", () => {
         {},
         () => {},
     ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
-        const rule = new ResourceSnakeCase({param: {except: invalidExcept}});
+        const rule = new ResourceSnakeCase({except: invalidExcept});
 
         const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
         const result = rule.matchString({
@@ -91,7 +94,7 @@ describe("ResourceSnakeCase", () => {
     });
 
     test("returns `undefined` if source string is an exception", () => {
-        const options = {param: {except: ["snake_case_exception"]}}
+        const options = {except: ["snake_case_exception"]}
         const rule = new ResourceSnakeCase(options);
         const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
 
@@ -103,6 +106,54 @@ describe("ResourceSnakeCase", () => {
         });
 
         expect(result).toBeUndefined();
+    });
+
+    test("returns `undefined` if source string is an exception when instantiated via RuleManager", () => {
+        // This test verifies that the exception functionality works correctly when the rule is instantiated
+        // through the RuleManager.get() method, which is the actual code path used in the system
+        const ruleManager = new RuleManager();
+        const builtinPlugin = new BuiltinPlugin();
+        ruleManager.add(builtinPlugin.getRules());
+
+        const rule = ruleManager.get("resource-snake-case", {except: ["snake_case_exception"]});
+
+        expect(rule).toBeInstanceOf(ResourceSnakeCase);
+
+        const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeUndefined();
+    });
+
+    test("returns error when source string is NOT an exception (showing exception functionality works)", () => {
+        // This test verifies that the exception functionality is actually working by showing that
+        // without the except parameter, the same test case would produce an error
+        const ruleManager = new RuleManager();
+        const builtinPlugin = new BuiltinPlugin();
+        ruleManager.add(builtinPlugin.getRules());
+
+        const rule = ruleManager.get("resource-snake-case", {}); // No except parameter
+
+        expect(rule).toBeInstanceOf(ResourceSnakeCase);
+
+        const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        expect(result.rule).toBeInstanceOf(ResourceSnakeCase);
+        expect(result.severity).toEqual("error");
     });
 
     test("returns `undefined` if source string is NOT in snake case", () => {

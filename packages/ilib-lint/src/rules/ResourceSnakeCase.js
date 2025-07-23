@@ -32,20 +32,19 @@ class ResourceSnakeCase extends ResourceRule {
     /**
      * Create a ResourceSnakeCase rule instance.
      * @param {object} options
-     * @param {object} [options.param]
-     * @param {string[]} [options.param.except] An array of strings to exclude from the rule.
+     * @param {string[]} [options.except] An array of strings to exclude from the rule.
      */
     constructor(options) {
         super(options);
 
         this.name = "resource-snake-case";
         this.description = "Ensure that when source strings contain only snake case and no whitespace, then the targets are the same";
-        this.link = "https://gihub.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-snake-case.md",
+        this.link = "https://gihub.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-snake-case.md";
         this.regexps = [
             "^\\s*[a-zA-Z0-9]*(_[a-zA-Z0-9]+)+\\s*$",
             "^\\s*[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*_\\s*$"
-        ]
-        this.exceptions = Array.isArray(options?.param?.except) ? options.param.except : [];
+        ];
+        this.exceptions = Array.isArray(options?.except) ? options.except : [];
     }
 
     /**
