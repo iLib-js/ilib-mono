@@ -101,8 +101,10 @@ class Resource {
      * property, which is the path to the source file that this resource was extracted from. This property
      * is only used for resources from resource files, such as Android string.xml files or xliff files.
      * Otherwise, the property is undefined.
-     * @param {Object} [props.metadata] the metadata of the resource
-     */
+     * @param {Object|undefined} [props.metadata] the metadata of the resource or undefined for no metadata.
+     * This can be any arbitrary object of any depth, as long as the values of properties are all static.
+     * It is up to the parsers to parse this and serializers to serialize this appropriately.
+    */
     constructor(props) {
         if (this.constructor === Resource) {
             throw new Error("Cannot instantiate abstract class Resource!");
@@ -220,7 +222,7 @@ class Resource {
     /**
     * Get the metadata of this resource.
     *
-    * @returns {Object} the metadata
+    * @returns {Object|undefined} the metadata
     */
     getMetadata() {
         return this.metadata;
@@ -228,7 +230,7 @@ class Resource {
 
     /**
     * Set the metadata of this resource.
-    * @param {Object} data the metadata of this resource.
+    * @param {Object|undefined} data the metadata of this resource.
     */
     setMetadata(data) {
         this.metadata = data;
