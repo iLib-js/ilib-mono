@@ -93,7 +93,7 @@ GenerateMode.prototype.init = function() {
             var intermediateFile = getIntermediateFile({
                 sourceLocale: this.sourceLocale,
                 path: pathName,
-                style: this.settings?.xliffStyle || "standard",
+                style: (this.settings && this.settings.xliffStyle) || "standard"
             });
             if (fs.existsSync(pathName)) {
                 this.ts.addSet(intermediateFile.read());

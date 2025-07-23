@@ -237,6 +237,50 @@ describe("testResourceString", () => {
         expect(rs.size()).toBe(1); // should always be 1
     });
 
+    test("ResourceStringGetMetadata", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+            metadata:  {
+                "test": "test-abcd"
+            }
+        });
+        expect(rs).toBeTruthy();
+        expect(rs.getMetadata()).toStrictEqual({"test": "test-abcd"});
+    });
+
+    test("ResourceStringGetMetadata2", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+        });
+        expect(rs).toBeTruthy();
+        expect(rs.getMetadata()).toBeFalsy();
+    });
+
+    test("ResourceStringSetMetadata", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+            metadata:{}
+        });
+        expect(rs).toBeTruthy();
+        rs.setMetadata({"test": "test-xyz"});
+        expect(rs.getMetadata()).toStrictEqual({"test": "test-xyz"});
+    });
+
     test("ResourceStringGetSourceEmpty", () => {
         expect.assertions(2);
 

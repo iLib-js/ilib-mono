@@ -1,7 +1,7 @@
 /*
  * Resource.js - super class that represents an a resource
  *
- * Copyright © 2016-2017, 2019 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019 HealthTap, Inc. 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,7 @@ var Resource = function(props) {
         this.localize = typeof(props.localize) === "boolean" ? props.localize : true; // some files have resources we do not want to localize/translate
         this.flavor = props.flavor;
         this.index = props.index;
+        this.metadata = props.metadata || undefined;
     }
 
     this.instances = [];
@@ -275,6 +276,24 @@ Resource.prototype.getLocalize = function() {
  */
 Resource.prototype.getFlavor = function() {
     return this.flavor;
+};
+
+/**
+ * Get the metadata of this resource.
+ *
+ * @returns {Object} the metadata
+ */
+Resource.prototype.getMetadata = function() {
+    return this.metadata;
+};
+
+/**
+ * Set the metadata of this resource.
+ *
+ * @param {Object} data the metadata of this resource.
+ */
+Resource.prototype.setMetadata = function(data) {
+    this.metadata = data;
 };
 
 /**

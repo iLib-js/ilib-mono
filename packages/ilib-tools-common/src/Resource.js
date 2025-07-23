@@ -101,6 +101,7 @@ class Resource {
      * property, which is the path to the source file that this resource was extracted from. This property
      * is only used for resources from resource files, such as Android string.xml files or xliff files.
      * Otherwise, the property is undefined.
+     * @param {Object} [props.metadata] the metadata of the resource
      */
     constructor(props) {
         if (this.constructor === Resource) {
@@ -130,6 +131,7 @@ class Resource {
             this.index = props.index;
             this.location = props.location; // optional location of the transunits in the xml file
             this.resfile = props.resfile; // optional resource file path
+            this.metadata = props.metadata || undefined;
         }
 
         this.instances = [];
@@ -213,6 +215,23 @@ class Resource {
      */
     getContext() {
         return this.context;
+    }
+
+    /**
+    * Get the metadata of this resource.
+    *
+    * @returns {Object} the metadata
+    */
+    getMetadata() {
+        return this.metadata;
+    }
+
+    /**
+    * Set the metadata of this resource.
+    * @param {Object} data the metadata of this resource.
+    */
+    setMetadata(data) {
+        this.metadata = data;
     }
 
     /**

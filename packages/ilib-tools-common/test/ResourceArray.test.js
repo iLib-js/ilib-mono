@@ -227,6 +227,50 @@ describe("testResourceArray", () => {
         expect(ra.getSource()).toStrictEqual(["This is a test", "This is also a test", "This is not"]);
     });
 
+    test("ResourceArrayGetMetadata", function() {
+        expect.assertions(2);
+
+        var ra = new ResourceArray({
+            key: "foo",
+            sourceArray: ["This is a test", "This is also a test", "This is not"],
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+            metadata:  {
+                "test": "test-abcd"
+            }
+        });
+        expect(ra).toBeTruthy();
+        expect(ra.getMetadata()).toStrictEqual({"test": "test-abcd"});
+    });
+
+    test("ResourceArrayGetMetadata2", function() {
+        expect.assertions(2);
+
+        var ra = new ResourceArray({
+            key: "foo",
+            sourceArray: ["This is a test", "This is also a test", "This is not"],
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE"
+        });
+        expect(ra).toBeTruthy();
+        expect(ra.getMetadata()).toBeFalsy();
+    });
+
+    test("ResourceArraySetMetadata", function() {
+        expect.assertions(2);
+
+        var ra = new ResourceArray({
+            key: "foo",
+            sourceArray: ["This is a test", "This is also a test", "This is not"],
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+            metadata:{}
+        });
+        expect(ra).toBeTruthy();
+        ra.setMetadata({"test": "test-xyz"});
+        expect(ra.getMetadata()).toStrictEqual({"test": "test-xyz"});
+    });
+
     test("ResourceArrayGetItemArrayEmpty", () => {
         expect.assertions(2);
 

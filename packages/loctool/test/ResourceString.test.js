@@ -1,7 +1,7 @@
 /*
  * ResourceString.test.js - test the resource string object.
  *
- * Copyright © 2016-2017, 2023 2019-2020, 2023 2023 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2020, 2023 HealthTap, Inc. 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

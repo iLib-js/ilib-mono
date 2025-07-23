@@ -44,7 +44,6 @@ var ResourceString = function(props) {
     if (props) {
         this.source = typeof(props.source) === 'string' ? props.source : props.text;
         this.target = props.target;
-        this.metadata = props.metadata || undefined;
     }
 
     this.origin = this.origin || "source";
@@ -93,26 +92,6 @@ ResourceString.prototype.setSource = function(str) {
 ResourceString.prototype.getTarget = function() {
     return this.target;
 };
-
-
-/**
- * Get the metadata of this resource.
- *
- * @returns {Object} the metadata
- */
-ResourceString.prototype.getMetadata = function() {
-    return this.metadata;
-};
-
-/**
- * Set the metadata of this resource.
- *
- * @param {Object} data the metadata of this resource.
- */
-ResourceString.prototype.setMetadata = function(data) {
-    this.metadata = data;
-};
-
 
 /**
  * Set the target string of this resource.
