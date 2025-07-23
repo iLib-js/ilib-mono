@@ -222,7 +222,7 @@ class Resource {
     /**
     * Get the metadata of this resource.
     *
-    * @returns {Object|undefined} the metadata
+    * @returns {Object|undefined} the metadata of this resource.
     */
     getMetadata() {
         return this.metadata;

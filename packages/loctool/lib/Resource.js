@@ -281,7 +281,7 @@ Resource.prototype.getFlavor = function() {
 /**
  * Get the metadata of this resource.
  *
- * @returns {Object|undefined} the metadata
+ * @returns {Object|undefined} the metadata of this resource.
  */
 Resource.prototype.getMetadata = function() {
     return this.metadata;
