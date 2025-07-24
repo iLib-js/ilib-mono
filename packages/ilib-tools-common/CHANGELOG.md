@@ -1,5 +1,11 @@
 # ilib-tools-common
 
+## 1.18.0
+
+### Minor Changes
+
+- 2f63633: - Add a `metadata` property to the `Resource` class to store any metadata that may exist on a per-Resource basis. It is up to parsers to recognize and parse the metadata appropriately and up to the serializers to serialize it properly again.
+
 ## 1.17.0
 
 ### Minor Changes

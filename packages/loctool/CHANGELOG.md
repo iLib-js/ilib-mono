@@ -1,5 +1,17 @@
 # loctool
 
+## 2.31.0
+
+### Minor Changes
+
+- 90814bf: - Add a `metadata` property to the `Resource` class to store any metadata that may exist on a per-Resource basis. It is up to parsers to recognize and parse the metadata appropriately and up to the serializers to serialize it properly again.
+  - Update to pass `style` property in `GenerateMode` to work with correct XliffFile class.
+
+### Patch Changes
+
+- Updated dependencies [2f63633]
+  - ilib-tools-common@1.18.0
+
 ## 2.30.0
 
 ### Minor Changes
