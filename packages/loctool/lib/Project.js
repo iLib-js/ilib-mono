@@ -29,7 +29,7 @@ var TranslationSet = require("./TranslationSet.js");
 var ResourceFactory = require("./ResourceFactory.js");
 var PseudoFactory = require("./PseudoFactory.js");
 var GenerateMode = require("./GenerateMode.js");
-var Xliff = require("./Xliff.js");
+var XliffFactory = require("./XliffFactory.js");
 var utils = require("./utils.js");
 var conversions = require("./ResourceConvert.js");
 var pluralCategories = require("../db/pluralCategories.json");
@@ -756,7 +756,7 @@ Project.prototype.close = function(cb) {
             if (this.fileTypes[i].modern && this.fileTypes[i].modern.size() > 0) {
                 var modernPath = path.join(dir, base + "-modern.xliff");
                 logger.info("Writing out the modern translation strings to " + modernPath);
-                var modernXliff = new Xliff({
+                var modernXliff = XliffFactory({
                     sourceLocale: this.sourceLocale,
                     pathName: modernPath,
                     version: this.settings.xliffVersion,

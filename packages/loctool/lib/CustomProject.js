@@ -1,7 +1,7 @@
 /*
  * CustomProject.js - a customizable project
  *
- * Copyright © 2019-2022, JEDLSoft
+ * Copyright © 2019-2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ var AndroidLayoutFileType = require("./AndroidLayoutFileType.js");
 var AndroidResourceFileType = require("./AndroidResourceFileType.js");
 var JavaFileType = require("./JavaFileType.js");
 var XliffFileType = require("./XliffFileType.js");
-var Xliff = require("./Xliff.js");
+var XliffFactory = require("./XliffFactory.js");
 var log4js = require("log4js");
 
 var logger = log4js.getLogger("loctool.lib.CustomProject");
@@ -137,7 +137,7 @@ CustomProject.prototype.getAPI = function() {
             return PseudoFactory.isPseudoLocale(locale, this);
         },
         newXliff: function(options) {
-            return new Xliff(options);
+            return XliffFactory(options);
         },
         getPseudoBundle: function(locale, filetype, project) {
             var type = "text";
