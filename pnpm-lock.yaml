@@ -40,9 +40,6 @@ importers:
       ilib-istring:
         specifier: workspace:^
         version: link:../ilib-istring
-      ilib-loader:
-        specifier: workspace:^
-        version: link:../ilib-loader
       ilib-locale:
         specifier: workspace:^
         version: link:../ilib-locale
