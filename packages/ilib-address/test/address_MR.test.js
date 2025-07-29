@@ -1,0 +1,190 @@
+/*
+ * address_MR.test.js - Mauritania address parsing and formatting tests for ilib-address
+ *
+ * Copyright © 2013-2015, 2017, 2022, 2025 JEDLSoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { LocaleData } from 'ilib-localedata';
+import { getPlatform } from 'ilib-env';
+
+import Address from '../src/Address.js';
+import AddressFmt from '../src/AddressFmt.js';
+
+let setUpPerformed = false;
+
+describe('address_MR', () => {
+    beforeAll(async () => {
+        if (getPlatform() === "browser" && !setUpPerformed) {
+            setUpPerformed = true;
+            await LocaleData.ensureLocale("ar-MR");
+        }
+    });
+
+    describe('Address parsing', () => {
+        const testCases = [
+            {
+                name: 'should parse normal Mauritania address with all components',
+                address: "السيد حامد ولد أحمد, الغزالي ١٢,نواكشوط, موريتانيا",
+                locale: 'ar-MR',
+                expected: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "نواكشوط",
+                    region: undefined,
+                    postalCode: undefined,
+                    country: "موريتانيا",
+                    countryCode: "MR"
+                }
+            },
+            {
+                name: 'should parse Mauritania address without postal code',
+                address: "السيد حامد ولد أحمد, الغزالي ١٢,نواكشوط, موريتانيا",
+                locale: 'ar-MR',
+                expected: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "نواكشوط",
+                    region: undefined,
+                    postalCode: undefined,
+                    country: "موريتانيا",
+                    countryCode: "MR"
+                }
+            },
+            {
+                name: 'should parse Mauritania address with multiple lines',
+                address: "السيد حامد ولد أحمد, الغزالي ١٢\nطرابلس\n موريتانيا",
+                locale: 'ar-MR',
+                expected: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "طرابلس",
+                    region: undefined,
+                    postalCode: undefined,
+                    country: "موريتانيا",
+                    countryCode: "MR"
+                }
+            },
+            {
+                name: 'should parse Mauritania address in single line format',
+                address: "السيد حامد ولد أحمد, الغزالي ١٢,طرابلس, موريتانيا",
+                locale: 'ar-MR',
+                expected: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "طرابلس",
+                    region: undefined,
+                    postalCode: undefined,
+                    country: "موريتانيا",
+                    countryCode: "MR"
+                }
+            },
+            {
+                name: 'should parse Mauritania address with superfluous whitespace',
+                address: "السيد حامد ولد أحمد, الغزالي ١٢   \n\t\nطرابلس\t\n\n  موريتانيا  \n  \t\t\t",
+                locale: 'ar-MR',
+                expected: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "طرابلس",
+                    region: undefined,
+                    postalCode: undefined,
+                    country: "موريتانيا",
+                    countryCode: "MR"
+                }
+            },
+            {
+                name: 'should parse Mauritania address without delimiters',
+                address: "السيد حامد ولد أحمد الغزالي ١٢ نواكشوط موريتانيا",
+                locale: 'ar-MR',
+                expected: {
+                    streetAddress: "السيد حامد ولد أحمد الغزالي ١٢",
+                    locality: "نواكشوط",
+                    region: undefined,
+                    postalCode: undefined,
+                    country: "موريتانيا",
+                    countryCode: "MR"
+                }
+            },
+            {
+                name: 'should parse Mauritania address with special characters',
+                address: "السيد حامد ولد أحمد, الغزالي ١٢,طرابلس, موريتانيا",
+                locale: 'ar-MR',
+                expected: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "طرابلس",
+                    region: undefined,
+                    postalCode: undefined,
+                    country: "موريتانيا",
+                    countryCode: "MR"
+                }
+            },
+            {
+                name: 'should parse Mauritania address from US locale',
+                address: "السيد حامد ولد أحمد, الغزالي ١٢,طرابلس, Mauritania ",
+                locale: 'en-US',
+                expected: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "طرابلس",
+                    region: undefined,
+                    postalCode: undefined,
+                    country: "Mauritania",
+                    countryCode: "MR"
+                }
+            }
+        ];
+
+        test.each(testCases)('$name', ({ address, locale, expected }) => {
+            const parsedAddress = new Address(address, { locale });
+            
+            expect(parsedAddress).toBeDefined();
+            expect(parsedAddress.streetAddress).toBe(expected.streetAddress);
+            expect(parsedAddress.locality).toBe(expected.locality);
+            expect(parsedAddress.region).toBe(expected.region);
+            expect(parsedAddress.postalCode).toBe(expected.postalCode);
+            expect(parsedAddress.country).toBe(expected.country);
+            expect(parsedAddress.countryCode).toBe(expected.countryCode);
+        });
+    });
+
+    describe('Address formatting', () => {
+        const testCases = [
+            {
+                name: 'should format Mauritania address in Arabic locale',
+                address: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "طرابلس",
+                    country: "موريتانيا",
+                    countryCode: "MR"
+                },
+                locale: 'ar-MR',
+                expected: "السيد حامد ولد أحمد, الغزالي ١٢\nطرابلس\nموريتانيا"
+            },
+            {
+                name: 'should format Mauritania address in US locale',
+                address: {
+                    streetAddress: "السيد حامد ولد أحمد, الغزالي ١٢",
+                    locality: "طرابلس",
+                    country: "Mauritania",
+                    countryCode: "MR"
+                },
+                locale: 'en-US',
+                expected: "السيد حامد ولد أحمد, الغزالي ١٢\nطرابلس\nMauritania"
+            }
+        ];
+
+        test.each(testCases)('$name', ({ address, locale, expected }) => {
+            const parsedAddress = new Address(address, { locale });
+            const formatter = new AddressFmt({ locale });
+            
+            expect(formatter.format(parsedAddress)).toBe(expected);
+        });
+    });
+}); 
