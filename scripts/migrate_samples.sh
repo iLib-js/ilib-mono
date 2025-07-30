@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Given that ilib-loctool-samples is copied into the monorepo
-# (as subtree under packages/ilib-loctool-samplesusing scripts/add_repo.sh ilib-loctool-samples)
+# (as subtree under packages/ilib-loctool-samples using scripts/add_repo.sh ilib-loctool-samples)
 # this script will take every sample project (packages/ilib-loctool-samples/<sampleName>) and based on dependencies/devDependencies
 # specified in its package.json it will copy the sample into the corresponding package (ilib-loctool-<plugin>/samples/<sampleName>)
 
