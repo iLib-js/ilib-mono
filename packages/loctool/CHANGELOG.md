@@ -1,5 +1,13 @@
 # loctool
 
+## 2.31.1
+
+### Patch Changes
+
+- edc242f: Fixed a case where XliffFactory was not being used.
+- Updated dependencies [32130cf]
+  - ilib-tools-common@1.19.0
+
 ## 2.31.0
 
 ### Minor Changes
