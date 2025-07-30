@@ -10,12 +10,14 @@ Below is a list of aspect that need to be accounted for when migrating existing 
     -   The package should be placed in `packages/<package-name>` directory (handled by subtree script)
     -   Build artifacts should be placed in `lib` directory
     -   All docs should be placed in `docs` directory - this includes the generated HTML pages and their assets (we plan to switch to a cleaner solution soon)
+    -   Sample projects should be placed in `samples/<sample-name>` directories
 -   **Dependencies**
     -   **Internal Dependencies**: If the package depends on other packages that are in the monorepo already, update them to use `workspace:^`; verify if any breaking changes were introduced between explicit dependency version and current workspace head and update migrated package accordingly
     -   **External Dependencies**: Ensure that all dependencies are included since pnpm uses [_isolated `node_modules`_](https://pnpm.io/motivation#creating-a-non-flat-node_modules-directory)
     -   **Dependents**: If the package is depended upon by other packages in the monorepo, update them to use `workspace:^` (see `scripts/link-workspace-packages.js`) and verify everything works as expected
     -   **Conditional Install**: Some of ilib packages utilized conditional install package in the prepare script to install Jest 26 when developing on older Node versions - this should be removed and Jest should be specified directly in devDependenciess
     -   **Workspace Dependency Conflicts**: In principle, pnpm should prevent issues with conflicting versions between workspace packages - unfortunately it's not perfect (see [pnpm issue #8863](https://github.com/pnpm/pnpm/issues/8863)); as of now, the only recommendation is to ensure that Jest should be installed in latest version common for all workspace packages
+    -   **Samples' dependencies**: Sample projects should have `workspace:^` devDependencies on the packages they are showcasing; for example, a sample project showcasing usage of `ilib-loctool-json` plugin should have `ilib-loctool-json` and `loctool` in its devDependencies
 -   **Scripts**:
     -   **Package manager**: Update all applicable scripts to use `pnpm` instead of `npm`
     -   **Multi scripts**: If the package uses `npm-run-all`, add option `--npm-path pnpm`; alternatively, you can switch to `pnpm`'s [built-in support](https://pnpm.io/cli/run#running-multiple-scripts) for running multiple scripts through regex like `pnpm run /test:/`
@@ -24,6 +26,8 @@ Below is a list of aspect that need to be accounted for when migrating existing 
     -   **CI**: Leftover CI configuration (like CircleCI) should be removed from the package directory after migration; CI is handled by the monorepo through GitHub Actions workflows common for the whole monorepo
     -   **Build**: If the package requires a build step, it should be added as `build` in its `package.json`; it should produce artifacts in `lib` directory which are ready for publishing; note that monorepo packages depend on each other so the build script (called automatically before tests) should produce complete ouptut as if the package was published to npm (so that it can be depended upon)
     -   **Test**: The package should define a `test` script that runs all tests; if using jest, make sure to invoke it with `node node_modules/jest/bin/jest.js` instead of the binary wrapper (to mitigate risk of incorrectly hoisted dependencies - see [pnpm issue #8863](https://github.com/pnpm/pnpm/issues/8863)); build script is called automatically before running tests, so remove it from the test script if it's already there; for now, all tests run in Node 20 with Chrome, we're planning to set up additional workflows for environment matrix testing soon
+    -   **E2E Test**: If the package has any E2E tests, the package should define a `test:e2e` script that runs them
+    -   **Sample Projects**: if any sample projects exist for a given package, they should be wrapped in dedicated E2E tests to verify that they are configured correctly and produce expected output; refer to related packages for examples on how to set them up (e.g. [`ilib-loctool-json`](../packages/ilib-loctool-json/test-e2e/samples.e2e.test.js))
     -   **Coverage**: The package should be configured to report code coverage in PR comments. To enable this:
         1. Create a `jest.config.cjs` file that extends the root configuration:
            ```javascript
@@ -87,18 +91,19 @@ Below is a list of aspect that need to be accounted for when migrating existing 
 9. Ensure no test script runs `build`
 10. Replace `jest` binstub calls in scripts to `node node_modules/jest/bin/jest.js`
 11. Run tests for all affected packages `pnpm test` (from monorepo root) and keep fixing until it works
-12. Update `jest` (and related) to latest `pnpm --filter '[origin/main]' up --latest '*jest*'` and rerun tests
-13. Ensure scripts generate files to expected directories (`build` to `lib`, `doc` to `docs`)
-14. Remove IDE config `rm -r packages/{package1,package2}/{.project,.vscode,.idea}`; optionally carry over useful settings to package scripts (e.g. debug run script) in IDE-agnostic way
-15. Remove .gitignores from each package `rm packages/{package1,package2}/**/.gitignore`, re-run `build` and `test`, then `git status` and optionally add untracked files to the monorepo root `.gitignore`
-16. Ensure `files` in `package.json` lists only files that should be included in the published package (remove `docs`), verify nothing's missing from package bundles `scripts/compare-package-contents.sh`
-17. Update changelogs to monorepo format; create test changeset `pnpm changeset` and test automated changelog updates with `pnpm changeset version` then revert both
-18. Update links in package.json to point to the monorepo
-19. Update links in documentation and source code to point to the monorepo
-20. Update copyright year in doc generation config and modified source code files
-21. Ensure package is licensed under Apache-2.0, check license file in package root and bundle config, check headers in source files
-22. Create changeset `pnpm changeset` and patchbump migrated packages with changelog message about migration
-23. Regenerate lockfile `pnpm install` and docs `pnpm doc`
+12. Migrate sample projects (if any) to `packages/<package-name>/samples/<sample-name>`, update sample dependencies to `workspace:^` and create E2E tests for them
+13. Update `jest` (and related) to latest `pnpm --filter '[origin/main]' up --latest '*jest*'` and rerun tests
+14. Ensure scripts generate files to expected directories (`build` to `lib`, `doc` to `docs`)
+15. Remove IDE config `rm -r packages/{package1,package2}/{.project,.vscode,.idea}`; optionally carry over useful settings to package scripts (e.g. debug run script) in IDE-agnostic way
+16. Remove .gitignores from each package `rm packages/{package1,package2}/**/.gitignore`, re-run `build` and `test`, then `git status` and optionally add untracked files to the monorepo root `.gitignore`
+17. Ensure `files` in `package.json` lists only files that should be included in the published package (remove `docs`), verify nothing's missing from package bundles `scripts/compare-package-contents.sh`
+18. Update changelogs to monorepo format; create test changeset `pnpm changeset` and test automated changelog updates with `pnpm changeset version` then revert both
+19. Update links in package.json to point to the monorepo
+20. Update links in documentation and source code to point to the monorepo
+21. Update copyright year in doc generation config and modified source code files
+22. Ensure package is licensed under Apache-2.0, check license file in package root and bundle config, check headers in source files
+23. Create changeset `pnpm changeset` and patchbump migrated packages with changelog message about migration
+24. Regenerate lockfile `pnpm install` and docs `pnpm doc`
 
 after merging
 
@@ -125,6 +130,7 @@ Package migration checklist:
 - [ ] Ensure test scripts don't run `build`
 - [ ] Replace binstub calls in scripts
 - [ ] Run tests for all affected packages and keep fixing until it works
+- [ ] Migrate sample projects and create E2E tests for them
 - [ ] Update `jest` (and related) to latest and rerun tests
 - [ ] Ensure scripts generate files to expected directories
 - [ ] Remove IDE-specific configs
