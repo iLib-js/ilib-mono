@@ -23,14 +23,20 @@ const { expectFileToMatchSnapshot, LoctoolRunner } = require("@ilib-mono/e2e-tes
 describe("samples", () => {
     describe("salesforce", () => {
         const projectPath = path.resolve(__dirname, "..", "samples", "salesforce");
+        const xliffPath = path.resolve(projectPath, "sample-metaxml-extracted.xliff");
 
         beforeAll(async () => {
             const loctool = new LoctoolRunner(projectPath);
             await loctool.run("localize");
         });
 
+        afterAll(() => {
+            if (fs.existsSync(xliffPath)) {
+                fs.unlinkSync(xliffPath);
+            }
+        });
+
         it("should produce an extracted XLIFF file", () => {
-            const xliffPath = path.resolve(projectPath, "sample-metaxml-extracted.xliff");
             expectFileToMatchSnapshot(xliffPath);
         });
     });
