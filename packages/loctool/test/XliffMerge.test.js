@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 var fs = require("fs");
-
-var Xliff = require("../lib/Xliff.js");
 var XliffMerge = require("../lib/XliffMerge.js");
 
 function rmrf(path) {
@@ -221,24 +219,23 @@ describe("xliffmerge", function() {
         expect(result).toBeTruthy();
         expect(fs.existsSync("./test/testfiles/xliff20/output-ko-KR.xliff")).toBeTruthy();
     });
-    test("XliffMerge_write_en_US_CustomStyle", function() {
+    test("XliffMerge_write_en_US_webOSStyle", function() {
         expect.assertions(2);
 
         var settings = {};
         settings.xliffVersion = 2;
-        settings.xliffStyle = "custom";
+        settings.xliffStyle = "webOS";
         settings.infiles = [
             "test/testfiles/xliff20/app1/en-US.xliff",
             "test/testfiles/xliff20/app2/en-US.xliff",
         ];
-
         var target = XliffMerge(settings);
         expect(target).toBeTruthy();
 
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_1">\n' +
@@ -282,7 +279,7 @@ describe("xliffmerge", function() {
         '</xliff>';
         expect(actual).toBe(expected);
     });
-    test("XliffMerge_write_en_US_CustomStyle_wrongStyle", function() {
+    test("XliffMerge_write_en_US_wrongStyleName", function() {
         expect.assertions(2);
 
         var settings = {};
@@ -295,7 +292,6 @@ describe("xliffmerge", function() {
 
         var target = XliffMerge(settings);
         expect(target).toBeTruthy();
-
         var actual = target.serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +

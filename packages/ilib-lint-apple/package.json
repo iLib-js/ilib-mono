@@ -1,0 +1,34 @@
+{
+    "name": "ilib-lint-apple",
+    "version": "1.0.0",
+    "description": "ilib-lint plugin for Apple platform string parameter validation",
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "coverage": "pnpm test -- --coverage",
+        "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+        "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
+        "clean": "git clean -f -d src test",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibLint.md && pnpm run doc:html",
+        "doc:html": "jsdoc -c jsdoc.json"
+    },
+    "keywords": [
+        "ilib",
+        "lint",
+        "apple",
+        "swift",
+        "objective-c",
+        "localization",
+        "i18n"
+    ],
+    "author": "JEDLSoft",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "ilib-lint-common": "workspace:^",
+        "ilib-tools-common": "workspace:^"
+    },
+    "devDependencies": {
+        "jest": "^29.0.0"
+    }
+}

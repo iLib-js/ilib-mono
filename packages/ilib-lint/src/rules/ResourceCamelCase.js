@@ -32,8 +32,7 @@ class ResourceCamelCase extends ResourceRule {
     /**
      * Create a ResourceCamelCase rule instance.
      * @param {object} options
-     * @param {object} [options.param]
-     * @param {string[]} [options.param.except] An array of strings to exclude from the rule.
+     * @param {string[]} [options.except] An array of strings to exclude from the rule.
      */
     constructor(options) {
         super(options);
@@ -45,7 +44,7 @@ class ResourceCamelCase extends ResourceRule {
             "^\\s*[a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
             "^\\s*[A-Z][a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
         ];
-        this.exceptions = Array.isArray(options?.param?.except) ? options.param.except : [];
+        this.exceptions = Array.isArray(options?.except) ? options.except : [];
     }
 
     /**

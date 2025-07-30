@@ -1,5 +1,37 @@
 # loctool
 
+## 2.31.1
+
+### Patch Changes
+
+- edc242f: Fixed a case where XliffFactory was not being used.
+- Updated dependencies [32130cf]
+  - ilib-tools-common@1.19.0
+
+## 2.31.0
+
+### Minor Changes
+
+- 90814bf: - Add a `metadata` property to the `Resource` class to store any metadata that may exist on a per-Resource basis. It is up to parsers to recognize and parse the metadata appropriately and up to the serializers to serialize it properly again.
+  - Update to pass `style` property in `GenerateMode` to work with correct XliffFile class.
+
+### Patch Changes
+
+- Updated dependencies [2f63633]
+  - ilib-tools-common@1.18.0
+
+## 2.30.0
+
+### Minor Changes
+
+- da9e913: \* Add the `XliffFactory` to support various XLIFF formats.
+  It creates an instance of either the `Xliff` class or the new `webOSXliff` class, depending on whether it’s targeting the webOS platform or another use case. Additional format support can be added in the same way if required.
+  - Update loctool options:
+    - Add the new `--metadata` option.
+      It accepts key-value pairs in the form `aaa=bbb` (e.g. --metadata device=Monitor), and is currently used by webOSXliff.
+    - Remove the `custom` option from `--xliffStyle`. Instead, the option `webOS` will be used.
+      Previously, the content of the `custom` option was already parsed as xliff for webOS.
+
 ## 2.29.3
 
 ### Patch Changes

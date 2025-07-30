@@ -277,6 +277,86 @@ describe("testResourcePlural", () => {
         expect(rp.getTargetPlural("many")).toBe("Dies ist der viele Fall");
     });
 
+    test("ResourcePluralGetMetadata", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            },
+            metadata:  {
+                "test": "test-abcd"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getMetadata()).toStrictEqual({"test": "test-abcd"});
+    });
+
+    test("ResourcePluralGetMetadata2", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getMetadata()).toBeFalsy();
+    });
+
+    test("ResourcePluralSetMetadata", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            },
+            metadata:{}
+        });
+        expect(rp).toBeTruthy();
+        rp.setMetadata({"test": "test-xyz"});
+        expect(rp.getMetadata()).toStrictEqual({"test": "test-xyz"});
+    });
+
     test("ResourcePluralGetNonExistent", () => {
         expect.assertions(3);
 

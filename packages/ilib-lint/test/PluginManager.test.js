@@ -358,14 +358,14 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
     });
 
     test("PluginManagerGetBuiltInRuleSets", () => {
-        expect.assertions(14);
+        expect.assertions(21);
 
         const plgmgr = new PluginManager();
         expect(plgmgr).toBeTruthy();
         const rm = plgmgr.getRuleManager();
         expect(rm).toBeTruthy();
 
-        expect(rm.sizeRuleSetDefinitions()).toBe(5);
+        expect(rm.sizeRuleSetDefinitions()).toBe(9);
 
         const genericRuleset = rm.getRuleSetDefinition("generic");
         expect(genericRuleset).toBeTruthy();
@@ -373,6 +373,11 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
         expect(genericRuleset["resource-url-match"]).toBeTruthy();
         expect(typeof(genericRuleset["resource-icu-plurals"])).toBe('boolean');
         expect(typeof(genericRuleset["resource-url-match"])).toBe('boolean');
+
+        const gnuRuleset = rm.getRuleSetDefinition("gnu");
+        expect(gnuRuleset).toBeTruthy();
+        expect(gnuRuleset["resource-gnu-printf-match"]).toBeTruthy();
+        expect(typeof(gnuRuleset["resource-gnu-printf-match"])).toBe('boolean');
 
         const sourceRuleset = rm.getRuleSetDefinition("source");
         expect(sourceRuleset).toBeTruthy();
@@ -385,6 +390,14 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
         const csharpRuleset = rm.getRuleSetDefinition("csharp");
         expect(csharpRuleset).toBeTruthy();
         expect(typeof(csharpRuleset["resource-csharp-numbered-params"])).toBe('boolean');
+
+        const tapRuleset = rm.getRuleSetDefinition("tap");
+        expect(tapRuleset).toBeTruthy();
+        expect(typeof(tapRuleset["resource-tap-named-params"])).toBe('boolean');
+
+        const windowsRuleset = rm.getRuleSetDefinition("windows");
+        expect(windowsRuleset).toBeTruthy();
+        expect(typeof(windowsRuleset["resource-return-char"])).toBe('boolean');
     });
 
     test("PluginManagerGetLoadPluginRightFixer", () => {

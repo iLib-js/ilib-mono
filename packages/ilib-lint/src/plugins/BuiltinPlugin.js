@@ -31,6 +31,7 @@ import JsonFormatter from '../formatters/JsonFormatter.js';
 import ResourceICUPlurals from '../rules/ResourceICUPlurals.js';
 import ResourceICUPluralTranslation from '../rules/ResourceICUPluralTranslation.js';
 import ResourceQuoteStyle from '../rules/ResourceQuoteStyle.js';
+import ResourceSentenceEnding from '../rules/ResourceSentenceEnding.js';
 import ResourceUniqueKeys from '../rules/ResourceUniqueKeys.js';
 import ResourceEdgeWhitespace from '../rules/ResourceEdgeWhitespace.js';
 import ResourceCompleteness from '../rules/ResourceCompleteness.js';
@@ -45,6 +46,8 @@ import ResourceXML from '../rules/ResourceXML.js';
 import ResourceCamelCase from '../rules/ResourceCamelCase.js';
 import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
 import ResourceKebabCase from '../rules/ResourceKebabCase.js';
+import ResourceGNUPrintfMatch from '../rules/ResourceGNUPrintfMatch.js';
+import ResourceReturnChar from '../rules/ResourceReturnChar.js';
 import StringFixer from './string/StringFixer.js';
 import ResourceFixer from './resource/ResourceFixer.js';
 
@@ -368,6 +371,14 @@ export const regexRules = [
         note: "The numbered parameter '{{matchString}}' from the source string does not appear in the target string",
         regexps: [ "\\{\\s*(?<match>\\d[^}]*?)\\s*\\}" ],
         link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-javascript/docs/resource-csharp-numbered-params.md"
+    },
+    {
+        type: "resource-matcher",
+        name: "resource-tap-named-params",
+        description: "Ensure that named parameters in Tap I18n that appear in the source string are also used in the translated string",
+        note: "The named parameter '__{matchString}__' from the source string does not appear in the target string",
+        regexps: [ "__(?<match>[a-zA-Z_][a-zA-Z0-9_.]*?)__" ],
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-tap-named-params.md"
     }
 ];
 
@@ -401,6 +412,11 @@ export const builtInRulesets = {
         "resource-no-space-with-fullwidth-punctuation": true,
     },
 
+    gnu: {
+        // GNU printf style parameter matching
+        "resource-gnu-printf-match": true,
+    },
+
     source: {
         "resource-source-icu-plural-syntax": true,
         "resource-source-icu-plural-categories": true,
@@ -421,6 +437,15 @@ export const builtInRulesets = {
     },
     "csharp": {
         "resource-csharp-numbered-params": true
+    },
+    "windows": {
+        "resource-return-char": true
+    },
+    "punctuation-checks": {
+        "resource-sentence-ending": true
+    },
+    "tap": {
+        "resource-tap-named-params": true
     }
 };
 
@@ -477,6 +502,7 @@ class BuiltinPlugin extends Plugin {
             ResourceICUPlurals,
             ResourceICUPluralTranslation,
             ResourceQuoteStyle,
+            ResourceSentenceEnding,
             ResourceUniqueKeys,
             ResourceEdgeWhitespace,
             ResourceCompleteness,
@@ -491,6 +517,8 @@ class BuiltinPlugin extends Plugin {
             ResourceCamelCase,
             ResourceSnakeCase,
             ResourceKebabCase,
+            ResourceGNUPrintfMatch,
+            ResourceReturnChar,
             ...regexRules
         ];
     }

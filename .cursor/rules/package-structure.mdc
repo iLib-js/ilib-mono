@@ -1,0 +1,47 @@
+# Package Structure Standards
+
+## Package Organization
+Each package in the `packages/` directory should follow this structure:
+- `package.json` - Package configuration and dependencies
+- `src/` - Source code files
+- `lib/` - Compiled/built files (generated)
+- `locale/` - Locale data
+- `test/` - Test files
+- `docs/` - Documentation files
+- `CHANGELOG.md` - Version history and changes
+- `README.md` - Package-specific documentation
+
+## Package.json Requirements
+- Include standard required scripts: `build`, `clean`, `coverage`, `debug`, `test`
+  The standard scripts need to be there in every packages even if they are empty for that package.
+- Include optional standard scripts if necessary: `doc`, `build:assemble`, `build:pkg`, `test:cli`, `test:web`
+- Use the 'workspace:' protocol for internal dependencies: `"ilib-common": "workspace:^"`
+- Include proper `main`, `module`, and `types` fields for different module systems
+- Specify Node.js version compatibility (>=12.0.0)
+- Include appropriate keywords for npm discovery
+
+## Source Code Organization
+- Place main entry points in `src/index.js`
+- Organize code by functionality in subdirectories
+- Use consistent file naming conventions
+- Include a `src/index.js` file that exports the public API
+
+## Testing Structure
+- Mirror the source directory structure in `test/`
+- Include unit tests for all public APIs
+- Use descriptive test file names that match the source files
+- Include integration tests for complex workflows
+- Maintain good test coverage (aim for >80%)
+
+## Documentation
+- Include descriptive JSDoc or TSDoc comments for all public APIs.
+    - These should be useful enough that anyone who does not know the package already will understand what each class and method does.
+- Provide usage examples in README.md
+- Document configuration options and environment variables
+- Include migration guides for breaking changes
+
+## Build Configuration
+- Use Babel for transpilation when needed
+- Configure build tools to target Node.js >=12.0.0
+- Generate source maps for debugging
+- Optimize bundle size for browser usage when applicable

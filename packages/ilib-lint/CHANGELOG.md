@@ -1,5 +1,54 @@
 # ilib-lint
 
+## 2.16.0
+
+### Minor Changes
+
+- 89dee27: - Added ResourceSentenceEnding rule with auto-fix support
+  - Matches the sentence ending punctuation in the English source string and
+    the locale-sensitive sentence-ending punctuation in the target string.
+  - Only checks the end of the string, not the middle.
+  - Ignores any quotation marks or whitespace at the end of the string
+  - Added support for both Unicode ellipsis (…) and three dots (...) in English
+  - Added configuration parameter support for custom punctuation mappings per locale
+
+### Patch Changes
+
+- 44ada06: - Fixed a bug where the exceptions for some rules were not taking effect
+  - resource-kebab-case, resource-camel-case, and resource-snake-case
+  - Syntax as noted in their documents for exceptions did not work
+- Updated dependencies [2f63633]
+  - ilib-tools-common@1.18.0
+
+## 2.15.0
+
+### Minor Changes
+
+- d4dfcc3: - Add resource-return-char rule to check for return character count mismatches
+  - Ensure source and target strings have matching counts of CR, LF, and CRLF characters.
+  - Added new ruleset called "windows" which contains this rule
+- e8a6eb7: - Added ability to match Swift and ObjC style printf params
+  - The GNU printf rule now supports %@ params
+  - Fixed some bugs in the GNU printf param rule
+    - was not able to detect multiple missing params
+- 6f36165: - Add ResourceGNUPrintfMatch rule for GNU printf parameter validation
+  - Implement new linting rule that validates GNU printf-style parameters between source and target strings
+  - Support full GNU printf syntax including positional parameters (%1$s, %2$d), width/precision from arguments, and GNU extensions
+  - Handle ResourceString, ResourceArray, and ResourcePlural resources with proper category matching
+  - Register rule in new "gnu" ruleset for programming-language-agnostic GNU printf validation
+- c0807be: - Add Tap I18n named parameter support
+  - Add resource-tap-named-params rule for Tap I18n parameter syntax (**param**)
+  - Support parameter names with underscores, dots for property access, and numbers
+  - Add comprehensive test coverage including parameter reordering scenarios
+  - Add documentation for Tap I18n parameter validation
+  - Include new "tap" ruleset in built-in rulesets
+
+### Patch Changes
+
+- da4e63b: - Fixed the regex for parsing URLs in the resource-url-match rule
+  - does not accept a dot as the last character in the string anymore
+  - now supports URL queries, hashes, and URL-encoded characters
+
 ## 2.14.0
 
 ### Minor Changes

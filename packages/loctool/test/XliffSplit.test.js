@@ -160,7 +160,7 @@ describe("xliffsplit", function() {
         settings.infiles = [
             "test/testfiles/xliff20/merge-en-US-style.xliff",
         ];
-        settings.xliffStyle = "custom"
+        settings.xliffStyle = "webOS"
         var superset = XliffSplit(settings);
         var result = XliffSplit.distribute(superset, settings);
         expect(result).toBeTruthy();
@@ -168,7 +168,7 @@ describe("xliffsplit", function() {
         var actual = result["app2"].serialize();
         var expected =
         '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app2_f1" original="app2">\n' +
         '    <group id="app2_g1" name="javascript">\n' +
         '      <unit id="app2_1">\n' +

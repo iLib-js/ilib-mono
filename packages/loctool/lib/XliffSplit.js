@@ -1,7 +1,7 @@
 /*
  * XliffSplit.js - test the split of Xliff object.
  *
- * Copyright © 2020, JEDLSoft
+ * Copyright © 2020, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var Xliff = require("./Xliff.js");
-
+var XliffFactory = require("./XliffFactory.js");
 var log4js = require("log4js");
 var logger = log4js.getLogger("loctool.lib.XliffSplit");
 
@@ -40,9 +39,10 @@ var XliffSplit = function XliffSplit(settings) {
         logger.info("Reading " + file + " ...");
         if (fs.existsSync(file)) {
             var data = fs.readFileSync(file, "utf-8");
-            var xliff = new Xliff({
+            var xliff = XliffFactory({
                 version: settings.xliffVersion,
-                style: settings.xliffStyle
+                style: settings.xliffStyle,
+                mode: settings.mode
             });
             xliff.deserialize(data);
             superset = superset.concat(xliff.getTranslationUnits());
@@ -103,7 +103,7 @@ _parse2 = function(superset, settings) {
         prjXliffPath = path.join(output,key);
 
         if (!file) {
-            file = cache[key] = new Xliff({
+            file = cache[key] = XliffFactory({
                 path: path.join(prjXliffPath, unit.targetLocale + ".xliff"),
                 version: settings.xliffVersion,
                 style: settings.xliffStyle
