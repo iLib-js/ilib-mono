@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+const fs = require("fs");
 const path = require("path");
 const { expectFileToMatchSnapshot, LoctoolRunner } = require("@ilib-mono/e2e-test");
 
