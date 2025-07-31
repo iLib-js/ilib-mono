@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0061D5</headerColor>
+        <logo>blue</logo>
+        <logoVersion>1.0</logoVersion>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+    <description>The best way to do X on the Internet!</description>
+    <formFactors>Large</formFactors>
+    <label>My Application</label>
+    <navType>Standard</navType>
+    <tabs>MyApp_File1</tabs>
+    <tabs>MyApp_File2</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

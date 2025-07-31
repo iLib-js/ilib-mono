@@ -7,69 +7,69 @@ name: Test affected
 on: pull_request
 
 jobs:
-  test-affected:
-    name: Test Affected
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [ 20 ]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          # workaround for `git error: fatal: bad object` when using `--affected`:
-          # ensure PR base commit is fetched
-          # per https://stackoverflow.com/a/78153130
-          fetch-depth: $(( ${{ github.event.pull_request.commits }} + 1 ))
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: pnpm
-      - name: Install Chrome
-        uses: browser-actions/setup-chrome@v1
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: List and test affected packages
-        id: affected-packages
-        run: |
-          echo "Listing affected packages"
-          LIST=$(pnpm turbo ls --affected --output=json)
-          echo "LIST: $LIST"
-          echo list=$(echo "$LIST" | jq -c .) >> "$GITHUB_OUTPUT"
-          echo "Running tests and generating coverage reports for affected packages"
-          pnpm coverage:ci:affected
+    test-affected:
+        name: Test Affected
+        runs-on: ubuntu-latest
         env:
-          # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
-          # manually set PR base commit ref
-          # per https://github.com/vercel/turborepo/issues/9320#issuecomment-2499219314
-          TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
-      - name: Generate coverage paths
-        id: coverage-paths
-        env: 
-          AFFECTED_PACKAGES: ${{steps.affected-packages.outputs.list}}
-        run: |
-          echo "Generating coverage paths"
-          node scripts/generate-coverage-paths.js
-      - name: Merge coverage reports
-        run: |
-          echo "Merging coverage reports"
-          node scripts/merge-coverage.js
-      - name: Jest Code Coverage Comment
-        uses: MishaKav/jest-coverage-comment@main
-        with:
-          multiple-files: ${{ steps.coverage-paths.outputs.coverage-files }}
-          title: Jest Code Coverage
-          coverage-path: ./coverage.txt
-          coverage-title: Code Coverage for changed files
-          create-new-comment: false
-          report-only-changed-files: true
-          multiple-junitxml-files: ${{ steps.coverage-paths.outputs.junit-files }}
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: code-coverage
-          path: ./packages/*/coverage/
-          retention-days: 3
+            # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
+            # manually set PR base commit ref
+            # per https://github.com/vercel/turborepo/issues/9320#issuecomment-2499219314
+            TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+        strategy:
+            matrix:
+                node-version: [20]
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  # workaround for `git error: fatal: bad object` when using `--affected`:
+                  # ensure PR base commit is fetched
+                  # per https://stackoverflow.com/a/78153130
+                  fetch-depth: $(( ${{ github.event.pull_request.commits }} + 1 ))
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: pnpm
+            - name: Install Chrome
+              uses: browser-actions/setup-chrome@v1
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            - name: List affected packages
+              id: affected-packages
+              run: |
+                  echo "Listing affected packages"
+                  LIST=$(pnpm turbo ls --affected --output=json)
+                  echo "Affected packages: $LIST"
+                  echo list=$(echo "$LIST" | jq -c .) >> "$GITHUB_OUTPUT"
+            - name: Run unit tests tests with coverage
+              run: pnpm coverage:ci:affected
+            - name: Generate coverage paths
+              id: coverage-paths
+              env:
+                  AFFECTED_PACKAGES: ${{ steps.affected-packages.outputs.list }}
+              run: |
+                  echo "Generating coverage paths"
+                  node scripts/generate-coverage-paths.js
+            - name: Merge coverage reports
+              run: |
+                  echo "Merging coverage reports"
+                  node scripts/merge-coverage.js
+            - name: Jest Code Coverage Comment
+              uses: MishaKav/jest-coverage-comment@main
+              with:
+                  multiple-files: ${{ steps.coverage-paths.outputs.coverage-files }}
+                  title: Jest Code Coverage
+                  coverage-path: ./coverage.txt
+                  coverage-title: Code Coverage for changed files
+                  create-new-comment: false
+                  report-only-changed-files: true
+                  multiple-junitxml-files: ${{ steps.coverage-paths.outputs.junit-files }}
+            - name: Upload coverage report
+              uses: actions/upload-artifact@v4
+              with:
+                  name: code-coverage
+                  path: ./packages/*/coverage/
+                  retention-days: 3

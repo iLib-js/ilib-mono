@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples po should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="" source-language="en-US" product-name="sample-po">
+    <body>
+      <trans-unit id="1" resname="one string" restype="plural" datatype="po" extype="one">
+        <source>one string</source>
+        <note>{"translator":["a plural string"],"pluralForm":"one","pluralFormOther":"one string"}</note>
+      </trans-unit>
+      <trans-unit id="2" resname="one string" restype="plural" datatype="po" extype="other">
+        <source>{$count} strings</source>
+        <note>{"translator":["a plural string"],"pluralForm":"other","pluralFormOther":"one string"}</note>
+      </trans-unit>
+      <trans-unit id="3" resname="Good bye" restype="string" datatype="po">
+        <source>Good bye</source>
+        <note>{"translator":["another string"]}</note>
+      </trans-unit>
+      <trans-unit id="4" resname="Thank you too" restype="string" datatype="po">
+        <source>Thank you too</source>
+        <note>{"translator":["string with continuation"]}</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

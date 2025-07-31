@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples js-json should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/t1.js" source-language="en-US" product-name="sample-js-json">
+    <body>
+      <trans-unit id="1" resname="Hello" restype="string" datatype="javascript">
+        <source>Hello</source>
+      </trans-unit>
+      <trans-unit id="2" resname="This is a string that has no translation yet" restype="string" datatype="javascript">
+        <source>This is a string that has no translation yet</source>
+      </trans-unit>
+      <trans-unit id="3" resname="Thank you" restype="string" datatype="javascript">
+        <source>Thank you</source>
+      </trans-unit>
+      <trans-unit id="4" resname="id1" restype="string" datatype="javascript">
+        <source>This is a test with a unique id</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;
+
+exports[`samples json should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="i18n/sample.json" source-language="en-US" product-name="sample-json">
+    <body>
+      <trans-unit id="1" resname="project.whatever.hello" restype="string" datatype="json">
+        <source>Hello</source>
+        <note>A greeting</note>
+      </trans-unit>
+      <trans-unit id="2" resname="project.whatever.world" restype="string" datatype="json">
+        <source>World</source>
+        <note>An object that greetings are directed to</note>
+      </trans-unit>
+      <trans-unit id="3" resname="project.whatever.translate.me" restype="string" datatype="json">
+        <source>Translate me</source>
+        <note>This is a string that has no translation yet</note>
+      </trans-unit>
+      <trans-unit id="4" resname="project.whatever.and.me" restype="string" datatype="json">
+        <source>And me</source>
+        <note>Another string that has no translation yet</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

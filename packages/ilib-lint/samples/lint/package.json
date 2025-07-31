@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "description": "Sample application that demostrates how to use the ilib-lint tool with python strings",
+  "devDependencies": {
+    "ilib-lint": "workspace:^",
+    "ilib-lint-common": "workspace:^",
+    "ilib-lint-python": "workspace:^",
+    "ilib-lint-python-gnu": "workspace:^",
+    "ilib-lint-react": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "ilib-lint ."
+  }
+}

@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "properties-schema",
+    "type": "object",
+    "title": "xml properties",
+    "description": "A schema for a Java xml properties file",
+    "$defs": {
+        "string-type": {
+            "type": "object",
+            "localizable": true,
+            "properties": {
+                "_attributes": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "localizableType": {
+                                "key": "_value"
+                            }
+                        },
+                        "i18n": {
+                            "type": "string",
+                            "localizableType": {
+                                "comment": "_value"
+                            }
+                        },
+                        "locale": {
+                            "type": "string",
+                            "localizableType": {
+                                "locale": "_value"
+                            }
+                        }
+                    }
+                },
+                "_text": {
+                    "type": "string",
+                    "localizableType": {
+                        "source": "_value"
+                    }
+                }
+            }
+        }
+    },
+    "properties": {
+         "properties": {
+            "type": "object",
+            "properties": {
+                "entry": {
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/string-type"
+                            }
+                        },
+                        {
+                            "$ref": "#/$defs/string-type"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

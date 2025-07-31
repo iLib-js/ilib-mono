@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="" source-language="en-US" target-language="ko-KR" product-name="sample-po">
+    <body>
+      <trans-unit id="3" resname="Good bye" restype="string" datatype="po">
+        <source>Good bye</source>
+        <target>안녕히가세요</target>
+        <note>{"translator":["another string"]}</note>
+      </trans-unit>
+      <trans-unit id="4" resname="Thank you too" restype="string" datatype="po">
+        <source>Thank you too</source>
+        <target>저도 고맙습니다</target>
+        <note>{"translator":["string with continuation"]}</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="a/b/c.js" source-language="en-US" target-language="ko-KR" product-name="sample-po">
+    <body>
+      <trans-unit id="1" resname="Hello" restype="string" datatype="po">
+        <source>Hello</source>
+        <target>안녕하세요</target>
+        <note>{"paths":["a/b/c.js:32"]}</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

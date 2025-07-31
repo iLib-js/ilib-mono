@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/t1.js" source-language="en-US" target-language="de-DE" product-name="sample-php-resource">
+    <body>
+      <trans-unit id="2" resname="Hello" restype="string" datatype="javascript">
+        <source>Hello</source>
+        <target>Hallo</target>
+      </trans-unit>
+      <trans-unit id="3" resname="Thank you" restype="string" datatype="javascript">
+        <source>Thank you</source>
+        <target>Danke</target>
+      </trans-unit>
+      <trans-unit id="4" resname="id1" restype="string" datatype="javascript">
+        <source>This is a test with a unique id</source>
+        <target>Dies ist ein Test mit einer eindeutigen ID</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

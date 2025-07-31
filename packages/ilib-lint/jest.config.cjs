@@ -1,12 +1,11 @@
-const baseConfig = require('../../jest.config.js');
+const baseConfig = require("../../jest.config.js");
 
 const config = {
     ...baseConfig,
     displayName: {
         name: "ilib-lint",
-        color: "red",
+        color: "blackBright",
     },
-}
-
+};
 
 module.exports = config;

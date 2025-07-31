@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "description": "Sample localization project",
+  "devDependencies": {
+    "ilib-loctool-po": "workspace:^",
+    "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
+  }
+}

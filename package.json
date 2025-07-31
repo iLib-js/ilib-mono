@@ -14,10 +14,18 @@
     "test:all:force": "turbo test --force",
     "test:ci": "turbo test --concurrency=5",
     "test:ci:affected": "pnpm test:ci --affected",
+    "test:e2e": "pnpm test:e2e:affected",
+    "test:e2e:affected": "turbo test:e2e --affected --output-logs=new-only",
+    "test:e2e:all": "turbo test:e2e",
+    "test:e2e:all:force": "turbo test:e2e --force",
+    "test:e2e:ci": "turbo test:e2e --concurrency=5",
+    "test:e2e:ci:affected": "turbo test:e2e --concurrency=5 --affected",
     "doc": "pnpm -F '[origin/main]' doc",
     "release": "pnpm build && pnpm changeset publish",
     "run:loctool": "NODE_PATH=packages node --inspect packages/loctool/loctool.js",
-    "run:lint": "NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js"
+    "run:lint": "NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js",
+    "run:samples": "pnpm -F '{packages/*/samples/*}' run:sample",
+    "run:samples:affected": "pnpm -F '{packages/*/samples/*}[origin/main]' run:sample"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9",

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="languages/en.i18n.yml" source-language="en-US" target-language="nl-NL" product-name="sample-tap-i18n">
+    <body>
+      <trans-unit id="1" resname="toplevel.first.loading" restype="string" datatype="x-yaml">
+        <source>Loading...</source>
+        <target>Laden ...</target>
+      </trans-unit>
+      <trans-unit id="2" resname="toplevel.first.pageLoading" restype="string" datatype="x-yaml">
+        <source>Loading the page...</source>
+        <target>De pagina wordt geladen ...</target>
+      </trans-unit>
+      <trans-unit id="4" resname="toplevel.second.cancel" restype="string" datatype="x-yaml">
+        <source>Cancel</source>
+        <target>Annuleer</target>
+      </trans-unit>
+      <trans-unit id="5" resname="toplevel.second.create" restype="string" datatype="x-yaml">
+        <source>Create</source>
+        <target>Maak</target>
+      </trans-unit>
+      <trans-unit id="5" resname="toplevel.plurals.plural1" restype="plural" datatype="x-yaml" extype="one">
+        <source>{{count}} item</source>
+        <target>{{count}} item</target>
+      </trans-unit>
+      <trans-unit id="5" resname="toplevel.plurals.plural1" restype="plural" datatype="x-yaml" extype="other">
+        <source>{{count}} items</source>
+        <target>{{count}} items</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

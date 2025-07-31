@@ -26,6 +26,24 @@ importers:
         specifier: ^2.2.3
         version: 2.2.3
 
+  packages/e2e-test:
+    devDependencies:
+      '@tsconfig/node12':
+        specifier: ^12.1.4
+        version: 12.1.4
+      '@types/jest':
+        specifier: ^29
+        version: 29.5.14
+      '@types/node':
+        specifier: '12'
+        version: 12.20.55
+      jest:
+        specifier: ^29
+        version: 29.7.0(@types/node@12.20.55)(node-notifier@8.0.2)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.6.3
+
   packages/ilib-address:
     dependencies:
       ilib-common:
@@ -152,7 +170,7 @@ importers:
         version: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.2
         version: 4.0.4
@@ -763,6 +781,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       '@tsconfig/node14':
         specifier: ^14.1.2
         version: 14.1.2
@@ -1012,6 +1033,24 @@ importers:
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
+
+  packages/ilib-lint/samples/lint:
+    devDependencies:
+      ilib-lint:
+        specifier: workspace:^
+        version: link:../..
+      ilib-lint-common:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-common
+      ilib-lint-python:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-python
+      ilib-lint-python-gnu:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-python-gnu
+      ilib-lint-react:
+        specifier: workspace:^
+        version: link:../../../ilib-lint-react
 
   packages/ilib-loader:
     dependencies:
@@ -1316,12 +1355,27 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-android-layout/samples/android:
+    devDependencies:
+      ilib-loctool-android-layout:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-android-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-android-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-android-resource:
     dependencies:
@@ -1335,12 +1389,27 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-android-resource/samples/android:
+    devDependencies:
+      ilib-loctool-android-layout:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-android-layout
+      ilib-loctool-android-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-csv:
     dependencies:
@@ -1409,6 +1478,9 @@ importers:
         specifier: ^2.0.0
         version: 2.0.3
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
@@ -1474,6 +1546,15 @@ importers:
         specifier: ^0.11.3
         version: 0.11.3
 
+  packages/ilib-loctool-ghfm/samples/markdown:
+    devDependencies:
+      ilib-loctool-ghfm:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-haml:
     dependencies:
       ilib:
@@ -1537,6 +1618,9 @@ importers:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       ilib-loctool-json:
         specifier: workspace:^
         version: link:../ilib-loctool-json
@@ -1556,12 +1640,78 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-javascript-resource/samples/js:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript-resource/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-regex
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/js:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/js-json:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-json
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-javascript/samples/php-resource:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-json:
     dependencies:
@@ -1575,12 +1725,39 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-json/samples/js-json:
+    devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../../../e2e-test
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-json/samples/json:
+    devDependencies:
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-jst:
     dependencies:
@@ -1635,12 +1812,24 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-mrkdwn/samples/slack:
+    devDependencies:
+      ilib-loctool-mrkdwn:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-objectivec:
     dependencies:
@@ -1664,12 +1853,42 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-php-resource/samples/php-resource:
+    devDependencies:
+      ilib-loctool-javascript:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-php-resource/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../..
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-regex
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-po:
     dependencies:
@@ -1686,12 +1905,24 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-po/samples/po:
+    devDependencies:
+      ilib-loctool-po:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-properties:
     dependencies:
@@ -1721,6 +1952,9 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       ilib-loctool-javascript-resource:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
@@ -1730,6 +1964,21 @@ importers:
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-regex/samples/regex:
+    devDependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      ilib-loctool-php-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-php-resource
+      ilib-loctool-regex:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-ruby-ilib:
     dependencies:
@@ -1759,12 +2008,24 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-salesforce-metaxml/samples/salesforce:
+    devDependencies:
+      ilib-loctool-salesforce-metaxml:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-strings:
     dependencies:
@@ -1807,12 +2068,24 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-tap-i18n/samples/tap-i18n:
+    devDependencies:
+      ilib-loctool-tap-i18n:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-xml:
     dependencies:
@@ -1826,12 +2099,24 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:^
+        version: link:../e2e-test
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+
+  packages/ilib-loctool-xml/samples/xml:
+    devDependencies:
+      ilib-loctool-xml:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
 
   packages/ilib-loctool-yaml:
     dependencies:
@@ -9829,7 +10114,7 @@ snapshots:
   '@jest/console@29.7.0':
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -9842,14 +10127,14 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@22.10.2)
+      jest-config: 29.7.0(@types/node@20.17.4)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -9916,7 +10201,7 @@ snapshots:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.25
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -10132,7 +10417,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
 
   '@types/hast@2.3.10':
     dependencies:
@@ -10196,6 +10481,7 @@ snapshots:
   '@types/node@22.10.2':
     dependencies:
       undici-types: 6.20.0
+    optional: true
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -13128,7 +13414,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -13376,7 +13662,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -13386,7 +13672,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -13432,7 +13718,7 @@ snapshots:
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@29.7.0):
@@ -13467,7 +13753,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -13495,7 +13781,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       chalk: 4.1.2
       cjs-module-lexer: 1.4.1
       collect-v8-coverage: 1.0.2
@@ -13560,7 +13846,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -13575,7 +13861,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -16335,7 +16621,8 @@ snapshots:
 
   undici-types@6.19.8: {}
 
-  undici-types@6.20.0: {}
+  undici-types@6.20.0:
+    optional: true
 
   unherit@1.1.3:
     dependencies:

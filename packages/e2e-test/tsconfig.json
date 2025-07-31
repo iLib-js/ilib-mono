@@ -1,0 +1,9 @@
+{
+    "extends": "@tsconfig/node12",
+    "compilerOptions": {
+        "outDir": "lib",
+        "declaration": true,
+        "declarationMap": true
+    },
+    "include": ["src"]
+}
