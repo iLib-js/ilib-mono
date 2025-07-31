@@ -1,0 +1,16 @@
+{
+    "language.name": "Vietnamese",
+    "locale": "vi",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn",
+        "Hani"
+    ]
+}

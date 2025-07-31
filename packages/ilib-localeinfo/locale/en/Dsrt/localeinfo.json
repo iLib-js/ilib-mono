@@ -1,0 +1,9 @@
+{
+    "locale": "en-Dsrt",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        }
+    }
+}

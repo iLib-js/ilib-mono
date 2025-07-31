@@ -1,0 +1,24 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "alternateQuotationStart": "‚",
+        "quotationEnd": "“",
+        "quotationStart": "„"
+    },
+    "language.name": "German",
+    "locale": "de",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": ".",
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Latn",
+        "Runr"
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "delimiter": {
+        "quotationEnd": "«",
+        "quotationStart": "»"
+    },
+    "language.name": "Tajik",
+    "locale": "tg",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Cyrl",
+        "Arab",
+        "Latn"
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "language.name": "Chakma",
+    "locale": "ccp",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        },
+        "digits": "𑄶𑄷𑄸𑄹𑄺𑄻𑄼𑄽𑄾𑄿",
+        "script": "Cakm",
+        "secgroupSize": 2,
+        "useNative": true
+    },
+    "scripts": [
+        "Beng",
+        "Cakm"
+    ]
+}

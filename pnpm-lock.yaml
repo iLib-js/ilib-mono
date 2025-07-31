@@ -231,7 +231,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
+        version: 5.0.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -428,7 +428,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
+        version: 5.0.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -573,7 +573,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
+        version: 5.0.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -757,8 +757,8 @@ importers:
         specifier: workspace:^
         version: link:../ilib-locale
       ilib-localeinfo:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: workspace:^
+        version: link:../ilib-localeinfo
       ilib-tools-common:
         specifier: workspace:^
         version: link:../ilib-tools-common
@@ -1345,6 +1345,142 @@ importers:
       webpack-cli:
         specifier: ^4.10.0
         version: 4.10.0(webpack@5.95.0)
+
+  packages/ilib-localeinfo:
+    dependencies:
+      '@log4js-node/log4js-api':
+        specifier: ^1.0.2
+        version: 1.0.2
+      ilib-common:
+        specifier: workspace:^
+        version: link:../ilib-common
+      ilib-env:
+        specifier: workspace:^
+        version: link:../ilib-env
+      ilib-locale:
+        specifier: workspace:^
+        version: link:../ilib-locale
+      ilib-localedata:
+        specifier: workspace:^
+        version: link:../ilib-localedata
+      ilib-localematcher:
+        specifier: ^1.2.2
+        version: 1.3.1
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.23.3
+        version: 7.26.0
+      '@babel/plugin-transform-modules-umd':
+        specifier: ^7.23.3
+        version: 7.25.9(@babel/core@7.26.0)
+      '@babel/preset-env':
+        specifier: ^7.23.3
+        version: 7.26.0(@babel/core@7.26.0)
+      '@babel/register':
+        specifier: ^7.22.15
+        version: 7.25.9(@babel/core@7.26.0)
+      '@babel/runtime':
+        specifier: ^7.23.4
+        version: 7.26.0
+      '@open-wc/webpack-import-meta-loader':
+        specifier: ^0.4.7
+        version: 0.4.7
+      assertextras:
+        specifier: ^1.1.0
+        version: 1.1.0(nodeunit@0.11.3)
+      babel-loader:
+        specifier: ^9.1.3
+        version: 9.2.1(@babel/core@7.26.0)(webpack@5.95.0)
+      babel-plugin-add-module-exports:
+        specifier: ^1.0.4
+        version: 1.0.4
+      babel-plugin-module-resolver:
+        specifier: ^5.0.0
+        version: 5.0.2
+      babel-plugin-transform-import-meta:
+        specifier: ^2.2.1
+        version: 2.2.1(@babel/core@7.26.0)
+      cldr-core:
+        specifier: ^44.0.1
+        version: 44.1.0
+      cldr-localenames-full:
+        specifier: ^44.0.1
+        version: 44.1.0(cldr-core@44.1.0)
+      cldr-misc-full:
+        specifier: ^44.0.1
+        version: 44.1.0(cldr-core@44.1.0)
+      cldr-numbers-full:
+        specifier: ^44.0.1
+        version: 44.1.0(cldr-core@44.1.0)
+      docdash:
+        specifier: ^2.0.2
+        version: 2.0.2
+      grunt:
+        specifier: ^1.6.1
+        version: 1.6.1
+      grunt-babel:
+        specifier: ^8.0.0
+        version: 8.0.0(@babel/core@7.26.0)(grunt@1.6.1)
+      grunt-cli:
+        specifier: ^1.4.3
+        version: 1.5.0
+      grunt-contrib-clean:
+        specifier: ^2.0.1
+        version: 2.0.1(grunt@1.6.1)
+      grunt-contrib-jshint:
+        specifier: ^3.2.0
+        version: 3.2.0
+      grunt-contrib-nodeunit:
+        specifier: ^5.0.0
+        version: 5.0.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
+      grunt-contrib-uglify:
+        specifier: ^5.2.2
+        version: 5.2.2
+      ilib-assemble:
+        specifier: workspace:^
+        version: link:../ilib-assemble
+      ilib-data-utils:
+        specifier: workspace:^
+        version: link:../ilib-data-utils
+      ilib-loader:
+        specifier: workspace:^
+        version: link:../ilib-loader
+      jsdoc:
+        specifier: ^4.0.2
+        version: 4.0.4
+      jsdoc-to-markdown:
+        specifier: ^8.0.0
+        version: 8.0.3
+      json-stable-stringify:
+        specifier: ^1.1.0
+        version: 1.2.1
+      load-grunt-tasks:
+        specifier: ^5.1.0
+        version: 5.1.0(grunt@1.6.1)
+      nodeunit:
+        specifier: ^0.11.3
+        version: 0.11.3
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      open-cli:
+        specifier: ^7.2.0
+        version: 7.2.0
+      raw-loader:
+        specifier: ^4.0.2
+        version: 4.0.2(webpack@5.95.0)
+      url-shim:
+        specifier: ^1.0.1
+        version: 1.0.1
+      webpack:
+        specifier: ^5.89.0
+        version: 5.95.0(webpack-cli@5.1.4)
+      webpack-cli:
+        specifier: ^5.1.4
+        version: 5.1.4(webpack@5.95.0)
 
   packages/ilib-loctool-android-layout:
     dependencies:
@@ -2403,7 +2539,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
+        version: 5.0.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
@@ -2740,7 +2876,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
-        version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
+        version: 5.0.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
@@ -4456,6 +4592,21 @@ packages:
   cldr-core@47.0.0:
     resolution: {integrity: sha512-tdYRy66DMgpjEwVOWCTN0zhNr+zh1+d4A6MCNgJKU7voFDGsrwcWHor6jcqudHDmElCgyVNqWBKAB1JeNdSOKg==}
 
+  cldr-localenames-full@44.1.0:
+    resolution: {integrity: sha512-oD7rQKpOQdj9x7Vd/5JJiAcUJ+65dFMGD1WT0DnyVQ8CYTjQhElrm9wGHa20uWTDOMNt9ilGh0lYG22iplEzgA==}
+    peerDependencies:
+      cldr-core: 44.1.0
+
+  cldr-misc-full@44.1.0:
+    resolution: {integrity: sha512-7e3L5GQS/p5TVxI/1zUNJMq57Yc3SfGeJwqrrzeuM4quAvS/hBWK+R6A0BqUJMvcQdgINvsHFT1FfM8chyKdDA==}
+    peerDependencies:
+      cldr-core: 44.1.0
+
+  cldr-numbers-full@44.1.0:
+    resolution: {integrity: sha512-ygyk8BIRdRUdm5WqiVvCkM7tFuEhGyFXBTFzpnI5055uZV1dcsxakgwki9DMQJ0gKxKmDGy1IqPj2xctX9W9tA==}
+    peerDependencies:
+      cldr-core: 44.1.0
+
   cldr-segmentation@2.2.1:
     resolution: {integrity: sha512-0XAXy22htsxXgdSbXxJzzyAsBrBUvFhUho3eRonfcP/zvromwjBe5yDji9/y4XaV9YszEZswKv3WYhgd+JA8CA==}
 
@@ -5822,6 +5973,9 @@ packages:
   ilib-env@1.4.1:
     resolution: {integrity: sha512-lhXj5AaOT6AAft3eSFTqncNSYhqMdXAq9RpAeCral1tJpZDmzxhxpnKcFghgbjk9NkFFBRxFxTIAkgSq9NfEfQ==}
 
+  ilib-env@1.4.2:
+    resolution: {integrity: sha512-H/nFk+qnC6hfgD6bgaSF+mohZUWqtfjQmStBCU3c832vv00Vtco6GrOSGaXwdr3QgnhzxL8zhLOUTtSTJ2gHxA==}
+
   ilib-istring@1.1.0:
     resolution: {integrity: sha512-L1k59U+R8BTPMZqdHGhRGLH1PPyDgaDGPMbQFmT1kk0grGHfT7Rcmt9/EgdRQ1G0q9dnr4ZqkvknNJY5711ang==}
 
@@ -5837,9 +5991,6 @@ packages:
 
   ilib-lint-plugin-test@file:packages/ilib-lint/test/ilib-lint-plugin-test:
     resolution: {directory: packages/ilib-lint/test/ilib-lint-plugin-test, type: directory}
-
-  ilib-loader@1.3.2:
-    resolution: {integrity: sha512-1XwTd1Kq+fVL4gddapdP+eQ58JLWxxU5deUNbRSs8GeMJj/oR3qj5QhXOAgqqjl1LUFamM2oGjq5MMR1rjt2oA==}
 
   ilib-loader@1.3.5:
     resolution: {integrity: sha512-EeEb652VmB6aAO5nvth3bIHyAapgukxn/7Zyf0mCEhGNCLMv3b6IqbXCRZVrztrgzu/fTLdQKQtq4pO+6ImOCg==}
@@ -7543,6 +7694,12 @@ packages:
     resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
     engines: {node: '>= 0.8'}
 
+  raw-loader@4.0.2:
+    resolution: {integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA==}
+    engines: {node: '>= 10.13.0'}
+    peerDependencies:
+      webpack: ^4.0.0 || ^5.0.0
+
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
@@ -8744,6 +8901,10 @@ packages:
 
   url-parse@1.4.7:
     resolution: {integrity: sha512-d3uaVyzDB9tQoSXFvuSUNFibTd9zxd2bkVrDRvF5TmvWWQwqE4lgYJ5m+x1DbecWkw+LK4RNl2CU1hHuOKPVlg==}
+
+  url-shim@1.0.1:
+    resolution: {integrity: sha512-8nwZkCP7pbI8ifcifTZSLRO3W+CWuh/mafPvc7utPRqgxAORnsZIzQ5K8LUsHiQ4mTtJrKRAJmW2ZHxQk0rKUA==}
+    engines: {node: '>= 6'}
 
   utfstring@2.0.2:
     resolution: {integrity: sha512-dlLwDU6nUrUVsUbA3bUQ6LzRpt8cmJFNCarbESKFqZGMdivOFmzapOlQq54ifHXB9zgR00lKpcpCo6CITG2bjQ==}
@@ -11248,6 +11409,18 @@ snapshots:
 
   cldr-core@47.0.0: {}
 
+  cldr-localenames-full@44.1.0(cldr-core@44.1.0):
+    dependencies:
+      cldr-core: 44.1.0
+
+  cldr-misc-full@44.1.0(cldr-core@44.1.0):
+    dependencies:
+      cldr-core: 44.1.0
+
+  cldr-numbers-full@44.1.0(cldr-core@44.1.0):
+    dependencies:
+      cldr-core: 44.1.0
+
   cldr-segmentation@2.2.1:
     dependencies:
       utfstring: 2.0.2
@@ -12450,9 +12623,9 @@ snapshots:
       - ts-node
       - typescript
 
-  grunt-contrib-nodeunit@5.0.0(coveralls@3.1.1)(typescript@5.6.3):
+  grunt-contrib-nodeunit@5.0.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
-      nodeunit-x: 0.16.0(coveralls@3.1.1)(typescript@5.6.3)
+      nodeunit-x: 0.16.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
     transitivePeerDependencies:
       - coveralls
       - flow-remove-types
@@ -12869,7 +13042,7 @@ snapshots:
   ilib-common@1.1.6:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-env: 1.4.1
+      ilib-env: 1.4.2
       ilib-locale: 1.2.4
 
   ilib-ctype@1.2.1:
@@ -12883,6 +13056,8 @@ snapshots:
   ilib-env@1.4.0: {}
 
   ilib-env@1.4.1: {}
+
+  ilib-env@1.4.2: {}
 
   ilib-istring@1.1.0:
     dependencies:
@@ -12917,13 +13092,6 @@ snapshots:
       ilib-tools-common: 1.16.0
       json5: 2.2.3
 
-  ilib-loader@1.3.2:
-    dependencies:
-      '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
-      ilib-env: 1.4.1
-      promise.allsettled: 1.0.7
-
   ilib-loader@1.3.5:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
@@ -12940,7 +13108,7 @@ snapshots:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.3
       ilib-env: 1.4.1
-      ilib-loader: 1.3.2
+      ilib-loader: 1.3.5
       ilib-locale: 1.2.4
       ilib-localematcher: 1.3.1
       json5: 2.2.3
@@ -14745,10 +14913,10 @@ snapshots:
       - ts-node
       - typescript
 
-  nodeunit-x@0.16.0(coveralls@3.1.1)(typescript@5.6.3):
+  nodeunit-x@0.16.0(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
       ejs: 3.1.10
-      tap: 16.3.10(coveralls@3.1.1)(typescript@5.6.3)
+      tap: 16.3.10(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3)
     transitivePeerDependencies:
       - coveralls
       - flow-remove-types
@@ -15321,6 +15489,12 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.4.24
       unpipe: 1.0.0
+
+  raw-loader@4.0.2(webpack@5.95.0):
+    dependencies:
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   react-is@18.3.1: {}
 
@@ -16281,7 +16455,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tap@16.3.10(coveralls@3.1.1)(typescript@5.6.3):
+  tap@16.3.10(coveralls@3.1.1)(ts-node@8.10.2(typescript@5.6.3))(typescript@5.6.3):
     dependencies:
       chokidar: 3.6.0
       findit: 2.0.0
@@ -16306,6 +16480,7 @@ snapshots:
       which: 2.0.2
     optionalDependencies:
       coveralls: 3.1.1
+      ts-node: 8.10.2(typescript@5.6.3)
       typescript: 5.6.3
     transitivePeerDependencies:
       - supports-color
@@ -16782,6 +16957,8 @@ snapshots:
       querystringify: 2.2.0
       requires-port: 1.0.0
     optional: true
+
+  url-shim@1.0.1: {}
 
   utfstring@2.0.2: {}
 

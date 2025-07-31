@@ -1,0 +1,9 @@
+{
+    "locale": "fa-AF",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "‎−{s} {n}"
+        }
+    }
+}

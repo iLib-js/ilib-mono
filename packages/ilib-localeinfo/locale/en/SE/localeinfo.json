@@ -1,0 +1,14 @@
+{
+    "locale": "en-SE",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "exponential": "×10^",
+        "groupChar": " ",
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %"
+    }
+}

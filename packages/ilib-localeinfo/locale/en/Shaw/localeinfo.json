@@ -1,0 +1,9 @@
+{
+    "locale": "en-Shaw",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        }
+    }
+}

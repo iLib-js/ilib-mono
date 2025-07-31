@@ -1,0 +1,13 @@
+{
+    "language.name": "Ganda",
+    "locale": "lg",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

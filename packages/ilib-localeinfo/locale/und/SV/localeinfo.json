@@ -1,0 +1,11 @@
+{
+    "clock": "12",
+    "currency": "USD",
+    "firstDayOfWeek": 0,
+    "locale": "und-SV",
+    "paperSizes": {
+        "regular": "8x11"
+    },
+    "region.name": "El Salvador",
+    "timezone": "America/El_Salvador"
+}

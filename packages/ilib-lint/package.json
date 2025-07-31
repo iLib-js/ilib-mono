@@ -81,7 +81,7 @@
         "ilib-common": "workspace:^",
         "ilib-lint-common": "workspace:^",
         "ilib-locale": "workspace:^",
-        "ilib-localeinfo": "^1.1.0",
+        "ilib-localeinfo": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "intl-messageformat": "^10.5",
         "json5": "^2.2.3",

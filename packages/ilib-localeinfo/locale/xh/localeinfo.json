@@ -1,0 +1,14 @@
+{
+    "language.name": "Xhosa",
+    "locale": "xh",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

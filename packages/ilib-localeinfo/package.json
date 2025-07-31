@@ -1,0 +1,127 @@
+{
+    "name": "ilib-localeinfo",
+    "version": "1.1.0",
+    "main": "./lib/index.js",
+    "module": "./src/index.js",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./lib/index.js"
+        },
+        "./assemble.mjs": "./assemble.mjs"
+    },
+    "description": "Encode locale info for various types of data",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "date",
+        "time",
+        "format",
+        "locale",
+        "translation"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-localeinfo",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "assemble.mjs",
+        "locale",
+        "src",
+        "lib",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:iLib-js/iLib-localeinfo.git"
+    },
+    "scripts": {
+        "build": "npm run build:prod",
+        "build:tz": "rm -r tz ; mkdir tz ; cd tz; wget https://data.iana.org/time-zones/releases/tzdata2022a.tar.gz ; tar zxovf *.tar.gz",
+        "build:data": "cd scripts ; node genlocinfo.js",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:locales": "echo '{\"locales\":[' $(cat locales.txt) ']}' > locales.json ; echo 'export const localeList = ' > test/locales.js ; cat locales.json >> test/locales.js",
+        "build:prod": "grunt babel --mode=prod",
+        "build:dev": "grunt babel --mode=dev",
+        "build:assemble": "npm-run-all build:locales ; ilib-assemble -m .  --localefile ./locales.json assembled src",
+        "build:webtest": "webpack-cli --env dev --config webpack-test.config.js",
+        "build:test": "npm-run-all build:locales build:dev build:assemble build:webtest",
+        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
+        "test:cli": "LANG=en_US.UTF8 npm-run-all build:locales build:assemble ; bash test/testSuite.sh",
+        "test:web": "LANG=en_US.UTF8 npm-run-all build:assemble build:webtest ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "test": "npm-run-all build:dev test:cli",
+        "test:all": "npm-run-all build:dev test:cli test:web",
+        "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
+        "clean": "git clean -f -d src test ; rm -rf lib tz assembled *.tgz",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/iliblocaleinfo.md",
+        "doc:html": "jsdoc -c jsdoc.json"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.23.3",
+        "@babel/plugin-transform-modules-umd": "^7.23.3",
+        "@babel/preset-env": "^7.23.3",
+        "@babel/register": "^7.22.15",
+        "@babel/runtime": "^7.23.4",
+        "@open-wc/webpack-import-meta-loader": "^0.4.7",
+        "assertextras": "^1.1.0",
+        "babel-loader": "^9.1.3",
+        "babel-plugin-add-module-exports": "^1.0.4",
+        "babel-plugin-module-resolver": "^5.0.0",
+        "babel-plugin-transform-import-meta": "^2.2.1",
+        "cldr-core": "^44.0.1",
+        "cldr-localenames-full": "^44.0.1",
+        "cldr-misc-full": "^44.0.1",
+        "cldr-numbers-full": "^44.0.1",
+        "docdash": "^2.0.2",
+        "grunt": "^1.6.1",
+        "grunt-babel": "^8.0.0",
+        "grunt-cli": "^1.4.3",
+        "grunt-contrib-clean": "^2.0.1",
+        "grunt-contrib-jshint": "^3.2.0",
+        "grunt-contrib-nodeunit": "^5.0.0",
+        "grunt-contrib-uglify": "^5.2.2",
+        "ilib-assemble": "workspace:^",
+        "ilib-data-utils": "workspace:^",
+        "ilib-loader": "workspace:^",
+        "jsdoc": "^4.0.2",
+        "jsdoc-to-markdown": "^8.0.0",
+        "json-stable-stringify": "^1.1.0",
+        "load-grunt-tasks": "^5.1.0",
+        "nodeunit": "^0.11.3",
+        "npm-run-all": "^4.1.5",
+        "open-cli": "^7.2.0",
+        "raw-loader": "^4.0.2",
+        "url-shim": "^1.0.1",
+        "webpack": "^5.89.0",
+        "webpack-cli": "^5.1.4"
+    },
+    "dependencies": {
+        "@log4js-node/log4js-api": "^1.0.2",
+        "ilib-common": "workspace:^",
+        "ilib-env": "workspace:^",
+        "ilib-locale": "workspace:^",
+        "ilib-localedata": "workspace:^",
+        "ilib-localematcher": "^1.2.2",
+        "json5": "^2.2.3"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "language.name": "Western Frisian",
+    "locale": "fy",
+    "numfmt": {
+        "currencyFormats": {
+            "commonNegative": "{s} {n}-"
+        },
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

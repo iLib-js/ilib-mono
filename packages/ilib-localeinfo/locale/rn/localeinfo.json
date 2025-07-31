@@ -1,0 +1,21 @@
+{
+    "delimiter": {
+        "alternateQuotationStart": "’",
+        "quotationStart": "”"
+    },
+    "language.name": "Rundi",
+    "locale": "rn",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        },
+        "decimalChar": ",",
+        "groupChar": ".",
+        "negativepctFmt": "-{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

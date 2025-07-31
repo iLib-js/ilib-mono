@@ -1,0 +1,11 @@
+{
+    "calendar": "persian",
+    "clock": "24",
+    "currency": "IRR",
+    "firstDayOfWeek": 6,
+    "locale": "und-IR",
+    "region.name": "Iran",
+    "timezone": "Asia/Tehran",
+    "weekendEnd": 5,
+    "weekendStart": 5
+}

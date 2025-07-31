@@ -1,0 +1,15 @@
+{
+    "language.name": "Swati",
+    "locale": "ss",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

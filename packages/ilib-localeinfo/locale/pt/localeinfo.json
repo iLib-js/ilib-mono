@@ -1,0 +1,11 @@
+{
+    "language.name": "Portuguese",
+    "locale": "pt",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

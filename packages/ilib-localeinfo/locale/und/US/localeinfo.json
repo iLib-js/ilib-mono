@@ -1,0 +1,12 @@
+{
+    "clock": "12",
+    "currency": "USD",
+    "firstDayOfWeek": 0,
+    "locale": "und-US",
+    "paperSizes": {
+        "regular": "8x11"
+    },
+    "region.name": "United States",
+    "timezone": "America/New_York",
+    "units": "uscustomary"
+}
