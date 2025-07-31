@@ -3,6 +3,13 @@
     "version": "1.0.0",
     "description": "ilib-lint plugin for Apple platform string parameter validation",
     "main": "src/index.js",
+    "module": "src/index.js",
+    "exports": {
+        ".": {
+            "import": "./src/index.js"
+        },
+        "./package.json": "./package.json"
+    },
     "type": "module",
     "scripts": {
         "coverage": "pnpm test -- --coverage",
