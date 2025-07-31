@@ -56,8 +56,8 @@ class AnsiConsoleFormatter extends Formatter {
             output += `  Source: ${result.source}\n`;
         }
         output += `  ${result.highlight}
-  Auto-fix: ${result.fix === undefined ? "unavailable" : result.fix.applied ? "\u001B[92mapplied\u001B[0m" : "\u001B[91mnot applied\u001B[0m"}
-  Rule (${result.rule.getName()}): ${result.rule.getDescription()}
+  Auto-fix: ${!result.fix ? "unavailable" : result.fix.applied ? "\u001B[92mapplied\u001B[0m" : "\u001B[91mnot applied\u001B[0m"}
+  Rule (${result?.rule?.getName()}): ${result?.rule?.getDescription()}
 `;
         if (result.locale) {
             output += `  Locale: ${result.locale}\n`;
@@ -68,7 +68,7 @@ class AnsiConsoleFormatter extends Formatter {
         output = output.replace(/<e\d\/>/g, "\u001B[91m␣\u001B[0m");
         output = output.replace(/<e\d>/g, "\u001B[91m");
         output = output.replace(/<\/e\d>/g, "\u001B[0m");
-        if (typeof(result.rule.getLink) === 'function' && result.rule.getLink()) {
+        if (typeof(result?.rule?.getLink) === 'function' && result?.rule?.getLink()) {
             output += `  More info: ${result.rule.getLink()}\n`;
         }
         return output;
