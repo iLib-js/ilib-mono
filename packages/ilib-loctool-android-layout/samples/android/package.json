@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-android-layout Sample",
   "private": true,
   "description": "Sample localization project",
   "devDependencies": {

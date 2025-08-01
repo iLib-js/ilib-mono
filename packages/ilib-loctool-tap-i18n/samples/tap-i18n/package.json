@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-tap-i18n Sample",
   "private": true,
   "description": "Sample localization project",
   "devDependencies": {

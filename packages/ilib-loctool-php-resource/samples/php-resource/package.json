@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-php-resource Sample",
   "private": true,
   "description": "Sample localization project that localizes strings into php resource files.",
   "devDependencies": {

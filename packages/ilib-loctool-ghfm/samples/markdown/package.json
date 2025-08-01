@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-ghfm Sample",
   "private": true,
   "description": "Sample localization project",
   "devDependencies": {

@@ -1,4 +1,5 @@
 {
+  "name": "ilib-lint Sample",
   "private": true,
   "description": "Sample application that demostrates how to use the ilib-lint tool with python strings",
   "devDependencies": {

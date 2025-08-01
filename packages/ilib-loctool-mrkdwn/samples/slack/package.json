@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-mrkdwn Sample",
   "private": true,
   "description": "Sample localization project",
   "devDependencies": {

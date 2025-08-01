@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-javascript JS-JSON Sample",
   "private": true,
   "description": "Sample localization project",
   "devDependencies": {
