@@ -123,7 +123,7 @@ function escapeQuotes(str) {
  */
 var MarkdownFile = function(options) {
     options = options || {};
-
+debugger;
     this.project = options.project;
     this.pathName = options.pathName;
 
@@ -582,14 +582,11 @@ MarkdownFile.prototype._walk = function(node) {
 
     switch (node.type) {
         case 'text':
-            var parts = trim(this.API, node.value);
-            // only localizable if there already is some localizable text
-            // or if this text contains anything that is not whitespace
-            if (this.message.getTextLength() > 0 || parts.text) {
-                this.message.addText(node.value);
-                this.message.isTranslatable = this.localizeLinks;
-                node.localizable = true;
-            }
+            // the message accumulator will handle the whitespace, so always
+            // add this text to the accumulator even if it's just whitespace
+            this.message.addText(node.value);
+            this.message.isTranslatable = this.localizeLinks;
+            node.localizable = true;
             break;
 
         case 'delete':
@@ -1024,10 +1021,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
 
     switch (node.type) {
         case 'text':
-            var parts = trim(this.API, node.value);
-            // only localizable if there already is some localizable text
-            // or if this text contains anything that is not whitespace
-            if (node.localizable || parts.text) {
+            if (node.localizable) {
                 message.addText(node.value);
             }
             break;

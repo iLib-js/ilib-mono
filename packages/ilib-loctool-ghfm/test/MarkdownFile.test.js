@@ -5387,7 +5387,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '---\n' +
             'fullyTranslated: true\n' +
             '---\n' +
-            '* `action (str):` `create`, `delete`, oder `update`.\n';
+            '* `a:` `b`, `c`, oder `d`.\n';
         diff(content, expected);
         expect(content).toBe(expected);
     });
