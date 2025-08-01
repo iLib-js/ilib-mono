@@ -403,7 +403,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 id: "sentence-ending-punctuation",
                 description: `Spanish ${sourceEnding.type} should start with "${sourceEnding.type === 'question' ? '¿' : '¡'}" for ${targetLocale} locale`,
                 source: source,
-                highlight: `Spanish ${sourceEnding.type} should start with "${sourceEnding.type === 'question' ? '¿' : '¡'}"`,
+                highlight: `<e0/>${target}`,
                 pathName: file,
                 lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
             });
@@ -412,9 +412,13 @@ class ResourceSentenceEnding extends ResourceRule {
         const patterns = [
             { regex: /\.{3}$/, punctuation: '...' },
             { regex: /…$/, punctuation: '…' },
+            { regex: /。$/, punctuation: '。' },
             { regex: /\.$/, punctuation: '.' },
+            { regex: /？$/, punctuation: '？' },
             { regex: /\?$/, punctuation: '?' },
+            { regex: /！$/, punctuation: '！' },
             { regex: /!$/, punctuation: '!' },
+            { regex: /：$/, punctuation: '：' },
             { regex: /:$/, punctuation: ':' }
         ];
         for (const pattern of patterns) {
@@ -429,13 +433,24 @@ class ResourceSentenceEnding extends ResourceRule {
             fix = this.createPunctuationFix(resource, target, actualPunctuation, expectedPunctuation);
         }
 
+        // Create highlight with <e0> tags around the incorrect punctuation
+        let highlight = '';
+        if (actualPunctuation) {
+            const positionInfo = this.findIncorrectPunctuationPosition(target, actualPunctuation);
+            if (positionInfo) {
+                const beforePunctuation = target.substring(0, positionInfo.position);
+                const afterPunctuation = target.substring(positionInfo.position + positionInfo.length);
+                highlight = `${beforePunctuation}<e0>${actualPunctuation}</e0>${afterPunctuation}`;
+            }
+        }
+
         return new Result({
             rule: this,
             severity: "warning",
             id: "sentence-ending-punctuation",
             description: `Sentence ending punctuation should be "${expectedPunctuation}" for ${targetLocale} locale, not "${(actualPunctuation ?? sourceEnding.original)}"`,
             source: source,
-            highlight: '',
+            highlight: highlight,
             pathName: file,
             fix,
             lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
