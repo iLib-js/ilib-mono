@@ -490,6 +490,136 @@ describe("ResourceSentenceEnding rule", function() {
             expectedResult: "Sentence ending punctuation should be \":\" for en-GB locale",
             highlight: "The answer is<e0>：</e0>",
             description: "English colon triggers warning if not Western colon"
+        },
+        // Tests for quoted content
+        {
+            targetLocale: "en-GB",
+            source: "She said, \"Hello!\"",
+            target: "She said, \"Hello!\"",
+            expectedResult: undefined,
+            description: "English exclamation mark in quotes is correct"
+        },
+        {
+            targetLocale: "en-GB",
+            source: "She said, \"Hello!\"",
+            target: "She said, \"Hello！\"",
+            expectedResult: "Sentence ending punctuation should be \"!\" for en-GB locale",
+            highlight: "She said, \"Hello<e0>！</e0>\"",
+            description: "English exclamation mark in quotes triggers warning if not Western exclamation mark"
+        },
+        {
+            targetLocale: "de-DE",
+            source: "She said, \"Hello!\"",
+            target: "Sie sagte, \"Hallo!\"",
+            expectedResult: undefined,
+            description: "German exclamation mark in quotes is correct"
+        },
+        {
+            targetLocale: "de-DE",
+            source: "She said, \"Hello!\"",
+            target: "Sie sagte, \"Hallo！\"",
+            expectedResult: "Sentence ending punctuation should be \"!\" for de-DE locale",
+            highlight: "Sie sagte, \"Hallo<e0>！</e0>\"",
+            description: "German exclamation mark in quotes triggers warning if not Western exclamation mark"
+        },
+        {
+            targetLocale: "ja-JP",
+            source: "She said, \"Hello!\"",
+            target: "彼女は「こんにちは！」と言いました。",
+            expectedResult: undefined,
+            description: "Japanese exclamation mark in quotes is correct"
+        },
+        {
+            targetLocale: "ja-JP",
+            source: "She said, \"Hello!\"",
+            target: "彼女は「こんにちは!」と言いました。",
+            expectedResult: "Sentence ending punctuation should be \"！\" for ja-JP locale",
+            highlight: "彼女は「こんにちは<e0>!</e0>」と言いました。",
+            description: "Japanese exclamation mark in quotes triggers warning if not fullwidth exclamation mark"
+        },
+        {
+            targetLocale: "zh-CN",
+            source: "She said, \"Hello!\"",
+            target: "她说：\"你好！\"",
+            expectedResult: undefined,
+            description: "Chinese exclamation mark in quotes is correct"
+        },
+        {
+            targetLocale: "zh-CN",
+            source: "She said, \"Hello!\"",
+            target: "她说：\"你好!\"",
+            expectedResult: "Sentence ending punctuation should be \"！\" for zh-CN locale",
+            highlight: "她说：\"你好<e0>!</e0>\"",
+            description: "Chinese exclamation mark in quotes with Western exclamation triggers warning if fullwidth exclamation mark is not used"
+        },
+        {
+            targetLocale: "ko-KR",
+            source: "She said, \"Hello!\"",
+            target: "그녀는 \"안녕하세요!\"라고 말했습니다.",
+            expectedResult: undefined,
+            description: "Korean exclamation mark in quotes is correct"
+        },
+        {
+            targetLocale: "ko-KR",
+            source: "She said, \"Hello!\"",
+            target: "그녀는 \"안녕하세요！\"라고 말했습니다.",
+            expectedResult: "Sentence ending punctuation should be \"!\" for ko-KR locale",
+            highlight: "그녀는 \"안녕하세요<e0>！</e0>\"라고 말했습니다.",
+            description: "Korean exclamation mark in quotes with fullwidth exclamation triggers warning"
+        },
+        {
+            targetLocale: "es-ES",
+            source: "She said, \"Hello!\"",
+            target: "Ella dijo: \"¡Hola!\"",
+            expectedResult: undefined,
+            description: "Spanish exclamation mark in quotes with inverted punctuation is correct"
+        },
+        {
+            targetLocale: "es-ES",
+            source: "She said, \"Hello!\"",
+            target: "Ella dijo: \"Hola!\"",
+            expectedResult: "Spanish exclamation should start with \"¡\" for es-ES locale",
+            highlight: "Ella dijo: \"<e0/>Hola!\"",
+            description: "Spanish exclamation mark in quotes missing inverted punctuation triggers warning"
+        },
+        {
+            targetLocale: "es-ES",
+            source: "She said, \"Hello!\"",
+            target: "Ella dijo: \"¡Hola！\"",
+            expectedResult: "Sentence ending punctuation should be \"!\" for es-ES locale",
+            highlight: "Ella dijo: \"¡Hola<e0>！</e0>\"",
+            description: "Spanish exclamation mark in quotes with fullwidth exclamation triggers warning"
+        },
+        {
+            targetLocale: "es-ES",
+            source: "She said, \"What?\"",
+            target: "Ella dijo: \"¿Qué?\"",
+            expectedResult: undefined,
+            description: "Spanish question mark in quotes with inverted punctuation is correct"
+        },
+        {
+            targetLocale: "es-ES",
+            source: "She said, \"What?\"",
+            target: "Ella dijo: \"Qué?\"",
+            expectedResult: "Spanish question should start with \"¿\" for es-ES locale",
+            highlight: "Ella dijo: \"<e0/>Qué?\"",
+            description: "Spanish question mark in quotes missing inverted punctuation triggers warning"
+        },
+        {
+            targetLocale: "es-ES",
+            source: "She said, \"What?\"",
+            target: "Ella dijo: \"¿Qué？\"",
+            expectedResult: "Sentence ending punctuation should be \"?\" for es-ES locale",
+            highlight: "Ella dijo: \"¿Qué<e0>？</e0>\"",
+            description: "Spanish question mark in quotes with fullwidth question mark triggers warning"
+        },
+        // Test for quoted text not at the end of the source
+        {
+            targetLocale: "de-DE",
+            source: "\"Don't do that,\" she said.",
+            target: "\"Toe dass nicht,\" sagt Sie.",
+            expectedResult: undefined,
+            description: "German period at end matches English period at end when quoted text is not at end"
         }
     ];
 

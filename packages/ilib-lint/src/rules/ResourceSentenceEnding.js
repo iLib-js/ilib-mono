@@ -220,33 +220,81 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
-     * Get the last sentence from a string, using period, question, exclamation, or colon as delimiters.
-     * For quoted content, extract the actual sentence within the quotes.
+     * Get the last quoted string in the input, or null if none found.
+     * Handles all quote types in allQuoteChars.
      * @param {string} str
-     * @returns {string}
+     * @returns {string|null}
      */
-    static getLastSentence(str) {
-        if (!str) return str;
-
-        // If there's a trailing quote, search backwards for the matching start quote
+    static getLastQuotedString(str) {
+        if (!str) return null;
         const quoteChars = ResourceSentenceEnding.allQuoteChars;
-        const trimmedStr = str.trim();
-        const lastChar = trimmedStr.charAt(trimmedStr.length - 1);
-
-        if (quoteChars.includes(lastChar)) {
-            // Find the last matching opening quote
-            for (let i = trimmedStr.length - 2; i >= 0; i--) {
-                if (quoteChars.includes(trimmedStr.charAt(i))) {
-                    // Extract content inside the last pair of quotes
-                    const quotedContent = trimmedStr.substring(i + 1, trimmedStr.length - 1);
-                    // Now find the last sentence within the quoted content
-                    return ResourceSentenceEnding.getLastSentenceFromContent(quotedContent);
+        let lastOpen = -1, lastClose = -1;
+        for (let i = str.length - 1; i >= 0; i--) {
+            if (quoteChars.includes(str[i])) {
+                lastClose = i;
+                // Find the matching opening quote
+                for (let j = i - 1; j >= 0; j--) {
+                    if (quoteChars.includes(str[j])) {
+                        lastOpen = j;
+                        break;
+                    }
                 }
+                break;
             }
         }
+        if (lastOpen !== -1 && lastClose !== -1 && lastOpen < lastClose) {
+            return str.substring(lastOpen + 1, lastClose);
+        }
+        return null;
+    }
 
-        // If no quotes, use the current algorithm directly
-        return ResourceSentenceEnding.getLastSentenceFromContent(trimmedStr);
+    /**
+     * Get the last sentence from a string, handling quoted content.
+     * For source strings: only return quoted content if the string ends with a quote; otherwise return the full string.
+     * For target strings: return the last quoted content anywhere in the string, or the full string if no quotes.
+     * @param {string} str
+     * @param {boolean} isSource - true if this is a source string, false if target string
+     * @returns {string}
+     */
+    static getLastSentence(str, isSource) {
+        if (!str) return str;
+        const quoteChars = ResourceSentenceEnding.allQuoteChars;
+        const trimmedStr = str.trim();
+
+        if (isSource) {
+            // For source strings, only return quoted content if the string ends with a quote
+            const lastChar = trimmedStr.charAt(trimmedStr.length - 1);
+            if (quoteChars.includes(lastChar)) {
+                // Find the last matching opening quote
+                for (let i = trimmedStr.length - 2; i >= 0; i--) {
+                    if (quoteChars.includes(trimmedStr.charAt(i))) {
+                        return trimmedStr.substring(i + 1, trimmedStr.length - 1);
+                    }
+                }
+            }
+            // Otherwise, return the full string
+            return trimmedStr;
+        } else {
+            // For target strings, find the last quoted content anywhere in the string
+            let lastQuoteStart = -1;
+            let lastQuoteEnd = -1;
+            for (let i = trimmedStr.length - 1; i >= 0; i--) {
+                if (quoteChars.includes(trimmedStr.charAt(i))) {
+                    lastQuoteEnd = i;
+                    for (let j = i - 1; j >= 0; j--) {
+                        if (quoteChars.includes(trimmedStr.charAt(j))) {
+                            lastQuoteStart = j;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if (lastQuoteStart !== -1 && lastQuoteEnd !== -1) {
+                return trimmedStr.substring(lastQuoteStart + 1, lastQuoteEnd);
+            }
+            return ResourceSentenceEnding.getLastSentenceFromContent(trimmedStr);
+        }
     }
 
     /**
@@ -310,26 +358,26 @@ class ResourceSentenceEnding extends ResourceRule {
     /**
      * Find the position of the incorrect punctuation in the target string
      * @param {string} target - The target string
+     * @param {string} lastSentence - The last sentence from the target
      * @param {string} incorrectPunctuation - The incorrect punctuation to find
      * @returns {Object|null} - Object with position and length, or null if not found
      */
-    findIncorrectPunctuationPosition(target, incorrectPunctuation) {
-        if (!target || !incorrectPunctuation) return null;
+    findIncorrectPunctuationPosition(target, lastSentence, incorrectPunctuation) {
+        if (!target || !lastSentence || !incorrectPunctuation) return null;
 
-        const stripped = ResourceSentenceEnding.stripTrailingQuotesAndWhitespace(target.trim());
-        if (!stripped) return null;
-
-        // Find the position of the incorrect punctuation at the end
+        // Find the position of the incorrect punctuation in the last sentence
         const punctuationLength = incorrectPunctuation.length;
-        const endPosition = stripped.length - punctuationLength;
+        const endPosition = lastSentence.length - punctuationLength;
 
-        if (endPosition >= 0 && stripped.substring(endPosition) === incorrectPunctuation) {
-            // Calculate the position in the original target string
-            const originalEndPosition = target.length - (target.trim().length - stripped.length) - punctuationLength;
-            return {
-                position: originalEndPosition,
-                length: punctuationLength
-            };
+        if (endPosition >= 0 && lastSentence.substring(endPosition) === incorrectPunctuation) {
+            // Find the position of the last sentence within the target string
+            const lastSentenceStart = target.lastIndexOf(lastSentence);
+            if (lastSentenceStart !== -1) {
+                return {
+                    position: lastSentenceStart + endPosition,
+                    length: punctuationLength
+                };
+            }
         }
 
         return null;
@@ -344,7 +392,9 @@ class ResourceSentenceEnding extends ResourceRule {
      * @returns {Object|null} - The fix object or null if no fix can be created
      */
     createPunctuationFix(resource, target, incorrectPunctuation, correctPunctuation) {
-        const positionInfo = this.findIncorrectPunctuationPosition(target, incorrectPunctuation);
+        // Get the last sentence to find the position
+        const lastSentence = ResourceSentenceEnding.getLastSentence(target, false);
+        const positionInfo = this.findIncorrectPunctuationPosition(target, lastSentence, incorrectPunctuation);
         if (!positionInfo) return null;
 
         return ResourceFixer.createFix({
@@ -379,35 +429,69 @@ class ResourceSentenceEnding extends ResourceRule {
         if (!language) return undefined;
         const optionalPunctuationLanguages = ['th', 'lo', 'my'];
         if (optionalPunctuationLanguages.includes(language)) return undefined;
-        // Pass sourceEnding.original to getExpectedPunctuation for ellipsis
         const expectedPunctuation = this.getExpectedPunctuation(localeObj, sourceEnding.type);
         if (!expectedPunctuation) return undefined;
 
-        const strippedTarget = ResourceSentenceEnding.stripTrailingQuotesAndWhitespace(target.trim());
-        if (this.hasExpectedEnding(strippedTarget, expectedPunctuation, sourceEnding.original)) {
-            if (language !== 'es') {
-                return undefined;
-            }
-
-            // For Spanish, also check for inverted punctuation at the beginning of the last sentence
-            // Call getLastSentence with the original target to properly handle quoted content
-            const lastSentence = ResourceSentenceEnding.getLastSentence(target);
-            if (this.hasCorrectSpanishInvertedPunctuation(source, lastSentence, sourceEnding.type)) {
-                return undefined;
-            }
-
-            // Spanish target is missing inverted punctuation at the beginning
-            return new Result({
-                rule: this,
-                severity: "warning",
-                id: "sentence-ending-punctuation",
-                description: `Spanish ${sourceEnding.type} should start with "${sourceEnding.type === 'question' ? '¿' : '¡'}" for ${targetLocale} locale`,
-                source: source,
-                highlight: `<e0/>${target}`,
-                pathName: file,
-                lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
-            });
+        // Determine if the source ends with a quote
+        const sourceTrimmed = source.trim();
+        const quoteChars = ResourceSentenceEnding.allQuoteChars;
+        const sourceEndsWithQuote = quoteChars.includes(sourceTrimmed.charAt(sourceTrimmed.length - 1));
+        let lastSentence;
+        if (sourceEndsWithQuote) {
+            // Use the last quoted string in the target
+            lastSentence = ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
+        } else {
+            // Use the full target string
+            lastSentence = target.trim();
         }
+
+        // For Spanish, check for inverted punctuation at the beginning of the last sentence
+        if (language === 'es') {
+            if (this.hasCorrectSpanishInvertedPunctuation(source, lastSentence, sourceEnding.type)) {
+                // Check if the last sentence has the correct ending punctuation
+                if (this.hasExpectedEnding(lastSentence, expectedPunctuation, sourceEnding.original)) {
+                    return undefined;
+                }
+            } else {
+                // Spanish target is missing inverted punctuation at the beginning
+                // Find where the quoted content starts to place the highlight correctly
+                const quoteChars = ResourceSentenceEnding.allQuoteChars;
+                let quotedContentStart = -1;
+                for (let i = 0; i < target.length; i++) {
+                    if (quoteChars.includes(target.charAt(i))) {
+                        quotedContentStart = i + 1;
+                        break;
+                    }
+                }
+
+                let highlight;
+                if (quotedContentStart !== -1) {
+                    const beforeQuote = target.substring(0, quotedContentStart);
+                    const afterQuote = target.substring(quotedContentStart);
+                    highlight = `${beforeQuote}<e0/>${afterQuote}`;
+                } else {
+                    highlight = `<e0/>${target}`;
+                }
+
+                return new Result({
+                    rule: this,
+                    severity: "warning",
+                    id: "sentence-ending-punctuation",
+                    description: `Spanish ${sourceEnding.type} should start with "${sourceEnding.type === 'question' ? '¿' : '¡'}" for ${targetLocale} locale`,
+                    source: source,
+                    highlight: highlight,
+                    pathName: file,
+                    lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
+                });
+            }
+        } else {
+            // For non-Spanish, check if the last sentence has the correct ending punctuation
+            if (this.hasExpectedEnding(lastSentence, expectedPunctuation, sourceEnding.original)) {
+                return undefined;
+            }
+        }
+
+        // Find the actual punctuation in the last sentence
         let actualPunctuation = null;
         const patterns = [
             { regex: /\.{3}$/, punctuation: '...' },
@@ -422,7 +506,7 @@ class ResourceSentenceEnding extends ResourceRule {
             { regex: /:$/, punctuation: ':' }
         ];
         for (const pattern of patterns) {
-            if (pattern.regex.test((target || '').trim())) {
+            if (pattern.regex.test(lastSentence)) {
                 actualPunctuation = pattern.punctuation;
                 break;
             }
@@ -436,7 +520,7 @@ class ResourceSentenceEnding extends ResourceRule {
         // Create highlight with <e0> tags around the incorrect punctuation
         let highlight = '';
         if (actualPunctuation) {
-            const positionInfo = this.findIncorrectPunctuationPosition(target, actualPunctuation);
+            const positionInfo = this.findIncorrectPunctuationPosition(target, lastSentence, actualPunctuation);
             if (positionInfo) {
                 const beforePunctuation = target.substring(0, positionInfo.position);
                 const afterPunctuation = target.substring(positionInfo.position + positionInfo.length);
