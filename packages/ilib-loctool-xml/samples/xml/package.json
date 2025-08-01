@@ -1,5 +1,4 @@
 {
-  "name": "ilib-loctool-xml Sample",
   "private": true,
   "description": "Sample localization project",
   "devDependencies": {

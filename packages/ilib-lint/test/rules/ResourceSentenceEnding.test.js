@@ -48,6 +48,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is a sentence.",
             target: "これは文です.",
             expectedResult: "Sentence ending punctuation should be \"。\" for ja-JP locale",
+            highlight: "これは文です<e0>.</e0>",
             description: "Japanese period triggers warning if not ideographic full stop"
         },
         {
@@ -62,6 +63,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "What is this?",
             target: "これは何ですか?",
             expectedResult: "Sentence ending punctuation should be \"？\" for ja-JP locale",
+            highlight: "これは何ですか<e0>?</e0>",
             description: "Japanese question mark triggers warning if not fullwidth"
         },
         {
@@ -76,6 +78,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is amazing!",
             target: "これは素晴らしいです!",
             expectedResult: "Sentence ending punctuation should be \"！\" for ja-JP locale",
+            highlight: "これは素晴らしいです<e0>!</e0>",
             description: "Japanese exclamation mark triggers warning if not fullwidth"
         },
         {
@@ -90,6 +93,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is incomplete...",
             target: "これは不完全です...",
             expectedResult: "Sentence ending punctuation should be \"…\" for ja-JP locale",
+            highlight: "これは不完全です<e0>...</e0>",
             description: "Japanese ellipsis triggers warning if not Unicode ellipsis"
         },
         {
@@ -104,6 +108,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "The answer is:",
             target: "答えは:",
             expectedResult: "Sentence ending punctuation should be \"：\" for ja-JP locale",
+            highlight: "答えは<e0>:</e0>",
             description: "Japanese colon is converted to fullwidth"
         },
         // Chinese tests
@@ -119,6 +124,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is a sentence.",
             target: "这是一个句子.",
             expectedResult: "Sentence ending punctuation should be \"。\" for zh-CN locale",
+            highlight: "这是一个句子<e0>.</e0>",
             description: "Chinese period triggers warning if not ideographic full stop"
         },
         {
@@ -133,6 +139,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "What is this?",
             target: "这是什么?",
             expectedResult: "Sentence ending punctuation should be \"？\" for zh-CN locale",
+            highlight: "这是什么<e0>?</e0>",
             description: "Chinese question mark triggers warning if not fullwidth"
         },
         {
@@ -147,6 +154,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is amazing!",
             target: "这太棒了!",
             expectedResult: "Sentence ending punctuation should be \"！\" for zh-CN locale",
+            highlight: "这太棒了<e0>!</e0>",
             description: "Chinese exclamation mark triggers warning if not fullwidth"
         },
         {
@@ -161,6 +169,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is incomplete...",
             target: "这是不完整的...",
             expectedResult: "Sentence ending punctuation should be \"…\" for zh-CN locale",
+            highlight: "这是不完整的<e0>...</e0>",
             description: "Chinese ellipsis triggers warning if not Unicode ellipsis"
         },
         {
@@ -175,6 +184,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "The answer is:",
             target: "答案是:",
             expectedResult: "Sentence ending punctuation should be \"：\" for zh-CN locale",
+            highlight: "答案是<e0>:</e0>",
             description: "Chinese colon triggers warning if not fullwidth"
         },
         // Korean tests
@@ -190,6 +200,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is a sentence.",
             target: "이것은 문장입니다。",
             expectedResult: "Sentence ending punctuation should be \".\" for ko-KR locale",
+            highlight: "이것은 문장입니다<e0>。</e0>",
             description: "Korean period triggers warning if ideographic full stop"
         },
         {
@@ -204,6 +215,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "What is this?",
             target: "이것은 무엇입니까？",
             expectedResult: "Sentence ending punctuation should be \"?\" for ko-KR locale",
+            highlight: "이것은 무엇입니까<e0>？</e0>",
             description: "Korean question mark triggers warning if fullwidth"
         },
         {
@@ -218,6 +230,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is amazing!",
             target: "이것은 놀랍습니다！",
             expectedResult: "Sentence ending punctuation should be \"!\" for ko-KR locale",
+            highlight: "이것은 놀랍습니다<e0>！</e0>",
             description: "Korean exclamation mark triggers warning if fullwidth"
         },
         {
@@ -232,6 +245,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is incomplete...",
             target: "이것은 불완전합니다...",
             expectedResult: "Sentence ending punctuation should be \"…\" for ko-KR locale",
+            highlight: "이것은 불완전합니다<e0>...</e0>",
             description: "Korean ellipsis triggers warning if not Unicode ellipsis"
         },
         {
@@ -246,6 +260,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "The answer is:",
             target: "답은：",
             expectedResult: "Sentence ending punctuation should be \":\" for ko-KR locale",
+            highlight: "답은<e0>：</e0>",
             description: "Korean colon triggers warning if fullwidth"
         },
         // Khmer tests
@@ -261,6 +276,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is a sentence.",
             target: "នេះគឺជាប្រយោគ.",
             expectedResult: "Sentence ending punctuation should be \"។\" for km-KH locale",
+            highlight: "នេះគឺជាប្រយោគ<e0>.</e0>",
             description: "Khmer period triggers warning if not Khmer period"
         },
         {
@@ -275,6 +291,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "What is this?",
             target: "នេះគឺជាអ្វី？",
             expectedResult: "Sentence ending punctuation should be \"?\" for km-KH locale",
+            highlight: "នេះគឺជាអ្វី<e0>？</e0>",
             description: "Khmer question mark triggers warning if not Western question mark"
         },
         {
@@ -289,6 +306,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is amazing!",
             target: "នេះគឺជាអស្ចារ្យ！",
             expectedResult: "Sentence ending punctuation should be \"!\" for km-KH locale",
+            highlight: "នេះគឺជាអស្ចារ្យ<e0>！</e0>",
             description: "Khmer exclamation mark triggers warning if not Western exclamation mark"
         },
         {
@@ -303,6 +321,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is incomplete...",
             target: "នេះគឺជាមិនគ្រប់គ្រាន់...",
             expectedResult: "Sentence ending punctuation should be \"…\" for km-KH locale",
+            highlight: "នេះគឺជាមិនគ្រប់គ្រាន់<e0>...</e0>",
             description: "Khmer ellipsis triggers warning if not Unicode ellipsis"
         },
         {
@@ -317,6 +336,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "The answer is:",
             target: "ចម្លើយគឺ：",
             expectedResult: "Sentence ending punctuation should be \":\" for km-KH locale",
+            highlight: "ចម្លើយគឺ<e0>：</e0>",
             description: "Khmer colon triggers warning if not Western colon"
         },
         // German tests
@@ -332,6 +352,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is a sentence.",
             target: "Das ist ein Satz：",
             expectedResult: "Sentence ending punctuation should be \".\" for de-DE locale",
+            highlight: "Das ist ein Satz<e0>：</e0>",
             description: "German period triggers warning if not Western period"
         },
         {
@@ -346,6 +367,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "What is this?",
             target: "Was ist das.",
             expectedResult: "Sentence ending punctuation should be \"?\" for de-DE locale",
+            highlight: "Was ist das<e0>.</e0>",
             description: "German question mark triggers warning if not Western question mark"
         },
         {
@@ -360,6 +382,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is amazing!",
             target: "Das ist erstaunlich.",
             expectedResult: "Sentence ending punctuation should be \"!\" for de-DE locale",
+            highlight: "Das ist erstaunlich<e0>.</e0>",
             description: "German exclamation mark triggers warning if not Western exclamation mark"
         },
         {
@@ -374,6 +397,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is incomplete...",
             target: "Das ist unvollständig...",
             expectedResult: "Sentence ending punctuation should be \"…\" for de-DE locale",
+            highlight: "Das ist unvollständig<e0>...</e0>",
             description: "German ellipsis triggers warning if not Unicode ellipsis"
         },
         {
@@ -388,6 +412,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "The answer is:",
             target: "Die Antwort ist.",
             expectedResult: "Sentence ending punctuation should be \":\" for de-DE locale",
+            highlight: "Die Antwort ist<e0>.</e0>",
             description: "German colon triggers warning if not Western colon"
         },
         // English tests
@@ -403,6 +428,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is a sentence.",
             target: "This is a sentence。",
             expectedResult: "Sentence ending punctuation should be \".\" for en-GB locale",
+            highlight: "This is a sentence<e0>。</e0>",
             description: "English period triggers warning if not Western period"
         },
         {
@@ -417,6 +443,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "What is this?",
             target: "What is this？",
             expectedResult: "Sentence ending punctuation should be \"?\" for en-GB locale",
+            highlight: "What is this<e0>？</e0>",
             description: "English question mark triggers warning if not Western question mark"
         },
         {
@@ -431,6 +458,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is amazing!",
             target: "This is amazing！",
             expectedResult: "Sentence ending punctuation should be \"!\" for en-GB locale",
+            highlight: "This is amazing<e0>！</e0>",
             description: "English exclamation mark triggers warning if not Western exclamation mark"
         },
         {
@@ -445,6 +473,7 @@ describe("ResourceSentenceEnding rule", function() {
             source: "This is incomplete...",
             target: "This is incomplete...",
             expectedResult: "Sentence ending punctuation should be \"…\" for en-GB locale",
+            highlight: "This is incomplete<e0>...</e0>",
             description: "English ellipsis triggers warning if not Unicode ellipsis"
         },
         {
@@ -459,13 +488,14 @@ describe("ResourceSentenceEnding rule", function() {
             source: "The answer is:",
             target: "The answer is：",
             expectedResult: "Sentence ending punctuation should be \":\" for en-GB locale",
+            highlight: "The answer is<e0>：</e0>",
             description: "English colon triggers warning if not Western colon"
         }
     ];
 
     languageTestCases.forEach(testCase => {
         test(testCase.description, () => {
-            expect.assertions(testCase.expectedResult === undefined ? 2 : 3);
+            expect.assertions(testCase.expectedResult === undefined ? 2 : (testCase.highlight ? 4 : 3));
 
             const rule = new ResourceSentenceEnding();
             expect(rule).toBeTruthy();
@@ -492,6 +522,9 @@ describe("ResourceSentenceEnding rule", function() {
             } else {
                 expect(actual).toBeTruthy();
                 expect(actual?.description).toContain(testCase.expectedResult);
+                if (testCase.highlight) {
+                    expect(actual?.highlight).toBe(testCase.highlight);
+                }
             }
         });
     });
@@ -551,7 +584,7 @@ describe("ResourceSentenceEnding rule", function() {
     });
 
     test("Spanish inverted punctuation - missing opening question mark", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -575,10 +608,11 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Spanish question should start with "¿" for es-ES locale');
+        expect(actual?.highlight).toBe("<e0/>Qué es esto?");
     });
 
     test("Spanish inverted punctuation - missing opening exclamation mark", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -602,11 +636,41 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Spanish exclamation should start with "¡" for es-ES locale');
+        expect(actual?.highlight).toBe("<e0/>Esto es increíble!");
+    });
+
+    // Test for highlight property functionality
+    test("Highlight property is correctly set in result", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "highlight.test",
+            sourceLocale: "en-US",
+            source: "The answer is:",
+            targetLocale: "ko-KR",
+            target: "답은：",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain('Sentence ending punctuation should be ":" for ko-KR locale');
+        expect(actual?.highlight).toBe("답은<e0>：</e0>");
     });
 
     // Customization tests
     test("Japanese with full custom punctuation configuration - correct punctuation passes", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         const customConfig = {
             "ja-JP": {
@@ -641,10 +705,11 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese ideographic full stop (。) but custom config expects Western period (.)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "." for ja-JP locale');
+        expect(actual?.highlight).toBe("これは文です<e0>。</e0>");
     });
 
     test("Japanese with full custom punctuation configuration - question mark violation", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         const customConfig = {
             "ja-JP": {
@@ -679,10 +744,11 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth question mark (？) but custom config expects Western question mark (?)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "?" for ja-JP locale');
+        expect(actual?.highlight).toBe("これは何ですか<e0>？</e0>");
     });
 
     test("Japanese with full custom punctuation configuration - exclamation mark violation", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         const customConfig = {
             "ja-JP": {
@@ -717,10 +783,11 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth exclamation mark (！) but custom config expects Western exclamation mark (!)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "!" for ja-JP locale');
+        expect(actual?.highlight).toBe("これは素晴らしいです<e0>！</e0>");
     });
 
     test("Japanese with full custom punctuation configuration - ellipsis violation", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         const customConfig = {
             "ja-JP": {
@@ -755,10 +822,11 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Unicode ellipsis (…) but custom config expects Western ellipsis (...)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "..." for ja-JP locale');
+        expect(actual?.highlight).toBe("これは不完全です<e0>…</e0>");
     });
 
     test("Japanese with full custom punctuation configuration - colon violation", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         const customConfig = {
             "ja-JP": {
@@ -778,7 +846,7 @@ describe("ResourceSentenceEnding rule", function() {
             sourceLocale: "en-US",
             source: "The answer is:",
             targetLocale: "ja-JP",
-            target: "答えは: はい。",
+            target: "答えは：",
             pathName: "a/b/c.xliff",
             lineNumber: 29
         });
@@ -793,11 +861,12 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth colon (：) but custom config expects Western colon (:)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be ":" for ja-JP locale');
+        expect(actual?.highlight).toBe("答えは<e0>：</e0>");
     });
 
     // Blending tests
     test("Japanese with partial custom punctuation configuration - question mark uses custom", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         // Configure Japanese with partial custom punctuation - only override question and exclamation
         const customConfig = {
@@ -831,6 +900,7 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth question mark (？) but custom config expects Western question mark (?)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "?" for ja-JP locale');
+        expect(actual?.highlight).toBe("これは何ですか<e0>？</e0>");
     });
 
     test("Japanese with partial custom punctuation configuration - period uses Japanese default", () => {
@@ -870,7 +940,7 @@ describe("ResourceSentenceEnding rule", function() {
     });
 
     test("Japanese with partial custom punctuation configuration - exclamation uses custom", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         // Configure Japanese with partial custom punctuation - only override question and exclamation
         const customConfig = {
@@ -904,6 +974,7 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth exclamation mark (！) but custom config expects Western exclamation mark (!)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "!" for ja-JP locale');
+        expect(actual?.highlight).toBe("これは素晴らしいです<e0>！</e0>");
     });
 
     test("Japanese with partial custom punctuation configuration - ellipsis uses Japanese default", () => {
