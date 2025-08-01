@@ -62,17 +62,23 @@ class ResourceSentenceEnding extends ResourceRule {
 
         // Initialize custom punctuation mappings from configuration
         this.customPunctuationMap = {};
-
-        if (options && options.param) {
-            if (typeof options.param === 'object' && !Array.isArray(options.param)) {
-                // param is an object with locale codes as keys and punctuation mappings as values
-                // Merge the default punctuation with the custom punctuation so that the custom
-                // punctuation overrides the default and we don't have to specify all punctuation types.
-                this.customPunctuationMap = {
-                    ...defaults,
-                    ...options.param
+        if (options && typeof options === 'object' && !Array.isArray(options)) {
+            // options is an object with locale codes as keys and punctuation mappings as values
+            // Merge the default punctuation with the custom punctuation so that the custom
+            // punctuation overrides the default and we don't have to specify all punctuation types.
+            // Custom maps are stored by language, not locale, so that they apply to all locales of
+            // that language.
+            for (const locale in options) {
+                const localeObj = new Locale(locale);
+                const language = localeObj.getLanguage();
+                if (!language) continue;
+                // Get locale-specific defaults for this language
+                const localeDefaults = this.getLocaleDefaults(language);
+                this.customPunctuationMap[language] = {
+                    ...localeDefaults,
+                    ...options[locale]
                 };
-            }
+            };
         }
     }
 
@@ -132,6 +138,18 @@ class ResourceSentenceEnding extends ResourceRule {
         if (language === 'en' && type === 'ellipsis') {
             return defaults['ellipsis'];
         }
+        // Get locale-specific defaults for this language
+        const localeDefaults = this.getLocaleDefaults(language);
+        const result = localeDefaults[type] || this.getDefaultPunctuation(type);
+        return result;
+    }
+
+    /**
+     * Get locale-specific defaults for a given language
+     * @param {string} language - The language code
+     * @returns {Object} - The locale-specific defaults for the language
+     */
+    getLocaleDefaults(language) {
         const punctuationMap = {
             'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
             'zh': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
@@ -147,8 +165,7 @@ class ResourceSentenceEnding extends ResourceRule {
             'kn': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
             'km': { 'period': '។', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' }
         };
-        const result = punctuationMap[language]?.[type] || this.getDefaultPunctuation(type);
-        return result;
+        return punctuationMap[language] || defaults;
     }
 
     /**
