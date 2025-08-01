@@ -123,7 +123,7 @@ function escapeQuotes(str) {
  */
 var MarkdownFile = function(options) {
     options = options || {};
-debugger;
+
     this.project = options.project;
     this.pathName = options.pathName;
 

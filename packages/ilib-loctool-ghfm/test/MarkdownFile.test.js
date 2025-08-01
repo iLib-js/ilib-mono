@@ -127,7 +127,8 @@ afterEach(function() {
         "test/testfiles/test/testfiles/de-DE/md/test3.md",
         "test/testfiles/test/testfiles/fr-FR/md/nostrings.md",
         "test/testfiles/test/testfiles/fr-FR/md/test1.md",
-        "test/testfiles/test/testfiles/fr-FR/md/test3.md"
+        "test/testfiles/test/testfiles/fr-FR/md/test3.md",
+        "test/testfiles/subproject/de-DE/codesnippets.md"
     ].forEach(rmrf);
 });
 
