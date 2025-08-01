@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-php-resource Regex Sample",
   "private": true,
   "description": "Sample localization project for the regex-based loctool plugin",
   "devDependencies": {

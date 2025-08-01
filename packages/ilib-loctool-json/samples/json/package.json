@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-json JSON Sample",
   "private": true,
   "description": "Sample localization project for ilib-loctool-json",
   "devDependencies": {

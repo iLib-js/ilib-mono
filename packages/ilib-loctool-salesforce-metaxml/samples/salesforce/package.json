@@ -1,4 +1,5 @@
 {
+  "name": "ilib-loctool-salesforce-metaxml Sample",
   "private": true,
   "description": "Sample Salesforce app localization project",
   "devDependencies": {
