@@ -127,7 +127,8 @@ afterEach(function() {
         "test/testfiles/test/testfiles/de-DE/md/test3.md",
         "test/testfiles/test/testfiles/fr-FR/md/nostrings.md",
         "test/testfiles/test/testfiles/fr-FR/md/test1.md",
-        "test/testfiles/test/testfiles/fr-FR/md/test3.md"
+        "test/testfiles/test/testfiles/fr-FR/md/test3.md",
+        "test/testfiles/subproject/de-DE/codesnippets.md"
     ].forEach(rmrf);
 });
 
@@ -4562,6 +4563,23 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r663481768");
     });
 
+    test("MarkdownFileParseCodeSnippetsInBulletList", function() {
+        expect.assertions(6);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('* `action (str):` `create`, `delete`, or `update`.\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+        var r = set.getBySource("<c0/> <c1/>, <c2/>, or <c3/>.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("<c0/> <c1/>, <c2/>, or <c3/>.");
+        expect(r.getKey()).toBe("r852531755");
+    });
+
     test("MarkdownFileParseWithLinkReferenceWithText", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
@@ -5333,6 +5351,44 @@ Dictionary<string, object> metadata = await client.MetadataManager
             'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
             'This is the last bit of localizable text.\n\n' +
             'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+        diff(content, expected);
+        expect(content).toBe(expected);
+    });
+
+    test("MarkdownFileLocalizeCodeSnippetsInBulletList", function() {
+        expect.assertions(3);
+        // this subproject has the "fullyTranslated" flag set to true
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            markdown: {
+                fullyTranslated: true
+            }
+        });
+        var mdft2 = new MarkdownFileType(p2);
+        var mf = new MarkdownFile({
+            project: p2,
+            pathName: "./codesnippets.md",
+            type: mdft2
+        });
+        expect(mf).toBeTruthy();
+        // should read the file
+        mf.extract();
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r852531755',
+            source: '<c0/> <c1/>, <c2/>, or <c3/>.',
+            target: '<c0/> <c1/>, <c2/>, oder <c3/>.',
+            targetLocale: "de-DE",
+            datatype: "markdown"
+        }));
+        mf.localize(translations, ["de-DE"]);
+        expect(fs.existsSync(path.join(p2.target, "de-DE/codesnippets.md"))).toBeTruthy();
+        var content = fs.readFileSync(path.join(p2.target, "de-DE/codesnippets.md"), "utf-8");
+        var expected =
+            '---\n' +
+            'fullyTranslated: true\n' +
+            '---\n' +
+            '* `a:` `b`, `c`, oder `d`.\n';
         diff(content, expected);
         expect(content).toBe(expected);
     });
