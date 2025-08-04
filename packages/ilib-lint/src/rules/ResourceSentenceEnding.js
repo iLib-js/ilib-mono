@@ -70,14 +70,19 @@ class ResourceSentenceEnding extends ResourceRule {
             // that language.
             for (const locale in options) {
                 const localeObj = new Locale(locale);
-                const language = localeObj.getLanguage();
-                if (!language) continue;
-                // Get locale-specific defaults for this language
-                const localeDefaults = this.getLocaleDefaults(language);
-                this.customPunctuationMap[language] = {
-                    ...localeDefaults,
-                    ...options[locale]
-                };
+
+                // only process config for valid locales
+                if (localeObj.isValid()) {
+                    const language = localeObj.getLanguage();
+                    // locale must have a language code
+                    if (!language) continue;
+                    // Apply locale-specific defaults for any locale that usesthis language
+                    const localeDefaults = this.getLocaleDefaults(language);
+                    this.customPunctuationMap[language] = {
+                        ...localeDefaults,
+                        ...options[locale]
+                    };
+                }
             };
         }
     }
