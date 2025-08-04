@@ -1,5 +1,12 @@
 # ilib-lint
 
+## 2.16.1
+
+### Patch Changes
+
+- efebec7: - fixed null pointer exception in the ascii formatter if
+  the Result.fix is set to null instead of undefined
+
 ## 2.16.0
 
 ### Minor Changes

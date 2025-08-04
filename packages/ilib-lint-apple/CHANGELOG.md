@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+### Patch Changes
+
+- efebec7: - Fixed ilib-lint-apple packaging to allow the linter to be able to load it properly
+
 ## 1.0.0
 
 ### Major Changes
