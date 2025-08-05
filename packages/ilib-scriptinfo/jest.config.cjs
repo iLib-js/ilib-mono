@@ -7,7 +7,17 @@ const config = {
         color: "blackBright",
     },
     preset: undefined,
-    transform: {},
+    transform: {
+        '^.+\\.ts$': ['ts-jest', {
+            tsconfig: {
+                types: ['jest', 'node']
+            }
+        }]
+    },
+    testMatch: [
+        "**/test/**/*.test.ts"
+    ],
+    moduleFileExtensions: ['ts', 'js']
 }
 
 module.exports = config; 

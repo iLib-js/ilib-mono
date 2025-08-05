@@ -71,7 +71,7 @@ function generateScriptData() {
         
         // Generate the output file content with ESM format
         const outputContent = `/*
- * ScriptData.js - Generated script data from ucd-full and ilib packages
+ * ScriptData.ts - Generated script data from ucd-full and ilib packages
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -95,7 +95,9 @@ function generateScriptData() {
 // Compact script data format
 // Each script is represented as: [code, number, name, longId, rtl?, ime?, casing?]
 // Empty array elements indicate missing optional values
-export const scriptData = [
+export type ScriptDataEntry = [string, number, string, string, boolean?, boolean?, boolean?];
+
+export const scriptData: ScriptDataEntry[] = [
 ${scriptData.map(entry => `    [${entry.map((val, i) => {
     if (i < 4) return JSON.stringify(val);
     return val === true ? 'true' : '';
@@ -104,10 +106,10 @@ ${scriptData.map(entry => `    [${entry.map((val, i) => {
 `;
         
         // Write the output file
-        const outputPath = path.join(__dirname, '../src/ScriptData.js');
+        const outputPath = path.join(__dirname, '../src/ScriptData.ts');
         fs.writeFileSync(outputPath, outputContent, 'utf8');
         
-        console.log(`✅ Generated ESM ScriptData.js with ${scriptData.length} scripts`);
+        console.log(`✅ Generated TS ScriptData.ts with ${scriptData.length} scripts`);
         console.log(`📁 Output file: ${outputPath}`);
         console.log(`📊 Source: ucd-full package (${ucdFullData.iso15924.length} scripts) + ilib package backfill`);
         
