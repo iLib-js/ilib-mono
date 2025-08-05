@@ -37,13 +37,13 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             "./karma-setup.cjs",
-            "./test/ScriptInfo.test.js"
+            "./test/**/*.test.ts"
         ],
 
         // preprocess matching files before serving them to the browser
         preprocessors: {
             "./karma-setup.cjs": ["webpack"],
-            "./test/ScriptInfo.test.js": ["webpack"],
+            "./test/**/*.test.ts": ["webpack"],
         },
 
         browsers: ["ChromeHeadless", "FirefoxHeadless"],
@@ -51,11 +51,24 @@ module.exports = function (config) {
         webpack: {
             mode: "development",
             target: "web",
+            resolve: {
+                extensions: ['.ts', '.js', '.mjs']
+            },
             module: {
                 rules: [
                     {
+                        test: /\.ts$/,
+                        exclude: /\/node_modules\//,
+                        use: {
+                            loader: 'ts-loader',
+                            options: {
+                                transpileOnly: true
+                            }
+                        }
+                    },
+                    {
                         test: /\.js$/,
-                        exclude: /node_modules/,
+                        exclude: /\/node_modules\//,
                         use: {
                             loader: 'babel-loader',
                             options: {

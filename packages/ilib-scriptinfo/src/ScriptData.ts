@@ -1,5 +1,5 @@
 /*
- * ScriptData.js - Generated script data from ucd-full and ilib packages
+ * ScriptData.ts - Generated script data from ucd-full and ilib packages
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -23,7 +23,9 @@
 // Compact script data format
 // Each script is represented as: [code, number, name, longId, rtl?, ime?, casing?]
 // Empty array elements indicate missing optional values
-export const scriptData = [
+export type ScriptDataEntry = [string, number, string, string, boolean?, boolean?, boolean?];
+
+export const scriptData: ScriptDataEntry[] = [
     ["Adlm",166,"Adlam","Adlam",true,,true],
     ["Afak",439,"Afaka","Afaka"],
     ["Aghb",239,"Caucasian Albanian","Caucasian_Albanian"],
