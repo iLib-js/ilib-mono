@@ -747,9 +747,15 @@ importers:
       '@formatjs/intl':
         specifier: ^2.10.4
         version: 2.10.11(typescript@5.6.3)
+      ilib-casemapper:
+        specifier: workspace:^
+        version: link:../ilib-casemapper
       ilib-common:
         specifier: workspace:^
         version: link:../ilib-common
+      ilib-ctype:
+        specifier: workspace:^
+        version: link:../ilib-ctype
       ilib-lint-common:
         specifier: workspace:^
         version: link:../ilib-lint-common
@@ -759,6 +765,12 @@ importers:
       ilib-localeinfo:
         specifier: ^1.1.0
         version: 1.1.0
+      ilib-localematcher:
+        specifier: ^1.2.2
+        version: 1.3.1
+      ilib-scriptinfo:
+        specifier: workspace:^
+        version: link:../ilib-scriptinfo
       ilib-tools-common:
         specifier: workspace:^
         version: link:../ilib-tools-common
@@ -13008,7 +13020,7 @@ snapshots:
   ilib-loader@1.3.2:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-env: 1.4.1
       promise.allsettled: 1.0.7
 
@@ -13055,7 +13067,7 @@ snapshots:
 
   ilib-localematcher@1.3.1:
     dependencies:
-      ilib-common: 1.1.3
+      ilib-common: 1.1.6
       ilib-locale: 1.2.4
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
