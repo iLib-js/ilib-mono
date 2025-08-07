@@ -79,6 +79,7 @@
     "dependencies": {
         "@formatjs/intl": "^2.10.4",
         "ilib-common": "workspace:^",
+        "ilib-ctype": "workspace:^",
         "ilib-lint-common": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-localeinfo": "^1.1.0",
