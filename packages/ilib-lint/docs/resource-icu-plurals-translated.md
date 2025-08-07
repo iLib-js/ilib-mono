@@ -26,8 +26,9 @@ need to be sent back to the translator for retranslation.
 ## Exceptions
 
 Sometimes, certain words or phrases are intentionally the same in both source and target languages.
-For example, the word "File" in Italian is also "File" - the exact same spelling!
-In such cases, you can configure exceptions to prevent false warnings.
+For example, the word "File" in Italian is also "File" - the exact same spelling! These exceptions
+may be phrases that happen to be the same, such as that example in Italian, or they may be loanwords
+from other languages, which is common for computer and software terms. In such cases, you can configure exceptions to prevent false warnings about untranslated plural categories.
 
 ### Configuration
 
@@ -39,9 +40,10 @@ You can configure exceptions by passing an object parameter to the rule construc
         "myruleset": {
             "resource-icu-plurals-translated": {
                 "exceptions": {
-                    "it-IT": ["File", "Email", "Download"],
+                    "it-IT": ["File", "Email", "Download", "File Download"],
                     "de-DE": ["Download", "Upload"],
-                    "fr-FR": ["Email", "Internet"]
+                    "fr-FR": ["Email", "Internet"],
+                    "pl-PL": ["App Center"]
                 }
             }
         }
@@ -49,8 +51,10 @@ You can configure exceptions by passing an object parameter to the rule construc
 }
 ```
 
-The `param` object should have locale codes as keys and arrays of exception words/phrases as values.
-The rule will ignore warnings when the source and target text contain any of the specified exceptions.
+The `param` object should have locale codes as keys and arrays of exception phrases as values. The
+entire source string must match the exception phrase in order for the exception to apply. (They are not
+single word exceptions.) The rule will ignore warnings when the source and target text both contain any
+of the specified exceptions phrases.
 
 ### Exception Matching
 
