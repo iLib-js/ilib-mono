@@ -1,6 +1,6 @@
 {
   "name": "ilib-scriptinfo-sample",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Sample command-line app demonstrating ilib-scriptinfo usage",
   "type": "module",
   "main": "index.js",
