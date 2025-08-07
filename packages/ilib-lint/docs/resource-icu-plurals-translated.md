@@ -22,3 +22,39 @@ German: "{numberOfFiles, plural, one {# file} other {# Dateien}}
 
 In this case, the German translator missed the "one" category. The string will
 need to be sent back to the translator for retranslation.
+
+## Exceptions
+
+Sometimes, certain words or phrases are intentionally the same in both source and target languages.
+For example, the word "File" in Italian is also "File" - the exact same spelling!
+In such cases, you can configure exceptions to prevent false warnings.
+
+### Configuration
+
+You can configure exceptions by passing an object parameter to the rule constructor:
+
+```javascript
+{
+    "rulesets":
+        "myruleset": {
+            "resource-icu-plurals-translated": {
+                "exceptions": {
+                    "it-IT": ["File", "Email", "Download"],
+                    "de-DE": ["Download", "Upload"],
+                    "fr-FR": ["Email", "Internet"]
+                }
+            }
+        }
+    }
+}
+```
+
+The `param` object should have locale codes as keys and arrays of exception words/phrases as values.
+The rule will ignore warnings when the source and target text contain any of the specified exceptions.
+
+### Exception Matching
+
+- Exceptions are matched case-insensitively
+- Exact matches only (no partial matching)
+- Exceptions are checked against the entire text content of the plural category
+- Exceptions are stored by language code (e.g., "it" for Italian) regardless of the full locale code provide

@@ -38,6 +38,64 @@ class ResourceICUPluralTranslation extends ResourceRule {
         this.description = "Ensure that plurals in translated resources are also translated";
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-icu-plurals-translated.md";
+
+        // Initialize exceptions from configuration
+        this.exceptions = {};
+
+        if (options && options.exceptions) {
+            if (typeof options.exceptions === 'object' && !Array.isArray(options.exceptions)) {
+                // exceptions is an object with locale codes as keys and arrays of exception words/phrases as values
+                // Validate locales and store by language only
+                for (const [locale, exceptionList] of Object.entries(options.exceptions)) {
+                    if (Array.isArray(exceptionList)) {
+                        const localeObj = new Locale(locale);
+                        if (localeObj.isValid()) {
+                            const language = localeObj.getLanguage();
+                            if (language) {
+                                if (!this.exceptions[language]) {
+                                    this.exceptions[language] = [];
+                                }
+                                this.exceptions[language].push(...exceptionList);
+                            }
+                        } else {
+                            // Skip invalid locales
+                            console.warn(`Invalid locale in exceptions configuration: ${locale}`);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if the given text contains any exceptions for the given locale.
+     * @private
+     * @param {string} text the text to check
+     * @param {string} locale the locale to check against
+     * @returns {boolean} true if the text contains any exceptions
+     */
+    containsExceptions(text, locale) {
+        try {
+            const localeObj = new Locale(locale);
+            if (!localeObj.isValid()) {
+                return false;
+            }
+            const language = localeObj.getLanguage();
+            if (!language || !this.exceptions[language]) {
+                return false;
+            }
+
+            const languageExceptions = this.exceptions[language];
+            const normalizedText = text.toLowerCase().trim();
+
+            // Check if any exception exactly matches the text
+            return languageExceptions.some(exception => {
+                const normalizedException = exception.toLowerCase().trim();
+                return normalizedText === normalizedException;
+            });
+        } catch (e) {
+            return false;
+        }
     }
 
     /**
@@ -161,12 +219,12 @@ class ResourceICUPluralTranslation extends ResourceRule {
             return Object.keys(targetPlural.options).flatMap(category => {
                 const sourceCategory = sourcePlural.options[category] ? category : "other";
                 const sourcePluralCat = sourcePlural.options[sourceCategory];
-                if (!sourcePluralCat) return; // nothing to check!
+                if (!sourcePluralCat) return []; // nothing to check!
 
                 // Only compare the source and target if there is some text there to
                 // translate. This will avoid the false positives for the situation where
                 // the only thing in the plural category string is just a {variable}.
-                if (this.textNodes(sourcePluralCat.value).length === 0) return;
+                if (this.textNodes(sourcePluralCat.value).length === 0) return [];
 
                 const sourceStr = this.reconstruct(sourcePluralCat.value).replace(/\s+/g, " ").trim();
                 const targetStr = this.reconstruct(targetPlural.options[category].value).replace(/\s+/g, " ").trim();
@@ -175,20 +233,25 @@ class ResourceICUPluralTranslation extends ResourceRule {
                 // use case- and whitespace-insensitive match. Also, don't produce a result
                 // if the source string is empty
                 if (sourceStr.length && sourceStr.toLowerCase() === targetStr.toLowerCase()) {
-                    let value = {
-                        severity: "warning",
-                        description: `Translation of the category \'${category}\' is the same as the source.`,
-                        rule: this,
-                        id: resource.getKey(),
-                        source: `${sourceCategory} {${sourceStr}}`,
-                        highlight: `Target: <e0>${category} {${targetStr}}</e0>`,
-                        pathName: file,
-                        locale: resource.getTargetLocale()
-                    };
-                    if (typeof(resource.lineNumber) !== 'undefined') {
-                        value.lineNumber = resource.lineNumber;
+                    // Check if this text contains any exceptions for the target locale
+                    const targetLocale = resource.getTargetLocale();
+                    const hasExceptions = this.containsExceptions(sourceStr, targetLocale);
+                    if (!hasExceptions) {
+                        let value = {
+                            severity: /** @type {"warning"} */ ("warning"),
+                            description: `Translation of the category \'${category}\' is the same as the source.`,
+                            rule: this,
+                            id: resource.getKey(),
+                            source: `${sourceCategory} {${sourceStr}}`,
+                            highlight: `Target: <e0>${category} {${targetStr}}</e0>`,
+                            pathName: file,
+                            locale: targetLocale
+                        };
+                        if (typeof(resource.lineNumber) !== 'undefined') {
+                            value.lineNumber = resource.lineNumber;
+                        }
+                        result.push(new Result(value));
                     }
-                    result.push(new Result(value));
                 }
 
                 // now the plurals may have plurals nested in them, so recursively check them too
