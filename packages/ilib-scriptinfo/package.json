@@ -7,7 +7,7 @@
     "types": "./lib/index.d.ts",
     "exports": {
         ".": {
-            "import": "./src/index.ts",
+            "import": "./lib/index.js",
             "require": "./lib/index.js",
             "types": "./lib/index.d.ts"
         }
@@ -68,7 +68,9 @@
         "test:cli": "pnpm test:jest",
         "test:web": "pnpm test:karma --single-run",
         "test:watch": "pnpm test:jest --watch",
-        "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:web test:e2e",
+        "test:e2e": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.cjs",
+        "test:e2e:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.cjs --watch",
         "debug": "pnpm build:dev; node --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
         "debug:web": "pnpm test:karma",
         "clean": "git clean -f -d src test; rm -rf lib",
@@ -76,6 +78,7 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
+        "@ilib-mono/e2e-test": "workspace:*",
         "@types/jest": "^29.5.0",
         "@types/node": "^20.0.0",
         "docdash": "^2.0.2",
