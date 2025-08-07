@@ -217,7 +217,7 @@ describe("ResourceAllCaps", () => {
         expect(result).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(result.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = result.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -247,7 +247,7 @@ describe("ResourceAllCaps", () => {
         expect(result).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(result.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = result.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -277,7 +277,7 @@ describe("ResourceAllCaps", () => {
         expect(result).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(result.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = result.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -307,7 +307,7 @@ describe("ResourceAllCaps", () => {
         expect(result).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(result.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = result.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -337,7 +337,7 @@ describe("ResourceAllCaps", () => {
         expect(result).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(result.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = result.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -367,7 +367,7 @@ describe("ResourceAllCaps", () => {
         expect(result).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(result.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = result.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -397,7 +397,7 @@ describe("ResourceAllCaps", () => {
         expect(result).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(result.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = result.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -427,7 +427,7 @@ describe("ResourceAllCaps", () => {
         expect(result).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(result.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = result.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -814,7 +814,7 @@ describe('ResourceAllCaps with ResourceArray', () => {
         expect(actualResult).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(actualResult.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = actualResult.fix;
         expect(fix).toBeInstanceOf(Fix);
@@ -966,7 +966,7 @@ describe('ResourceAllCaps with ResourcePlural', () => {
         expect(actualResult).toBeInstanceOf(Result);
         // @ts-ignore - We're testing that result is defined
         expect(actualResult.fix).toBeDefined();
-        
+
         // @ts-ignore - We're testing that result is defined
         const fix = actualResult.fix;
         expect(fix).toBeInstanceOf(Fix);

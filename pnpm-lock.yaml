@@ -2425,7 +2425,7 @@ importers:
   packages/ilib-scriptinfo/samples/app:
     dependencies:
       ilib-scriptinfo:
-        specifier: file:../..
+        specifier: workspace:^
         version: link:../..
 
   packages/ilib-tmx:
