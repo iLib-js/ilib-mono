@@ -23,7 +23,7 @@ import {Result} from 'ilib-lint-common';
 import Locale from 'ilib-locale';
 import {isAlpha, isUpper} from 'ilib-ctype';
 import CaseMapper from 'ilib-casemapper';
-import {ScriptInfo} from '../../../ilib-scriptinfo/lib/index.js';
+import {ScriptInfo} from 'ilib-scriptinfo';
 import LocaleMatcher from 'ilib-localematcher';
 
 /** @ignore @typedef {import('ilib-tools-common').Resource} Resource */
@@ -103,7 +103,7 @@ class ResourceAllCaps extends ResourceRule {
     getFix(resource, target, file, index, category) {
         const locale = resource.targetLocale || 'en-US';
         const upperCaseTarget = this.toUpperCaseLocale(target, locale);
-        
+
         const command = ResourceFixer.createStringCommand(0, target.length, upperCaseTarget);
         return ResourceFixer.createFix({
             resource,
@@ -160,7 +160,7 @@ class ResourceAllCaps extends ResourceRule {
         try {
             const localeObj = new Locale(locale);
             let script = localeObj.getScript();
-            
+
             // If no script is specified, use LocaleMatcher to get the likely locale
             if (!script) {
                 const localeMatcher = new LocaleMatcher({ locale: locale });
@@ -170,12 +170,12 @@ class ResourceAllCaps extends ResourceRule {
                     script = likelyLocaleObj.getScript();
                 }
             }
-            
+
             if (script) {
                 const scriptInfo = new ScriptInfo(script);
                 return scriptInfo.getCasing();
             }
-            
+
             return true; // Default to true for unknown scripts
         } catch (error) {
             // If there's any error parsing the locale or script, default to true
@@ -191,7 +191,7 @@ class ResourceAllCaps extends ResourceRule {
      */
     toUpperCaseLocale(string, locale) {
         if (!string) return string;
-        
+
         try {
             const caseMapper = new CaseMapper({ locale: locale || 'en-US' });
             const result = caseMapper.map(string);
