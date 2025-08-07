@@ -1,0 +1,14 @@
+{
+  "name": "ilib-scriptinfo-sample",
+  "version": "1.0.0",
+  "description": "Sample command-line app demonstrating ilib-scriptinfo usage",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js Latn"
+  },
+  "dependencies": {
+    "ilib-scriptinfo": "workspace:^"
+  }
+} 

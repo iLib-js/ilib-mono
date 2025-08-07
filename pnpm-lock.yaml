@@ -2352,6 +2352,9 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
     devDependencies:
+      '@ilib-mono/e2e-test':
+        specifier: workspace:*
+        version: link:../e2e-test
       '@types/jest':
         specifier: ^29.5.0
         version: 29.5.14
@@ -2418,6 +2421,12 @@ importers:
       webpack-cli:
         specifier: ^5.1.4
         version: 5.1.4(webpack@5.95.0)
+
+  packages/ilib-scriptinfo/samples/app:
+    dependencies:
+      ilib-scriptinfo:
+        specifier: file:../..
+        version: link:../..
 
   packages/ilib-tmx:
     dependencies:
