@@ -18,11 +18,14 @@
  * limitations under the License.
  */
 
+import log4js from 'log4js';
 import { IntlMessageFormat } from 'intl-messageformat';
 import Locale from 'ilib-locale';
 import { Result } from 'ilib-lint-common';
 
 import ResourceRule from './ResourceRule.js';
+
+const logger = log4js.getLogger("ilib-lint.ResourceICUPluralTranslation");
 
 /**
  * @class Represent an ilib-lint rule.
@@ -53,13 +56,15 @@ class ResourceICUPluralTranslation extends ResourceRule {
                             const language = localeObj.getLanguage();
                             if (language) {
                                 if (!this.exceptions[language]) {
-                                    this.exceptions[language] = [];
+                                    this.exceptions[language] = new Set();
                                 }
-                                this.exceptions[language].push(...exceptionList);
+                                exceptionList.forEach(exception =>
+                                    this.exceptions[language].add(exception.toLowerCase().trim())
+                                );
                             }
                         } else {
                             // Skip invalid locales
-                            console.warn(`Invalid locale in exceptions configuration: ${locale}`);
+                            logger.warn(`Invalid locale in exceptions configuration: ${locale}`);
                         }
                     }
                 }
@@ -86,13 +91,13 @@ class ResourceICUPluralTranslation extends ResourceRule {
             }
 
             const languageExceptions = this.exceptions[language];
+            if (!languageExceptions) {
+                return false;
+            }
             const normalizedText = text.toLowerCase().trim();
 
             // Check if any exception exactly matches the text
-            return languageExceptions.some(exception => {
-                const normalizedException = exception.toLowerCase().trim();
-                return normalizedText === normalizedException;
-            });
+            return languageExceptions.has(normalizedText);
         } catch (e) {
             return false;
         }
