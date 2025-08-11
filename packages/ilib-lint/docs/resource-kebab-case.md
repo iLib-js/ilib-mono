@@ -11,24 +11,26 @@ Kebab case is a way of writing phrases without spaces, where spaces are replaced
 
 In this context, any string that conforms to the following rules is considered kebab case and should not be translated:
 
+> **Note:** This rule requires at least 2 hyphens to avoid false positives with common hyphenated English words like "self-driving", "co-owner", "well-known", etc. These words are legitimate translation candidates and should not be blocked by this rule.
 
 A string is considered to be in kebab case if:
 - It contains only letters, numbers, and hyphens
 - Words are separated by single hyphens
+- **It contains at least 2 hyphens** (to avoid false positives with common hyphenated English words)
 - It may have leading or trailing whitespace
 - It may have a leading or trailing hyphen
 - It may contain mixed case letters
 - It may contain only upper case letters
 
 Examples of kebab case strings:
-- `kebab-case`
+- `kebab-case-example`
 - `kebab-case-with-multiple-words`
-- `kebab-case-123`
-- `Kebab-Case-Mixed`
-- `KEBAB-CASE-UPPER`
-- ` kebab-case ` (with leading/trailing whitespace)
-- `kebab-case-` (with trailing hyphen)
-- `-kebab-case` (with leading hyphen)
+- `kebab-case-123-example`
+- `Kebab-Case-Mixed-Example`
+- `KEBAB-CASE-UPPER-EXAMPLE`
+- ` kebab-case-example ` (with leading/trailing whitespace)
+- `kebab-case-example-` (with trailing hyphen)
+- `-kebab-case-example` (with leading hyphen)
 
 Examples of strings that are not in kebab case:
 - `kebab case` (contains spaces)
@@ -37,6 +39,9 @@ Examples of strings that are not in kebab case:
 - `kebab_case` (snake case)
 - `kebab.case` (contains dots)
 - `kebab--case` (consecutive hyphens)
+- `kebab-case` (only 1 hyphen - common hyphenated English words are excluded)
+- `self-driving` (only 1 hyphen - common hyphenated English words are excluded)
+- `co-owner` (only 1 hyphen - common hyphenated English words are excluded)
 
 ## Examples
 
@@ -74,4 +79,4 @@ The rule can be configured to ignore certain strings using the `except` paramete
 
 ## Fix
 
-This rule provides an automatic fix that replaces the target string with the source string when a violation is detected. 
+This rule provides an automatic fix that replaces the target string with the source string when a violation is detected.

@@ -20,10 +20,7 @@ class ResourceKebabCase extends ResourceRule {
         this.name = "resource-kebab-case";
         this.description = "Ensure that when source strings contain only kebab case and no whitespace, then the targets are the same";
         this.link = "https://gihub.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-kebab-case.md";
-        this.regexps = [
-            "^\\s*[a-zA-Z0-9]*(-[a-zA-Z0-9]+)+\\s*$",
-            "^\\s*[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*-\\s*$"
-        ];
+
         this.exceptions = Array.isArray(options?.except) ? options.except : [];
     }
 
@@ -82,19 +79,27 @@ class ResourceKebabCase extends ResourceRule {
     /**
      * @public
      * @param {string} string A non-empty string to check.
-     * @returns {boolean} Returns true for a string that is in kebab case (matches one of the regular expressions declared in the constructor).
+     * @returns {boolean} Returns true for a string that is in kebab case with at least 2 dashes.
      * Otherwise, returns false.
      */
     isKebabCase(string) {
         const trimmed = string.trim();
-        for (const regexp of this.regexps) {
-            const match = RegExp(regexp).test(trimmed);
 
-            if (match) {
-                return true;
-            }
+        // Count the number of dashes in the string
+        const dashCount = (trimmed.match(/-/g) || []).length;
+
+        // Require at least 2 dashes to be considered kebab case
+        if (dashCount < 2) {
+            return false;
         }
-        return false;
+
+        // Basic pattern check: only letters, numbers, and hyphens allowed
+        // and no consecutive hyphens
+        if (!/^[a-zA-Z0-9\-]+$/.test(trimmed) || /--/.test(trimmed)) {
+            return false;
+        }
+
+        return true;
     }
 }
 
