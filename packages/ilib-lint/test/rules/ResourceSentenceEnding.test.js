@@ -500,6 +500,38 @@ describe("ResourceSentenceEnding rule", function() {
             expectedResult: undefined,
             description: "Bengali plural content doesn't mess up the algorithm"
         },
+        // Test for substitution parameter moved to end without sentence-ending punctuation
+        {
+            targetLocale: "it-IT",
+            source: "Your content for paragraph {number} goes here",
+            target: "Inserisci qui i contenuti per il paragrafo {number}",
+            expectedResult: undefined,
+            description: "Italian translation with substitution parameter moved to end should not trigger sentence-ending punctuation error when source has no punctuation"
+        },
+        // Test for substitution parameter in middle with no sentence-ending punctuation
+        {
+            targetLocale: "fr-FR",
+            source: "Welcome to {app_name}",
+            target: "Bienvenue sur {app_name}",
+            expectedResult: undefined,
+            description: "French translation with substitution parameter in middle should not trigger sentence-ending punctuation error when source has no punctuation"
+        },
+        // Test for multiple substitution parameters with no sentence-ending punctuation
+        {
+            targetLocale: "de-DE",
+            source: "Hello {name}, you have {count} messages",
+            target: "Hallo {name}, Sie haben {count} Nachrichten",
+            expectedResult: undefined,
+            description: "German translation with multiple substitution parameters should not trigger sentence-ending punctuation error when source has no punctuation"
+        },
+        // Test for substitution parameter at end with sentence-ending punctuation in source
+        {
+            targetLocale: "es-ES",
+            source: "Your content for paragraph {number} goes here.",
+            target: "Inserte aquí el contenido para el párrafo {number}.",
+            expectedResult: undefined,
+            description: "Spanish translation with substitution parameter at end should not trigger sentence-ending punctuation error when source has sentence-ending punctuation"
+        },
         // Tests for quoted content
         {
             targetLocale: "en-GB",
@@ -686,6 +718,63 @@ describe("ResourceSentenceEnding rule", function() {
             target: "Halo dunya",
             expectedResult: undefined,
             description: "Missing punctuation in translation for optional punctuation language (Sundanese)"
+        },
+        // Test for substitution parameter at end in source but not in target
+        {
+            targetLocale: "ko-KR",
+            source: "Hello, {name}",
+            target: "안녕하세요, {name}님",
+            expectedResult: undefined,
+            description: "Korean translation with substitution parameter repositioned should not trigger sentence-ending punctuation error when source ends with substitution parameter"
+        },
+        // Additional optional punctuation language tests - source has punctuation, target has correct punctuation
+        {
+            targetLocale: "th-TH",
+            source: "Hello world.",
+            target: "สวัสดีโลก.",
+            expectedResult: undefined,
+            description: "Correct punctuation in translation for optional punctuation language (Thai)"
+        },
+        {
+            targetLocale: "km-KH",
+            source: "What is this?",
+            target: "នេះគឺជាអ្វី?",
+            expectedResult: undefined,
+            description: "Correct punctuation in translation for optional punctuation language (Khmer)"
+        },
+        // Additional optional punctuation language tests - source has punctuation, target has wrong punctuation
+        {
+            targetLocale: "vi-VN",
+            source: "Hello world.",
+            target: "Xin chào thế giới!",
+            expectedResult: "Sentence ending punctuation should be \".\" (U+002E) for vi-VN locale, not \"!\"",
+            highlight: "Xin chào thế giới<e0>! (U+0021)</e0>",
+            description: "Wrong punctuation in translation for optional punctuation language (Vietnamese) - should be fixed"
+        },
+        {
+            targetLocale: "id-ID",
+            source: "What is this?",
+            target: "Apa ini.",
+            expectedResult: "Sentence ending punctuation should be \"?\" (U+003F) for id-ID locale, not \".\"",
+            highlight: "Apa ini<e0>. (U+002E)</e0>",
+            description: "Wrong punctuation in translation for optional punctuation language (Indonesian) - should be fixed"
+        },
+        // Additional optional punctuation language tests - source has no punctuation, target has punctuation (should be removed)
+        {
+            targetLocale: "ms-MY",
+            source: "Hello world",
+            target: "Halo dunia.",
+            expectedResult: "Extra sentence ending punctuation \".\" (U+002E) for ms-MY locale",
+            highlight: "Halo dunia<e0>. (U+002E)</e0>",
+            description: "Extra punctuation in translation for optional punctuation language (Malay) when source has none - should be removed"
+        },
+        {
+            targetLocale: "tl-PH",
+            source: "Hello world",
+            target: "Kamusta mundo!",
+            expectedResult: "Extra sentence ending punctuation \"!\" (U+0021) for tl-PH locale",
+            highlight: "Kamusta mundo<e0>! (U+0021)</e0>",
+            description: "Extra punctuation in translation for optional punctuation language (Tagalog) when source has none - should be removed"
         }
     ];
 

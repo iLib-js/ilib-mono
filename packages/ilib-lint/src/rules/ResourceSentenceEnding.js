@@ -51,6 +51,25 @@ const defaults = {
     'colon': ':'
 };
 
+/** @ignore
+ * Punctuation map for each language, with default punctuation for each punctuation type
+ */
+const punctuationMap = {
+    'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
+    'zh': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
+    'el': { 'period': '.', 'question': ';', 'exclamation': '!', 'ellipsis': '...', 'colon': ':' },
+    'ar': { 'period': '.', 'question': '؟', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'bo': { 'period': '།', 'question': '།', 'exclamation': '།', 'ellipsis': '…', 'colon': '།' },
+    'am': { 'period': '።', 'question': '፧', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'ur': { 'period': '۔', 'question': '؟', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'as': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'hi': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'or': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'pa': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'kn': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'km': { 'period': '។', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' }
+};
+
 /**
  * @class ResourceSentenceEnding
  * @extends ResourceRule
@@ -87,6 +106,66 @@ class ResourceSentenceEnding extends ResourceRule {
                 }
             };
         }
+
+        // Build the set of sentence-ending punctuation characters dynamically
+        this.sentenceEndingPunctuationSet = this.buildSentenceEndingPunctuationSet();
+    }
+
+    /**
+     * Build a set of all sentence-ending punctuation characters from all locale configurations
+     * This ensures that when new languages are added, their punctuation is automatically
+     * included without needing to manually update this method.
+     *
+     * The set includes:
+     * - Default Western punctuation: . ? ! … :
+     * - Japanese/Chinese: 。 ？ ！ … ：
+     * - Arabic: ؟
+     * - Amharic: ። ፧
+     * - Urdu: ۔
+     * - Indic scripts: । ᠀
+     * - Khmer: ។
+     * - Tibetan: །
+     * - And any custom punctuation from configuration
+     *
+     * @returns {Set} - Set of all sentence-ending punctuation characters
+     */
+    buildSentenceEndingPunctuationSet() {
+        const punctuationSet = new Set();
+
+        // Add default punctuation
+        Object.values(defaults).forEach(punct => {
+            if (punct) punctuationSet.add(punct);
+        });
+
+        // Add punctuation from all locale configurations
+        for (const language in this.customPunctuationMap) {
+            Object.values(this.customPunctuationMap[language]).forEach(punct => {
+                if (punct) punctuationSet.add(punct);
+            });
+        }
+
+        // Add punctuation from all built-in locale defaults
+        // Get the languages from the punctuationMap in getLocaleDefaults
+        const allLanguages = Object.keys(punctuationMap);
+        allLanguages.forEach(language => {
+            const localeDefaults = this.getLocaleDefaults(language);
+            Object.values(localeDefaults).forEach(punct => {
+                if (punct) punctuationSet.add(punct);
+            });
+        });
+
+        return punctuationSet;
+    }
+
+    /**
+     * Check if a character is sentence-ending punctuation
+     * @param {string} char - The character to check
+     * @returns {boolean} - True if the character is sentence-ending punctuation
+     */
+    isSentenceEndingPunctuation(char) {
+        // Only these characters are considered sentence-ending punctuation
+        // This excludes: { } ( ) [ ] < > , ; % - etc.
+        return this.sentenceEndingPunctuationSet.has(char);
     }
 
     /**
@@ -113,9 +192,9 @@ class ResourceSentenceEnding extends ResourceRule {
             return { type: 'ellipsis', original: '…' };
         }
 
-        // Check if the last character is punctuation using isPunct
+        // Check if the last character is sentence-ending punctuation
         const lastChar = stripped.charAt(stripped.length - 1);
-        if (!isPunct(lastChar)) return null;
+        if (!this.isSentenceEndingPunctuation(lastChar)) return null;
 
         // Determine the punctuation type based on the character
         let type = 'period'; // default
@@ -166,21 +245,6 @@ class ResourceSentenceEnding extends ResourceRule {
      * @returns {Object} - The locale-specific defaults for the language
      */
     getLocaleDefaults(language) {
-        const punctuationMap = {
-            'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
-            'zh': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
-            'el': { 'period': '.', 'question': ';', 'exclamation': '!', 'ellipsis': '...', 'colon': ':' },
-            'ar': { 'period': '.', 'question': '؟', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'bo': { 'period': '།', 'question': '།', 'exclamation': '།', 'ellipsis': '…', 'colon': '།' },
-            'am': { 'period': '።', 'question': '፧', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'ur': { 'period': '۔', 'question': '؟', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'as': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'hi': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'or': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'pa': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'kn': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-            'km': { 'period': '។', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' }
-        };
         return punctuationMap[language] || defaults;
     }
 
