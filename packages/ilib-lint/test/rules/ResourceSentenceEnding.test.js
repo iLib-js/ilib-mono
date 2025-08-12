@@ -869,7 +869,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
-        debugger;
+
         const resource = new ResourceString({
             key: "parentheses.test",
             sourceLocale: "en-US",
@@ -893,7 +893,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
-        debugger;
+
         const resource = new ResourceString({
             key: "parentheses.test",
             sourceLocale: "en-US",
@@ -917,7 +917,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
-        debugger;
+
         const resource = new ResourceString({
             key: "parentheses.test",
             sourceLocale: "en-US",
@@ -941,7 +941,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
-        debugger;
+
         const resource = new ResourceString({
             key: "parentheses.test",
             sourceLocale: "en-US",
