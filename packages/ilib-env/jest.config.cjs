@@ -5,7 +5,11 @@ const config = {
     displayName: {
         name: "ilib-env",
         color: "yellowBright",
-    }
+    },
+    testPathIgnorePatterns: [
+        "/node_modules/",
+        "env-browser.test.js"
+    ]
 }
 
 
