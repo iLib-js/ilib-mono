@@ -863,7 +863,103 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual?.description).toContain('Sentence ending punctuation should be ":" (U+003A) for ko-KR locale');
         expect(actual?.highlight).toBe("답은<e0>： (U+FF1A)</e0>");
     });
+    // Test with different punctuation
+    test("Test with different punctuation (parentheses)", () => {
+        expect.assertions(2);
 
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        debugger;
+        const resource = new ResourceString({
+            key: "parentheses.test",
+            sourceLocale: "en-US",
+            source: "On Earbuds",
+            targetLocale: "de-DE",
+            target: "Auf In-Ear-Kopfhörern (Earbuds)",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
+    test("Test with different punctuation2 (parentheses)", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        debugger;
+        const resource = new ResourceString({
+            key: "parentheses.test",
+            sourceLocale: "en-US",
+            source: "HDMI(ARC) Device",
+            targetLocale: "he-IL",
+            target: "התקן HDMI(ARC)",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
+    test("Test with different punctuation (bracket)", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        debugger;
+        const resource = new ResourceString({
+            key: "parentheses.test",
+            sourceLocale: "en-US",
+            source: "{HH}:{MM} Elapsed",
+            targetLocale: "zh-Hant-TW",
+            target: "已經過 {HH}:{MM}",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
+    test("Test with different punctuation2 (bracket)", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        debugger;
+        const resource = new ResourceString({
+            key: "parentheses.test",
+            sourceLocale: "en-US",
+            source: "Show me when '{arg1}' starts",
+            targetLocale: "bg-BG",
+            target: "Покажи ми кога започва '{arg1}'",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
     // Customization tests
     test("Japanese with full custom punctuation configuration - correct punctuation passes", () => {
         expect.assertions(4);
