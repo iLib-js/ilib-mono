@@ -67,7 +67,8 @@ const punctuationMap = {
     'or': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
     'pa': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
     'kn': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
-    'km': { 'period': '។', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' }
+    'km': { 'period': '។', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
+    'bn': { 'period': '।', 'question': '?', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' }
 };
 
 /**

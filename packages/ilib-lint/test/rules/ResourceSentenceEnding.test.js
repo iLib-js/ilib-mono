@@ -500,6 +500,50 @@ describe("ResourceSentenceEnding rule", function() {
             expectedResult: undefined,
             description: "Bengali plural content doesn't mess up the algorithm"
         },
+        // Bengali punctuation tests
+        {
+            targetLocale: "bn-IN",
+            source: "Hello world.",
+            target: "হ্যালো বিশ্ব।",
+            expectedResult: undefined,
+            description: "Bengali period (danda) is correct for Bengali locale"
+        },
+        {
+            targetLocale: "bn-IN",
+            source: "Hello world.",
+            target: "হ্যালো বিশ্ব.",
+            expectedResult: "Sentence ending punctuation should be \"।\" (U+0964) for bn-IN locale",
+            highlight: "হ্যালো বিশ্ব<e0>. (U+002E)</e0>",
+            description: "Bengali should use danda (।) not Western period (.)"
+        },
+        {
+            targetLocale: "bn-IN",
+            source: "What is your name?",
+            target: "আপনার নাম কি?",
+            expectedResult: undefined,
+            description: "Bengali question mark is correct (same as Western)"
+        },
+        {
+            targetLocale: "bn-IN",
+            source: "Welcome!",
+            target: "স্বাগতম!",
+            expectedResult: undefined,
+            description: "Bengali exclamation mark is correct (same as Western)"
+        },
+        {
+            targetLocale: "bn-IN",
+            source: "The options are:",
+            target: "বিকল্পগুলি হল:",
+            expectedResult: undefined,
+            description: "Bengali colon is correct (same as Western)"
+        },
+        {
+            targetLocale: "bn-IN",
+            source: "Loading...",
+            target: "লোড হচ্ছে…",
+            expectedResult: undefined,
+            description: "Bengali ellipsis is correct (same as Western)"
+        },
         // Test for substitution parameter moved to end without sentence-ending punctuation
         {
             targetLocale: "it-IT",
