@@ -91,7 +91,8 @@ class Project extends DirItem {
     constructor(root, options, config) {
         super(root, options, config);
 
-        this.files = [];
+        /** @type {DirItem[]} */
+        this.dirItems = [];
 
         if (!options || !root || !config || !options.pluginManager) {
             throw "Insufficient params given to Project constructor";
@@ -272,10 +273,10 @@ class Project extends DirItem {
         }
 
         // initialize any projects or files that have an init method.
-        this.files.forEach((file) => {
-            if (typeof file.init === "function") {
+        this.dirItems.forEach((dirItem) => {
+            if (typeof dirItem.init === "function") {
                 promise = promise.then(() => {
-                    return file.init();
+                    return dirItem.init();
                 });
             }
         });
@@ -514,7 +515,7 @@ class Project extends DirItem {
      * @param {DirItem} item directory item to add
      */
     add(item) {
-        this.files.push(item);
+        this.dirItems.push(item);
     }
 
     /**
@@ -522,7 +523,7 @@ class Project extends DirItem {
      * @returns {Array.<LintableFile>} the lintable files in this project.
      */
     get() {
-        return this.files.flatMap((dirItem) => {
+        return this.dirItems.flatMap((dirItem) => {
             if (dirItem instanceof LintableFile) {
                 return dirItem;
             } else if (dirItem instanceof DirItem) {
@@ -539,10 +540,8 @@ class Project extends DirItem {
      */
     findIssues(locales) {
         this.fileStats = new FileStats();
-        if (!this.files || this.files.length === 0) {
-            return [];
-        }
-        return this.files
+
+        return this.dirItems
             .flatMap((file) => {
                 //logger.debug(`Examining ${file.filePath}`);
                 if (!this.options.opt.quiet && this.options.opt.progressInfo) {
@@ -567,7 +566,7 @@ class Project extends DirItem {
      * @param {Array.<Result>} results the results of the linting process
      */
     applyTransformers(results) {
-        this.files.forEach((file) => file.applyTransformers(results));
+        this.dirItems.forEach((dirItem) => dirItem.applyTransformers(results));
     }
 
     /**
@@ -576,8 +575,8 @@ class Project extends DirItem {
      */
     serialize() {
         if (this.options.opt.write) {
-            const lintables = this.get();
-            lintables.forEach((file) => {
+            const files = this.get();
+            files.forEach((file) => {
                 const irs = file.getIRs();
                 const fileType = file.getFileType();
                 const serializer = fileType.getSerializer();
@@ -785,7 +784,7 @@ class Project extends DirItem {
     }
 
     clear() {
-        this.files = [];
+        this.dirItems = [];
     }
 }
 
