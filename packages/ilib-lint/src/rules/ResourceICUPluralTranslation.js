@@ -73,13 +73,13 @@ class ResourceICUPluralTranslation extends ResourceRule {
     }
 
     /**
-     * Check if the given text contains any exceptions for the given locale.
+     * Check if the given text matches any exception for the given language.
      * @private
      * @param {string} text the text to check
      * @param {string} locale the locale to check against
-     * @returns {boolean} true if the text contains any exceptions
+     * @returns {boolean} true if the text matches any exception
      */
-    containsExceptions(text, locale) {
+    matchesException(text, locale) {
         try {
             const localeObj = new Locale(locale);
             if (!localeObj.isValid()) {
