@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import log4js from 'log4js';
+import log4js from "log4js";
 
-import { Parser } from 'ilib-lint-common';
+import { Parser } from "ilib-lint-common";
 
 const logger = log4js.getLogger("ilib-lint.ParserManager");
 
@@ -68,7 +68,7 @@ class ParserManager {
     get(extension) {
         // the '*' extension means any extension, which gives all the
         // parsers that can handle any text file
-        return this.parserCache[extension] || this.parserCache['*'] || [];
+        return this.parserCache[extension] || this.parserCache["*"] || [];
     }
 
     /**
@@ -90,9 +90,9 @@ class ParserManager {
     add(parsers) {
         if (!parsers || !Array.isArray(parsers)) return;
         for (const parser of parsers) {
-            if (parser && typeof(parser) === 'function' && Object.getPrototypeOf(parser).name === "Parser") {
+            if (parser && typeof parser === "function" && Object.getPrototypeOf(parser).name === "Parser") {
                 const p = new parser({
-                    getLogger: log4js.getLogger.bind(log4js)
+                    getLogger: log4js.getLogger.bind(log4js),
                 });
                 const name = p.getName();
                 if (this.parserInfo[name]) {
@@ -102,7 +102,7 @@ class ParserManager {
                 this.parserInfo[name] = {
                     description: p.getDescription(),
                     type: p.getType(),
-                    extensions: p.getExtensions()
+                    extensions: p.getExtensions(),
                 };
                 for (const extension of p.getExtensions()) {
                     if (!this.parserCache[extension]) {
@@ -117,7 +117,7 @@ class ParserManager {
                 logger.debug("Attempt to add parser that does not inherit from Parser to the parser manager");
             }
         }
-    };
+    }
 
     /**
      * Return an object where the properties are the parser names and the
