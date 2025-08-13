@@ -28,7 +28,9 @@ need to be sent back to the translator for retranslation.
 Sometimes, certain words or phrases are intentionally the same in both source and target languages.
 For example, the word "File" in Italian is also "File" - the exact same spelling! These exceptions
 may be phrases that happen to be the same, such as that example in Italian, or they may be loanwords
-from other languages, which is common for computer and software terms. In such cases, you can configure exceptions to prevent false warnings about untranslated plural categories.
+from other languages, which is common for computer and software terms.
+
+In such cases, you can configure exceptions to suppress false warnings about untranslated plural categories.
 
 ### Configuration
 
@@ -36,14 +38,14 @@ You can configure exceptions by passing an object parameter to the rule construc
 
 ```javascript
 {
-    "rulesets":
+    "rulesets": {
         "myruleset": {
             "resource-icu-plurals-translated": {
                 "exceptions": {
-                    "it-IT": ["File", "Email", "Download", "File Download"],
-                    "de-DE": ["Download", "Upload"],
-                    "fr-FR": ["Email", "Internet"],
-                    "pl-PL": ["App Center"]
+                    "it": ["File", "Email", "Download", "File Download"],
+                    "de": ["Download", "Upload"],
+                    "fr": ["Email", "Internet"],
+                    "pl": ["App Center"]
                 }
             }
         }
@@ -51,14 +53,17 @@ You can configure exceptions by passing an object parameter to the rule construc
 }
 ```
 
-The `param` object should have locale codes as keys and arrays of exception phrases as values. The
-entire source string must match the exception phrase in order for the exception to apply. (They are not
-single word exceptions.) The rule will ignore warnings when the source and target text both contain any
-of the specified exceptions phrases.
+The `exceptions` property should be an object with language codes as keys and arrays of exception phrases as values.
+Note that differences in region or script are ignored (e.g., exceptions for `it-IT` and `it-CH` will be folded into the same language `it`).
 
 ### Exception Matching
 
-- Exceptions are matched case-insensitively
-- Exact matches only (no partial matching)
-- Exceptions are checked against the entire text content of the plural category
-- Exceptions are stored by language code (e.g., "it" for Italian) regardless of the full locale code provide
+Once an untranslated plural category is found, the rule will check if it matches any of the exceptions configured for its target language.
+
+Matching rules:
+
+-   Exact matches only (no partial matching)
+-   Case-insensitive
+-   ICU MessageFormat syntax is NOT ignored (e.g. string `# File` will not match exception `File`)
+-   Leading and trailing whitespace is ignored
+-   Only language is considered (region and script are ignored; e.g., both `it-IT` and `it-CH` strings will be checked against exceptions configured for `it`)
