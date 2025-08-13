@@ -38,16 +38,18 @@ class IntermediateRepresentation {
      */
     constructor(params) {
         const requiredFields = ["type", "ir", "sourceFile"];
-        const missing = requiredFields.filter(field => undefined === params?.[field]);
+        const missing = requiredFields.filter((field) => undefined === params?.[field]);
         if (missing.length) {
-            throw new Error(`Missing required parameters in the IntermediateRepresentation constructor: ${missing.join(", ")}`);
+            throw new Error(
+                `Missing required parameters in the IntermediateRepresentation constructor: ${missing.join(", ")}`
+            );
         }
 
         this.type = params.type;
         this.ir = params.ir;
         this.sourceFile = params.sourceFile;
         this.stats = params.stats;
-        this.dirty = typeof(params.dirty) === "boolean" ? params.dirty : false;
+        this.dirty = typeof params.dirty === "boolean" ? params.dirty : false;
     }
 
     /**

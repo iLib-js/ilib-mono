@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import log4js from 'log4js';
+import log4js from "log4js";
 
-import RuleSet from './RuleSet.js';
+import RuleSet from "./RuleSet.js";
 
 const logger = log4js.getLogger("ilib-lint.FileType");
 
@@ -150,15 +150,17 @@ class FileType {
         if (!options || !options.name || !options.project) {
             throw "Missing required options to the FileType constructor";
         }
-        ["name", "project", "locales", "ruleset", "template", "parsers", "transformers", "serializer"].forEach(prop => {
-            if (typeof(options[prop]) !== 'undefined') {
-                this[prop] = options[prop];
+        ["name", "project", "locales", "ruleset", "template", "parsers", "transformers", "serializer"].forEach(
+            (prop) => {
+                if (typeof options[prop] !== "undefined") {
+                    this[prop] = options[prop];
+                }
             }
-        });
+        );
 
         if (this.parsers) {
             const parserMgr = this.project.getParserManager();
-            this.parserClasses = this.parsers.map(parserName => {
+            this.parserClasses = this.parsers.map((parserName) => {
                 const parser = parserMgr.getByName(parserName);
                 if (!parser) {
                     throw `Could not find parser ${parserName} named in the configuration for filetype ${this.name}`;
@@ -171,9 +173,9 @@ class FileType {
         }
 
         if (this.ruleset) {
-            if (typeof(this.ruleset) === 'string') {
+            if (typeof this.ruleset === "string") {
                 // single string -> convert to an array with a single element
-                this.ruleset = [ this.ruleset ];
+                this.ruleset = [this.ruleset];
             } else if (!Array.isArray(this.ruleset)) {
                 // rule set definition instead of a ruleset name. Save a new
                 // rule set definition in the rule manager and give it a
@@ -182,14 +184,14 @@ class FileType {
                 const ruleMgr = this.project.getRuleManager();
                 const setName = `${this.name}-unnamed-ruleset`;
                 ruleMgr.addRuleSetDefinition(setName, this.ruleset);
-                this.ruleset = [ setName ];
+                this.ruleset = [setName];
             }
         }
 
         if (this.transformers) {
-            const names = Array.isArray(this.transformers) ? this.transformers : [ this.transformers ];
+            const names = Array.isArray(this.transformers) ? this.transformers : [this.transformers];
             const transformerMgr = this.project.getTransformerManager();
-            this.transformerInstances = names.map(transformerName => {
+            this.transformerInstances = names.map((transformerName) => {
                 const transformer = transformerMgr.get(transformerName);
                 if (!transformer) {
                     throw `Could not find transformer ${transformerName} named in the configuration for filetype ${this.name}`;
@@ -198,7 +200,9 @@ class FileType {
                 if (!this.type) {
                     this.type = transformerType;
                 } else if (transformerType !== this.type) {
-                     throw new Error(`The transformer ${transformerName} processes representations of type ${transformerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`);
+                    throw new Error(
+                        `The transformer ${transformerName} processes representations of type ${transformerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`
+                    );
                 }
                 return transformer;
             });
@@ -207,17 +211,21 @@ class FileType {
         if (this.serializer) {
             // if it is a string, then that string is the name of the serializer. If it is an object,
             // then it the name and the settings to pass to the the serializer constructor.
-            const name = typeof(this.serializer) === 'string' ? this.serializer : this.serializer.name;
+            const name = typeof this.serializer === "string" ? this.serializer : this.serializer.name;
             const serializerMgr = this.project.getSerializerManager();
             this.serializerInst = serializerMgr.get(name, this.serializer);
             if (!this.serializerInst) {
-                throw new Error(`Could not find or instantiate serializer ${this.serializer} named in the configuration for filetype ${this.name}`);
+                throw new Error(
+                    `Could not find or instantiate serializer ${this.serializer} named in the configuration for filetype ${this.name}`
+                );
             }
             const serializerType = this.serializerInst.getType();
             if (!this.type) {
                 this.type = serializerType;
             } else if (serializerType !== this.type) {
-                throw new Error(`The serializer ${name} processes representations of type ${serializerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`);
+                throw new Error(
+                    `The serializer ${name} processes representations of type ${serializerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`
+                );
             }
         }
 
@@ -284,14 +292,14 @@ class FileType {
 
         const ruleMgr = this.project.getRuleManager();
         const set = new RuleSet();
-        this.ruleset.forEach(ruleSetName => {
+        this.ruleset.forEach((ruleSetName) => {
             const definitions = ruleMgr.getRuleSetDefinition(ruleSetName);
             if (!definitions) {
                 logger.error(`Could not find rule set ${ruleSetName}`);
                 return;
             }
             for (let ruleName in definitions) {
-                if (typeof(definitions[ruleName]) === 'boolean') {
+                if (typeof definitions[ruleName] === "boolean") {
                     if (definitions[ruleName]) {
                         set.addRule(ruleMgr.get(ruleName));
                     } else {
