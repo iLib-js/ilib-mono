@@ -240,7 +240,7 @@ class ResourceICUPluralTranslation extends ResourceRule {
                 if (sourceStr.length && sourceStr.toLowerCase() === targetStr.toLowerCase()) {
                     // Check if this text contains any exceptions for the target locale
                     const targetLocale = resource.getTargetLocale();
-                    const hasExceptions = this.containsExceptions(sourceStr, targetLocale);
+                    const hasExceptions = this.matchesException(sourceStr, targetLocale);
                     if (!hasExceptions) {
                         let value = {
                             severity: /** @type {"warning"} */ ("warning"),
