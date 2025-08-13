@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
-import log4js from 'log4js';
-import mm from 'micromatch';
+import fs from "node:fs";
+import path from "node:path";
+import log4js from "log4js";
+import mm from "micromatch";
 
-import { FileStats, SourceFile, Formatter } from 'ilib-lint-common';
+import { FileStats, SourceFile, Formatter } from "ilib-lint-common";
 
-import LintableFile from './LintableFile.js';
-import DirItem from './DirItem.js';
-import FileType from './FileType.js';
-import { FolderConfigurationProvider } from './config/ConfigurationProvider.js';
-import ResultComparator from './ResultComparator.js';
+import LintableFile from "./LintableFile.js";
+import DirItem from "./DirItem.js";
+import FileType from "./FileType.js";
+import { FolderConfigurationProvider } from "./config/ConfigurationProvider.js";
+import ResultComparator from "./ResultComparator.js";
 
 const logger = log4js.getLogger("ilib-lint.root.Project");
 
@@ -41,18 +41,18 @@ const rulesetDefinitions = {
         "resource-named-params": true,
         "resource-snake-case": true,
         "resource-camel-case": true,
-    }
+    },
 };
 
 const xliffFileTypeDefinition = {
     name: "xliff",
     glob: "**/*.xliff",
-    ruleset: [ "resource-check-all" ]
+    ruleset: ["resource-check-all"],
 };
 
 const unknownFileTypeDefinition = {
     name: "unknown",
-    glob: "**/*"
+    glob: "**/*",
 };
 
 /**
@@ -67,7 +67,7 @@ const unknownFileTypeDefinition = {
  * @returns {boolean} true if the method is defined in the class itself
  */
 function isOwnMethod(instance, methodName, parentClass) {
-    return typeof(instance[methodName]) === 'function' && instance[methodName] !== parentClass.prototype[methodName];
+    return typeof instance[methodName] === "function" && instance[methodName] !== parentClass.prototype[methodName];
 }
 
 /**
@@ -106,7 +106,7 @@ class Project extends DirItem {
             this.name = config.name;
         }
 
-        this.sourceLocale = (config?.sourceLocale) || (options?.opt?.sourceLocale);
+        this.sourceLocale = config?.sourceLocale || options?.opt?.sourceLocale;
         this.config.autofix = options?.opt?.fix === true || config?.autofix === true;
 
         this.pluginMgr = this.options.pluginManager;
@@ -115,8 +115,8 @@ class Project extends DirItem {
         ruleMgr.addRuleSetDefinitions(rulesetDefinitions);
 
         this.filetypes = {
-            "xliff": new FileType({project: this, ...xliffFileTypeDefinition}),
-            "unknown": new FileType({project: this, ...unknownFileTypeDefinition})
+            xliff: new FileType({ project: this, ...xliffFileTypeDefinition }),
+            unknown: new FileType({ project: this, ...unknownFileTypeDefinition }),
         };
     }
 
@@ -146,7 +146,7 @@ class Project extends DirItem {
     async walk(root) {
         let list;
 
-        if (typeof(root) !== "string") {
+        if (typeof root !== "string") {
             return [];
         }
 
@@ -155,11 +155,11 @@ class Project extends DirItem {
         let pathName, included, stat, glob;
 
         try {
-            stat = fs.statSync(root, {throwIfNoEntry: false});
+            stat = fs.statSync(root, { throwIfNoEntry: false });
             if (stat) {
                 if (stat.isDirectory()) {
                     const currentFolderConfigurationProvider = new FolderConfigurationProvider(root);
-                    if (root !== this.root && await currentFolderConfigurationProvider.hasConfigurationFile()) {
+                    if (root !== this.root && (await currentFolderConfigurationProvider.hasConfigurationFile())) {
                         const config = await currentFolderConfigurationProvider.loadConfiguration();
                         const newProject = new Project(root, this.getOptions(), config);
                         includes = newProject.getIncludes();
@@ -206,7 +206,7 @@ class Project extends DirItem {
                                     excludes = settings.excludes || excludes;
                                     included = excludes ? !mm.isMatch(root, excludes) : true;
                                 }
-                            }
+                            },
                         });
                     }
 
@@ -214,10 +214,16 @@ class Project extends DirItem {
                         logger.trace(`${root} ... included`);
                         glob = glob || "**";
                         const filetype = this.getFileTypeForPath(root);
-                        this.add(new LintableFile(root, {
-                            settings: this.getSettings(glob),
-                            filetype
-                        }, this));
+                        this.add(
+                            new LintableFile(
+                                root,
+                                {
+                                    settings: this.getSettings(glob),
+                                    filetype,
+                                },
+                                this
+                            )
+                        );
                     } else {
                         logger.trace(`${root} ... excluded`);
                     }
@@ -245,7 +251,7 @@ class Project extends DirItem {
     async scan(paths) {
         for (const pathName of paths) {
             await this.walk(pathName);
-        };
+        }
     }
 
     /**
@@ -266,8 +272,8 @@ class Project extends DirItem {
         }
 
         // initialize any projects or files that have an init method.
-        this.files.forEach(file => {
-            if (typeof(file.init) === 'function') {
+        this.files.forEach((file) => {
+            if (typeof file.init === "function") {
                 promise = promise.then(() => {
                     return file.init();
                 });
@@ -302,7 +308,7 @@ class Project extends DirItem {
                     this.filetypes[ft] = new FileType({
                         name: ft,
                         project: this,
-                        ...this.config.filetypes[ft]
+                        ...this.config.filetypes[ft],
                     });
                 }
             }
@@ -310,14 +316,14 @@ class Project extends DirItem {
                 this.mappings = this.config.paths;
                 for (let glob in this.mappings) {
                     let mapping = this.mappings[glob];
-                    if (typeof(mapping) === 'object') {
+                    if (typeof mapping === "object") {
                         // this is an "on-the-fly" file type
                         this.filetypes[glob] = new FileType({
                             name: glob,
                             project: this,
-                            ...mapping
+                            ...mapping,
                         });
-                    } else if (typeof(mapping) === 'string') {
+                    } else if (typeof mapping === "string") {
                         if (!this.filetypes[mapping]) {
                             throw `Mapping ${glob} is configured to use unknown filetype ${mapping}`;
                         }
@@ -462,8 +468,7 @@ class Project extends DirItem {
      * @returns {FileType} the requested file type, or undefined if
      * there is no such file type
      */
-    getFileType(name) {
-    }
+    getFileType(name) {}
 
     /**
      * Using the path mappings, find the file type that applies for
@@ -481,9 +486,7 @@ class Project extends DirItem {
                 // if it is a string, it names the file type. If it is
                 // something else, then it is an on-the-fly file type
                 // definition
-                const name = typeof(this.mappings[glob]) === 'string' ?
-                    this.mappings[glob] :
-                    glob;
+                const name = typeof this.mappings[glob] === "string" ? this.mappings[glob] : glob;
                 return this.filetypes[name] || this.filetypes.unknown;
             }
         }
@@ -519,7 +522,7 @@ class Project extends DirItem {
      * @returns {Array.<LintableFile>} the lintable files in this project.
      */
     get() {
-        return this.files.flatMap(dirItem => {
+        return this.files.flatMap((dirItem) => {
             if (dirItem instanceof LintableFile) {
                 return dirItem;
             } else if (dirItem instanceof DirItem) {
@@ -539,20 +542,22 @@ class Project extends DirItem {
         if (!this.files || this.files.length === 0) {
             return [];
         }
-        return this.files.flatMap(file => {
-            //logger.debug(`Examining ${file.filePath}`);
-            if (!this.options.opt.quiet && this.options.opt.progressInfo) {
-                logger.info("Examing path   : " + file.filePath);
-            }
-            try {
-                const results = file.findIssues(locales);
-                this.fileStats.addStats(file.getStats());
-                return results;
-            } catch (e) {
-                logger.error(`Error while finding issues in the file ${file.filePath}`);
-                logger.error(e);
-            }
-        }).filter(result => result);
+        return this.files
+            .flatMap((file) => {
+                //logger.debug(`Examining ${file.filePath}`);
+                if (!this.options.opt.quiet && this.options.opt.progressInfo) {
+                    logger.info("Examing path   : " + file.filePath);
+                }
+                try {
+                    const results = file.findIssues(locales);
+                    this.fileStats.addStats(file.getStats());
+                    return results;
+                } catch (e) {
+                    logger.error(`Error while finding issues in the file ${file.filePath}`);
+                    logger.error(e);
+                }
+            })
+            .filter((result) => result);
     }
 
     /**
@@ -562,7 +567,7 @@ class Project extends DirItem {
      * @param {Array.<Result>} results the results of the linting process
      */
     applyTransformers(results) {
-        this.files.forEach(file => file.applyTransformers(results));
+        this.files.forEach((file) => file.applyTransformers(results));
     }
 
     /**
@@ -572,7 +577,7 @@ class Project extends DirItem {
     serialize() {
         if (this.options.opt.write) {
             const lintables = this.get();
-            lintables.forEach(file => {
+            lintables.forEach((file) => {
                 const irs = file.getIRs();
                 const fileType = file.getFileType();
                 const serializer = fileType.getSerializer();
@@ -581,7 +586,7 @@ class Project extends DirItem {
                     if (!this.options.opt.overwrite) {
                         let outputPath = `${sourceFile.getPath()}.modified`;
                         sourceFile = new SourceFile(outputPath, {
-                            file: sourceFile
+                            file: sourceFile,
                         });
                     }
                     sourceFile.write();
@@ -608,14 +613,16 @@ class Project extends DirItem {
             throw new Error("Attempt to calculate the I18N score without having retrieved the issues first.");
         }
 
-        const base = (this.fileStats.modules || this.fileStats.lines || this.fileStats.files || this.fileStats.bytes || 1);
-        const demeritPoints = this.resultStats.errors * 5 + this.resultStats.warnings * 3 + this.resultStats.suggestions;
+        const base =
+            this.fileStats.modules || this.fileStats.lines || this.fileStats.files || this.fileStats.bytes || 1;
+        const demeritPoints =
+            this.resultStats.errors * 5 + this.resultStats.warnings * 3 + this.resultStats.suggestions;
 
         // divide demerit points by the base so that larger projects are not penalized for
         // having more issues just because they have more files, lines, or modules
         // y intercept = 100
         // lim(x->infinity) of f(x) = 0
-        return 100 / (1.0 + demeritPoints/base);
+        return 100 / (1.0 + demeritPoints / base);
     }
 
     /**
@@ -635,7 +642,7 @@ class Project extends DirItem {
         this.resultStats = {
             errors: 0,
             warnings: 0,
-            suggestions: 0
+            suggestions: 0,
         };
 
         let totalTime = (endTime.getTime() - startTime.getTime()) / 1000;
@@ -646,7 +653,7 @@ class Project extends DirItem {
         results.sort(ResultComparator);
         let resultAll;
         if (results) {
-            results.forEach(result => {
+            results.forEach((result) => {
                 if (result.severity === "error") {
                     this.resultStats.errors++;
                 } else if (result.severity === "warning") {
@@ -657,7 +664,7 @@ class Project extends DirItem {
             });
         }
         const fmt = new Intl.NumberFormat("en-US", {
-            maxFractionDigits: 2
+            maxFractionDigits: 2,
         });
         const score = this.getScore();
         if (isOwnMethod(this.formatter, "formatOutput", Formatter)) {
@@ -668,11 +675,11 @@ class Project extends DirItem {
                 results: results,
                 score: score,
                 time: totalTime,
-                errorsOnly : this.options.opt.errorsOnly || false
+                errorsOnly: this.options.opt.errorsOnly || false,
             });
         } else {
             let outputArray = [];
-            results.forEach(result => {
+            results.forEach((result) => {
                 const str = this.formatter.format(result);
                 if (str) {
                     if (result.severity === "error") {
@@ -697,26 +704,51 @@ class Project extends DirItem {
                     }
                 }
                 return str;
-            })
+            });
 
             const lines = [
                 `Total Elapse Time: ${String(totalTime)} seconds`,
-                `                             ${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}`,
-                `                   Total     ${`${String(this.fileStats.files)} Files`.padEnd(15, ' ')}${`${String(this.fileStats.modules)} Modules`.padEnd(15, ' ')}${`${String(this.fileStats.lines)} Lines`.padEnd(15, ' ')}`
+                `                             ${`Average over`.padEnd(15, " ")}${`Average over`.padEnd(
+                    15,
+                    " "
+                )}${`Average over`.padEnd(15, " ")}`,
+                `                   Total     ${`${String(this.fileStats.files)} Files`.padEnd(15, " ")}${`${String(
+                    this.fileStats.modules
+                )} Modules`.padEnd(15, " ")}${`${String(this.fileStats.lines)} Lines`.padEnd(15, " ")}`,
             ];
             if (results.length) {
-                lines.push(`Errors:            ${String(this.resultStats.errors).padEnd(10, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.lines).padEnd(15, ' ')}`);
+                lines.push(
+                    `Errors:            ${String(this.resultStats.errors).padEnd(10, " ")}${fmt
+                        .format(this.resultStats.errors / this.fileStats.files)
+                        .padEnd(15, " ")}${fmt
+                        .format(this.resultStats.errors / this.fileStats.modules)
+                        .padEnd(15, " ")}${fmt.format(this.resultStats.errors / this.fileStats.lines).padEnd(15, " ")}`
+                );
                 if (!this.options.errorsOnly) {
                     lines.push(
-                        `Warnings:          ${String(this.resultStats.warnings).padEnd(10, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.lines).padEnd(15, ' ')}`);
+                        `Warnings:          ${String(this.resultStats.warnings).padEnd(10, " ")}${fmt
+                            .format(this.resultStats.warnings / this.fileStats.files)
+                            .padEnd(15, " ")}${fmt
+                            .format(this.resultStats.warnings / this.fileStats.modules)
+                            .padEnd(15, " ")}${fmt
+                            .format(this.resultStats.warnings / this.fileStats.lines)
+                            .padEnd(15, " ")}`
+                    );
                     lines.push(
-                        `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.lines).padEnd(15, ' ')}`);
+                        `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, " ")}${fmt
+                            .format(this.resultStats.suggestions / this.fileStats.files)
+                            .padEnd(15, " ")}${fmt
+                            .format(this.resultStats.suggestions / this.fileStats.modules)
+                            .padEnd(15, " ")}${fmt
+                            .format(this.resultStats.suggestions / this.fileStats.lines)
+                            .padEnd(15, " ")}`
+                    );
                 }
             }
             lines.push(`I18N Score (0-100) ${fmt.format(score)}`);
 
             if (!this.options.opt.output) {
-                lines.forEach(line => {
+                lines.forEach((line) => {
                     logger.info(line);
                 });
             }
@@ -746,7 +778,7 @@ class Project extends DirItem {
         } else if (this.options.errorsOnly) {
             exitValue = this.resultStats.errors > 0 ? 2 : 0;
         } else {
-            exitValue = this.resultStats.errors > 0 ? 2 : ((this.resultStats.warnings > 0) ? 1 : 0);
+            exitValue = this.resultStats.errors > 0 ? 2 : this.resultStats.warnings > 0 ? 1 : 0;
         }
 
         return exitValue;
@@ -755,6 +787,6 @@ class Project extends DirItem {
     clear() {
         this.files = [];
     }
-};
+}
 
 export default Project;

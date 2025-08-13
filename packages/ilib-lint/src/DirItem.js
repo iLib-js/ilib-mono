@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import log4js from 'log4js';
+import log4js from "log4js";
 
 const logger = log4js.getLogger("ilib-lint.DirItem");
 
@@ -76,6 +76,6 @@ class DirItem {
      * @abstract
      */
     findIssues(locales) {}
-};
+}
 
 export default DirItem;
