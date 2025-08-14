@@ -960,6 +960,31 @@ describe("ResourceSentenceEnding rule", function() {
         });
         expect(actual).toBeUndefined();
     });
+    // Test with the existing space at the end of the target
+    test("Test with the existing space at the end of the target", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "en-US",
+            source: "Enter the code shown on your device's screen.",
+            targetLocale: "nl-NL",
+            target: "Voer de code in die op het scherm van uw apparaat zichbaar is. ",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        // this.getLastSentenceFromContent(target, targetLocaleObj); return ''
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
     // Customization tests
     test("Japanese with full custom punctuation configuration - correct punctuation passes", () => {
         expect.assertions(4);
