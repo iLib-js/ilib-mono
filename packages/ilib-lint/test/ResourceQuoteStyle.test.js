@@ -139,7 +139,7 @@ describe("testResourceQuoteStyle", () => {
             pathName: "x"
         });
         expect(actual).toEqual(expected);
-        expect(actual.fix).toBeTruthy();
+        expect(actual?.fix).toBeTruthy();
 
         const ir = new IntermediateRepresentation({
             type: "resource",
@@ -148,7 +148,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
@@ -231,7 +231,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
@@ -478,7 +478,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("「マイドキュメント」をクリックすると詳細が表示されます");
     });
@@ -556,7 +556,7 @@ describe("testResourceQuoteStyle", () => {
             sourceFile
         });
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("「マイドキュメント」をクリックすると詳細が表示されます");
     });
@@ -658,7 +658,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
@@ -758,7 +758,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält ‚Anführungszeichen‘.");
     });
@@ -836,7 +836,7 @@ describe("testResourceQuoteStyle", () => {
             sourceFile
         });
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe('Stel asseblief u PIN-kode vanaf ‘Kieslys > PIN-kode’.');
     });
@@ -967,7 +967,7 @@ describe("testResourceQuoteStyle", () => {
         expect(result).toEqual(expected);
 
         // if the target does not contain quotes, then we can't fix it
-        expect(result.fix).toBeFalsy();
+        expect(result?.fix).toBeFalsy();
     });
 
     test("ResourceQuoteStyleQuotesAdjacentReplacementParamBracket fancy quotes in source and no quotes in translation", () => {
@@ -1006,7 +1006,7 @@ describe("testResourceQuoteStyle", () => {
         expect(result).toEqual(expected);
 
         // if the target does not contain quotes, then we can't fix it
-        expect(result.fix).toBeFalsy();
+        expect(result?.fix).toBeFalsy();
     });
 
     test("ResourceQuoteStyleQuotesAdjacentReplacementParamBracket with single quotes in source", () => {
@@ -1145,7 +1145,55 @@ describe("testResourceQuoteStyle", () => {
         expect(!actual).toBeTruthy();
     });
 
-    test("ResourceQuoteStyleItalianNoGuillemets", () => {
+    test("ResourceQuoteStyleItalianOptionalQuotesNoQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "it-IT",
+            target: "Questa stringa contiene virgolette.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Italian, quotes are optional, so no quotes in target is okay
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleItalianOptionalQuotesCorrectQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "it-IT",
+            target: 'Questa stringa contiene «virgolette».',
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Italian, quotes are optional, but if present should be correct style
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleItalianOptionalQuotesAsciiQuotesInTarget", () => {
         expect.assertions(2);
 
         const rule = new ResourceQuoteStyle();
@@ -1165,10 +1213,21 @@ describe("testResourceQuoteStyle", () => {
             resource,
             file: "a/b/c.xliff"
         });
-        expect(!actual).toBeTruthy();
+        // For Italian, if quotes are present, they should be the correct style
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale it-IT should be «text» or there should be no quotes in the target",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: 'Target: Questa stringa contiene <e0>"</e0>virgolette<e1>"</e1>.',
+            rule,
+            locale: "it-IT",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
     });
 
-    test("ResourceQuoteStyleItalianSkipped", () => {
+    test("ResourceQuoteStyleItalianOptionalQuotesWrongQuotesInTarget", () => {
         expect.assertions(2);
 
         const rule = new ResourceQuoteStyle();
@@ -1179,22 +1238,143 @@ describe("testResourceQuoteStyle", () => {
             sourceLocale: "en-US",
             source: 'This string contains "quotes" in it.',
             targetLocale: "it-IT",
-            target: "Questa stringa non contiene virgolette.",
+            target: 'Questa stringa contiene “virgolette”.',
             pathName: "a/b/c.xliff"
         });
-
-        const ir = new IntermediateRepresentation({
-            type: "resource",
-            ir: [resource],
-            sourceFile
-        });
-
-        const actual = rule.match({
-            ir,
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
             file: "a/b/c.xliff"
         });
+        // For Italian, if quotes are present, they should be the correct style
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale it-IT should be «text» or there should be no quotes in the target",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: 'Target: Questa stringa contiene <e0>“</e0>virgolette<e1>”</e1>.',
+            rule,
+            locale: "it-IT",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
+    });
 
+    test("ResourceQuoteStyleSwedishOptionalQuotesNoQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "sv-SE",
+            target: "Denna sträng innehåller citattecken.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Swedish, quotes are optional, so no quotes in target is okay
         expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleSwedishOptionalQuotesCorrectQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains “quotes” in it.',
+            targetLocale: "sv-SE",
+            target: "Denna sträng innehåller ”citattecken”.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Swedish, quotes are optional, but if present should be correct style
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleSwedishOptionalQuotesAsciiQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "sv-SE",
+            target: 'Denna sträng innehåller "citattecken".',
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Swedish, if quotes are present, they should be the correct style
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale sv-SE should be ”text” or there should be no quotes in the target",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: 'Target: Denna sträng innehåller <e0>"</e0>citattecken<e1>"</e1>.',
+            rule,
+            locale: "sv-SE",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
+    });
+
+    test("ResourceQuoteStyleSwedishOptionalQuotesWrongQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "sv-SE",
+            target: 'Denna sträng innehåller »citattecken«.',
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Swedish, if quotes are present, they should be the correct style
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale sv-SE should be ”text” or there should be no quotes in the target",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: 'Target: Denna sträng innehåller <e0>»</e0>citattecken<e1>«</e1>.',
+            rule,
+            locale: "sv-SE",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
     });
 
     test("ResourceQuoteStyleMatchQuotesInTargetOnly", () => {
@@ -1624,27 +1804,6 @@ describe("testResourceQuoteStyle", () => {
             target: resource.getTarget(),
             resource,
             file: "a/b/c.xliff"
-        });
-        expect(!actual).toBeTruthy();
-    });
-
-    test("ResourceQuoteStyleIgnoreMissingSwedishQuotes", () => {
-        expect.assertions(2);
-
-        const rule = new ResourceQuoteStyle();
-        expect(rule).toBeTruthy();
-
-        const actual = rule.match({
-            locale: "sv-SE",
-            resource: new ResourceString({
-                key: "quote.test",
-                sourceLocale: "en-US",
-                source: `This is a "string."`,
-                targetLocale: "sv-SE",
-                target: "Det här är ett snöre.",
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x/y"
         });
         expect(!actual).toBeTruthy();
     });

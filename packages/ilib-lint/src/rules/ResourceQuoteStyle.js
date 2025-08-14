@@ -18,6 +18,7 @@
  */
 
 import LocaleInfo from 'ilib-localeinfo';
+import Locale from 'ilib-locale';
 import { Result } from 'ilib-lint-common';
 
 import ResourceRule from './ResourceRule.js';
@@ -89,11 +90,11 @@ let /** @type {{[locale: string]: LocaleInfo}} */ LICache = {};
  */
 
 /**
- * @class Represent an ilib-lint rule.
+ * @class Represent the ilib-lint rule that checks the quote style of the target string.
  */
 class ResourceQuoteStyle extends ResourceRule {
     /**
-     * Make a new rule instance.
+     * Make a new instance of the rule that checks the quote style of the target string.
      *
      * @param {object} [options]
      * @param {string} [options.sourceLocale]
@@ -111,14 +112,11 @@ class ResourceQuoteStyle extends ResourceRule {
             this.localeOnly = true;
         }
 
-        if (!this.skipLocales) {
-            this.skipLocales = new Set();
-        }
-
+        this.optionalQuoteLocales = new Set();
         [
             "sv", // According to the MS Style guidelines, quotes are usually not required in Swedish when the source English text contains quotes
-            "it", // Based on feedback from linguists quotes in Italian are not required to be the guillemets, even though CLDR says so
-        ].forEach(locale => this.skipLocales.add(locale));
+            "it", // Based on feedback from linguists quotes in Italian are not required to be there
+        ].forEach(locale => this.optionalQuoteLocales.add(locale));
     }
 
     /**
@@ -132,7 +130,10 @@ class ResourceQuoteStyle extends ResourceRule {
      * @param {string} category
      */
     checkString(src, tar, resource, file, locale, index, category) {
-        const regExps = this.getRegExps(locale);
+        const localeObj = new Locale(locale);
+        const language = localeObj.getLanguage();
+        const isOptionalPunctuationLanguage = this.optionalQuoteLocales.has(language);
+        const regExps = this.getRegExps(locale, isOptionalPunctuationLanguage);
 
         const sourceStyle = {
             ascii: regExps.quotesAscii.test(src),
@@ -153,7 +154,7 @@ class ResourceQuoteStyle extends ResourceRule {
         let nonQuoteEndChars = regExps.target.nonQuoteChars;
         let nonQuoteStartCharsAlt = regExps.target.nonQuoteCharsAlt;
         let nonQuoteEndCharsAlt = regExps.target.nonQuoteCharsAlt;
-        if (locale === "ja-JP") {
+        if (language === "ja") {
             // Japanese has a special case where the quotes are different
             nonQuoteStartChars = nonQuoteStartChars.replace(/』/g, "");
             nonQuoteEndChars = nonQuoteEndChars.replace(/『/g, "");
@@ -165,7 +166,10 @@ class ResourceQuoteStyle extends ResourceRule {
         // match the all types of Unicode non-breaking spaces which are used in some
         // locales to separate the quote from the text.
         let startQuote, endQuote;
-        if (sourceStyle.ascii) {
+        if (isOptionalPunctuationLanguage) {
+            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartChars}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}'"]))(\\W|$)`, "gu");
+        } else if (sourceStyle.ascii) {
             if (regExps.target.quotesAll.test(tar)) return;
             startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartChars}'])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
             endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}']))(\\W|$)`, "gu");
@@ -192,7 +196,11 @@ class ResourceQuoteStyle extends ResourceRule {
             if (startQuote) { highlight = highlight.replace(startQuote, "$1<e0>$2</e0>$4"); }
             if (endQuote) { highlight = highlight.replace(endQuote, "$1<e1>$2</e1>$4"); }
             highlight = `Target: ${highlight}`;
-            description = `Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
+            if (isOptionalPunctuationLanguage) {
+                description = `Quote style for the locale ${locale} should be ${targetQuoteStyleExample} or there should be no quotes in the target`;
+            } else {
+                description = `Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
+            }
             // create a fix to replace the quotes in the target string with the correct ones
             let correctQuoteStart, correctQuoteEnd;
             if (sourceStyle.ascii || sourceStyle.native) {
@@ -232,6 +240,9 @@ class ResourceQuoteStyle extends ResourceRule {
                 fix = ResourceFixer.createFix({ resource, commands, index, category });
             }
         } else {
+            if (isOptionalPunctuationLanguage) {
+                return;
+            }
             // no auto-fix possible, so just highlight the problem
             highlight = `Target: ${tar}<e0></e0>`;
             description = `Quotes are missing in the target. Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
@@ -262,9 +273,10 @@ class ResourceQuoteStyle extends ResourceRule {
      * Calculate all the regular expressions we need.
      * @private
      * @param {string} locale
+     * @param {boolean} isOptionalPunctuationLanguage
      * @returns {RegExpCollectionForLocale}
      */
-    getRegExps(locale) {
+    getRegExps(locale, isOptionalPunctuationLanguage) {
         // superset of all the non-ASCII start and end chars used in CLDR
         const quoteChars = "«»‘“”„「」’‚‹›『』";
 
@@ -315,6 +327,7 @@ class ResourceQuoteStyle extends ResourceRule {
 
         // now calculate regular expressions for the source string that use those quotes
         // if the source uses ASCII quotes, then the target could have ASCII or native quotes
+        // Look for a quote start followed by a letter or an opening brace, or look for a letter or close brace followed by a quote end
         const sourceQuotesNative = new RegExp(`((^|\\W)${sourceQuoteStart}\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?${sourceQuoteEnd}(\\W|$))`, "gu");
         const sourceQuotesNativeAlt = new RegExp(`((^|\\W)${sourceQuoteStartAlt}\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?${sourceQuoteEndAlt}(\\W|$))`, "gu");
 
@@ -322,10 +335,10 @@ class ResourceQuoteStyle extends ResourceRule {
         // if the source contains native quotes, then the target should also have native quotes
         const targetQuotesNative = new RegExp(`((^|\\W)[${targetQuoteStart}]\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?[${targetQuoteEnd}](\\W|$))`, "gu");
         const targetQuotesNativeAlt = new RegExp(`((^|\\W)[${targetQuoteStartAlt}]\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?[${targetQuoteEndAlt}](\\W|$))`, "gu");
-        const targetQuotesAll = this.localeOnly ?
+        const targetQuotesAll = (this.localeOnly || isOptionalPunctuationLanguage) ?
             targetQuotesNative :
             new RegExp(`((^|\\W)[${targetQuoteStart}${targetQuoteStartAlt}"]\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?[${targetQuoteEnd}${targetQuoteEndAlt}"](\\W|$))`, "gu");
-        const targetQuotesAllAlt = this.localeOnly ?
+        const targetQuotesAllAlt = (this.localeOnly || isOptionalPunctuationLanguage) ?
             targetQuotesNativeAlt :
             new RegExp(`((^|\\W)[${targetQuoteStartAlt}']\\s?[\\p{Letter}{]|[\\p{Letter}}]\\s?[${targetQuoteEndAlt}'](\\W|$))`, "gu");
 
