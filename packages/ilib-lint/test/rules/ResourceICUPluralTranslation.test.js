@@ -829,5 +829,279 @@ describe("testResourceICUPluralTranslation", () => {
         });
         expect(!actual).toBeTruthy();
     });
+
+    test("Rule should produce a warning when source and target match and there are no exceptions", () => {
+        expect.assertions(18);
+
+        const rule = new ResourceICUPluralTranslation();
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'Download of # {count, plural, one {File} other {Files}} in the folder.',
+                    targetLocale: "it-IT",
+                    target: "Download del # {count, plural, one {File} other {Files}} nella cartella.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(Array.isArray(actual)).toBeTruthy();
+        expect(actual.length).toBe(2);
+        expect(actual[0].locale).toBe("it-IT");
+        expect(actual[0].source).toBe('one {File}');
+        expect(actual[0].highlight).toBe('Target: <e0>one {File}</e0>');
+        expect(actual[0].description).toBe("Translation of the category 'one' is the same as the source.");
+        expect(actual[0].id).toBe("plural.test");
+        expect(actual[0].rule).toBe(rule);
+        expect(actual[0].pathName).toBe("a/b/c.xliff");
+        expect(actual[1].locale).toBe("it-IT");
+        expect(actual[1].source).toBe('other {Files}');
+        expect(actual[1].highlight).toBe('Target: <e0>other {Files}</e0>');
+        expect(actual[1].description).toBe("Translation of the category 'other' is the same as the source.");
+        expect(actual[1].id).toBe("plural.test");
+        expect(actual[1].rule).toBe(rule);
+        expect(actual[1].pathName).toBe("a/b/c.xliff");
+    });
+
+    test("Rule should ignore exceptions when source and target match and there are exceptions", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPluralTranslation({
+            exceptions: {
+                "it-IT": ["File", "Files", "Email", "Download"]
+            }
+        });
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'Download of # {count, plural, one {File} other {Files}} in the folder.',
+                    targetLocale: "it-IT",
+                    target: "Download del # {count, plural, one {File} other {Files}} nella cartella.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("Rule should ignore exceptions when source and target match and there are exceptions with multiple words in them", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPluralTranslation({
+            exceptions: {
+                "it-IT": ["# File", "# Files", "Email", "Download"]
+            }
+        });
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'Download of {count, plural, one {# File} other {# Files}} in the folder.',
+                    targetLocale: "it-IT",
+                    target: "Download del {count, plural, one {# File} other {# Files}} nella cartella.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("Rule should still report warnings for non-exception words", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceICUPluralTranslation({
+            exceptions: {
+                "it-IT": ["File", "Files", "Email", "Download"]
+            }
+        });
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'There {count, plural, one {is # folder} other {are # folders}} in the folder.',
+                    targetLocale: "it-IT",
+                    target: "Ci {count, plural, one {is # folder} other {sono # folders}} nella cartella.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(!Array.isArray(actual)).toBeTruthy();
+
+        const expected = new Result({
+            severity: "warning",
+            description: "Translation of the category 'one' is the same as the source.",
+            id: "plural.test",
+            highlight: 'Target: <e0>one {is # folder}</e0>',
+            rule,
+            pathName: "a/b/c.xliff",
+            locale: "it-IT",
+            source: 'one {is # folder}'
+        });
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("Rule should handle case-insensitive exception matching", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPluralTranslation({
+            exceptions: {
+                "it-IT": ["file", "email", "download"]
+            }
+        });
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'There {count, plural, one {is # File} other {are # Files}} in the folder.',
+                    targetLocale: "it-IT",
+                    target: "Ci {count, plural, one {è # File} other {sono # Files}} nella cartella.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("Rule should not match partial exceptions", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceICUPluralTranslation({
+            exceptions: {
+                "it-IT": ["File", "Files", "Email", "Download"]
+            }
+        });
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'There {count, plural, one {is # File name} other {are # File names}} in the folder.',
+                    targetLocale: "it-IT",
+                    target: "Ci {count, plural, one {is # File name} other {sono # File names}} nella cartella.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(!Array.isArray(actual)).toBeTruthy();
+
+        const expected = new Result({
+            severity: "warning",
+            description: "Translation of the category 'one' is the same as the source.",
+            id: "plural.test",
+            highlight: 'Target: <e0>one {is # File name}</e0>',
+            rule,
+            pathName: "a/b/c.xliff",
+            locale: "it-IT",
+            source: 'one {is # File name}'
+        });
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("Rule should work with multiple locales having different exceptions", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceICUPluralTranslation({
+            exceptions: {
+                "it-IT": ["File", "Files", "Email"],
+                "de-DE": ["Download", "Upload"]
+            }
+        });
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'There {count, plural, one {is # File} other {are # Files}} in the folder.',
+                    targetLocale: "de-DE",
+                    target: "Es {count, plural, one {is # File} other {gibt # Files}} in dem Ordner.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+    });
+
+    test("Rule should produce Result instance without exceptions parameter", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceICUPluralTranslation();
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: 'There {count, plural, one {is # file} other {are # files}} in the folder.',
+                    targetLocale: "de-DE",
+                    target: "Es {count, plural, one {is # file} other {gibt # Dateien}} in dem Ordner.",
+                    pathName: "a/b/c.xliff"
+                })],
+                sourceFile
+            }),
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(!Array.isArray(actual)).toBeTruthy();
+
+        const expected = new Result({
+            severity: "warning",
+            description: "Translation of the category 'one' is the same as the source.",
+            id: "plural.test",
+            highlight: 'Target: <e0>one {is # file}</e0>',
+            rule,
+            pathName: "a/b/c.xliff",
+            locale: "de-DE",
+            source: 'one {is # file}'
+        });
+        expect(actual).toStrictEqual(expected);
+    });
+
+
 });
 
