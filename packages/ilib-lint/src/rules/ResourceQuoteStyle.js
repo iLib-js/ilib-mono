@@ -117,7 +117,7 @@ class ResourceQuoteStyle extends ResourceRule {
         [
             "sv", // According to the MS Style guidelines, quotes are usually not required in Swedish when the source English text contains quotes
             "it", // Based on feedback from linguists quotes in Italian are not required to be there
-        ].forEach(locale => this.optionalQuoteLocales.add(locale));
+        ].forEach(language => this.optionalQuoteLanguages.add(language));
     }
 
     /**
