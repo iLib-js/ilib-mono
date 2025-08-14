@@ -16,13 +16,13 @@ For most locales, quotes are required when the source contains quotes. The targe
 
 Example string with a problem:
 
-source in English: This is a "string" in English.
+source in English: This is a “string” in English.
 target in German: Dies ist eine "Zeichenfolge" auf deutsch.
 
 This would be flagged because the target is using the ASCII quotes instead of the
 proper quotes in German. The correct proper quotes would look like this:
 
-target: Dies ist eine „Zeichenfolge" auf deutsch.
+target: Dies ist eine „Zeichenfolge“ auf deutsch.
 
 ## Optional Quote Languages
 
@@ -44,7 +44,7 @@ Currently, both Swedish and Italian are designated as optional quote languages, 
 In Swedish, quotes are optional according to Microsoft Style guidelines. This means:
 
 - **No quotes in target**: ✅ Acceptable
-- **Correct quotes in target**: ✅ Acceptable (using "text" style)
+- **Correct quotes in target**: ✅ Acceptable (using ”text” style)
 - **Wrong quotes in target**: ❌ Will trigger a warning
 
 Examples:
