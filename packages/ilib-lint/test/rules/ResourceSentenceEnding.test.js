@@ -824,7 +824,7 @@ describe("ResourceSentenceEnding rule", function() {
 
     languageTestCases.forEach(testCase => {
         test(testCase.description, () => {
-            expect.assertions(testCase.expectedResult === undefined ? 2 : (testCase.highlight ? 4 : 3));
+            expect.assertions(testCase.expectedResult === undefined ? 2 : (testCase.highlight ? 5 : 4));
 
             const rule = new ResourceSentenceEnding();
             expect(rule).toBeTruthy();
@@ -851,6 +851,7 @@ describe("ResourceSentenceEnding rule", function() {
             } else {
                 expect(actual).toBeTruthy();
                 expect(actual?.description).toContain(testCase.expectedResult);
+                expect(actual?.id).toBe(resource.getKey());
                 if (testCase.highlight) {
                     expect(actual?.highlight).toBe(testCase.highlight);
                 }
@@ -913,7 +914,7 @@ describe("ResourceSentenceEnding rule", function() {
     });
 
     test("Spanish inverted punctuation - missing opening question mark", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -937,11 +938,12 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Spanish question should start with "¿" (U+00BF) for es-ES locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("<e0/>Qué es esto?");
     });
 
     test("Spanish inverted punctuation - missing opening exclamation mark", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -965,12 +967,13 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Spanish exclamation should start with "¡" (U+00A1) for es-ES locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("<e0/>Esto es increíble!");
     });
 
     // Test for highlight property functionality
     test("Highlight property is correctly set in result", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -994,12 +997,13 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be ":" (U+003A) for ko-KR locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("답은<e0>： (U+FF1A)</e0>");
     });
 
     // Customization tests
     test("Japanese with full custom punctuation configuration - correct punctuation passes", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         const customConfig = {
             "ja-JP": {
@@ -1034,11 +1038,12 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese ideographic full stop (。) but custom config expects Western period (.)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "." (U+002E) for ja-JP locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("これは文です<e0>。 (U+3002)</e0>");
     });
 
     test("Japanese with full custom punctuation configuration - question mark violation", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         const customConfig = {
             "ja-JP": {
@@ -1073,11 +1078,12 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth question mark (？) but custom config expects Western question mark (?)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "?" (U+003F) for ja-JP locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("これは何ですか<e0>？ (U+FF1F)</e0>");
     });
 
     test("Japanese with full custom punctuation configuration - exclamation mark violation", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         const customConfig = {
             "ja-JP": {
@@ -1112,11 +1118,12 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth exclamation mark (！) but custom config expects Western exclamation mark (!)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "!" (U+0021) for ja-JP locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("これは素晴らしいです<e0>！ (U+FF01)</e0>");
     });
 
     test("Japanese with full custom punctuation configuration - ellipsis violation", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         const customConfig = {
             "ja-JP": {
@@ -1151,11 +1158,12 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Unicode ellipsis (…) but custom config expects Western ellipsis (...)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "..." (U+002E U+002E U+002E) for ja-JP locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("これは不完全です<e0>… (U+2026)</e0>");
     });
 
     test("Japanese with full custom punctuation configuration - colon violation", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         const customConfig = {
             "ja-JP": {
@@ -1190,12 +1198,13 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth colon (：) but custom config expects Western colon (:)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be ":" (U+003A) for ja-JP locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("答えは<e0>： (U+FF1A)</e0>");
     });
 
     // Blending tests
     test("Japanese with partial custom punctuation configuration - question mark uses custom", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         // Configure Japanese with partial custom punctuation - only override question and exclamation
         const customConfig = {
@@ -1229,6 +1238,7 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth question mark (？) but custom config expects Western question mark (?)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "?" (U+003F) for ja-JP locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("これは何ですか<e0>？ (U+FF1F)</e0>");
     });
 
@@ -1269,7 +1279,7 @@ describe("ResourceSentenceEnding rule", function() {
     });
 
     test("Japanese with partial custom punctuation configuration - exclamation uses custom", () => {
-        expect.assertions(4);
+        expect.assertions(5);
 
         // Configure Japanese with partial custom punctuation - only override question and exclamation
         const customConfig = {
@@ -1303,6 +1313,7 @@ describe("ResourceSentenceEnding rule", function() {
         // Should trigger because the target uses Japanese fullwidth exclamation mark (！) but custom config expects Western exclamation mark (!)
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "!" (U+0021) for ja-JP locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("これは素晴らしいです<e0>！ (U+FF01)</e0>");
     });
 
@@ -1380,7 +1391,7 @@ describe("ResourceSentenceEnding rule", function() {
 
     // Test for extra punctuation in translation when source has no punctuation
     test("Extra punctuation in translation when source has no punctuation", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1404,13 +1415,14 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Extra sentence ending punctuation "。" (U+3002) for ja-JP locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("こんにちは世界<e0>。 (U+3002)</e0>");
         expect(actual?.fix).toBeTruthy();
     });
 
     // Test for missing punctuation in translation when source has punctuation
     test("Missing punctuation in translation when source has punctuation", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1434,6 +1446,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Missing sentence ending punctuation for ja-JP locale. It should be "。" (U+3002)');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("こんにちは世界<e0></e0>");
         expect(actual?.fix).toBeTruthy();
     });
@@ -1469,7 +1482,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual.severity).toBe("warning");
-        expect(actual.id).toBe("sentence-ending-punctuation");
+        expect(actual.id).toBe(resource.getKey());
         expect(actual.description).toContain('Found regular space character (U+0020) before sentence-ending punctuation and incorrect punctuation type');
         expect(actual.highlight).toBe("Elle a dit : « Bonjour le monde <e0> (U+0020)</e0>! »");
         expect(actual.source).toBe("She said, \"Hello world.\"");
@@ -1478,7 +1491,7 @@ describe("ResourceSentenceEnding rule", function() {
 
     // French non-breaking space tests
     test("French missing non-breaking space before period", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1501,12 +1514,13 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Non-breaking space (U+00A0) missing before sentence-ending punctuation for fr-FR locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("Bonjour le monde<e0/>.");
         expect(actual?.fix).toBeTruthy();
     });
 
     test("French missing non-breaking space before question mark", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1529,12 +1543,13 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Non-breaking space (U+00A0) missing before sentence-ending punctuation for fr-FR locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("Comment vous appelez-vous<e0/>?");
         expect(actual?.fix).toBeTruthy();
     });
 
     test("French missing non-breaking space before exclamation mark", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1557,12 +1572,13 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Non-breaking space (U+00A0) missing before sentence-ending punctuation for fr-FR locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("Bienvenue<e0/>!");
         expect(actual?.fix).toBeTruthy();
     });
 
     test("French wrong type of space before exclamation mark", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1585,6 +1601,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Found regular space character (U+0020) before sentence-ending punctuation. A non-breaking space (U+00A0) is required before sentence-ending punctuation for the fr-FR locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("Bienvenue<e0> (U+0020)</e0>!");
         expect(actual?.fix).toBeTruthy();
     });
@@ -1615,7 +1632,7 @@ describe("ResourceSentenceEnding rule", function() {
     });
 
     test("French missing non-breaking space before colon", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1638,12 +1655,13 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Non-breaking space (U+00A0) missing before sentence-ending punctuation for fr-FR locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("Les options sont<e0/>:");
         expect(actual?.fix).toBeTruthy();
     });
 
     test("French missing non-breaking space before ellipsis", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1666,6 +1684,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Non-breaking space (U+00A0) missing before sentence-ending punctuation for fr-FR locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("Chargement<e0/>…");
         expect(actual?.fix).toBeTruthy();
     });
@@ -1791,7 +1810,7 @@ describe("ResourceSentenceEnding rule", function() {
 
     // Test for multi-sentence source with different punctuation types
     test("Multi-sentence source with statement and question translated to Spanish", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1815,13 +1834,14 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "?" (U+003F) for es-ES locale, not "？"');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("Esto es una declaración. ¿Qué es esto<e0>？ (U+FF1F)</e0>");
         expect(actual?.fix).toBeTruthy();
     });
 
     // Test for English to Amharic with Amharic-style quotes
     test("English to Amharic with Amharic-style quotes", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1844,6 +1864,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending punctuation should be "፧" (U+1367) for am-ET locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("እርሷ እንደተናገረች፣ «ይህ ምንድን ነው<e0>? (U+003F)</e0>»");
         expect(actual?.fix).toBeTruthy();
     });
@@ -1878,7 +1899,7 @@ describe("ResourceSentenceEnding rule", function() {
 
     // Test for French to Spanish with French quotes and Spanish quotes, both with question marks but missing inverted punctuation
     test("French to Spanish with French quotes and Spanish quotes, both with question marks but missing inverted punctuation", () => {
-        expect.assertions(5);
+        expect.assertions(6);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1902,6 +1923,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Spanish question should start with "¿" (U+00BF) for es-ES locale');
+        expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("Ella dijo: «<e0/>Qué es esto?»");
         expect(actual?.fix).toBeTruthy();
     });
@@ -1935,7 +1957,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual.severity).toBe("warning");
-        expect(actual.id).toBe("sentence-ending-punctuation");
+        expect(actual.id).toBe(resource.getKey());
         expect(actual.description).toContain('Sentence ending punctuation should be "？" (U+FF1F) for ja-JP locale');
         expect(actual.highlight).toBe("Target[1]: これは何ですか<e0>? (U+003F)</e0>");
         expect(actual.source).toBe("What is this?");
@@ -2007,7 +2029,7 @@ describe("ResourceSentenceEnding rule", function() {
 
         expect(actual).toBeTruthy();
         expect(actual.severity).toBe("warning");
-        expect(actual.id).toBe("sentence-ending-punctuation");
+        expect(actual.id).toBe(resource.getKey());
         expect(actual.description).toContain('Spanish question should start with "¿" (U+00BF) for es-ES locale');
         expect(actual.highlight).toBe("Target(other): <e0/>Qué es esto?");
         expect(actual.source).toBe("What is this?");
