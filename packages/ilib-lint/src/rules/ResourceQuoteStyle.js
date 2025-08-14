@@ -133,7 +133,11 @@ class ResourceQuoteStyle extends ResourceRule {
     checkString(src, tar, resource, file, locale, index, category) {
         const localeObj = new Locale(locale);
         const language = localeObj.getLanguage();
-        const isOptionalPunctuationLanguage = this.optionalQuoteLocales.has(language);
+        if (!language) {
+            // no language? nothing to do!
+            return;
+        }
+        const isOptionalPunctuationLanguage = this.optionalQuoteLanguages.has(language);
         const regExps = this.getRegExps(locale, isOptionalPunctuationLanguage);
 
         const sourceStyle = {
