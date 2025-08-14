@@ -1,0 +1,236 @@
+#!/usr/bin/env node
+
+import { ScriptInfo, ScriptDirection } from 'ilib-scriptinfo';
+
+/**
+ * Sample command-line application demonstrating ilib-scriptinfo usage.
+ * 
+ * Usage: node index.js <script-code>
+ * Example: node index.js Latn
+ * Example: node index.js Arab
+ * Example: node index.js Hani
+ */
+function showHelp() {
+    console.log(`
+ilib-scriptinfo Sample App
+==========================
+
+A command-line tool that demonstrates the ilib-scriptinfo package by looking up
+information about writing scripts based on ISO 15924 codes.
+
+USAGE
+-----
+node index.js <script-code>
+node index.js --help
+
+PARAMETERS
+----------
+<script-code>    ISO 15924 4-letter script code (e.g., Latn, Arab, Hani)
+
+OPTIONS
+-------
+--help           Show this help message
+
+EXAMPLES
+--------
+node index.js Latn          # Look up Latin script information
+node index.js Arab          # Look up Arabic script information
+node index.js Hani          # Look up Han (Chinese) script information
+node index.js Deva          # Look up Devanagari script information
+node index.js Cyrl          # Look up Cyrillic script information
+
+OUTPUT
+------
+The tool displays all available script properties in a tabular format:
+• Code: ISO 15924 4-letter script code
+• Code Number: ISO 15924 numeric code
+• Name: English name of the script
+• Long Code: Long identifier for the script
+• Script Direction: Writing direction (ltr/rtl)
+• Needs IME: Whether script requires Input Method Editor
+• Uses Casing: Whether script uses letter case
+
+COMMON SCRIPT CODES
+------------------
+Latn - Latin
+Arab - Arabic
+Hani - Han (Chinese)
+Deva - Devanagari
+Cyrl - Cyrillic
+Grek - Greek
+Hebr - Hebrew
+Thai - Thai
+Hang - Hangul (Korean)
+Kana - Katakana
+Hira - Hiragana
+
+For a complete list of all available script codes, the tool will show
+examples when an unknown script code is provided.
+
+MORE INFORMATION
+----------------
+This is a sample application demonstrating the ilib-scriptinfo package.
+For more information about the package, see the main documentation.
+`);
+}
+
+/**
+ * Find the correct case for a script code by searching through all available codes
+ * @param {string} searchCode - The script code to find (case-insensitive)
+ * @param {string[]} allScripts - Array of all available script codes
+ * @returns {string|null} The correct case version of the script code, or null if not found
+ */
+function findCorrectCase(searchCode, allScripts) {
+    const searchLower = searchCode.toLowerCase();
+    for (const code of allScripts) {
+        if (code.toLowerCase() === searchLower) {
+            return code;
+        }
+    }
+    return null;
+}
+
+/**
+ * Search for script codes that contain the given search term (case-insensitive)
+ * @param {string} searchTerm - The term to search for
+ * @param {string[]} allScripts - Array of all available script codes
+ * @returns {Array} Array of matching script codes with their names
+ */
+function searchScriptCodes(searchTerm, allScripts) {
+    const matches = [];
+    const searchLower = searchTerm.toLowerCase();
+    
+    for (const code of allScripts) {
+        const scriptInfo = new ScriptInfo(code);
+        const name = scriptInfo.getName();
+        
+        // Check if the search term matches the code (case-insensitive)
+        if (code.toLowerCase().includes(searchLower)) {
+            matches.push({ code, name });
+        }
+        // Also check if the search term matches the script name (case-insensitive)
+        else if (name && name.toLowerCase().includes(searchLower)) {
+            matches.push({ code, name });
+        }
+    }
+    
+    return matches;
+}
+
+function main() {
+    const args = process.argv.slice(2);
+    
+    // Check for help flag
+    if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
+        showHelp();
+        process.exit(0);
+    }
+    
+    if (args.length !== 1) {
+        console.error('Error: Invalid number of arguments');
+        console.error('');
+        console.error('Usage: node index.js <script-code>');
+        console.error('Example: node index.js Latn');
+        console.error('Example: node index.js Arab');
+        console.error('Example: node index.js Hani');
+        console.error('');
+        console.error('For more information, run: node index.js --help');
+        process.exit(1);
+    }
+    
+    const inputScriptCode = args[0];
+    const allScripts = ScriptInfo.getAllScripts();
+    
+    // Try to find the correct case for the script code
+    const correctCaseCode = findCorrectCase(inputScriptCode, allScripts);
+    const scriptCodeToUse = correctCaseCode || inputScriptCode;
+    
+    // Create a ScriptInfo instance for the script code
+    const scriptInfo = new ScriptInfo(scriptCodeToUse);
+    
+    // Print header
+    console.log(`\nScript Information for "${inputScriptCode}"`);
+    console.log('='.repeat(50));
+    
+    // Get all available properties and their values
+    const properties = [
+        { name: 'Code', value: scriptCodeToUse },
+        { name: 'Code Number', value: scriptInfo.getCodeNumber()?.toString() || 'undefined' },
+        { name: 'Name', value: scriptInfo.getName() || 'undefined' },
+        { name: 'Long Code', value: scriptInfo.getLongCode() || 'undefined' },
+        { name: 'Script Direction', value: scriptInfo.getScriptDirection() },
+        { name: 'Needs IME', value: scriptInfo.getNeedsIME().toString() },
+        { name: 'Uses Casing', value: scriptInfo.getCasing().toString() }
+    ];
+    
+    // Find the maximum length of property names for alignment
+    const maxNameLength = Math.max(...properties.map(p => p.name.length));
+    
+    // Print properties in tabular format
+    properties.forEach(property => {
+        const paddedName = property.name.padEnd(maxNameLength);
+        console.log(`${paddedName} | ${property.value}`);
+    });
+    
+    // Print footer
+    console.log('='.repeat(50));
+    
+    // Show some additional information
+    if (scriptInfo.getName()) {
+        console.log(`\n✅ Valid script found: ${scriptInfo.getName()}`);
+        
+        // Show direction information
+        const direction = scriptInfo.getScriptDirection();
+        const directionText = direction === ScriptDirection.RTL ? 'Right-to-Left' : 'Left-to-Right';
+        console.log(`📝 Writing direction: ${directionText}`);
+        
+        // Show IME information
+        if (scriptInfo.getNeedsIME()) {
+            console.log(`⌨️  This script typically requires an Input Method Editor (IME)`);
+        }
+        
+        // Show casing information
+        if (scriptInfo.getCasing()) {
+            console.log(`🔤 This script uses letter case (uppercase/lowercase)`);
+        } else {
+            console.log(`🔤 This script does not use letter case`);
+        }
+    } else {
+        console.log(`\n❌ Unknown script code: "${inputScriptCode}"`);
+        
+        // Search for similar script codes
+        const matches = searchScriptCodes(inputScriptCode, allScripts);
+        
+        if (matches.length > 0) {
+            console.log(`🔍 Found ${matches.length} similar script code(s):`);
+            matches.forEach(match => {
+                console.log(`   ${match.code} - ${match.name}`);
+            });
+            
+            if (matches.length === 1) {
+                console.log(`\n💡 Did you mean: ${matches[0].code}?`);
+            }
+        } else {
+            console.log(`💡 No similar script codes found for "${inputScriptCode}"`);
+            console.log(`💡 Try one of these valid script codes:`);
+            
+            // Show some example script codes
+            const examples = allScripts.slice(0, 10); // Show first 10 as examples
+            examples.forEach(code => {
+                const example = new ScriptInfo(code);
+                console.log(`   ${code} - ${example.getName()}`);
+            });
+            
+            if (allScripts.length > 10) {
+                console.log(`   ... and ${allScripts.length - 10} more scripts`);
+            }
+        }
+    }
+    
+    console.log('\n');
+}
+
+// Run the application
+if (import.meta.url === `file://${process.argv[1]}`) {
+    main();
+}
