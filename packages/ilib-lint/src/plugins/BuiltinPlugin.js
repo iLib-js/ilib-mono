@@ -157,6 +157,19 @@ export const regexRules = [
     },
     {
         type: "resource-target",
+        name: "resource-apostrophe",
+        description: "Ensure that the target uses proper Unicode apostrophes instead of ASCII straight quotes.",
+        note: "The word \"{matchString}\" contains an ASCII straight quote used as an apostrophe. Use the Unicode apostrophe character instead.",
+        regexps: [ 
+            "(\\p{L}+('\\p{L}+)+)"         // word boundary + word chars + quote + word chars + word boundary (e.g., it's, don't, d'l'homme)
+        ],
+        link: "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-apostrophe.md",
+        fixes: [
+            { search: "'", replace: "\u2019" }
+        ]
+    },
+    {
+        type: "resource-target",
         name: "resource-no-halfwidth-kana-characters",
         description: "Ensure that the target does not contain half-width kana characters.",
         note: "The half-width kana characters are not allowed in the target string. Use full-width characters.",
@@ -410,6 +423,7 @@ export const builtInRulesets = {
         "resource-no-halfwidth-kana-characters": true,
         "resource-no-double-byte-space": true,
         "resource-no-space-with-fullwidth-punctuation": true,
+        "resource-apostrophe": true,
     },
 
     gnu: {
