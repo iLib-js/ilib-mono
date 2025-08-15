@@ -892,7 +892,7 @@ describe("resource-apostrophe rule", () => {
             target: "Ду'мата е кратка.",
             pathName: "a/b/c.xliff"
         });
-debugger;
+
         const results = checker.matchString({
             source: resource.getSource(),
             target: resource.getTarget(),
