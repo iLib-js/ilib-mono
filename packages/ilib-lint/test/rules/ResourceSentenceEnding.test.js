@@ -1101,7 +1101,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
-            key: "targetspace.test",
+            key: "french.test",
             sourceLocale: "en-US",
             source: "Select your first choice language.",
             targetLocale: "fr-CA",
@@ -1125,7 +1125,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
-            key: "targetspace.test",
+            key: "french.test",
             sourceLocale: "en-US",
             source: "Select antenna channel ordering method.",
             targetLocale: "fr-FR",
@@ -1166,6 +1166,33 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
         expect(actual).toBeUndefined();
+    });
+    // Test with the wrong target extracted
+    test("Test with the wrong target extracted", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "en-US",
+            source: "{num} channels have been blocked.",
+            targetLocale: "sk-SK",
+            target: "Počet zablokovaných kanálov: {num}",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        // this.getLastSentenceFromContent(target, targetLocaleObj); return '{num}'
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain('Missing sentence ending punctuation for sk-SK locale. It should be \".\" (U+002E)');
+        expect(actual?.highlight).toBe("Počet zablokovaných kanálov: {num}<e0></e0>");
     });
     // Customization tests
     test("Japanese with full custom punctuation configuration - correct punctuation passes", () => {
