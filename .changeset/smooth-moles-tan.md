@@ -1,5 +1,4 @@
 ---
-"ilib-scriptinfo-sample": major
 "ilib-scriptinfo": major
 ---
 
@@ -8,5 +7,5 @@
   - Script information for all 226 Unicode scripts
   - Properties: name, direction, casing, IME requirements
   - TypeScript with full type safety
-  - Zero external dependencies, but script information is derived from
+  - Zero external runtime dependencies; script information is derived at buildtime from
     the latest ISO 15924 script information from the Unicode organization
