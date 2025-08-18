@@ -26,7 +26,9 @@ import CaseMapper from 'ilib-casemapper';
 import {ScriptInfo} from 'ilib-scriptinfo';
 import LocaleMatcher from 'ilib-localematcher';
 
+// type imports
 /** @ignore @typedef {import('ilib-tools-common').Resource} Resource */
+/** @ignore @typedef {import('../plugins/resource/ResourceFix.js').default} ResourceFix */
 
 /**
  * @classdesc Class representing an ilib-lint programmatic rule for linting ALL CAPS strings.
