@@ -77,20 +77,22 @@ class ResourceAllCaps extends ResourceRule {
         }
 
         // Check if target matches the ALL CAPS style
-        if (!this.isAllCaps(target)) {
-            const result = new Result({
-                severity: "error",
-                id: resource.getKey(),
-                source,
-                description: "The source string is in ALL CAPS, but the target string is not. Please update the target string to match the ALL CAPS style of the source.",
-                rule: this,
-                locale: resource.targetLocale,
-                pathName: file,
-                highlight: `<e0>${target}</e0>`
-            });
-            result.fix = this.getFix(resource, target, file, index, category);
-            return result;
+        if (this.isAllCaps(target)) {
+            return;
         }
+
+        const result = new Result({
+            severity: "error",
+            id: resource.getKey(),
+            source,
+            description: "The source string is in ALL CAPS, but the target string is not.",
+            rule: this,
+            locale: resource.targetLocale,
+            pathName: file,
+            highlight: `<e0>${target}</e0>`
+        });
+        result.fix = this.createFix(resource, target, file, index, category);
+        return result;
     }
 
     /**
@@ -100,11 +102,15 @@ class ResourceAllCaps extends ResourceRule {
      * @param {string} file the file path
      * @param {number} [index] the index for array resources
      * @param {string} [category] the category for plural resources
-     * @returns {import('../plugins/resource/ResourceFix.js').default} the fix for this rule
+     * @returns {ResourceFix} the fix for this rule
      */
-    getFix(resource, target, file, index, category) {
+    createFix(resource, target, file, index, category) {
         const locale = resource.targetLocale || 'en-US';
-        const upperCaseTarget = this.toUpperCaseLocale(target, locale);
+        const casemapper = new CaseMapper({
+            locale,
+            direction: "toupper"
+        });
+        const upperCaseTarget = casemapper.map(target) || target;
 
         const command = ResourceFixer.createStringCommand(0, target.length, upperCaseTarget);
         return ResourceFixer.createFix({
