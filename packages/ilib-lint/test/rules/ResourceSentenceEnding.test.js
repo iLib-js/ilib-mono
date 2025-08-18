@@ -1118,6 +1118,30 @@ describe("ResourceSentenceEnding rule", function() {
         });
         expect(actual).toBeUndefined();
     });
+    test("Test with the french target no punctuation2", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "en-US",
+            source: "Select antenna channel ordering method.",
+            targetLocale: "fr-FR",
+            target: "Sélectionnez le mode de classement des chaînes d'antenne",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        // targetEnding.original
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
     // Test with the existing space at the end of the target
     test("Test with the existing space at the end of the target", () => {
         expect.assertions(2);
