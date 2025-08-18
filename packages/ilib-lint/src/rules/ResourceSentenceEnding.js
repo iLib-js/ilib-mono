@@ -724,7 +724,7 @@ class ResourceSentenceEnding extends ResourceRule {
             return new Result({
                 rule: this,
                 severity: "warning",
-                id: "sentence-ending-punctuation",
+                id: resource.getKey(),
                 description: `Extra sentence ending punctuation "${targetEnding.original}" (${unicodeCode}) for ${targetLocale} locale`,
                 source: source,
                 highlight: highlight,
@@ -777,7 +777,7 @@ class ResourceSentenceEnding extends ResourceRule {
             return new Result({
                 rule: this,
                 severity: "warning",
-                id: "sentence-ending-punctuation",
+                id: resource.getKey(),
                 description: `Missing sentence ending punctuation for ${targetLocale} locale. It should be "${expectedPunctuation}" (${unicodeCode})`,
                 source: source,
                 highlight: highlight,
@@ -826,7 +826,7 @@ class ResourceSentenceEnding extends ResourceRule {
                     return new Result({
                         rule: this,
                         severity: "warning",
-                        id: "sentence-ending-punctuation",
+                        id: resource.getKey(),
                         description: `Spanish ${sourceEnding.type} should start with "${invertedChar}" (${unicodeCode}) for ${targetLocale} locale`,
                         source: source,
                         highlight: highlight,
@@ -868,7 +868,7 @@ class ResourceSentenceEnding extends ResourceRule {
                             return new Result({
                                 rule: this,
                                 severity: "warning",
-                                id: "sentence-ending-punctuation",
+                                id: resource.getKey(),
                                 description: `Found regular space character (U+0020) before sentence-ending punctuation. A non-breaking space (U+00A0) is required before sentence-ending punctuation for the ${targetLocale} locale`,
                                 source: source,
                                 highlight: highlight,
@@ -892,7 +892,7 @@ class ResourceSentenceEnding extends ResourceRule {
                             return new Result({
                                 rule: this,
                                 severity: "warning",
-                                id: "sentence-ending-punctuation",
+                                id: resource.getKey(),
                                 description: `Non-breaking space (U+00A0) missing before sentence-ending punctuation for ${targetLocale} locale`,
                                 source: source,
                                 highlight: highlight,
@@ -930,7 +930,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         return new Result({
                             rule: this,
                             severity: "warning",
-                            id: "sentence-ending-punctuation",
+                            id: resource.getKey(),
                             description: `Found regular space character (U+0020) before sentence-ending punctuation and incorrect punctuation type. A non-breaking space (U+00A0) is required before sentence-ending punctuation for the ${targetLocale} locale, and the punctuation should be "${expectedPunctuation}" (${expectedUnicode})`,
                             source: source,
                             highlight: highlight,
@@ -944,7 +944,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         return new Result({
                             rule: this,
                             severity: "warning",
-                            id: "sentence-ending-punctuation",
+                            id: resource.getKey(),
                             description: `Non-breaking space (U+00A0) missing before sentence-ending punctuation and incorrect punctuation type. The punctuation should be "${expectedPunctuation}" (${expectedUnicode}) for the ${targetLocale} locale`,
                             source: source,
                             highlight: highlight,
@@ -958,7 +958,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         return new Result({
                             rule: this,
                             severity: "warning",
-                            id: "sentence-ending-punctuation",
+                            id: resource.getKey(),
                             description: `Sentence ending punctuation should be "${expectedPunctuation}" (${expectedUnicode}) for ${targetLocale} locale, not "${targetEnding.original}" (${unicodeCode})`,
                             source: source,
                             highlight: highlight,
@@ -983,7 +983,7 @@ class ResourceSentenceEnding extends ResourceRule {
             return new Result({
                 rule: this,
                 severity: "warning",
-                id: "sentence-ending-punctuation",
+                id: resource.getKey(),
                 description: `Sentence ending punctuation should be "${expectedPunctuation}" (${expectedUnicode}) for ${targetLocale} locale, not "${targetEnding.original}" (${unicodeCode})`,
                 source: source,
                 highlight: highlight,
