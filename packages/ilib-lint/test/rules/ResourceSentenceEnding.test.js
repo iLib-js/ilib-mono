@@ -1093,6 +1093,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
         expect(actual).toBeUndefined();
     });
+    //------------------- above resolved -------------------
     // Test with the french target no punctuation
     test("Test with the french target no punctuation", () => {
         expect.assertions(2);
@@ -1194,6 +1195,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual?.description).toContain('Missing sentence ending punctuation for sk-SK locale. It should be \".\" (U+002E)');
         expect(actual?.highlight).toBe("Počet zablokovaných kanálov: {num}<e0></e0>");
     });
+    // ------------------------------------------------------
     // Customization tests
     test("Japanese with full custom punctuation configuration - correct punctuation passes", () => {
         expect.assertions(4);
