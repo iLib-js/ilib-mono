@@ -33,7 +33,7 @@ Examples of strings that are NOT in ALL CAPS:
 
 ### Correct
 
-Correctly matched ALL CAPS variations in a Spanish (es-ES) translation, where both source and target are the same style but different text:
+Correct ALL CAPS translations in Spanish - target follows the style of source. No error will be produced.
 
 ```xliff
 <source>ALL CAPS</source>
