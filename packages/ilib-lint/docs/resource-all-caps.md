@@ -52,7 +52,7 @@ Correct ALL CAPS translations in Spanish - target follows the style of source. N
 
 ### Incorrect
 
-Incorrectly matched ALL CAPS in a Spanish translation:
+Incorrect translations of ALL CAPS strings in Spanish which will be flagged by this rule:
 
 ```xliff
 <source>ALL CAPS</source>
