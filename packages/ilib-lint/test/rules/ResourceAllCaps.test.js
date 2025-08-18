@@ -203,6 +203,379 @@ describe("ResourceAllCaps", () => {
         expect(result.fix).toBeDefined();
     });
 
+    describe("comprehensive rule functionality testing", () => {
+        test.each([
+            {
+                name: "source and target both ALL CAPS - should not trigger (English)",
+                source: "ALL CAPS TEXT",
+                target: "ALL CAPS TEXT",
+                targetLocale: "en-US",
+                shouldTrigger: false
+            },
+            {
+                name: "source ALL CAPS, target lowercase - should trigger (Spanish)",
+                source: "ALL CAPS TEXT",
+                target: "texto en minúsculas",
+                targetLocale: "es-ES",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target sentence case - should trigger (French)",
+                source: "ALL CAPS TEXT",
+                target: "Texte en minuscules",
+                targetLocale: "fr-FR",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target title case - should trigger (German)",
+                source: "ALL CAPS TEXT",
+                target: "Text In Kleinbuchstaben",
+                targetLocale: "de-DE",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target mixed case - should trigger (Italian)",
+                source: "ALL CAPS TEXT",
+                target: "Testo In minuscole",
+                targetLocale: "it-IT",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with numbers, target lowercase - should trigger (Portuguese)",
+                source: "ALL CAPS 123 TEXT",
+                target: "texto 123 em minúsculas",
+                targetLocale: "pt-BR",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with punctuation, target lowercase - should trigger (Dutch)",
+                source: "ALL CAPS! TEXT?",
+                target: "tekst in kleine letters!",
+                targetLocale: "nl-NL",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with special chars, target lowercase - should trigger (Swedish)",
+                source: "ALL-CAPS_TEXT",
+                target: "text-i-små-bokstäver",
+                targetLocale: "sv-SE",
+                shouldTrigger: true
+            },
+            {
+                name: "source not ALL CAPS, target lowercase - should not trigger (Norwegian)",
+                source: "Normal Text",
+                target: "normal tekst",
+                targetLocale: "no-NO",
+                shouldTrigger: false
+            },
+            {
+                name: "source not ALL CAPS, target ALL CAPS - should not trigger (Danish)",
+                source: "Normal Text",
+                target: "NORMAL TEKST",
+                targetLocale: "da-DK",
+                shouldTrigger: false
+            },
+            {
+                name: "source mixed case, target different case - should not trigger (Finnish)",
+                source: "Mixed Case Text",
+                target: "sekoitettu kirjainkoko",
+                targetLocale: "fi-FI",
+                shouldTrigger: false
+            },
+            {
+                name: "source camelCase, target different case - should not trigger (Polish)",
+                source: "camelCaseText",
+                target: "tekst w camel case",
+                targetLocale: "pl-PL",
+                shouldTrigger: false
+            },
+            {
+                name: "source snake_case, target different case - should not trigger (Czech)",
+                source: "snake_case_text",
+                target: "text v snake case",
+                targetLocale: "cs-CZ",
+                shouldTrigger: false
+            },
+            {
+                name: "source with leading/trailing spaces ALL CAPS, target lowercase - should trigger (Hungarian)",
+                source: " ALL CAPS TEXT ",
+                target: " kisbetűs szöveg ",
+                targetLocale: "hu-HU",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with accented chars, target lowercase - should trigger (French)",
+                source: "ALL CAPS ÉTÉ",
+                target: "été en minuscules",
+                targetLocale: "fr-FR",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with German chars, target lowercase - should trigger (German)",
+                source: "ALL CAPS SCHLOSS",
+                target: "schloß in kleinbuchstaben",
+                targetLocale: "de-DE",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with Turkish chars, target lowercase - should trigger (Turkish)",
+                source: "ALL CAPS ŞEHİR",
+                target: "şehir küçük harflerle",
+                targetLocale: "tr-TR",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target Russian lowercase - should trigger (Russian)",
+                source: "ALL CAPS TEXT",
+                target: "текст в нижнем регистре",
+                targetLocale: "ru-RU",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target Greek lowercase - should trigger (Greek)",
+                source: "ALL CAPS TEXT",
+                target: "κείμενο σε πεζά γράμματα",
+                targetLocale: "el-GR",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target Bulgarian lowercase - should trigger (Bulgarian)",
+                source: "ALL CAPS TEXT",
+                target: "текст с малки букви",
+                targetLocale: "bg-BG",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target Arabic - should not trigger (no capital letters)",
+                source: "ALL CAPS TEXT",
+                target: "نص عربي",
+                targetLocale: "ar-SA",
+                shouldTrigger: false
+            },
+            {
+                name: "source ALL CAPS, target Chinese - should not trigger (no capital letters)",
+                source: "ALL CAPS TEXT",
+                target: "中文文本",
+                targetLocale: "zh-CN",
+                shouldTrigger: false
+            },
+            {
+                name: "source ALL CAPS, target Japanese - should not trigger (no capital letters)",
+                source: "ALL CAPS TEXT",
+                target: "日本語テキスト",
+                targetLocale: "ja-JP",
+                shouldTrigger: false
+            },
+            {
+                name: "source ALL CAPS, target Korean - should not trigger (no capital letters)",
+                source: "ALL CAPS TEXT",
+                target: "한국어 텍스트",
+                targetLocale: "ko-KR",
+                shouldTrigger: false
+            },
+            {
+                name: "source ALL CAPS, target Thai - should not trigger (no capital letters)",
+                source: "ALL CAPS TEXT",
+                target: "ข้อความภาษาไทย",
+                targetLocale: "th-TH",
+                shouldTrigger: false
+            }
+        ])("$name", ({source, target, targetLocale, shouldTrigger}) => {
+            const rule = new ResourceAllCaps({});
+            const resource = createTestResourceString({source, target, targetLocale});
+
+            const result = rule.matchString({
+                source: resource.source,
+                target: resource.target,
+                file: resource.pathName,
+                resource
+            });
+
+            if (shouldTrigger) {
+                expect(result).toBeInstanceOf(Result);
+                // @ts-ignore - We're testing that result is defined
+                expect(result.rule).toBeInstanceOf(ResourceAllCaps);
+                // @ts-ignore - We're testing that result is defined
+                expect(result.severity).toEqual("error");
+                // @ts-ignore - We're testing that result is defined
+                expect(result.description).toContain("ALL CAPS");
+                // @ts-ignore - We're testing that result is defined
+                expect(result.pathName).toBe("tests/for/allCaps.xliff");
+                // @ts-ignore - We're testing that result is defined
+                expect(result.locale).toBe(targetLocale);
+                // @ts-ignore - We're testing that result is defined
+                expect(result.fix).toBeDefined();
+            } else {
+                expect(result).toBeUndefined();
+            }
+        });
+
+        test.each([
+            {
+                name: "source ALL CAPS, target partially capitalized - should trigger (English)",
+                source: "ALL CAPS TEXT",
+                target: "All caps text",
+                targetLocale: "en-US",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target first word only capitalized - should trigger (Spanish)",
+                source: "ALL CAPS TEXT",
+                target: "Primera palabra mayúscula",
+                targetLocale: "es-ES",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target last word only capitalized - should trigger (French)",
+                source: "ALL CAPS TEXT",
+                target: "dernier mot Majuscule",
+                targetLocale: "fr-FR",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS, target middle word only capitalized - should trigger (German)",
+                source: "ALL CAPS TEXT",
+                target: "mittleres Wort Groß",
+                targetLocale: "de-DE",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with numbers, target with numbers lowercase - should trigger (Italian)",
+                source: "ERROR 404 NOT FOUND",
+                target: "errore 404 non trovato",
+                targetLocale: "it-IT",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with symbols, target with symbols lowercase - should trigger (Portuguese)",
+                source: "DEBUG MODE ON!",
+                target: "modo debug ativado!",
+                targetLocale: "pt-BR",
+                shouldTrigger: true
+            },
+            {
+                name: "source ALL CAPS with mixed content, target mixed case - should trigger (Dutch)",
+                source: "USER LOGIN FAILED",
+                target: "Gebruiker Login Mislukt",
+                targetLocale: "nl-NL",
+                shouldTrigger: true
+            },
+            {
+                name: "source mixed ALL CAPS and normal, target mixed case - should trigger (Romanian)",
+                source: "ERROR 404 NOT FOUND",
+                target: "Eroare 404 nu a fost găsit",
+                targetLocale: "ro-RO",
+                shouldTrigger: true
+            },
+            {
+                name: "source mixed ALL CAPS and normal, target mixed case - should trigger (Slovak)",
+                source: "DEBUG MODE ON",
+                target: "Režim ladenia zapnutý",
+                targetLocale: "sk-SK",
+                shouldTrigger: true
+            },
+            {
+                name: "source mixed ALL CAPS and normal, target mixed case - should trigger (Slovenian)",
+                source: "WARNING SYSTEM DOWN",
+                target: "Opozorilo sistem je neaktiven",
+                targetLocale: "sl-SI",
+                shouldTrigger: true
+            },
+            {
+                name: "source partially ALL CAPS (first word) - should not trigger (Estonian)",
+                source: "ERROR system down",
+                target: "Viga süsteem on alla",
+                targetLocale: "et-EE",
+                shouldTrigger: false
+            },
+            {
+                name: "source partially ALL CAPS (last word) - should not trigger (Latvian)",
+                source: "System ERROR down",
+                target: "Sistēmas kļūda ir lejā",
+                targetLocale: "lv-LV",
+                shouldTrigger: false
+            },
+            {
+                name: "source partially ALL CAPS (middle word) - should not trigger (Lithuanian)",
+                source: "System ERROR down",
+                target: "Sistemos klaida yra žemyn",
+                targetLocale: "lt-LT",
+                shouldTrigger: false
+            }
+        ])("$name - testing specific capitalization patterns", ({source, target, targetLocale, shouldTrigger}) => {
+            const rule = new ResourceAllCaps({});
+            const resource = createTestResourceString({source, target, targetLocale});
+
+            const result = rule.matchString({
+                source: resource.source,
+                target: resource.target,
+                file: resource.pathName,
+                resource
+            });
+
+            if (shouldTrigger) {
+                expect(result).toBeInstanceOf(Result);
+                // @ts-ignore - We're testing that result is defined
+                expect(result.rule).toBeInstanceOf(ResourceAllCaps);
+                // @ts-ignore - We're testing that result is defined
+                expect(result.severity).toEqual("error");
+                // @ts-ignore - We're testing that result is defined
+                expect(result.description).toContain("ALL CAPS");
+                // @ts-ignore - We're testing that result is defined
+                expect(result.pathName).toBe("tests/for/allCaps.xliff");
+                // @ts-ignore - We're testing that result is defined
+                expect(result.locale).toBe(targetLocale);
+                // @ts-ignore - We're testing that result is defined
+                expect(result.fix).toBeDefined();
+            } else {
+                expect(result).toBeUndefined();
+            }
+        });
+
+        test.each([
+            {
+                name: "source ALL CAPS, target empty string - should not trigger (handled by separate test)",
+                source: "ALL CAPS TEXT",
+                target: "",
+                targetLocale: "en-US",
+                shouldTrigger: false
+            },
+            {
+                name: "source empty string, target anything - should not trigger (handled by separate test)",
+                source: "",
+                target: "any target",
+                targetLocale: "es-ES",
+                shouldTrigger: false
+            },
+            {
+                name: "source null, target anything - should not trigger (handled by separate test)",
+                source: null,
+                target: "any target",
+                targetLocale: "fr-FR",
+                shouldTrigger: false
+            },
+            {
+                name: "source undefined, target anything - should not trigger (handled by separate test)",
+                source: undefined,
+                target: "any target",
+                targetLocale: "de-DE",
+                shouldTrigger: false
+            }
+        ])("$name - edge cases", ({source, target, targetLocale, shouldTrigger}) => {
+            const rule = new ResourceAllCaps({});
+            const resource = createTestResourceString({source: source || "", target: target || "", targetLocale});
+
+            const result = rule.matchString({
+                source: resource.source,
+                target: resource.target,
+                file: resource.pathName,
+                resource
+            });
+
+            expect(result).toBeUndefined();
+        });
+    });
+
     test("provides fix that converts target to ALL CAPS", () => {
         const rule = new ResourceAllCaps({});
         const resource = createTestResourceString({source: "ALL CAPS", target: "different target"});
@@ -440,6 +813,156 @@ describe("ResourceAllCaps", () => {
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "ŞEHİR"
+        });
+    });
+
+    test("provides fix that handles Turkish locale-sensitive upper-casing correctly", () => {
+        const rule = new ResourceAllCaps({});
+        const resource = createTestResourceString({source: "TURKISH TEXT", target: "türkçe metin", targetLocale: "tr-TR"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        // @ts-ignore - We're testing that result is defined
+        expect(result.fix).toBeDefined();
+
+        // @ts-ignore - We're testing that result is defined
+        const fix = result.fix;
+        expect(fix).toBeInstanceOf(Fix);
+        // @ts-ignore
+        expect(fix.commands).toHaveLength(1);
+
+        // @ts-ignore
+        const command = fix.commands[0];
+        expect(command.stringFix).toEqual({
+            position: 0,
+            deleteCount: resource.target.length,
+            insertContent: "TÜRKÇE METİN"
+        });
+    });
+
+    test("provides fix that handles German locale-sensitive upper-casing correctly", () => {
+        const rule = new ResourceAllCaps({});
+        const resource = createTestResourceString({source: "GERMAN TEXT", target: "deutscher text", targetLocale: "de-DE"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        // @ts-ignore - We're testing that result is defined
+        expect(result.fix).toBeDefined();
+
+        // @ts-ignore - We're testing that result is defined
+        const fix = result.fix;
+        expect(fix).toBeInstanceOf(Fix);
+        // @ts-ignore
+        expect(fix.commands).toHaveLength(1);
+
+        // @ts-ignore
+        const command = fix.commands[0];
+        expect(command.stringFix).toEqual({
+            position: 0,
+            deleteCount: resource.target.length,
+            insertContent: "DEUTSCHER TEXT"
+        });
+    });
+
+    test("provides fix that handles German ess-zett locale-sensitively", () => {
+        const rule = new ResourceAllCaps({});
+        const resource = createTestResourceString({source: "STREET", target: "straße", targetLocale: "de-DE"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        // @ts-ignore - We're testing that result is defined
+        expect(result.fix).toBeDefined();
+
+        // @ts-ignore - We're testing that result is defined
+        const fix = result.fix;
+        expect(fix).toBeInstanceOf(Fix);
+        // @ts-ignore
+        expect(fix.commands).toHaveLength(1);
+
+        // @ts-ignore
+        const command = fix.commands[0];
+        expect(command.stringFix).toEqual({
+            position: 0,
+            deleteCount: resource.target.length,
+            insertContent: "STRASSE"
+        });
+    });
+
+    test("provides fix that handles Turkish mixed case locale-sensitively", () => {
+        const rule = new ResourceAllCaps({});
+        const resource = createTestResourceString({source: "TURKISH MIXED", target: "Türkçe Karışık", targetLocale: "tr-TR"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        // @ts-ignore - We're testing that result is defined
+        expect(result.fix).toBeDefined();
+
+        // @ts-ignore - We're testing that result is defined
+        const fix = result.fix;
+        expect(fix).toBeInstanceOf(Fix);
+        // @ts-ignore
+        expect(fix.commands).toHaveLength(1);
+
+        // @ts-ignore
+        const command = fix.commands[0];
+        expect(command.stringFix).toEqual({
+            position: 0,
+            deleteCount: resource.target.length,
+            insertContent: "TÜRKÇE KARIŞIK"
+        });
+    });
+
+    test("provides fix that handles German mixed case locale-sensitively", () => {
+        const rule = new ResourceAllCaps({});
+        const resource = createTestResourceString({source: "GERMAN MIXED", target: "Deutscher Gemischt", targetLocale: "de-DE"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        // @ts-ignore - We're testing that result is defined
+        expect(result.fix).toBeDefined();
+
+        // @ts-ignore - We're testing that result is defined
+        const fix = result.fix;
+        expect(fix).toBeInstanceOf(Fix);
+        // @ts-ignore
+        expect(fix.commands).toHaveLength(1);
+
+        // @ts-ignore
+        const command = fix.commands[0];
+        expect(command.stringFix).toEqual({
+            position: 0,
+            deleteCount: resource.target.length,
+            insertContent: "DEUTSCHER GEMISCHT"
         });
     });
 
