@@ -123,6 +123,8 @@ class ResourceAllCaps extends ResourceRule {
     }
 
     /**
+     * Checks if a given string is in ALL CAPS style, i.e. at least 2 letter characters exist and all of them are uppercase.
+     * 
      * @public
      * @param {string} string A non-empty string to check.
      * @returns {boolean} Returns true for a string that is in ALL CAPS (all letter characters are uppercase and at least 2 letter characters exist).
