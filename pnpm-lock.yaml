@@ -1314,13 +1314,13 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(typescript@3.9.10)
+        version: 4.0.0(typescript@5.6.3)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(node-notifier@8.0.2)
       jsdoc:
         specifier: ^3.6.11
         version: 3.6.11
@@ -10851,7 +10851,7 @@ snapshots:
       loader-utils: 2.0.4
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 5.95.0(webpack-cli@4.10.0)
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   babel-loader@9.2.1(@babel/core@7.26.0)(webpack@5.95.0):
     dependencies:
@@ -12420,9 +12420,9 @@ snapshots:
       hooker: 0.2.3
       jshint: 2.13.6
 
-  grunt-contrib-nodeunit@4.0.0(typescript@3.9.10):
+  grunt-contrib-nodeunit@4.0.0(typescript@5.6.3):
     dependencies:
-      nodeunit-x: 0.15.0(typescript@3.9.10)
+      nodeunit-x: 0.15.0(typescript@5.6.3)
     transitivePeerDependencies:
       - flow-remove-types
       - supports-color
@@ -13820,7 +13820,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -14123,7 +14123,7 @@ snapshots:
     dependencies:
       glob: 7.2.3
       minimatch: 9.0.5
-      webpack: 5.95.0(webpack-cli@4.10.0)
+      webpack: 5.95.0(webpack-cli@5.1.4)
       webpack-merge: 4.2.2
 
   karma@6.4.4:
@@ -14705,10 +14705,10 @@ snapshots:
       socks: 1.1.9
     optional: true
 
-  nodeunit-x@0.15.0(typescript@3.9.10):
+  nodeunit-x@0.15.0(typescript@5.6.3):
     dependencies:
       ejs: 3.1.10
-      tap: 15.2.3(typescript@3.9.10)
+      tap: 15.2.3(typescript@5.6.3)
     transitivePeerDependencies:
       - flow-remove-types
       - supports-color
@@ -16210,7 +16210,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tap@15.2.3(typescript@3.9.10):
+  tap@15.2.3(typescript@5.6.3):
     dependencies:
       chokidar: 3.6.0
       coveralls: 3.1.1
@@ -16235,7 +16235,7 @@ snapshots:
       tcompare: 5.0.7
       which: 2.0.2
     optionalDependencies:
-      typescript: 3.9.10
+      typescript: 5.6.3
     transitivePeerDependencies:
       - supports-color
 
@@ -16265,7 +16265,7 @@ snapshots:
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
       terser: 5.36.0
-      webpack: 5.95.0(webpack-cli@4.10.0)
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   terser@5.36.0:
     dependencies:
