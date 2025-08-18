@@ -59,25 +59,9 @@ Incorrect translations of ALL CAPS strings in Spanish which will be flagged by t
 <target>todo mayúsculas</target>
 ```
 
-Problems in the above incorrect translation:
-The "ALL CAPS" string was translated but the casing style was not preserved. The target should maintain the ALL CAPS style.
-
 ## Language Exceptions
 
 This rule only applies to languages that have capital letters in their script. For languages without capital letters (such as Arabic, Chinese, Japanese, Korean, Thai, and many others), the rule is automatically disabled and no errors will be reported.
-
-### Languages where the rule applies:
-- English, Spanish, French, German, Italian, Portuguese
-- Russian, Greek, Turkish, Polish, Czech, Hungarian
-- Romanian, Bulgarian, Croatian, Slovak, Slovenian
-- Estonian, Latvian, Lithuanian
-- And other languages with capital letters
-
-### Languages where the rule is disabled:
-- Arabic, Chinese, Japanese, Korean, Thai
-- Hebrew, Persian, Urdu, Bengali, Hindi
-- Tamil, Telugu, Kannada, Malayalam, Gujarati
-- And other languages without capital letters
 
 ## Configuration
 
@@ -95,9 +79,11 @@ The rule can be configured to ignore certain strings using the `exceptions` para
 }
 ```
 
+If the source string of any resource matches any of the strings in the exceptions array, then this rule does not check the translation for that resource. The exceptions are not partially matched. ie. the entire source string must match the whole exception string in order for the rule to skip the check of the translation. The exception applies to all locales.
+
 ## How to Fix
 
-When you see this error, you need to preserve the casing style of the source in your translation. The rule can automatically fix this by converting all letter characters in the target to uppercase while leaving non-letter characters unchanged. This happens when the
+The rule can automatically fix this by converting all letter characters in the target to uppercase while leaving non-letter characters unchanged. This happens when the
 linter is running in auto-fix mode (ie. with the --fix command-line option).
 
 **Before:**
@@ -113,13 +99,11 @@ linter is running in auto-fix mode (ie. with the --fix command-line option).
 ```
 
 The auto-fix will:
-- Convert all letter characters to uppercase
+- Convert all letter characters to uppercase locale-sensitively
 - Leave numbers, punctuation, and other characters unchanged
 - Preserve the original translation content
 
 Alternatively, you can manually update your translation to match the ALL CAPS style of the source.
-
-If you need to exclude certain strings from this rule, you can add them to the exceptions list in your configuration.
 
 ## Common Scenarios
 
