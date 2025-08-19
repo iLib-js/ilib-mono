@@ -158,11 +158,31 @@ function main() {
         { name: 'Code', value: scriptCodeToUse },
         { name: 'Code Number', value: scriptInfo.getCodeNumber()?.toString() || 'undefined' },
         { name: 'Name', value: scriptInfo.getName() || 'undefined' },
-        { name: 'Long Code', value: scriptInfo.getLongCode() || 'undefined' },
-        { name: 'Script Direction', value: scriptInfo.getScriptDirection() },
-        { name: 'Needs IME', value: scriptInfo.getNeedsIME().toString() },
-        { name: 'Uses Casing', value: scriptInfo.getCasing().toString() }
+        { name: 'Long Code', value: scriptInfo.getLongCode() || 'undefined' }
     ];
+    
+    // Add emoji+English information to the table for better readability
+    if (scriptInfo.getName()) {
+        // Add direction information with emoji
+        const direction = scriptInfo.getScriptDirection();
+        const directionEmoji = direction === ScriptDirection.RTL ? '📝 RTL' : '📝 LTR';
+        const directionText = direction === ScriptDirection.RTL ? 'Right-to-Left' : 'Left-to-Right';
+        properties.push({ name: 'Script Direction', value: `${directionEmoji} ${directionText}` });
+        
+        // Add IME information with emoji
+        if (scriptInfo.getNeedsIME()) {
+            properties.push({ name: 'IME Requirement', value: '⌨️  Requires Input Method Editor' });
+        } else {
+            properties.push({ name: 'IME Requirement', value: '⌨️  No IME required' });
+        }
+        
+        // Add casing information with emoji
+        if (scriptInfo.getCasing()) {
+            properties.push({ name: 'Casing Info', value: '🔤 Uses letter case (uppercase/lowercase)' });
+        } else {
+            properties.push({ name: 'Casing Info', value: '🔤 No letter case' });
+        }
+    }
     
     // Find the maximum length of property names for alignment
     const maxNameLength = Math.max(...properties.map(p => p.name.length));
@@ -176,27 +196,8 @@ function main() {
     // Print footer
     console.log('='.repeat(50));
     
-    // Show some additional information
-    if (scriptInfo.getName()) {
-        console.log(`\n✅ Valid script found: ${scriptInfo.getName()}`);
-        
-        // Show direction information
-        const direction = scriptInfo.getScriptDirection();
-        const directionText = direction === ScriptDirection.RTL ? 'Right-to-Left' : 'Left-to-Right';
-        console.log(`📝 Writing direction: ${directionText}`);
-        
-        // Show IME information
-        if (scriptInfo.getNeedsIME()) {
-            console.log(`⌨️  This script typically requires an Input Method Editor (IME)`);
-        }
-        
-        // Show casing information
-        if (scriptInfo.getCasing()) {
-            console.log(`🔤 This script uses letter case (uppercase/lowercase)`);
-        } else {
-            console.log(`🔤 This script does not use letter case`);
-        }
-    } else {
+    // Only show error messages for unknown scripts, not success messages
+    if (!scriptInfo.getName()) {
         console.log(`\n❌ Unknown script code: "${inputScriptCode}"`);
         
         // Search for similar script codes
