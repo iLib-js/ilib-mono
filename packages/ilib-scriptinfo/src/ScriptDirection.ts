@@ -1,5 +1,5 @@
 /**
- * ilib-scriptinfo - information about writing scripts based on ISO 15924
+ * ScriptDirection.ts - enumeration of script writing directions
  *
  * Copyright © 2012-2018, 2025 JEDLSoft
  *
@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-// Re-export the main ScriptInfo class as default
-export { default as ScriptInfo } from './ScriptInfo';
-
-// Re-export the ScriptDirection enum
-export { ScriptDirection } from './ScriptDirection';
-
-// Also export ScriptInfo as default for convenience
-export { default } from './ScriptInfo';
+/**
+ * Enumeration of script writing directions.
+ */
+export enum ScriptDirection {
+    /** Left-to-right writing direction */
+    LTR = "ltr",
+    /** Right-to-left writing direction */
+    RTL = "rtl"
+}
