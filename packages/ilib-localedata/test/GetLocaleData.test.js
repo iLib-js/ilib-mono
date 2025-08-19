@@ -137,4 +137,4 @@ describe("GetLocaleData", () => {
         expect(locData2.getPath()).toBe("./test/files2");
         expect(locData1).not.toBe(locData2);
     });
-}); 
+});
