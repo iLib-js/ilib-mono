@@ -57,10 +57,9 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "npm-run-all --npm-path pnpm build:data build:ts build:fix-imports",
+        "build": "npm-run-all --npm-path pnpm build:data build:ts",
         "build:ts": "tsc",
         "build:data": "node scripts/generate-script-data.cjs",
-        "build:fix-imports": "node scripts/fix-imports.js",
         "coverage": "pnpm test:cli --coverage",
         "test": "pnpm test:all",
         "test:jest": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
