@@ -10067,6 +10067,10 @@ packages:
   ucd-full@16.0.1:
     resolution: {integrity: sha512-XnDN5vR6TNr0+2Tp4mAl5J59HZLji1IhWbIwvTD6G1mpzz4Vjg8vjyBm7VNyd+D/fnDridl9/cTHIKMXojvdeA==}
 
+  ucd-full@file:../UCD/json/ucd-full-16.0.1.tgz:
+    resolution: {integrity: sha512-3hQt5aFv/tcteiWtfCfMbWphuIAOs/VryAhVXdU+HTgmIQ2qZaaxmHD4kxA5JdhAliDyixcKpUHY1OkODgr7RQ==, tarball: file:../UCD/json/ucd-full-16.0.1.tgz}
+    version: 16.0.1
+
   uglify-js-export@3.19.3:
     resolution: {integrity: sha512-q5uyaOepquFzA/77CqU2sAIgq9LBARs2jo1x0KaRK2D3uf0Kf0GvLlc+mtHKGU1mIyHB+J8kIMvusT8eCvBDhw==}
 
@@ -20462,6 +20466,8 @@ snapshots:
   uc.micro@2.1.0: {}
 
   ucd-full@16.0.1: {}
+
+  ucd-full@file:../UCD/json/ucd-full-16.0.1.tgz: {}
 
   uglify-js-export@3.19.3: {}
 
