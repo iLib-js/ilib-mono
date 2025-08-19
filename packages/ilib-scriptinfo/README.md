@@ -1,31 +1,13 @@
 # ilib-scriptinfo
 
-Script information utilities for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS.
+Get information about writing scripts (ISO 15924) for internationalization. The data is derived from the Unicode project, which maintains the ISO 15924 standard for script identification. Supports all 226 Unicode scripts with properties like direction, casing, and IME requirements.
 
-**Note**: This package was adapted from the original `ilib/js/lib/ScriptInfo.js` implementation and modernized with TypeScript support, enhanced testing, and improved documentation.
+## What it does
 
-## Features
-
-- **Script Information**: Get information about writing scripts (ISO 15924)
-- **Script Properties**: Retrieve script properties like name, code number, direction, casing, and IME requirements
-- **Complete Coverage**: Support for all 226 Unicode scripts
-- **Compact Data**: Efficient data representation with optimized storage
-- **Type Safety**: Full TypeScript support with comprehensive type definitions
-- **Modern JavaScript**: ES2019+ features with Node.js 12+ compatibility
-- **Optional Chaining**: Clean code with `?.` and `??` operators
-- **Dual Module Support**: Works with both CommonJS and ESM
-- **Comprehensive Testing**: 34 tests covering edge cases and unknown scripts
-- **Browser Support**: Karma testing for Chrome and Firefox
-- **Zero Dependencies**: Pure JavaScript with no external runtime dependencies
-
-## Technical Details
-
-- **Source**: Adapted from original `ilib/js/lib/ScriptInfo.js` implementation
-- **Build System**: Direct TypeScript compilation to CommonJS (no Babel/Grunt required)
-- **Module Support**: Dual ESM/CommonJS support via package.json exports
-- **Testing**: Jest for Node.js tests, Karma for browser tests
-- **Documentation**: Comprehensive TSDoc comments and README.md
-- **Data Sources**: `ucd-full` package for Unicode script data, `ilib` package for additional script properties
+- **Script Information**: Get details about any writing script (Latin, Arabic, Chinese, etc.)
+- **Script Properties**: Direction (left-to-right vs right-to-left), letter casing, IME needs
+- **Complete Coverage**: All 226 Unicode scripts supported
+- **Easy to Use**: Simple API with TypeScript support
 
 ## Installation
 
@@ -33,84 +15,65 @@ Script information utilities for ilib. iLib is a cross-engine library of interna
 npm install ilib-scriptinfo
 ```
 
-## Usage
+## Quick Start
 
-### CommonJS
 ```javascript
-const { ScriptInfo, ScriptDirection } = require('ilib-scriptinfo');
+import ScriptInfo from 'ilib-scriptinfo';
 
-// Create a script info instance
-const scriptInfo = new ScriptInfo('Latn');
+// Get info about Latin script
+const latin = new ScriptInfo('Latn');
+console.log(latin.getName());           // "Latin"
+console.log(latin.getDirection());      // "ltr" (left-to-right)
+console.log(latin.getCasing());         // true (has upper/lowercase)
 
-// Get script properties
-console.log(scriptInfo.getCode());                    // "Latn"
-console.log(scriptInfo.getName());                    // "Latin"
-console.log(scriptInfo.getCodeNumber());              // 215
-console.log(scriptInfo.getScriptDirection());         // ScriptDirection.LTR
-console.log(scriptInfo.getCasing());                  // true
-console.log(scriptInfo.getNeedsIME());                // false
-
-// Get all available scripts
-const allScripts = ScriptInfo.getAllScripts();
-console.log(allScripts.length);                       // 226
-```
-
-### ESM/TypeScript
-```typescript
-import { ScriptInfo, ScriptDirection } from 'ilib-scriptinfo';
-
-// Create a script info instance
-const scriptInfo = new ScriptInfo('Latn');
-
-// Get script properties
-console.log(scriptInfo.getCode());                    // "Latn"
-console.log(scriptInfo.getName());                    // "Latin"
-console.log(scriptInfo.getCodeNumber());              // 215
-console.log(scriptInfo.getScriptDirection());         // ScriptDirection.LTR
-console.log(scriptInfo.getCasing());                  // true
-console.log(scriptInfo.getNeedsIME());                // false
-
-// Get all available scripts
-const allScripts = ScriptInfo.getAllScripts();
-console.log(allScripts.length);                       // 226
+// Get info about Arabic script
+const arabic = new ScriptInfo('Arab');
+console.log(arabic.getName());          // "Arabic"
+console.log(arabic.getDirection());     // "rtl" (right-to-left)
+console.log(arabic.getCasing());        // false (no letter case)
 ```
 
 ## API
 
-### Constructor
-
-```typescript
-new ScriptInfo(script: string)
+### Create a script info instance
+```javascript
+const script = new ScriptInfo('Latn');  // 4-letter ISO 15924 code
 ```
 
-- `script` (string): The ISO 15924 4-letter identifier for the script
+### Get script properties
+- `getName()` - Script name in English
+- `getDirection()` - "ltr" or "rtl" 
+- `getCasing()` - Whether script uses letter case
+- `getNeedsIME()` - Whether script typically needs input method editor
+- `getCodeNumber()` - ISO 15924 numeric code
 
-### Static Methods
-
-- `ScriptInfo.getAllScripts(): string[]`: Returns an array of all available script identifiers.
-
-### Instance Methods
-
-- `getCode(): string`: Returns the 4-letter ISO 15924 identifier
-- `getCodeNumber(): number | undefined`: Returns the ISO 15924 code number
-- `getName(): string | undefined`: Returns the script name in English
-- `getLongCode(): string | undefined`: Returns the long identifier
-- `getScriptDirection(): ScriptDirection`: Returns `ScriptDirection.LTR` or `ScriptDirection.RTL`
-- `getCasing(): boolean`: Returns true if the script uses letter case
-- `getNeedsIME(): boolean`: Returns true if the script typically requires an IME
-
-### Types
-
-```typescript
-enum ScriptDirection {
-    LTR = "ltr",
-    RTL = "rtl"
-}
+### Get all available scripts
+```javascript
+const allScripts = ScriptInfo.getAllScripts();
+// Returns array of all 226 script codes
 ```
+
+## Common Script Codes
+
+- `Latn` - Latin (English, Spanish, French, etc.)
+- `Arab` - Arabic
+- `Hans` - Chinese Simplified
+- `Hant` - Chinese Traditional
+- `Cyrl` - Cyrillic (Russian, Bulgarian, etc.)
+- `Deva` - Devanagari (Hindi, Marathi, etc.)
+- `Grek` - Greek
+- `Hira` - Hiragana (Japanese)
+- `Kana` - Katakana (Japanese)
+- `Hang` - Hangul (Korean)
+- `Thai` - Thai
+
+## Documentation
+
+For detailed API documentation including all available methods and types, see the extracted [TypeScript documentation](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-scriptinfo/docs/index.html).
 
 ## License
 
-Copyright © 2013-2025 JEDLSoft
+Copyright © 2025 JEDLSoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

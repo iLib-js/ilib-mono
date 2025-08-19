@@ -233,7 +233,7 @@ This ensures that users always see the correct ISO 15924 format regardless of ho
 The sample app demonstrates how to use the `ilib-scriptinfo` package:
 
 ```javascript
-import { ScriptInfo, ScriptDirection } from 'ilib-scriptinfo';
+import ScriptInfo, { ScriptDirection } from 'ilib-scriptinfo';
 
 // Create a ScriptInfo instance
 const scriptInfo = new ScriptInfo('Latn');
