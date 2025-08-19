@@ -46,7 +46,7 @@ class FileCache {
     constructor(loader) {
         this.logger = log4js.getLogger("ilib-localedata");
         this.logger.trace("new FileCache instance");
-        
+
         // Map of file paths to promises that will resolve to the loaded data
         this.filePromises = new Map();
         this.loader = loader;
@@ -54,7 +54,7 @@ class FileCache {
 
     /**
      * Factory method to create a new FileCache singleton.
-     * 
+     *
      * @param {Loader} loader a class that loads files
      * @returns {FileCache} the file cache singleton
      */
@@ -75,14 +75,14 @@ class FileCache {
     /**
      * Create a promise to load the data of a specific file and cache it, or
      * return the cached promise if it already exists.
-     * 
+     *
      * The data is loaded using the loader instance passed to the constructor.
      * If the file is already being loaded, the cached promise is returned.
      * If the promise is already resolved, the loaded data is returned immediately
      * from the promise. If the promise is rejected, the error is propagated and
      * the caller can handle the error by removing the file from the cache and
      * trying again.
-     * 
+     *
      * @param {string} filePath the path to the file to load
      * @returns {Promise} a promise that will resolve to the loaded file data
      */
@@ -99,10 +99,10 @@ class FileCache {
 
         // Create a new promise to load the file
         const loadPromise = this.loader.loadFile(filePath);
-        
+
         // Cache the promise
         this.filePromises.set(filePath, loadPromise);
-        
+
         return loadPromise;
     }
 
