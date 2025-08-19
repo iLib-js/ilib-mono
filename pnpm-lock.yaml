@@ -2409,6 +2409,12 @@ importers:
       ts-loader:
         specifier: ^9.5.0
         version: 9.5.2(typescript@5.9.2)(webpack@5.95.0)
+      typedoc:
+        specifier: ^0.26.11
+        version: 0.26.11(typescript@5.6.3)
+      typedoc-plugin-markdown:
+        specifier: ^4.2.10
+        version: 4.2.10(typedoc@0.26.11(typescript@5.6.3))
       typescript:
         specifier: ^5.0.0
         version: 5.9.2
@@ -13447,7 +13453,7 @@ snapshots:
 
   '@types/hast@3.0.4':
     dependencies:
-      '@types/unist': 2.0.11
+      '@types/unist': 3.0.3
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
