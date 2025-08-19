@@ -23,7 +23,7 @@ import {Result} from 'ilib-lint-common';
 import Locale from 'ilib-locale';
 import {isAlpha, isUpper} from 'ilib-ctype';
 import CaseMapper from 'ilib-casemapper';
-import {ScriptInfo} from 'ilib-scriptinfo';
+import ScriptInfo from 'ilib-scriptinfo';
 import LocaleMatcher from 'ilib-localematcher';
 
 // type imports
