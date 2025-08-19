@@ -8,14 +8,10 @@ Code             | Latn
 Code Number      | 215
 Name             | Latin
 Long Code        | Latin
-Script Direction | ltr
-Needs IME        | false
-Uses Casing      | true
+Script Direction | 📝 LTR Left-to-Right
+IME Requirement  | ⌨️  No IME required
+Casing Info      | 🔤 Uses letter case (uppercase/lowercase)
 ==================================================
-
-✅ Valid script found: Latin
-📝 Writing direction: Left-to-Right
-🔤 This script uses letter case (uppercase/lowercase)
 
 
 "
@@ -29,14 +25,10 @@ Code             | Latn
 Code Number      | 215
 Name             | Latin
 Long Code        | Latin
-Script Direction | ltr
-Needs IME        | false
-Uses Casing      | true
+Script Direction | 📝 LTR Left-to-Right
+IME Requirement  | ⌨️  No IME required
+Casing Info      | 🔤 Uses letter case (uppercase/lowercase)
 ==================================================
-
-✅ Valid script found: Latin
-📝 Writing direction: Left-to-Right
-🔤 This script uses letter case (uppercase/lowercase)
 
 
 "
@@ -46,13 +38,10 @@ exports[`ilib-scriptinfo sample app error handling should handle unknown script 
 "
 Script Information for "xyz"
 ==================================================
-Code             | xyz
-Code Number      | undefined
-Name             | undefined
-Long Code        | undefined
-Script Direction | ltr
-Needs IME        | false
-Uses Casing      | false
+Code        | xyz
+Code Number | undefined
+Name        | undefined
+Long Code   | undefined
 ==================================================
 
 ❌ Unknown script code: "xyz"
@@ -224,14 +213,10 @@ Code             | Arab
 Code Number      | 160
 Name             | Arabic
 Long Code        | Arabic
-Script Direction | rtl
-Needs IME        | false
-Uses Casing      | false
+Script Direction | 📝 RTL Right-to-Left
+IME Requirement  | ⌨️  No IME required
+Casing Info      | 🔤 No letter case
 ==================================================
-
-✅ Valid script found: Arabic
-📝 Writing direction: Right-to-Left
-🔤 This script does not use letter case
 
 
 "
@@ -241,13 +226,10 @@ exports[`ilib-scriptinfo sample app partial matching functionality should find p
 "
 Script Information for "han"
 ==================================================
-Code             | han
-Code Number      | undefined
-Name             | undefined
-Long Code        | undefined
-Script Direction | ltr
-Needs IME        | false
-Uses Casing      | false
+Code        | han
+Code Number | undefined
+Name        | undefined
+Long Code   | undefined
 ==================================================
 
 ❌ Unknown script code: "han"
@@ -273,13 +255,10 @@ exports[`ilib-scriptinfo sample app partial matching functionality should find p
 "
 Script Information for "lat"
 ==================================================
-Code             | lat
-Code Number      | undefined
-Name             | undefined
-Long Code        | undefined
-Script Direction | ltr
-Needs IME        | false
-Uses Casing      | false
+Code        | lat
+Code Number | undefined
+Name        | undefined
+Long Code   | undefined
 ==================================================
 
 ❌ Unknown script code: "lat"
@@ -301,14 +280,10 @@ Code             | Arab
 Code Number      | 160
 Name             | Arabic
 Long Code        | Arabic
-Script Direction | rtl
-Needs IME        | false
-Uses Casing      | false
+Script Direction | 📝 RTL Right-to-Left
+IME Requirement  | ⌨️  No IME required
+Casing Info      | 🔤 No letter case
 ==================================================
-
-✅ Valid script found: Arabic
-📝 Writing direction: Right-to-Left
-🔤 This script does not use letter case
 
 
 "
@@ -322,15 +297,10 @@ Code             | Hani
 Code Number      | 500
 Name             | Han (Hanzi, Kanji, Hanja)
 Long Code        | Han
-Script Direction | ltr
-Needs IME        | true
-Uses Casing      | false
+Script Direction | 📝 LTR Left-to-Right
+IME Requirement  | ⌨️  Requires Input Method Editor
+Casing Info      | 🔤 No letter case
 ==================================================
-
-✅ Valid script found: Han (Hanzi, Kanji, Hanja)
-📝 Writing direction: Left-to-Right
-⌨️  This script typically requires an Input Method Editor (IME)
-🔤 This script does not use letter case
 
 
 "
@@ -344,14 +314,10 @@ Code             | Latn
 Code Number      | 215
 Name             | Latin
 Long Code        | Latin
-Script Direction | ltr
-Needs IME        | false
-Uses Casing      | true
+Script Direction | 📝 LTR Left-to-Right
+IME Requirement  | ⌨️  No IME required
+Casing Info      | 🔤 Uses letter case (uppercase/lowercase)
 ==================================================
-
-✅ Valid script found: Latin
-📝 Writing direction: Left-to-Right
-🔤 This script uses letter case (uppercase/lowercase)
 
 
 "
