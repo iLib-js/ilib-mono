@@ -126,7 +126,7 @@ function main() {
         showHelp();
         process.exit(0);
     }
-    debugger;
+
     if (args.length !== 1) {
         console.error('Error: Invalid number of arguments');
         console.error('');
