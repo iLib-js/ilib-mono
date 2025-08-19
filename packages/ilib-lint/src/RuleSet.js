@@ -72,7 +72,7 @@ class RuleSet {
      */
     removeRule(name) {
         if (typeof(name) !== 'string' || !this.rules[name]) return;
-        this.rules[name] = undefined;
+        delete this.rules[name];
     }
 
     /**
@@ -88,7 +88,6 @@ class RuleSet {
 
     /**
      * Return a list of rule instances in this set.
-     *
      * @param {String} type optional parameter that restricts
      * the type of rules returned. If no type is specified,
      * all rules are returned.
@@ -97,7 +96,7 @@ class RuleSet {
      */
     getRules(type) {
         return Object.values(this.rules).filter(rule => {
-            return (!type || rule.getRuleType() === type) ? rule : undefined;
+            return !type || rule.getRuleType() === type;
         });
     }
 
