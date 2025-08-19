@@ -192,25 +192,6 @@ class ResourceAllCaps extends ResourceRule {
             return true;
         }
     }
-
-    /**
-     * @private
-     * @param {string} string The string to convert to uppercase
-     * @param {string} locale The locale for locale-sensitive uppercase conversion
-     * @returns {string} The uppercase version of the string
-     */
-    toUpperCaseLocale(string, locale) {
-        if (!string) return string;
-
-        try {
-            const caseMapper = new CaseMapper({ locale: locale || 'en-US' });
-            const result = caseMapper.map(string);
-            return result || string;
-        } catch (error) {
-            // Fallback to standard toUpperCase if casemapper fails
-            return string.toUpperCase();
-        }
-    }
 }
 
 export default ResourceAllCaps; 
