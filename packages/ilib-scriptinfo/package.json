@@ -57,10 +57,9 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "npm-run-all --npm-path pnpm build:data build:ts build:fix-imports",
+        "build": "npm-run-all --npm-path pnpm build:data build:ts",
         "build:ts": "tsc",
         "build:data": "node scripts/generate-script-data.cjs",
-        "build:fix-imports": "node scripts/fix-imports.js",
         "coverage": "pnpm test:cli --coverage",
         "test": "pnpm test:all",
         "test:jest": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
@@ -102,7 +101,7 @@
         "typedoc": "^0.26.11",
         "typedoc-plugin-markdown": "^4.2.10",
         "typescript": "^5.0.0",
-        "ucd-full": "file:/Users/ehoogerbeets/src/UCD/json/ucd-full-16.0.1.tgz",
+        "ucd-full": "^16.0.1",
         "webpack": "^5.89.0",
         "webpack-cli": "^5.1.4"
     },
