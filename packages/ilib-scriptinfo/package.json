@@ -3,12 +3,11 @@
     "version": "0.0.0",
     "type": "module",
     "main": "./lib/index.js",
-    "module": "./src/index.ts",
+    "module": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "exports": {
         ".": {
             "import": "./lib/index.js",
-            "require": "./lib/index.js",
             "types": "./lib/index.d.ts"
         }
     },
@@ -58,9 +57,10 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "npm-run-all --npm-path pnpm build:data build:ts",
+        "build": "npm-run-all --npm-path pnpm build:data build:ts build:fix-imports",
         "build:ts": "tsc",
         "build:data": "node scripts/generate-script-data.cjs",
+        "build:fix-imports": "node scripts/fix-imports.js",
         "coverage": "pnpm test:cli --coverage",
         "test": "pnpm test:all",
         "test:jest": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
@@ -71,11 +71,13 @@
         "test:all": "npm-run-all --npm-path pnpm test:cli test:web test:e2e",
         "test:e2e": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.cjs",
         "test:e2e:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.cjs --watch",
+        "sample": "LANG=en_US.UTF8 node --experimental-vm-modules samples/app/index.js",
         "debug": "pnpm build:dev; node --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
         "debug:web": "pnpm test:karma",
         "clean": "git clean -f -d src test; rm -rf lib",
-        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibScriptInfo.md && pnpm doc:html",
-        "doc:html": "jsdoc -c jsdoc.json"
+        "doc": "npm-run-all --npm-path pnpm doc:md doc:html",
+        "doc:md": "mkdir -p docs && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
+        "doc:html": "mkdir -p docs && typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts"
     },
     "devDependencies": {
         "@ilib-mono/e2e-test": "workspace:*",
@@ -97,6 +99,8 @@
         "semver": "^7.6.3",
         "ts-jest": "^29.1.0",
         "ts-loader": "^9.5.0",
+        "typedoc": "^0.26.11",
+        "typedoc-plugin-markdown": "^4.2.10",
         "typescript": "^5.0.0",
         "ucd-full": "file:/Users/ehoogerbeets/src/UCD/json/ucd-full-16.0.1.tgz",
         "webpack": "^5.89.0",
