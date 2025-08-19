@@ -7,17 +7,19 @@ const config = {
         color: "blackBright",
     },
     preset: undefined,
+    testMatch: [
+        "**/test/**/*.test.ts"
+    ],
+    moduleFileExtensions: ['ts', 'js'],
     transform: {
         '^.+\\.ts$': ['ts-jest', {
+            useESM: true,
             tsconfig: {
                 types: ['jest', 'node']
             }
         }]
     },
-    testMatch: [
-        "**/test/**/*.test.ts"
-    ],
-    moduleFileExtensions: ['ts', 'js']
+    extensionsToTreatAsEsm: ['.ts']
 }
 
 module.exports = config; 

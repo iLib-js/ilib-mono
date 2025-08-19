@@ -99,7 +99,7 @@ function getAllScriptCodes(): string[] {
  * 
  * @example
  * ```typescript
- * import { ScriptInfo } from 'ilib-scriptinfo';
+ * import ScriptInfo from 'ilib-scriptinfo';
  * 
  * const latin = new ScriptInfo('Latn');
  * console.log(latin.getName()); // "Latin"
@@ -109,7 +109,7 @@ function getAllScriptCodes(): string[] {
  * console.log(arabic.getScriptDirection()); // "rtl" (right-to-left)
  * ```
  */
-export class ScriptInfo {
+export default class ScriptInfo {
     private script: string;
     private info: ScriptInfoData | null;
 
@@ -189,6 +189,7 @@ export class ScriptInfo {
      * console.log(scriptInfo.getName()); // "Latin"
      * 
      * const unknown = new ScriptInfo('Xxxx');
+     * console.log(unknown.getCode()); // "Xxxx"
      * console.log(unknown.getName()); // undefined
      * ```
      */
@@ -303,4 +304,7 @@ export class ScriptInfo {
     static getAllScripts(): string[] {
         return ScriptInfo._getScriptsArray();
     }
-} 
+}
+
+// Also export as named export for compatibility
+export { ScriptInfo };
