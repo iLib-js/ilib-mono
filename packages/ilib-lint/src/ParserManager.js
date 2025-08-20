@@ -42,21 +42,22 @@ class ParserManager {
      * <li>extensions - an array of file name extensions that this parser can handle</li>
      * </ul>
      *
-     * @type {Object}
+     * @type {Record<string, { description: string, type: string, extensions: string[] }>}
      * @private
      */
     parserInfo = {};
 
+    /** @type {Record<string, Parser[]>} */
+    parserCache = {};
+
+    /** @type {Record<string, Parser>} */
+    parserByName = {};
+
     /**
      * Create a new parser manager instance.
-     * @params {Object} options options controlling the construction of this object
      * @constructor
      */
-    constructor(options) {
-        this.parserCache = {};
-        this.parserByName = {};
-        this.descriptions = {};
-    }
+    constructor() {}
 
     /**
      * Return a list of parsers for the given file name extension
@@ -85,7 +86,7 @@ class ParserManager {
      * Add a list of parsers to this factory so that other code
      * can find them.
      *
-     * @param {Array.<Parser>} parsers the list of parsers to add
+     * @param {Array.<typeof Parser>} parsers the list of parsers to add
      */
     add(parsers) {
         if (!parsers || !Array.isArray(parsers)) return;
@@ -123,9 +124,10 @@ class ParserManager {
      * Return an object where the properties are the parser names and the
      * values are the parser descriptions.
      *
-     * @returns {Object} the parser names and descriptions
+     * @returns {Record<string, string>} the parser names and descriptions
      */
     getDescriptions() {
+        /** @type {Record<string, string>} */
         let json = {};
         Object.keys(this.parserInfo).forEach((name) => {
             json[name] = this.parserInfo[name].description;
