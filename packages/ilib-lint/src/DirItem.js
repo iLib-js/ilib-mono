@@ -18,7 +18,6 @@
  */
 
 import { Result } from "ilib-lint-common";
-import PluginManager from "./PluginManager.js";
 
 // type imports
 /** @ignore @typedef {import("./Project.js").default} Project */
@@ -45,12 +44,6 @@ class DirItem {
     settings;
 
     /**
-     * The plugin manager for this run of the ilib-lint tool
-     * @type {PluginManager|undefined}
-     */
-    pluginMgr;
-
-    /**
      * The project that this directory item is part of
      * @type {Project|undefined}
      */
@@ -64,8 +57,6 @@ class DirItem {
      * @param {Object} options options for constructing this directory item
      * @param {Record<string, unknown>} [options.settings] the settings from the ilib-lint config that
      *   apply to this file
-     * @param {PluginManager} [options.pluginManager] the plugin manager for this run of
-     *   the ilib-lint tool
      * @param {Project} [project] the project that this directory item is part of
      */
     constructor(filePath, options, project) {
@@ -74,7 +65,6 @@ class DirItem {
         }
         this.filePath = filePath;
         this.settings = options.settings;
-        this.pluginMgr = options.pluginManager;
         this.project = project;
     }
 
