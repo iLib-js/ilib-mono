@@ -18,6 +18,7 @@
  */
 
 import log4js from "log4js";
+import { Result } from "ilib-lint-common";
 
 const logger = log4js.getLogger("ilib-lint.DirItem");
 
@@ -60,22 +61,15 @@ class DirItem {
     }
 
     /**
-     * Parse the current directory item.
-     *
-     * @returns {Array.<IntermediateRepresentation>} the parsed
-     * representations of this file
-     * @abstract
-     */
-    parse() {}
-
-    /**
      * Check the directory item and return a list of issues found in it.
      *
-     * @param {Array.<Locale>} locales a set of locales to apply
+     * @param {Array.<string>} locales a set of locales to apply
      * @returns {Array.<Result>} a list of natch results
      * @abstract
      */
-    findIssues(locales) {}
+    findIssues(locales) {
+        throw new Error("Not implemented");
+    }
 }
 
 export default DirItem;
