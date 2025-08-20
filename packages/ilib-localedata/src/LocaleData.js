@@ -2,7 +2,7 @@
  * LocaleData.js - utility class to load ilib locale data from a list
  * of root directories
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import Locale from 'ilib-locale';
 import LocaleMatcher from 'ilib-localematcher';
 
 import DataCache from './DataCache.js';
+import FileCache from './FileCache.js';
 
 /**
  * @private
@@ -344,6 +345,8 @@ class LocaleData {
                     root
                 };
                 const data = this.cache.getData(root, basename, loc);
+                console.log(`DEBUG getFilesArray: Looking for data at root=${root}, basename=${basename}, locale=${loc.getSpec()}`);
+                console.log(`DEBUG getFilesArray: Found data:`, data ? Object.keys(data) : 'undefined');
                 if (data) {
                     entry.data = data;
                 }
@@ -451,7 +454,7 @@ class LocaleData {
 
         // for async operation, try loading the assembled locale data file first
         // so that we don't have to load a bunch of individual files
-        let promise = (!sync && !this.cache.isLoaded(`${loc.getSpec()}.js`)) ?
+        let promise = (!sync && !this.cache.getFileData(`${loc.getSpec()}.js`)) ?
             LocaleData.ensureLocale(loc, [this.path]) :
             Promise.resolve(true);
 
@@ -465,18 +468,23 @@ class LocaleData {
             files = this.getFilesArray(basename, loc, crossRoots ? roots.reverse() : roots);
             const count = files.filter(file => !file.data).length;
             if (count) {
-                const fileNames = files.map((file) => {
-                    return (file.data || this.cache.isLoaded(file.name)) ? undefined : file.name;
-                });
-                const data = this.loader.loadFiles(fileNames, {sync});
-                data.forEach((datum, i) => {
-                    if (!files[i].data) {
-                        // null indicates we attempted to load the file, but
-                        // there was no data or the file did not exist
-                        this.cache.markFileAsLoaded(fileNames[i]);
-                        const parsed = datum ? parseData(datum, fileNames[i]) : null;
-                        this.cache.storeData(files[i].root, basename, files[i].locale, parsed);
-                        files[i].data = parsed;
+                // Create FileCache for sync loading
+                const fileCache = new FileCache(this.loader);
+
+                files.forEach((file) => {
+                    if (!file.data) {
+                        try {
+                            // Try to load file synchronously
+                            const datum = fileCache.loadFileSync(file.name);
+                            if (datum) {
+                                const parsed = parseData(datum, file.name);
+                                this.cache.storeData(file.root, basename, file.locale, parsed);
+                                file.data = parsed;
+                            }
+                        } catch (error) {
+                            // File failed to load, continue with other files
+                            console.warn(`Failed to load file ${file.name} synchronously: ${error.message}`);
+                        }
                     }
                 });
             }
@@ -487,22 +495,26 @@ class LocaleData {
                 files = this.getFilesArray(basename, loc, crossRoots ? roots.reverse() : roots);
                 const count = files.filter(file => !file.data).length;
                 if (count) {
-                    const fileNames = files.map((file) => {
-                        return (file.data || this.cache.isLoaded(file)) ? undefined : file.name;
-                    });
-                    return this.loader.loadFiles(fileNames, {sync}).then((data) => {
-                        data.forEach((datum, i) => {
-                            // record that we already attempted to load this
-                            this.cache.markFileAsLoaded(fileNames[i]);
-                            if (!files[i].data) {
-                                // null indicates we attempted to load the file, but
-                                // there was no data or the file did not exist
-                                const parsed = datum ? parseData(datum, fileNames[i]) : null;
-                                this.cache.storeData(files[i].root, basename, files[i].locale, parsed);
-                                files[i].data = parsed;
+                    // Create FileCache for async loading
+                    const fileCache = new FileCache(this.loader);
+
+                    const loadPromises = files.map(async (file) => {
+                        if (!file.data) {
+                            try {
+                                const datum = await fileCache.loadFile(file.name);
+                                if (datum) {
+                                    const parsed = parseData(datum, file.name);
+                                    this.cache.storeData(file.root, basename, file.locale, parsed);
+                                    file.data = parsed;
+                                }
+                            } catch (error) {
+                                // File failed to load, continue with other files
+                                console.warn(`Failed to load file ${file.name}: ${error.message}`);
                             }
-                        });
+                        }
                     });
+
+                    return Promise.all(loadPromises);
                 }
             });
             return promise.then(() => mergeData(files));
@@ -679,7 +691,7 @@ class LocaleData {
      * false if it could be found
      * @reject {Error} if there was an error while loading the data
      */
-    static ensureLocale(locale, otherRoots) {
+    static async ensureLocale(locale, otherRoots) {
         if (typeof(locale) !== 'string' && typeof(locale) !== 'object') {
             throw "Invalid parameter to ensureLocale";
         }
@@ -687,6 +699,12 @@ class LocaleData {
         if (locale && locale !== "root" && !loc.getLanguage()) {
             loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
         }
+
+        // Validate that we have a valid locale object
+        if (!loc || typeof loc.getSpec !== 'function') {
+            throw "Invalid locale parameter to ensureLocale";
+        }
+
         const roots = LocaleData.getGlobalRoots().concat(otherRoots || []);
         if (roots.length === 0) {
             roots.push("./locale");
@@ -697,78 +715,96 @@ class LocaleData {
         if (!loader) {
             throw new Error("No loader available for this platform");
         }
+
+        // Create FileCache instance for this operation
+        const fileCache = new FileCache(loader);
         const cache = DataCache.getDataCache();
         const subLocales = Utils.getSublocales(locale);
+
+        // Build list of files to load - always create the same unfiltered list
         let files = [];
         subLocales.forEach((spec) => {
             roots.forEach((root) => {
-                let ret = {
+                // Try .js file first (pre-assembled data)
+                files.push({
                     path: Path.join(root, `${spec}.js`),
-                    root
-                };
-                // check if the data is already available in the cache
-                const data = cache.getData(root, undefined, new Locale(spec));
-                if (data) {
-                    ret.data = data;
-                }
-                files.push(ret);
+                    root,
+                    type: 'js'
+                });
 
-                // only need to check the cache for the js files otherwise
-                // we have the same data twice in the array
+                // Also try .json files as fallback
                 files.push({
                     path: Path.join(root, `${spec}.json`),
-                    root
+                    root,
+                    type: 'json'
                 });
             });
         });
 
-        return Promise.resolve(true).then(() => {
-            const count = files.filter(file => !file.data).length;
-            if (count) {
-                const fileNames = files.map(file =>
-                    (file.data || cache.isLoaded(file.path)) ? undefined : file.path
-                );
-                return loader.loadFiles(fileNames).then(data => {
+        // Load all files using FileCache to prevent race conditions
+        const loadedLocales = new Set(); // Track which locales we actually loaded data for
 
-                    let dataLoaded = false;
-                    if (data && Array.isArray(data)) {
-                        data.forEach((datum, i) => {
-                            cache.markFileAsLoaded(files[i].path);
+        const loadPromises = files.map(async (file) => {
+            try {
+                const data = await fileCache.loadFile(file.path);
+                if (data) {
+                    const localeData = parseData(data, file.path);
+                    if (localeData) {
+                        // Cache the individual file data
+                        console.log(`DEBUG ensureLocale: Caching data from ${file.path} with root ${file.root}`);
+                        console.log(`DEBUG ensureLocale: Data keys:`, Object.keys(localeData));
+                        LocaleData.cacheData(localeData, file.root);
 
-                            if (!datum) return;
-                            if (!files[i].data) {
-                                // null indicates we attempted to load the file, but
-                                // there was no data or the file did not exist
-                                let localeData = parseData(datum, files[i].path);
-
-                                if (localeData) {
-                                    LocaleData.cacheData(localeData, files[i].root);
-                                    files[i].data = localeData;
-                                    dataLoaded = true;
-                                }
+                        // Track which locales we loaded data for
+                        for (const locale in localeData) {
+                            if (locale !== "root") {
+                                loadedLocales.add(locale);
+                                console.log(`DEBUG ensureLocale: Added ${locale} to loadedLocales`);
                             }
-                        });
+                        }
+
+                        return true; // Data was loaded and cached
                     }
+                }
+            } catch (error) {
+                // File failed to load, continue with other files
+                console.warn(`Failed to load file ${file.path}: ${error.message}`);
+            }
+            return false; // No data loaded for this file
+        });
 
+        // Wait for all files to load
+        const results = await Promise.all(loadPromises);
 
-                    return dataLoaded;
-                });
-            } else {
-                // Check if the data is actually available in the cache, not just marked as loaded
-                let dataAvailable = false;
-                for (const spec of subLocales) {
-                    for (const root of roots) {
-                        const data = cache.getData(root, undefined, new Locale(spec));
-                        if (data && Object.keys(data).length > 0) {
-                            dataAvailable = true;
-                            break;
+        // After loading files, ensure root data is available under the requested locale names
+        // This is needed for the fallback behavior where a locale uses root data
+        for (const root of roots) {
+            // Check if we have any data for the root locale by checking specific basenames
+            const rootInfo = cache.getData(root, "info", new Locale("root"));
+            const rootFoo = cache.getData(root, "foo", new Locale("root"));
+
+            if (rootInfo || rootFoo) {
+                // Cache the root data under the requested locale names
+                // but only if no locale-specific data exists for those sublocales
+                for (const sublocale of subLocales) {
+                    if (sublocale !== "root") {
+                        // Only cache root data if we didn't load locale-specific data for this sublocale
+                        if (!loadedLocales.has(sublocale)) {
+                            if (rootInfo) {
+                                cache.storeData(root, "info", new Locale(sublocale), rootInfo);
+                            }
+                            if (rootFoo) {
+                                cache.storeData(root, "foo", new Locale(sublocale), rootFoo);
+                            }
                         }
                     }
-                    if (dataAvailable) break;
                 }
-                return dataAvailable;
+                break;
             }
-        });
+        }
+
+        // Return true if any data was loaded and cached
+        return results.some(result => result === true);
     }
 
     /**
@@ -819,9 +855,7 @@ class LocaleData {
         return Utils.getSublocales(locale).slice(1).some((sublocale) => {
             return roots.some((root) => {
                 const value = cache.getData(root, basename, new Locale(sublocale));
-                return typeof(value) !== 'undefined' ||
-                    cache.isLoaded(Path.join(root, `${sublocale}.js`)) ||
-                    cache.isLoaded(Path.join(root, `${sublocale}.json`));
+                return typeof(value) !== 'undefined';
             });
         });
     }

@@ -423,4 +423,191 @@ describe("DataCache", () => {
         expect(!cache.isLoaded(true)).toBe(true);
         expect(!cache.isLoaded(function() { return true; })).toBe(true);
     });
+
+    // File-level caching methods for FileCache integration
+    describe("File-level caching", () => {
+        test("should get undefined for non-existent file data", () => {
+            expect.assertions(1);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            const data = cache.getFileData("nonexistent.json");
+            expect(data).toBeUndefined();
+        });
+
+        test("should set and get file data", () => {
+            expect.assertions(2);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            const testData = { content: "test data" };
+            cache.setFileData("test.json", testData);
+
+            const retrievedData = cache.getFileData("test.json");
+            expect(retrievedData).toBe(testData);
+            expect(cache.getFileDataCount()).toBe(1);
+        });
+
+        test("should set null file data for failed loads", () => {
+            expect.assertions(2);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            cache.setFileData("failed.json", null);
+
+            const retrievedData = cache.getFileData("failed.json");
+            expect(retrievedData).toBeNull();
+            expect(cache.getFileDataCount()).toBe(1);
+        });
+
+        test("should remove file data", () => {
+            expect.assertions(3);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            cache.setFileData("test.json", { content: "test" });
+            expect(cache.getFileDataCount()).toBe(1);
+
+            cache.removeFileData("test.json");
+            expect(cache.getFileDataCount()).toBe(0);
+            expect(cache.getFileData("test.json")).toBeUndefined();
+        });
+
+        test("should handle invalid file paths gracefully", () => {
+            expect.assertions(3);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            cache.setFileData("", { content: "test" });
+            cache.setFileData(null, { content: "test" });
+            cache.setFileData(undefined, { content: "test" });
+
+            expect(cache.getFileDataCount()).toBe(0);
+            expect(cache.getFileData("")).toBeUndefined();
+            expect(cache.getFileData(null)).toBeUndefined();
+        });
+
+        test("should get undefined for non-existent file promise", () => {
+            expect.assertions(1);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            const promise = cache.getFilePromise("nonexistent.json");
+            expect(promise).toBeUndefined();
+        });
+
+        test("should set and get file promise", () => {
+            expect.assertions(2);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            const testPromise = Promise.resolve("test data");
+            cache.setFilePromise("test.json", testPromise);
+
+            const retrievedPromise = cache.getFilePromise("test.json");
+            expect(retrievedPromise).toBe(testPromise);
+            expect(cache.getFilePromiseCount()).toBe(1);
+        });
+
+        test("should remove file promise", () => {
+            expect.assertions(3);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            const testPromise = Promise.resolve("test data");
+            cache.setFilePromise("test.json", testPromise);
+            expect(cache.getFilePromiseCount()).toBe(1);
+
+            cache.removeFilePromise("test.json");
+            expect(cache.getFilePromiseCount()).toBe(0);
+            expect(cache.getFilePromise("test.json")).toBeUndefined();
+        });
+
+        test("should handle invalid file paths for promises gracefully", () => {
+            expect.assertions(3);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            const testPromise = Promise.resolve("test data");
+            cache.setFilePromise("", testPromise);
+            cache.setFilePromise(null, testPromise);
+            cache.setFilePromise(undefined, testPromise);
+
+            expect(cache.getFilePromiseCount()).toBe(0);
+            expect(cache.getFilePromise("")).toBeUndefined();
+            expect(cache.getFilePromise(null)).toBeUndefined();
+        });
+
+        test("should clear file cache", () => {
+            expect.assertions(4);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            // Add some file data and promises
+            cache.setFileData("data1.json", { content: "data1" });
+            cache.setFileData("data2.json", { content: "data2" });
+            cache.setFilePromise("promise1.json", Promise.resolve("promise1"));
+            cache.setFilePromise("promise2.json", Promise.resolve("promise2"));
+
+            expect(cache.getFileDataCount()).toBe(2);
+            expect(cache.getFilePromiseCount()).toBe(2);
+
+            cache.clearFileCache();
+
+            expect(cache.getFileDataCount()).toBe(0);
+            expect(cache.getFilePromiseCount()).toBe(0);
+        });
+
+        test("should get correct file promise count", () => {
+            expect.assertions(4);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            expect(cache.getFilePromiseCount()).toBe(0);
+
+            cache.setFilePromise("file1.json", Promise.resolve("data1"));
+            expect(cache.getFilePromiseCount()).toBe(1);
+
+            cache.setFilePromise("file2.json", Promise.resolve("data2"));
+            expect(cache.getFilePromiseCount()).toBe(2);
+
+            cache.removeFilePromise("file1.json");
+            expect(cache.getFilePromiseCount()).toBe(1);
+        });
+
+        test("should get correct file data count", () => {
+            expect.assertions(4);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            expect(cache.getFileDataCount()).toBe(0);
+
+            cache.setFileData("file1.json", { content: "data1" });
+            expect(cache.getFileDataCount()).toBe(1);
+
+            cache.setFileData("file2.json", { content: "data2" });
+            expect(cache.getFileDataCount()).toBe(2);
+
+            cache.removeFileData("file1.json");
+            expect(cache.getFileDataCount()).toBe(1);
+        });
+
+        test("should clear file cache when clearing all data", () => {
+            expect.assertions(4);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            // Add some file data and promises
+            cache.setFileData("data.json", { content: "test" });
+            cache.setFilePromise("promise.json", Promise.resolve("test"));
+
+            expect(cache.getFileDataCount()).toBe(1);
+            expect(cache.getFilePromiseCount()).toBe(1);
+
+            cache.clearData();
+
+            expect(cache.getFileDataCount()).toBe(0);
+            expect(cache.getFilePromiseCount()).toBe(0);
+        });
+    });
 });
