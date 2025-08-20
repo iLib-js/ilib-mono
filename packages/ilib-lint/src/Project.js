@@ -522,27 +522,27 @@ class Project extends DirItem {
      * Find all issues with the files located within this project and
      * all subprojects, and return them together in an array.
      *
+     * @param {Array.<String>} locales the locales to find issues for
      * @returns {Array.<Result>} a list of results
      */
     findIssues(locales) {
         this.fileStats = new FileStats();
 
-        return this.dirItems
+        return this.get()
             .flatMap((file) => {
-                //logger.debug(`Examining ${file.filePath}`);
                 if (!this.options.opt.quiet && this.options.opt.progressInfo) {
-                    logger.info("Examing path   : " + file.filePath);
+                    logger.info(`Finding issues in file [${file.filePath}]`);
                 }
                 try {
                     const results = file.findIssues(locales);
-                    this.fileStats.addStats(file.getStats());
+                    this.fileStats?.addStats(file.getStats());
                     return results;
                 } catch (e) {
-                    logger.error(`Error while finding issues in the file ${file.filePath}`);
-                    logger.error(e);
+                    logger.error(`Error finding issues in file [${file.filePath}]`, e);
+                    return undefined;
                 }
             })
-            .filter((result) => result);
+            .filter((result) => !!result);
     }
 
     /**
