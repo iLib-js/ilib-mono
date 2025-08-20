@@ -509,13 +509,17 @@ class Project extends DirItem {
      * @returns {Array.<LintableFile>} the lintable files in this project.
      */
     get() {
-        return this.dirItems.flatMap((dirItem) => {
-            if (dirItem instanceof LintableFile) {
-                return dirItem;
-            } else if (dirItem instanceof DirItem) {
-                return dirItem.get();
-            }
-        });
+        return this.dirItems
+            .flatMap((dirItem) => {
+                if (dirItem instanceof LintableFile) {
+                    return dirItem;
+                } else if (dirItem instanceof Project) {
+                    return dirItem.get();
+                } else {
+                    return undefined;
+                }
+            })
+            .filter((file) => !!file);
     }
 
     /**
