@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import log4js from "log4js";
 import { Result } from "ilib-lint-common";
+import PluginManager from "./PluginManager.js";
 
-const logger = log4js.getLogger("ilib-lint.DirItem");
+// type imports
+/** @ignore @typedef {import("./Project.js").Project} Project */
 
 /**
  * @class Represent a directory item.
@@ -32,14 +33,40 @@ const logger = log4js.getLogger("ilib-lint.DirItem");
  */
 class DirItem {
     /**
+     * The file path for this directory item
+     * @type {String}
+     */
+    filePath;
+
+    /**
+     * The settings from the ilib-lint config that apply to this file
+     * @type {Record<string, unknown> | undefined}
+     */
+    settings;
+
+    /**
+     * The plugin manager for this run of the ilib-lint tool
+     * @type {PluginManager|undefined}
+     */
+    pluginMgr;
+
+    /**
+     * The project that this directory item is part of
+     * @type {Project|undefined}
+     */
+    project;
+
+    /**
      * Construct a new directory item
      * The options parameter can contain any of the following properties:
      *
-     * - filePath {String} path to the file
-     * - settings {Object} the settings from the ilib-lint config that
+     * @param {String} filePath path to the file
+     * @param {Object} options options for constructing this directory item
+     * @param {Record<string, unknown>} [options.settings] the settings from the ilib-lint config that
      *   apply to this file
-     * - pluginManager {PluginManager} the plugin manager for this run of
+     * @param {PluginManager} [options.pluginManager] the plugin manager for this run of
      *   the ilib-lint tool
+     * @param {Project} [project] the project that this directory item is part of
      */
     constructor(filePath, options, project) {
         if (!options || !filePath) {
@@ -52,9 +79,9 @@ class DirItem {
     }
 
     /**
-     * Return the file path for this source file.
+     * Return the file path for this directory item.
      *
-     * @returns {String} the file path for this source file
+     * @returns {String} the file path for this directory item
      */
     getFilePath() {
         return this.filePath;
