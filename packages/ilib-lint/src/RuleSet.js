@@ -32,7 +32,7 @@ class RuleSet {
      * Construct an ilib-lint rule set.
      *
      * @constructor
-     * @param {Array.<Rule>} rules a list of rules to initialize
+     * @param {Array.<Rule>} [rules] a list of rules to initialize
      * this set
      */
     constructor(rules) {
@@ -44,7 +44,7 @@ class RuleSet {
 
     /**
      * Add a rule instnace to this rule set.
-     * @param {Rule} rule the instance to add
+     * @param {Rule} [rule] the instance to add
      */
     addRule(rule) {
         if (!rule || typeof rule !== "object" || !rule.getName()) return;
@@ -58,7 +58,7 @@ class RuleSet {
      * override the previous definition. This way, the rule is
      * only ever added once.
      *
-     * @param {Array.<Rule>} rules a list of rule instances to add
+     * @param {Array.<Rule>} [rules] a list of rule instances to add
      */
     add(rules) {
         if (!rules || typeof rules !== "object" || !Array.isArray(rules)) return;
