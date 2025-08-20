@@ -119,7 +119,6 @@ class IntermediateRepresentation {
 
     /** Whether or not this IR is modified from the original IR
      * @type {boolean}
-     * @readonly
      */
     dirty = false;
 
