@@ -201,9 +201,9 @@ class Rule {
      * @abstract
      * @param {Object} options The options object as per the description
      * @param {IntermediateRepresentation} options.ir The intermediate representation of the file to check
-     * @param {String} options.locale the locale against which this rule should be checked. Some rules
-     * are locale-sensitive, others not.
      * @param {string} options.file the file where the resource came from
+     * @param {String} [options.locale] the locale against which this rule should be checked. Some rules
+     * are locale-sensitive, others not.
      * @param {object} [options.parameters] optional additional parameters for this rule from the configuration file
      * @returns {Result|Array.<Result>|undefined} a Result instance describing the problem if
      * the rule check fails for this locale, or an array of such Result instances if
