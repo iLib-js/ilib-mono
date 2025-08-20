@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import fs from 'fs';
-import path from 'path';
-import { Buffer } from 'buffer';
+import fs from "fs";
+import path from "path";
+import { Buffer } from "buffer";
 import NotImplementedError from "./NotImplementedError.js";
 
 /**
@@ -66,7 +66,7 @@ class SourceFile {
             this.dirty = options.file.dirty;
         }
         // other options can override the file options
-        if (typeof(options?.getLogger) === "function") {
+        if (typeof options?.getLogger === "function") {
             this.logger = options.getLogger("ilib-lint-common.SourceFile");
         }
         if (options?.sourceLocale) {
@@ -78,7 +78,7 @@ class SourceFile {
         if (options?.type) {
             this.type = options.type;
         }
-        if (typeof(options?.content) === 'string') {
+        if (typeof options?.content === "string") {
             this.content = options.content;
             if (this.content) {
                 this.dirty = true;
@@ -167,7 +167,7 @@ class SourceFile {
      * @returns {String} the content of the file, encoded as a JS string
      */
     getContent() {
-        if (typeof(this.content) === 'undefined') {
+        if (typeof this.content === "undefined") {
             this.read();
         }
         return this.content;
@@ -179,7 +179,7 @@ class SourceFile {
      * @returns {Array.<String>|undefined} the content as an array of lines
      */
     getLines() {
-        if (typeof(this.content) === 'undefined') {
+        if (typeof this.content === "undefined") {
             this.read();
         }
         return this.content?.split(/[\r\n]+/g);
@@ -263,7 +263,7 @@ class SourceFile {
     write() {
         if (this.filePath && this.isDirty()) {
             const dir = path.dirname(this.filePath);
-            fs.mkdirSync(path.dirname(this.filePath), {recursive: true});
+            fs.mkdirSync(path.dirname(this.filePath), { recursive: true });
             fs.writeFileSync(this.filePath, this.getContent() || "", "utf-8");
             this.dirty = false;
             return true;
