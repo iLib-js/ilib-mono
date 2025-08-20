@@ -2,7 +2,7 @@
  * DataCache.js - class to cache locale data so that we are not
  * constantly loading the same files over and over again
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import log4js from '@log4js-node/log4js-api';
 
 import { Path } from 'ilib-common';
 import { top } from 'ilib-env';
+import Locale from 'ilib-locale';
 
 /**
  * @private
@@ -57,7 +58,6 @@ class DataCache {
      * Create a locale data cache.
      *
      * @private
-     * @param {string} name the unique name for this type of locale data
      * @constructor
      */
     constructor() {
@@ -68,12 +68,14 @@ class DataCache {
         this.count = 0;
         this.data = {};
         this.loaded = new Set();
+
+        // File-level caching for FileCache integration
+        this.fileData = new Map(); // filename -> data (object, null, or undefined)
+        this.filePromises = new Map(); // filename -> Promise
     }
 
     /**
      * Factory method to create a new DataCache singleton.
-     * @param {Object} options options to pass to the constructor. (See
-     * the constructor's documentation for details.
      * @returns {DataCache} the data cache for the given package
      */
     static getDataCache() {
@@ -100,31 +102,28 @@ class DataCache {
     }
 
     /**
-     * Get locale data from the cache or information about data that may be missing.
-     * If the basename is missing, get all the data for the locale.
+     * Get the data for the given locale from the given root. The data
+     * is returned as it was stored, which means it could be undefined
+     * if no data was stored for that locale.
      *
      * @param {string} root the root from which the data was loaded
-     * @param {string|undefined} basename the base name of this type of data. If this
-     * is undefined, return all basenames for the locale
-     * @param {Locale} locale the full or partial locale for this particular data
-     * @returns {Object|null|undefined} the requested data, or null to explicitly indicate
-     * that no data of this type exists for this locale, or undefined to indicate that the
-     * cache has no information about this type of data for that locale
+     * @param {string} basename the base name of this type of data
+     * @param {Locale} locale the full or partial locale of this data
+     * @returns {Object|undefined} the data for this locale or undefined if none was stored
      */
     getData(root, basename, locale) {
-        this.logger.trace(`Getting data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
+        if (!root || !basename) {
+            return undefined;
+        }
 
         let localeSpec = getLocaleSpec(locale);
 
-        if ( !this.data[root] ) {
-            this.data[root] = {};
-        }
-        if ( !this.data[root][localeSpec] ) {
+        if (!this.data?.[root]?.[localeSpec] || !(basename in this.data[root][localeSpec])) {
             return undefined;
         }
 
         return basename ? this.data[root][localeSpec][basename] : this.data[root][localeSpec];
-    };
+    }
 
     /**
      * Store the given data for the given full or partial locale. The data may be given
@@ -198,6 +197,8 @@ class DataCache {
         this.count = 0;
         this.data = {};
         this.loaded.clear();
+        this.fileData.clear();
+        this.filePromises.clear();
     }
 
     /**
@@ -216,6 +217,90 @@ class DataCache {
     isLoaded(fileName) {
         if (!fileName || typeof(fileName) !== "string") return false;
         return this.loaded.has(fileName);
+    }
+
+    // File-level caching methods for FileCache integration
+
+    /**
+     * Get file data from the cache.
+     * @param {string} filePath the path to the file
+     * @returns {Object|null|undefined} the file data, null if failed/no data, undefined if not attempted
+     */
+    getFileData(filePath) {
+        if (!filePath || typeof filePath !== 'string') return undefined;
+        return this.fileData.get(filePath);
+    }
+
+    /**
+     * Set file data in the cache.
+     * @param {string} filePath the path to the file
+     * @param {Object|null} data the file data or null if failed/no data
+     */
+    setFileData(filePath, data) {
+        if (!filePath || typeof filePath !== 'string') return;
+        this.fileData.set(filePath, data);
+    }
+
+    /**
+     * Remove file data from the cache.
+     * @param {string} filePath the path to the file
+     */
+    removeFileData(filePath) {
+        if (!filePath || typeof filePath !== 'string') return;
+        this.fileData.delete(filePath);
+    }
+
+    /**
+     * Get file promise from the cache.
+     * @param {string} filePath the path to the file
+     * @returns {Promise|undefined} the promise for the file or undefined if not loading
+     */
+    getFilePromise(filePath) {
+        if (!filePath || typeof filePath !== 'string') return undefined;
+        return this.filePromises.get(filePath);
+    }
+
+    /**
+     * Set file promise in the cache.
+     * @param {string} filePath the path to the file
+     * @param {Promise} promise the promise for the file
+     */
+    setFilePromise(filePath, promise) {
+        if (!filePath || typeof filePath !== 'string' || !promise) return;
+        this.filePromises.set(filePath, promise);
+    }
+
+    /**
+     * Remove file promise from the cache.
+     * @param {string} filePath the path to the file
+     */
+    removeFilePromise(filePath) {
+        if (!filePath || typeof filePath !== 'string') return;
+        this.filePromises.delete(filePath);
+    }
+
+    /**
+     * Clear all file cache data and promises.
+     */
+    clearFileCache() {
+        this.fileData.clear();
+        this.filePromises.clear();
+    }
+
+    /**
+     * Get the count of file promises currently in flight.
+     * @returns {number} the number of file promises
+     */
+    getFilePromiseCount() {
+        return this.filePromises.size;
+    }
+
+    /**
+     * Get the count of files that have been attempted to load.
+     * @returns {number} the number of files with data
+     */
+    getFileDataCount() {
+        return this.fileData.size;
     }
 }
 

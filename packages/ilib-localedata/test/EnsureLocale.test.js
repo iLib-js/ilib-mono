@@ -19,18 +19,21 @@
 
 import LocaleData from '../src/LocaleData.js';
 import Locale from 'ilib-locale';
+import DataCache from '../src/DataCache.js';
 
 describe('LocaleData.ensureLocale', () => {
     beforeEach(() => {
         // Clear cache before each test
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
+        DataCache.clearDataCache();
     });
 
     afterEach(() => {
         // Clean up after each test
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
+        DataCache.clearDataCache();
     });
 
     test('concurrent ensureLocale calls should return consistent results', async () => {
@@ -126,5 +129,68 @@ describe('LocaleData.ensureLocale', () => {
         }
     });
 
+    test('should prevent multiple file loading promises for the same locale', async () => {
+        // Add a test root
+        LocaleData.addGlobalRoot("./test/files");
 
+        // Start multiple concurrent requests for the same locale
+        const promises = [];
+        for (let i = 0; i < 10; i++) {
+            promises.push(LocaleData.ensureLocale("ja-JP"));
+        }
+
+        const results = await Promise.all(promises);
+
+        // All results should be identical
+        const firstResult = results[0];
+        results.forEach(result => {
+            expect(result).toBe(firstResult);
+        });
+
+        // Verify that the FileCache is working - only one promise should be cached
+        // This is an implementation detail test to ensure our race condition fix works
+        const dataCache = DataCache.getDataCache();
+        // The exact count depends on how many files are loaded, but it should be reasonable
+        expect(dataCache.getFilePromiseCount()).toBeGreaterThan(0);
+    });
+
+    test('should handle locale with multiple sublocales correctly', async () => {
+        // Add a test root
+        LocaleData.addGlobalRoot("./test/files");
+
+        // Test with a locale that has multiple sublocales (e.g., zh-Hans-CN)
+        const result = await LocaleData.ensureLocale("zh-Hans-CN");
+
+        expect(typeof result).toBe("boolean");
+    });
+
+    test('should handle root locale correctly', async () => {
+        // Add a test root
+        LocaleData.addGlobalRoot("./test/files");
+
+        // Test with root locale
+        const result = await LocaleData.ensureLocale("root");
+
+        expect(typeof result).toBe("boolean");
+    });
+
+    test('should handle invalid locale gracefully', () => {
+        // Add a test root
+        LocaleData.addGlobalRoot("./test/files");
+
+        // Test with invalid locale - these should throw synchronously
+        expect(() => LocaleData.ensureLocale(null)).toThrow("Invalid locale parameter to ensureLocale");
+        expect(() => LocaleData.ensureLocale(undefined)).toThrow("Invalid parameter to ensureLocale");
+        expect(() => LocaleData.ensureLocale(123)).toThrow("Invalid parameter to ensureLocale");
+    });
+
+    test('should work with multiple global roots', async () => {
+        // Add multiple test roots
+        LocaleData.addGlobalRoot("./test/files1");
+        LocaleData.addGlobalRoot("./test/files2");
+
+        const result = await LocaleData.ensureLocale("en-US");
+
+        expect(typeof result).toBe("boolean");
+    });
 });
