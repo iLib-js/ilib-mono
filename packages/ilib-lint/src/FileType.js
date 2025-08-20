@@ -23,6 +23,9 @@ import RuleSet from "./RuleSet.js";
 import { Parser, Rule, Serializer, Transformer } from "ilib-lint-common";
 import Project from "./Project.js";
 
+// type imports
+/** @ignore @typedef {import("./RuleManager.js").RuleSetDefinition} RuleSetDefinition */
+
 const logger = log4js.getLogger("ilib-lint.FileType");
 
 /**
@@ -124,7 +127,7 @@ class FileType {
      * type of the rules, and the type of the transformers and serializer. If no
      * parsers are specified, then the parser manager will be asked to find all
      * parsers that can parse files of this type.
-     * @param {Array.<String>|String|Record<String, unknown>} [options.ruleset] a list of rule set names
+     * @param {Array.<String>|String|RuleSetDefinition} [options.ruleset] a list of rule set names
      * to use with this file type. Only rules in these rule sets that operate
      * on the same type of intermediate representation as the parsers will
      * be applied to the file.
