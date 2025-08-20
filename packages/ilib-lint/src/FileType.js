@@ -20,7 +20,7 @@
 import log4js from "log4js";
 
 import RuleSet from "./RuleSet.js";
-import { Parser, Rule, Serializer, Transformer } from "ilib-lint-common";
+import { Fixer, Parser, Rule, Serializer, Transformer } from "ilib-lint-common";
 import Project from "./Project.js";
 
 // type imports
@@ -337,6 +337,16 @@ class FileType {
      */
     getSerializer() {
         return this.serializer;
+    }
+
+    /**
+     * Return an instance of the fixer class for this file type.
+     *
+     * @returns {Fixer|undefined} an instance of the fixer class for this
+     * file type or undefined if there is no fixer for this file type.
+     */
+    getFixer() {
+        return this.project.getFixerManager().get(this.type);
     }
 }
 
