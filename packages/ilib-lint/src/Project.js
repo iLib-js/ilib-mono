@@ -458,24 +458,6 @@ class Project extends DirItem {
     }
 
     /**
-     * Return the named file type definition. Projects have two
-     * default file types that are always defined for every project:
-     * "xliff", and "unknown".
-     *
-     * - xliff - handles all *.xliff files using the XliffParser.
-     * It uses the default resources rule set to perform all regular
-     * resource checks.
-     * - unknown - handles all file types that are not otherwise
-     * matched. It does not perform any rule checks on any file.
-     *
-     * @param {String} name the name or the glob expression used to
-     * identify the requested file type
-     * @returns {FileType} the requested file type, or undefined if
-     * there is no such file type
-     */
-    getFileType(name) {}
-
-    /**
      * Using the path mappings, find the file type that applies for
      * the given path. If no mappings apply, the "unkown" file type
      * will be returned.
