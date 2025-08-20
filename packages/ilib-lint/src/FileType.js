@@ -20,6 +20,8 @@
 import log4js from "log4js";
 
 import RuleSet from "./RuleSet.js";
+import { Parser, Rule, Serializer, Transformer } from "ilib-lint-common";
+import Project from "./Project.js";
 
 const logger = log4js.getLogger("ilib-lint.FileType");
 
@@ -35,74 +37,65 @@ class FileType {
     /**
      * The lint project that this file is a part of.
      * @type {Project}
+     * @readonly
      */
     project;
 
     /**
      * The name or glob spec for this file type
      * @type {String|undefined}
+     * @readonly
      */
     name;
 
     /**
      * The list of locales to use with this file type
      * @type {Array.<String>|undefined}
+     * @readonly
      */
     locales;
 
     /**
      * The intermediate representation type of this file type.
      * @type {String}
+     * @readonly
      */
     type;
 
     /**
-     * The array of names of classes of parsers to use with this file type.
-     * @type {Array.<String>|undefined}
-     */
-    parsers = undefined;
-
-    /**
      * The array of classes of parsers to use with this file type.
-     * @type {Array.<Class>|undefined}
+     * @type {Array.<Parser>|undefined}
+     * @readonly
      */
-    parserClasses = undefined;
-
-    /**
-     * The array of names of transformers to use with this file type.
-     * @type {Array.<String>|undefined}
-     */
-    transformers = undefined;
+    parsers;
 
     /**
      * The array of instances of transformers to use with this file type.
      * @type {Array.<Transformer>|undefined}
+     * @readonly
      */
-    transformerInstances = undefined;
-
-    /**
-     * The serializer to use with this file type.
-     * @type {String|undefined}
-     */
-    serializer = undefined;
+    transformers;
 
     /**
      * The instance of the serializer to use with this file type.
      * @type {Serializer|undefined}
+     * @readonly
      */
-    serializerInst = undefined;
+    serializer;
 
     /**
      * The array of rule sets to apply to files of this type.
      * @type {Array<String>|undefined}
+     * @readonly
      */
-    ruleset = undefined;
+    ruleset;
 
     /**
      * The path template for this file type.
      * @type {String|undefined}
+     * @readonly
      */
-    template = undefined;
+    template;
 
     /**
      * Contructor a new instance of a file type.
@@ -131,14 +124,14 @@ class FileType {
      * type of the rules, and the type of the transformers and serializer. If no
      * parsers are specified, then the parser manager will be asked to find all
      * parsers that can parse files of this type.
-     * @param {Array.<String>} [options.ruleset] a list of rule set names
+     * @param {Array.<String>|String|Record<String, unknown>} [options.ruleset] a list of rule set names
      * to use with this file type. Only rules in these rule sets that operate
      * on the same type of intermediate representation as the parsers will
      * be applied to the file.
      * @param {Array.<String>} [options.transformers] an array of transformer names
      * to apply to files of this type after the rules have been applied. Every transformer
      * must operate on the same type of intermediate representation as the parser.
-     * @param {String|Object} [options.serializer] the name of the serializer to use if
+     * @param {String} [options.serializer] the name of the serializer to use if
      * the file has been modified by a transformer or a fixer. The serializer must
      * operate on the same type of intermediate representation as the parser.
      * @constructor
@@ -150,88 +143,93 @@ class FileType {
         if (!options || !options.name || !options.project) {
             throw "Missing required options to the FileType constructor";
         }
-        ["name", "project", "locales", "ruleset", "template", "parsers", "transformers", "serializer"].forEach(
-            (prop) => {
-                if (typeof options[prop] !== "undefined") {
-                    this[prop] = options[prop];
-                }
-            }
-        );
 
-        if (this.parsers) {
+        /** @type {String|undefined} */
+        let inferredType = undefined;
+
+        this.name = options.name;
+        this.project = options.project;
+        this.locales = options.locales;
+        this.template = options.template;
+
+        const parserNames = options.parsers;
+        if (parserNames) {
             const parserMgr = this.project.getParserManager();
-            this.parserClasses = this.parsers.map((parserName) => {
+            this.parsers = parserNames.map((parserName) => {
                 const parser = parserMgr.getByName(parserName);
                 if (!parser) {
                     throw `Could not find parser ${parserName} named in the configuration for filetype ${this.name}`;
                 }
-                if (!this.type) {
-                    this.type = parserMgr.getType(parserName);
+                if (!inferredType) {
+                    inferredType = parserMgr.getType(parserName);
                 }
                 return parser;
             });
         }
 
-        if (this.ruleset) {
-            if (typeof this.ruleset === "string") {
+        const unknownRuleset = options.ruleset;
+        if (unknownRuleset) {
+            if (Array.isArray(unknownRuleset)) {
+                this.ruleset = unknownRuleset;
+            } else if (typeof unknownRuleset === "string") {
                 // single string -> convert to an array with a single element
-                this.ruleset = [this.ruleset];
-            } else if (!Array.isArray(this.ruleset)) {
+                this.ruleset = [unknownRuleset];
+            } else {
                 // rule set definition instead of a ruleset name. Save a new
                 // rule set definition in the rule manager and give it a
                 // temp name so we can refer to it and make sure that this.ruleset
                 // always points to an array of rule set names
                 const ruleMgr = this.project.getRuleManager();
                 const setName = `${this.name}-unnamed-ruleset`;
-                ruleMgr.addRuleSetDefinition(setName, this.ruleset);
+                ruleMgr.addRuleSetDefinition(setName, unknownRuleset);
                 this.ruleset = [setName];
             }
         }
 
-        if (this.transformers) {
-            const names = Array.isArray(this.transformers) ? this.transformers : [this.transformers];
+        const transformerNames = options.transformers;
+        if (transformerNames) {
+            const names = Array.isArray(transformerNames) ? transformerNames : [transformerNames];
             const transformerMgr = this.project.getTransformerManager();
-            this.transformerInstances = names.map((transformerName) => {
+            this.transformers = names.map((transformerName) => {
                 const transformer = transformerMgr.get(transformerName);
                 if (!transformer) {
                     throw `Could not find transformer ${transformerName} named in the configuration for filetype ${this.name}`;
                 }
                 const transformerType = transformer.getType();
-                if (!this.type) {
-                    this.type = transformerType;
-                } else if (transformerType !== this.type) {
+                if (!inferredType) {
+                    inferredType = transformerType;
+                } else if (transformerType !== inferredType) {
                     throw new Error(
-                        `The transformer ${transformerName} processes representations of type ${transformerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`
+                        `The transformer ${transformerName} processes representations of type ${transformerType}, but the filetype ${this.name} handles representations of type ${inferredType}. The two types must match.`
                     );
                 }
                 return transformer;
             });
         }
 
-        if (this.serializer) {
-            // if it is a string, then that string is the name of the serializer. If it is an object,
-            // then it the name and the settings to pass to the the serializer constructor.
-            const name = typeof this.serializer === "string" ? this.serializer : this.serializer.name;
+        const serializerName = options.serializer;
+        if (serializerName) {
             const serializerMgr = this.project.getSerializerManager();
-            this.serializerInst = serializerMgr.get(name, this.serializer);
-            if (!this.serializerInst) {
+            this.serializer = serializerMgr.get(serializerName);
+            if (!this.serializer) {
                 throw new Error(
-                    `Could not find or instantiate serializer ${this.serializer} named in the configuration for filetype ${this.name}`
+                    `Could not find or instantiate serializer ${serializerName} named in the configuration for filetype ${this.name}`
                 );
             }
-            const serializerType = this.serializerInst.getType();
-            if (!this.type) {
-                this.type = serializerType;
-            } else if (serializerType !== this.type) {
+            const serializerType = this.serializer.getType();
+            if (!inferredType) {
+                inferredType = serializerType;
+            } else if (serializerType !== inferredType) {
                 throw new Error(
-                    `The serializer ${name} processes representations of type ${serializerType}, but the filetype ${this.name} handles representations of type ${this.type}. The two types must match.`
+                    `The serializer ${serializerName} processes representations of type ${serializerType}, but the filetype ${this.name} handles representations of type ${inferredType}. The two types must match.`
                 );
             }
         }
 
-        if (!this.type) {
-            this.type = "string";
+        if (!inferredType) {
+            inferredType = "string";
         }
+        this.type = inferredType;
     }
 
     getName() {
@@ -261,11 +259,11 @@ class FileType {
      * that can parse files with the given file name extension. If there
      * are none available, this method returned undefined;
      * @param {String} extension file name extension of the file being parsed
-     * @returns {Array.<Class>} an array of parser classes to use with
+     * @returns {Parser[]} an array of parser classes to use with
      * files of this type.
      */
-    getParserClasses(extension) {
-        if (this.parserClasses) return this.parserClasses;
+    getParsers(extension) {
+        if (this.parsers) return this.parsers;
         const pm = this.project.getParserManager();
         return pm.get(extension);
     }
@@ -276,7 +274,7 @@ class FileType {
      * @returns {Array.<String>} a list of rule set names
      */
     getRuleSetNames() {
-        return this.ruleset;
+        return this.ruleset || [];
     }
 
     /**
@@ -325,7 +323,7 @@ class FileType {
      * with this file type, or undefined if there are none.
      */
     getTransformers() {
-        return this.transformerInstances;
+        return this.transformers;
     }
 
     /**
@@ -335,7 +333,7 @@ class FileType {
      * file type or undefined if there is no serializer for this file type.
      */
     getSerializer() {
-        return this.serializerInst;
+        return this.serializer;
     }
 }
 
