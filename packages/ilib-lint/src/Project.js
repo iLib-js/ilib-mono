@@ -88,11 +88,20 @@ function isOwnMethod(instance, methodName, parentClass) {
  */
 class Project extends DirItem {
     /**
+     * The plugin manager for this run of the ilib-lint tool
+     * @type {PluginManager}
+     */
+    pluginMgr;
+
+    /**
      * Construct a new project.
      *
      * @param {String} root root directory for this project
      * @param {Object} options properties controlling how this run of the linter
      * works, mostly from the command-line options
+     * @param {PluginManager} options.pluginManager the plugin manager to use for this project
+     * @param {Record<string, unknown>} [options.settings] the settings from the ilib-lint config that
+     *  apply to this file
      * @param {Object} config contents of a configuration file for this project
      */
     constructor(root, options, config) {
