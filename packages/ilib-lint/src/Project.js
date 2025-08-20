@@ -552,7 +552,7 @@ class Project extends DirItem {
      * @param {Array.<Result>} results the results of the linting process
      */
     applyTransformers(results) {
-        this.dirItems.forEach((dirItem) => dirItem.applyTransformers(results));
+        this.get().forEach((file) => file.applyTransformers(results));
     }
 
     /**
