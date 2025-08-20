@@ -277,87 +277,72 @@ class Project extends DirItem {
      * Initialize this project. This returns a promise to load the
      * plugins and initializes them.
      *
-     * @returns {Promise} a promise to initialize the project
-     * @accept {boolean} true when everything was initialized correct
-     * @reject the initialization failed
+     * @returns {Promise<void>} a promise to initialize the project
      */
     async init() {
-        let promise = Promise.resolve(true);
-
         if (this.config.plugins) {
-            promise = promise.then(() => {
-                return this.pluginMgr.load(this.config.plugins);
-            });
+            await this.pluginMgr.load(this.config.plugins);
         }
 
         // initialize any projects or files that have an init method.
-        this.dirItems.forEach((dirItem) => {
-            if (typeof dirItem.init === "function") {
-                promise = promise.then(() => {
-                    return dirItem.init();
+        await Promise.all(this.dirItems.map((dirItem) => dirItem.init()));
+
+        // This configuration processing below was moved here from the
+        // constructor. The reason is that it has to be done after
+        // the plugins are already loaded because the plugins themselves
+        // may be providing some of the parsers, rules, rulesets, etc.
+        // that are referenced in the config.
+
+        const ruleMgr = this.pluginMgr.getRuleManager();
+        const fmtMgr = this.pluginMgr.getFormatterManager();
+        const fixerMgr = this.pluginMgr.getFixerManager();
+        if (this.config.rules) {
+            ruleMgr.add(this.config.rules);
+        }
+        if (this.config.rulesets) {
+            ruleMgr.addRuleSetDefinitions(this.config.rulesets);
+        }
+        if (this.config.formatters) {
+            fmtMgr.add(this.config.formatters);
+        }
+        if (this.config.fixers) {
+            fixerMgr.add(this.config.fixers);
+        }
+
+        if (this.config.filetypes) {
+            for (let ft in this.config.filetypes) {
+                this.filetypes[ft] = new FileType({
+                    name: ft,
+                    project: this,
+                    ...this.config.filetypes[ft],
                 });
             }
-        });
-
-        return promise.then(() => {
-            // This configuration processing below was moved here from the
-            // constructor. The reason is that it has to be done after
-            // the plugins are already loaded because the plugins themselves
-            // may be providing some of the parsers, rules, rulesets, etc.
-            // that are referenced in the config.
-
-            const ruleMgr = this.pluginMgr.getRuleManager();
-            const fmtMgr = this.pluginMgr.getFormatterManager();
-            const fixerMgr = this.pluginMgr.getFixerManager();
-            if (this.config.rules) {
-                ruleMgr.add(this.config.rules);
-            }
-            if (this.config.rulesets) {
-                ruleMgr.addRuleSetDefinitions(this.config.rulesets);
-            }
-            if (this.config.formatters) {
-                fmtMgr.add(this.config.formatters);
-            }
-            if (this.config.fixers) {
-                fixerMgr.add(this.config.fixers);
-            }
-
-            if (this.config.filetypes) {
-                for (let ft in this.config.filetypes) {
-                    this.filetypes[ft] = new FileType({
-                        name: ft,
+        }
+        if (this.config.paths) {
+            this.mappings = this.config.paths;
+            for (let glob in this.mappings) {
+                let mapping = this.mappings[glob];
+                if (typeof mapping === "object") {
+                    // this is an "on-the-fly" file type
+                    this.filetypes[glob] = new FileType({
+                        name: glob,
                         project: this,
-                        ...this.config.filetypes[ft],
+                        ...mapping,
                     });
-                }
-            }
-            if (this.config.paths) {
-                this.mappings = this.config.paths;
-                for (let glob in this.mappings) {
-                    let mapping = this.mappings[glob];
-                    if (typeof mapping === "object") {
-                        // this is an "on-the-fly" file type
-                        this.filetypes[glob] = new FileType({
-                            name: glob,
-                            project: this,
-                            ...mapping,
-                        });
-                    } else if (typeof mapping === "string") {
-                        if (!this.filetypes[mapping]) {
-                            throw `Mapping ${glob} is configured to use unknown filetype ${mapping}`;
-                        }
+                } else if (typeof mapping === "string") {
+                    if (!this.filetypes[mapping]) {
+                        throw `Mapping ${glob} is configured to use unknown filetype ${mapping}`;
                     }
                 }
             }
-            const formatterName = this.options?.opt?.formatter || this.options.formatter || "ansi-console-formatter";
-            this.formatter = fmtMgr.get(formatterName);
-            if (!this.formatter) {
-                logger.error(`Could not find formatter ${formatterName}. Aborting...`);
-                process.exit(3);
-            }
+        }
 
-            return true;
-        });
+        const formatterName = this.options?.opt?.formatter || this.options.formatter || "ansi-console-formatter";
+        const formatter = fmtMgr.get(formatterName);
+        if (!formatter) {
+            throw new Error(`Could not find formatter ${formatterName}`);
+        }
+        this.formatter = formatter;
     }
 
     /**

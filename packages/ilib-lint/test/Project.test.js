@@ -344,7 +344,7 @@ describe("testProject", () => {
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("src/foo/ja/asdf.json");
         expect(ft.getName()).toBe("json");
     });
@@ -356,7 +356,7 @@ describe("testProject", () => {
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("src/foo/asdf.js");
         expect(ft.getName()).toBe("javascript");
     });
@@ -368,7 +368,7 @@ describe("testProject", () => {
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("notsrc/foo/ja/asdf.json");
         expect(ft.getName()).toBe("unknown");
     });
@@ -380,7 +380,7 @@ describe("testProject", () => {
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("./src/foo/ja/asdf.json");
         expect(ft.getName()).toBe("json");
     });
@@ -392,7 +392,7 @@ describe("testProject", () => {
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("i18n/it-IT.xliff");
         // since it is not a pre-defined xliff with a real name, it uses
         // the mapping's glob as the name
@@ -425,7 +425,7 @@ describe("testProject", () => {
     });
 
     test("ProjectWalk", async () => {
-        expect.assertions(6);
+        expect.assertions(5);
 
         const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
@@ -433,9 +433,7 @@ describe("testProject", () => {
         const pluginMgr = project.getPluginManager();
         expect(pluginMgr).toBeTruthy();
 
-        const result = await project.init();
-        // verify that the init indeed loaded the test plugin
-        expect(result).toBeTruthy();
+        await project.init();
 
         const files = await project.walk("./test/testfiles/js");
         expect(files).toBeTruthy();
@@ -444,7 +442,7 @@ describe("testProject", () => {
     });
 
     test("ProjectFindIssues", async () => {
-        expect.assertions(20);
+        expect.assertions(19);
 
         const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
@@ -452,9 +450,7 @@ describe("testProject", () => {
         const pluginMgr = project.getPluginManager();
         expect(pluginMgr).toBeTruthy();
 
-        const result = await project.init();
-        // verify that the init indeed loaded the test plugin
-        expect(result).toBeTruthy();
+        await project.init();
 
         await project.walk("./test/testfiles/js");
         const results = project.findIssues(genericConfig.locales);

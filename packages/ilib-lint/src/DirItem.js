@@ -69,6 +69,14 @@ class DirItem {
     }
 
     /**
+     * Initialize this directory item.
+     * @returns {Promise<void>} a promise to initialize the directory item
+     */
+    async init() {
+        return Promise.resolve();
+    }
+
+    /**
      * Return the file path for this directory item.
      *
      * @returns {String} the file path for this directory item
