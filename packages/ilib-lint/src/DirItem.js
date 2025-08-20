@@ -21,7 +21,7 @@ import { Result } from "ilib-lint-common";
 import PluginManager from "./PluginManager.js";
 
 // type imports
-/** @ignore @typedef {import("./Project.js").Project} Project */
+/** @ignore @typedef {import("./Project.js").default} Project */
 
 /**
  * @class Represent a directory item.
