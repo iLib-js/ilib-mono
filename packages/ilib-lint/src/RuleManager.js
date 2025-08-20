@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import { Rule } from 'ilib-lint-common';
-import log4js from 'log4js';
+import { Rule } from "ilib-lint-common";
+import log4js from "log4js";
 
-import ResourceMatcher from './rules/ResourceMatcher.js';
-import ResourceSourceChecker from './rules/ResourceSourceChecker.js';
-import ResourceTargetChecker from './rules/ResourceTargetChecker.js';
-import SourceRegexpChecker from './rules/SourceRegexpChecker.js';
+import ResourceMatcher from "./rules/ResourceMatcher.js";
+import ResourceSourceChecker from "./rules/ResourceSourceChecker.js";
+import ResourceTargetChecker from "./rules/ResourceTargetChecker.js";
+import SourceRegexpChecker from "./rules/SourceRegexpChecker.js";
 
-import ResourceICUPlurals from './rules/ResourceICUPlurals.js';
-import ResourceQuoteStyle from './rules/ResourceQuoteStyle.js';
-import ResourceUniqueKeys from './rules/ResourceUniqueKeys.js';
+import ResourceICUPlurals from "./rules/ResourceICUPlurals.js";
+import ResourceQuoteStyle from "./rules/ResourceQuoteStyle.js";
+import ResourceUniqueKeys from "./rules/ResourceUniqueKeys.js";
 
 const logger = log4js.getLogger("ilib-lint.RuleManager");
 
@@ -39,7 +39,7 @@ const typeMap = {
     "resource-matcher": ResourceMatcher,
     "resource-source": ResourceSourceChecker,
     "resource-target": ResourceTargetChecker,
-    "source-checker": SourceRegexpChecker
+    "source-checker": SourceRegexpChecker,
 };
 
 /**
@@ -85,19 +85,19 @@ class RuleManager {
         const ruleConfig = this.ruleCache[name];
         if (!name || !ruleConfig) return;
 
-        if (typeof(ruleConfig) === 'object') {
+        if (typeof ruleConfig === "object") {
             const ruleClass = typeMap[ruleConfig.type];
             return new ruleClass({
                 ...ruleConfig,
                 ...options,
                 sourceLocale: this.sourceLocale,
-                getLogger: log4js.getLogger.bind(log4js)
+                getLogger: log4js.getLogger.bind(log4js),
             });
         } else {
             return new ruleConfig({
                 ...options,
                 sourceLocale: this.sourceLocale,
-                getLogger: log4js.getLogger.bind(log4js)
+                getLogger: log4js.getLogger.bind(log4js),
             });
         }
     }
@@ -121,18 +121,22 @@ class RuleManager {
      */
     addRule(rule) {
         if (rule) {
-            if (typeof(rule) === 'function' && this.inheritsFromRule(rule)) {
+            if (typeof rule === "function" && this.inheritsFromRule(rule)) {
                 const p = new rule({
                     sourceLocale: this.sourceLocale,
-                    getLogger: log4js.getLogger.bind(log4js)
+                    getLogger: log4js.getLogger.bind(log4js),
                 });
                 this.ruleCache[p.getName()] = rule;
                 this.descriptions[p.getName()] = p.getDescription();
                 logger.trace(`Added rule ${p.getName()} to the rule manager.`);
-            } else if (typeof(rule) === 'object') {
-                if (typeof(rule.type) !== 'string' || typeof(rule.name) !== 'string' ||
-                    typeof(rule.description) !== 'string' || typeof(rule.note) !== 'string' ||
-                    !typeMap[rule.type]) {
+            } else if (typeof rule === "object") {
+                if (
+                    typeof rule.type !== "string" ||
+                    typeof rule.name !== "string" ||
+                    typeof rule.description !== "string" ||
+                    typeof rule.note !== "string" ||
+                    !typeMap[rule.type]
+                ) {
                     throw "Insufficient or incorrect arguments to register declarative rule";
                 }
                 this.ruleCache[rule.name] = rule;
@@ -191,18 +195,18 @@ class RuleManager {
      * or the Class does not inherit from Rule.
      */
     add(rules) {
-        if (!rules || (typeof(rules) !== 'object' && typeof(rules) !== 'function')) {
+        if (!rules || (typeof rules !== "object" && typeof rules !== "function")) {
             logger.debug("Attempt to add a rule to the rule manager a rule that is not declarative or is not a class");
         }
 
         if (Array.isArray(rules)) {
-            rules.forEach(rule => {
+            rules.forEach((rule) => {
                 this.addRule(rule);
             });
         } else {
             this.addRule(rules);
         }
-    };
+    }
 
     /**
      * Return all the rule classes that this manager knows about.
@@ -232,7 +236,7 @@ class RuleManager {
      * definition and their optional parameters
      */
     addRuleSetDefinition(name, ruleDefs) {
-        if (typeof(ruleDefs) !== 'object') return;
+        if (typeof ruleDefs !== "object") return;
 
         logger.trace(`Added ruleset definition for set ${name}`);
         // this will override any existing one with the same name
@@ -245,7 +249,7 @@ class RuleManager {
      * the rule name, and the values are the rule definitions.
      */
     addRuleSetDefinitions(ruleDefs) {
-        if (typeof(ruleDefs) !== 'object') return;
+        if (typeof ruleDefs !== "object") return;
         for (let name in ruleDefs) {
             this.addRuleSetDefinition(name, ruleDefs[name]);
         }
