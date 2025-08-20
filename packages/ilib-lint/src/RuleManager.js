@@ -43,6 +43,22 @@ const typeMap = {
 };
 
 /**
+ * @typedef {Object} RuleConfig
+ * @property {string} type
+ * @property {string} name
+ * @property {string} description
+ * @property {string} note
+ */
+
+/**
+ * @typedef {Record<String, unknown>} RuleSetDefinition
+ */
+
+/**
+ * @typedef {(new (...args: ConstructorParameters<typeof Rule>) => Rule)} RuleConstructor
+ */
+
+/**
  * @class a class to manage all the possible rules
  */
 class RuleManager {
@@ -61,8 +77,11 @@ class RuleManager {
      * @constructor
      */
     constructor(options) {
+        /** @type {Record<String, RuleConstructor | RuleConfig>} */
         this.ruleCache = {};
+        /** @type {Record<String, RuleSetDefinition>} */
         this.ruleDefs = {};
+        /** @type {Record<String, String>} */
         this.descriptions = {};
         this.sourceLocale = options && options.sourceLocale;
 
@@ -115,18 +134,6 @@ class RuleManager {
         if (proto.name === "Object") return false;
         return this.inheritsFromRule(proto);
     }
-
-    /**
-     * @typedef {Object} RuleConfig
-     * @property {string} type
-     * @property {string} name
-     * @property {string} description
-     * @property {string} note
-     */
-
-    /**
-     * @typedef {(new (...args: ConstructorParameters<typeof Rule>) => Rule)} RuleConstructor
-     */
 
     /**
      * @private
@@ -224,7 +231,7 @@ class RuleManager {
     /**
      * Return all the rule classes that this manager knows about.
      *
-     * @returns {Array.<Rule>} an array of rule classes that this manager
+     * @returns {Array.<RuleConstructor | RuleConfig>} an array of rule classes that this manager
      * knows about
      */
     getRules() {
@@ -235,7 +242,7 @@ class RuleManager {
      * Return an object where the properties are the rule names and the
      * values are the rule descriptions.
      *
-     * @returns {Object} the rule names and descriptions
+     * @returns {Record<String, String>} the rule names and descriptions
      */
     getDescriptions() {
         return this.descriptions;
@@ -245,7 +252,7 @@ class RuleManager {
      * Add a ruleset definition to this rule manager.
      *
      * @param {String} name the name of this ruleset definition
-     * @param {Object} ruleDefs definitions of rules in this
+     * @param {RuleSetDefinition} ruleDefs definitions of rules in this
      * definition and their optional parameters
      */
     addRuleSetDefinition(name, ruleDefs) {
@@ -258,8 +265,8 @@ class RuleManager {
     /**
      * Add an object full of ruleset definitions to this rule manager.
      *
-     * @param {Object} ruleDefs an object where the properties are
-     * the rule name, and the values are the rule definitions.
+     * @param {Record<String, RuleSetDefinition>} ruleDefs an object where the properties are
+     * the rule set name, and the values are the rule set definitions.
      */
     addRuleSetDefinitions(ruleDefs) {
         if (typeof ruleDefs !== "object") return;
@@ -273,7 +280,7 @@ class RuleManager {
      *
      * @param {String} name the name of the ruleset definition
      * to return
-     * @returns {Object} the ruleset definition
+     * @returns {RuleSetDefinition} the ruleset definition
      */
     getRuleSetDefinition(name) {
         return this.ruleDefs[name];

@@ -234,6 +234,7 @@ describe("testFileType", () => {
         expect.assertions(1);
 
         expect(() => {
+            // @ts-expect-error: we are testing the error case
             const ft = new FileType({
                 project,
             });
@@ -244,6 +245,7 @@ describe("testFileType", () => {
         expect.assertions(1);
 
         expect(() => {
+            // @ts-expect-error: we are testing the error case
             const ft = new FileType({
                 name: "test",
             });
@@ -382,7 +384,7 @@ describe("testFileType", () => {
             ...projectWithValidPlugins.config.fileTypes.test,
         });
         expect(ft).toBeTruthy();
-        const parsers = ft.getParserClasses(".xyz");
+        const parsers = ft.getParsers(".xyz");
         expect(parsers).toBeTruthy();
         expect(parsers.length).toBe(1);
         expect(parsers[0].getName()).toBe("parser-xyz");
@@ -398,8 +400,8 @@ describe("testFileType", () => {
         expect(ft).toBeTruthy();
         const transformers = ft.getTransformers();
         expect(transformers).toBeTruthy();
-        expect(transformers.length).toBe(1);
-        expect(transformers[0].getName()).toBe("transformer-xyz");
+        expect(transformers?.length).toBe(1);
+        expect(transformers?.[0]?.getName()).toBe("transformer-xyz");
     });
 
     test("FileType get serializer", () => {
@@ -412,7 +414,7 @@ describe("testFileType", () => {
         expect(ft).toBeTruthy();
         const serializer = ft.getSerializer();
         expect(serializer).toBeTruthy();
-        expect(serializer.getName()).toBe("serializer-xyz");
+        expect(serializer?.getName()).toBe("serializer-xyz");
     });
 
     test("FileTypeGetLocalesFromProject", () => {
