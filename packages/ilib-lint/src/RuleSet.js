@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import log4js from 'log4js';
+import log4js from "log4js";
 
 const logger = log4js.getLogger("ilib-lint.RuleSet");
 
@@ -46,7 +46,7 @@ class RuleSet {
      * @param {Rule} rule the instance to add
      */
     addRule(rule) {
-        if (!rule || typeof(rule) !== 'object' || !rule.getName()) return;
+        if (!rule || typeof rule !== "object" || !rule.getName()) return;
         logger.trace(`Adding rule ${rule.getName()} to the set`);
         this.rules[rule.getName()] = rule;
     }
@@ -60,7 +60,7 @@ class RuleSet {
      * @param {Array.<Rule>} rules a list of rule instances to add
      */
     add(rules) {
-        if (!rules || typeof(rules) !== 'object' || !Array.isArray(rules)) return;
+        if (!rules || typeof rules !== "object" || !Array.isArray(rules)) return;
         rules.forEach(this.addRule.bind(this));
     }
 
@@ -71,7 +71,7 @@ class RuleSet {
      * @param {String} name unique name of the rule to remove
      */
     removeRule(name) {
-        if (typeof(name) !== 'string' || !this.rules[name]) return;
+        if (typeof name !== "string" || !this.rules[name]) return;
         delete this.rules[name];
     }
 
@@ -95,7 +95,7 @@ class RuleSet {
      * @returns {Array.<Rule>} a list of rule instances
      */
     getRules(type) {
-        return Object.values(this.rules).filter(rule => {
+        return Object.values(this.rules).filter((rule) => {
             return !type || rule.getRuleType() === type;
         });
     }
@@ -107,6 +107,6 @@ class RuleSet {
     getSize() {
         return Object.keys(this.rules).length;
     }
-};
+}
 
 export default RuleSet;
