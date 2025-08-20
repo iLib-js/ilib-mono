@@ -76,7 +76,7 @@ class RuleManager {
      * Return a rule instance for the given name.
      *
      * @param {String} name name of the rule to return
-     * @param {Object|undefined} options options for this instance of the
+     * @param {Object} [options] options for this instance of the
      * rule from the config file, if any
      * @returns {Rule|undefined} an instance of the required rule or undefined if
      * the rule cannot be found
@@ -117,7 +117,20 @@ class RuleManager {
     }
 
     /**
+     * @typedef {Object} RuleConfig
+     * @property {string} type
+     * @property {string} name
+     * @property {string} description
+     * @property {string} note
+     */
+
+    /**
+     * @typedef {(new (...args: ConstructorParameters<typeof Rule>) => Rule)} RuleConstructor
+     */
+
+    /**
      * @private
+     * @param {RuleConstructor | RuleConfig} rule the rule to add
      */
     addRule(rule) {
         if (rule) {
@@ -189,7 +202,7 @@ class RuleManager {
      * Both the declarative and programmatic rules define a unique name, which is
      * what is used to instantiate the rule using the RuleFactory function.
      *
-     * @param {Object|Class|Array.<Object|Class>} ruleConfig the configuration for
+     * @param {RuleConstructor | RuleConfig | Array.<RuleConstructor | RuleConfig>} rules the configuration for
      * the new rule or rules to register
      * @throws if the required properties are not given in the declarative config
      * or the Class does not inherit from Rule.
