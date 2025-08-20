@@ -23,10 +23,6 @@ import { Parser } from "ilib-lint-common";
 
 const logger = log4js.getLogger("ilib-lint.ParserManager");
 
-function getSuperClassName(obj) {
-    return Object.getPrototypeOf(Object.getPrototypeOf(obj)).constructor.name;
-}
-
 /**
  * @class Manages a collection of parsers that this instance of ilib-lint
  * knows about.
@@ -144,15 +140,6 @@ class ParserManager {
      */
     getType(name) {
         return this.parserInfo[name].type;
-    }
-
-    /**
-     * Clear the parsers from the factory. This is only intended
-     * for use with the unit tests
-     * @private
-     */
-    clear() {
-        this.parserCache = {};
     }
 }
 
