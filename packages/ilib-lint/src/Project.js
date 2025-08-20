@@ -240,10 +240,7 @@ class Project extends DirItem {
                 logger.warn(`File ${root} does not exist.`);
             }
         } catch (e) {
-            // if the readdirSync did not work, it's maybe a file?
-            if (fs.existsSync(root)) {
-                this.add(new LintableFile(root, {}, this));
-            }
+            logger.error(`Error while walking directory ${root}`, e);
         }
 
         return this.get();
