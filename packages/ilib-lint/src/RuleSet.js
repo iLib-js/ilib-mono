@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 import log4js from "log4js";
+import { Rule } from "ilib-lint-common";
 
 const logger = log4js.getLogger("ilib-lint.RuleSet");
 
@@ -88,7 +89,7 @@ class RuleSet {
 
     /**
      * Return a list of rule instances in this set.
-     * @param {String} type optional parameter that restricts
+     * @param {String} [type] optional parameter that restricts
      * the type of rules returned. If no type is specified,
      * all rules are returned.
      *
