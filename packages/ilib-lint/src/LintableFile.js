@@ -70,7 +70,6 @@ class LintableFile extends DirItem {
      * @param {String} filePath path to the source file
      * @param {Object} options options for constructing this source file
      * @param {FileType} options.filetype file type of this source file
-     * @param {String} options.filePath path to the file
      * @param {String} [options.locale] locale of the file
      * @param {object} [options.settings] additional settings from the ilib-lint config that apply to this file
      * @param {Project} project the project where this file is located
