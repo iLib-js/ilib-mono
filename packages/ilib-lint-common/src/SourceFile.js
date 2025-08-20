@@ -44,7 +44,7 @@ class SourceFile {
      * @param {Object} [options] options to the constructor
      * @param {SourceFile} [options.file] the source file to copy from. Other options
      * will override the fields in this file
-     * @param {String} [options.sourceLocale] the source locale of the files
+     * @param {String} [options.sourceLocale] Deprecated: the source locale of the files
      * being linted
      * @param {Function} [options.getLogger] a callback function provided by
      * the linter to retrieve the log4js logger
@@ -71,9 +71,6 @@ class SourceFile {
         }
         if (options?.sourceLocale) {
             this.sourceLocale = options.sourceLocale;
-        }
-        if (!this.sourceLocale) {
-            this.sourceLocale = "en-US";
         }
         if (options?.type) {
             this.type = options.type;
@@ -111,6 +108,14 @@ class SourceFile {
     }
 
     /**
+     * The locale of this file
+     * @deprecated
+     * @type {string}
+     * @default "en-US"
+     */
+    sourceLocale = "en-US";
+
+    /**
      * A callback function provided by the linter to retrieve the log4js logger
      * @type {Function | undefined}
      * @protected
@@ -143,11 +148,14 @@ class SourceFile {
     /**
      * Return the raw contents of the file as a Buffer of bytes.
      * This has not been converted into a Unicode string yet.
-     * @returns {Buffer|undefined} a buffer containing the bytes of this file
+     * @returns {Buffer} a buffer containing the bytes of this file
      */
     getRaw() {
         if (this.raw === undefined) {
             this.read();
+            if (this.raw === undefined) {
+                throw new Error("Raw is undefined");
+            }
         }
         return this.raw;
     }
@@ -156,7 +164,7 @@ class SourceFile {
      * The content of the file, stored as regular Javascript string
      * encoded in UTF-8.
      *
-     * @type {String}
+     * @type {String|undefined}
      * @protected
      */
     content;
@@ -169,7 +177,11 @@ class SourceFile {
     getContent() {
         if (typeof this.content === "undefined") {
             this.read();
+            if (typeof this.content === "undefined") {
+                throw new Error("Content is undefined");
+            }
         }
+
         return this.content;
     }
 
