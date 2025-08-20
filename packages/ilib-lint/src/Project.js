@@ -163,7 +163,12 @@ class Project extends DirItem {
         let pathName, included, stat, glob;
 
         try {
-            stat = fs.statSync(root, { throwIfNoEntry: false });
+            stat = fs.statSync(
+                root,
+                // @ts-expect-error: `throwIfNoEntry` is only available since 14.17.0
+                // older versions don't throw so it's OK to pass it here
+                { throwIfNoEntry: false }
+            );
             if (stat) {
                 if (stat.isDirectory()) {
                     const currentFolderConfigurationProvider = new FolderConfigurationProvider(root);
