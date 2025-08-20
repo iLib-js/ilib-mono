@@ -655,7 +655,7 @@ class Project extends DirItem {
             maxFractionDigits: 2,
         });
         const score = this.getScore();
-        if (isOwnMethod(this.formatter, "formatOutput", Formatter)) {
+        if (this.formatter && isOwnMethod(this.formatter, "formatOutput", Formatter)) {
             resultAll = this.formatter.formatOutput({
                 name: this.options.opt.name || this.project.name,
                 fileStats: this.fileStats,
@@ -668,7 +668,7 @@ class Project extends DirItem {
         } else {
             let outputArray = [];
             results.forEach((result) => {
-                const str = this.formatter.format(result);
+                const str = this.formatter?.format(result);
                 if (str) {
                     if (result.severity === "error") {
                         if (!this.options.opt.output) {
