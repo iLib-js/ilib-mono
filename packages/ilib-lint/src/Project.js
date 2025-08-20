@@ -22,13 +22,19 @@ import path from "node:path";
 import log4js from "log4js";
 import mm from "micromatch";
 
-import { FileStats, SourceFile, Formatter } from "ilib-lint-common";
+import { FileStats, SourceFile, Formatter, Result } from "ilib-lint-common";
 
 import LintableFile from "./LintableFile.js";
 import DirItem from "./DirItem.js";
 import FileType from "./FileType.js";
 import { FolderConfigurationProvider } from "./config/ConfigurationProvider.js";
 import ResultComparator from "./ResultComparator.js";
+import FixerManager from "./FixerManager.js";
+import ParserManager from "./ParserManager.js";
+import PluginManager from "./PluginManager.js";
+import RuleManager from "./RuleManager.js";
+import SerializerManager from "./SerializerManager.js";
+import TransformerManager from "./TransformerManager.js";
 
 const logger = log4js.getLogger("ilib-lint.root.Project");
 
@@ -61,7 +67,8 @@ const unknownFileTypeDefinition = {
  * class.
  *
  * @private
- * @param {Object} instance the instance to check
+ * @template {abstract new (...args: any[]) => any} Class
+ * @param {InstanceType<Class>} instance the instance to check
  * @param {String} methodName the name of the method to check
  * @param {Class} parentClass the parent class of the instance or one of its ancestors
  * @returns {boolean} true if the method is defined in the class itself
@@ -363,7 +370,7 @@ class Project extends DirItem {
      * @returns {Array.<String>} the includes for this project
      */
     getIncludes() {
-        return this.includes;
+        return this.includes ?? [];
     }
 
     /**
