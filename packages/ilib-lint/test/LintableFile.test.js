@@ -429,4 +429,49 @@ describe("testLintableFile", () => {
 
         expect(lf.getIRs()).not.toEqual(irs);
     });
+
+    test("LintableFile reports dirty if none of the intermediate representations are dirty", () => {
+        expect.assertions(3);
+
+        const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.xliff");
+        const lf = new LintableFile(
+            "test/testfiles/xliff/test.xliff",
+            {
+                settings: {},
+                filetype,
+            },
+            project
+        );
+        expect(lf).toBeTruthy();
+        lf.findIssues(["de-DE"]);
+
+        // none of the IRs should be dirty after parsing
+        expect(lf.getIRs().every((ir) => ir.dirty)).toBe(false);
+
+        // the whole file should not be dirty
+        expect(lf.isDirty()).toBe(false);
+    });
+
+    test("LintableFile reports dirty if some of the intermediate representations are dirty", () => {
+        expect.assertions(2);
+
+        const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.xliff");
+        const lf = new LintableFile(
+            "test/testfiles/xliff/test.xliff",
+            {
+                settings: {},
+                filetype,
+            },
+            project
+        );
+        expect(lf).toBeTruthy();
+        lf.findIssues(["de-DE"]);
+        const ir = lf.getIRs()[0];
+
+        // artificially mark the first IR as dirty
+        ir.dirty = true;
+
+        // the whole file should now be dirty
+        expect(lf.isDirty()).toBe(true);
+    });
 });
