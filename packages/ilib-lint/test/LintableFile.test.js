@@ -430,7 +430,7 @@ describe("testLintableFile", () => {
         expect(lf.getIRs()).not.toEqual(irs);
     });
 
-    test("LintableFile reports dirty if none of the intermediate representations are dirty", () => {
+    test("LintableFile reports not dirty if none of the intermediate representations are dirty", () => {
         expect.assertions(3);
 
         const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.xliff");
