@@ -116,24 +116,24 @@ class LintingStrategy {
                     resultsWithFixes.map((result) => result.fix)
                 );
             } catch (error) {
-                // if the Fixer fails, accumulate current Results and bail out
+                // if the Fixer fails, accumulate current Results and finish
                 logger.error(`Error applying fixes to IR [${ir.getType()}] of file [${filePath}]`, error);
                 accumulatedResults.push(...results);
                 return accumulatedResults;
             }
 
-            // check if any Fixes were applied
+            // if no Fixes were applied, accumulate current Results and finish
             const autofixedResults = resultsWithFixes.filter((result) => result.fix.applied);
             logger.trace(`${autofixedResults.length} results autofixed`);
             const autofixesApplied = autofixedResults.length > 0;
-            if (autofixesApplied) {
-                ir.dirty = true;
-                // accumulate only autofixed Results -
-                // non-autofixable Results will be recreated in the next iteration
-                accumulatedResults.push(...autofixedResults);
+            if (!autofixesApplied) {
+                accumulatedResults.push(...results);
+                return accumulatedResults;
             }
 
-            // move to the next iteration
+            // accumulate autofixed Results and continue
+            ir.dirty = true;
+            accumulatedResults.push(...autofixedResults);
             autofixIteration++;
         }
 
