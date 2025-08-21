@@ -31,12 +31,14 @@ class LintingStrategy {
     /**
      * Maximum number of iterations to apply autofixing to a single IR
      * @type {number}
+     * @readonly
      */
     maxAutofixIterations;
 
     /**
      * Whether autofixing is enabled
      * @type {boolean}
+     * @readonly
      */
     autofixEnabled;
 
@@ -46,7 +48,7 @@ class LintingStrategy {
      * @param {boolean} [params.autofixEnabled] whether autofixing is enabled
      */
     constructor({ maxAutofixIterations, autofixEnabled } = {}) {
-        this.maxAutofixIterations = maxAutofixIterations ?? DEFAULT_MAX_AUTOFIX_ITERATIONS;
+        this.maxAutofixIterations = Math.max(1, maxAutofixIterations ?? DEFAULT_MAX_AUTOFIX_ITERATIONS);
         this.autofixEnabled = autofixEnabled ?? false;
     }
 
