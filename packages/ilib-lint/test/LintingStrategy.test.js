@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { IntermediateRepresentation, Result, Rule } from "ilib-lint-common";
+import { Fix, Fixer, IntermediateRepresentation, Result, Rule } from "ilib-lint-common";
 import LintingStrategy from "../src/LintingStrategy.js";
 
 // ESM support
@@ -27,17 +27,18 @@ const jest = import.meta.jest;
 const testIrType = "test-type";
 const testFilePath = "test/path/name";
 
-const createIR = () => {
+/** Instantiate an IntermediateRepresentation */
+const testIr = (/** @type {unknown} */ content = {}) => {
     return new IntermediateRepresentation({
         type: testIrType,
-        ir: {},
+        ir: content,
         // @ts-expect-error: unused in test
         sourceFile: null,
     });
 };
 
-/** Create an anonymous Rule with the supplied type and match function */
-const createRule = (/** @type {Rule["match"]} */ match) => {
+/** Create an anonymous Rule with the supplied `match` method */
+const testRule = (/** @type {Rule["match"]} */ match) => {
     /** @type {Rule & { match: jest.MockedFunction<Rule["match"]> }} */
     const instance = new (class extends Rule {
         match = jest.fn(match);
@@ -46,14 +47,44 @@ const createRule = (/** @type {Rule["match"]} */ match) => {
     return instance;
 };
 
-const createResult = (/** @type {Rule} */ originRule) => {
+/** Instantiate a Result linking back to the supplied originRule and optionally containing a fix */
+const testResult = (/** @type {Rule} */ originRule, /** @type {Fix|undefined} */ fix = undefined) => {
     return new Result({
         severity: "error",
         description: "test description",
         highlight: "test highlight",
         pathName: testFilePath,
         rule: originRule,
+        fix,
     });
+};
+
+/**
+ * Create an anonymous Fix with the supplied properties injected into it
+ *
+ * @template {Record<string, any>} T
+ * @param {T | undefined} props - properties to copy into the Fix instance
+ */
+const testFix = (props = undefined) => {
+    /** @type {Fix} */
+    const fix = new (class extends Fix {
+        type = testIrType;
+    })();
+    if (!props) {
+        return fix;
+    }
+    // copy in the supplied properties into the anonymous Fix instance
+    return Object.assign(fix, props);
+};
+
+/** Create an anonymous Fixer with the supplied `applyFixes` method */
+const testFixer = (/** @type {Fixer["applyFixes"]} */ applyFixes) => {
+    /** @type {Fixer & { applyFixes: jest.MockedFunction<Fixer["applyFixes"]> }} */
+    const fixer = new (class extends Fixer {
+        type = testIrType;
+        applyFixes = jest.fn(applyFixes);
+    })();
+    return fixer;
 };
 
 describe("LintingStrategy", () => {
@@ -62,11 +93,11 @@ describe("LintingStrategy", () => {
         let ir;
 
         beforeEach(() => {
-            ir = createIR();
+            ir = testIr();
         });
 
         it("should apply rules to an IR", () => {
-            const rule = createRule(() => []);
+            const rule = testRule(() => []);
 
             const strategy = new LintingStrategy();
             strategy.apply({
@@ -79,7 +110,7 @@ describe("LintingStrategy", () => {
         });
 
         it("should gracefully handle rules that return undefined", () => {
-            const rule = createRule(() => undefined);
+            const rule = testRule(() => undefined);
 
             const strategy = new LintingStrategy();
             strategy.apply({
@@ -92,8 +123,8 @@ describe("LintingStrategy", () => {
         });
 
         it("should gracefully handle rules that throw an error", () => {
-            const rule = createRule(() => {
-                throw new Error();
+            const rule = testRule(() => {
+                throw new Error("rule error");
             });
 
             const strategy = new LintingStrategy();
@@ -123,7 +154,7 @@ describe("LintingStrategy", () => {
         it("should pass the locale to the rule", () => {
             const locale = "test-locale";
 
-            const rule = createRule(() => []);
+            const rule = testRule(() => []);
             const strategy = new LintingStrategy();
             strategy.apply({
                 ir,
@@ -138,7 +169,7 @@ describe("LintingStrategy", () => {
         it("should pass the file path to the rule", () => {
             const differentFilePath = "different/test/path/name";
 
-            const rule = createRule(() => []);
+            const rule = testRule(() => []);
             const strategy = new LintingStrategy();
             strategy.apply({
                 ir,
@@ -155,7 +186,7 @@ describe("LintingStrategy", () => {
         let ir;
 
         beforeEach(() => {
-            ir = createIR();
+            ir = testIr();
         });
 
         it("should return empty array if no rules are provided", () => {
@@ -170,8 +201,8 @@ describe("LintingStrategy", () => {
         });
 
         it("should accumulate results from multiple rules", () => {
-            const rule1 = createRule(() => [createResult(rule1)]);
-            const rule2 = createRule(() => [createResult(rule2)]);
+            const rule1 = testRule(() => [testResult(rule1)]);
+            const rule2 = testRule(() => [testResult(rule2)]);
 
             const strategy = new LintingStrategy();
             const results = strategy.apply({
@@ -194,8 +225,8 @@ describe("LintingStrategy", () => {
         });
 
         it("should gracefully handle rules that return an empty array", () => {
-            const rule1 = createRule(() => []);
-            const rule2 = createRule(() => [createResult(rule2)]);
+            const rule1 = testRule(() => []);
+            const rule2 = testRule(() => [testResult(rule2)]);
 
             const strategy = new LintingStrategy();
             const results = strategy.apply({
@@ -215,8 +246,8 @@ describe("LintingStrategy", () => {
         });
 
         it("should gracefully handle rules that return undefined", () => {
-            const rule1 = createRule(() => undefined);
-            const rule2 = createRule(() => [createResult(rule2)]);
+            const rule1 = testRule(() => undefined);
+            const rule2 = testRule(() => [testResult(rule2)]);
 
             const strategy = new LintingStrategy();
             const results = strategy.apply({
@@ -236,11 +267,11 @@ describe("LintingStrategy", () => {
         });
 
         it("should return accumulated results if some rules throw", () => {
-            const rule1 = createRule(() => [createResult(rule1)]);
-            const rule2 = createRule(() => {
-                throw new Error();
+            const rule1 = testRule(() => [testResult(rule1)]);
+            const rule2 = testRule(() => {
+                throw new Error("rule2 error");
             });
-            const rule3 = createRule(() => [createResult(rule3)]);
+            const rule3 = testRule(() => [testResult(rule3)]);
 
             const strategy = new LintingStrategy();
             const results = strategy.apply({
@@ -260,6 +291,207 @@ describe("LintingStrategy", () => {
                     }),
                 ])
             );
+            // TODO: test that the error is logged
+        });
+    });
+
+    describe("autofixing", () => {
+        /** @type {IntermediateRepresentation} */
+        let ir;
+
+        beforeEach(() => {
+            ir = testIr();
+        });
+
+        /**
+         * Test fixer which appends Fix.suffix to the IR
+         *
+         * It expects the Fix to contain a `suffix` property.
+         */
+        const suffixAppendFixer = () =>
+            testFixer((ir, fixes) => {
+                for (const fix of fixes) {
+                    /** @type {string} */
+                    // @ts-expect-error: proper Fixer would perform some validation on this Fix first
+                    const suffix = fix.suffix;
+                    // append to existing content
+                    const currentContent = ir.ir;
+                    ir.ir = currentContent + suffix;
+                    // fixer should mark which Fixes were applied
+                    fix.applied = true;
+                }
+            });
+
+        it("should not autofix if autofixing is disabled in the strategy", () => {
+            const strategy = new LintingStrategy({ autofixEnabled: false });
+            const fixer = testFixer();
+
+            const fix = testFix();
+            const rule = testRule(() => [testResult(rule, fix)]);
+
+            const results = strategy.apply({
+                ir,
+                rules: [rule],
+                filePath: testFilePath,
+                fixer,
+            });
+
+            expect(fixer.applyFixes).not.toHaveBeenCalled();
+            expect(results).toHaveLength(1);
+            expect(fix.applied).toBe(false);
+        });
+
+        it("should not autofix if no Fixer is provided", () => {
+            const strategy = new LintingStrategy({ autofixEnabled: true });
+            const fixer = undefined;
+
+            const fix = testFix();
+            const rule = testRule(() => [testResult(rule, fix)]);
+
+            const results = strategy.apply({
+                ir,
+                rules: [rule],
+                filePath: testFilePath,
+                fixer,
+            });
+
+            expect(results).toHaveLength(1);
+            expect(fix.applied).toBe(false);
+        });
+
+        it("should not autofix if no Fixes are produced", () => {
+            const strategy = new LintingStrategy({ autofixEnabled: true });
+            const fixer = testFixer();
+
+            const fix = undefined;
+            const rule = testRule(() => [testResult(rule, fix)]);
+
+            const results = strategy.apply({
+                ir,
+                rules: [rule],
+                filePath: testFilePath,
+                fixer,
+            });
+
+            expect(fixer.applyFixes).not.toHaveBeenCalled();
+            expect(results).toHaveLength(1);
+            expect(results[0].fix).toBeUndefined();
+        });
+
+        it("should gracefully handle the Fixer failing", () => {
+            const strategy = new LintingStrategy({ autofixEnabled: true });
+            const fixer = testFixer(() => {
+                throw new Error("fixer error");
+            });
+
+            const fix = testFix();
+            const rule = testRule(() => [testResult(rule, fix)]);
+
+            let results;
+            expect(() => {
+                results = strategy.apply({
+                    ir,
+                    rules: [rule],
+                    filePath: testFilePath,
+                    fixer,
+                });
+            }).not.toThrow();
+
+            expect(fixer.applyFixes).toHaveBeenCalled();
+            // should still return the results
+            expect(results).toHaveLength(1);
+            expect(fix.applied).toBe(false);
+            // TODO: test that the error is logged
+        });
+
+        it("should apply the fix to the IR", () => {
+            const suffix = "-fixed";
+            const ir = testIr("value");
+            const strategy = new LintingStrategy({ autofixEnabled: true });
+
+            // once produces a Fix containing a suffix to be appended
+            const rule = testRule();
+            rule.match.mockReturnValueOnce([testResult(rule, testFix({ suffix }))]);
+
+            const fixer = suffixAppendFixer();
+
+            const results = strategy.apply({
+                ir,
+                rules: [rule],
+                filePath: testFilePath,
+                fixer,
+            });
+
+            expect(fixer.applyFixes).toHaveBeenCalledTimes(1);
+            expect(fixer.applyFixes).toHaveBeenCalledWith(ir, expect.any(Array));
+            expect(results).toHaveLength(1);
+            expect(results[0].fix?.applied).toBe(true);
+            expect(ir.getRepresentation()).toEqual("value-fixed");
+        });
+
+        it("should keep autofixing until no more fixes are produced", () => {
+            const strategy = new LintingStrategy({ autofixEnabled: true });
+            const suffix = "-fixed";
+            const ir = testIr("value");
+
+            // twice produces a Fix containing a suffix to be appended
+            const rule = testRule();
+            rule.match.mockReturnValueOnce([testResult(rule, testFix({ suffix }))]);
+            rule.match.mockReturnValueOnce([testResult(rule, testFix({ suffix }))]);
+
+            const fixer = suffixAppendFixer();
+
+            const results = strategy.apply({
+                ir,
+                rules: [rule],
+                filePath: testFilePath,
+                fixer,
+            });
+
+            expect(fixer.applyFixes).toHaveBeenCalledTimes(2);
+            expect(fixer.applyFixes).toHaveBeenCalledWith(
+                ir,
+                expect.arrayContaining([expect.any(Fix), expect.any(Fix)])
+            );
+            expect(results).toHaveLength(2);
+            expect(results[0].fix?.applied).toBe(true);
+            expect(results[1].fix?.applied).toBe(true);
+            expect(ir.getRepresentation()).toEqual("value-fixed-fixed");
+        });
+
+        it("should stop autofixing after the maximum number of iterations is reached", () => {
+            const maxIterations = 3;
+            const strategy = new LintingStrategy({
+                autofixEnabled: true,
+                maxAutofixIterations: maxIterations,
+            });
+            const suffix = "-fixed";
+            const ir = testIr("value");
+
+            // infinitely produces a Fix containing a suffix to be appended
+            const rule = testRule();
+            rule.match.mockReturnValue([testResult(rule, testFix({ suffix }))]);
+
+            const fixer = suffixAppendFixer();
+
+            const results = strategy.apply({
+                ir,
+                rules: [rule],
+                filePath: testFilePath,
+                fixer,
+            });
+
+            expect(fixer.applyFixes).toHaveBeenCalledTimes(maxIterations);
+            expect(fixer.applyFixes).toHaveBeenCalledWith(
+                ir,
+                expect.arrayContaining(Array(maxIterations).fill(expect.any(Fix)))
+            );
+            expect(results).toHaveLength(maxIterations);
+            expect(results[0].fix?.applied).toBe(true);
+            expect(results[1].fix?.applied).toBe(true);
+            expect(results[2].fix?.applied).toBe(true);
+            expect(ir.getRepresentation()).toEqual("value-fixed-fixed-fixed");
+            // TODO: test that a warning about exceeding the maximum number of iterations is logged
         });
     });
 });
