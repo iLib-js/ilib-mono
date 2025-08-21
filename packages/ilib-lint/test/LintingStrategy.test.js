@@ -493,5 +493,33 @@ describe("LintingStrategy", () => {
             expect(ir.getRepresentation()).toEqual("value-fixed-fixed-fixed");
             // TODO: test that a warning about exceeding the maximum number of iterations is logged
         });
+
+        it("should stop autofixing if no Fixes were actually applied", () => {
+            const strategy = new LintingStrategy({
+                autofixEnabled: true,
+            });
+            const suffix = "-fixed";
+            const ir = testIr("value");
+
+            // infinitely produces a Fix containing a suffix to be appended
+            const rule = testRule();
+            rule.match.mockReturnValue([testResult(rule, testFix({ suffix }))]);
+
+            // fixer which does nothing
+            const fixer = testFixer(() => {});
+
+            const results = strategy.apply({
+                ir,
+                rules: [rule],
+                filePath: testFilePath,
+                fixer,
+            });
+
+            expect(fixer.applyFixes).toHaveBeenCalledTimes(1);
+            expect(fixer.applyFixes).toHaveBeenCalledWith(ir, expect.arrayContaining([expect.any(Fix)]));
+            expect(results).toHaveLength(1);
+            expect(results[0].fix?.applied).toBe(false);
+            expect(ir.getRepresentation()).toEqual("value");
+        });
     });
 });
