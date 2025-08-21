@@ -32,12 +32,6 @@ const logger = log4js.getLogger("ilib-lint.root.LintableFile");
  */
 class LintableFile extends DirItem {
     /**
-     * Whether the file has been modified since it was last written or since it was read.
-     * @type {boolean}
-     */
-    dirty = false;
-
-    /**
      * The list of parsers that can parse this file.
      * @type {Parser[]}
      */
@@ -212,10 +206,6 @@ class LintableFile extends DirItem {
 
                             // check if anything had been applied
                             if (fixes.some((fix) => fix.applied)) {
-                                // remember that a fix modified the file and that it needs to be
-                                // written out to disk again after all fixes have been applied
-                                this.dirty = true;
-
                                 // indicate that the content has been modified and the re-applying the rules should occur
                                 changesMade = true;
 
@@ -292,12 +282,11 @@ class LintableFile extends DirItem {
     }
 
     /**
-     * Return whether or not the file has been modified since it was last written
-     * or since it was read.
-     * @returns {boolean} true if the file is dirty, false otherwise
+     * Return whether any of the intermediate representations of this file have been modified.
+     * @returns {boolean}
      */
     isDirty() {
-        return this.dirty;
+        return this.irs.some((ir) => ir.isDirty());
     }
 
     /**
@@ -351,7 +340,6 @@ class LintableFile extends DirItem {
                         const newIR = transformer.transform(this.irs[i], results);
                         if (newIR) {
                             this.irs[i] = newIR;
-                            this.dirty = this.dirty || newIR.isDirty();
                         }
                     }
                 });
