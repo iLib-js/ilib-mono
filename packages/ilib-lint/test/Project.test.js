@@ -625,7 +625,7 @@ describe("testProject", () => {
         expect(files).toBeTruthy();
         files.forEach((file) => {
             // sneakily mark the file as dirty when it really hasn't been modified
-            file.dirty = true;
+            file.irs[0].dirty = true;
         });
 
         project.serialize();
@@ -680,9 +680,9 @@ describe("testProject", () => {
         const files = project.get();
         expect(files).toBeTruthy();
         expect(files.length).toBe(3);
-        files[0].dirty = true;
+        files[0].irs[0].dirty = true;
         // not files[1]
-        files[2].dirty = true;
+        files[2].irs[0].dirty = true;
 
         project.serialize();
 
@@ -748,7 +748,7 @@ describe("testProject", () => {
         files.forEach((file) => {
             // sneakily mark the file as dirty when it really hasn't been modified
             if (file.getFilePath() === testFile) {
-                file.dirty = true;
+                file.irs[0].dirty = true;
                 const irs = file.getIRs();
                 expect(irs.length).toBe(1);
                 const resources = irs[0].getRepresentation();
