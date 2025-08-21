@@ -20,10 +20,11 @@
 import path from "node:path";
 import log4js from "log4js";
 import { getLocaleFromPath } from "ilib-tools-common";
-import { Fix, IntermediateRepresentation, Parser, Result, SourceFile, FileStats, Serializer } from "ilib-lint-common";
+import { IntermediateRepresentation, Parser, Result, SourceFile, FileStats, Serializer } from "ilib-lint-common";
 import DirItem from "./DirItem.js";
 import Project from "./Project.js";
 import FileType from "./FileType.js";
+import LintingStrategy from "./LintingStrategy.js";
 
 const logger = log4js.getLogger("ilib-lint.root.LintableFile");
 
@@ -146,120 +147,32 @@ class LintableFile extends DirItem {
      */
     findIssues(locales) {
         const detectedLocale = this.getLocaleFromPath();
-
         if (detectedLocale && !locales.includes(detectedLocale)) {
             // not one of the locales we need to check
             return [];
         }
 
+        const locale = detectedLocale || this.project?.getSourceLocale();
+
         if (!this.filePath) return [];
-        /**
-         * @type {IntermediateRepresentation[]}
-         */
-        this.irs = [];
 
-        const results = this.parsers.flatMap((parser) => {
-            const /** @type {Result[]} */ fixedResults = [];
-            let /** @type {Result[]} */ currentParseResults = [];
+        this.parse();
 
-            try {
-                let changesMade = false;
-                let irs = parser.parse(this.sourceFile);
+        const projectAutofixEnabled = this.project?.getConfig()?.autofix ?? false;
 
-                do {
-                    // indicate that for current round, we did not modify the current representations yet
-                    changesMade = false;
-                    // clear the results of the current parse in case any results were left over from the previous iteration
-                    // which do not match the current intermediate representations any more, or which repeat the same issues
-                    currentParseResults = [];
-
-                    for (const ir of irs) {
-                        // find the rules that are appropriate for this intermediate representation and then apply them
-                        const rules = this.filetype.getRules().filter((rule) => rule.getRuleType() === ir.getType());
-
-                        rules.forEach((rule) => {
-                            logger.debug(`Checking rule  : ${rule.name}`);
-                        });
-                        logger.debug("");
-
-                        // apply rules
-                        const results = rules
-                            .flatMap(
-                                (rule) =>
-                                    rule.match({
-                                        ir,
-                                        locale: detectedLocale || this.project.getSourceLocale(),
-                                        file: this.filePath,
-                                    }) ?? []
-                            )
-                            .filter((result) => result);
-                        const fixable = results.filter((result) => result?.fix !== undefined);
-
-                        let fixer;
-                        if (
-                            // ensure that autofixing is enabled
-                            true === this.project.getConfig().autofix &&
-                            // and that any fixable results were produced
-                            fixable.length > 0 &&
-                            // and that the fixer for this type of IR is avaliable
-                            (fixer = this.project.getFixerManager().get(ir.getType()))
-                        ) {
-                            // attempt to apply fixes to the current IR
-                            const fixes = /** @type {Fix[]} */ (fixable.map((result) => result.fix));
-                            fixer.applyFixes(ir, fixes);
-
-                            // check if anything had been applied
-                            if (fixes.some((fix) => fix.applied)) {
-                                // indicate that the content has been modified and the re-applying the rules should occur
-                                changesMade = true;
-
-                                // after writing out the fixed content, we may need to reparse to see if any new issues appeared,
-                                // while preserving the results that have been fixed so far;
-                                // fixer should have set the `applied` flag of each applied Fix
-                                // so accumulate the corresponding results
-                                fixedResults.push(...results.filter((result) => result.fix?.applied));
-                            }
-                        }
-
-                        if (!changesMade) {
-                            // otherwise, just accumulate the results of the current parse for each IRs
-                            currentParseResults.push(...results);
-                        }
-                    }
-                    // if a write had occurred for a given parser, redo the rule application
-                } while (changesMade);
-
-                if (irs) {
-                    this.irs = this.irs.concat(irs);
-                }
-            } catch (e) {
-                if (this.parsers.length === 1) {
-                    // if this is the only parser for this file, throw an exception right away so the user
-                    // can see what the specific parse error was from the parser
-                    throw new Error(
-                        `Could not parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`,
-                        // @ts-expect-error: Error cause is only available since Node 16.9, but it's OK to pass it in older versions
-                        {
-                            cause: e,
-                        }
-                    );
-                }
-                logger.trace(`Parser ${parser.getName()} could not parse file ${this.sourceFile.getPath()}`);
-                logger.trace(e);
-            }
-
-            // once all intermediate representations have been processed for the given parser
-            // without any modifications, finally return all of the results accumulated during auto-fixing
-            // and the remaining ones that were produced by the rules which did not involve any fixes
-            return [...fixedResults, ...currentParseResults];
+        return this.irs.flatMap((ir) => {
+            const rules = this.filetype.getRules().filter((rule) => rule.getRuleType() === ir.getType());
+            const fixer = this.project?.getFixerManager().get(ir.getType());
+            return new LintingStrategy({
+                autofixEnabled: projectAutofixEnabled && !this.isDirty(),
+            }).apply({
+                ir,
+                rules,
+                fixer,
+                filePath: this.filePath,
+                locale,
+            });
         });
-        if (this.irs.length === 0) {
-            throw new Error(
-                `All available parsers failed to parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`
-            );
-        }
-
-        return results;
     }
 
     /**
