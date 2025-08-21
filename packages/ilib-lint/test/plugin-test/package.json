@@ -17,9 +17,9 @@
         "test": "echo Success!"
     },
     "dependencies": {
-        "ilib-lint-common": "^3.0.0",
-        "ilib-locale": "^1.2.2",
-        "ilib-tools-common": "^1.9.1",
+        "ilib-lint-common": "workspace:^",
+        "ilib-locale": "workspace:^",
+        "ilib-tools-common": "workspace:^",
         "json5": "^2.2.3"
     }
 }
