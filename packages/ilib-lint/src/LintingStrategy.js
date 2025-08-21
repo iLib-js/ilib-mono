@@ -70,18 +70,10 @@ class LintingStrategy {
      */
     apply({ ir, rules, fixer, filePath, locale }) {
         const accumulatedResults = [];
+
         let autofixIteration = 0;
-        let fixesAppliedInIteration;
-        do {
-            // prevent infinite autofixing loop
-            autofixIteration++;
-            if (autofixIteration > this.maxAutofixIterations) {
-                logger.warn(`Exceeded maximum number of autofix iterations`);
-                break;
-            }
-
-            fixesAppliedInIteration = false;
-
+        while (autofixIteration < this.maxAutofixIterations) {
+            // apply Rules
             logger.trace(`Linting iteration ${autofixIteration}`);
             const results = rules
                 .flatMap((rule) => {
@@ -99,45 +91,53 @@ class LintingStrategy {
                 })
                 .filter((result) => result !== undefined);
 
-            // if autofixing is not enabled or no fixer is provided, bail out
+            // if autofixing is not enabled or no Fixer is provided, finish immediately
             if (!this.autofixEnabled || !fixer) {
-                accumulatedResults.push(...results);
-                break;
+                return results;
             }
 
+            // if no Fixes were produced, accumulate current Results and finish
             /** @type {(Result & { fix: Fix })[]} */
             // @ts-expect-error: filter predicates not working in current TS version, TODO: remove once TS is updated
             const resultsWithFixes = results.filter((result) => !!result.fix);
             logger.trace(`${results.length} results produced, ${resultsWithFixes.length} with fixes`);
-
             const fixesAvailable = resultsWithFixes.length > 0;
             if (!fixesAvailable) {
                 accumulatedResults.push(...results);
-                break;
+                return accumulatedResults;
             }
 
+            // apply fixes
             try {
                 fixer.applyFixes(
                     ir,
                     resultsWithFixes.map((result) => result.fix)
                 );
             } catch (error) {
+                // if the Fixer fails, accumulate current Results and bail out
                 logger.error(`Error applying fixes to IR [${ir.getType()}] of file [${filePath}]`, error);
                 accumulatedResults.push(...results);
-                break;
+                return accumulatedResults;
             }
 
+            // check if any Fixes were applied
             const autofixedResults = resultsWithFixes.filter((result) => result.fix.applied);
             logger.trace(`${autofixedResults.length} results autofixed`);
-
             const autofixesApplied = autofixedResults.length > 0;
             if (autofixesApplied) {
-                fixesAppliedInIteration = true;
                 ir.dirty = true;
+                // accumulate only autofixed Results -
+                // non-autofixable Results will be recreated in the next iteration
                 accumulatedResults.push(...autofixedResults);
             }
-        } while (fixesAppliedInIteration);
 
+            // move to the next iteration
+            autofixIteration++;
+        }
+
+        // method should return when no more autofixes are available
+        // so if we get here it means we've exceeded the maximum number of autofix iterations
+        logger.warn(`Exceeded maximum number of autofix iterations`);
         return accumulatedResults;
     }
 }
