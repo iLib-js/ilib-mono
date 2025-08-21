@@ -110,12 +110,18 @@ class LintableFile extends DirItem {
 
     /**
      * Parse the current source file into a list of Intermediate Representaitons
-     * @returns {Array.<IntermediateRepresentation>} the parsed representations
-     * of this file
      */
     parse() {
-        if (!this.filePath) return [];
-        const irs = this.parsers.flatMap((parser) => {
+        if (!this.filePath) {
+            logger.warn(`No file path found for file, skipping parsing`);
+            return;
+        }
+        if (this.parsers.length === 0) {
+            logger.warn(`No parsers found for file ${this.filePath}, skipping parsing`);
+            return;
+        }
+
+        this.irs = this.parsers.flatMap((parser) => {
             try {
                 return parser.parse(this.sourceFile);
             } catch (e) {
@@ -123,12 +129,10 @@ class LintableFile extends DirItem {
                 logger.trace(e);
             }
         });
-        if (!irs || irs.length === 0) {
-            throw new Error(
-                `All available parsers failed to parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`
-            );
+
+        if (this.irs.length === 0) {
+            logger.error(`All available parsers failed to parse file ${this.sourceFile.getPath()}.`);
         }
-        return irs;
     }
 
     /**

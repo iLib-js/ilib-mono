@@ -199,7 +199,7 @@ describe("testLintableFile", () => {
             project
         );
         expect(lf).toBeTruthy();
-        lf.findIssues("de-DE");
+        lf.parse();
         const ir = lf.getIRs()[0];
         const resources = ir.getRepresentation();
         expect(resources).toBeTruthy();
@@ -220,7 +220,7 @@ describe("testLintableFile", () => {
             project
         );
         expect(lf).toBeTruthy();
-        lf.findIssues("de-DE");
+        lf.parse();
         const ir = lf.getIRs();
         expect(ir).toBeTruthy();
         expect(Array.isArray(ir)).toBeTruthy();
@@ -246,7 +246,7 @@ describe("testLintableFile", () => {
             project
         );
         expect(lf).toBeTruthy();
-        lf.findIssues("de-DE");
+        lf.parse();
         const ir = lf.getIRs();
         expect(ir).toBeTruthy();
         expect(Array.isArray(ir)).toBeTruthy();
@@ -267,7 +267,7 @@ describe("testLintableFile", () => {
             project
         );
         expect(lf).toBeTruthy();
-        lf.findIssues("de-DE");
+        lf.parse();
         const ir = lf.getIRs();
         expect(ir).toBeTruthy();
         expect(Array.isArray(ir)).toBeTruthy();
@@ -292,7 +292,7 @@ describe("testLintableFile", () => {
             project2
         );
         expect(lf).toBeTruthy();
-        lf.findIssues("de-DE");
+        lf.parse();
         const ir = lf.getIRs();
         expect(ir).toBeTruthy();
         expect(Array.isArray(ir)).toBeTruthy();
@@ -316,7 +316,7 @@ describe("testLintableFile", () => {
             project
         );
         expect(lf).toBeTruthy();
-        lf.findIssues("de-DE");
+        lf.parse();
         const ir = lf.getIRs();
         expect(ir).toBeTruthy();
         expect(Array.isArray(ir)).toBeTruthy();
