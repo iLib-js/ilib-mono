@@ -24,6 +24,9 @@ const logger = log4js.getLogger("ilib-lint.LintingStrategy");
 
 const DEFAULT_MAX_AUTOFIX_ITERATIONS = 10;
 
+/**
+ * Encapsulates the logic for linting an {@link IntermediateRepresentation}.
+ */
 class LintingStrategy {
     /**
      * Maximum number of iterations to apply autofixing to a single IR
@@ -48,13 +51,22 @@ class LintingStrategy {
     }
 
     /**
+     * Lint an IR using the given rules and fixer.
+     *
+     * This method will apply provided {@link Rule}s to the IR.
+     * If the Rules produce fixes, the suppplied {@link Fixer} will be used to apply them.
+     * When autofixing occurs, the method will re-apply the Rules -
+     * this process will repeat until no more autofixes are applied
+     * or the maximum number of iterations is reached.
+     * {@link Result}s will be accumulated throughout the iterations.
+     *
      * @param {Object} params
      * @param {IntermediateRepresentation} params.ir the IR to lint
      * @param {Rule[]} params.rules the rules to apply
      * @param {Fixer} [params.fixer] the fixer to use
-     * @param {string} params.filePath the path to the file
-     * @param {string} [params.locale] the locale of the file
-     * @returns {Result[]} the Results of the linting
+     * @param {string} params.filePath the path to the file from which the IR was parsed
+     * @param {string} [params.locale] the locale of the file from which the IR was parsed
+     * @returns {Result[]} accumulated Results of the linting process
      */
     apply({ ir, rules, fixer, filePath, locale }) {
         const accumulatedResults = [];
