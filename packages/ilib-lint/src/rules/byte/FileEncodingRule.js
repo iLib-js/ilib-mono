@@ -18,7 +18,7 @@
  */
 
 import { Rule, Result, IntermediateRepresentation } from "ilib-lint-common";
-import { TextDecoder } from "node:util";
+import { TextDecoder, types } from "node:util";
 
 /**
  * @typedef {Object} FileEncodingRuleOptions
@@ -73,18 +73,29 @@ class FileEncodingRule extends Rule {
      * problem found (ie. the rule does not match).
      */
     match({ ir, file }) {
-        /** @type {Buffer} */
+        if (ir.type !== this.type) {
+            throw new Error(`Unexpected intermediate representation type: [${ir.type}]`);
+        }
+
         const bytes = ir.getRepresentation();
+        if (!(bytes instanceof Buffer)) {
+            throw new Error(`Unexpected intermediate representation content`);
+        }
+
         try {
             this.decoder.decode(bytes);
-        } catch (_) {
-            return new Result({
-                rule: this,
-                severity: "error",
-                description: `File cannot be decoded using the expected encoding: ${this.encoding}`,
-                pathName: file,
-                highlight: "",
-            });
+        } catch (error) {
+            // TextDecoder({ fatal: true }).decode() throws a TypeError if the encoding is invalid
+            if (types.isNativeError(error) && error.name === "TypeError") {
+                return new Result({
+                    rule: this,
+                    severity: "error",
+                    description: `File cannot be decoded using the expected encoding: ${this.encoding}`,
+                    pathName: file,
+                    highlight: "",
+                });
+            }
+            throw error;
         }
 
         return undefined;
