@@ -1,5 +1,70 @@
 # ilib-lint
 
+## 2.17.0
+
+### Minor Changes
+
+- 445db19: - Add a rule that checks for single quotes used as apostrophes in the middle of words
+  - Fix converts them to actual Unicode apostrophes
+  - Don't check for single quotes at the beginning or ending of words because we can't
+    really tell if they are used as apostrophes or as actual quote characters
+- 2a359b6: - Added the ability to specify exceptions to the
+  resource-icu-plural-translated rule. - It does not produce warnings for those exception phrases.
+  Now you can list the exceptions by locale in the parameters
+  to the rule:
+  `      "rulesets": {
+        "myruleset": {
+          "resource-icu-plural-translated": {
+            "exceptions": {
+              "it-IT": ["File", "Files"]
+            }
+          }
+        }
+      }
+     ` - Exceptions are entire phrases, not individual words. The idea
+  of the rule is to catch entire plural categories that the
+  translators missed, and the idea of the exceptions to avoid
+  those few false positives that pop up infrequently.
+- 21b1009: - Fix resource-sentence-ending rule to reduce false positives
+  - If the source ends in non-sentence-ending punctuation or
+    no punctuation at all, then do not flag and remove the
+    non-sentence-ending punctuation from the target, even if
+    it is different
+  - Added support for Bengali sentence-ending punctuation
+    - A regular western period was incorrectly used instead of
+      the Bengali period (danda)
+  - Fix support for French sentence-ending punctuation
+    - In French, you put a non-breaking space between the
+      last text and the sentence-ending punctuation
+    - This change will ensure that the non-breaking space is
+      there. If there is a breaking space, it will be converted to
+      a non-breaking space. If there is no space at all, a
+      non-breaking space will be added. If there is already a
+      non-breaking space, it will not touch it. It will only
+      ensure that the sentence-ending punctuation is correct
+
+### Patch Changes
+
+- e6b2896: - Fix quote handling for Swedish and Italian
+  - Quotes are optional in those languages for many places
+    where were would use quotes in English
+  - The rule now checks for the presence of quotes in the
+    source and target, and if the quotes are not present
+    in the target, no Result is generated. (For other locales
+    a result is generated for this case.) If the quotes are
+    present in the target, they must be the native quotes.
+    They cannot be the ascii ones.
+- 2959c54: - Fixed resource-kebab-case rule so that there are no false
+  positives for simple hyphenated words
+  - now does not complain for simple English words that are
+    hyphenated, such as "co-owner" or "share-only"
+  - new rule is that there has to be at least 2 dashes in
+    the text, and the text can only be letters or numbers
+    in order to be considered kebab case
+- ba699b7: - Fixed a bug where the unique id of resources was not
+  set into the Result object for the
+  resource-sentence-ending rule
+
 ## 2.16.2
 
 ### Patch Changes
