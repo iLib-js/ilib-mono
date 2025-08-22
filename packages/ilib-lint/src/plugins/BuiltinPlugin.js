@@ -52,6 +52,7 @@ import StringFixer from './string/StringFixer.js';
 import ResourceFixer from './resource/ResourceFixer.js';
 import ByteParser from './byte/ByteParser.js';
 import FileEncodingRule from '../rules/byte/FileEncodingRule.js';
+import XliffHeaderEncoding from '../rules/string/XliffHeaderEncoding.js';
 
 // built-in declarative rules
 export const regexRules = [
@@ -430,6 +431,7 @@ export const builtInRulesets = {
 
     xliff: {
         "file-encoding": true,
+        "xliff-header-encoding": true,
     },
 
     gnu: {
@@ -540,6 +542,7 @@ class BuiltinPlugin extends Plugin {
             ResourceGNUPrintfMatch,
             ResourceReturnChar,
             FileEncodingRule,
+            XliffHeaderEncoding,
             ...regexRules
         ];
     }
