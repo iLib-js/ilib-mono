@@ -30,6 +30,11 @@ describe("FileEncodingRule", () => {
             expect(rule.description).toBe("Check that the file encoding is correct");
         });
 
+        test("uses utf-8 as default encoding", () => {
+            const rule = new FileEncodingRule();
+            expect(rule.encoding).toBe("utf-8");
+        });
+
         test.each(["ascii", "utf8", "utf-8", "ucs-2", "latin1"])("accepts encoding option", (encoding) => {
             const rule = new FileEncodingRule({ encoding });
             expect(rule).toBeInstanceOf(FileEncodingRule);
@@ -45,7 +50,7 @@ describe("FileEncodingRule", () => {
         const fakePath = "/test/file/path";
         const fakeFile = /** @type {SourceFile} */ ({});
 
-        test("returns undefined if encoding is correct", () => {
+        test("does not produce a Result if encoding is correct", () => {
             const content = "Hello, world!";
             const bytes = Buffer.from(content, "utf-8");
             const ir = new IntermediateRepresentation({
@@ -58,7 +63,7 @@ describe("FileEncodingRule", () => {
             expect(rule.match({ ir, file: fakePath })).toBeUndefined();
         });
 
-        test("returns a result if encoding is not correct", () => {
+        test("produces an error Result if encoding is not correct", () => {
             // "Witaj, świecie!" encoded in ISO-8859-2
             const base64Content = "V2l0YWosILZ3aWVjaWUh";
             const bytes = Buffer.from(base64Content, "base64");

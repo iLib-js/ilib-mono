@@ -22,7 +22,8 @@ import { TextDecoder } from "node:util";
 
 /**
  * @typedef {Object} FileEncodingRuleOptions
- * @property {string} [encoding] expected encoding of the file
+ * @property {string} [encoding] expected encoding of the file; defaults to "utf-8";
+ *     full list of supported encodings: https://nodejs.org/docs/latest-v14.x/api/util.html#util_whatwg_supported_encodings
  */
 
 /**
