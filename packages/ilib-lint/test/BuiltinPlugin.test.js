@@ -35,7 +35,7 @@ describe("testBuiltinPlugin", () => {
         expect(xp).toBeTruthy();
 
         const parsers = xp.getParsers();
-        expect(parsers.length).toBe(3);
+        expect(parsers.length).toBe(4);
 
         const xliff = new parsers[0]();
         expect(xliff.getExtensions()).toEqual(["xliff", "xlif", "xlf"]);
@@ -49,7 +49,7 @@ describe("testBuiltinPlugin", () => {
 
         const parsers = xp.getParsers();
         expect(parsers).toBeTruthy();
-        expect(parsers.length).toBe(3);
+        expect(parsers.length).toBe(4);
     });
 
     test("XliffParser", () => {

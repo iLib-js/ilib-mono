@@ -20,8 +20,8 @@
 import NotImplementedError from "./NotImplementedError.js";
 import PipelineElement from "./PipelineElement.js";
 
-/* @ignore @typedef {import("IntermediateRepresentation")} IntermediateRepresentation */
-/* @ignore @typedef {import("SourceFile")} SourceFile */
+/** @ignore @typedef {import("./IntermediateRepresentation.js").default} IntermediateRepresentation */
+/** @ignore @typedef {import("./SourceFile.js").default} SourceFile */
 
 /**
  * @class common SPI for parser plugins
@@ -108,6 +108,6 @@ class Parser extends PipelineElement {
     parse(sourceFile) {
         throw new NotImplementedError();
     }
-};
+}
 
 export default Parser;
