@@ -34,9 +34,7 @@ describe("test the XliffParser plugin", () => {
 
     test("Serialize a regular xliff file", () => {
         expect.assertions(3);
-
         const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
-
         const ir = new IntermediateRepresentation({
             type: "resource",
             ir: [
@@ -74,7 +72,47 @@ describe("test the XliffParser plugin", () => {
   </file>
 </xliff>`);
     });
+    test("Serialize a regular xliff 2.0 file", () => {
+        expect.assertions(3);
 
+        const sourceFile = new SourceFile("test/testfiles/xliff/es-ES.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [
+                new ResourceString({
+                    source: "App",
+                    sourceLocale: "en-US",
+                    target: "aplicación",
+                    targetLocale: "es-ES",
+                    key: "App",
+                    datatype: "plaintext",
+                    restype: "string",
+                    project: "webapp",
+                    pathName: "foo/bar/asdf.js"
+                })
+            ],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        const newSourceFile = xs.serialize([ir]);
+        expect(newSourceFile).toBeTruthy();
+        expect(newSourceFile.getPath()).toBe(sourceFile.getPath());
+        expect(newSourceFile.getContent()).toBe(
+`<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.0" srcLang="en-US" trgLang="es-ES" xmlns:l="http://ilib-js.com/loctool">
+  <file original="foo/bar/asdf.js" l:project="webapp">
+    <group id="group_1" name="plaintext">
+      <unit id="1" type="res:string" l:datatype="plaintext">
+        <segment>
+          <source>App</source>
+          <target>aplicación</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>`);
+    });
     test("Serialize a regular xliff file with multiple resources", () => {
         expect.assertions(3);
 

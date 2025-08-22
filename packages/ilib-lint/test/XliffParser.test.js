@@ -136,4 +136,24 @@ describe("test the XliffParser plugin", () => {
         expect(stats?.getModules()).toBe(1);
         expect(stats?.getWords()).toBe(2);
     });
+
+    test("Parse a regular xliff 2.0 file and return the correct file stats", () => {
+        expect.assertions(9);
+
+        const xp = new XliffParser();
+        const sourceFile = new SourceFile("test/testfiles/xliff/es-ES.xliff", {});
+
+        const ir = xp.parse(sourceFile);
+        expect(ir).toBeTruthy();
+        expect(ir.length).toBe(1);
+        expect(ir[0] instanceof IntermediateRepresentation).toBeTruthy();
+
+        const stats = ir[0].getStats();
+        expect(stats).toBeTruthy();
+        expect(stats?.getFiles()).toBe(1);
+        expect(stats?.getLines()).toBe(13);
+        expect(stats?.getBytes()).toBe(3);
+        expect(stats?.getModules()).toBe(1);
+        expect(stats?.getWords()).toBe(1);
+    });
 });
