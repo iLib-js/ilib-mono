@@ -217,11 +217,9 @@ describe("ResourceSnakeCase", () => {
         expect(fix.commands).toHaveLength(1);
 
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
-            position: 0,
-            deleteCount: resource.target.length,
-            insertContent: resource.source
-        });
+        expect(command.stringFix.position).toBe(0);
+        expect(command.stringFix.deleteCount).toBe(resource.target.length);
+        expect(command.stringFix.insertContent).toEqual(resource.source);
     });
 });
 
