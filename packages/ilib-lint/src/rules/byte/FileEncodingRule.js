@@ -18,6 +18,7 @@
  */
 
 import { Rule, Result, IntermediateRepresentation } from "ilib-lint-common";
+import { TextDecoder } from "node:util";
 
 /**
  * @typedef {Object} FileEncodingRuleOptions
@@ -30,16 +31,22 @@ import { Rule, Result, IntermediateRepresentation } from "ilib-lint-common";
 class FileEncodingRule extends Rule {
     /**
      * Expected encoding of the file
-     * @type {BufferEncoding}
-     * @private
+     * @type {string}
      * @readonly
      */
     encoding = "utf-8";
 
     /**
-     * @param {ConstructorParameters<typeof Rule>[0] & FileEncodingRuleOptions} options options to the constructor
+     * @type {TextDecoder}
+     * @private
+     * @readonly
      */
-    constructor(options) {
+    decoder;
+
+    /**
+     * @param {ConstructorParameters<typeof Rule>[0] & FileEncodingRuleOptions} [options] options to the constructor
+     */
+    constructor(options = {}) {
         super(options);
 
         this.type = "byte";
@@ -47,11 +54,10 @@ class FileEncodingRule extends Rule {
         this.description = "Check that the file encoding is correct";
 
         if (options?.encoding) {
-            if (!Buffer.isEncoding(options.encoding)) {
-                throw new Error(`Invalid encoding: ${options.encoding}`);
-            }
             this.encoding = options.encoding;
         }
+
+        this.decoder = new TextDecoder(this.encoding, { fatal: true });
     }
 
     /**
@@ -69,7 +75,7 @@ class FileEncodingRule extends Rule {
         /** @type {Buffer} */
         const bytes = ir.getRepresentation();
         try {
-            bytes.toString(this.encoding);
+            this.decoder.decode(bytes);
         } catch (_) {
             return new Result({
                 rule: this,
