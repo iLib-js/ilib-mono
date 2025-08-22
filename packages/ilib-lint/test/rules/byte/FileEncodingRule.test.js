@@ -19,6 +19,10 @@
 
 import { IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
 import FileEncodingRule from "../../../src/rules/byte/FileEncodingRule.js";
+import { TextDecoder } from "node:util";
+
+// ESM support
+const jest = import.meta.jest;
 
 describe("FileEncodingRule", () => {
     describe("constructor", () => {
@@ -84,6 +88,55 @@ describe("FileEncodingRule", () => {
             expect(result.description).toBe("File cannot be decoded using the expected encoding: utf-8");
             expect(result.pathName).toBe(fakePath);
             expect(result.highlight).toBe("");
+        });
+
+        test("does not produce a Result if the file is empty", () => {
+            const ir = new IntermediateRepresentation({
+                type: "byte",
+                ir: Buffer.from([]),
+                sourceFile: fakeFile,
+            });
+
+            const rule = new FileEncodingRule();
+            const maybeResult = rule.match({ ir, file: fakePath });
+            expect(maybeResult).toBeUndefined();
+        });
+
+        test("throws an error if the intermediate representation type is not 'byte'", () => {
+            const ir = new IntermediateRepresentation({
+                type: "string",
+                ir: "not a Buffer",
+                sourceFile: fakeFile,
+            });
+        });
+
+        test("throws an error if the intermediate representation is not a Buffer", () => {
+            const ir = new IntermediateRepresentation({
+                type: "byte",
+                ir: "not a Buffer",
+                sourceFile: fakeFile,
+            });
+
+            const rule = new FileEncodingRule();
+            expect(() => rule.match({ ir, file: fakePath })).toThrow();
+        });
+
+        test("rethrows an error if the decoding fails for unrelated reasons", () => {
+            const ir = new IntermediateRepresentation({
+                type: "byte",
+                ir: Buffer.from([0x00, 0x01, 0x02]),
+                sourceFile: fakeFile,
+            });
+
+            const decodeSpy = jest.spyOn(TextDecoder.prototype, "decode");
+            decodeSpy.mockImplementationOnce(() => {
+                throw new Error("Unexpected error");
+            });
+
+            const rule = new FileEncodingRule();
+            expect(() => rule.match({ ir, file: fakePath })).toThrow();
+
+            decodeSpy.mockRestore();
         });
     });
 });

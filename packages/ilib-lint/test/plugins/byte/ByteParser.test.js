@@ -73,7 +73,7 @@ describe("ByteParser", () => {
         )("parses a %s encoded file", (encoding) => {
             const file = new SourceFile("/test/file/path");
             const content = Buffer.from("Hello, world!", encoding);
-            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(content);
+            const readFileSyncSpy = jest.spyOn(fs, "readFileSync").mockReturnValueOnce(content);
 
             const parser = new ByteParser();
             const [result] = parser.parse(file);
@@ -82,6 +82,8 @@ describe("ByteParser", () => {
             expect(result.type).toBe("byte");
             expect(result.ir).toBe(content);
             expect(result.sourceFile).toBe(file);
+
+            readFileSyncSpy.mockRestore();
         });
     });
 });
