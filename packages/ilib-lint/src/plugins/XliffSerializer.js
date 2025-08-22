@@ -67,7 +67,8 @@ class XliffSerializer extends Serializer {
     * Extracts the XLIFF version from the provided data.
     *
     * @param {String} data The XML data as a string.
-    * @returns {String} The XLIFF version extracted from the XML data, or the default version "1.2" if the version is not found or an error occurs.
+    * @returns {String} The XLIFF version extracted from the XML data,
+    * or the default version "1.2" if the version is not found or an error occurs.
     */
     _getxliffVersion(data) {
         const defaultVersion = "1.2";
