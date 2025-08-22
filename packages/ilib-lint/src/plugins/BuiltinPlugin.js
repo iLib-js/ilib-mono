@@ -51,7 +51,7 @@ import ResourceReturnChar from '../rules/ResourceReturnChar.js';
 import StringFixer from './string/StringFixer.js';
 import ResourceFixer from './resource/ResourceFixer.js';
 import ByteParser from './byte/ByteParser.js';
-import FileEncodingRule from '../rules/FileEncodingRule.js';
+import FileEncodingRule from '../rules/byte/FileEncodingRule.js';
 
 // built-in declarative rules
 export const regexRules = [
