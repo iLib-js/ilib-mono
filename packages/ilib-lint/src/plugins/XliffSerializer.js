@@ -19,6 +19,7 @@
 
 import { ResourceXliff } from 'ilib-tools-common';
 import { Serializer, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
+import { xml2js } from 'xml-js';
 
 /**
  * @class Serializer for XLIFF files based on the ilib-xliff library.
@@ -47,8 +48,10 @@ class XliffSerializer extends Serializer {
         // should only be one ir in this array
         const ir = irs[0];
         const resources = ir.getRepresentation();
+        const xliffVersion = this._getxliffVersion(ir.sourceFile.getContent());
         const xliff = new ResourceXliff({
-            path: ir.sourceFile.getPath()
+            path: ir.sourceFile.getPath(),
+            version: xliffVersion
         });
         resources.forEach(resource => {
             xliff.addResource(resource);
@@ -58,6 +61,26 @@ class XliffSerializer extends Serializer {
             file: ir.sourceFile,
             content: data
         });
+    }
+
+    /**
+    * Extracts the XLIFF version from the provided data.
+    *
+    * @param {String} data The XML data as a string.
+    * @returns {String} The XLIFF version extracted from the XML data,
+    * or the default version "1.2" if the version is not found or an error occurs.
+    */
+    _getxliffVersion(data) {
+        const defaultVersion = "1.2";
+        if (!data) defaultVersion;
+
+        try {
+            const parseData = xml2js(data);
+            return parseData?.elements?.[0]?.attributes?.version || defaultVersion;
+        } catch (e) {
+            // If an error occurs during XML parsing, return the default version.
+            return defaultVersion;
+        }
     }
 }
 
