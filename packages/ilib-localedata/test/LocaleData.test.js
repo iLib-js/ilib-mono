@@ -449,22 +449,30 @@ describe("LocaleData", () => {
         expect(LocaleData.checkCache("fr-FR", "foo")).toBe(true);
     });
 
-    test("should ensure locale non-existent data uses root", async () => {
+    test("should ensure locale non-existent data uses root when root data is pre-loaded", async () => {
         expect.assertions(2);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("fr-FR");
-        expect(result).toBeTruthy();
+        // Set up MockLoader for this test
+        registerLoader(MockLoader);
+        setPlatform("mock");
 
+        // First, load en-US data which will populate the cache with root data
+        LocaleData.addGlobalRoot("./test/files3");
+        const enUSResult = await LocaleData.ensureLocale("en-US");
+        expect(enUSResult).toBeTruthy();
+
+        // Now try to load fr-FR data - it should succeed by returning the cached root data
+        const frFRResult = await LocaleData.ensureLocale("fr-FR");
+        expect(frFRResult).toBeTruthy();
+
+        // Verify that fr-FR data returns root data
         const locData = new LocaleData({
             path: "./test/files",
             sync: false
         });
 
-        // loads the root data only because fr-FR does
-        // not exist
         let data = locData.loadData({
             sync: true,
             locale: "fr-FR",
@@ -475,58 +483,77 @@ describe("LocaleData", () => {
             "a": "b root",
             "c": "d root"
         });
+
+        // Clean up
+        setPlatform(undefined);
     });
 
-    test("should throw error when ensure locale called with undefined", () => {
+    test("should ensure locale non-existent data returns nothing when no root data is pre-loaded", async () => {
+        expect.assertions(2);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        // Set up MockLoader for this test
+        registerLoader(MockLoader);
+        setPlatform("mock");
+
+        // Try to load fr-FR data with no pre-loaded data
+        LocaleData.addGlobalRoot("./test/files3");
+        const result = await LocaleData.ensureLocale("fr-FR");
+        expect(result).toBeFalsy();
+
+        // Verify that loadData returns nothing
+        const locData = new LocaleData({
+            path: "./test/files",
+            sync: false
+        });
+
+        let data = locData.loadData({
+            sync: true,
+            locale: "fr-FR",
+            basename: "info"
+        });
+
+        expect(data).toBeUndefined();
+
+        // Clean up
+        setPlatform(undefined);
+    });
+
+    test("should throw error when ensure locale called with undefined", async () => {
         expect.assertions(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
         LocaleData.addGlobalRoot("./test/files3");
-        expect(() => {
-            LocaleData.ensureLocale().then(result => {
-                expect.fail();
-            });
-        }).toThrow();
+        await expect(LocaleData.ensureLocale()).rejects.toThrow("Invalid parameter to ensureLocale");
     });
 
-    test("should throw error when ensure locale called with null", () => {
+    test("should throw error when ensure locale called with null", async () => {
         expect.assertions(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
         LocaleData.addGlobalRoot("./test/files3");
-        expect(() => {
-            LocaleData.ensureLocale(null).then(result => {
-                expect.fail();
-            });
-        }).toThrow();
+        await expect(LocaleData.ensureLocale(null)).rejects.toThrow("Invalid parameter to ensureLocale");
     });
 
-    test("should throw error when ensure locale called with boolean", () => {
+    test("should throw error when ensure locale called with boolean", async () => {
         expect.assertions(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
         LocaleData.addGlobalRoot("./test/files3");
-        expect(() => {
-            LocaleData.ensureLocale(true).then(result => {
-                expect.fail();
-            });
-        }).toThrow();
+        await expect(LocaleData.ensureLocale(true)).rejects.toThrow("Invalid parameter to ensureLocale");
     });
 
-    test("should throw error when ensure locale called with number", () => {
+    test("should throw error when ensure locale called with number", async () => {
         expect.assertions(1);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
         LocaleData.addGlobalRoot("./test/files3");
-        expect(() => {
-            LocaleData.ensureLocale(4).then(result => {
-                expect.fail();
-            });
-        }).toThrow();
+        await expect(LocaleData.ensureLocale(4)).rejects.toThrow("Invalid parameter to ensureLocale");
     });
 
     test("should ensure locale json", async () => {

@@ -424,6 +424,39 @@ describe("DataCache", () => {
         expect(!cache.isLoaded(function() { return true; })).toBe(true);
     });
 
+    test("should not store null data over existing data", () => {
+        expect.assertions(4);
+        let cache = DataCache.getDataCache();
+        cache.clearData();
+        
+        cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
+
+        let data = cache.getData("root", "basename", new Locale("en-US"));
+
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
+
+        cache.storeData("root", "basename", new Locale("en-US"), null);
+
+        data = cache.getData("root", "basename", new Locale("en-US"));
+
+        expect(data).toBeTruthy();
+        expect(data).toEqual({ x: "string" });
+    });
+
+    test("should store null data over undefined data", () => {
+        expect.assertions(1);
+        let cache = DataCache.getDataCache();
+        cache.clearData();  
+        
+        cache.storeData("root", "basename", new Locale("en-US"), undefined);
+        cache.storeData("root", "basename", new Locale("en-US"), null);
+
+        const data = cache.getData("root", "basename", new Locale("en-US"));
+
+        expect(data).toBeNull();
+   });
+
     // File-level caching methods for FileCache integration
     describe("File-level caching", () => {
         test("should get undefined for non-existent file data", () => {
