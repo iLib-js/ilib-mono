@@ -20,7 +20,7 @@
 import { Fixer, IntermediateRepresentation } from "ilib-lint-common";
 import ByteParser from "./ByteParser.js";
 import { ByteFix } from "./ByteFix.js";
-import PositionalFixCommand from "../positional/PositionalFixCommand.js";
+import { PositionalFixCommand } from "../positional/PositionalFixCommand.js";
 
 export class ByteFixer extends Fixer {
     /**
@@ -35,6 +35,11 @@ export class ByteFixer extends Fixer {
      * @param {ByteFix[]} fixes
      */
     applyFixes(ir, fixes) {
+        const content = ir.ir;
+        if (!(content instanceof Buffer)) {
+            throw new Error("ByteFixer can only be applied to a Buffer");
+        }
+
         // skip fix if there is any overlap with
         // the fixes that have already been enqueued for processing
         let enqueued = fixes.reduce((queue, fix) => {
@@ -48,17 +53,11 @@ export class ByteFixer extends Fixer {
             fix.applied = true;
         });
 
-        const content = ir.ir;
-        if (!(content instanceof Buffer)) {
-            throw new Error("ByteFixer can only be applied to a Buffer");
-        }
-
-        ir.ir = Buffer.from(
-            PositionalFixCommand.applyCommands(
-                Array.from(content),
-                enqueued.flatMap((fix) => fix.commands)
-            )
+        const commands = enqueued.flatMap((fix) => fix.commands);
+        const modifiedContent = PositionalFixCommand.applyCommands(content, commands, (...chunks) =>
+            Buffer.concat(chunks)
         );
+        ir.ir = modifiedContent;
     }
 }
 

@@ -48,10 +48,15 @@ export class StringFixer extends Fixer {
             fix.applied = true;
         });
 
-        ir.ir = StringFixCommand.applyCommands(
-            ir.ir,
+        /** @type {string} */
+        const content = ir.ir;
+
+        const modifiedContent = StringFixCommand.applyCommands(
+            content,
             enqueued.flatMap((fix) => fix.commands)
         );
+
+        ir.ir = modifiedContent;
     }
 }
 

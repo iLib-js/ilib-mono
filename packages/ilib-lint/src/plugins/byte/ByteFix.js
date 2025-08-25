@@ -29,11 +29,11 @@ export class ByteFix extends Fix {
 
     /**
      * @readonly
-     * @type {PositionalFixCommand<number[]>[]}
+     * @type {PositionalFixCommand<Buffer>[]}
      */
     commands = [];
 
-    constructor(/** @type {PositionalFixCommand<number[]>[]} */ ...commands) {
+    constructor(/** @type {PositionalFixCommand<Buffer>[]} */ ...commands) {
         super();
         if (commands.some((one, idx) => commands.slice(idx + 1).some((other) => one.overlaps(other)))) {
             throw new Error("Cannot create a fix because some of the commands overlap with each other");
@@ -42,7 +42,7 @@ export class ByteFix extends Fix {
     }
 
     /**
-     * Determines if two instances intend to modify the same range of the original string
+     * Determines if two instances intend to modify the same range of the original byte array
      * @param {ByteFix} other
      */
     overlaps(other) {
