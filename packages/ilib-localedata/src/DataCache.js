@@ -28,7 +28,20 @@ import Locale from 'ilib-locale';
  * @private
  */
 function getLocaleSpec(locale) {
-    return !locale || locale.getRegion() === "001" ? "root" : locale.getSpec();
+    if (!locale) return "root";
+    
+    // Handle string-based locale identifiers
+    if (typeof locale === 'string') {
+        return locale === "root" ? "root" : locale;
+    }
+    
+    // Handle Locale objects
+    if (typeof locale === 'object' && locale.getRegion && locale.getSpec) {
+        return locale.getRegion() === "001" ? "root" : locale.getSpec();
+    }
+    
+    // Fallback to string representation
+    return String(locale);
 }
 
 /**
@@ -108,7 +121,7 @@ class DataCache {
      *
      * @param {string} root the root from which the data was loaded
      * @param {string} basename the base name of this type of data
-     * @param {Locale} locale the full or partial locale of this data
+     * @param {Locale|string|null} locale the full or partial locale of this data, or "root" for root data
      * @returns {Object|undefined} the data for this locale or undefined if none was stored
      */
     getData(root, basename, locale) {
@@ -133,17 +146,16 @@ class DataCache {
      *
      * @param {string} root the root from which the data was loaded
      * @param {string} basename the base name of this type of data
-     * @param {Locale} locale the full or partial locale of this data
+     * @param {Locale|string|null} locale the full or partial locale of this data, or "root" for root data
      * @param {Object} data the data to store for this locale
      */
     storeData(root, basename, locale, data) {
-        this.logger.trace(`Storing data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
+        const localeSpec = getLocaleSpec(locale);
+        this.logger.trace(`Storing data for ${basename} locale ${localeSpec} in the cache.`);
         if (!basename) {
             this.logger.info(`Attempt to store data in the cache with no basename.`);
             return;
         }
-
-        let localeSpec = getLocaleSpec(locale);
 
         if ( !this.data[root] ) {
             this.data[root] = {};
@@ -152,8 +164,7 @@ class DataCache {
             this.data[root][localeSpec] = {};
         }
 
-
-        if (this.data[root][localeSpec][basename]) {
+        if (basename in this.data[root][localeSpec]) {
             if (typeof(data) === 'undefined') {
                 // setting to undefined is the same as removing
                 this.count--;
@@ -162,7 +173,10 @@ class DataCache {
             this.count++;
         }
 
-        this.data[root][localeSpec][basename] = data;
+        // don't overwrite existing data with a null value
+        if (data !== null || typeof(this.data[root][localeSpec][basename]) === 'undefined') {
+            this.data[root][localeSpec][basename] = data;
+        }
     }
 
     /**
@@ -173,10 +187,11 @@ class DataCache {
      *
      * @param {string} root the root from which the data was loaded
      * @param {string} basename the base name of this type of data
-     * @param {Locale} locale the full or partial locale of this data
+     * @param {Locale|string|null} locale the full or partial locale of this data, or "root" for root data
      */
     removeData(root, basename, locale) {
-        this.logger.trace(`Removing data for ${basename} locale ${locale ? locale.getSpec() : "root"} in the cache.`);
+        const localeSpec = getLocaleSpec(locale);
+        this.logger.trace(`Removing data for ${basename} locale ${localeSpec} in the cache.`);
         this.storeData(root, basename, locale, undefined);
     }
 

@@ -1,13 +1,13 @@
 module.exports = function getLocaleData() {
     return {
-        "root": {
+        "de-DE": {
             "info": {
-                "a": "b root",
-                "c": "d root"
+                "a": "b de",
+                "c": "d de"
             },
             "foo": {
-                "m": "n root",
-                "o": "p root"
+                "m": "n de",
+                "o": "p de"
             }
         }
     };

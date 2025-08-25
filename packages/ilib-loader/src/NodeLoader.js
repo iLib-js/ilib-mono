@@ -129,6 +129,9 @@ class NodeLoader extends Loader {
         if (sync) {
             try {
                 this.logger.trace(`loadFile: loading file ${pathName} synchronously.`);
+                if (!fs.existsSync(fullPath)) {
+                    return undefined;
+                }
                 if (isJs) {
                     if (pathName.endsWith(".mjs")) {
                         // cannot load ESM modules synchronously

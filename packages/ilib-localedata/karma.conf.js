@@ -36,16 +36,18 @@ module.exports = function (config) {
         frameworks: ["jasmine", "webpack"],
 
         // list of files / patterns to load in the browser
-        // Here I'm including all of the the Jest tests which are all under the __tests__ directory.
-        // You may need to tweak this patter to find your test files/
+        // Only include async tests for browser compatibility (exclude sync tests that require Node.js)
+        // Sync tests are excluded via the exclude pattern below
         files: [
             "./karma-setup.js",
             "./test/**/*.test.js"
         ],
 
         // list of files to exclude
+        // Exclude Node.js specific tests and sync-only tests that don't work in browsers
         exclude: [
-            "./test/LocaleDataNode.test.js"
+            "./test/LocaleDataNode.test.js",
+            "./test/**/*.sync.test.js"
         ],
 
         // preprocess matching files before serving them to the browser

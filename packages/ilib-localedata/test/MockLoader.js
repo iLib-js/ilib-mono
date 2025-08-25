@@ -50,23 +50,150 @@ class MockLoader extends Loader {
     }
 
     supportsSync() {
-        return false;
+        return true;
     }
 
     loadFile(pathName, options) {
+        console.log(`DEBUG: MockLoader.loadFile called with pathName: "${pathName}", options:`, options);
         let returnValue;
 
-        if (pathName.search("fr/localeinfo.json$") !== -1) {
+        if (pathName.endsWith(".js")) {
+            // For test directories that should not exist, return undefined first
+            if (pathName.includes("files4") || pathName.includes("files5")) {
+                returnValue = undefined;
+            } else if (pathName.includes("files7")) {
+                // Handle files7 directory (CommonJS files)
+                if (pathName.includes("en-US.js")) {
+                    returnValue = {
+                        "root": {
+                            "info": { "a": "b", "c": "d" },
+                            "foo": { "m": "n", "o": "p" }
+                        },
+                        "en": {
+                            "info": { "a": "b en", "c": "d en" },
+                            "foo": { "m": "n en", "o": "p en" }
+                        }
+                    };
+                } else if (pathName.includes("en-GB.js")) {
+                    returnValue = {
+                        "root": {
+                            "info": { "a": "b", "c": "d" },
+                            "foo": { "m": "n", "o": "p" }
+                        },
+                        "en": {
+                            "info": { "a": "b en", "c": "d en" },
+                            "foo": { "m": "n en", "o": "p en" }
+                        }
+                    };
+                } else if (pathName.includes("root.js")) {
+                    returnValue = {
+                        "root": {
+                            "info": { "a": "b", "c": "d" },
+                            "foo": { "m": "n", "o": "p" }
+                        }
+                    };
+                } else if (pathName.includes("en.js")) {
+                    returnValue = {
+                        "root": {
+                            "info": { "a": "b", "c": "d" },
+                            "foo": { "m": "n", "o": "p" }
+                        },
+                        "en": {
+                            "info": { "a": "b en", "c": "d en" },
+                            "foo": { "m": "n en", "o": "p en" }
+                        }
+                    };
+                } else {
+                    // For other files7 .js files, try to read them
+                    try {
+                        const fs = require('fs');
+                        const path = require('path');
+                        const fullPath = path.resolve(__dirname, pathName);
+                        returnValue = fs.readFileSync(fullPath, 'utf8');
+                    } catch (error) {
+                        returnValue = undefined;
+                    }
+                }
+            } else if (pathName.includes("en-US.js")) {
+                returnValue = {
+                    getLocaleData: () => ({
+                        "root": {
+                            "info": { "a": "b", "c": "d" },
+                            "foo": { "m": "n", "o": "p" }
+                        },
+                        "en": {
+                            "info": { "a": "b en", "c": "d en" },
+                            "foo": { "m": "n en", "o": "p en" }
+                        },
+                        "en-US": {
+                            "info": { "a": "b en-US", "c": "d en-US" },
+                            "foo": { "m": "n en-US", "o": "p en-US" }
+                        }
+                    })
+                };
+            } else if (pathName.includes("root.js")) {
+                returnValue = {
+                    getLocaleData: () => ({
+                        "root": {
+                            "info": { "a": "b", "c": "d" },
+                            "foo": { "m": "n", "o": "p" }
+                        }
+                    })
+                };
+            } else if (pathName.includes("empty.js")) {
+                returnValue = undefined;
+            } else if (pathName.includes("invalid.js")) {
+                returnValue = "invalid javascript content";
+            } else if (pathName.search("root.js$") !== -1) {
+                console.log(`DEBUG: Matched root.js pattern 1`);
+                returnValue = `{
+                    "root": {
+                        "info": {
+                            "a": "b root",
+                            "c": "d root"
+                        },
+                        "foo": {
+                            "m": "n root",
+                            "o": "p root"
+                        }
+                    }
+                }`;
+            } else if (pathName === "root.js" || pathName.endsWith("/root.js")) {
+                console.log(`DEBUG: Matched root.js pattern 2`);
+                returnValue = `{
+                    "root": {
+                        "info": {
+                            "a": "b root",
+                            "c": "d root"
+                        },
+                        "foo": {
+                            "m": "n root",
+                            "o": "p root"
+                        }
+                    }
+                }`;
+            } else {
+                // For other .js files, read the actual file content
+                const fs = require('fs');
+                const path = require('path');
+                try {
+                    const fullPath = path.resolve(__dirname, pathName);
+                    returnValue = fs.readFileSync(fullPath, 'utf8');
+                } catch (error) {
+                    returnValue = undefined;
+                }
+            }
+        } else if (pathName.search("fr/localeinfo.json$") !== -1) {
             returnValue = `
             {
                 "language.name": "French",
                 "numfmt": {
-                    "groupChar": " ",
+                    "groupChar": " ",
                     "currencyFormats": {
-                        "common": "{n} {s}",
-                        "commonNegative": "({n} {s})"
+                        "common": "{n} {s}",
+                        "commonNegative": "({n} {s})"
                     },
-                    "pctFmt": "{n} %"
+                    "pctFmt": "{n} %"
                 },
                 "paperSizes": {
                     "regular": "A4",
@@ -135,6 +262,33 @@ class MockLoader extends Loader {
                 "timezone": "Etc/UTC",
                 "units": "metric"
             }`;
+        } else if (pathName.endsWith(".json")) {
+            // For test .json files, return JSON strings since parseData expects strings for JSON parsing
+            if (pathName.includes("en.json")) {
+                returnValue = JSON.stringify({
+                    "en": {
+                        "info": { "a": "b en", "c": "d en" },
+                        "foo": { "m": "n en", "o": "p en" }
+                    }
+                });
+            } else if (pathName.includes("multi.json")) {
+                returnValue = JSON.stringify({
+                    "root": {
+                        "info": { "a": "b", "c": "d" },
+                        "foo": { "m": "n", "o": "p" }
+                    },
+                    "en": {
+                        "info": { "a": "b en", "c": "d en" },
+                        "foo": { "m": "n en", "o": "p en" }
+                    }
+                });
+            } else if (pathName.includes("invalid.json")) {
+                returnValue = "invalid json content";
+            } else {
+                // For other .json files, return undefined instead of trying to read actual files
+                // This prevents issues in browser environments where fs/path modules aren't available
+                returnValue = undefined;
+            }
         }
         return (options && options.sync) ? returnValue : Promise.resolve(returnValue);
     }

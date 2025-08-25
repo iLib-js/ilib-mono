@@ -29,6 +29,7 @@ import LocaleMatcher from 'ilib-localematcher';
 
 import DataCache from './DataCache.js';
 import FileCache from './FileCache.js';
+import MergedDataCache from './MergedDataCache.js';
 
 /**
  * @private
@@ -43,34 +44,14 @@ function getIlib() {
 
 /**
  * @private
+ * Get a shared MergedDataCache instance for static methods
  */
-function parseData(data, pathName) {
-    let localeData;
-
-    switch (typeof(data)) {
-        case 'function':
-            localeData = data();
-            break;
-        case 'object':
-            if (typeof(data["default"]) !== 'undefined') {
-                localeData = (typeof(data["default"]) === 'function') ? data["default"]() : data["default"];
-            } else if (typeof(data.getLocaleData) === 'function') {
-                localeData = data.getLocaleData();
-            } else {
-                // if it is a json file we loaded, then this object
-                // IS the data
-                if (!pathName.endsWith(".js") && !pathName.endsWith(".mjs")) {
-                    localeData = data;
-                }
-                // else nothing to return
-            }
-            break;
-        case 'string':
-            localeData = JSON5.parse(data);
-            break;
+function getSharedMergedDataCache() {
+    const loader = LoaderFactory();
+    if (!loader) {
+        return null;
     }
-
-    return localeData;
+    return new MergedDataCache(loader);
 }
 
 /**
@@ -274,22 +255,16 @@ class LocaleData {
     /**
      * Create a locale data instance.
      *
-     * The options can contain the following properties:
-     *
-     * <ul>
-     * <li>path {string} (required) - The path to the local package's locale data on disk
-     * <li>sync {boolean} - whether this locale data instance should operate in synchronous
-     * mode by default. (Default value: false)
-     * <li>useCache {boolean} - whether this locale data instance should use the locale
-     * data cache or it should load the data each time. Specifying `false` for this option
-     * will slow down constructors as it loads the same files again and again but it reduces
-     * the memory footprint which may be more important than speed for small low-memory
-     * devices. Default value: true
-     * </ul>
-     *
      * @param {string} packageName the unique name of the calling package. (eg. "LocaleInfo")
      * @param {Object} options options controlling the operation of this locale data
-     * instance, as detailed above
+     * instance
+     * @param {string} options.path (required) - The path to the local package's locale data on disk
+     * @param {boolean} [options.sync=false] - whether this locale data instance should operate in synchronous
+     * mode by default. The loader for the platform must support synchronous operation for this to work.
+     * @param {Object} [options.mergeOptions] - options for merging locale data
+     * @param {boolean} [options.mergeOptions.mostSpecific] - if true, return the most specific data available
+     * @param {boolean} [options.mergeOptions.returnOne] - if true, return only one result instead of merging
+     * @param {boolean} [options.mergeOptions.crossRoots] - if true, merge data across all roots
      * @constructor
      */
     constructor(options) {
@@ -298,7 +273,8 @@ class LocaleData {
         }
         let {
             sync = false,
-            path
+            path,
+            mergeOptions = {}
         } = options;
 
         this.loader = LoaderFactory();
@@ -306,6 +282,9 @@ class LocaleData {
         this.cache = DataCache.getDataCache();
         this.logger = log4js.getLogger("ilib-localedata");
         this.path = path;
+        
+        // Create MergedDataCache instance with the merge options
+        this.mergedDataCache = new MergedDataCache(this.loader, mergeOptions);
     }
 
     /**
@@ -322,72 +301,95 @@ class LocaleData {
     }
 
     /**
-     * Return the path used to construct this LocaleData
-     * @returns {string} path used to construct this LocaleData
+     * Return the path that this LocaleData instance is using to load data.
+     *
+     * @returns {string} the path
      */
     getPath() {
         return this.path;
     }
 
     /**
-     * @private
-     */
-    getFilesArray(basename, loc, roots) {
-        const fileName = basename + ".json";
-        let returnArray = [];
-        Utils.getSublocales(loc.getSpec()).forEach((spec) => {
-            roots.forEach((root) => {
-                const loc = new Locale(spec);
-                const pathName = Path.join(root, (spec === "root") ? fileName : Path.join(spec.replace(/-/g, "/"), fileName));
-                const entry = {
-                    name: pathName,
-                    locale: loc,
-                    root
-                };
-                const data = this.cache.getData(root, basename, loc);
-                console.log(`DEBUG getFilesArray: Looking for data at root=${root}, basename=${basename}, locale=${loc.getSpec()}`);
-                console.log(`DEBUG getFilesArray: Found data:`, data ? Object.keys(data) : 'undefined');
-                if (data) {
-                    entry.data = data;
-                }
-                returnArray.push(entry);
-            });
-        });
-        return returnArray;
-    }
-
-    /**
-     * Find locale data or load it in. If the data with the given name is preassembled, it will
-     * find the data in ilib.data. If the data is not preassembled but there is a loader function,
-     * this function will call it to load the data. Otherwise, the callback will be called with
-     * undefined as the data. This function will create a cache under the given class object.
-     * If data was successfully loaded, it will be set into the cache so that future access to
-     * the same data for the same locale is much quicker.<p>
-     *
-     * The parameters can specify any of the following properties:<p>
-     *
+     * Find locale data or load it in. <p>
+     * 
+     * The data may be loaded from different sources:
+     * 
      * <ul>
-     * <li><i>basename</i> - String. The base name of the file being loaded. Default: ResBundle
-     * <li><i>locale</i> - Locale. The locale for which data is loaded. Default is the current locale.
-     * <li><i>replace</i> - boolean. When merging json objects, this parameter controls whether to merge arrays
-     * or have arrays replace each other. If true, arrays in child objects replace the arrays in parent
-     * objects. When false, the arrays in child objects are concatenated with the arrays in parent objects.
-     * <li><i>returnOne</i> - return only the first file found. Do not merge many locale data files into one.
-     * Default is "false".
-     * <li><i>sync</i> - boolean. Whether or not to load the data synchronously
-     * <li><i>mostSpecific</i> - boolean. When true, only the most specific locale data is returned. Multiple
-     * locale data files are not merged into one. This is similar to returnOne except this one retuns the last
-     * file, which is specific to the full locale, rather than the first one found which is specific to the
-     * least specific locale (often the root). Default is "false".
-     * <li><i>crossRoots</i> - boolean. When true, merge the locale data across the various roots. When false,
-     * only the first data found for a locale is found, and the data for the same locale in other roots is
-     * ignored. Default is "false" if not specified.
+     * <li>From a preassembled data file. This is a file that contains the locale data for a single locale
+     * and includes all of the data for all of the basenames and all of the sublocales. The idea is that
+     * you only need to load one file for a locale and all of the data will be loaded into the cache in one
+     * operation. The preassembled data files are typically named [locale].js. They are
+     * created using the [ilib-assemble tool](https://github.com/ilib-js/ilib-mono/tree/main/packages/ilib-assemble).
+     * They are intended for use in browser environments where the data is loaded from a bundle rather than
+     * from the file system. They have the advantage of only containing the data for basenames and locales
+     * that your app actually needs instead of the many megabytes of data that are available for all locales
+     * and basenames because the ilib-assemble tool scans your app's code for references to ilib classes
+     * and their methods and calculates from there exactly what data is needed.
+     * <li>From individual json data files. These are the files that contain the locale data for a single
+     * basename and a single sublocale. The files are named [basename].json. They are typically created
+     * by generating the locale data in various ways, such as from the Unicode CLDR data. For example,
+     * translations in your app's resource bundles are typically generated
+     * with the [loctool](https://github.com/ilib-js/ilib-mono/tree/main/packages/loctool) tool. In environments
+     * where the data can be loaded directly from the file system, these files are typically stored in the
+     * "locale" directory in the root of the package. These json files are usually the source of the data for the 
+     * preassembled data files.
      * </ul>
      *
-     * @param {Object} params Parameters configuring how to load the files (see above)
-     * @returns {Promise|Object} the requested data or a promise to load the requested data
-     * @fulfil {Object} the locale data
-     * @reject {Error} if the data could not be loaded
+     * The data is loaded from the [Loader instance](https://github.com/ilib-js/ilib-mono/tree/main/packages/ilib-loader)
+     * in the order of the roots. This method will look through the roots for the requested locale data until it
+     * finds it. If the "crossRoots" flag is given in the parameters, then the data is merged across all the roots.
+     * The last root in the list is typically the "locale" directory within the package
+     * itself and contains the locale data that the package was originally shipped with. In this way, locale data
+     * that comes with a package can be overridden by other data that is perhaps customized by the app or the
+     * operating system or it might be updated from what is in the original package.
+     *
+     * The loadData method relies on a Loader instance to load the data. The Loader instance knows how to load the data
+     * from where it is stored. This may be from the file system if the code is running in an environment
+     * that supports file system access, or it may be from another part of a bundle such as those constructed by
+     * webpack or rollup. The Loader instance also knows how to load the data from the preassembled
+     * data file.
+     * 
+     * Regardless of how the data is loaded, the data for a particular basename is merged into a single object for the requested locale. The
+     * requested locale is first decomposed into a hierarchy of sublocales. Generally, the data starts at the "root" locale
+     * which is a sublocale shared by all locales. On top of the root data, it merges the the data from the less
+     * specific sublocales to the more specific sublocales until the requested locale is reached. For example,
+     * if the requested locale is "en-US", and the locale data loaded has information about the "root", the "en",
+     * the "und-US", and the "en-US", the data will be merged in the following order:
+     * 
+     * <ol>
+     * <li>root
+     * <li>en
+     * <li>und-US
+     * <li>en-US
+     * </ol>
+     * 
+     * See the [Utils.getSublocales](https://github.com/ilib-js/ilib-mono/tree/main/packages/ilib-common#utilsgetsublocales)
+     * method for more details on how the sublocales are calculated.
+     * 
+     * The merging is done according to the flags specified in the parameters. The default is to merge the data
+     * for all the sublocales in order. If the `mostSpecific` flag is true, only the most specific locale data is
+     * returned. If the `returnOne` flag is true, only the first file found is returned. If the `crossRoots` flag
+     * is true, the data is merged across all the roots. Once the data is merged, it is returned as a single object.
+     * It is also cached in the cache for future use so that future calls to this method for the same locale and
+     * basename will not need to load or merge the data again.
+     *
+     * If the "sync" flag is true, the data is loaded synchronously. This is useful in environments where the
+     * loader supports synchronous operation such as nodejs. If the "sync" flag is false, the data is loaded asynchronously.
+     * This is useful in all environments, as asynchronous loading is supported by all loaders. If the loader does
+     * not support synchronous operation, but the "sync" flag is true anyways, then this method will first check the cache
+     * for the data. If the data is already in the cache, for example because the ensureLocale method was previously
+     * called and completed successfully, then the data will be returned immediately. If the data is not in the cache,
+     * then this method will throw an error because synchronous loading is not supported.
+     *
+     * @param {Object} params parameters controlling the data loading
+     * @param {string|Locale} params.locale the locale to load data for
+     * @param {string} params.basename the basename of the data to load
+     * @param {boolean} [params.sync] whether to load the data synchronously or asynchronously
+     * @param {boolean} [params.mostSpecific] if true, only return the most specific locale data
+     * @param {boolean} [params.returnOne] if true, only return the first file found
+     * @param {boolean} [params.crossRoots] if true, merge data across all roots. Default is false.
+     * @returns {Object|Promise.<Object>} the locale data if sync is true, or a promise to the locale data if sync is false
+     * @throws {Error} if the data could not be loaded
      */
     loadData(params) {
         const {
@@ -418,108 +420,34 @@ class LocaleData {
             }
         }
 
-        function mergeData(files) {
-            if (mostSpecific) {
-                return files.reduce((previous, current) => {
-                    return (current && current.data) ? current.data : previous;
-                }, {});
-            }
-
-            if (returnOne) {
-                return files.map(file => file.data).find(file => file);
-            }
-
-            if (crossRoots) {
-                // merge all data across all roots
-                return files.map(file => file.data).reduce((previous, current) => {
-                    return JSUtils.merge(previous, current || {});
-                }, {});
-            }
-
-            // else return the data for each sublocale in the first root in which
-            // it is found in and ignore the data in the other roots
-            let locales = {};
-            let dataToMerge = [];
-            files.forEach((file) => {
-                if (file.data && !locales[file.locale.getSpec()]) {
-                    locales[file.locale.getSpec()] = true;
-                    dataToMerge.push(file.data);
-                }
-            });
-
-            return dataToMerge.reduce((previous, current) => {
-                return JSUtils.merge(previous, current || {});
-            }, {});
-        }
-
-        // for async operation, try loading the assembled locale data file first
-        // so that we don't have to load a bunch of individual files
-        let promise = (!sync && !this.cache.getFileData(`${loc.getSpec()}.js`)) ?
-            LocaleData.ensureLocale(loc, [this.path]) :
-            Promise.resolve(true);
-
-        // then check how to load it
-        // then load it
-
+        // Get the list of roots to search
         const roots = this.getRoots(); // includes this.path at the end of it
-        let files;
+
+        // Determine which MergedDataCache instance to use
+        let mergedDataCache = this.mergedDataCache;
+        const hasRuntimeOptions = mostSpecific !== undefined || returnOne !== undefined || crossRoots !== undefined;
+        
+        if (hasRuntimeOptions) {
+            // Create a new instance with runtime merge options
+            mergedDataCache = new MergedDataCache(this.loader, {
+                mostSpecific,
+                returnOne,
+                crossRoots
+            });
+        }
 
         if (sync) {
-            files = this.getFilesArray(basename, loc, crossRoots ? roots.reverse() : roots);
-            const count = files.filter(file => !file.data).length;
-            if (count) {
-                // Create FileCache for sync loading
-                const fileCache = new FileCache(this.loader);
-
-                files.forEach((file) => {
-                    if (!file.data) {
-                        try {
-                            // Try to load file synchronously
-                            const datum = fileCache.loadFileSync(file.name);
-                            if (datum) {
-                                const parsed = parseData(datum, file.name);
-                                this.cache.storeData(file.root, basename, file.locale, parsed);
-                                file.data = parsed;
-                            }
-                        } catch (error) {
-                            // File failed to load, continue with other files
-                            console.warn(`Failed to load file ${file.name} synchronously: ${error.message}`);
-                        }
-                    }
-                });
+            // Try to load data synchronously
+            const result = mergedDataCache.loadMergedDataSync(loc.getSpec(), roots, basename);
+            if (result === undefined) {
+                throw new Error(`No locale data found for locale ${loc.getSpec()}`);
             }
-
-            return mergeData(files);
+            return result;
         } else {
-            promise = promise.then(() => {
-                files = this.getFilesArray(basename, loc, crossRoots ? roots.reverse() : roots);
-                const count = files.filter(file => !file.data).length;
-                if (count) {
-                    // Create FileCache for async loading
-                    const fileCache = new FileCache(this.loader);
-
-                    const loadPromises = files.map(async (file) => {
-                        if (!file.data) {
-                            try {
-                                const datum = await fileCache.loadFile(file.name);
-                                if (datum) {
-                                    const parsed = parseData(datum, file.name);
-                                    this.cache.storeData(file.root, basename, file.locale, parsed);
-                                    file.data = parsed;
-                                }
-                            } catch (error) {
-                                // File failed to load, continue with other files
-                                console.warn(`Failed to load file ${file.name}: ${error.message}`);
-                            }
-                        }
-                    });
-
-                    return Promise.all(loadPromises);
-                }
-            });
-            return promise.then(() => mergeData(files));
+            // Load data asynchronously
+            return mergedDataCache.loadMergedData(loc.getSpec(), roots, basename);
         }
-    };
+    }
 
     /**
      * Return the list of roots that this LocaleData instance is using to load data.
@@ -602,18 +530,15 @@ class LocaleData {
 
     /**
      * Ensure that the data for a particular locale is loaded into the
-     * cache so that it is available for future synchronous use.<p>
+     * cache asynchronously so that it is available for future synchronous use.<p>
      *
-     * If the method completes successfully, the data is cached in the
+     * If the promise fulfills successfully, the data is cached in the
      * same caching object as if the data was loaded with `loadData` method.
      * Because of this, future callers are not required
      * to call `loadData` asynchronously, even when the loader does not
      * support synchronous loading because the data is already cached.
      * The idea behind `ensureLocale` is to pre-load the data into the
-     * cache. If the loader for the current platform
-     * supports synchronous loading, this method will return a Promise that
-     * resolves to true immediately because `loadData` can return the data
-     * on-demand and it does not need to be pre-loaded.<p>
+     * cache so that it is available for future synchronous use.<p>
      *
      * This method will look for files that are named [locale].js or
      * [locale].json where the locale is given as the full locale
@@ -625,10 +550,10 @@ class LocaleData {
      * The files named for the locale should contain the data of multiple
      * types. The first level of properties in the data should be the sublocales
      * of the locale. Within the sublocale property is the the basename
-     * of the data. The properties within the basename property are the actual
-     * locale data. For javascript files, the file should be a commonjs or
-     * ESM style module that exports a function that takes no parameters.
-     * This function should return the type of data described above.<p>
+     * of the data. Any properties within the basename property are the actual
+     * locale data. For javascript files, the file should be either a commonjs or
+     * ESM style module that exports a single default function that takes no
+     * parameters. This function should return the type of data described above.<p>
      *
      * Example file "de-DE.js":
      *
@@ -653,7 +578,6 @@ class LocaleData {
      *             "phonefmt": {
      *                 "default": {
      *                     "example": "030 12 34 56 78",
-     *                     etc.
      *                 }
      *             },
      *             "numplan": {
@@ -679,7 +603,9 @@ class LocaleData {
      * If the data is loaded successfully, the Promise returned from this method
      * will resolve to `true`.
      * If there was an error loading the files, or if no files were found to
-     * load, the Promise will resolve to `false`.<p>
+     * load, the Promise will resolve to `false`. Both results are stored in
+     * the cache so that future calls to this method for the same locale will
+     * not need to load the data again.<p>
      *
      * @param {Locale|string} locale the Locale object or a string containing
      * the locale spec
@@ -692,9 +618,14 @@ class LocaleData {
      * @reject {Error} if there was an error while loading the data
      */
     static async ensureLocale(locale, otherRoots) {
-        if (typeof(locale) !== 'string' && typeof(locale) !== 'object') {
-            throw "Invalid parameter to ensureLocale";
+        // Validate parameters - throw Error objects for invalid parameters
+        if (locale === undefined || locale === null) {
+            throw new Error("Invalid parameter to ensureLocale");
         }
+        if (typeof(locale) !== 'string' && typeof(locale) !== 'object') {
+            throw new Error("Invalid parameter to ensureLocale");
+        }
+        
         let loc = (typeof(locale) === 'string') ? new Locale(locale) : locale;
         if (locale && locale !== "root" && !loc.getLanguage()) {
             loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
@@ -702,109 +633,38 @@ class LocaleData {
 
         // Validate that we have a valid locale object
         if (!loc || typeof loc.getSpec !== 'function') {
-            throw "Invalid locale parameter to ensureLocale";
+            throw new Error("Invalid locale parameter to ensureLocale");
         }
 
+        // Get the list of roots to search
         const roots = LocaleData.getGlobalRoots().concat(otherRoots || []);
         if (roots.length === 0) {
             roots.push("./locale");
         }
-        const spec = loc.getSpec();
 
-        const loader = LoaderFactory();
-        if (!loader) {
+        // Get shared MergedDataCache instance for this operation
+        const mergedDataCache = getSharedMergedDataCache();
+        if (!mergedDataCache) {
             throw new Error("No loader available for this platform");
         }
-
-        // Create FileCache instance for this operation
-        const fileCache = new FileCache(loader);
-        const cache = DataCache.getDataCache();
-        const subLocales = Utils.getSublocales(locale);
-
-        // Build list of files to load - always create the same unfiltered list
-        let files = [];
-        subLocales.forEach((spec) => {
-            roots.forEach((root) => {
-                // Try .js file first (pre-assembled data)
-                files.push({
-                    path: Path.join(root, `${spec}.js`),
-                    root,
-                    type: 'js'
-                });
-
-                // Also try .json files as fallback
-                files.push({
-                    path: Path.join(root, `${spec}.json`),
-                    root,
-                    type: 'json'
-                });
-            });
-        });
-
-        // Load all files using FileCache to prevent race conditions
-        const loadedLocales = new Set(); // Track which locales we actually loaded data for
-
-        const loadPromises = files.map(async (file) => {
-            try {
-                const data = await fileCache.loadFile(file.path);
-                if (data) {
-                    const localeData = parseData(data, file.path);
-                    if (localeData) {
-                        // Cache the individual file data
-                        console.log(`DEBUG ensureLocale: Caching data from ${file.path} with root ${file.root}`);
-                        console.log(`DEBUG ensureLocale: Data keys:`, Object.keys(localeData));
-                        LocaleData.cacheData(localeData, file.root);
-
-                        // Track which locales we loaded data for
-                        for (const locale in localeData) {
-                            if (locale !== "root") {
-                                loadedLocales.add(locale);
-                                console.log(`DEBUG ensureLocale: Added ${locale} to loadedLocales`);
-                            }
-                        }
-
-                        return true; // Data was loaded and cached
-                    }
-                }
-            } catch (error) {
-                // File failed to load, continue with other files
-                console.warn(`Failed to load file ${file.path}: ${error.message}`);
+        
+        try {
+            // Use MergedDataCache to load the data for the locale
+            // We'll load a common basename like "info" to ensure the locale is cached
+            const result = await mergedDataCache.loadMergedData(loc.getSpec(), roots, "info");
+            
+            // Return true if data was loaded and cached
+            return result !== undefined;
+        } catch (error) {
+            // If MergedDataCache failed to load the data, return false
+            // MergedDataCache should handle the case where only root data is available
+            if (error.message && error.message.includes("No locale data found")) {
+                return false;
             }
-            return false; // No data loaded for this file
-        });
-
-        // Wait for all files to load
-        const results = await Promise.all(loadPromises);
-
-        // After loading files, ensure root data is available under the requested locale names
-        // This is needed for the fallback behavior where a locale uses root data
-        for (const root of roots) {
-            // Check if we have any data for the root locale by checking specific basenames
-            const rootInfo = cache.getData(root, "info", new Locale("root"));
-            const rootFoo = cache.getData(root, "foo", new Locale("root"));
-
-            if (rootInfo || rootFoo) {
-                // Cache the root data under the requested locale names
-                // but only if no locale-specific data exists for those sublocales
-                for (const sublocale of subLocales) {
-                    if (sublocale !== "root") {
-                        // Only cache root data if we didn't load locale-specific data for this sublocale
-                        if (!loadedLocales.has(sublocale)) {
-                            if (rootInfo) {
-                                cache.storeData(root, "info", new Locale(sublocale), rootInfo);
-                            }
-                            if (rootFoo) {
-                                cache.storeData(root, "foo", new Locale(sublocale), rootFoo);
-                            }
-                        }
-                    }
-                }
-                break;
-            }
+            
+            // Re-throw unexpected errors
+            throw error;
         }
-
-        // Return true if any data was loaded and cached
-        return results.some(result => result === true);
     }
 
     /**
@@ -834,7 +694,6 @@ class LocaleData {
      * using a call to `cacheData`.
      * </ul>
      *
-     * @param {string} packageName Name of the package to check for data
      * @param {string} locale full locale of the data to check
      * @param {string|undefined} basename the basename of the data to check. If
      * undefined, it will check if any data for any basename is available for
@@ -845,19 +704,21 @@ class LocaleData {
         if (typeof(locale) !== 'string' || (basename && typeof(basename) !== 'string')) {
             return false;
         }
-        const cache = DataCache.getDataCache();
+
+        // Get the list of roots to search
         const roots = LocaleData.getGlobalRoots();
         if (roots.length === 0) {
             roots.push("./locale");
         }
 
-        // use slice(1) because we don't need to check the root locale
-        return Utils.getSublocales(locale).slice(1).some((sublocale) => {
-            return roots.some((root) => {
-                const value = cache.getData(root, basename, new Locale(sublocale));
-                return typeof(value) !== 'undefined';
-            });
-        });
+        // Get shared MergedDataCache instance for this operation
+        const mergedDataCache = getSharedMergedDataCache();
+        if (!mergedDataCache) {
+            return false;
+        }
+
+        // Check if data exists for the specific basename
+        return mergedDataCache.hasMergedData(locale, roots, basename);
     }
 
     /**
@@ -893,15 +754,15 @@ class LocaleData {
         if (typeof(data) !== 'object') {
             return;
         }
-        const cache = DataCache.getDataCache();
 
-        for (let locale in data) {
-            const localeData = data[locale];
-            for (let basename in localeData) {
-                const any = localeData[basename];
-                cache.storeData(root, basename, new Locale(locale), any);
-            }
+        // Get shared MergedDataCache instance for this operation
+        const mergedDataCache = getSharedMergedDataCache();
+        if (!mergedDataCache) {
+            return;
         }
+
+        // Use MergedDataCache.storeData to store the data
+        mergedDataCache.storeData(data, root);
     }
 
     /**
@@ -909,6 +770,15 @@ class LocaleData {
      * to guarantee that the cache is clear before starting a new test.
      */
     static clearCache() {
+        // Clear MergedDataCache's cache
+        const mergedDataCache = getSharedMergedDataCache();
+        if (mergedDataCache) {
+            mergedDataCache.clearMergedData();
+            // Also clear the parsed data cache since cacheData stores data there
+            mergedDataCache.parsedDataCache.clearAllParsedData();
+        }
+        
+        // Also clear the underlying DataCache for backward compatibility
         DataCache.clearDataCache();
     }
 }

@@ -2,19 +2,22 @@ module.exports = function getLocaleData() {
     return {
         "root": {
             "info": {
-                "a": "b from files5",
-                "n": "m from files5"
+                "a": "b",
+                "c": "d"
             },
             "foo": {
-                "o": "p from files5"
+                "m": "n",
+                "o": "p"
             }
         },
         "en": {
             "info": {
-                "x": "y from files5",
+                "a": "b en",
+                "c": "d en"
             },
             "foo": {
-                "o": "p en from files5"
+                "m": "n en",
+                "o": "p en"
             }
         }
     };

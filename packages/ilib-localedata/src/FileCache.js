@@ -123,7 +123,7 @@ class FileCache {
         }
 
         // Check if the loader supports sync operations
-        if (!this.loader.supportsSync) {
+        if (!this.loader.supportsSync()) {
             this.logger.warn(`Loader does not support sync operations for file ${filePath}`);
             // Store null to indicate we attempted but can't load
             this.dataCache.setFileData(filePath, null);
