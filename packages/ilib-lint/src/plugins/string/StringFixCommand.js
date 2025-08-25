@@ -21,7 +21,7 @@ import PositionalFixCommand from "../positional/PositionalFixCommand.js";
 
 export class StringFixCommand {
     /**
-     * @type {PositionalFixCommand<string[]>}
+     * @type {PositionalFixCommand<string>}
      * @private
      * @readonly
      */
@@ -35,7 +35,7 @@ export class StringFixCommand {
      * @param {string} insertContent string that should be inserted
      */
     constructor(position, deleteCount, insertContent) {
-        this.positionalFixCommand = new PositionalFixCommand(position, deleteCount, Array.from(insertContent));
+        this.positionalFixCommand = new PositionalFixCommand(position, deleteCount, insertContent);
     }
 
     /**
@@ -56,7 +56,7 @@ export class StringFixCommand {
      * content that should be inserted at {@link position}
      */
     get insertContent() {
-        return this.positionalFixCommand.insertContent?.join("") ?? "";
+        return this.positionalFixCommand.insertContent;
     }
 
     /**
@@ -128,9 +128,10 @@ export class StringFixCommand {
      */
     static applyCommands(content, commands) {
         return PositionalFixCommand.applyCommands(
-            Array.from(content),
-            commands.map((command) => command.positionalFixCommand)
-        ).join("");
+            content,
+            commands.map((command) => command.positionalFixCommand),
+            (...chunks) => chunks.join("")
+        );
     }
 }
 

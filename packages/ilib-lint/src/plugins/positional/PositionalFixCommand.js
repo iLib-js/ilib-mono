@@ -17,10 +17,30 @@
  * limitations under the License.
  */
 
-/** @typedef {Array<any> | Buffer | string} PositionalContent */
+/**
+ * Zip multiple arrays into a single array of elements
+ *
+ * @example
+ * zip([1, 2, 3], ['a', 'b', 'c'], ['!', '@', '#']) // [1, 'a', '!', 2, 'b', '@', 3, 'c', '#']
+ *
+ * @template T
+ * @param  {...T[]} arrays
+ */
+const zip = (...arrays) => {
+    const maxLength = Math.max(...arrays.map((array) => array.length));
+    return Array.from({ length: maxLength }, (_, i) => arrays.map((array) => array[i])).flat();
+};
 
 /**
- * @template {PositionalContent} T
+ * @template T
+ * @typedef {{
+ *   slice(start?: number, end?: number): T,
+ *   length: number,
+ * }} Chunkable
+ */
+
+/**
+ * @template {Chunkable<T>} T
  */
 export class PositionalFixCommand {
     /**
@@ -28,7 +48,7 @@ export class PositionalFixCommand {
      *
      * @param {number} position position in content after which the operation should be performed
      * @param {number} deleteCount count of elements that should be deleted
-     * @param {T | undefined} insertContent content that should be inserted
+     * @param {T} [insertContent] content that should be inserted
      */
     constructor(position, deleteCount, insertContent) {
         if (!Number.isInteger(position) || position < 0) {
@@ -123,12 +143,13 @@ export class PositionalFixCommand {
      * @throws when some of the provided commands overlap (as defined in {@link PositionalFixCommand.overlaps})
      * @throws when some of the provided commands intend to modify range outside of input content bounds
      *
-     * @template {PositionalContent} T
+     * @template {Chunkable<T>} T
      * @param {T} content content to apply commands to
      * @param {PositionalFixCommand<T>[]} commands commands that should be applied to the content
-     * @return {PositionalContent[number][]} modified content
+     * @param {(...chunks: T[]) => T} concatFn function to concatenate chunks of the content
+     * @return {T} modified content
      */
-    static applyCommands(content, commands) {
+    static applyCommands(content, commands, concatFn) {
         if (commands.some((one, idx) => commands.slice(idx + 1).some((other) => one.overlaps(other)))) {
             throw new Error("Cannot apply the commands because some of them overlap with each other");
         }
@@ -156,17 +177,15 @@ export class PositionalFixCommand {
                     chunks[chunkIdx].push(element);
                     return chunks;
                 }, /** @type {number[][]} */ ([]));
+
         // use complement ranges to extract chunks for preservation
         const preservedChunks = complementRanges.map((range) => content.slice(...range));
 
         // create modified string by interlacing the preserved chunks of original with the replacement contents from each command
-        return preservedChunks
-            .flatMap((_, idx) => [
-                preservedChunks[idx],
-                // there is always 1 more of chunks preserved than of commands to apply
-                sortedCommands[idx]?.insertContent ?? [],
-            ])
-            .flat();
+        const incomingChunks = sortedCommands.map((command) => command.insertContent ?? undefined);
+        const modifiedContent = zip(preservedChunks, incomingChunks).filter((chunk) => chunk !== undefined);
+
+        return concatFn(...modifiedContent);
     }
 }
 
