@@ -41,14 +41,23 @@ class StringSerializer extends Serializer {
      *
      * @override
      * @param {IntermediateRepresentation[]} irs the intermediate representations to convert
-     * @returns {SourceFile} the source file with the contents of the intermediate
-     * representation
+     * @returns {SourceFile|undefined} the source file with the contents of the intermediate
+     * representation, or undefined if the source file could not be created
      */
     serialize(irs) {
         // should only have 1 intermediate representation in the array because the StringParser
         // only creates one
+        if (!irs || irs.length === 0) {
+            return undefined;
+        }
         const ir = irs[0];
+        if (ir.getType() !== this.type) {
+            return undefined;
+        }
         const data = ir.getRepresentation();
+        if (!data) {
+            return undefined;
+        }
         return new SourceFile(ir.sourceFile.getPath(), {
             file: ir.sourceFile,
             content: data

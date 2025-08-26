@@ -39,13 +39,22 @@ class LineSerializer extends Serializer {
      *
      * @override
      * @param {IntermediateRepresentation[]} irs the intermediate representations to convert
-     * @returns {SourceFile} the source file with the contents of the intermediate
-     * representation
+     * @returns {SourceFile|undefined} the source file with the contents of the intermediate
+     * representation, or undefined if the source file could not be created
      */
     serialize(irs) {
         // should only be one ir in this array
+        if (!irs || irs.length === 0) {
+            return undefined;
+        }
         const ir = irs[0];
+        if (ir.getType() !== this.type) {
+            return undefined;
+        }
         const lines = ir.getRepresentation();
+        if (!lines || lines.length === 0) {
+            return undefined;
+        }
         const data = lines.join("\n");
         return new SourceFile(ir.sourceFile.getPath(), {
             file: ir.sourceFile,
