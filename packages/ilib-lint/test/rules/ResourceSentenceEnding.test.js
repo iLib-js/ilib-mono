@@ -1447,14 +1447,53 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Missing sentence ending punctuation for ja-JP locale. It should be "。" (U+3002)');
         expect(actual?.id).toBe(resource.getKey());
-        expect(actual?.highlight).toBe("こんにちは世界<e0></e0>");
+        expect(actual?.highlight).toBe("こんにちは世界<e0/>");
         expect(actual?.fix).toBeTruthy();
     });
 
+    // French spacing tests
+    test("French wrong spacing character before sentence-ending punctuation within quotes", () => {
+        expect.assertions(12);
 
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
 
-    // Test for curly quotes with different punctuation
-    test("Curly quotes with different punctuation", () => {
+        const resource = new ResourceString({
+            key: "curly.quotes.different.punctuation",
+            sourceLocale: "en-US",
+            source: "She said, \"Hello world!\"",
+            targetLocale: "fr-FR",
+            target: "Elle a dit : « Bonjour le monde ! »",
+            pathName: "a/b/c.xliff"
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("test/testfiles/xliff/test.xliff", {})
+        });
+
+        const actual = rule.match({
+            ir,
+            file: resource.getPath()
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual.severity).toBe("warning");
+        expect(actual.id).toBe(resource.getKey());
+        expect(actual.description).toContain("Found regular space character (U+0020) before sentence-ending punctuation. A non-breaking space (U+00A0) is required before sentence-ending punctuation for the fr-FR locale");
+        expect(actual.highlight).toBe("Elle a dit : « Bonjour le monde<e0> (U+0020)</e0>! »");
+        expect(actual.source).toBe("She said, \"Hello world!\"");
+        expect(actual.pathName).toBe("a/b/c.xliff");
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(31);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(1);
+        expect(fix?.commands[0].stringFix.insertContent).toBe("\u00A0"); // insert non-breaking space
+    });
+
+    test("French wrong spacing character before wrong sentence-ending punctuation within quotes", () => {
         expect.assertions(8);
 
         const rule = new ResourceSentenceEnding();
@@ -1483,15 +1522,62 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual).toBeTruthy();
         expect(actual.severity).toBe("warning");
         expect(actual.id).toBe(resource.getKey());
-        expect(actual.description).toContain('Found regular space character (U+0020) before sentence-ending punctuation and incorrect punctuation type');
-        expect(actual.highlight).toBe("Elle a dit : « Bonjour le monde <e0> (U+0020)</e0>! »");
+        expect(actual.description).toContain('Sentence ending punctuation should be \".\" (U+002E) for fr-FR locale, not \" !\" (U+0020 U+0021)');
+        expect(actual.highlight).toBe("Elle a dit : « Bonjour le monde<e0> !(U+0020 U+0021)</e0> »");
         expect(actual.source).toBe("She said, \"Hello world.\"");
         expect(actual.pathName).toBe("a/b/c.xliff");
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(31);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(2);
+        expect(fix?.commands[0].stringFix.insertContent).toBe("."); // insert period
+    });
+
+    test("French wrong spacing character before wrong sentence-ending question mark punctuation within quotes", () => {
+        expect.assertions(8);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "curly.quotes.different.punctuation",
+            sourceLocale: "en-US",
+            source: "She said, \"Hello world?\"",
+            targetLocale: "fr-FR",
+            target: "Elle a dit : « Bonjour le monde ! »",
+            pathName: "a/b/c.xliff"
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("test/testfiles/xliff/test.xliff", {})
+        });
+
+        const actual = rule.match({
+            ir,
+            file: resource.getPath()
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual.severity).toBe("warning");
+        expect(actual.id).toBe(resource.getKey());
+        expect(actual.description).toContain('Found regular space character (U+0020) before sentence-ending punctuation and incorrect punctuation type');
+        expect(actual.highlight).toBe("Elle a dit : « Bonjour le monde<e0> !(U+0020 U+0021)</e0> »");
+        expect(actual.source).toBe("She said, \"Hello world.\"");
+        expect(actual.pathName).toBe("a/b/c.xliff");
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(31);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(2);
+        expect(fix?.commands[0].stringFix.insertContent).toBe("\u00A0?"); // insert non-breaking space and question mark
     });
 
     // French non-breaking space tests
-    test("French missing non-breaking space before period", () => {
-        expect.assertions(6);
+    test("French no non-breaking space before period", () => {
+        expect.assertions(2);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1512,11 +1598,7 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
 
-        expect(actual).toBeTruthy();
-        expect(actual?.description).toContain('Non-breaking space (U+00A0) missing before sentence-ending punctuation for fr-FR locale');
-        expect(actual?.id).toBe(resource.getKey());
-        expect(actual?.highlight).toBe("Bonjour le monde<e0/>.");
-        expect(actual?.fix).toBeTruthy();
+        expect(actual).toBeFalsy();
     });
 
     test("French missing non-breaking space before question mark", () => {
@@ -1660,8 +1742,8 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual?.fix).toBeTruthy();
     });
 
-    test("French missing non-breaking space before ellipsis", () => {
-        expect.assertions(6);
+    test("French no non-breaking space before ellipsis", () => {
+        expect.assertions(2);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1682,11 +1764,40 @@ describe("ResourceSentenceEnding rule", function() {
             file: "a/b/c.xliff"
         });
 
+        expect(actual).toBeFalsy();
+    });
+
+    test("French no non-breaking space before incorrect elipsis", () => {
+        expect.assertions(8);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "french.missing.nbsp.ellipsis",
+            sourceLocale: "en-US",
+            source: "Loading...",
+            targetLocale: "fr-FR",
+            target: "Chargement...",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
         expect(actual).toBeTruthy();
-        expect(actual?.description).toContain('Non-breaking space (U+00A0) missing before sentence-ending punctuation for fr-FR locale');
-        expect(actual?.id).toBe(resource.getKey());
-        expect(actual?.highlight).toBe("Chargement<e0/>…");
+        expect(actual?.highlight).toBe("Chargement<e0>... (U+002E U+002E U+002E)</e0>");
         expect(actual?.fix).toBeTruthy();
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(10);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(3);
+        expect(fix?.commands[0].stringFix.insertContent).toBe("…");
     });
 
     // French wrong punctuation type tests
@@ -1713,7 +1824,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         expect(actual).toBeTruthy();
-        expect(actual?.highlight).toBe("Bonjour le monde <e0> (U+0020)</e0>!");
+        expect(actual?.highlight).toBe("Bonjour le monde<e0> !(U+0020 U+0021)</e0>");
         expect(actual?.fix).toBeTruthy();
 
         // Check that the fix replaces both the space and the exclamation point
@@ -1732,7 +1843,7 @@ describe("ResourceSentenceEnding rule", function() {
     });
 
     test("French wrong punctuation type with no space before exclamation", () => {
-        expect.assertions(11);
+        expect.assertions(8);
 
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -1754,22 +1865,17 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         expect(actual).toBeTruthy();
-        expect(actual?.highlight).toBe("Bonjour le monde<e0> (U+0020)</e0>!");
+        expect(actual?.highlight).toBe("Bonjour le monde<e0>! (U+0021)</e0>");
         expect(actual?.fix).toBeTruthy();
 
         // Check that the fix adds the non-breaking space and replaces the exclamation point
         const fix = actual?.fix;
-        expect(fix?.commands).toHaveLength(2);
+        expect(fix?.commands).toHaveLength(1);
 
         // First command should insert non-breaking space before the exclamation
         expect(fix?.commands[0].stringFix.position).toBe(16); // position before exclamation
-        expect(fix?.commands[0].stringFix.deleteCount).toBe(0); // delete 0 characters (insert only)
-        expect(fix?.commands[0].stringFix.insertContent).toBe("\u00A0"); // insert non-breaking space
-
-        // Second command should replace the exclamation point
-        expect(fix?.commands[1].stringFix.position).toBe(17); // position of the exclamation
-        expect(fix?.commands[1].stringFix.deleteCount).toBe(1); // delete 1 character (exclamation)
-        expect(fix?.commands[1].stringFix.insertContent).toBe("."); // insert period
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(1); // delete 0 characters (insert only)
+        expect(fix?.commands[0].stringFix.insertContent).toBe("."); // insert non-breaking space
     });
 
     test("French wrong punctuation type with non-breaking space before exclamation", () => {
@@ -1795,7 +1901,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         expect(actual).toBeTruthy();
-        expect(actual?.highlight).toBe("Bonjour le monde\u00A0<e0>! (U+0020)</e0>");
+        expect(actual?.highlight).toBe("Bonjour le monde\u00A0<e0>! (U+0021)</e0>");
         expect(actual?.fix).toBeTruthy();
 
         // Check that the fix only replaces the exclamation point
@@ -1807,6 +1913,218 @@ describe("ResourceSentenceEnding rule", function() {
         expect(fix?.commands[0].stringFix.deleteCount).toBe(1); // delete 1 character (exclamation)
         expect(fix?.commands[0].stringFix.insertContent).toBe("."); // insert period
     });
+
+    test("French wrong punctuation type ellipsis", () => {
+        expect.assertions(8);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "french.wrong.punctuation.nbsp",
+            sourceLocale: "en-US",
+            source: "Hello world.",
+            targetLocale: "fr-FR",
+            target: "Bonjour le monde...",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.highlight).toBe("Bonjour le monde<e0>... (U+002E U+002E U+002E)</e0>");
+        expect(actual?.fix).toBeTruthy();
+
+        // Check that the fix only replaces the exclamation point
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+
+        // Command should replace the exclamation point
+        expect(fix?.commands[0].stringFix.position).toBe(16); // position of the exclamation
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(3); // delete 1 character (exclamation)
+        expect(fix?.commands[0].stringFix.insertContent).toBe("."); // insert period
+    });
+
+    test("French missing punctuation type period", () => {
+        expect.assertions(10);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "french.missing.punctuation.period",
+            sourceLocale: "en-US",
+            source: "Hello world.",
+            targetLocale: "fr-FR",
+            target: "Bonjour le monde",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain('Missing sentence ending punctuation for fr-FR locale. It should be \".\" (U+002E)');
+        expect(actual?.id).toBe(resource.getKey());
+        expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
+        expect(actual?.fix).toBeTruthy();
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(16);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(0);
+        expect(fix?.commands[0].stringFix.insertContent).toBe(".");
+    });
+
+    test("French missing punctuation type exclamation mark", () => {
+        expect.assertions(10);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "french.missing.punctuation.period",
+            sourceLocale: "en-US",
+            source: "Hello world!",
+            targetLocale: "fr-FR",
+            target: "Bonjour le monde",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain('Missing sentence ending punctuation for fr-FR locale. It should be "\u00A0!" (U+00A0 U+0021)');
+        expect(actual?.id).toBe(resource.getKey());
+        expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
+        expect(actual?.fix).toBeTruthy();
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(16);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(0);
+        expect(fix?.commands[0].stringFix.insertContent).toBe("\u00A0!");
+    });
+
+    test("French missing punctuation type question mark", () => {
+        expect.assertions(10);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "french.missing.punctuation.period",
+            sourceLocale: "en-US",
+            source: "Hello world?",
+            targetLocale: "fr-FR",
+            target: "Bonjour le monde",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain('Missing sentence ending punctuation for fr-FR locale. It should be "\u00A0?" (U+00A0 U+003F)');
+        expect(actual?.id).toBe(resource.getKey());
+        expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
+        expect(actual?.fix).toBeTruthy();
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(16);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(0);
+        expect(fix?.commands[0].stringFix.insertContent).toBe("\u00A0?");
+    });
+
+    test("French missing punctuation type colon", () => {
+        expect.assertions(10);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "french.missing.punctuation.period",
+            sourceLocale: "en-US",
+            source: "Hello world:",
+            targetLocale: "fr-FR",
+            target: "Bonjour le monde",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain('Missing sentence ending punctuation for fr-FR locale. It should be "\u00A0:" (U+00A0 U+003A)');
+        expect(actual?.id).toBe(resource.getKey());
+        expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
+        expect(actual?.fix).toBeTruthy();
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(16);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(0);
+        expect(fix?.commands[0].stringFix.insertContent).toBe("\u00A0:");
+    });
+
+    test("French missing punctuation type ellipsis", () => {
+        expect.assertions(10);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "french.missing.punctuation.period",
+            sourceLocale: "en-US",
+            source: "Hello world...",
+            targetLocale: "fr-FR",
+            target: "Bonjour le monde",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain('Missing sentence ending punctuation for fr-FR locale. It should be \"…\" (U+2026)');
+        expect(actual?.id).toBe(resource.getKey());
+        expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
+        expect(actual?.fix).toBeTruthy();
+
+        const fix = actual?.fix;
+        expect(fix?.commands).toHaveLength(1);
+        expect(fix?.commands[0].stringFix.position).toBe(16);
+        expect(fix?.commands[0].stringFix.deleteCount).toBe(0);
+        expect(fix?.commands[0].stringFix.insertContent).toBe("…");
+    });
+
 
     // Test for multi-sentence source with different punctuation types
     test("Multi-sentence source with statement and question translated to Spanish", () => {
