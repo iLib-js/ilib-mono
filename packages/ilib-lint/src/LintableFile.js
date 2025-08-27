@@ -20,7 +20,7 @@
 import path from "node:path";
 import log4js from "log4js";
 import { getLocaleFromPath } from "ilib-tools-common";
-import { Fix, IntermediateRepresentation, Parser, Result, SourceFile, FileStats } from "ilib-lint-common";
+import { Fix, IntermediateRepresentation, Parser, Result, SourceFile, FileStats, Serializer } from "ilib-lint-common";
 import DirItem from "./DirItem.js";
 import Project from "./Project.js";
 import FileType from "./FileType.js";
@@ -70,19 +70,19 @@ class LintableFile extends DirItem {
      * @param {String} filePath path to the source file
      * @param {Object} options options for constructing this source file
      * @param {FileType} options.filetype file type of this source file
-     * @param {String} options.filePath path to the file
+     * @param {String} [options.locale] locale of the file
      * @param {object} [options.settings] additional settings from the ilib-lint config that apply to this file
      * @param {Project} project the project where this file is located
      */
     constructor(filePath, options, project) {
         super(filePath, options, project);
         if (!options || !filePath || !options.filetype) {
-            throw "Incorrect options given to LintableFile constructor";
+            throw new Error("Incorrect options given to LintableFile constructor");
         }
         this.sourceFile = new SourceFile(filePath, {
             sourceLocale: options.locale,
             getLogger: log4js.getLogger.bind(log4js),
-            type: options.filetype.getName()
+            type: options.filetype.getName(),
         });
         this.filetype = options.filetype;
 
@@ -94,7 +94,7 @@ class LintableFile extends DirItem {
         if (extension) {
             // remove the dot
             extension = extension.substring(1);
-            this.parsers = this.filetype.getParserClasses(extension);
+            this.parsers = this.filetype.getParsers(extension);
         }
         this.transformers = this.filetype.getTransformers();
         this.serializer = this.filetype.getSerializer();
@@ -121,7 +121,7 @@ class LintableFile extends DirItem {
      */
     parse() {
         if (!this.filePath) return [];
-        const irs = this.parsers.flatMap(parser => {
+        const irs = this.parsers.flatMap((parser) => {
             try {
                 return parser.parse(this.sourceFile);
             } catch (e) {
@@ -130,7 +130,9 @@ class LintableFile extends DirItem {
             }
         });
         if (!irs || irs.length === 0) {
-            throw new Error(`All available parsers failed to parse file ${file.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`);
+            throw new Error(
+                `All available parsers failed to parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`
+            );
         }
         return irs;
     }
@@ -177,20 +179,22 @@ class LintableFile extends DirItem {
                         // find the rules that are appropriate for this intermediate representation and then apply them
                         const rules = this.filetype.getRules().filter((rule) => rule.getRuleType() === ir.getType());
 
-                        rules.forEach(rule => {
+                        rules.forEach((rule) => {
                             logger.debug(`Checking rule  : ${rule.name}`);
                         });
-                        logger.debug('');
+                        logger.debug("");
 
                         // apply rules
-                        const results = rules.flatMap(
-                            (rule) =>
-                                rule.match({
-                                    ir,
-                                    locale: detectedLocale || this.project.getSourceLocale(),
-                                    file: this.filePath,
-                                }) ?? []
-                        ).filter(result => result);
+                        const results = rules
+                            .flatMap(
+                                (rule) =>
+                                    rule.match({
+                                        ir,
+                                        locale: detectedLocale || this.project.getSourceLocale(),
+                                        file: this.filePath,
+                                    }) ?? []
+                            )
+                            .filter((result) => result);
                         const fixable = results.filter((result) => result?.fix !== undefined);
 
                         let fixer;
@@ -238,9 +242,13 @@ class LintableFile extends DirItem {
                 if (this.parsers.length === 1) {
                     // if this is the only parser for this file, throw an exception right away so the user
                     // can see what the specific parse error was from the parser
-                    throw new Error(`Could not parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`, {
-                        cause: e
-                    });
+                    throw new Error(
+                        `Could not parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`,
+                        // @ts-expect-error: Error cause is only available since Node 16.9, but it's OK to pass it in older versions
+                        {
+                            cause: e,
+                        }
+                    );
                 }
                 logger.trace(`Parser ${parser.getName()} could not parse file ${this.sourceFile.getPath()}`);
                 logger.trace(e);
@@ -252,7 +260,9 @@ class LintableFile extends DirItem {
             return [...fixedResults, ...currentParseResults];
         });
         if (this.irs.length === 0) {
-            throw new Error(`All available parsers failed to parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`);
+            throw new Error(
+                `All available parsers failed to parse file ${this.sourceFile.getPath()}. Try configuring another parser or excluding this file from the lint project.`
+            );
         }
 
         return results;
@@ -273,7 +283,7 @@ class LintableFile extends DirItem {
      * of this file
      */
     setIRs(irs) {
-        if (irs.every(ir => ir instanceof IntermediateRepresentation)) {
+        if (irs.every((ir) => ir instanceof IntermediateRepresentation)) {
             this.irs = irs;
         } else {
             // should never happen
@@ -305,7 +315,7 @@ class LintableFile extends DirItem {
     getStats() {
         const fileStats = new FileStats();
         if (this.irs) {
-            this.irs.forEach(ir => {
+            this.irs.forEach((ir) => {
                 if (ir.stats) {
                     fileStats.addStats(ir.stats);
                 }
@@ -336,7 +346,7 @@ class LintableFile extends DirItem {
             // representation can be applied.
             for (let i = 0; i < this.irs.length; i++) {
                 if (!this.irs[i]) continue;
-                transformers.forEach(transformer => {
+                transformers.forEach((transformer) => {
                     if (this.irs[i].getType() === transformer.getType()) {
                         const newIR = transformer.transform(this.irs[i], results);
                         if (newIR) {
