@@ -135,6 +135,12 @@ class Project extends DirItem {
             xliff: new FileType({ project: this, ...xliffFileTypeDefinition }),
             unknown: new FileType({ project: this, ...unknownFileTypeDefinition }),
         };
+
+        this.resultStats = {
+            errors: 0,
+            warnings: 0,
+            suggestions: 0,
+        };
     }
 
     /**
@@ -619,8 +625,6 @@ class Project extends DirItem {
      * @returns {Number} the exit value
      */
     run() {
-        let exitValue = 0;
-
         let startTime = new Date();
 
         const results = this.findIssues(this.options.opt.locales);
@@ -755,21 +759,84 @@ class Project extends DirItem {
             }
         }
 
-        if (this.options.opt["max-errors"]) {
-            exitValue = this.resultStats.errors > this.options.opt["max-errors"] ? 2 : 0;
-        } else if (this.options.opt["max-warnings"]) {
-            exitValue = this.resultStats.warnings > this.options.opt["max-warnings"] ? 1 : 0;
-        } else if (this.options.opt["max-suggestions"]) {
-            exitValue = this.resultStats.suggestions > this.options.opt["max-suggestions"] ? 1 : 0;
-        } else if (this.options.opt["min-score"]) {
-            exitValue = score < this.options.opt["min-score"] ? 2 : 0;
-        } else if (this.options.errorsOnly) {
-            exitValue = this.resultStats.errors > 0 ? 2 : 0;
-        } else {
-            exitValue = this.resultStats.errors > 0 ? 2 : this.resultStats.warnings > 0 ? 1 : 0;
+        return this.getExitValue();
+    }
+
+    /**
+     * Status codes for the exit value of the run method.
+     * @private
+     * @readonly
+     */
+    static exitValues = /** @type {const} */ ({
+        ERROR: 2,
+        WARNING: 1,
+        SUCCESS: 0,
+    });
+
+    /** @private */
+    getExitValue() {
+        // TODO fix types of project options and then clean up these local variables
+        // TODO refactor runtime defaults to be closer to the definition of the options
+        // currently defaults are based on this command line documentation
+        // https://github.com/iLib-js/ilib-mono/blob/f252e4cf2fc573b51cbc5070778d67827f3174eb/packages/ilib-lint/src/index.js#L121-L143
+
+        /**
+         * Maximum number of errors to still pass
+         * @type {number}
+         */
+        // @ts-expect-error: options.opt is not typed
+        const maxErrors = this.options.opt["max-errors"] ?? 0;
+
+        /**
+         * Maximum number of warnings to still pass
+         * @type {number}
+         */
+        // @ts-expect-error: options.opt is not typed
+        const maxWarnings = this.options.opt["max-warnings"] ?? 0;
+
+        /**
+         * Maximum number of suggestions to still pass
+         * @type {number | undefined}
+         */
+        // @ts-expect-error: options.opt is not typed
+        const maxSuggestions = this.options.opt["max-suggestions"] ?? undefined;
+
+        /**
+         * Minimum score to pass
+         * @type {number | undefined}
+         */
+        // @ts-expect-error: options.opt is not typed
+        const minScore = this.options.opt["min-score"] ?? undefined;
+
+        /**
+         * Only return errors and supress warnings
+         * @type {boolean}
+         */
+        // @ts-expect-error: options.errorsOnly is not typed
+        const errorsOnly = Boolean(this.options.errorsOnly);
+
+        if (this.resultStats.errors > maxErrors) {
+            return Project.exitValues.ERROR;
         }
 
-        return exitValue;
+        if (minScore !== undefined) {
+            const score = this.getScore();
+            if (score < minScore) {
+                return Project.exitValues.ERROR;
+            }
+        }
+
+        // errorsOnly suppresses checking warning and suggestion counts
+        if (!errorsOnly) {
+            if (this.resultStats.warnings > maxWarnings) {
+                return Project.exitValues.WARNING;
+            }
+            if (maxSuggestions !== undefined && this.resultStats.suggestions > maxSuggestions) {
+                return Project.exitValues.WARNING;
+            }
+        }
+
+        return Project.exitValues.SUCCESS;
     }
 
     clear() {
