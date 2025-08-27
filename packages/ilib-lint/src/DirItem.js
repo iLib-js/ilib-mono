@@ -89,7 +89,7 @@ class DirItem {
      * Check the directory item and return a list of issues found in it.
      *
      * @param {Array.<string>} locales a set of locales to apply
-     * @returns {Array.<Result>} a list of natch results
+     * @returns {Array.<Result>} a list of match results
      * @abstract
      */
     findIssues(locales) {
