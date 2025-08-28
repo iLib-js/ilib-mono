@@ -1,0 +1,81 @@
+{
+    "name": "ilib-tools-interfaces",
+    "version": "1.19.0",
+    "main": "./lib/index.js",
+    "module": "./src/index.js",
+    "exports": {
+        ".": {
+            "import": "./src/index.js",
+            "require": "./lib/index.js"
+        }
+    },
+    "description": "Library of common classes and functions for the ilib command-line tools",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "lint",
+        "locale"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-tools-interfaces",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "src",
+        "lib",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "scripts": {
+        "build": "pnpm build:data ; pnpm build:prod",
+        "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
+        "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:data": "node --experimental-vm-modules ./scripts/genPluralCategories.mjs",
+        "coverage": "pnpm test -- --coverage",
+        "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:watch": "pnpm test:jest --watch",
+        "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i --testEnvironment node",
+        "clean": "git clean -f -d src test; rm -rf lib",
+        "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibToolsCommon.md && pnpm doc:html",
+        "doc:html": "jsdoc -c jsdoc.json"
+    },
+    "devDependencies": {
+        
+    },
+    "dependencies": {
+        "@log4js-node/log4js-api": "^1.0.2",
+        "ilib-ctype": "workspace:^",
+        "ilib-istring": "workspace:^",
+        "ilib-locale": "workspace:^",
+        "ilib-xliff": "workspace:^",
+        "intl-messageformat": "^10.7.11",
+        "micromatch": "^4.0.8"
+    }
+}
