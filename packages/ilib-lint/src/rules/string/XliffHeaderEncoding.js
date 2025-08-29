@@ -41,6 +41,7 @@ class XliffHeaderEncoding extends Rule {
         this.type = "string";
         this.name = "xliff-header-encoding";
         this.description = "Check that the encoding specified in the XLIFF header is correct";
+        this.link = "https://github.com/ilib-js/ilib-mono/blob/main/packages/ilib-lint/docs/xliff-header-encoding.md";
 
         if (options?.encoding) {
             this.encoding = options.encoding.toLowerCase();
