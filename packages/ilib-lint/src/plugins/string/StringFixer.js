@@ -44,10 +44,6 @@ export class StringFixer extends Fixer {
             return queue;
         }, /** @type {StringFix[]} */ ([]));
 
-        enqueued.forEach((fix) => {
-            fix.applied = true;
-        });
-
         /** @type {string} */
         const content = ir.ir;
 
@@ -57,6 +53,11 @@ export class StringFixer extends Fixer {
         );
 
         ir.ir = modifiedContent;
+
+        // mark the fixes as applied only after the content has been modified successfully
+        enqueued.forEach((fix) => {
+            fix.applied = true;
+        });
     }
 }
 
