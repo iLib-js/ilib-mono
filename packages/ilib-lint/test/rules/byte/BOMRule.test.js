@@ -1,7 +1,7 @@
 /*
- * UTF8BOM.test.js - test the UTF-8 BOM rule
+ * BOMRule.test.js - test the UTF-8 BOM rule
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
