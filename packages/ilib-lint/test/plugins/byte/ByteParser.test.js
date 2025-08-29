@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import fs from "node:fs";
+import fs from "fs";
 import { IntermediateRepresentation, SourceFile } from "ilib-lint-common";
+
 import ByteParser from "../../../src/plugins/byte/ByteParser.js";
 
 // ESM support

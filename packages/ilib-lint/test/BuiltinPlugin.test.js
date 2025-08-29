@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import BuiltinPlugin from '../src/plugins/BuiltinPlugin.js';
 import { Parser, SourceFile } from 'ilib-lint-common';
+
+import BuiltinPlugin from '../src/plugins/BuiltinPlugin.js';
 
 describe("testBuiltinPlugin", () => {
     test("BuiltinPlugin", () => {
