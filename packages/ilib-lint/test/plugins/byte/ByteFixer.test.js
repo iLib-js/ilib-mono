@@ -22,6 +22,9 @@ import ByteFixer from "../../../src/plugins/byte/ByteFixer.js";
 import ByteFix from "../../../src/plugins/byte/ByteFix.js";
 import PositionalFixCommand from "../../../src/plugins/positional/PositionalFixCommand.js";
 
+// ESM support
+const jest = import.meta.jest;
+
 const sourceFile = new SourceFile("test/file.txt", {});
 
 describe("ByteFixer", () => {
@@ -201,6 +204,72 @@ describe("ByteFixer", () => {
 
         expect(alwaysShoutFix.applied).toBe(true);
         expect(alwaysAskFix.applied).toBe(false);
+    });
+
+    test("should not mark fixes as applied if an attempt to apply them fails", () => {
+        const subject = new IntermediateRepresentation({
+            type: "byte",
+            sourceFile,
+            ir: Buffer.from("abcdef"),
+        });
+
+        const fixer = new ByteFixer();
+        // no overlap
+        const fixes = [
+            // produced by rule "sentence case"
+            new ByteFix(new PositionalFixCommand(0, 1, Buffer.from("A"))),
+            // produced by rule "always shout"
+            new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("!"))),
+        ];
+
+        // mock error when applying fix commands
+        const applyCommandsSpy = jest.spyOn(PositionalFixCommand, "applyCommands").mockImplementationOnce(() => {
+            throw new Error("test error");
+        });
+
+        expect(() => {
+            fixer.applyFixes(subject, fixes);
+        }).toThrow();
+
+        // no fixes should be marked as applied
+        expect(fixes.every((f) => f.applied)).toBe(false);
+
+        // cleanup
+        applyCommandsSpy.mockRestore();
+    });
+
+    test("should not overwrite the intermediate representation content if an attempt to apply fixes fails", () => {
+        const originalContent = Buffer.from("abcdef");
+
+        const subject = new IntermediateRepresentation({
+            type: "byte",
+            sourceFile,
+            ir: originalContent,
+        });
+
+        const fixer = new ByteFixer();
+        // no overlap
+        const fixes = [
+            // produced by rule "sentence case"
+            new ByteFix(new PositionalFixCommand(0, 1, Buffer.from("A"))),
+            // produced by rule "always shout"
+            new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("!"))),
+        ];
+
+        // mock error when applying fix commands
+        const applyCommandsSpy = jest.spyOn(PositionalFixCommand, "applyCommands").mockImplementationOnce(() => {
+            throw new Error("test error");
+        });
+
+        expect(() => {
+            fixer.applyFixes(subject, fixes);
+        }).toThrow();
+
+        // the original content should not be modified
+        expect(subject.ir).toBe(originalContent);
+
+        // cleanup
+        applyCommandsSpy.mockRestore();
     });
 
     test("should not apply any commands of a skipped fix", () => {

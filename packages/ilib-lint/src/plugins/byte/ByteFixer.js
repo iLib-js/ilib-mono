@@ -49,15 +49,16 @@ export class ByteFixer extends Fixer {
             return queue;
         }, /** @type {ByteFix[]} */ ([]));
 
-        enqueued.forEach((fix) => {
-            fix.applied = true;
-        });
-
         const commands = enqueued.flatMap((fix) => fix.commands);
         const modifiedContent = PositionalFixCommand.applyCommands(content, commands, (...chunks) =>
             Buffer.concat(chunks)
         );
         ir.ir = modifiedContent;
+
+        // mark the fixes as applied only after the content has been modified successfully
+        enqueued.forEach((fix) => {
+            fix.applied = true;
+        });
     }
 }
 
