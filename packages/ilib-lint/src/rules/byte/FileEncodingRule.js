@@ -53,6 +53,7 @@ class FileEncodingRule extends Rule {
         this.type = "byte";
         this.name = "file-encoding";
         this.description = "Check that the file encoding is correct";
+        this.link = "https://github.com/ilib-js/ilib-mono/blob/main/packages/ilib-lint/docs/file-encoding.md";
 
         if (options?.encoding) {
             this.encoding = options.encoding;
