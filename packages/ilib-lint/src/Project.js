@@ -536,6 +536,9 @@ class Project extends DirItem {
      */
     findIssues(locales) {
         this.fileStats = new FileStats();
+        if (!this.files || this.files.length === 0) {
+            return [];
+        }
         return this.files.flatMap(file => {
             //logger.debug(`Examining ${file.filePath}`);
             if (!this.options.opt.quiet && this.options.opt.progressInfo) {

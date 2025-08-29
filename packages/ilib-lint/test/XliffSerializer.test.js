@@ -74,6 +74,7 @@ describe("test the XliffParser plugin", () => {
   </file>
 </xliff>`);
     });
+
     test("Serialize a regular xliff 2.0 file", () => {
         expect.assertions(3);
 
@@ -212,6 +213,53 @@ describe("test the XliffParser plugin", () => {
     </body>
   </file>
 </xliff>`);
+    });
 
+    test("Serialize a resource with an invalid resource type", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "string",
+            ir: ["random string"],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([ir])).toThrow("Invalid intermediate representation");
+    });
+
+    test("Serialize an intermediate representation with no representations", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([])).toThrow("No intermediate representation provided");
+    });
+
+    test("Serialize an intermediate representation with no resource representations", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([ir])).toThrow("No resources found in intermediate representation");
+    });
+
+    test("Serialize an intermediate representation with an undefined or null intermediate representation", () => {
+        expect.assertions(2);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const xs = new XliffSerializer();
+        //@ts-ignore the expected value is an array with null, but TypeScript is throwing an error because it can't assign null to an array of IntermediateRepresentation
+        expect(() => xs.serialize([null])).toThrow("Invalid intermediate representation");
+
+        //@ts-ignore the expected value is an array with undefined, but TypeScript is throwing an error because it can't assign undefined to an array of IntermediateRepresentation
+        expect(() => xs.serialize([undefined])).toThrow("Invalid intermediate representation");
     });
 });

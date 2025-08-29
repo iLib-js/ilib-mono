@@ -43,11 +43,22 @@ class XliffSerializer extends Serializer {
      * @param {IntermediateRepresentation[]} irs the intermediate representations to convert
      * @returns {SourceFile} the source file with the contents of the intermediate
      * representation
+     * @throws {Error} if the source file could not be created
      */
     serialize(irs) {
         // should only be one ir in this array
+        if (!irs || irs.length === 0) {
+            throw new Error("No intermediate representation provided");
+        }
         const ir = irs[0];
+        if (!ir || ir.getType() !== this.type) {
+            throw new Error("Invalid intermediate representation");
+        }
         const resources = ir.getRepresentation();
+        if (!resources || resources.length === 0) {
+            throw new Error("No resources found in intermediate representation");
+        }
+        // produce the same version as the original file
         const xliffVersion = this._getxliffVersion(ir.sourceFile.getContent());
         const xliff = new ResourceXliff({
             path: ir.sourceFile.getPath(),
