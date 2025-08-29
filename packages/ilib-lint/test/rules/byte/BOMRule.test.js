@@ -71,7 +71,7 @@ describe("BOMRule", () => {
 
             expect(result.rule).toBeInstanceOf(BOMRule);
             expect(result.severity).toBe("error");
-            expect(result.description).toBe("File must not start with a UTF-8 BOM");
+            expect(result.description).toBe("File must not start with a UTF-8 byte order mark (BOM)");
             expect(result.pathName).toBe(fakePath);
             expect(result.highlight).toBe("");
 
