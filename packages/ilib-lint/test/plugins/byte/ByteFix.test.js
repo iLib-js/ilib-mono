@@ -20,22 +20,24 @@
 import PositionalFixCommand from "../../../src/plugins/positional/PositionalFixCommand.js";
 import ByteFix from "../../../src/plugins/byte/ByteFix.js";
 
-describe("testByteFix", () => {
-    test("ByteFixCtorShouldThrowOverlappingCommands", () => {
-        expect.assertions(1);
-        // overlapping commands in a single fix
-        expect(
-            () =>
-                new ByteFix(
-                    // replace 1st and 2nd byte
-                    new PositionalFixCommand(0, 2, Buffer.from([0x00, 0x01])),
-                    // replace 1st byte
-                    new PositionalFixCommand(1, 1, Buffer.from([0x02]))
-                )
-        ).toThrow();
+describe("ByteFix", () => {
+    describe("constructor", () => {
+        test("should throw an error if any commands overlap", () => {
+            expect.assertions(1);
+            // overlapping commands in a single fix
+            expect(
+                () =>
+                    new ByteFix(
+                        // replace 1st and 2nd byte
+                        new PositionalFixCommand(0, 2, Buffer.from([0x00, 0x01])),
+                        // replace 1st byte
+                        new PositionalFixCommand(1, 1, Buffer.from([0x02]))
+                    )
+            ).toThrow();
+        });
     });
 
-    test("StringFixShouldDetectOverlap", () => {
+    test("should detect overlap with another fix", () => {
         expect.assertions(2);
         // fixes overlap because some commands between them overlap
         const one = new ByteFix(
@@ -50,7 +52,7 @@ describe("testByteFix", () => {
         expect(other.overlaps(one)).toBeTruthy();
     });
 
-    test("StringFixShouldDetectOverlapOfAnyCommands", () => {
+    test("should detect overlap even when only some commands overlap with another fix", () => {
         expect.assertions(2);
         // fixes overlap because some commands between them overlap
         // even if not all commands do
