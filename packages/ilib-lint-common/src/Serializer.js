@@ -68,8 +68,9 @@ class Serializer extends PipelineElement {
      * @abstract
      * @param {IntermediateRepresentation[]} representations the array of intermediate
      * representations to serialize
-     * @returns {SourceFile|undefined} the source file that contains the serialized form of the
-     * given intermediate representation, or undefined if the source file could not be created
+     * @returns {SourceFile} the source file that contains the serialized form of the
+     * given intermediate representation
+     * @throws {Error} if the source file could not be created
      */
     serialize(representations) {
         throw new NotImplementedError();

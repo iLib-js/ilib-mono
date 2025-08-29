@@ -2,6 +2,6 @@
 "ilib-lint-common": minor
 ---
 
-- Serializer plugins can now return undefined if the
+- Serializer plugins can now throw an Error if the
   data they are trying to serialize is insufficient
-  and the output file cannot be generated
+  or the output file cannot be generated
