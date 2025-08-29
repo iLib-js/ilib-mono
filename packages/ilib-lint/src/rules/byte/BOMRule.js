@@ -37,6 +37,9 @@ class BOMRule extends Rule {
     /** @override */
     description = "Check that the file does not start with a UTF-8 BOM";
 
+    /** @override */
+    link = "https://github.com/ilib-js/ilib-mono/blob/main/packages/ilib-lint/docs/utf-bom.md";
+
     /**
      * @param {ConstructorParameters<typeof Rule>[0]} [options] options to the constructor
      */
