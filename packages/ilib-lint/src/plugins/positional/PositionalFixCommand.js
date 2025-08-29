@@ -140,7 +140,7 @@ export class PositionalFixCommand {
     /**
      * Apply multiple PositionalFixCommands to a supplied content
      *
-     * @throws when some of the provided commands overlap (as defined in {@link PositionalFixCommand.overlaps})
+     * @throws when some of the provided commands overlap (as defined in {@link PositionalFixCommand<T>.overlaps})
      * @throws when some of the provided commands intend to modify range outside of input content bounds
      *
      * @template {Chunkable<T>} T
