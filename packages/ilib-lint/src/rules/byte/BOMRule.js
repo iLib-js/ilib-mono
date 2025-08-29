@@ -71,7 +71,7 @@ class BOMRule extends Rule {
             return new Result({
                 rule: this,
                 severity: "error",
-                description: `File must not start with a UTF-8 BOM`,
+                description: `File must not start with a UTF-8 byte order mark (BOM)`,
                 pathName: file,
                 highlight: "",
                 fix: new ByteFix(BOMRule.removeBOMCommand()),
