@@ -53,6 +53,8 @@ import ResourceFixer from './resource/ResourceFixer.js';
 import ByteParser from './byte/ByteParser.js';
 import FileEncodingRule from '../rules/byte/FileEncodingRule.js';
 import XliffHeaderEncoding from '../rules/string/XliffHeaderEncoding.js';
+import BOMRule from '../rules/byte/BOMRule.js';
+import ByteFixer from './byte/ByteFixer.js';
 
 // built-in declarative rules
 export const regexRules = [
@@ -432,6 +434,7 @@ export const builtInRulesets = {
     xliff: {
         "file-encoding": true,
         "xliff-header-encoding": true,
+        "utf-bom": true,
     },
 
     gnu: {
@@ -543,6 +546,7 @@ class BuiltinPlugin extends Plugin {
             ResourceReturnChar,
             FileEncodingRule,
             XliffHeaderEncoding,
+            BOMRule,
             ...regexRules
         ];
     }
@@ -564,7 +568,8 @@ class BuiltinPlugin extends Plugin {
     getFixers() {
         return [
             StringFixer,
-            ResourceFixer
+            ResourceFixer,
+            ByteFixer
         ];
     }
 };
