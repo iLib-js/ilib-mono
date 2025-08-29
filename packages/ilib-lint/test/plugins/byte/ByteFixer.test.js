@@ -24,8 +24,8 @@ import PositionalFixCommand from "../../../src/plugins/positional/PositionalFixC
 
 const sourceFile = new SourceFile("test/file.txt", {});
 
-describe("testByteFixer", () => {
-    test("ByteFixerShouldReplace", () => {
+describe("ByteFixer", () => {
+    test("should replace a byte", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -38,7 +38,7 @@ describe("testByteFixer", () => {
         expect(subject.ir).toEqual(Buffer.from("abCdef"));
     });
 
-    test("ByteFixerShouldInsert", () => {
+    test("should insert a byte", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -51,7 +51,7 @@ describe("testByteFixer", () => {
         expect(subject.ir).toEqual(Buffer.from("ab!cdef"));
     });
 
-    test("ByteFixerShouldDelete", () => {
+    test("should delete a byte", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -64,7 +64,7 @@ describe("testByteFixer", () => {
         expect(subject.ir).toEqual(Buffer.from("abdef"));
     });
 
-    test("ByteFixerShouldReplaceMultiple", () => {
+    test("should replace multiple bytes", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -81,7 +81,7 @@ describe("testByteFixer", () => {
         expect(subject.ir).toEqual(Buffer.from("AbcdEf"));
     });
 
-    test("ByteFixerShouldInsertMultiple", () => {
+    test("should insert multiple bytes", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -98,7 +98,7 @@ describe("testByteFixer", () => {
         expect(subject.ir).toEqual(Buffer.from('"abcdef"'));
     });
 
-    test("ByteFixerShouldDeleteMultiple", () => {
+    test("should delete multiple bytes", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -115,7 +115,7 @@ describe("testByteFixer", () => {
         expect(subject.ir).toEqual(Buffer.from("bcdf"));
     });
 
-    test("ByteFixerShouldFixMultipleFixes", () => {
+    test("should apply multiple fixes", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -133,7 +133,7 @@ describe("testByteFixer", () => {
         expect(subject.ir).toEqual(Buffer.from("Abcdef!"));
     });
 
-    test("ByteFixerShouldFixMultipleFixesMultipleCommands", () => {
+    test("should apply multiple fixes with multiple commands", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -157,7 +157,7 @@ describe("testByteFixer", () => {
         expect(subject.ir).toEqual(Buffer.from('"bcdf"'));
     });
 
-    test("ByteFixerShouldFlagAppliedFixes", () => {
+    test("should mark applied fixes as applied", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -176,7 +176,7 @@ describe("testByteFixer", () => {
         expect(fixes.every((f) => f.applied)).toBe(true);
     });
 
-    test("ByteFixerShouldNotMarkOverlappingFixAsApplied", () => {
+    test("should not mark overlapping fixes as applied", () => {
         expect.assertions(2);
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -203,7 +203,7 @@ describe("testByteFixer", () => {
         expect(alwaysAskFix.applied).toBe(false);
     });
 
-    test("ByteFixerShouldNotApplyAnyCommandsOfASkippedFix", () => {
+    test("should not apply any commands of a skipped fix", () => {
         expect.assertions(4);
         const subject = new IntermediateRepresentation({
             type: "byte",
