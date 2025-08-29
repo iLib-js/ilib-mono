@@ -18,12 +18,22 @@
  */
 
 import { IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
+import { CharmapFactory } from "ilib-es6";
 import { TextDecoder } from "util";
 
 import FileEncodingRule from "../../../src/rules/byte/FileEncodingRule.js";
 
 // ESM support
 const jest = import.meta.jest;
+
+/**
+ * @param {string} str
+ * @param {string} encoding
+ * @returns {Buffer}
+ */
+const encodeString = (str, encoding) => {
+    return Buffer.from(new CharmapFactory({ name: encoding }).mapToNative(str));
+};
 
 describe("FileEncodingRule", () => {
     describe("constructor", () => {
@@ -56,8 +66,7 @@ describe("FileEncodingRule", () => {
         const fakeFile = /** @type {SourceFile} */ ({});
 
         test("does not produce a Result if encoding is correct", () => {
-            const content = "Hello, world!";
-            const bytes = Buffer.from(content, "utf-8");
+            const bytes = encodeString("Ħéłļö, wørľð!", "utf-8");
             const ir = new IntermediateRepresentation({
                 type: "byte",
                 ir: bytes,
@@ -69,9 +78,7 @@ describe("FileEncodingRule", () => {
         });
 
         test("produces an error Result if encoding is not correct", () => {
-            // "Witaj, świecie!" encoded in ISO-8859-2
-            const base64Content = "V2l0YWosILZ3aWVjaWUh";
-            const bytes = Buffer.from(base64Content, "base64");
+            const bytes = encodeString("Witaj, świecie!", "iso-8859-2");
 
             const ir = new IntermediateRepresentation({
                 type: "byte",
