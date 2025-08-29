@@ -28,15 +28,20 @@ const UTF8_BOM = Buffer.from([0xef, 0xbb, 0xbf]);
  * Rule that checks if the file starts with a UTF-8 BOM
  */
 class BOMRule extends Rule {
+    /** @override */
+    type = "byte";
+
+    /** @override */
+    name = "utf-bom";
+
+    /** @override */
+    description = "Check that the file does not start with a UTF-8 BOM";
+
     /**
      * @param {ConstructorParameters<typeof Rule>[0]} [options] options to the constructor
      */
     constructor(options = {}) {
         super(options);
-
-        this.type = "byte";
-        this.name = "utf-bom";
-        this.description = "Check that the file does not start with a UTF-8 BOM";
     }
 
     /**
