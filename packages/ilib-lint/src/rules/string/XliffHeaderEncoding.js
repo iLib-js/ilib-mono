@@ -25,6 +25,18 @@ import { IntermediateRepresentation, Result, Rule } from "ilib-lint-common";
  */
 
 class XliffHeaderEncoding extends Rule {
+    /** @override */
+    type = "string";
+
+    /** @override */
+    name = "xliff-header-encoding";
+
+    /** @override */
+    description = "Check that the encoding specified in the XLIFF header is correct";
+
+    /** @override */
+    link = "https://github.com/ilib-js/ilib-mono/blob/main/packages/ilib-lint/docs/xliff-header-encoding.md";
+
     /**
      * Expected encoding of the file
      * @type {string}
@@ -37,11 +49,6 @@ class XliffHeaderEncoding extends Rule {
      */
     constructor(options = {}) {
         super(options);
-
-        this.type = "string";
-        this.name = "xliff-header-encoding";
-        this.description = "Check that the encoding specified in the XLIFF header is correct";
-        this.link = "https://github.com/ilib-js/ilib-mono/blob/main/packages/ilib-lint/docs/xliff-header-encoding.md";
 
         if (options?.encoding) {
             this.encoding = options.encoding.toLowerCase();

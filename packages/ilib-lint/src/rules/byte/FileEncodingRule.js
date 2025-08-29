@@ -30,6 +30,18 @@ import { TextDecoder, types } from "util";
  * Rule that checks if the encoding of a text file is correct
  */
 class FileEncodingRule extends Rule {
+    /** @override */
+    type = "byte";
+
+    /** @override */
+    name = "file-encoding";
+
+    /** @override */
+    description = "Check that the file encoding is correct";
+
+    /** @override */
+    link = "https://github.com/ilib-js/ilib-mono/blob/main/packages/ilib-lint/docs/file-encoding.md";
+
     /**
      * Expected encoding of the file
      * @type {string}
@@ -49,11 +61,6 @@ class FileEncodingRule extends Rule {
      */
     constructor(options = {}) {
         super(options);
-
-        this.type = "byte";
-        this.name = "file-encoding";
-        this.description = "Check that the file encoding is correct";
-        this.link = "https://github.com/ilib-js/ilib-mono/blob/main/packages/ilib-lint/docs/file-encoding.md";
 
         if (options?.encoding) {
             this.encoding = options.encoding;
