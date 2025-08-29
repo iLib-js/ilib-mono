@@ -1529,12 +1529,12 @@ describe("ResourceSentenceEnding rule", function() {
 
         const fix = actual?.fix;
         expect(fix?.commands).toHaveLength(2);
-        
+
         // First command should replace the regular space with nothing (since period doesn't need space)
         expect(fix?.commands[0].stringFix.position).toBe(31); // position of the space
         expect(fix?.commands[0].stringFix.deleteCount).toBe(1); // delete 1 character (space)
         expect(fix?.commands[0].stringFix.insertContent).toBe(""); // insert nothing
-        
+
         // Second command should replace the exclamation point with period
         expect(fix?.commands[1].stringFix.position).toBe(32); // position of the exclamation
         expect(fix?.commands[1].stringFix.deleteCount).toBe(1); // delete 1 character (exclamation)
@@ -1577,12 +1577,12 @@ describe("ResourceSentenceEnding rule", function() {
 
         const fix = actual?.fix;
         expect(fix?.commands).toHaveLength(2);
-        
+
         // First command should replace the regular space with non-breaking space
         expect(fix?.commands[0].stringFix.position).toBe(31); // position of the space
         expect(fix?.commands[0].stringFix.deleteCount).toBe(1); // delete 1 character (space)
         expect(fix?.commands[0].stringFix.insertContent).toBe("\u202F"); // insert thin no-break space
-        
+
         // Second command should replace the exclamation point with question mark
         expect(fix?.commands[1].stringFix.position).toBe(32); // position of the exclamation
         expect(fix?.commands[1].stringFix.deleteCount).toBe(1); // delete 1 character (exclamation)
@@ -1870,7 +1870,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect(fix?.commands[0].stringFix.position).toBe(16); // position of the space
         expect(fix?.commands[0].stringFix.deleteCount).toBe(1); // delete 1 character (space)
         expect(fix?.commands[0].stringFix.insertContent).toBe(""); // insert nothing
-        
+
         // Second command should replace the exclamation point with period
         expect(fix?.commands[1].stringFix.position).toBe(17); // position of the exclamation
         expect(fix?.commands[1].stringFix.deleteCount).toBe(1); // delete 1 character (exclamation)

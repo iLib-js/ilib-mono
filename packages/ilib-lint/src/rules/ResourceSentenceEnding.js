@@ -621,7 +621,7 @@ class ResourceSentenceEnding extends ResourceRule {
         const regularSpace = ' ';
         const narrowNoBreakSpace = '\u202F';
         const nonBreakingSpace = '\u00A0';
-        
+
         if (needsNonBreakingSpace) {
             // Target needs a non-breaking space
             if (currentSpace === narrowNoBreakSpace) {
@@ -944,7 +944,7 @@ class ResourceSentenceEnding extends ResourceRule {
             const unicodeCode = ResourceSentenceEnding.getUnicodeCodes(targetEnding.original);
             const expectedUnicode = ResourceSentenceEnding.getUnicodeCodes(expectedPunctuation);
             const positionInfo = this.findIncorrectPunctuationPosition(target, lastSentence, targetEnding.original);
-            
+
             description = `Sentence ending should be "${expectedPunctuation}" (${expectedUnicode}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
 
             if (positionInfo) {
@@ -959,7 +959,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         const needsNonBreakingSpace = expectedPunctuation === '?' || expectedPunctuation === '!' || expectedPunctuation === ':';
                         const expectedWithSpace = needsNonBreakingSpace ? narrowNoBreakSpace + expectedPunctuation : expectedPunctuation;
                         const expectedUnicodeWithSpace = ResourceSentenceEnding.getUnicodeCodes(expectedWithSpace);
-                        
+
                         highlight = `${beforePunctuation}<e0/>`;
                         description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of ""`;
                         fix = this.createPunctuationFix(resource, target, '', expectedWithSpace, index, category, targetLocaleObj);
@@ -968,10 +968,10 @@ class ResourceSentenceEnding extends ResourceRule {
                         const spacePosition = positionInfo.position - 1;
                         const lastCharBeforePunctuation = target.charAt(spacePosition);
                         const needsNonBreakingSpace = expectedPunctuation === '?' || expectedPunctuation === '!' || expectedPunctuation === ':';
-                        
+
                         const spacingFix = this.createFrenchSpacingFix(resource, target, spacePosition, needsNonBreakingSpace, lastCharBeforePunctuation, index, category);
                         const punctuationFix = this.createPunctuationFix(resource, target, targetEnding.original, expectedPunctuation, index, category, targetLocaleObj);
-                    
+
                     // Combine fixes if both are needed
                     if (spacingFix && punctuationFix) {
                         fix = ResourceFixer.createFix({
@@ -985,7 +985,7 @@ class ResourceSentenceEnding extends ResourceRule {
                     } else if (punctuationFix) {
                         fix = punctuationFix;
                     }
-                    
+
                     // Create appropriate highlight and description
                     if (spacingFix && punctuationFix) {
                         // Both spacing and punctuation are wrong
@@ -993,14 +993,14 @@ class ResourceSentenceEnding extends ResourceRule {
                             // For European French-speaking countries, if the expected punctuation needs a non-breaking space, include it in the description
                             const expectedWithSpace = needsNonBreakingSpace ? narrowNoBreakSpace + expectedPunctuation : expectedPunctuation;
                             const expectedUnicodeWithSpace = ResourceSentenceEnding.getUnicodeCodes(expectedWithSpace);
-                            
+
                             highlight = `${beforePunctuation.substring(0, beforePunctuation.length - 1)}<e0> ${targetEnding.original} (U+0020 ${unicodeCode})</e0>${afterPunctuation}`;
                             description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of " ${targetEnding.original}" (U+0020 ${unicodeCode})`;
                         } else if (lastCharBeforePunctuation !== narrowNoBreakSpace) {
                             // For European French-speaking countries, if the expected punctuation needs a non-breaking space, include it in the description
                             const expectedWithSpace = needsNonBreakingSpace ? narrowNoBreakSpace + expectedPunctuation : expectedPunctuation;
                             const expectedUnicodeWithSpace = ResourceSentenceEnding.getUnicodeCodes(expectedWithSpace);
-                            
+
                             highlight = `${beforePunctuation}<e0>${targetEnding.original} (${unicodeCode})</e0>${afterPunctuation}`;
                             description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
                         } else if (lastCharBeforePunctuation === narrowNoBreakSpace && !needsNonBreakingSpace) {
@@ -1020,7 +1020,7 @@ class ResourceSentenceEnding extends ResourceRule {
                             // For European French-speaking countries, if the expected punctuation needs a non-breaking space, include it in the description
                             const expectedWithSpace = needsNonBreakingSpace ? narrowNoBreakSpace + targetEnding.original : targetEnding.original;
                             const expectedUnicodeWithSpace = ResourceSentenceEnding.getUnicodeCodes(expectedWithSpace);
-                            
+
                             highlight = `${beforePunctuation}<e0>${targetEnding.original} (${unicodeCode})</e0>${afterPunctuation}`;
                             description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
                         }
@@ -1030,7 +1030,7 @@ class ResourceSentenceEnding extends ResourceRule {
                             // Target has correct thin no-break space but wrong punctuation
                             // For French locales, we need to check if the expected punctuation needs this spacing
                             const needsNonBreakingSpace = expectedPunctuation === '?' || expectedPunctuation === '!' || expectedPunctuation === ':';
-                            
+
                             if (!needsNonBreakingSpace) {
                                 // Expected punctuation doesn't need non-breaking space, so we need to remove it
                                 // Create a combined fix: remove space + replace punctuation
@@ -1046,7 +1046,7 @@ class ResourceSentenceEnding extends ResourceRule {
                                         )
                                     ]
                                 });
-                                
+
                                 fix = ResourceFixer.createFix({
                                     resource,
                                     index,
@@ -1057,7 +1057,7 @@ class ResourceSentenceEnding extends ResourceRule {
                                 // Expected punctuation needs non-breaking space, so keep it
                                 fix = punctuationFix;
                             }
-                            
+
                             // Highlight both the space and punctuation together
                             const beforeSpace = beforePunctuation.substring(0, beforePunctuation.length - 1);
                             highlight = `${beforeSpace}<e0>\u202F${targetEnding.original} (U+202F ${unicodeCode})</e0>${afterPunctuation}`;
@@ -1068,7 +1068,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         }
                     }
                     }
-                    
+
                     // If no fixes are needed, continue to general case
                 } else {
                     // Non-European French-speaking target just has wrong punctuation
