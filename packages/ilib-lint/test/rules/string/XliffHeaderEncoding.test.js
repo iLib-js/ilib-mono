@@ -18,8 +18,9 @@
  */
 
 import { IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
-import XliffHeaderEncoding from "../../../src/rules/string/XliffHeaderEncoding.js";
 import dedent from "dedent";
+
+import XliffHeaderEncoding from "../../../src/rules/string/XliffHeaderEncoding.js";
 
 // ESM support
 const jest = import.meta.jest;

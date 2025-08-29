@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import path from "node:path";
+import { Result, SourceFile } from 'ilib-lint-common';
+import { ResourceString } from 'ilib-tools-common';
+import path from "path";
 
 import PluginManager from '../src/PluginManager.js';
-import { Parser, Result, SourceFile } from 'ilib-lint-common';
-import { ResourceString } from 'ilib-tools-common';
 import { TestFixerTypeId } from './ilib-lint-plugin-test/src/TestFixer.js';
 
 describe("testPluginManager", () => {
