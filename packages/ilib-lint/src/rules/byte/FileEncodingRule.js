@@ -18,7 +18,7 @@
  */
 
 import { Rule, Result, IntermediateRepresentation } from "ilib-lint-common";
-import { TextDecoder, types } from "node:util";
+import { TextDecoder, types } from "util";
 
 /**
  * @typedef {Object} FileEncodingRuleOptions

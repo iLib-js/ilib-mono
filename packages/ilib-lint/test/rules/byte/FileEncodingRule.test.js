@@ -18,8 +18,9 @@
  */
 
 import { IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
+import { TextDecoder } from "util";
+
 import FileEncodingRule from "../../../src/rules/byte/FileEncodingRule.js";
-import { TextDecoder } from "node:util";
 
 // ESM support
 const jest = import.meta.jest;
