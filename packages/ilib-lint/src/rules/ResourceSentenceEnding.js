@@ -745,6 +745,8 @@ class ResourceSentenceEnding extends ResourceRule {
         const narrowNoBreakSpace = '\u202F';
         const nonBreakingSpace = '\u00A0';
         let fix;
+        let highlight = '';
+        let description = '';
 
         let lastSentence;
         if (sourceEndsWithQuote) {
@@ -761,7 +763,6 @@ class ResourceSentenceEnding extends ResourceRule {
         if (!sourceEnding && targetEnding) {
             const unicodeCode = ResourceSentenceEnding.getUnicodeCodes(targetEnding.original);
             const positionInfo = this.findIncorrectPunctuationPosition(target, lastSentence, targetEnding.original);
-            let highlight = '';
             if (positionInfo) {
                 const beforePunctuation = target.substring(0, positionInfo.position);
                 const afterPunctuation = target.substring(positionInfo.position + positionInfo.length);
@@ -776,11 +777,11 @@ class ResourceSentenceEnding extends ResourceRule {
                 severity: "warning",
                 id: resource.getKey(),
                 description: `Sentence ending should be "" for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`,
-                source: source,
-                highlight: highlight,
+                source,
+                highlight,
                 pathName: file,
                 fix: this.createPunctuationFix(resource, target, targetEnding.original, '', index, category, targetLocaleObj),
-                lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
+                lineNumber: resource.getLocation()?.line
             });
         }
 
@@ -789,7 +790,7 @@ class ResourceSentenceEnding extends ResourceRule {
             const expectedPunctuation = this.getExpectedPunctuation(targetLocaleObj, sourceEnding.type);
             if (!expectedPunctuation) return undefined;
 
-            let highlight = `${lastSentence}<e0/>`;
+            highlight = `${lastSentence}<e0/>`;
 
             let deleteString = '';
             let insertString = expectedPunctuation;
@@ -815,11 +816,11 @@ class ResourceSentenceEnding extends ResourceRule {
                 severity: "warning",
                 id: resource.getKey(),
                 description: `Sentence ending should be "${insertString}" (${unicodeCode}) for ${targetLocale} locale instead of ""`,
-                source: source,
-                highlight: highlight,
+                source,
+                highlight,
                 pathName: file,
                 fix: this.createPunctuationFix(resource, target, deleteString, insertString, index, category, targetLocaleObj),
-                lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
+                lineNumber: resource.getLocation()?.line
             });
         }
 
@@ -841,7 +842,6 @@ class ResourceSentenceEnding extends ResourceRule {
                         }
                     }
 
-                    let highlight;
                     if (quotedContentStart !== -1) {
                         const beforeQuote = target.substring(0, quotedContentStart);
                         const afterQuote = target.substring(quotedContentStart);
@@ -860,11 +860,11 @@ class ResourceSentenceEnding extends ResourceRule {
                         severity: "warning",
                         id: resource.getKey(),
                         description: `Spanish ${sourceEnding.type} should start with "${invertedChar}" (${unicodeCode}) for ${targetLocale} locale`,
-                        source: source,
-                        highlight: highlight,
+                        source,
+                        highlight,
                         pathName: file,
                         fix: this.createFixForSpanishInvertedPunctuation(resource, target, lastSentence, invertedChar, index, category, targetLocaleObj),
-                        lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
+                        lineNumber: resource.getLocation()?.line
                     });
                 }
             }
@@ -886,67 +886,54 @@ class ResourceSentenceEnding extends ResourceRule {
                             // Build the highlight by replacing the space with the highlighted version
                             const beforeSpace = target.substring(0, spacePosition);
                             const afterSpace = target.substring(spacePosition + 1);
-                            let highlight = `${beforeSpace}<e0> (U+0020)</e0>${afterSpace}`;
+                            highlight = `${beforeSpace}<e0> (U+0020)</e0>${afterSpace}`;
 
                             // Add prefix for array/plural resources
                             highlight = this._addResourcePrefix(highlight, index, category);
 
                             const unicodeCode = ResourceSentenceEnding.getUnicodeCodes(targetEnding.original);
-
-                            return new Result({
-                                rule: this,
-                                severity: "warning",
-                                id: resource.getKey(),
-                                description: `Sentence ending should be "\u202F${targetEnding.original}" (U+202F ${unicodeCode}) for ${targetLocale} locale instead of " ${targetEnding.original}" (U+0020 ${unicodeCode})`,
-                                source: source,
-                                highlight: highlight,
-                                pathName: file,
-                                fix: this.createFixForFrenchNonBreakingSpace(resource, target, spacePosition, narrowNoBreakSpace, index, category),
-                                lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
-                            });
+                            description = `Sentence ending should be "\u202F${targetEnding.original}" (U+202F ${unicodeCode}) for ${targetLocale} locale instead of " ${targetEnding.original}" (U+0020 ${unicodeCode})`;
+                            fix = this.createFixForFrenchNonBreakingSpace(resource, target, spacePosition, narrowNoBreakSpace, index, category);
                         } else if (lastCharBeforePunctuation === nonBreakingSpace) {
                             // French target has regular no-break space (U+00A0) instead of narrow no-break space (U+202F)
                             const beforeSpace = target.substring(0, spacePosition);
                             const afterSpace = target.substring(spacePosition + 1);
-                            let highlight = `${beforeSpace}<e0> (U+00A0)</e0>${afterSpace}`;
+                            highlight = `${beforeSpace}<e0> (U+00A0)</e0>${afterSpace}`;
 
                             // Add prefix for array/plural resources
                             highlight = this._addResourcePrefix(highlight, index, category);
 
                             const unicodeCode = ResourceSentenceEnding.getUnicodeCodes(targetEnding.original);
-                            return new Result({
-                                rule: this,
-                                severity: "warning",
-                                id: resource.getKey(),
-                                description: `Sentence ending should be "\u202F${targetEnding.original}" (U+202F ${unicodeCode}) for ${targetLocale} locale instead of " ${targetEnding.original}" (U+00A0 ${unicodeCode})`,
-                                source: source,
-                                highlight: highlight,
-                                pathName: file,
-                                fix: this.createFixForFrenchNonBreakingSpace(resource, target, spacePosition, narrowNoBreakSpace, index, category),
-                                lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
-                            });
+                            description = `Sentence ending should be "\u202F${targetEnding.original}" (U+202F ${unicodeCode}) for ${targetLocale} locale instead of " ${targetEnding.original}" (U+00A0 ${unicodeCode})`;
+                            fix = this.createFixForFrenchNonBreakingSpace(resource, target, spacePosition, narrowNoBreakSpace, index, category);
                         } else if (lastCharBeforePunctuation !== narrowNoBreakSpace) {
                             // French target is missing non-breaking space before punctuation
                             const beforePunctuation = target.substring(0, positionInfo.position);
                             const afterPunctuation = target.substring(positionInfo.position);
-                            let highlight = `${beforePunctuation}<e0/>${afterPunctuation}`;
+                            highlight = `${beforePunctuation}<e0/>${afterPunctuation}`;
 
                             // Add prefix for array/plural resources
                             highlight = this._addResourcePrefix(highlight, index, category);
 
                             const unicodeCode = ResourceSentenceEnding.getUnicodeCodes(targetEnding.original);
-                            return new Result({
-                                rule: this,
-                                severity: "warning",
-                                id: resource.getKey(),
-                                description: `Sentence ending should be "\u202F${targetEnding.original}" (U+202F ${unicodeCode}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`,
-                                source: source,
-                                highlight: highlight,
-                                pathName: file,
-                                fix: this.createFixForFrenchNonBreakingSpace(resource, target, positionInfo.position, narrowNoBreakSpace, index, category),
-                                lineNumber: typeof(resource['lineNumber']) !== 'undefined' ? resource['lineNumber'] : undefined
-                            });
+                            description = `Sentence ending should be "\u202F${targetEnding.original}" (U+202F ${unicodeCode}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
+                            fix = this.createFixForFrenchNonBreakingSpace(resource, target, positionInfo.position, narrowNoBreakSpace, index, category);
+                        } else {
+                            // Target has correct thin no-break space and correct punctuation
+                            return undefined;
                         }
+
+                        return new Result({
+                            rule: this,
+                            severity: "warning",
+                            id: resource.getKey(),
+                            description,
+                            source,
+                            highlight,
+                            pathName: file,
+                            fix,
+                            lineNumber: resource.getLocation()?.line
+                        });
                     }
                 }
 
@@ -957,8 +944,8 @@ class ResourceSentenceEnding extends ResourceRule {
             const unicodeCode = ResourceSentenceEnding.getUnicodeCodes(targetEnding.original);
             const expectedUnicode = ResourceSentenceEnding.getUnicodeCodes(expectedPunctuation);
             const positionInfo = this.findIncorrectPunctuationPosition(target, lastSentence, targetEnding.original);
-            let highlight = '';
-            let description = `Sentence ending should be "${expectedPunctuation}" (${expectedUnicode}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
+            
+            description = `Sentence ending should be "${expectedPunctuation}" (${expectedUnicode}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
 
             if (positionInfo) {
                 const beforePunctuation = target.substring(0, positionInfo.position);
@@ -966,7 +953,6 @@ class ResourceSentenceEnding extends ResourceRule {
 
                 if (this._usesFrenchSpacingRules(targetLocale)) {
                     // For European French-speaking countries, handle spacing and punctuation as separate issues
-                    
                     // Check if the target has no punctuation at all (missing punctuation case)
                     if (targetEnding.original === '') {
                         // Target is missing punctuation entirely - just create a punctuation fix with correct spacing
@@ -1105,7 +1091,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 highlight,
                 pathName: file,
                 fix,
-                lineNumber: resource.lineNumber
+                lineNumber: resource.getLocation()?.line
             });
         }
 
