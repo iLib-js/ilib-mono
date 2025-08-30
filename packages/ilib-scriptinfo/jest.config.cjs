@@ -13,13 +13,11 @@ const config = {
     moduleFileExtensions: ['ts', 'js'],
     transform: {
         '^.+\\.ts$': ['ts-jest', {
-            useESM: true,
             tsconfig: {
                 types: ['jest', 'node']
             }
         }]
-    },
-    extensionsToTreatAsEsm: ['.ts']
+    }
 }
 
 module.exports = config; 

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { readFileSync } from 'fs';
-import ScriptInfo, { ScriptDirection } from 'ilib-scriptinfo';
+import pkg from 'ilib-scriptinfo';
+const { ScriptInfo, ScriptDirection } = pkg;
 
 /**
  * Sample command-line application demonstrating ilib-scriptinfo usage.
@@ -121,13 +122,14 @@ function searchScriptCodes(searchTerm, allScripts) {
 function main() {
     const args = process.argv.slice(2);
     
-    // Check for help flag
-    if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
+    // Show help if no arguments or --help flag
+    if (args.length === 0 || args.includes('--help')) {
         showHelp();
-        process.exit(0);
+        return;
     }
-
-    if (args.length !== 1) {
+    
+    // Check for too many arguments
+    if (args.length > 1) {
         console.error('Error: Invalid number of arguments');
         console.error('');
         console.error('Usage: node index.js <script-code>');
@@ -147,57 +149,10 @@ function main() {
     const scriptCodeToUse = correctCaseCode || inputScriptCode;
     
     // Create a ScriptInfo instance for the script code
-    const scriptInfo = new ScriptInfo(scriptCodeToUse);
+    const scriptInfo = ScriptInfo.create(scriptCodeToUse);
     
-    // Print header
-    console.log(`\nScript Information for "${inputScriptCode}"`);
-    console.log('='.repeat(50));
-    
-    // Get all available properties and their values
-    const properties = [
-        { name: 'Code', value: scriptCodeToUse },
-        { name: 'Code Number', value: scriptInfo.getCodeNumber()?.toString() || 'undefined' },
-        { name: 'Name', value: scriptInfo.getName() || 'undefined' },
-        { name: 'Long Code', value: scriptInfo.getLongCode() || 'undefined' }
-    ];
-    
-    // Add emoji+English information to the table for better readability
-    if (scriptInfo.getName()) {
-        // Add direction information with emoji
-        const direction = scriptInfo.getScriptDirection();
-        const directionEmoji = direction === ScriptDirection.RTL ? '📝 RTL' : '📝 LTR';
-        const directionText = direction === ScriptDirection.RTL ? 'Right-to-Left' : 'Left-to-Right';
-        properties.push({ name: 'Script Direction', value: `${directionEmoji} ${directionText}` });
-        
-        // Add IME information with emoji
-        if (scriptInfo.getNeedsIME()) {
-            properties.push({ name: 'IME Requirement', value: '⌨️  Requires Input Method Editor' });
-        } else {
-            properties.push({ name: 'IME Requirement', value: '⌨️  No IME required' });
-        }
-        
-        // Add casing information with emoji
-        if (scriptInfo.getCasing()) {
-            properties.push({ name: 'Casing Info', value: '🔤 Uses letter case (uppercase/lowercase)' });
-        } else {
-            properties.push({ name: 'Casing Info', value: '🔤 No letter case' });
-        }
-    }
-    
-    // Find the maximum length of property names for alignment
-    const maxNameLength = Math.max(...properties.map(p => p.name.length));
-    
-    // Print properties in tabular format
-    properties.forEach(property => {
-        const paddedName = property.name.padEnd(maxNameLength);
-        console.log(`${paddedName} | ${property.value}`);
-    });
-    
-    // Print footer
-    console.log('='.repeat(50));
-    
-    // Only show error messages for unknown scripts, not success messages
-    if (!scriptInfo.getName()) {
+    // Check if script was recognized
+    if (!scriptInfo) {
         console.log(`\n❌ Unknown script code: "${inputScriptCode}"`);
         
         // Search for similar script codes
@@ -219,16 +174,65 @@ function main() {
             // Show some example script codes
             const examples = allScripts.slice(0, 10); // Show first 10 as examples
             examples.forEach(code => {
-                const example = new ScriptInfo(code);
-                console.log(`   ${code} - ${example.getName()}`);
+                const example = ScriptInfo.create(code);
+                if (example) {
+                    console.log(`   ${code} - ${example.getName()}`);
+                }
             });
             
             if (allScripts.length > 10) {
                 console.log(`   ... and ${allScripts.length - 10} more scripts`);
             }
         }
+        
+        console.log('\n');
+        return;
     }
     
+    // Print header
+    console.log(`\nScript Information for "${inputScriptCode}"`);
+    console.log('='.repeat(50));
+    
+    // Get all available properties and their values
+    const properties = [
+        { name: 'Code', value: scriptCodeToUse },
+        { name: 'Code Number', value: scriptInfo.getCodeNumber().toString() },
+        { name: 'Name', value: scriptInfo.getName() },
+        { name: 'Long Code', value: scriptInfo.getLongCode() }
+    ];
+    
+    // Add emoji+English information to the table for better readability
+    // Add direction information with emoji
+    const direction = scriptInfo.getScriptDirection();
+    const directionEmoji = direction === ScriptDirection.RTL ? '📝 RTL' : '📝 LTR';
+    const directionText = direction === ScriptDirection.RTL ? 'Right-to-Left' : 'Left-to-Right';
+    properties.push({ name: 'Script Direction', value: `${directionEmoji} ${directionText}` });
+    
+    // Add IME information with emoji
+    if (scriptInfo.getNeedsIME()) {
+        properties.push({ name: 'IME Requirement', value: '⌨️  Requires Input Method Editor' });
+    } else {
+        properties.push({ name: 'IME Requirement', value: '⌨️  No IME required' });
+    }
+    
+    // Add casing information with emoji
+    if (scriptInfo.getCasing()) {
+        properties.push({ name: 'Casing Info', value: '🔤 Uses letter case (uppercase/lowercase)' });
+    } else {
+        properties.push({ name: 'Casing Info', value: '🔤 No letter case' });
+    }
+    
+    // Find the maximum length of property names for alignment
+    const maxNameLength = Math.max(...properties.map(p => p.name.length));
+    
+    // Print properties in tabular format
+    properties.forEach(property => {
+        const paddedName = property.name.padEnd(maxNameLength);
+        console.log(`${paddedName} | ${property.value}`);
+    });
+    
+    // Print footer
+    console.log('='.repeat(50));
     console.log('\n');
 }
 
