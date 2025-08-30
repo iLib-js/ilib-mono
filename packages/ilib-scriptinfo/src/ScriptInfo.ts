@@ -92,52 +92,68 @@ interface ScriptInfoData {
  * ```
  */
 export default class ScriptInfo {
-    private script: string | number | null | undefined;
-    private scriptString: string;
-    private info: ScriptInfoData | undefined;
+    private script: string;
+    private info: ScriptInfoData;
 
     /**
-     * Creates a new ScriptInfo instance for the specified script.
-     *
+     * Private constructor - use ScriptInfo.create() instead.
+     * 
+     * @param script - The ISO 15924 4-letter script code
+     * @param info - The script information data
+     * @internal
+     */
+    private constructor(script: string, info: ScriptInfoData) {
+        this.script = script;
+        this.info = info;
+    }
+
+    /**
+     * Factory method to create a ScriptInfo instance.
+     * 
      * @param script - The ISO 15924 4-letter script code (e.g., 'Latn', 'Arab', 'Hani')
-     *
-     * If the script code is not recognized or is invalid:
-     * - The instance will still be created successfully
-     * - `getCode()` will return the original input
-     * - `getCodeNumber()`, `getName()`, and `getLongCode()` will return `undefined`
-     * - `getScriptDirection()` will return `ScriptDirection.LTR` (default)
-     * - `getNeedsIME()` and `getCasing()` will return `false` (default)
-     *
+     * @returns A ScriptInfo instance if the script is recognized, undefined otherwise
+     * 
      * @example
      * ```typescript
-     * const latin = new ScriptInfo('Latn');
-     * const unknown = new ScriptInfo('Xyz'); // Still creates instance
+     * const latin = ScriptInfo.create('Latn');
+     * if (latin) {
+     *     console.log(latin.getName()); // "Latin"
+     *     console.log(latin.getScriptDirection()); // "ltr" (left-to-right)
+     * }
+     * 
+     * const unknown = ScriptInfo.create('Xyz');
+     * if (unknown) {
+     *     // This won't execute - unknown will be undefined
+     *     console.log(unknown.getName());
+     * }
      * ```
      */
-    constructor(script: string | number | null | undefined) {
-        this.script = script;
-        this.scriptString = String(script || '');
-        this.info = this.scriptString ? getScriptInfo(this.scriptString) : undefined;
+    static create(script: string | number | null | undefined): ScriptInfo | undefined {
+        if (!script) return undefined;
+        
+        const scriptString = String(script).trim();
+        if (!scriptString) return undefined;
+        
+        const info = getScriptInfo(scriptString);
+        if (!info) return undefined;
+        
+        return new ScriptInfo(scriptString, info);
     }
 
     /**
      * Gets the ISO 15924 4-letter script code.
      *
-     * @returns The script code exactly as provided to the constructor
+     * @returns The script code as a string
      *
      * @example
      * ```typescript
-     * const latin = new ScriptInfo('Latn');
-     * console.log(latin.getCode()); // "Latn"
-     * 
-     * const numeric = new ScriptInfo(123);
-     * console.log(numeric.getCode()); // 123
-     * 
-     * const nullScript = new ScriptInfo(null);
-     * console.log(nullScript.getCode()); // null
+     * const latin = ScriptInfo.create('Latn');
+     * if (latin) {
+     *     console.log(latin.getCode()); // "Latn"
+     * }
      * ```
      */
-    getCode(): string | number | null | undefined {
+    getCode(): string {
         return this.script;
     }
 

@@ -6,12 +6,9 @@ const config = {
         name: "ilib-scriptinfo e2e",
         color: "blue",
     },
-    preset: "ts-jest/presets/default-esm",
-    extensionsToTreatAsEsm: [".ts"],
+    preset: "ts-jest/presets/default",
     transform: {
-        "^.+\\.ts$": ["ts-jest", {
-            useESM: true,
-        }],
+        "^.+\\.ts$": ["ts-jest", {}],
     },
 };
 

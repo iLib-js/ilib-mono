@@ -52,7 +52,7 @@ module.exports = function (config) {
             mode: "development",
             target: "web",
             resolve: {
-                extensions: ['.ts', '.js', '.mjs']
+                extensions: ['.ts', '.js']
             },
             module: {
                 rules: [
