@@ -1,6 +1,6 @@
 {
     "name": "ilib-tools-interfaces",
-    "version": "1.19.0",
+    "version": "0.0.0",
     "main": "./lib/index.js",
     "module": "./src/index.js",
     "exports": {
@@ -53,11 +53,10 @@
         "node": ">=10.0.0"
     },
     "scripts": {
-        "build": "pnpm build:data ; pnpm build:prod",
+        "build": "pnpm build:prod",
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
         "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
-        "build:data": "node --experimental-vm-modules ./scripts/genPluralCategories.mjs",
         "coverage": "pnpm test -- --coverage",
         "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
@@ -67,15 +66,10 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
-        
+        "jest": "^29.7.0"
     },
     "dependencies": {
-        "@log4js-node/log4js-api": "^1.0.2",
-        "ilib-ctype": "workspace:^",
-        "ilib-istring": "workspace:^",
-        "ilib-locale": "workspace:^",
         "ilib-xliff": "workspace:^",
-        "intl-messageformat": "^10.7.11",
         "micromatch": "^4.0.8"
     }
 }

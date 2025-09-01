@@ -24,7 +24,7 @@
  */
 class Xliff {
     
-    version = 1.2;
+    version = "1.2";
     sourceLocale = "en-US";
     // place to store the translation units
     tu = [];
@@ -127,7 +127,6 @@ class Xliff {
             this.addTranslationUnit(unit);
         });
     }
-
 }
 
 export default Xliff;
