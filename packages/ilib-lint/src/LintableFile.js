@@ -161,14 +161,15 @@ class LintableFile extends DirItem {
         const projectAutofixEnabled = this.project?.getConfig()?.autofix ?? false;
 
         return this.irs.flatMap((ir) => {
-            const rules = this.filetype.getRules().filter((rule) => rule.getRuleType() === ir.getType());
-            const fixer = this.project?.getFixerManager().get(ir.getType());
-            return new LintingStrategy({
-                autofixEnabled: projectAutofixEnabled && !this.isDirty(),
+            /** @type {boolean} */
+            const autofixEnabled = projectAutofixEnabled && !this.isDirty();
+            return LintingStrategy.create({
+                type: ir.getType(),
+                fileType: this.filetype,
+                autofixEnabled,
+                fixerManager: this.project?.getFixerManager(),
             }).apply({
                 ir,
-                rules,
-                fixer,
                 filePath: this.filePath,
                 locale,
             });

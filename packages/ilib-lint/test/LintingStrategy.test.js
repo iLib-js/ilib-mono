@@ -88,6 +88,60 @@ const testFixer = (/** @type {Fixer["applyFixes"]} */ applyFixes) => {
 };
 
 describe("LintingStrategy", () => {
+    describe("creation", () => {
+        describe("constructor", () => {
+            it("should throw an error if the rules don't match the type", () => {
+                const rule = new (class extends Rule {
+                    match = () => [];
+                    type = "different-type";
+                })();
+                expect(() => new LintingStrategy({ type: testIrType, rules: [rule] })).toThrow();
+            });
+
+            it("should throw an error if the fixer doesn't match the type", () => {
+                const fixer = new (class extends Fixer {
+                    type = "different-type";
+                    applyFixes = () => [];
+                })();
+                expect(() => new LintingStrategy({ type: testIrType, rules: [], fixer })).toThrow();
+            });
+
+            it.each([0, -1, -Infinity])("should cap the minimum number of iterations at 1", (maxAutofixIterations) => {
+                const strategy = new LintingStrategy({ type: testIrType, rules: [], maxAutofixIterations });
+                expect(strategy.maxAutofixIterations).toBe(1);
+            });
+
+            it("should default the maximum number of iterations to 10", () => {
+                const strategy = new LintingStrategy({ type: testIrType, rules: [] });
+                expect(strategy.maxAutofixIterations).toBe(10);
+            });
+
+            it("should set the maximum number of iterations to the provided value", () => {
+                const maxAutofixIterations = 5;
+                const strategy = new LintingStrategy({ type: testIrType, rules: [], maxAutofixIterations });
+                expect(strategy.maxAutofixIterations).toBe(maxAutofixIterations);
+            });
+
+            it("should set the type to the provided type", () => {
+                const type = "different-type";
+                const strategy = new LintingStrategy({ type, rules: [], fixer: undefined });
+                expect(strategy.type).toBe(type);
+            });
+
+            it("should set the rules to the provided rules", () => {
+                const rules = [testRule(() => [])];
+                const strategy = new LintingStrategy({ type: testIrType, rules });
+                expect(strategy.rules).toBe(rules);
+            });
+
+            it("should set the fixer to the provided fixer", () => {
+                const fixer = testFixer(() => []);
+                const strategy = new LintingStrategy({ type: testIrType, rules: [], fixer });
+                expect(strategy.fixer).toBe(fixer);
+            });
+        });
+    });
+
     describe("rule application", () => {
         /** @type {IntermediateRepresentation} */
         let ir;
@@ -99,10 +153,9 @@ describe("LintingStrategy", () => {
         it("should apply rules to an IR", () => {
             const rule = testRule(() => []);
 
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule] });
             strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
             });
 
@@ -112,10 +165,9 @@ describe("LintingStrategy", () => {
         it("should gracefully handle rules that return undefined", () => {
             const rule = testRule(() => undefined);
 
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule] });
             strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
             });
 
@@ -127,12 +179,11 @@ describe("LintingStrategy", () => {
                 throw new Error("rule error");
             });
 
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule] });
 
             expect(() => {
                 strategy.apply({
                     ir,
-                    rules: [rule],
                     filePath: testFilePath,
                 });
             }).not.toThrow();
@@ -141,11 +192,10 @@ describe("LintingStrategy", () => {
         });
 
         it("should gracefully handle empty rules array", () => {
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [] });
             expect(() => {
                 strategy.apply({
                     ir,
-                    rules: [],
                     filePath: testFilePath,
                 });
             }).not.toThrow();
@@ -155,10 +205,9 @@ describe("LintingStrategy", () => {
             const locale = "test-locale";
 
             const rule = testRule(() => []);
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule] });
             strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
                 locale,
             });
@@ -170,10 +219,9 @@ describe("LintingStrategy", () => {
             const differentFilePath = "different/test/path/name";
 
             const rule = testRule(() => []);
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule] });
             strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: differentFilePath,
             });
 
@@ -190,10 +238,9 @@ describe("LintingStrategy", () => {
         });
 
         it("should return empty array if no rules are provided", () => {
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [] });
             const results = strategy.apply({
                 ir,
-                rules: [],
                 filePath: testFilePath,
             });
 
@@ -204,10 +251,9 @@ describe("LintingStrategy", () => {
             const rule1 = testRule(() => [testResult(rule1)]);
             const rule2 = testRule(() => [testResult(rule2)]);
 
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule1, rule2] });
             const results = strategy.apply({
                 ir,
-                rules: [rule1, rule2],
                 filePath: testFilePath,
             });
 
@@ -228,10 +274,9 @@ describe("LintingStrategy", () => {
             const rule1 = testRule(() => []);
             const rule2 = testRule(() => [testResult(rule2)]);
 
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule1, rule2] });
             const results = strategy.apply({
                 ir,
-                rules: [rule1, rule2],
                 filePath: testFilePath,
             });
 
@@ -249,10 +294,9 @@ describe("LintingStrategy", () => {
             const rule1 = testRule(() => undefined);
             const rule2 = testRule(() => [testResult(rule2)]);
 
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule1, rule2] });
             const results = strategy.apply({
                 ir,
-                rules: [rule1, rule2],
                 filePath: testFilePath,
             });
 
@@ -273,10 +317,9 @@ describe("LintingStrategy", () => {
             });
             const rule3 = testRule(() => [testResult(rule3)]);
 
-            const strategy = new LintingStrategy();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule1, rule2, rule3] });
             const results = strategy.apply({
                 ir,
-                rules: [rule1, rule2, rule3],
                 filePath: testFilePath,
             });
 
@@ -322,37 +365,19 @@ describe("LintingStrategy", () => {
                 }
             });
 
-        it("should not autofix if autofixing is disabled in the strategy", () => {
-            const strategy = new LintingStrategy({ autofixEnabled: false });
-            const fixer = testFixer();
-
+        it("should not autofix if no Fixer is provided", () => {
+            const fixer = undefined;
             const fix = testFix();
             const rule = testRule(() => [testResult(rule, fix)]);
-
-            const results = strategy.apply({
-                ir,
+            const strategy = new LintingStrategy({
+                type: testIrType,
                 rules: [rule],
-                filePath: testFilePath,
                 fixer,
             });
 
-            expect(fixer.applyFixes).not.toHaveBeenCalled();
-            expect(results).toHaveLength(1);
-            expect(fix.applied).toBe(false);
-        });
-
-        it("should not autofix if no Fixer is provided", () => {
-            const strategy = new LintingStrategy({ autofixEnabled: true });
-            const fixer = undefined;
-
-            const fix = testFix();
-            const rule = testRule(() => [testResult(rule, fix)]);
-
             const results = strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
-                fixer,
             });
 
             expect(results).toHaveLength(1);
@@ -360,17 +385,14 @@ describe("LintingStrategy", () => {
         });
 
         it("should not autofix if no Fixes are produced", () => {
-            const strategy = new LintingStrategy({ autofixEnabled: true });
             const fixer = testFixer();
-
             const fix = undefined;
             const rule = testRule(() => [testResult(rule, fix)]);
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule], fixer });
 
             const results = strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
-                fixer,
             });
 
             expect(fixer.applyFixes).not.toHaveBeenCalled();
@@ -379,21 +401,19 @@ describe("LintingStrategy", () => {
         });
 
         it("should gracefully handle the Fixer failing", () => {
-            const strategy = new LintingStrategy({ autofixEnabled: true });
             const fixer = testFixer(() => {
                 throw new Error("fixer error");
             });
 
             const fix = testFix();
             const rule = testRule(() => [testResult(rule, fix)]);
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule], fixer });
 
             let results;
             expect(() => {
                 results = strategy.apply({
                     ir,
-                    rules: [rule],
                     filePath: testFilePath,
-                    fixer,
                 });
             }).not.toThrow();
 
@@ -407,19 +427,17 @@ describe("LintingStrategy", () => {
         it("should apply the fix to the IR", () => {
             const suffix = "-fixed";
             const ir = testIr("value");
-            const strategy = new LintingStrategy({ autofixEnabled: true });
 
             // once produces a Fix containing a suffix to be appended
             const rule = testRule();
             rule.match.mockReturnValueOnce([testResult(rule, testFix({ suffix }))]);
 
             const fixer = suffixAppendFixer();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule], fixer });
 
             const results = strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
-                fixer,
             });
 
             expect(fixer.applyFixes).toHaveBeenCalledTimes(1);
@@ -430,7 +448,6 @@ describe("LintingStrategy", () => {
         });
 
         it("should keep autofixing until no more fixes are produced", () => {
-            const strategy = new LintingStrategy({ autofixEnabled: true });
             const suffix = "-fixed";
             const ir = testIr("value");
 
@@ -440,12 +457,11 @@ describe("LintingStrategy", () => {
             rule.match.mockReturnValueOnce([testResult(rule, testFix({ suffix }))]);
 
             const fixer = suffixAppendFixer();
+            const strategy = new LintingStrategy({ type: testIrType, rules: [rule], fixer });
 
             const results = strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
-                fixer,
             });
 
             expect(fixer.applyFixes).toHaveBeenCalledTimes(2);
@@ -461,10 +477,6 @@ describe("LintingStrategy", () => {
 
         it("should stop autofixing after the maximum number of iterations is reached", () => {
             const maxIterations = 3;
-            const strategy = new LintingStrategy({
-                autofixEnabled: true,
-                maxAutofixIterations: maxIterations,
-            });
             const suffix = "-fixed";
             const ir = testIr("value");
 
@@ -473,12 +485,16 @@ describe("LintingStrategy", () => {
             rule.match.mockReturnValue([testResult(rule, testFix({ suffix }))]);
 
             const fixer = suffixAppendFixer();
+            const strategy = new LintingStrategy({
+                type: testIrType,
+                maxAutofixIterations: maxIterations,
+                rules: [rule],
+                fixer,
+            });
 
             const results = strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
-                fixer,
             });
 
             expect(fixer.applyFixes).toHaveBeenCalledTimes(maxIterations);
@@ -495,9 +511,6 @@ describe("LintingStrategy", () => {
         });
 
         it("should stop autofixing if no Fixes were actually applied", () => {
-            const strategy = new LintingStrategy({
-                autofixEnabled: true,
-            });
             const suffix = "-fixed";
             const ir = testIr("value");
 
@@ -507,12 +520,15 @@ describe("LintingStrategy", () => {
 
             // fixer which does nothing
             const fixer = testFixer(() => {});
+            const strategy = new LintingStrategy({
+                type: testIrType,
+                rules: [rule],
+                fixer,
+            });
 
             const results = strategy.apply({
                 ir,
-                rules: [rule],
                 filePath: testFilePath,
-                fixer,
             });
 
             expect(fixer.applyFixes).toHaveBeenCalledTimes(1);
