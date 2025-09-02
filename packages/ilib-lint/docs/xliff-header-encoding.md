@@ -17,3 +17,10 @@ Encoding specifier comparison is case-insensitive.
 ## Options
 
 -   `encoding`: The expected encoding of the XLIFF header. Defaults to `utf-8`.
+
+## Fixing This
+
+If you are seeing this type of error, you can do one of two things:
+
+1. Update the header of your xml file to have the right character set name
+1. Convert your file to the named character set using a tool like [iconv](https://www.npmjs.com/package/iconv)
