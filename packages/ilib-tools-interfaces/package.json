@@ -66,10 +66,14 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
+        "@babel/core": "^7.19.0",
+        "@babel/preset-env": "^7.19.0",
+        "grunt-contrib-uglify": "^5.2.2",
+        "grunt-babel": "^8.0.0",
+        "grunt": "^1.5.3",
         "jest": "^29.7.0"
     },
     "dependencies": {
-        "ilib-xliff": "workspace:^",
-        "micromatch": "^4.0.8"
+        "ilib-xliff": "workspace:^"
     }
 }
