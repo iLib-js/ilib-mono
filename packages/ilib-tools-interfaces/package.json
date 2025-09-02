@@ -68,7 +68,9 @@
     "devDependencies": {
         "@babel/core": "^7.19.0",
         "@babel/preset-env": "^7.19.0",
+        "babel-plugin-add-module-exports": "^1.0.4",
         "grunt-contrib-uglify": "^5.2.2",
+        "load-grunt-tasks": "^5.1.0",
         "grunt-babel": "^8.0.0",
         "grunt": "^1.5.3",
         "jest": "^29.7.0"
