@@ -29,7 +29,6 @@ class Xliff {
     // place to store the translation units
     tu = [];
     tuhash = {};
-    lines = 0;
     
     /**
      * Construct a new xliff element instance.
@@ -73,7 +72,7 @@ class Xliff {
      * or undefined if this xml file is being parsed from a string
      * instead of a file
      */
-    deserialize() {
+    deserialize(xml, resfile) {
         throw new Error("deserialize() not implemented");
     }
 
@@ -127,6 +126,17 @@ class Xliff {
             this.addTranslationUnit(unit);
         });
     }
+
+    /**
+     * Clear the current xliff file of all translation units and start from scratch. All
+     * the settings from the constructor are still kept. Only the translation units are
+     * removed.
+     */
+    clear() {
+        this.tu = [];
+        this.tuhash = {};
+    }
+
 }
 
 export default Xliff;

@@ -2371,9 +2371,6 @@ importers:
       ilib-xliff:
         specifier: workspace:^
         version: link:../ilib-xliff
-      micromatch:
-        specifier: ^4.0.8
-        version: 4.0.8
     devDependencies:
       '@babel/core':
         specifier: ^7.19.0
@@ -2381,6 +2378,9 @@ importers:
       '@babel/preset-env':
         specifier: ^7.19.0
         version: 7.26.0(@babel/core@7.28.3)
+      babel-plugin-add-module-exports:
+        specifier: ^1.0.4
+        version: 1.0.4
       grunt:
         specifier: ^1.5.3
         version: 1.6.1
@@ -2393,6 +2393,9 @@ importers:
       jest:
         specifier: ^29.7.0
         version: 29.7.0(node-notifier@8.0.2)
+      load-grunt-tasks:
+        specifier: ^5.1.0
+        version: 5.1.0(grunt@1.6.1)
 
   packages/ilib-tree-node:
     devDependencies:
