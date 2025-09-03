@@ -251,15 +251,16 @@ describe("test the XliffParser plugin", () => {
         expect(() => xs.serialize([ir])).toThrow("No resources found in intermediate representation");
     });
 
-    test("Serialize an intermediate representation with an undefined or null intermediate representation", () => {
-        expect.assertions(2);
+    test.each([undefined, null])(
+        "Serialize an intermediate representation with invalid argument type %s",
+        (invalidIr) => {
+            expect.assertions(1);
 
-        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
-        const xs = new XliffSerializer();
-        //@ts-ignore the expected value is an array with null, but TypeScript is throwing an error because it can't assign null to an array of IntermediateRepresentation
-        expect(() => xs.serialize([null])).toThrow("Invalid intermediate representation");
-
-        //@ts-ignore the expected value is an array with undefined, but TypeScript is throwing an error because it can't assign undefined to an array of IntermediateRepresentation
-        expect(() => xs.serialize([undefined])).toThrow("Invalid intermediate representation");
-    });
+            const xs = new XliffSerializer();
+            expect(() =>
+                // @ts-expect-error testing invalid argument types
+                xs.serialize([invalidIr])
+            ).toThrow("Invalid intermediate representation");
+        }
+    );
 });
