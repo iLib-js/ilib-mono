@@ -252,10 +252,9 @@ class ResourceQuoteStyle extends ResourceRule {
             highlight = `Target: ${tar}<e0></e0>`;
             description = `Quotes are missing in the target. Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
         }
-        // @ts-ignore: Property 'lineNumber' does not exist on type 'Resource'
-        // there is no lineNumber property on a Resource type
-        // (preserved for compatibility)
-        if (typeof(resource.lineNumber) !== 'undefined') {lineNumber = /** @type {number} */ (resource.lineNumber); }
+        if (resource.getLocation()?.line !== undefined) {
+            lineNumber = resource.getLocation().line;
+        }
 
         let params = {
             /** @type {Severity} */ severity: this.localeOnly ? "error" : "warning",

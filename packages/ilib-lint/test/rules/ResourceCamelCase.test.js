@@ -18,7 +18,7 @@
  */
 
 import {Result, Fix} from "ilib-lint-common";
-import {ResourceString} from "ilib-tools-common";
+import {ResourceString, Location} from "ilib-tools-common";
 
 import ResourceCamelCase from "../../src/rules/ResourceCamelCase.js";
 import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
@@ -186,7 +186,15 @@ describe("ResourceCamelCase", () => {
 
     test("returns error if source is in camel case and target is different", () => {
         const rule = new ResourceCamelCase({});
-        const resource = createTestResourceString({source: "camelCase", target: "differentTarget"});
+        const resource = createTestResourceString({
+            source: "camelCase", 
+            target: "differentTarget",
+            location: new Location({
+                line: 45,
+                offset: 0,
+                char: 0
+            })
+        });
 
         const result = rule.matchString({
             source: resource.source,
@@ -198,6 +206,8 @@ describe("ResourceCamelCase", () => {
         expect(result).toBeInstanceOf(Result);
         expect(result.rule).toBeInstanceOf(ResourceCamelCase);
         expect(result.severity).toEqual("error");
+        expect(result.locale).toBe("xd-XD");
+        expect(result.lineNumber).toBe(45);
         expect(result.fix).toBeDefined();
 
     });
@@ -265,12 +275,23 @@ describe('ResourceCamelCase.isCamelCase', () => {
     });
 });
 
-function createTestResourceString({source, target}) {
+/**
+ * Create a test resource string
+ * @private
+ * @param {Object} param0 The parameters
+ * @param {string} param0.source The source string
+ * @param {string} param0.target The target string
+ * @param {Location} [param0.location] The location of the resource
+ * 
+ * @returns {ResourceString} The test resource string
+ */
+function createTestResourceString({source, target, location}) {
     return new ResourceString({
         source,
         target,
         key: "camel.case.test.string.id",
         targetLocale: "xd-XD",
-        pathName: "tests/for/camelCase.xliff"
+        pathName: "tests/for/camelCase.xliff",
+        ...(location && { location })
     });
 }
