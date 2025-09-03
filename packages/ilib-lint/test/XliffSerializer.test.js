@@ -74,6 +74,7 @@ describe("test the XliffParser plugin", () => {
   </file>
 </xliff>`);
     });
+
     test("Serialize a regular xliff 2.0 file", () => {
         expect.assertions(3);
 
@@ -212,6 +213,54 @@ describe("test the XliffParser plugin", () => {
     </body>
   </file>
 </xliff>`);
-
     });
+
+    test("Serialize a resource with an invalid resource type", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "string",
+            ir: ["random string"],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([ir])).toThrow("Invalid intermediate representation");
+    });
+
+    test("Serialize an intermediate representation with no representations", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([])).toThrow("No intermediate representation provided");
+    });
+
+    test("Serialize an intermediate representation with no resource representations", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([ir])).toThrow("No resources found in intermediate representation");
+    });
+
+    test.each([undefined, null])(
+        "Serialize an intermediate representation with invalid argument type %s",
+        (invalidIr) => {
+            expect.assertions(1);
+
+            const xs = new XliffSerializer();
+            expect(() =>
+                // @ts-expect-error testing invalid argument types
+                xs.serialize([invalidIr])
+            ).toThrow("Invalid intermediate representation");
+        }
+    );
 });
