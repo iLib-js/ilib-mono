@@ -40,7 +40,7 @@ describe("XliffFactory", function() {
     });
     test("XliffFactory_getAllStyles", function() {
         expect.assertions(1);
-        var list = ['default', 'standard', 'webOS'];
+        var list = ['default', 'standard', 'webOS', '1.2', '2.0', '1', '2'];
         expect(XliffFactory.getAllStyles()).toEqual(list);
     });
     test("XliffFactory_style_standard", function() {
@@ -58,5 +58,37 @@ describe("XliffFactory", function() {
         });
         expect(xf).toBeTruthy();
         expect(xf instanceof webOSXliff).toBeTruthy();
+    });
+    test("XliffFactory_style_12", function() {
+        expect.assertions(2);
+        const xf = XliffFactory({
+            style: "1.2"
+        });
+        expect(xf).toBeTruthy();
+        expect(xf instanceof Xliff).toBeTruthy();
+    });
+    test("XliffFactory_style_20", function() {
+        expect.assertions(2);
+        const xf = XliffFactory({
+            style: "2.0"
+        });
+        expect(xf).toBeTruthy();
+        expect(xf instanceof Xliff).toBeTruthy();
+    });
+    test("XliffFactory_style_1", function() {
+        expect.assertions(2);
+        const xf = XliffFactory({
+            style: "1"
+        });
+        expect(xf).toBeTruthy();
+        expect(xf instanceof Xliff).toBeTruthy();
+    });
+    test("XliffFactory_style_2", function() {
+        expect.assertions(2);
+        const xf = XliffFactory({
+            style: "2"
+        });
+        expect(xf).toBeTruthy();
+        expect(xf instanceof Xliff).toBeTruthy();
     });
 });

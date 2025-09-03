@@ -74,8 +74,5 @@
         "grunt-babel": "^8.0.0",
         "grunt": "^1.5.3",
         "jest": "^29.7.0"
-    },
-    "dependencies": {
-        "ilib-xliff": "workspace:^"
     }
 }

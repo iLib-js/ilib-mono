@@ -1,5 +1,5 @@
 /*
- * Xliff.js - super class that represents a xliff
+ * Xliff.js - superclass that represents an xliff file
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -18,8 +18,7 @@
  */
 
 /**
- * @class a class that represents resources as an xliff file.
- * extracted from the code.
+ * @class represents the API that every Xliff file subclass must implement
  * @abstract
  */
 class Xliff {
@@ -33,32 +32,26 @@ class Xliff {
     /**
      * Construct a new xliff element instance.
      *
-     * @param {Object} [options] options to the constructor
-     * @param {Function} [options.getLogger] a callback function provided by the
-     * linter to retrieve the log4js logger
-     * @param {object} [options.settings] additional settings that can be passed from the
-     * linter to pipeline element from the configuration file
+     * @param {Object} [props] props to the constructor
      */
     constructor(props) {
         if (this.constructor === Xliff) {
-            throw new Error("Cannot instantiate abstract class PipelineElement directly!");
+            throw new Error("Cannot instantiate abstract class Xliff directly!");
         }
-
-        if (props) {
-            this.sourceLocale = props.sourceLocale || props.locale;
-            this.targetLocale = props.targetLocale;
-            this.reskey = props.key || props.reskey;
-        }
-        
     }
 
     /**
-     * Return the a hash key that uniquely identifies this resource.
+     * Serialize this xliff instance to a string that contains
+     * the xliff format xml text.
      *
      * @abstract
-     * @returns {string} a unique hash key for this resource
+     * @param {boolean} untranslated if true, add the untranslated resources
+     * to the xliff file without target tags. Otherwiwe, untranslated
+     * resources are skipped.
+     * @returns {string} the current instance encoded as an xliff format
+     * xml text
      */
-    serialize() {
+    serialize(untranslated) {
         throw new Error("serialize() not implemented");
     }
 
@@ -71,6 +64,8 @@ class Xliff {
      * @param {string | undefined} resfile the path to the xliff file,
      * or undefined if this xml file is being parsed from a string
      * instead of a file
+     * @returns {Resource[]} An array of Resource instances representing
+     * the strings in this xliff file
      */
     deserialize(xml, resfile) {
         throw new Error("deserialize() not implemented");
@@ -101,7 +96,7 @@ class Xliff {
     /**
      * Get the translation units in this xliff.
      *
-     * @returns {Array.<Object>} the translation units in this xliff
+     * @returns {Resource[]} the translation units in this xliff
      */
     getTranslationUnits() {
         return this.tu;
@@ -119,7 +114,7 @@ class Xliff {
     /**
      * Add translation units to this xliff.
      *
-     * @param {Array.<Object>} files the translation units to add to this xliff
+     * @param {TranslationUnit[]} files the translation units to add to this xliff
      */
     addTranslationUnits(units) {
         units.forEach((unit) => {

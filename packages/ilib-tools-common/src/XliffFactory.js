@@ -24,18 +24,22 @@ import { webOSXliff } from "ilib-xliff-webos";
 const xliffClasses = {
     webOS: webOSXliff,
     standard: Xliff,
-    default: Xliff
+    default: Xliff,
+    '1.2': Xliff,
+    '2.0': Xliff,
+    '1': Xliff,
+    '2': Xliff
 };
 
 /**
  * Factory function that creates an instance of an XLIFF class based on the provided style.
  *
  * @function
- * @param {Object} props properties of the resource to be passed to the
- * actual resource subclass' constructor
+ * @param {Object} props properties of the xliff file to be passed to the
+ * actual resource subclass constructor
  * @param {string} [props.style] the xliff format style
  * 
- * @returns {(Object|undefined)} An instance of the corresponding XLIFF class, or `undefined` if the style is invalid.
+ * @returns {(Xliff|undefined)} An instance of the corresponding XLIFF class, or `undefined` if the style is invalid.
  */
 function XliffFactory(props) {
     let style = props && XliffFactory.availableStyles.includes(props.style)
@@ -43,12 +47,11 @@ function XliffFactory(props) {
         : XliffFactory.defaultStyle;
 
     let XliffClass = xliffClasses[style];
-    //logger.trace("xliff style " + style + " with class " + (XliffClass?.name || 'undefined') + " registered to class ");
 
     return XliffClass ? new XliffClass(props) : undefined;
 }
 
-XliffFactory.availableStyles = ['default', 'standard', 'webOS'];
+XliffFactory.availableStyles = ['default', 'standard', 'webOS', '1.2', '2.0', '1', '2'];
 XliffFactory.defaultStyle = 'standard';
 
 /**

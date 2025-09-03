@@ -95,7 +95,7 @@
         "ilib-istring": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-xliff": "workspace:^",
-        "ilib-xliff-webos": "^1.0.0",
+        "ilib-xliff-webos": "^1.0.1",
         "intl-messageformat": "^10.7.11",
         "micromatch": "^4.0.8"
     }
