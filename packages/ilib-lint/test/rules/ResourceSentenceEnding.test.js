@@ -859,6 +859,37 @@ describe("ResourceSentenceEnding rule", function() {
         });
     });
 
+    // Test that Result locale is the same as targetLocale
+    test("Result locale should match targetLocale", () => {
+        expect.assertions(6);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "locale.test",
+            sourceLocale: "en-US",
+            source: "This is a sentence.",
+            targetLocale: "ja-JP",
+            target: "これは文です.",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.locale).toBe("ja-JP");
+        expect(actual?.description).toContain("Sentence ending should be");
+        expect(actual?.id).toBe(resource.getKey());
+        expect(actual?.highlight).toBe("これは文です<e0>. (U+002E)</e0>");
+    });
+
 
     // Spanish tests for inverted punctuation
     test("Spanish inverted punctuation - question mark", () => {

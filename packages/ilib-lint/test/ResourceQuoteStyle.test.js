@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceString } from 'ilib-tools-common';
+import { ResourceString, Location } from 'ilib-tools-common';
 import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
 
 import ResourceQuoteStyle from "../src/rules/ResourceQuoteStyle.js";
@@ -573,7 +573,8 @@ describe("testResourceQuoteStyle", () => {
             source: 'This string contains "quotes" in it.',
             targetLocale: "de-DE",
             target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            location: new Location({line: 67, offset: 0, char: 0 })
         });
         const actual = rule.matchString({
             source: resource.getSource(),

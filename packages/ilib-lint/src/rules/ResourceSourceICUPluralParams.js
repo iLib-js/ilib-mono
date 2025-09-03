@@ -112,12 +112,13 @@ export class ResourceSourceICUPluralParams extends ResourceRule {
                     return new Result({
                         rule: this,
                         id: resource.getKey(),
-                        pathName: resource.getPath(),
+                        pathName: file,
                         source,
                         highlight: `<e0>${this.substringForLocation(source, partialResult.location)}</e0>`,
                         severity: partialResult.severity,
                         description: partialResult.description,
                         locale: resource.getTargetLocale(),
+                        lineNumber: resource.getLocation()?.line
                     });
                 }
                 return undefined;

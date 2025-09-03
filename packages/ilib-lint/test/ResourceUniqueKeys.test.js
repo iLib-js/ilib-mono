@@ -18,7 +18,7 @@
  */
 
 import { Result, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
-import { ResourceString } from 'ilib-tools-common';
+import { ResourceString, Location } from 'ilib-tools-common';
 
 import ResourceUniqueKeys from '../src/rules/ResourceUniqueKeys.js';
 
@@ -93,7 +93,7 @@ describe("testResourceUniqueKeys", () => {
     });
 
     test("ResourceUniqueKeysTwoResourcesConflicting", () => {
-        expect.assertions(7);
+        expect.assertions(8);
 
         const rule = new ResourceUniqueKeys();
         expect(rule).toBeTruthy();
@@ -109,6 +109,7 @@ describe("testResourceUniqueKeys", () => {
                 target: "target string",
                 pathName: "a/b/c.xliff",
                 state: "translated",
+                location: new Location({ line: 52, offset: 0, char: 0 })
             }),new ResourceString({
                 key: "resource1",
                 sourceLocale: "en-US",
@@ -117,6 +118,7 @@ describe("testResourceUniqueKeys", () => {
                 target: "target string",
                 pathName: "a/b/c.xliff",
                 state: "translated",
+                location: new Location({ line: 58, offset: 0, char: 0 })
             })]
         });
         const actual = rule.match({
@@ -130,6 +132,7 @@ describe("testResourceUniqueKeys", () => {
         expect(actual[0].description).toBe("Key is not unique within locale de-DE.");
         expect(actual[0].highlight).toBe('Key is also defined in this file: a/b/c.xliff');
         expect(actual[0].pathName).toBe("a/b/c.xliff");
+        expect(actual[0].lineNumber).toBe(52);
     });
 
     test("ResourceUniqueKeysMultipleResourcesConflicting", () => {

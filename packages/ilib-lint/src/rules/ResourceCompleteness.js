@@ -55,7 +55,8 @@ class ResourceCompleteness extends ResourceRule {
             rule: this,
             pathName: file,
             source,
-            locale: resource.getTargetLocale()
+            locale: resource.getTargetLocale(),
+            lineNumber: resource.getLocation()?.line
         };
 
         // for each source string, a translation must be provided

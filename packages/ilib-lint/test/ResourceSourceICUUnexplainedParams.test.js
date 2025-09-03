@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceArray, ResourcePlural, ResourceString } from "ilib-tools-common";
+import { ResourceArray, ResourcePlural, ResourceString, Location } from "ilib-tools-common";
 import { IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
 import ResourceSourceICUUnexplainedParams from "../src/rules/ResourceSourceICUUnexplainedParams.js";
 
@@ -30,14 +30,15 @@ describe("ResourceSourceICUUnexplainedParams", () => {
             key: "icu.test",
             sourceLocale: "en-US",
             source: "Examine other usage by {ruleUser}.",
-            pathName: "a/b/c.xliff",
-            comment: "Notice about other usage examples."
+            pathName: "original/resource/path.xliff",
+            comment: "Notice about other usage examples.",
+            location: new Location({ line: 42 })
         });
 
         const result = rule.matchString({
             source: /** @type {string} */ (resource.getSource()),
             resource,
-            file: "a/b/c.xliff"
+            file: "current/processing/file.xliff"
         });
 
         const expected = [
@@ -48,11 +49,13 @@ describe("ResourceSourceICUUnexplainedParams", () => {
                 source: "Examine other usage by {ruleUser}.",
                 highlight: "Examine other usage by <e0>{ruleUser}</e0>.",
                 rule,
-                pathName: "a/b/c.xliff"
+                pathName: "current/processing/file.xliff",
+                lineNumber: 42
             })
         ];
 
         expect(result).toStrictEqual(expected);
+        expect(result[0].lineNumber).toBe(42);
     });
 
     test("replacement parameter mentioned in comment for translators", () => {
