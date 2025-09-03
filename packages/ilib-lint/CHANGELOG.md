@@ -1,5 +1,21 @@
 # ilib-lint
 
+## 2.17.1
+
+### Patch Changes
+
+- ea31e0d: Fixed the issue where an incorrect xliff instance was created because the version was not being passed in the XliffSerializer.
+- 114eae0: - fix incorrect fixes in the sentence-ending punctuation rule that extended past the end of the string
+  - add differentiation between question mark, exclamation point, colon vs. period and ellipsis.
+    - the first group gets a narrow non-breaking space in front of it, whereas the second group does not
+  - make the French rule only apply to Euro locales
+    - Canadian French for example does not follow the Euro French spacing rules
+  - harmonize the description field to be similar for all cases
+- 9212dff: - Add defensive code to the serializers so they don't
+  crash if they are given bogus input
+- Updated dependencies [9212dff]
+  - ilib-lint-common@3.5.0
+
 ## 2.17.0
 
 ### Minor Changes
@@ -12,16 +28,16 @@
   resource-icu-plural-translated rule. - It does not produce warnings for those exception phrases.
   Now you can list the exceptions by locale in the parameters
   to the rule:
-  `      "rulesets": {
-        "myruleset": {
-          "resource-icu-plural-translated": {
-            "exceptions": {
-              "it-IT": ["File", "Files"]
-            }
+  `     "rulesets": {
+      "myruleset": {
+        "resource-icu-plural-translated": {
+          "exceptions": {
+            "it-IT": ["File", "Files"]
           }
         }
       }
-     ` - Exceptions are entire phrases, not individual words. The idea
+    }
+  ` - Exceptions are entire phrases, not individual words. The idea
   of the rule is to catch entire plural categories that the
   translators missed, and the idea of the exceptions to avoid
   those few false positives that pop up infrequently.
