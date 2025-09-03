@@ -705,12 +705,22 @@ class Project extends DirItem {
                 `                   Total     ${`${String(this.fileStats.files)} Files`.padEnd(15, ' ')}${`${String(this.fileStats.modules)} Modules`.padEnd(15, ' ')}${`${String(this.fileStats.lines)} Lines`.padEnd(15, ' ')}`
             ];
             if (results.length) {
-                lines.push(`Errors:            ${String(this.resultStats.errors).padEnd(10, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.lines).padEnd(15, ' ')}`);
+                // avoid division by zero if the fileStats is undefined or zero
+                const errorsPerFile = this.resultStats.errors/(this?.fileStats?.files || 1);
+                const warningsPerFile = this.resultStats.warnings/(this?.fileStats?.files || 1);
+                const suggestionsPerFile = this.resultStats.suggestions/(this?.fileStats?.files || 1);
+                const errorsPerModule = this.resultStats.errors/(this?.fileStats?.modules || 1);
+                const warningsPerModule = this.resultStats.warnings/(this?.fileStats?.modules || 1);
+                const suggestionsPerModule = this.resultStats.suggestions/(this?.fileStats?.modules || 1);
+                const errorsPerLine = this.resultStats.errors/(this?.fileStats?.lines || 1);
+                const warningsPerLine = this.resultStats.warnings/(this?.fileStats?.lines || 1);
+                const suggestionsPerLine = this.resultStats.suggestions/(this?.fileStats?.lines || 1);
+                lines.push(`Errors:            ${String(this.resultStats.errors).padEnd(10, ' ')}${fmt.format(errorsPerFile).padEnd(15, ' ')}${fmt.format(errorsPerModule).padEnd(15, ' ')}${fmt.format(errorsPerLine).padEnd(15, ' ')}`);
                 if (!this.options.errorsOnly) {
                     lines.push(
-                        `Warnings:          ${String(this.resultStats.warnings).padEnd(10, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.lines).padEnd(15, ' ')}`);
+                        `Warnings:          ${String(this.resultStats.warnings).padEnd(10, ' ')}${fmt.format(warningsPerFile).padEnd(15, ' ')}${fmt.format(warningsPerModule).padEnd(15, ' ')}${fmt.format(warningsPerLine).padEnd(15, ' ')}`);
                     lines.push(
-                        `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.lines).padEnd(15, ' ')}`);
+                        `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, ' ')}${fmt.format(suggestionsPerFile).padEnd(15, ' ')}${fmt.format(suggestionsPerModule).padEnd(15, ' ')}${fmt.format(suggestionsPerLine).padEnd(15, ' ')}`);
                 }
             }
             lines.push(`I18N Score (0-100) ${fmt.format(score)}`);
