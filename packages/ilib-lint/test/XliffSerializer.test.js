@@ -264,6 +264,3 @@ describe("test the XliffParser plugin", () => {
         }
     );
 });
-
-    });
-});
