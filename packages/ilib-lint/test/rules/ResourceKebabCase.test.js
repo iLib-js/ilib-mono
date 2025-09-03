@@ -18,7 +18,7 @@
  */
 
 import {Result, Fix} from "ilib-lint-common";
-import {ResourceString} from "ilib-tools-common";
+import {ResourceString, Location} from "ilib-tools-common";
 
 import ResourceKebabCase from "../../src/rules/ResourceKebabCase.js";
 import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
@@ -186,7 +186,15 @@ describe("ResourceKebabCase", () => {
 
     test("returns error if source is in kebab case and target is different", () => {
         const rule = new ResourceKebabCase({});
-        const resource = createTestResourceString({source: "kebab-case-example", target: "different-target"});
+        const resource = createTestResourceString({
+            source: "kebab-case-example", 
+            target: "different-target",
+            location: new Location({
+                line: 37,
+                offset: 0,
+                char: 0
+            })
+        });
 
         const result = rule.matchString({
             source: resource.source,
@@ -198,6 +206,8 @@ describe("ResourceKebabCase", () => {
         expect(result).toBeInstanceOf(Result);
         expect(result.rule).toBeInstanceOf(ResourceKebabCase);
         expect(result.severity).toEqual("error");
+        expect(result.locale).toBe("xd-XD");
+        expect(result.lineNumber).toBe(37);
         expect(result.fix).toBeDefined();
     });
 
@@ -270,12 +280,23 @@ describe('ResourceKebabCase.isKebabCase', () => {
     });
 });
 
-function createTestResourceString({source, target}) {
+/**
+ * Create a test resource string
+ * @private
+ * @param {Object} param0 The parameters
+ * @param {string} param0.source The source string
+ * @param {string} param0.target The target string
+ * @param {Location} [param0.location] The location of the resource
+ * 
+ * @returns {ResourceString} The test resource string
+ */
+function createTestResourceString({source, target, location}) {
     return new ResourceString({
         source,
         target,
         key: "kebab.case.test.string.id",
         targetLocale: "xd-XD",
-        pathName: "tests/for/kebabCase.xliff"
+        pathName: "tests/for/kebabCase.xliff",
+        ...(location && { location })
     });
 }

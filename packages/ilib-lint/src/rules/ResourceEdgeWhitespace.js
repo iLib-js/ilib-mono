@@ -52,7 +52,8 @@ class ResourceEdgeWhitespace extends ResourceRule {
             rule: this,
             pathName: file,
             source,
-            locale: resource.getTargetLocale()
+            locale: resource.getTargetLocale(),
+            lineNumber: resource.getLocation()?.line
         };
 
         if (whitespaces.target.leading !== whitespaces.source.leading) {
