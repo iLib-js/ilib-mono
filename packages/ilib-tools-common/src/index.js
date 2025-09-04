@@ -1,7 +1,7 @@
 /*
  * index.js - export all the library code from one main file
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import Location from './Location.js';
 import walk from './DirectoryWalk.js';
 import {convertPluralResToICU, convertICUToPluralRes} from './ResourceConvert.js';
 import escaperFactory from './EscaperFactory.js';
+import XliffFactory from './XliffFactory.js';
 
 import {
     formatPath,
@@ -74,5 +75,6 @@ export {
     convertPluralResToICU,
     convertICUToPluralRes,
     escaperFactory,
-    getLanguagePluralCategories
+    getLanguagePluralCategories,
+    XliffFactory
 };
