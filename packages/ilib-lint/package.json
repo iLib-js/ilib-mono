@@ -69,6 +69,7 @@
         "dedent": "^1.5.3",
         "docdash": "^2.0.2",
         "i18nlint-plugin-test-old": "file:test/i18nlint-plugin-test-old",
+        "ilib-es6": "^14.21.0",
         "ilib-lint-plugin-obsolete": "file:test/ilib-lint-plugin-obsolete",
         "ilib-lint-plugin-test": "file:test/ilib-lint-plugin-test",
         "jest": "^29.7.0",

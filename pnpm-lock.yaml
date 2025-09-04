@@ -805,6 +805,9 @@ importers:
       i18nlint-plugin-test-old:
         specifier: file:test/i18nlint-plugin-test-old
         version: file:packages/ilib-lint/test/i18nlint-plugin-test-old
+      ilib-es6:
+        specifier: ^14.21.0
+        version: 14.21.0
       ilib-lint-plugin-obsolete:
         specifier: file:test/ilib-lint-plugin-obsolete
         version: file:packages/ilib-lint/test/ilib-lint-plugin-obsolete
@@ -5818,6 +5821,10 @@ packages:
 
   ilib-env@1.4.1:
     resolution: {integrity: sha512-lhXj5AaOT6AAft3eSFTqncNSYhqMdXAq9RpAeCral1tJpZDmzxhxpnKcFghgbjk9NkFFBRxFxTIAkgSq9NfEfQ==}
+
+  ilib-es6@14.21.0:
+    resolution: {integrity: sha512-0RNWnaZ5ojMuK/we1UP1Z2olbm45VETB6oVTlTWkCZTvlgDpuqTdtNymbvgSn6s7UP/qRBP5uHBZ7RrBrWgxug==}
+    engines: {node: '>= 14.0.0'}
 
   ilib-istring@1.1.0:
     resolution: {integrity: sha512-L1k59U+R8BTPMZqdHGhRGLH1PPyDgaDGPMbQFmT1kk0grGHfT7Rcmt9/EgdRQ1G0q9dnr4ZqkvknNJY5711ang==}
@@ -12868,6 +12875,10 @@ snapshots:
   ilib-env@1.4.0: {}
 
   ilib-env@1.4.1: {}
+
+  ilib-es6@14.21.0:
+    dependencies:
+      ilib: 14.21.0
 
   ilib-istring@1.1.0:
     dependencies:

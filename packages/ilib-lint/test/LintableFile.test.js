@@ -243,7 +243,7 @@ describe("testLintableFile", () => {
     });
 
     test("LintableFileParseNonResourceFile", () => {
-        expect.assertions(7);
+        expect.assertions(8);
 
         const filetype = project.getFileTypeForPath("test/ilib-mock/index.js");
         const lf = new LintableFile("test/ilib-mock/index.js", {
@@ -256,8 +256,9 @@ describe("testLintableFile", () => {
         const ir = lf.getIRs();
         expect(ir).toBeTruthy();
         expect(Array.isArray(ir)).toBeTruthy();
-        expect(ir.length).toBe(1);
+        expect(ir.length).toBe(2);
         expect(ir[0].getType()).toBe("string");
+        expect(ir[1].getType()).toBe("byte");
         const source = ir[0].getRepresentation();
         expect(source).toBeTruthy();
         expect(source.length).toBe(117); // how many chars in this source file?
@@ -285,7 +286,7 @@ describe("testLintableFile", () => {
     });
 
     test("LintableFile parse an oddly-named file using the default parser not using a named parser", () => {
-        expect.assertions(7);
+        expect.assertions(8);
 
         const filetype = project.getFileTypeForPath("test/testfiles/strings.pdq");
         const lf = new LintableFile("test/testfiles/strings.pdq", {
@@ -298,9 +299,10 @@ describe("testLintableFile", () => {
         const ir = lf.getIRs();
         expect(ir).toBeTruthy();
         expect(Array.isArray(ir)).toBeTruthy();
-        expect(ir.length).toBe(1);
+        expect(ir.length).toBe(2);
         // can't determine the file type, so it just parses it as one big string
         expect(ir[0].getType()).toBe("string");
+        expect(ir[1].getType()).toBe("byte");
         const source = ir[0].getRepresentation();
         expect(source).toBeTruthy();
         expect(source.length).toBe(78); // how many chars in this source file?

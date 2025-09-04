@@ -50,6 +50,9 @@ import ResourceGNUPrintfMatch from '../rules/ResourceGNUPrintfMatch.js';
 import ResourceReturnChar from '../rules/ResourceReturnChar.js';
 import StringFixer from './string/StringFixer.js';
 import ResourceFixer from './resource/ResourceFixer.js';
+import ByteParser from './byte/ByteParser.js';
+import FileEncodingRule from '../rules/byte/FileEncodingRule.js';
+import XliffHeaderEncoding from '../rules/string/XliffHeaderEncoding.js';
 
 // built-in declarative rules
 export const regexRules = [
@@ -426,6 +429,11 @@ export const builtInRulesets = {
         "resource-apostrophe": true,
     },
 
+    xliff: {
+        "file-encoding": true,
+        "xliff-header-encoding": true,
+    },
+
     gnu: {
         // GNU printf style parameter matching
         "resource-gnu-printf-match": true,
@@ -483,7 +491,7 @@ class BuiltinPlugin extends Plugin {
      * plugin
      */
     getParsers() {
-        return [XliffParser, LineParser, StringParser];
+        return [XliffParser, LineParser, StringParser, ByteParser];
     }
 
     /**
@@ -533,6 +541,8 @@ class BuiltinPlugin extends Plugin {
             ResourceKebabCase,
             ResourceGNUPrintfMatch,
             ResourceReturnChar,
+            FileEncodingRule,
+            XliffHeaderEncoding,
             ...regexRules
         ];
     }
