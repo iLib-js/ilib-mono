@@ -50,6 +50,7 @@ class SourceFile {
      * the linter to retrieve the log4js logger
      * @param {String} [options.type] the type of this file
      * @param {String} [options.content] the content of the file
+     * @param {Buffer} [options.raw] the raw bytes of the file
      * @constructor
      */
     constructor(uri, options) {
@@ -82,6 +83,12 @@ class SourceFile {
             if (this.content) {
                 this.dirty = true;
                 this.raw = Buffer.from(this.content, "utf8");
+            }
+        } else if (options?.raw) {
+            this.raw = options.raw;
+            if (this.raw) {
+                this.dirty = true;
+                this.content = this.raw.toString("utf8");
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * StringFixer.test.js
+ * ByteFixer.test.js
  *
  * Copyright © 2023-2025 JEDLSoft
  *
@@ -18,167 +18,182 @@
  */
 
 import { IntermediateRepresentation, SourceFile } from "ilib-lint-common";
-import StringFixer from "../../../src/plugins/string/StringFixer.js";
-import StringFix from "../../../src/plugins/string/StringFix.js";
-import StringFixCommand from "../../../src/plugins/string/StringFixCommand.js";
+import ByteFixer from "../../../src/plugins/byte/ByteFixer.js";
+import ByteFix from "../../../src/plugins/byte/ByteFix.js";
+import PositionalFixCommand from "../../../src/plugins/positional/PositionalFixCommand.js";
 
 // ESM support
 const jest = import.meta.jest;
 
 const sourceFile = new SourceFile("test/file.txt", {});
 
-describe("testStringFixer", () => {
-    test("StringFixerShouldReplace", () => {
+describe("ByteFixer", () => {
+    test("should replace a byte", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
-        const fix = new StringFix(StringFixCommand.replaceAfter(2, 1, "C"));
+        const fixer = new ByteFixer();
+        const fix = new ByteFix(new PositionalFixCommand(2, 1, Buffer.from("C")));
         fixer.applyFixes(subject, [fix]);
-        expect(subject.ir).toBe("abCdef");
+        expect(subject.ir).toEqual(Buffer.from("abCdef"));
     });
 
-    test("StringFixerShouldInsert", () => {
+    test("should insert a byte", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
-        const fix = new StringFix(StringFixCommand.insertAfter(2, "!"));
+        const fixer = new ByteFixer();
+        const fix = new ByteFix(new PositionalFixCommand(2, 0, Buffer.from("!")));
         fixer.applyFixes(subject, [fix]);
-        expect(subject.ir).toBe("ab!cdef");
+        expect(subject.ir).toEqual(Buffer.from("ab!cdef"));
     });
 
-    test("StringFixerShouldDelete", () => {
+    test("should delete a byte", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
-        const fix = new StringFix(StringFixCommand.deleteAfter(2, 1));
+        const fixer = new ByteFixer();
+        const fix = new ByteFix(new PositionalFixCommand(2, 1, Buffer.from([])));
         fixer.applyFixes(subject, [fix]);
-        expect(subject.ir).toBe("abdef");
+        expect(subject.ir).toEqual(Buffer.from("abdef"));
     });
 
-    test("StringFixerShouldReplaceMultiple", () => {
+    test("should replace multiple bytes", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
         // produced by rule "uppercase the vowels"
-        const fix = new StringFix(StringFixCommand.replaceAfter(0, 1, "A"), StringFixCommand.replaceAfter(4, 1, "E"));
+        const fix = new ByteFix(
+            new PositionalFixCommand(0, 1, Buffer.from("A")),
+            new PositionalFixCommand(4, 1, Buffer.from("E"))
+        );
         fixer.applyFixes(subject, [fix]);
-        expect(subject.ir).toBe("AbcdEf");
+        expect(subject.ir).toEqual(Buffer.from("AbcdEf"));
     });
 
-    test("StringFixerShouldInsertMultiple", () => {
+    test("should insert multiple bytes", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
         // produced by rule "always quote"
-        const fix = new StringFix(StringFixCommand.insertAfter(0, '"'), StringFixCommand.insertAfter(6, '"'));
+        const fix = new ByteFix(
+            new PositionalFixCommand(0, 0, Buffer.from('"')),
+            new PositionalFixCommand(6, 0, Buffer.from('"'))
+        );
         fixer.applyFixes(subject, [fix]);
-        expect(subject.ir).toBe('"abcdef"');
+        expect(subject.ir).toEqual(Buffer.from('"abcdef"'));
     });
 
-    test("StringFixerShouldDeleteMultiple", () => {
+    test("should delete multiple bytes", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
         // produced by rule "disallow vowels"
-        const fix = new StringFix(StringFixCommand.deleteAfter(0, 1), StringFixCommand.deleteAfter(4, 1));
+        const fix = new ByteFix(
+            new PositionalFixCommand(0, 1, Buffer.from([])),
+            new PositionalFixCommand(4, 1, Buffer.from([]))
+        );
         fixer.applyFixes(subject, [fix]);
-        expect(subject.ir).toBe("bcdf");
+        expect(subject.ir).toEqual(Buffer.from("bcdf"));
     });
 
-    test("StringFixerShouldFixMultipleFixes", () => {
+    test("should apply multiple fixes", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
         const fixes = [
             // produced by rule "sentence case"
-            new StringFix(StringFixCommand.replaceAfter(0, 1, "A")),
+            new ByteFix(new PositionalFixCommand(0, 1, Buffer.from("A"))),
             // produced by rule "always shout"
-            new StringFix(StringFixCommand.insertAfter(6, "!")),
+            new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("!"))),
         ];
         fixer.applyFixes(subject, fixes);
-        expect(subject.ir).toBe("Abcdef!");
+        expect(subject.ir).toEqual(Buffer.from("Abcdef!"));
     });
 
-    test("StringFixerShouldFixMultipleFixesMultipleCommands", () => {
+    test("should apply multiple fixes with multiple commands", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
         const fixes = [
             // produced by rule "always quote"
-            new StringFix(StringFixCommand.insertAfter(0, '"'), StringFixCommand.insertAfter(6, '"')),
+            new ByteFix(
+                new PositionalFixCommand(0, 0, Buffer.from('"')),
+                new PositionalFixCommand(6, 0, Buffer.from('"'))
+            ),
             // produced by rule "disallow vowels"
-            new StringFix(StringFixCommand.deleteAfter(0, 1), StringFixCommand.deleteAfter(4, 1)),
+            new ByteFix(
+                new PositionalFixCommand(0, 1, Buffer.from([])),
+                new PositionalFixCommand(4, 1, Buffer.from([]))
+            ),
         ];
         fixer.applyFixes(subject, fixes);
-        expect(subject.ir).toBe('"bcdf"');
+        expect(subject.ir).toEqual(Buffer.from('"bcdf"'));
     });
 
-    test("StringFixerShouldFlagAppliedFixes", () => {
+    test("should mark applied fixes as applied", () => {
         expect.assertions(1);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
         // no overlap
         const fixes = [
             // produced by rule "sentence case"
-            new StringFix(StringFixCommand.replaceAfter(0, 1, "A")),
+            new ByteFix(new PositionalFixCommand(0, 1, Buffer.from("A"))),
             // produced by rule "always shout"
-            new StringFix(StringFixCommand.insertAfter(6, "!")),
+            new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("!"))),
         ];
         fixer.applyFixes(subject, fixes);
         expect(fixes.every((f) => f.applied)).toBe(true);
     });
 
-    test("StringFixerShouldNotMarkOverlappingFixAsApplied", () => {
+    test("should not mark overlapping fixes as applied", () => {
         expect.assertions(2);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
 
         // overlap
 
         // produced by rule "always shout"
-        const alwaysShoutFix = new StringFix(StringFixCommand.insertAfter(6, "!"));
+        const alwaysShoutFix = new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("!")));
         // produced by rule "always ask"
-        const alwaysAskFix = new StringFix(StringFixCommand.insertAfter(6, "?"));
+        const alwaysAskFix = new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("?")));
 
         fixer.applyFixes(subject, [alwaysShoutFix, alwaysAskFix]);
 
@@ -189,41 +204,26 @@ describe("testStringFixer", () => {
 
         expect(alwaysShoutFix.applied).toBe(true);
         expect(alwaysAskFix.applied).toBe(false);
-
-        // @TODO note for future - this is a good example of infinite loop during naive
-        // attempt to exhaustively apply all auto-fixes by reparsing until no fixes are available:
-        // in first parsing and autofixing iteration, always-shout fix would append ! to the string
-        // and always-ask would be skipped; after reparsing, always-shout would be satisfied
-        // but always-ask would complain again, so its fix would append ?; in third iteration,
-        // always-shout would again notice missing ! at the end etc.
-        //
-        // one idea other than simply placing a hard iteration limit is:
-        // if during any iteration the rule did not produce a Result, this means that
-        // any Results produced by it in subsequent iterations would only come from errors introduced
-        // by errors in other Rules; hence, after no errors were found the Rule get disabled
-        // for the subsequent iterations
-        // or it could keep running (so that the final report would still contain a note about the issue)
-        // but become banned from producing autofixes
     });
 
     test("should not mark fixes as applied if an attempt to apply them fails", () => {
         const subject = new IntermediateRepresentation({
             type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
 
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
         // no overlap
         const fixes = [
             // produced by rule "sentence case"
-            new StringFix(new StringFixCommand(0, 1, "A")),
+            new ByteFix(new PositionalFixCommand(0, 1, Buffer.from("A"))),
             // produced by rule "always shout"
-            new StringFix(new StringFixCommand(6, 0, "!")),
+            new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("!"))),
         ];
 
         // mock error when applying fix commands
-        const applyCommandsSpy = jest.spyOn(StringFixCommand, "applyCommands").mockImplementationOnce(() => {
+        const applyCommandsSpy = jest.spyOn(PositionalFixCommand, "applyCommands").mockImplementationOnce(() => {
             throw new Error("test error");
         });
 
@@ -239,7 +239,7 @@ describe("testStringFixer", () => {
     });
 
     test("should not overwrite the intermediate representation content if an attempt to apply fixes fails", () => {
-        const originalContent = "abcdef";
+        const originalContent = Buffer.from("abcdef");
 
         const subject = new IntermediateRepresentation({
             type: "byte",
@@ -247,17 +247,17 @@ describe("testStringFixer", () => {
             ir: originalContent,
         });
 
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
         // no overlap
         const fixes = [
             // produced by rule "sentence case"
-            new StringFix(new StringFixCommand(0, 1, "A")),
+            new ByteFix(new PositionalFixCommand(0, 1, Buffer.from("A"))),
             // produced by rule "always shout"
-            new StringFix(new StringFixCommand(6, 0, "!")),
+            new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("!"))),
         ];
 
         // mock error when applying fix commands
-        const applyCommandsSpy = jest.spyOn(StringFixCommand, "applyCommands").mockImplementationOnce(() => {
+        const applyCommandsSpy = jest.spyOn(PositionalFixCommand, "applyCommands").mockImplementationOnce(() => {
             throw new Error("test error");
         });
 
@@ -272,28 +272,28 @@ describe("testStringFixer", () => {
         applyCommandsSpy.mockRestore();
     });
 
-    test("StringFixerShouldNotApplyAnyCommandsOfASkippedFix", () => {
+    test("should not apply any commands of a skipped fix", () => {
         expect.assertions(4);
         const subject = new IntermediateRepresentation({
-            type: "string",
+            type: "byte",
             sourceFile,
-            ir: "abcdef",
+            ir: Buffer.from("abcdef"),
         });
-        const fixer = new StringFixer();
+        const fixer = new ByteFixer();
 
         // overlap
 
         // produced by rule "always ask"
-        const alwaysAskFix = new StringFix(StringFixCommand.insertAfter(6, "?"));
+        const alwaysAskFix = new ByteFix(new PositionalFixCommand(6, 0, Buffer.from("?")));
         // produced by rule "always shout in Spanish"
-        const alwaysShoutFix = new StringFix(
-            StringFixCommand.insertAfter(0, "¡"),
-            StringFixCommand.insertAfter(6, "!")
+        const alwaysShoutFix = new ByteFix(
+            new PositionalFixCommand(0, 0, Buffer.from("¡")),
+            new PositionalFixCommand(6, 0, Buffer.from("!"))
         );
         // produced by rule "uppercase B and D"
-        const uppercaseSelectedFix = new StringFix(
-            StringFixCommand.replaceAfter(1, 1, "B"),
-            StringFixCommand.replaceAfter(3, 1, "D")
+        const uppercaseSelectedFix = new ByteFix(
+            new PositionalFixCommand(1, 1, Buffer.from("B")),
+            new PositionalFixCommand(3, 1, Buffer.from("D"))
         );
 
         fixer.applyFixes(subject, [alwaysAskFix, alwaysShoutFix, uppercaseSelectedFix]);
@@ -308,6 +308,6 @@ describe("testStringFixer", () => {
         expect(alwaysShoutFix.applied).toBe(false);
         expect(uppercaseSelectedFix.applied).toBe(true);
 
-        expect(subject.ir).toBe("aBcDef?");
+        expect(subject.ir).toEqual(Buffer.from("aBcDef?"));
     });
 });
