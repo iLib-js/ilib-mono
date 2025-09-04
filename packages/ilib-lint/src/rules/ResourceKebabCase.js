@@ -2,7 +2,9 @@ import ResourceRule from './ResourceRule.js';
 import {Result} from 'ilib-lint-common';
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
+// type imports
 /** @ignore @typedef {import('ilib-tools-common').Resource} Resource */
+/** @ignore @typedef {import('../plugins/resource/ResourceFix.js').default} ResourceFix */
 
 /**
  * @classdesc Class representing an ilib-lint programmatic rule for linting kebab cased strings.
@@ -27,6 +29,14 @@ class ResourceKebabCase extends ResourceRule {
     /**
      * Check if a source string is in kebab case and if the target string is the same as the source.
      * @override
+     * @param {Object} params
+     * @param {string} params.source the source string to match against
+     * @param {string} params.target the target string to match against
+     * @param {string} params.file the file path where the resources came from
+     * @param {Resource} params.resource the resource that contains the source and/or target string
+     * @param {number} [params.index] if the resource being tested is an array resource, this represents the index of this string in the array
+     * @param {string} [params.category] if the resource being tested is a plural resource, this represents the plural category of this string
+     * @returns {Result|undefined} A Result with severity 'error' if the source string is in kebab case and target string is not the same as the source string, otherwise undefined.
      */
     matchString({source, target, file, resource, index, category}) {
         if (!source || !target) {
@@ -64,7 +74,9 @@ class ResourceKebabCase extends ResourceRule {
      * Get the fix for this rule
      * @param {Resource} resource the resource to fix
      * @param {string} source the source string that should be used in the target
-     * @returns {import('../plugins/resource/ResourceFix.js').default} the fix for this rule
+     * @param {number} [index] if the resource being tested is an array resource, this represents the index of this string in the array
+     * @param {string} [category] if the resource being tested is a plural resource, this represents the plural category of this string
+     * @returns {ResourceFix} the fix for this rule
      */
     getFix(resource, source, index, category) {
         const command = ResourceFixer.createStringCommand(0, resource.getTarget().length, source);
