@@ -28,22 +28,25 @@ class Location {
      *
      * @constructor
      * @param {Object} info location info of the resource
-     * @param {Number?} info.offset offset of the first character of the resource
+     * @param {(Number|String)?} info.offset offset of the first character of the resource
      * relative to the beginning of the file
-     * @param {Number?} info.line line number of the resource
-     * @param {Number?} info.char character number of the resource
+     * @param {(Number|String)?} info.line line number of the resource
+     * @param {(Number|String)?} info.char character number of the resource
      */
     constructor(info) {
+        /**
+         * @type {{offset?: number, line?: number, char?: number}}
+         */
         this.info = {
         };
 
         if (info) {
             if (info.offset) {
-                this.info.offset = parseInt(info.offset);
+                this.info.offset = parseInt(String(info.offset));
             }
             if (info.line) {
-                this.info.line = parseInt(info.line);
-                this.info.char = parseInt(info.char);
+                this.info.line = parseInt(String(info.line));
+                this.info.char = parseInt(String(info.char));
             }
         }
     }

@@ -784,6 +784,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
+      '@formatjs/icu-messageformat-parser':
+        specifier: 2.9.1
+        version: 2.9.1
       '@ilib-mono/e2e-test':
         specifier: workspace:^
         version: link:../e2e-test

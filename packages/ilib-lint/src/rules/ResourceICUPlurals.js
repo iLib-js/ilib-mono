@@ -20,9 +20,18 @@
 import { IntlMessageFormat } from 'intl-messageformat';
 import Locale from 'ilib-locale';
 import { Result } from 'ilib-lint-common';
-import { getLanguagePluralCategories } from 'ilib-tools-common';
+import { getLanguagePluralCategories, Resource } from 'ilib-tools-common';
 
 import ResourceRule from './ResourceRule.js';
+
+// type imports
+/** @ignore @typedef {ReturnType<import('intl-messageformat').IntlMessageFormat['getAst']>} MessageFormatAst */
+/** @ignore @typedef {import("@formatjs/icu-messageformat-parser").PluralElement} PluralElement */
+/** @ignore @typedef {import("@formatjs/icu-messageformat-parser").SelectElement} SelectElement */
+
+/** @typedef {{node: PluralElement|SelectElement, categories: string[]}} Select */
+/** @typedef {{offset: number, line: number, column: number}} ErrorLocationDetails */
+/** @typedef {{start: ErrorLocationDetails, end: ErrorLocationDetails}} ICUErrorLocation */
 
 /**
  * Get the difference of two sets. That is, return a set that contains
@@ -74,6 +83,14 @@ class ResourceICUPlurals extends ResourceRule {
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-icu-plurals.md";
     }
 
+    /**
+     * @param {Select} sourceSelect the source select or plural
+     * @param {Select} targetSelect the target select or plural
+     * @param {Locale} locale the locale
+     * @param {Resource} resource the resource being checked
+     * @param {string} file the file where the resource came from
+     * @returns {Result[]} the results
+     */
     matchCategories(sourceSelect, targetSelect, locale, resource, file) {
         let problems = [];
         const srcLocale = new Locale(resource.getSourceLocale());
@@ -81,7 +98,7 @@ class ResourceICUPlurals extends ResourceRule {
         // categories that are required according to the language rules
         let requiredSourceCategories, requiredTargetCategories;
 
-        if (sourceSelect.node.pluralType === "cardinal") {
+        if ('pluralType' in sourceSelect.node && sourceSelect.node.pluralType === "cardinal") {
             requiredSourceCategories = new Set(getLanguagePluralCategories(srcLocale.getLanguage()));
             requiredTargetCategories = new Set(getLanguagePluralCategories(locale.getLanguage()));
         } else {
@@ -94,7 +111,7 @@ class ResourceICUPlurals extends ResourceRule {
         let actualNonrequiredSourceCategories = difference(allSourceCategories, requiredSourceCategories);
 
         const allTargetCategories = new Set(Object.keys(targetSelect.node.options));
-        if (sourceSelect.node.pluralType !== "cardinal") {
+        if ('pluralType' in sourceSelect.node && sourceSelect.node.pluralType !== "cardinal") {
             // for select and selectordinal, the target should always have all of the same categories as the source
             requiredTargetCategories = allSourceCategories;
         }
@@ -139,7 +156,7 @@ class ResourceICUPlurals extends ResourceRule {
         });
         if (missing.length) {
             let opts = {
-                severity: "error",
+                severity: /** @type {const} */ ("error"),
                 rule: this,
                 description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
                 id: resource.getKey(),
@@ -153,7 +170,7 @@ class ResourceICUPlurals extends ResourceRule {
         }
 
         // now deal with the missing non-required categories
-        if (sourceSelect.node.pluralType === "cardinal") {
+        if ('pluralType' in sourceSelect.node && sourceSelect.node.pluralType === "cardinal") {
             missing = Array.from(actualNonrequiredSourceCategories).filter(category => {
                 // if it is in the source, but it is not required, it should also be in the target
                 // so give a warning
@@ -161,7 +178,7 @@ class ResourceICUPlurals extends ResourceRule {
             });
             if (missing.length) {
                 let opts = {
-                    severity: "warning", // non-required categories get a warning
+                    severity: /** @type {const} */ ("warning"), // non-required categories get a warning
                     rule: this,
                     description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
                     id: resource.getKey(),
@@ -182,7 +199,7 @@ class ResourceICUPlurals extends ResourceRule {
         if (extra.length) {
             const highlight = resource.getTarget().replace(new RegExp(`(${extra.join("|")})\\s*\\{`, "g"), "<e0>$1</e0> {");
             let opts = {
-                severity: "warning",
+                severity: /** @type {const} */ ("warning"),
                 rule: this,
                 description: `Extra categories in target string: ${extra.join(", ")}. Expecting only these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
                 id: resource.getKey(),
@@ -198,7 +215,12 @@ class ResourceICUPlurals extends ResourceRule {
         return problems;
     }
 
+    /**
+     * @param {MessageFormatAst} ast the abstract syntax tree
+     * @returns {Record<string, Select>} the selects
+     */
     findSelects(ast) {
+        /** @type {Record<string, Select>} */
         let selects = {};
 
         ast.forEach(node => {
@@ -220,6 +242,14 @@ class ResourceICUPlurals extends ResourceRule {
         return selects;
     }
 
+    /**
+     * @param {MessageFormatAst} sourceAst the source abstract syntax tree
+     * @param {MessageFormatAst} targetAst the target abstract syntax tree
+     * @param {Locale} locale the locale
+     * @param {Resource} resource the resource being checked
+     * @param {string} file the file where the resource came from
+     * @returns {Result[]} the results
+     */
     checkNodes(sourceAst, targetAst, locale, resource, file) {
         const sourceSelects = this.findSelects(sourceAst);
         const targetSelects = this.findSelects(targetAst);
@@ -232,7 +262,7 @@ class ResourceICUPlurals extends ResourceRule {
             } else {
                 const targetSnippet = resource.getTarget().replace(new RegExp(`(\\{\\s*${select})`, "g"), "<e0>$1</e0>");
                 let opts = {
-                    severity: "error",
+                    severity: /** @type {const} */ ("error"),
                     rule: this,
                     description: `Select or plural with pivot variable ${targetSelects[select].node.value} does not exist in the source string. Possible translated variable name.`,
                     id: resource.getKey(),
@@ -249,13 +279,25 @@ class ResourceICUPlurals extends ResourceRule {
         return problems;
     }
 
+    /**
+     * @override
+     * @param {Object} params
+     * @param {string} params.source the source string
+     * @param {string} params.target the target string
+     * @param {string} params.file the file where the resource came from
+     * @param {Resource} params.resource the resource being checked
+     * @returns {Result|Result[]|undefined} the results
+     */
     matchString({source, target, file, resource}) {
         if (!target) return; // can't check "nothing" !
 
         const sLoc = new Locale(resource.getSourceLocale());
         const tLoc = new Locale(resource.getTargetLocale());
+        /** @type {MessageFormatAst} */
         let sourceAst;
+        /** @type {MessageFormatAst} */
         let targetAst;
+        /** @type {Result[]} */
         let problems = [];
 
         try {
@@ -274,23 +316,63 @@ class ResourceICUPlurals extends ResourceRule {
 
             problems = this.checkNodes(sourceAst, targetAst, tLoc, resource, file);
         } catch (e) {
+            const errorLocation = ResourceICUPlurals.tryGetErrorLocation(e);
+            let highlight = `Target: `;
+            if (errorLocation) {
+                highlight += `${target.substring(0, errorLocation.end.offset)}<e0>${target.substring(errorLocation.end.offset)}</e0>`;
+            } else {
+                highlight += target;
+            }
+            
+            let resourceLocation = resource.getLocation();
             let value = {
-                severity: "error",
+                severity: /** @type {const} */ ("error"),
                 description: `Incorrect plural or select syntax in target string: ${e}`,
                 rule: this,
                 id: resource.getKey(),
                 source,
-                highlight: `Target: ${target.substring(0, e?.location?.end?.offset)}<e0>${target.substring(e?.location?.end?.offset)}</e0>`,
+                highlight,
                 pathName: file,
                 locale: tLoc.getSpec(),
-                lineNumber: resource.getLocation()?.line
+                lineNumber: resourceLocation?.line
             };
-            if (resource.getLocation()?.line !== undefined) {
-                value.lineNumber = resource.getLocation().line + e.location.end.line - 1;
+            if (errorLocation && resourceLocation && resourceLocation.line !== undefined) {
+                value.lineNumber = resourceLocation.line + errorLocation.end.line - 1;
             }
             problems.push(new Result(value));
         }
         return problems.length < 2 ? problems[0] : problems;
+    }
+
+    /**
+     * Attempts to extract the location of a parsing error produced by IntlMessageFormat
+     * @private
+     * @param {unknown} error
+     * @returns {ICUErrorLocation | undefined}
+     */
+    static tryGetErrorLocation(error) {
+        if (typeof error !== "object" || !error) return;
+
+        if (!("location" in error)) return;
+        if (typeof error.location !== "object" || !error.location) return;
+        const location = error.location;
+
+        if (!("start" in location && "end" in location)) return;
+        if (typeof location.start !== "object" || !location.start) return;
+        if (typeof location.end !== "object" || !location.end) return;
+        const start = location.start;
+        const end = location.end;
+
+        if (!("offset" in start && "line" in start && "column" in start)) return;
+        if (!("offset" in end && "line" in end && "column" in end)) return;
+        if (typeof start.offset !== "number" || typeof start.line !== "number" || typeof start.column !== "number")
+            return;
+        if (typeof end.offset !== "number" || typeof end.line !== "number" || typeof end.column !== "number") return;
+
+        return {
+            start: { offset: start.offset, line: start.line, column: start.column },
+            end: { offset: end.offset, line: end.line, column: end.column },
+        };
     }
 }
 

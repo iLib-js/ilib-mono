@@ -35,6 +35,8 @@ const translationImportant = [
     "targetLocale"
 ];
 
+/** @ignore @typedef {import("./Location.js").default} Location */
+
 
 /**
  * @class Represents a resource from a resource file or
@@ -575,7 +577,7 @@ class Resource {
      * line number and character within that line where the representation of the resource
      * instance starts.
      *
-     * @returns {Location|undefined} the location information, or undefined if no location
+     * @returns {ReturnType<Location['getLocation']>|undefined} the location information, or undefined if no location
      * information is available
      */
     getLocation() {
