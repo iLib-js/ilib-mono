@@ -127,8 +127,8 @@ class ResourceQuoteStyle extends ResourceRule {
      * @param {Resource} resource
      * @param {string} file
      * @param {string} locale
-     * @param {number} index
-     * @param {string} category
+     * @param {number|undefined} index
+     * @param {string|undefined} category
      */
     checkString(src, tar, resource, file, locale, index, category) {
         const localeObj = new Locale(locale);
@@ -252,8 +252,9 @@ class ResourceQuoteStyle extends ResourceRule {
             highlight = `Target: ${tar}<e0></e0>`;
             description = `Quotes are missing in the target. Quote style for the locale ${locale} should be ${targetQuoteStyleExample}`;
         }
-        if (resource.getLocation()?.line !== undefined) {
-            lineNumber = resource.getLocation().line;
+        const resourceLocation = resource.getLocation();
+        if (resourceLocation?.line !== undefined) {
+            lineNumber = resourceLocation.line;
         }
 
         let params = {
@@ -385,10 +386,13 @@ class ResourceQuoteStyle extends ResourceRule {
     /**
      * @override
      * @param {Object} params
-     * @param {string | undefined} params.source
-     * @param {string | undefined} params.target
-     * @param {Resource} params.resource
-     * @param {string} params.file
+     * @param {string} params.source the source string to match against
+     * @param {string} params.target the target string to match against
+     * @param {string} params.file the file path where the resources came from
+     * @param {Resource} params.resource the resource that contains the source and/or target string
+     * @param {number} [params.index] if the resource being tested is an array resource, this represents the index of this string in the array
+     * @param {string} [params.category] if the resource being tested is a plural resource, this represents the plural category of this string
+     * @returns {Result|undefined} the results
      */
     matchString({source, target, resource, file, index, category}) {
         if (!source || !target) return; // cannot match in strings that don't exist!
