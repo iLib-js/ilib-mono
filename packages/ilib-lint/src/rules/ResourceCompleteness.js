@@ -43,7 +43,7 @@ class ResourceCompleteness extends ResourceRule {
      * @param {string} params.target the target string
      * @param {Resource} params.resource the resource being checked
      * @param {string} params.file the file where the resource came from
-     * @returns {Array.<Result>|undefined} the results
+     * @returns {Result|undefined} the results
      */
     matchString({ source, target, resource, file }) {
         // note: language specifiers for comparison - "en-US" should match "en-GB" (same language, only different region)
@@ -68,7 +68,8 @@ class ResourceCompleteness extends ResourceRule {
                 ...resultMetaProps,
                 severity: "error",
                 description: "Missing target string in resource",
-                locale: resource.getTargetLocale()
+                locale: resource.getTargetLocale(),
+                highlight: ''
             });
         }
         // if there's an extra translation string for which there is no source, just warn
