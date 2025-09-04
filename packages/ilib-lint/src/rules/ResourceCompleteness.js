@@ -68,8 +68,7 @@ class ResourceCompleteness extends ResourceRule {
                 ...resultMetaProps,
                 severity: "error",
                 description: "Missing target string in resource",
-                locale: resource.getTargetLocale(),
-                highlight: ''
+                locale: resource.getTargetLocale()
             });
         }
         // if there's an extra translation string for which there is no source, just warn

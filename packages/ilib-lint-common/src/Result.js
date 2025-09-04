@@ -71,7 +71,7 @@ class Result {
      * @param {String} fields.description description of the problem in the source file
      * @param {String} fields.pathName name of the file that the issue was found in
      * @param {Rule} fields.rule the rule that generated this result
-     * @param {String} fields.highlight highlighted text from the source file indicating
+     * @param {String} [fields.highlight] highlighted text from the source file indicating
      * where the issue was optionally including some context. For resources, this is
      * either the source or target string, where-ever the problem occurred.
      * @param {String} [fields.id] for rule that check resources, this is the id of
@@ -150,7 +150,7 @@ class Result {
 
     /**
      * highlighted text from the source file indicating where the issue was optionally including some context. For resources, this is either the source or target string, where-ever the problem occurred.
-     * @type {String}
+     * @type {String | undefined}
      */
     highlight;
 
