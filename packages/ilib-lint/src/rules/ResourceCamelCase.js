@@ -18,9 +18,10 @@
  * limitations under the License.
  */
 
-import ResourceRule from './ResourceRule.js';
 import {Result} from 'ilib-lint-common';
+
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
+import ResourceRule from './ResourceRule.js';
 
 /** @ignore @typedef {import('ilib-tools-common').Resource} Resource */
 
@@ -50,7 +51,13 @@ class ResourceCamelCase extends ResourceRule {
     /**
      * Check if a source string is in camel case and if the target string is the same as the source.
      * @override
-     * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}} params
+     * @param {Object} params
+     * @param {String|undefined} params.source the source string to match against
+     * @param {String|undefined} params.target the target string to match against
+     * @param {String} params.file the file path where the resources came from
+     * @param {Resource} params.resource the resource that contains the source and/or target string
+     * @param {number} [params.index] if the resource being tested is an array resource, this represents the index of this string in the array
+     * @param {string} [params.category] if the resource being tested is a plural resource, this represents the plural category of this string
      * @returns {Result|undefined} A Result with severity 'error' if the source string is in camel case and target string is not the same as the source string, otherwise undefined.
      */
     matchString({source, target, file, resource, index, category}) {

@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 
+import { Rule, Result } from 'ilib-lint-common';
 import Locale from 'ilib-locale';
-
-import { Rule } from 'ilib-lint-common';
+import { Resource } from 'ilib-tools-common';
 
 class ResourceRule extends Rule {
     /**
@@ -96,7 +96,9 @@ class ResourceRule extends Rule {
      * found in this string or undefined if no problems were
      * found.
      */
-    matchString(params) {}
+    matchString(params) {
+        throw new Error('Not implemented');
+    }
 
     /**
      * @override
