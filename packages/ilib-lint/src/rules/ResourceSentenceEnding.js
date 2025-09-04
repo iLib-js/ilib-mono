@@ -32,14 +32,13 @@
  */
 
 import { Result } from 'ilib-lint-common';
-import ResourceRule from './ResourceRule.js';
 import Locale from 'ilib-locale';
-import LocaleInfo from 'ilib-localeinfo';
+import { isSpace } from 'ilib-ctype';
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
-import { isPunct, isSpace } from 'ilib-ctype';
+import ResourceFix from '../plugins/resource/ResourceFix.js';
+import ResourceRule from './ResourceRule.js';
 
 /** @ignore @typedef {import("ilib-tools-common").Resource} Resource */
-/** @ignore @typedef {import("ilib-lint-common").Fix} Fix */
 
 /** @ignore
  * Default punctuation for each punctuation type
@@ -487,7 +486,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {string} target - The target string
      * @param {string} incorrectPunctuation - The incorrect punctuation
      * @param {string} correctPunctuation - The correct punctuation
-     * @returns {Fix|undefined} - The fix object or undefined if no fix can be created
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix can be created
      */
     createPunctuationFix(resource, target, incorrectPunctuation, correctPunctuation, index, category, targetLocaleObj) {
         // Get the last sentence to find the position
@@ -544,7 +543,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {string} character - The character to insert
      * @param {number} [index] - Index for array/plural resources
      * @param {string} [category] - Category for plural resources
-     * @returns {Fix|undefined} - The fix object or undefined if no fix can be created
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix can be created
      */
     createInsertCharacterFix(resource, target, position, character, index, category) {
         return ResourceFixer.createFix({
@@ -573,7 +572,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {number} [index] - Index for array/plural resources
      * @param {string} [category] - Category for plural resources
      * @param {Locale} [targetLocaleObj] - The target locale object (unused, kept for compatibility)
-     * @returns {Fix|undefined} - The fix object or undefined if no fix can be created
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix can be created
      */
     createFixForSpanishInvertedPunctuation(resource, target, lastSentence, correctPunctuation, index, category, targetLocaleObj) {
         const lastSentenceStart = target.lastIndexOf(lastSentence);
@@ -589,7 +588,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {string} nonBreakingSpace - The non-breaking space character to insert
      * @param {number} [index] - Index for array/plural resources
      * @param {string} [category] - Category for plural resources
-     * @returns {Fix|undefined} - The fix object or undefined if no fix can be created
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix can be created
      */
     createFixForFrenchNonBreakingSpace(resource, target, position, nonBreakingSpace, index, category) {
         return ResourceFixer.createFix({
@@ -615,7 +614,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {string} currentSpace - The current space character (or empty string if none)
      * @param {number} [index] - Index for array/plural resources
      * @param {string} [category] - Category for plural resources
-     * @returns {Fix|undefined} - The fix object or undefined if no fix is needed
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix is needed
      */
     createFrenchSpacingFix(resource, target, spacePosition, needsNonBreakingSpace, currentSpace, index, category) {
         const regularSpace = ' ';
