@@ -18,6 +18,7 @@
  */
 
 import { Result, withVisibleWhitespace } from "ilib-lint-common";
+import { Resource } from "ilib-tools-common";
 
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 import ResourceRule from './ResourceRule.js';
@@ -35,6 +36,14 @@ class ResourceEdgeWhitespace extends ResourceRule {
 
     /**
      * @override
+     * @param {Object} params
+     * @param {string} params.source the source string
+     * @param {string} params.target the target string
+     * @param {string} params.file the file where the resource came from
+     * @param {Resource} params.resource the resource being checked
+     * @param {number} [params.index] if the resource being tested is an array resource, this represents the index of this string in the array
+     * @param {string} [params.category] if the resource being tested is a plural resource, this represents the plural category of this string
+     * @returns {Result|Result[]|undefined} the results
      */
     matchString({ source, target, file, resource, index, category }) {
         if ("string" !== typeof source || "string" !== typeof target) {
