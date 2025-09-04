@@ -19,7 +19,7 @@
  */
 
 import Locale from 'ilib-locale';
-
+import { Resource } from 'ilib-tools-common';
 import { Result } from 'ilib-lint-common';
 
 import ResourceRule from './ResourceRule.js';
@@ -28,9 +28,12 @@ import ResourceRule from './ResourceRule.js';
  * @class Represent an ilib-lint rule.
  */
 class ResourceNoTranslation extends ResourceRule {
-    #name = "resource-no-translation";
-    #description = "Ensure that each resource in a resource file has a proper translation";
-    #link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-translation.md";
+    /** @override */
+    name = "resource-no-translation";
+    /** @override */
+    description = "Ensure that each resource in a resource file has a proper translation";
+    /** @override */
+    link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-no-translation.md";
 
     /**
      * Make a new rule instance.
@@ -44,6 +47,12 @@ class ResourceNoTranslation extends ResourceRule {
 
     /**
      * @override
+     * @param {Object} params
+     * @param {string} params.source the source string to match against
+     * @param {string} params.target the target string to match against
+     * @param {string} params.file the file path where the resources came from
+     * @param {Resource} params.resource the resource that contains the source and/or target string
+     * @returns {Result|undefined} the results
      */
     matchString({source, target, file, resource}) {
         const sourceLocale = new Locale(resource.getSourceLocale());
@@ -65,7 +74,7 @@ class ResourceNoTranslation extends ResourceRule {
                 source === target ||
                 source.replace(/\s+/g, "").toLowerCase() === target.replace(/\s+/g, "").toLowerCase()) {
             let value = {
-                severity: "warning",
+                severity: /** @type {const} */ ("warning"),
                 id: resource.getKey(),
                 rule: this,
                 pathName: file,
@@ -74,8 +83,9 @@ class ResourceNoTranslation extends ResourceRule {
                 source,
                 locale: targetLocale.getSpec()
             };
-            if (resource.getLocation()?.line !== undefined) {
-                value.lineNumber = resource.getLocation().line;
+            const resourceLocation = resource.getLocation();
+            if (resourceLocation?.line !== undefined) {
+                value.lineNumber = resourceLocation.line;
             }
             return new Result(value);
         }
