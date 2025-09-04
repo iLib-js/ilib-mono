@@ -710,38 +710,28 @@ class Project extends DirItem {
             ];
             if (results.length) {
                 // avoid division by zero if the fileStats is undefined or zero
-                const errorsPerFile = this.resultStats.errors / (this?.fileStats?.files || 1);
-                const warningsPerFile = this.resultStats.warnings / (this?.fileStats?.files || 1);
-                const suggestionsPerFile = this.resultStats.suggestions / (this?.fileStats?.files || 1);
-                const errorsPerModule = this.resultStats.errors / (this?.fileStats?.modules || 1);
-                const warningsPerModule = this.resultStats.warnings / (this?.fileStats?.modules || 1);
-                const suggestionsPerModule = this.resultStats.suggestions / (this?.fileStats?.modules || 1);
-                const errorsPerLine = this.resultStats.errors / (this?.fileStats?.lines || 1);
-                const warningsPerLine = this.resultStats.warnings / (this?.fileStats?.lines || 1);
-                const suggestionsPerLine = this.resultStats.suggestions / (this?.fileStats?.lines || 1);
-                lines.push(
-                    `Errors:            ${String(this.resultStats.errors).padEnd(10, " ")}${fmt
-                        .format(errorsPerFile)
-                        .padEnd(15, " ")}${fmt.format(errorsPerModule).padEnd(15, " ")}${fmt
-                        .format(errorsPerLine)
-                        .padEnd(15, " ")}`
-                );
+                const stats = [this.resultStats?.errors, this.resultStats?.warnings, this.resultStats?.suggestions];
+                const perFile = stats.map((stat) => stat / (this.fileStats?.getFiles() || 1));
+                const perModule = stats.map((stat) => stat / (this.fileStats?.getModules() || 1));
+                const perLine = stats.map((stat) => stat / (this.fileStats?.getLines() || 1));
+                const table = [
+                    [stats[0], perFile[0], perModule[0], perLine[0]], // errors
+                ];
                 if (!this.options.errorsOnly) {
-                    lines.push(
-                        `Warnings:          ${String(this.resultStats.warnings).padEnd(10, " ")}${fmt
-                            .format(warningsPerFile)
-                            .padEnd(15, " ")}${fmt.format(warningsPerModule).padEnd(15, " ")}${fmt
-                            .format(warningsPerLine)
-                            .padEnd(15, " ")}`
-                    );
-                    lines.push(
-                        `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, " ")}${fmt
-                            .format(suggestionsPerFile)
-                            .padEnd(15, " ")}${fmt.format(suggestionsPerModule).padEnd(15, " ")}${fmt
-                            .format(suggestionsPerLine)
-                            .padEnd(15, " ")}`
+                    table.push(
+                        [stats[1], perFile[1], perModule[1], perLine[1]], // warnings,
+                        [stats[2], perFile[2], perModule[2], perLine[2]] // suggestions
                     );
                 }
+                const lineHeaders = ["Errors:", "Warnings:", "Suggestions:"];
+                const tableLines = table.map((row, index) =>
+                    [
+                        String(lineHeaders[index]).padEnd(19, " "), // line header
+                        fmt.format(row[0]).padEnd(10, " "), // total
+                        ...row.slice(1).map((cell) => fmt.format(cell).padEnd(15, " ")), // per file, module, line
+                    ].join("")
+                );
+                lines.push(...tableLines);
             }
             lines.push(`I18N Score (0-100) ${fmt.format(score)}`);
 
