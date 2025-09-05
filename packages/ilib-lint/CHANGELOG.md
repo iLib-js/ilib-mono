@@ -1,5 +1,27 @@
 # ilib-lint
 
+## 2.18.0
+
+### Minor Changes
+
+- f1cebb6: Added new rule to detect XLIFF files with UTF-8 BOM
+- 2ff58c2: - Added new rules to validate encoding of the underlying text file - file-encoding rule - check that the file is encoded with the right character set - xliff-header-encoding - check that the xliff header mentions a valid encoding
+
+### Patch Changes
+
+- a164407: Introduced a hardcoded limit on the number of autofixing iterations that can be performed on a single IntermediateRepresentation. This prevents infinite loops in case of conflicting (or otherwise unsafe) Rules.
+- 8aaa6fd: - Various result and formatter fixes to give better formatted output
+  - make sure all rules are setting the locale field of a Result properly
+  - make sure all rules are setting the lineNumber field of a Result properly
+  - make sure all rules are getting the pathName from the intermediate representation instead
+    of the resource. The intermediate representation contains the name of the xliff file that
+    the resource was read from, whereas the resource instance contains
+    the path to the original source file where the string was extracted
+  - does not divide by zero any more causing incomplete stats table at
+    the end of the formatted result output
+- Updated dependencies [a164407]
+  - ilib-lint-common@3.6.0
+
 ## 2.17.1
 
 ### Patch Changes
@@ -28,16 +50,15 @@
   resource-icu-plural-translated rule. - It does not produce warnings for those exception phrases.
   Now you can list the exceptions by locale in the parameters
   to the rule:
-  `     "rulesets": {
-      "myruleset": {
-        "resource-icu-plural-translated": {
-          "exceptions": {
-            "it-IT": ["File", "Files"]
-          }
+  `    "rulesets": {
+    "myruleset": {
+      "resource-icu-plural-translated": {
+        "exceptions": {
+          "it-IT": ["File", "Files"]
         }
       }
     }
-  ` - Exceptions are entire phrases, not individual words. The idea
+  }` - Exceptions are entire phrases, not individual words. The idea
   of the rule is to catch entire plural categories that the
   translators missed, and the idea of the exceptions to avoid
   those few false positives that pop up infrequently.
