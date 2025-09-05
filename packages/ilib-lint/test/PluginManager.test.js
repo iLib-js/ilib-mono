@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import path from "node:path";
+import { Result, SourceFile } from 'ilib-lint-common';
+import { ResourceString } from 'ilib-tools-common';
+import path from "path";
 
 import PluginManager from '../src/PluginManager.js';
-import { Parser, Result, SourceFile } from 'ilib-lint-common';
-import { ResourceString } from 'ilib-tools-common';
 import { TestFixerTypeId } from './ilib-lint-plugin-test/src/TestFixer.js';
 
 describe("testPluginManager", () => {
@@ -365,7 +365,7 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
         const rm = plgmgr.getRuleManager();
         expect(rm).toBeTruthy();
 
-        expect(rm.sizeRuleSetDefinitions()).toBe(9);
+        expect(rm.sizeRuleSetDefinitions()).toBe(10);
 
         const genericRuleset = rm.getRuleSetDefinition("generic");
         expect(genericRuleset).toBeTruthy();
@@ -420,7 +420,7 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
     });
 
     test("PluginManager make sure we cannot load an old plugin at all", () => {
-        expect.assertions(7);
+        expect.assertions(8);
 
         const plgmgr = new PluginManager();
         expect(plgmgr).toBeTruthy();
@@ -438,10 +438,13 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
             const pm = plgmgr.getParserManager();
             const parsers = pm.get("def");
             expect(parsers).toBeTruthy();
-            expect(parsers.length).toBe(1);
+            expect(parsers.length).toBe(2);
 
             const testParser = parsers[0];
             expect(testParser.getName()).toBe("string");
+
+            const testParser2 = parsers[1];
+            expect(testParser2.getName()).toBe("byte");
         }).catch(e2 => {
             // should throw an exception because the plugin is found
             // but not accepted
@@ -451,7 +454,7 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
     });
 
     test("PluginManager make sure we cannot load an obsolete plugin", () => {
-        expect.assertions(7);
+        expect.assertions(8);
 
         const plgmgr = new PluginManager();
         expect(plgmgr).toBeTruthy();
@@ -469,10 +472,13 @@ __Rule_(resource-test):_Test_for_the_existence_of_the_word_'test'_in_the_strings
             const pm = plgmgr.getParserManager();
             const parsers = pm.get("ghi");
             expect(parsers).toBeTruthy();
-            expect(parsers.length).toBe(1);
+            expect(parsers.length).toBe(2);
 
             const testParser = parsers[0];
             expect(testParser.getName()).toBe("string");
+
+            const testParser2 = parsers[1];
+            expect(testParser2.getName()).toBe("byte");
         }).catch(e2 => {
             // should throw an exception because the plugin is found
             // but not accepted

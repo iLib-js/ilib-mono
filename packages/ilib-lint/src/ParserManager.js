@@ -17,15 +17,11 @@
  * limitations under the License.
  */
 
-import log4js from 'log4js';
+import log4js from "log4js";
 
-import { Parser } from 'ilib-lint-common';
+import { Parser } from "ilib-lint-common";
 
 const logger = log4js.getLogger("ilib-lint.ParserManager");
-
-function getSuperClassName(obj) {
-    return Object.getPrototypeOf(Object.getPrototypeOf(obj)).constructor.name;
-}
 
 /**
  * @class Manages a collection of parsers that this instance of ilib-lint
@@ -42,21 +38,22 @@ class ParserManager {
      * <li>extensions - an array of file name extensions that this parser can handle</li>
      * </ul>
      *
-     * @type {Object}
+     * @type {Record<string, { description: string, type: string, extensions: string[] }>}
      * @private
      */
     parserInfo = {};
 
+    /** @type {Record<string, Parser[]>} */
+    parserCache = {};
+
+    /** @type {Record<string, Parser>} */
+    parserByName = {};
+
     /**
      * Create a new parser manager instance.
-     * @params {Object} options options controlling the construction of this object
      * @constructor
      */
-    constructor(options) {
-        this.parserCache = {};
-        this.parserByName = {};
-        this.descriptions = {};
-    }
+    constructor() {}
 
     /**
      * Return a list of parsers for the given file name extension
@@ -68,7 +65,7 @@ class ParserManager {
     get(extension) {
         // the '*' extension means any extension, which gives all the
         // parsers that can handle any text file
-        return this.parserCache[extension] || this.parserCache['*'] || [];
+        return this.parserCache[extension] || this.parserCache["*"] || [];
     }
 
     /**
@@ -85,14 +82,14 @@ class ParserManager {
      * Add a list of parsers to this factory so that other code
      * can find them.
      *
-     * @param {Array.<Parser>} parsers the list of parsers to add
+     * @param {Array.<typeof Parser>} parsers the list of parsers to add
      */
     add(parsers) {
         if (!parsers || !Array.isArray(parsers)) return;
         for (const parser of parsers) {
-            if (parser && typeof(parser) === 'function' && Object.getPrototypeOf(parser).name === "Parser") {
+            if (parser && typeof parser === "function" && Object.getPrototypeOf(parser).name === "Parser") {
                 const p = new parser({
-                    getLogger: log4js.getLogger.bind(log4js)
+                    getLogger: log4js.getLogger.bind(log4js),
                 });
                 const name = p.getName();
                 if (this.parserInfo[name]) {
@@ -102,7 +99,7 @@ class ParserManager {
                 this.parserInfo[name] = {
                     description: p.getDescription(),
                     type: p.getType(),
-                    extensions: p.getExtensions()
+                    extensions: p.getExtensions(),
                 };
                 for (const extension of p.getExtensions()) {
                     if (!this.parserCache[extension]) {
@@ -117,15 +114,16 @@ class ParserManager {
                 logger.debug("Attempt to add parser that does not inherit from Parser to the parser manager");
             }
         }
-    };
+    }
 
     /**
      * Return an object where the properties are the parser names and the
      * values are the parser descriptions.
      *
-     * @returns {Object} the parser names and descriptions
+     * @returns {Record<string, string>} the parser names and descriptions
      */
     getDescriptions() {
+        /** @type {Record<string, string>} */
         let json = {};
         Object.keys(this.parserInfo).forEach((name) => {
             json[name] = this.parserInfo[name].description;
@@ -142,15 +140,6 @@ class ParserManager {
      */
     getType(name) {
         return this.parserInfo[name].type;
-    }
-
-    /**
-     * Clear the parsers from the factory. This is only intended
-     * for use with the unit tests
-     * @private
-     */
-    clear() {
-        this.parserCache = {};
     }
 }
 

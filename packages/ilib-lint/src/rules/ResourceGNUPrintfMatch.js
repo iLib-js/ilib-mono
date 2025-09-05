@@ -131,6 +131,7 @@ class ResourceGNUPrintfMatch extends ResourceRule {
                     pathName: file,
                     lineNumber: lineNumber,
                     charNumber: charNumber,
+                    locale: resource.getTargetLocale(),
                 };
                 results.push(new Result(resultFields));
             }
@@ -195,6 +196,7 @@ class ResourceGNUPrintfMatch extends ResourceRule {
                 pathName: file,
                 lineNumber: lineNumber,
                 charNumber: charNumber,
+                locale: resource.getTargetLocale(),
             };
             results.push(new Result(resultFields));
         }

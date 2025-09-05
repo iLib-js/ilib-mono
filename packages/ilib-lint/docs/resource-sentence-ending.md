@@ -51,15 +51,19 @@ The rule defaults to English punctuation. If you need different punctuation for 
 
 ## Custom Configuration
 
-If you need different punctuation rules for your project, add this to your config:
+You can override the default punctuation rules for specific locales by providing custom configuration. The configuration uses locale codes as keys and punctuation mappings as values.
+
+### Full Custom Configuration
+
+To completely override all punctuation types for a locale:
 
 ```json
 {
   "rulesets": {
     "myset": {
       "resource-sentence-ending": {
-        "fr": {
-          "period": "!",
+        "ja-JP": {
+          "period": ".",
           "question": "?",
           "exclamation": "!",
           "ellipsis": "...",
@@ -75,6 +79,84 @@ If you need different punctuation rules for your project, add this to your confi
   }
 }
 ```
+
+### Partial Custom Configuration
+
+You can override only specific punctuation types. Unspecified types will use the default rules for that language:
+
+```json
+{
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "ja-JP": {
+          "question": "?",
+          "exclamation": "!"
+        }
+      }
+    }
+  },
+  "filetypes": {
+    "mytype": {
+      "ruleset": [ "myset" ]
+    }
+  }
+}
+```
+
+In this example, Japanese will use:
+- **Custom**: Question mark (`?`) and exclamation mark (`!`)
+- **Default**: Period (`。`), ellipsis (`…`), and colon (`：`)
+
+### Multiple Locales
+
+You can configure different punctuation rules for multiple locales:
+
+```json
+{
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "ja-JP": {
+          "period": ".",
+          "question": "?"
+        },
+        "zh-CN": {
+          "period": ".",
+          "exclamation": "!"
+        },
+        "fr-FR": {
+          "ellipsis": "..."
+        }
+      }
+    }
+  },
+  "filetypes": {
+    "mytype": {
+      "ruleset": [ "myset" ]
+    }
+  }
+}
+```
+
+### Supported Punctuation Types
+
+The following punctuation types can be customized:
+
+| Type | Description | Default |
+|------|-------------|---------|
+| `period` | Sentence-ending period | `.` |
+| `question` | Question mark | `?` |
+| `exclamation` | Exclamation mark | `!` |
+| `ellipsis` | Ellipsis (three dots) | `…` |
+| `colon` | Colon | `:` |
+
+### Configuration Behavior
+
+- **Locale Validation**: Only valid locales are processed. Invalid locales are ignored with a warning.
+- **Language-Based Storage**: Custom configurations are stored by language code (e.g., "ja" for Japanese) and apply to all locales of that language.
+- **Merging**: Custom configurations merge with the default locale-specific rules, so you only need to specify the punctuation types you want to override.
+- **Fallback**: If a punctuation type is not specified in the custom configuration, the rule uses the default punctuation for that language.
 
 ## Common Scenarios
 

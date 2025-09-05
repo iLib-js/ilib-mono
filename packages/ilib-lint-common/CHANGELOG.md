@@ -1,5 +1,13 @@
 # ilib-lint-common
 
+## 3.5.0
+
+### Minor Changes
+
+- 9212dff: - Serializer plugins can now throw an Error if the
+  data they are trying to serialize is insufficient
+  or the output file cannot be generated
+
 ## 3.4.0
 
 ### Minor Changes

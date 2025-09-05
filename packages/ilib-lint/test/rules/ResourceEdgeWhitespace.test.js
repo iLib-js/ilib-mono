@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceString } from 'ilib-tools-common';
+import { ResourceString, Location } from 'ilib-tools-common';
 import ResourceEdgeWhitespace from '../../src/rules/ResourceEdgeWhitespace.js';
 
 import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
@@ -52,7 +52,7 @@ describe("testEdgeWhitespace", () => {
     });
 
     test("ResourceEdgeWhitespaceLeadingSpaceMissing", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rule = new ResourceEdgeWhitespace();
         expect(rule).toBeTruthy();
@@ -65,6 +65,7 @@ describe("testEdgeWhitespace", () => {
             target: "some target string.",
             pathName: "resource-edge-whitespace-test.xliff",
             state: "translated",
+            location: new Location({ line: 28 })
         });
         const subject = {
             // accidentally ommited space in front of target string
@@ -91,9 +92,11 @@ describe("testEdgeWhitespace", () => {
                 id: "resource-edge-whitespace.leading-space-missing",
                 description: "Leading whitespace in target does not match leading whitespace in source",
                 highlight: `Source: <e0>⎵</e0>some… Target: <e1></e1>some…`,
-                fix
+                fix,
+                lineNumber: 28
             })
         );
+        expect(result.lineNumber).toBe(28);
     });
 
     test("ResourceEdgeWhitespaceLeadingSpaceExtra", () => {
