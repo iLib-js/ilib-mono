@@ -709,33 +709,29 @@ class Project extends DirItem {
                 )} Modules`.padEnd(15, " ")}${`${String(this.fileStats.lines)} Lines`.padEnd(15, " ")}`,
             ];
             if (results.length) {
-                lines.push(
-                    `Errors:            ${String(this.resultStats.errors).padEnd(10, " ")}${fmt
-                        .format(this.resultStats.errors / this.fileStats.files)
-                        .padEnd(15, " ")}${fmt
-                        .format(this.resultStats.errors / this.fileStats.modules)
-                        .padEnd(15, " ")}${fmt.format(this.resultStats.errors / this.fileStats.lines).padEnd(15, " ")}`
-                );
+                // avoid division by zero if the fileStats is undefined or zero
+                const stats = [this.resultStats?.errors, this.resultStats?.warnings, this.resultStats?.suggestions];
+                const perFile = stats.map((stat) => stat / (this.fileStats?.getFiles() || 1));
+                const perModule = stats.map((stat) => stat / (this.fileStats?.getModules() || 1));
+                const perLine = stats.map((stat) => stat / (this.fileStats?.getLines() || 1));
+                const table = [
+                    [stats[0], perFile[0], perModule[0], perLine[0]], // errors
+                ];
                 if (!this.options.errorsOnly) {
-                    lines.push(
-                        `Warnings:          ${String(this.resultStats.warnings).padEnd(10, " ")}${fmt
-                            .format(this.resultStats.warnings / this.fileStats.files)
-                            .padEnd(15, " ")}${fmt
-                            .format(this.resultStats.warnings / this.fileStats.modules)
-                            .padEnd(15, " ")}${fmt
-                            .format(this.resultStats.warnings / this.fileStats.lines)
-                            .padEnd(15, " ")}`
-                    );
-                    lines.push(
-                        `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, " ")}${fmt
-                            .format(this.resultStats.suggestions / this.fileStats.files)
-                            .padEnd(15, " ")}${fmt
-                            .format(this.resultStats.suggestions / this.fileStats.modules)
-                            .padEnd(15, " ")}${fmt
-                            .format(this.resultStats.suggestions / this.fileStats.lines)
-                            .padEnd(15, " ")}`
+                    table.push(
+                        [stats[1], perFile[1], perModule[1], perLine[1]], // warnings,
+                        [stats[2], perFile[2], perModule[2], perLine[2]] // suggestions
                     );
                 }
+                const lineHeaders = ["Errors:", "Warnings:", "Suggestions:"];
+                const tableLines = table.map((row, index) =>
+                    [
+                        String(lineHeaders[index]).padEnd(19, " "), // line header
+                        fmt.format(row[0]).padEnd(10, " "), // total
+                        ...row.slice(1).map((cell) => fmt.format(cell).padEnd(15, " ")), // per file, module, line
+                    ].join("")
+                );
+                lines.push(...tableLines);
             }
             lines.push(`I18N Score (0-100) ${fmt.format(score)}`);
 

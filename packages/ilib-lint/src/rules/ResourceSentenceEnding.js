@@ -780,6 +780,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 source,
                 highlight,
                 pathName: file,
+                locale: targetLocale,
                 fix: this.createPunctuationFix(resource, target, targetEnding.original, '', index, category, targetLocaleObj),
                 lineNumber: resource.getLocation()?.line
             });
@@ -819,6 +820,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 source,
                 highlight,
                 pathName: file,
+                locale: targetLocale,
                 fix: this.createPunctuationFix(resource, target, deleteString, insertString, index, category, targetLocaleObj),
                 lineNumber: resource.getLocation()?.line
             });
@@ -863,6 +865,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         source,
                         highlight,
                         pathName: file,
+                        locale: targetLocale,
                         fix: this.createFixForSpanishInvertedPunctuation(resource, target, lastSentence, invertedChar, index, category, targetLocaleObj),
                         lineNumber: resource.getLocation()?.line
                     });
@@ -931,6 +934,7 @@ class ResourceSentenceEnding extends ResourceRule {
                             source,
                             highlight,
                             pathName: file,
+                            locale: targetLocale,
                             fix,
                             lineNumber: resource.getLocation()?.line
                         });
@@ -1090,6 +1094,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 source,
                 highlight,
                 pathName: file,
+                locale: targetLocale,
                 fix,
                 lineNumber: resource.getLocation()?.line
             });

@@ -132,12 +132,13 @@ export class ResourceSourceICUUnexplainedParams extends ResourceRule {
                 new Result({
                     rule: this,
                     id: resource.getKey(),
-                    pathName: resource.getPath(),
+                    pathName: file,
                     source: source,
                     severity: "warning",
                     description: `Replacement parameter "${name}" is not mentioned in the string's comment for translators.`,
                     highlight: this.highlightLocation(source, location),
-                    locale: resource.getTargetLocale()
+                    locale: resource.getTargetLocale(),
+                    lineNumber: resource.getLocation()?.line
                 })
         );
     }
