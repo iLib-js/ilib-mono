@@ -168,7 +168,7 @@ class LintingStrategy {
 
         // method should return when no more autofixes are available
         // so if we get here it means we've exceeded the maximum number of autofix iterations
-        logger.warn(`Exceeded maximum number of autofix iterations`);
+        logger.error(`Exceeded maximum number of autofix iterations on IR [${ir.getType()}] of file [${filePath}]`);
         return accumulatedResults;
     }
 
