@@ -69,6 +69,41 @@ interface ScriptInfoData {
 }
 
 /**
+ * Factory function to create a ScriptInfo instance.
+ * 
+ * @param script - The ISO 15924 4-letter script code (e.g., 'Latn', 'Arab', 'Hani')
+ * @returns A ScriptInfo instance if the script is recognized, undefined otherwise
+ * 
+ * @example
+ * ```typescript
+ * import scriptInfoFactory from 'ilib-scriptinfo';
+ * 
+ * const latin = scriptInfoFactory('Latn');
+ * if (latin) {
+ *     console.log(latin.getName()); // "Latin"
+ *     console.log(latin.getScriptDirection()); // "ltr" (left-to-right)
+ * }
+ * 
+ * const unknown = scriptInfoFactory('Xyz');
+ * if (unknown) {
+ *     // This won't execute - unknown will be undefined
+ *     console.log(unknown.getName());
+ * }
+ * ```
+ */
+export default function scriptInfoFactory(script: string | number | null | undefined): ScriptInfo | undefined {
+    if (!script) return undefined;
+    
+    const scriptString = String(script).trim();
+    if (!scriptString) return undefined;
+    
+    const info = getScriptInfo(scriptString);
+    if (!info) return undefined;
+    
+    return new ScriptInfo(scriptString, info);
+}
+
+/**
  * ScriptInfo class provides information about writing scripts based on ISO 15924.
  *
  * This class offers access to script properties including:
@@ -81,63 +116,29 @@ interface ScriptInfoData {
  *
  * @example
  * ```typescript
- * import ScriptInfo from 'ilib-scriptinfo';
+ * import scriptInfoFactory from 'ilib-scriptinfo';
  *
- * const latin = new ScriptInfo('Latn');
- * console.log(latin.getName()); // "Latin"
- * console.log(latin.getScriptDirection()); // "ltr" (left-to-right)
- *
- * const arabic = new ScriptInfo('Arab');
- * console.log(arabic.getScriptDirection()); // "rtl" (right-to-left)
+ * const latin = scriptInfoFactory('Latn');
+ * if (latin) {
+ *     console.log(latin.getName()); // "Latin"
+ *     console.log(latin.getScriptDirection()); // "ltr" (left-to-right)
+ * }
  * ```
  */
-export default class ScriptInfo {
+export class ScriptInfo {
     private script: string;
     private info: ScriptInfoData;
 
     /**
-     * Private constructor - use ScriptInfo.create() instead.
+     * Internal constructor - use createScriptInfo() instead.
      * 
      * @param script - The ISO 15924 4-letter script code
      * @param info - The script information data
      * @internal
      */
-    private constructor(script: string, info: ScriptInfoData) {
+    constructor(script: string, info: ScriptInfoData) {
         this.script = script;
         this.info = info;
-    }
-
-    /**
-     * Factory method to create a ScriptInfo instance.
-     * 
-     * @param script - The ISO 15924 4-letter script code (e.g., 'Latn', 'Arab', 'Hani')
-     * @returns A ScriptInfo instance if the script is recognized, undefined otherwise
-     * 
-     * @example
-     * ```typescript
-     * const latin = ScriptInfo.create('Latn');
-     * if (latin) {
-     *     console.log(latin.getName()); // "Latin"
-     *     console.log(latin.getScriptDirection()); // "ltr" (left-to-right)
-     * }
-     * 
-     * const unknown = ScriptInfo.create('Xyz');
-     * if (unknown) {
-     *     // This won't execute - unknown will be undefined
-     *     console.log(unknown.getName());
-     * }
-     * ```
-     */
-    static create(script: string | number | null | undefined): ScriptInfo | undefined {
-        if (!script) return undefined;
-        
-        const scriptString = String(script).trim();
-        if (!scriptString) return undefined;
-        
-        const info = getScriptInfo(scriptString);
-        if (!info) return undefined;
-        
-        return new ScriptInfo(scriptString, info);
     }
 
     /**
@@ -147,7 +148,7 @@ export default class ScriptInfo {
      *
      * @example
      * ```typescript
-     * const latin = ScriptInfo.create('Latn');
+     * const latin = scriptInfoFactory('Latn');
      * if (latin) {
      *     console.log(latin.getCode()); // "Latn"
      * }
@@ -164,8 +165,10 @@ export default class ScriptInfo {
      *
      * @example
      * ```typescript
-     * const latin = new ScriptInfo('Latn');
-     * console.log(latin.getCodeNumber()); // 215
+     * const latin = scriptInfoFactory('Latn');
+     * if (latin) {
+     *     console.log(latin.getCodeNumber()); // 215
+     * }
      * ```
      */
     getCodeNumber(): number | undefined {
@@ -179,8 +182,10 @@ export default class ScriptInfo {
      *
      * @example
      * ```typescript
-     * const latin = new ScriptInfo('Latn');
-     * console.log(latin.getName()); // "Latin"
+     * const latin = scriptInfoFactory('Latn');
+     * if (latin) {
+     *     console.log(latin.getName()); // "Latin"
+     * }
      * ```
      */
     getName(): string | undefined {
@@ -194,8 +199,10 @@ export default class ScriptInfo {
      *
      * @example
      * ```typescript
-     * const latin = new ScriptInfo('Latn');
-     * console.log(latin.getLongCode()); // "Latin"
+     * const latin = scriptInfoFactory('Latn');
+     * if (latin) {
+     *     console.log(latin.getLongCode()); // "Latin"
+     * }
      * ```
      */
     getLongCode(): string | undefined {
@@ -211,11 +218,15 @@ export default class ScriptInfo {
      *
      * @example
      * ```typescript
-     * const latin = new ScriptInfo('Latn');
-     * console.log(latin.getScriptDirection()); // ScriptDirection.LTR
-     *
-     * const arabic = new ScriptInfo('Arab');
-     * console.log(arabic.getScriptDirection()); // ScriptDirection.RTL
+     * const latin = scriptInfoFactory('Latn');
+     * if (latin) {
+     *     console.log(latin.getScriptDirection()); // ScriptDirection.LTR
+     * }
+     * 
+     * const arabic = scriptInfoFactory('Arab');
+     * if (arabic) {
+     *     console.log(arabic.getScriptDirection()); // ScriptDirection.RTL
+     * }
      * ```
      */
     getScriptDirection(): ScriptDirection {
@@ -229,11 +240,15 @@ export default class ScriptInfo {
      *
      * @example
      * ```typescript
-     * const chinese = new ScriptInfo('Hani');
-     * console.log(chinese.getNeedsIME()); // true
-     *
-     * const latin = new ScriptInfo('Latn');
-     * console.log(latin.getNeedsIME()); // false
+     * const chinese = scriptInfoFactory('Hani');
+     * if (chinese) {
+     *     console.log(chinese.getNeedsIME()); // true
+     * }
+     * 
+     * const latin = scriptInfoFactory('Latn');
+     * if (latin) {
+     *     console.log(latin.getNeedsIME()); // false
+     * }
      * ```
      */
     getNeedsIME(): boolean {
@@ -247,11 +262,15 @@ export default class ScriptInfo {
      *
      * @example
      * ```typescript
-     * const latin = new ScriptInfo('Latn');
-     * console.log(latin.getCasing()); // true
-     *
-     * const thai = new ScriptInfo('Thai');
-     * console.log(thai.getCasing()); // false
+     * const latin = scriptInfoFactory('Latn');
+     * if (latin) {
+     *     console.log(latin.getCasing()); // true
+     * }
+     * 
+     * const thai = scriptInfoFactory('Thai');
+     * if (thai) {
+     *     console.log(thai.getCasing()); // false
+     * }
      * ```
      */
     getCasing(): boolean {

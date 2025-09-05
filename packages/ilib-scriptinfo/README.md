@@ -18,37 +18,48 @@ npm install ilib-scriptinfo
 ## Quick Start
 
 ```javascript
-import ScriptInfo from 'ilib-scriptinfo';
+import scriptInfoFactory from 'ilib-scriptinfo';
 
 // Get info about Latin script
-const latin = new ScriptInfo('Latn');
-console.log(latin.getName());           // "Latin"
-console.log(latin.getDirection());      // "ltr" (left-to-right)
-console.log(latin.getCasing());         // true (has upper/lowercase)
+const latin = scriptInfoFactory('Latn');
+if (latin) {
+    console.log(latin.getName());           // "Latin"
+    console.log(latin.getScriptDirection()); // ScriptDirection.LTR
+    console.log(latin.getCasing());         // true (has upper/lowercase)
+}
 
 // Get info about Arabic script
-const arabic = new ScriptInfo('Arab');
-console.log(arabic.getName());          // "Arabic"
-console.log(arabic.getDirection());     // "rtl" (right-to-left)
-console.log(arabic.getCasing());        // false (no letter case)
+const arabic = scriptInfoFactory('Arab');
+if (arabic) {
+    console.log(arabic.getName());          // "Arabic"
+    console.log(arabic.getScriptDirection()); // ScriptDirection.RTL
+    console.log(arabic.getCasing());        // false (no letter case)
+}
 ```
 
 ## API
 
 ### Create a script info instance
 ```javascript
-const script = new ScriptInfo('Latn');  // 4-letter ISO 15924 code
+import scriptInfoFactory from 'ilib-scriptinfo';
+
+const script = scriptInfoFactory('Latn');  // 4-letter ISO 15924 code
+// Returns ScriptInfo instance or undefined if script not found
 ```
 
 ### Get script properties
 - `getName()` - Script name in English
-- `getDirection()` - "ltr" or "rtl" 
+- `getScriptDirection()` - ScriptDirection.LTR or ScriptDirection.RTL 
 - `getCasing()` - Whether script uses letter case
 - `getNeedsIME()` - Whether script typically needs input method editor
 - `getCodeNumber()` - ISO 15924 numeric code
+- `getCode()` - ISO 15924 4-letter code
+- `getLongCode()` - Long identifier for the script
 
 ### Get all available scripts
 ```javascript
+import scriptInfoFactory, { ScriptInfo } from 'ilib-scriptinfo';
+
 const allScripts = ScriptInfo.getAllScripts();
 // Returns array of all 226 script codes
 ```

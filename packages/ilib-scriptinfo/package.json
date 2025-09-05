@@ -1,6 +1,7 @@
 {
     "name": "ilib-scriptinfo",
     "version": "0.0.0",
+    "type": "module",
     "main": "./lib/index.js",
     "module": "./lib/index.js",
     "types": "./lib/index.d.ts",

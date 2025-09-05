@@ -17,70 +17,70 @@
  * limitations under the License.
  */
 
-import ScriptInfo, { ScriptDirection } from '../src/index';
+import scriptInfoFactory, { ScriptInfo, ScriptDirection } from '../src/index';
 
 describe('ScriptInfo', () => {
     describe('Constructor and basic functionality', () => {
         test('should create a script info instance with empty string', () => {
-            const si = ScriptInfo.create('');
+            const si = scriptInfoFactory('');
             expect(si).toBeUndefined();
         });
 
         test('should create a script info instance with valid script code', () => {
-            const si = ScriptInfo.create('Latn');
+            const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
             expect(si?.getCode()).toBe('Latn');
         });
 
         test('should handle undefined script code', () => {
-            const si = ScriptInfo.create(undefined);
+            const si = scriptInfoFactory(undefined);
             expect(si).toBeUndefined();
         });
 
         test('should handle null script code', () => {
-            const si = ScriptInfo.create(null);
+            const si = scriptInfoFactory(null);
             expect(si).toBeUndefined();
         });
 
         test('should handle numeric script code', () => {
-            const si = ScriptInfo.create(123);
+            const si = scriptInfoFactory(123);
             expect(si).toBeUndefined();
         });
     });
 
     describe('Known script properties', () => {
         test('should get script code number for Latin', () => {
-            const si = ScriptInfo.create('Latn');
+            const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
             expect(si?.getCodeNumber()).toBe(215);
         });
 
         test('should get script name for Latin', () => {
-            const si = ScriptInfo.create('Latn');
+            const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
             expect(si?.getName()).toBe('Latin');
         });
 
         test('should get script long code for Latin', () => {
-            const si = ScriptInfo.create('Latn');
+            const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
             expect(si?.getLongCode()).toBe('Latin');
         });
 
         test('should get script direction for Latin', () => {
-            const si = ScriptInfo.create('Latn');
+            const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
             expect(si?.getScriptDirection()).toBe(ScriptDirection.LTR);
         });
 
         test('should get script casing for Latin', () => {
-            const si = ScriptInfo.create('Latn');
+            const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
             expect(si?.getCasing()).toBe(true);
         });
 
         test('should get script IME requirement for Latin', () => {
-            const si = ScriptInfo.create('Latn');
+            const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
             expect(si?.getNeedsIME()).toBe(false);
         });
@@ -88,25 +88,25 @@ describe('ScriptInfo', () => {
 
     describe('RTL script properties', () => {
         test('should handle RTL script direction', () => {
-            const si = ScriptInfo.create('Arab');
+            const si = scriptInfoFactory('Arab');
             expect(si).toBeDefined();
             expect(si?.getScriptDirection()).toBe(ScriptDirection.RTL);
         });
 
         test('should handle RTL script casing', () => {
-            const si = ScriptInfo.create('Arab');
+            const si = scriptInfoFactory('Arab');
             expect(si).toBeDefined();
             expect(si?.getCasing()).toBe(false);
         });
 
         test('should handle RTL script IME requirement', () => {
-            const si = ScriptInfo.create('Arab');
+            const si = scriptInfoFactory('Arab');
             expect(si).toBeDefined();
             expect(si?.getNeedsIME()).toBe(false);
         });
 
         test('should get script properties for Hebrew (RTL)', () => {
-            const si = ScriptInfo.create('Hebr');
+            const si = scriptInfoFactory('Hebr');
             expect(si).toBeDefined();
             expect(si?.getCode()).toBe('Hebr');
             expect(si?.getCodeNumber()).toBe(125);
@@ -119,58 +119,58 @@ describe('ScriptInfo', () => {
 
     describe('Edge cases and unknown scripts', () => {
         test('should handle completely unknown script code', () => {
-            const si = ScriptInfo.create('Xxxx');
+            const si = scriptInfoFactory('Xxxx');
             expect(si).toBeUndefined();
         });
 
         test('should handle empty string script code', () => {
-            const si = ScriptInfo.create('');
+            const si = scriptInfoFactory('');
             expect(si).toBeUndefined();
         });
 
         test('should handle undefined script code', () => {
-            const si = ScriptInfo.create(undefined);
+            const si = scriptInfoFactory(undefined);
             expect(si).toBeUndefined();
         });
 
         test('should handle null script code', () => {
-            const si = ScriptInfo.create(null);
+            const si = scriptInfoFactory(null);
             expect(si).toBeUndefined();
         });
 
         test('should handle numeric script code', () => {
-            const si = ScriptInfo.create(123);
+            const si = scriptInfoFactory(123);
             expect(si).toBeUndefined();
         });
 
         test('should handle case-sensitive script codes', () => {
-            const si = ScriptInfo.create('latn'); // lowercase
+            const si = scriptInfoFactory('latn'); // lowercase
             expect(si).toBeUndefined();
         });
 
         test('should handle mixed case script codes', () => {
-            const si = ScriptInfo.create('LaTn'); // mixed case
+            const si = scriptInfoFactory('LaTn'); // mixed case
             expect(si).toBeUndefined();
         });
 
         test('should handle script codes with spaces', () => {
-            const si = ScriptInfo.create('Lat n'); // with space
+            const si = scriptInfoFactory('Lat n'); // with space
             expect(si).toBeUndefined();
         });
 
         test('should handle script codes with special characters', () => {
-            const si = ScriptInfo.create('Lat@n'); // with special char
+            const si = scriptInfoFactory('Lat@n'); // with special char
             expect(si).toBeUndefined();
         });
 
         test('should handle very long script codes', () => {
             const longCode = 'A'.repeat(100);
-            const si = ScriptInfo.create(longCode);
+            const si = scriptInfoFactory(longCode);
             expect(si).toBeUndefined();
         });
 
         test('should handle script codes with unicode characters', () => {
-            const si = ScriptInfo.create('Lätn'); // with umlaut
+            const si = scriptInfoFactory('Lätn'); // with umlaut
             expect(si).toBeUndefined();
         });
     });
@@ -187,7 +187,7 @@ describe('ScriptInfo', () => {
         test('should verify all scripts in getAllScripts are valid', () => {
             const allScripts = ScriptInfo.getAllScripts();
             for (const scriptCode of allScripts) {
-                const scriptInfo = ScriptInfo.create(scriptCode);
+                const scriptInfo = scriptInfoFactory(scriptCode);
                 expect(scriptInfo).toBeDefined();
                 expect(scriptInfo?.getCode()).toBe(scriptCode);
                 expect(scriptInfo?.getName()).toBeDefined();
@@ -204,35 +204,35 @@ describe('ScriptInfo', () => {
 
     describe('Additional known script tests', () => {
         test('should handle Chinese Han script', () => {
-            const si = ScriptInfo.create('Hani');
+            const si = scriptInfoFactory('Hani');
             expect(si).toBeDefined();
             expect(si?.getName()).toBe('Han (Hanzi, Kanji, Hanja)');
             expect(si?.getNeedsIME()).toBe(true);
         });
 
         test('should handle Korean Hangul script', () => {
-            const si = ScriptInfo.create('Hang');
+            const si = scriptInfoFactory('Hang');
             expect(si).toBeDefined();
             expect(si?.getName()).toBe('Hangul (Hangŭl, Hangeul)');
             expect(si?.getNeedsIME()).toBe(true);
         });
 
         test('should handle Japanese Hiragana script', () => {
-            const si = ScriptInfo.create('Hira');
+            const si = scriptInfoFactory('Hira');
             expect(si).toBeDefined();
             expect(si?.getName()).toBe('Hiragana');
             expect(si?.getNeedsIME()).toBe(false);
         });
 
         test('should handle Thai script', () => {
-            const si = ScriptInfo.create('Thai');
+            const si = scriptInfoFactory('Thai');
             expect(si).toBeDefined();
             expect(si?.getName()).toBe('Thai');
             expect(si?.getCasing()).toBe(false);
         });
 
         test('should handle Devanagari script', () => {
-            const si = ScriptInfo.create('Deva');
+            const si = scriptInfoFactory('Deva');
             expect(si).toBeDefined();
             expect(si?.getName()).toBe('Devanagari (Nagari)');
             expect(si?.getNeedsIME()).toBe(false);

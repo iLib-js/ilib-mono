@@ -217,13 +217,19 @@ Casing Info      | 🔤 No letter case
 exports[`ilib-scriptinfo sample app partial matching functionality should find partial matches for 'han' 1`] = `
 "
 ❌ Unknown script code: "han"
-🔍 Found 6 similar script code(s):
-   Hanb - undefined
-   Hang - undefined
-   Hani - undefined
-   Hano - undefined
-   Hans - undefined
-   Hant - undefined
+🔍 Found 12 similar script code(s):
+   Dupl - Duployan shorthand, Duployan stenography
+   Hanb - Han with Bopomofo (alias for Han + Bopomofo)
+   Hang - Hangul (Hangŭl, Hangeul)
+   Hani - Han (Hanzi, Kanji, Hanja)
+   Hano - Hanunoo (Hanunóo)
+   Hans - Han (Simplified variant)
+   Hant - Han (Traditional variant)
+   Hntl - Han (Traditional variant) with Latin (alias for Hant + Latn)
+   Jamo - Jamo (alias for Jamo subset of Hangul)
+   Jpan - Japanese (alias for Han + Hiragana + Katakana)
+   Kore - Korean (alias for Hangul + Han)
+   Rohg - Hanifi Rohingya
 
 
 "
@@ -232,10 +238,11 @@ exports[`ilib-scriptinfo sample app partial matching functionality should find p
 exports[`ilib-scriptinfo sample app partial matching functionality should find partial matches for 'lat' 1`] = `
 "
 ❌ Unknown script code: "lat"
-🔍 Found 3 similar script code(s):
-   Latf - undefined
-   Latg - undefined
-   Latn - undefined
+🔍 Found 4 similar script code(s):
+   Hntl - Han (Traditional variant) with Latin (alias for Hant + Latn)
+   Latf - Latin (Fraktur variant)
+   Latg - Latin (Gaelic variant)
+   Latn - Latin
 
 
 "
