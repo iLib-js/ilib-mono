@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import fs from 'fs';
-import path from 'path';
-import { Buffer } from 'buffer';
+import fs from "fs";
+import path from "path";
+import { Buffer } from "buffer";
 import NotImplementedError from "./NotImplementedError.js";
 
 /**
@@ -44,7 +44,7 @@ class SourceFile {
      * @param {Object} [options] options to the constructor
      * @param {SourceFile} [options.file] the source file to copy from. Other options
      * will override the fields in this file
-     * @param {String} [options.sourceLocale] the source locale of the files
+     * @param {String} [options.sourceLocale] Deprecated: the source locale of the files
      * being linted
      * @param {Function} [options.getLogger] a callback function provided by
      * the linter to retrieve the log4js logger
@@ -66,19 +66,16 @@ class SourceFile {
             this.dirty = options.file.dirty;
         }
         // other options can override the file options
-        if (typeof(options?.getLogger) === "function") {
+        if (typeof options?.getLogger === "function") {
             this.logger = options.getLogger("ilib-lint-common.SourceFile");
         }
         if (options?.sourceLocale) {
             this.sourceLocale = options.sourceLocale;
         }
-        if (!this.sourceLocale) {
-            this.sourceLocale = "en-US";
-        }
         if (options?.type) {
             this.type = options.type;
         }
-        if (typeof(options?.content) === 'string') {
+        if (typeof options?.content === "string") {
             this.content = options.content;
             if (this.content) {
                 this.dirty = true;
@@ -109,6 +106,14 @@ class SourceFile {
         // mark as not modified with respect to the source
         this.dirty = false;
     }
+
+    /**
+     * The locale of this file
+     * @deprecated
+     * @type {string}
+     * @default "en-US"
+     */
+    sourceLocale = "en-US";
 
     /**
      * A callback function provided by the linter to retrieve the log4js logger
@@ -143,11 +148,14 @@ class SourceFile {
     /**
      * Return the raw contents of the file as a Buffer of bytes.
      * This has not been converted into a Unicode string yet.
-     * @returns {Buffer|undefined} a buffer containing the bytes of this file
+     * @returns {Buffer} a buffer containing the bytes of this file
      */
     getRaw() {
         if (this.raw === undefined) {
             this.read();
+            if (this.raw === undefined) {
+                throw new Error("Raw is undefined");
+            }
         }
         return this.raw;
     }
@@ -156,7 +164,7 @@ class SourceFile {
      * The content of the file, stored as regular Javascript string
      * encoded in UTF-8.
      *
-     * @type {String}
+     * @type {String|undefined}
      * @protected
      */
     content;
@@ -167,9 +175,13 @@ class SourceFile {
      * @returns {String} the content of the file, encoded as a JS string
      */
     getContent() {
-        if (typeof(this.content) === 'undefined') {
+        if (typeof this.content === "undefined") {
             this.read();
+            if (typeof this.content === "undefined") {
+                throw new Error("Content is undefined");
+            }
         }
+
         return this.content;
     }
 
@@ -179,7 +191,7 @@ class SourceFile {
      * @returns {Array.<String>|undefined} the content as an array of lines
      */
     getLines() {
-        if (typeof(this.content) === 'undefined') {
+        if (typeof this.content === "undefined") {
             this.read();
         }
         return this.content?.split(/[\r\n]+/g);
@@ -263,7 +275,7 @@ class SourceFile {
     write() {
         if (this.filePath && this.isDirty()) {
             const dir = path.dirname(this.filePath);
-            fs.mkdirSync(path.dirname(this.filePath), {recursive: true});
+            fs.mkdirSync(path.dirname(this.filePath), { recursive: true });
             fs.writeFileSync(this.filePath, this.getContent() || "", "utf-8");
             this.dirty = false;
             return true;

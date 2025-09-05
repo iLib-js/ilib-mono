@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import { Rule } from 'ilib-lint-common';
-import log4js from 'log4js';
+import { Rule } from "ilib-lint-common";
+import log4js from "log4js";
 
-import ResourceMatcher from './rules/ResourceMatcher.js';
-import ResourceSourceChecker from './rules/ResourceSourceChecker.js';
-import ResourceTargetChecker from './rules/ResourceTargetChecker.js';
-import SourceRegexpChecker from './rules/SourceRegexpChecker.js';
+import ResourceMatcher from "./rules/ResourceMatcher.js";
+import ResourceSourceChecker from "./rules/ResourceSourceChecker.js";
+import ResourceTargetChecker from "./rules/ResourceTargetChecker.js";
+import SourceRegexpChecker from "./rules/SourceRegexpChecker.js";
 
-import ResourceICUPlurals from './rules/ResourceICUPlurals.js';
-import ResourceQuoteStyle from './rules/ResourceQuoteStyle.js';
-import ResourceUniqueKeys from './rules/ResourceUniqueKeys.js';
+import ResourceICUPlurals from "./rules/ResourceICUPlurals.js";
+import ResourceQuoteStyle from "./rules/ResourceQuoteStyle.js";
+import ResourceUniqueKeys from "./rules/ResourceUniqueKeys.js";
 
 const logger = log4js.getLogger("ilib-lint.RuleManager");
 
@@ -39,8 +39,24 @@ const typeMap = {
     "resource-matcher": ResourceMatcher,
     "resource-source": ResourceSourceChecker,
     "resource-target": ResourceTargetChecker,
-    "source-checker": SourceRegexpChecker
+    "source-checker": SourceRegexpChecker,
 };
+
+/**
+ * @typedef {Object} RuleConfig
+ * @property {string} type
+ * @property {string} name
+ * @property {string} description
+ * @property {string} note
+ */
+
+/**
+ * @typedef {Record<String, unknown>} RuleSetDefinition
+ */
+
+/**
+ * @typedef {(new (...args: ConstructorParameters<typeof Rule>) => Rule)} RuleConstructor
+ */
 
 /**
  * @class a class to manage all the possible rules
@@ -61,8 +77,11 @@ class RuleManager {
      * @constructor
      */
     constructor(options) {
+        /** @type {Record<String, RuleConstructor | RuleConfig>} */
         this.ruleCache = {};
+        /** @type {Record<String, RuleSetDefinition>} */
         this.ruleDefs = {};
+        /** @type {Record<String, String>} */
         this.descriptions = {};
         this.sourceLocale = options && options.sourceLocale;
 
@@ -76,7 +95,7 @@ class RuleManager {
      * Return a rule instance for the given name.
      *
      * @param {String} name name of the rule to return
-     * @param {Object|undefined} options options for this instance of the
+     * @param {Object} [options] options for this instance of the
      * rule from the config file, if any
      * @returns {Rule|undefined} an instance of the required rule or undefined if
      * the rule cannot be found
@@ -85,19 +104,19 @@ class RuleManager {
         const ruleConfig = this.ruleCache[name];
         if (!name || !ruleConfig) return;
 
-        if (typeof(ruleConfig) === 'object') {
+        if (typeof ruleConfig === "object") {
             const ruleClass = typeMap[ruleConfig.type];
             return new ruleClass({
                 ...ruleConfig,
                 ...options,
                 sourceLocale: this.sourceLocale,
-                getLogger: log4js.getLogger.bind(log4js)
+                getLogger: log4js.getLogger.bind(log4js),
             });
         } else {
             return new ruleConfig({
                 ...options,
                 sourceLocale: this.sourceLocale,
-                getLogger: log4js.getLogger.bind(log4js)
+                getLogger: log4js.getLogger.bind(log4js),
             });
         }
     }
@@ -118,21 +137,26 @@ class RuleManager {
 
     /**
      * @private
+     * @param {RuleConstructor | RuleConfig} rule the rule to add
      */
     addRule(rule) {
         if (rule) {
-            if (typeof(rule) === 'function' && this.inheritsFromRule(rule)) {
+            if (typeof rule === "function" && this.inheritsFromRule(rule)) {
                 const p = new rule({
                     sourceLocale: this.sourceLocale,
-                    getLogger: log4js.getLogger.bind(log4js)
+                    getLogger: log4js.getLogger.bind(log4js),
                 });
                 this.ruleCache[p.getName()] = rule;
                 this.descriptions[p.getName()] = p.getDescription();
                 logger.trace(`Added rule ${p.getName()} to the rule manager.`);
-            } else if (typeof(rule) === 'object') {
-                if (typeof(rule.type) !== 'string' || typeof(rule.name) !== 'string' ||
-                    typeof(rule.description) !== 'string' || typeof(rule.note) !== 'string' ||
-                    !typeMap[rule.type]) {
+            } else if (typeof rule === "object") {
+                if (
+                    typeof rule.type !== "string" ||
+                    typeof rule.name !== "string" ||
+                    typeof rule.description !== "string" ||
+                    typeof rule.note !== "string" ||
+                    !typeMap[rule.type]
+                ) {
                     throw "Insufficient or incorrect arguments to register declarative rule";
                 }
                 this.ruleCache[rule.name] = rule;
@@ -185,29 +209,29 @@ class RuleManager {
      * Both the declarative and programmatic rules define a unique name, which is
      * what is used to instantiate the rule using the RuleFactory function.
      *
-     * @param {Object|Class|Array.<Object|Class>} ruleConfig the configuration for
+     * @param {RuleConstructor | RuleConfig | Array.<RuleConstructor | RuleConfig>} rules the configuration for
      * the new rule or rules to register
      * @throws if the required properties are not given in the declarative config
      * or the Class does not inherit from Rule.
      */
     add(rules) {
-        if (!rules || (typeof(rules) !== 'object' && typeof(rules) !== 'function')) {
+        if (!rules || (typeof rules !== "object" && typeof rules !== "function")) {
             logger.debug("Attempt to add a rule to the rule manager a rule that is not declarative or is not a class");
         }
 
         if (Array.isArray(rules)) {
-            rules.forEach(rule => {
+            rules.forEach((rule) => {
                 this.addRule(rule);
             });
         } else {
             this.addRule(rules);
         }
-    };
+    }
 
     /**
      * Return all the rule classes that this manager knows about.
      *
-     * @returns {Array.<Rule>} an array of rule classes that this manager
+     * @returns {Array.<RuleConstructor | RuleConfig>} an array of rule classes that this manager
      * knows about
      */
     getRules() {
@@ -218,7 +242,7 @@ class RuleManager {
      * Return an object where the properties are the rule names and the
      * values are the rule descriptions.
      *
-     * @returns {Object} the rule names and descriptions
+     * @returns {Record<String, String>} the rule names and descriptions
      */
     getDescriptions() {
         return this.descriptions;
@@ -228,11 +252,11 @@ class RuleManager {
      * Add a ruleset definition to this rule manager.
      *
      * @param {String} name the name of this ruleset definition
-     * @param {Object} ruleDefs definitions of rules in this
+     * @param {RuleSetDefinition} ruleDefs definitions of rules in this
      * definition and their optional parameters
      */
     addRuleSetDefinition(name, ruleDefs) {
-        if (typeof(ruleDefs) !== 'object') return;
+        if (typeof ruleDefs !== "object") return;
 
         logger.trace(`Added ruleset definition for set ${name}`);
         // this will override any existing one with the same name
@@ -241,11 +265,11 @@ class RuleManager {
     /**
      * Add an object full of ruleset definitions to this rule manager.
      *
-     * @param {Object} ruleDefs an object where the properties are
-     * the rule name, and the values are the rule definitions.
+     * @param {Record<String, RuleSetDefinition>} ruleDefs an object where the properties are
+     * the rule set name, and the values are the rule set definitions.
      */
     addRuleSetDefinitions(ruleDefs) {
-        if (typeof(ruleDefs) !== 'object') return;
+        if (typeof ruleDefs !== "object") return;
         for (let name in ruleDefs) {
             this.addRuleSetDefinition(name, ruleDefs[name]);
         }
@@ -256,7 +280,7 @@ class RuleManager {
      *
      * @param {String} name the name of the ruleset definition
      * to return
-     * @returns {Object} the ruleset definition
+     * @returns {RuleSetDefinition} the ruleset definition
      */
     getRuleSetDefinition(name) {
         return this.ruleDefs[name];

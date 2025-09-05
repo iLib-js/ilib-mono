@@ -17,84 +17,72 @@
  * limitations under the License.
  */
 
-import { SourceFile, IntermediateRepresentation } from 'ilib-lint-common';
-import { ResourceString } from 'ilib-tools-common';
+import { SourceFile, IntermediateRepresentation } from "ilib-lint-common";
+import { ResourceString } from "ilib-tools-common";
 
-import LintableFile from '../src/LintableFile.js';
-import Project from '../src/Project.js';
-import PluginManager from '../src/PluginManager.js';
+import LintableFile from "../src/LintableFile.js";
+import Project from "../src/Project.js";
+import PluginManager from "../src/PluginManager.js";
 
 const config = {
-    "name": "test",
-    "locales": [
-        "en-US",
-        "de-DE",
-        "ja-JP",
-        "ko-KR"
-    ],
-    "paths": {
+    name: "test",
+    locales: ["en-US", "de-DE", "ja-JP", "ko-KR"],
+    paths: {
         "**/*.json": {
-            "locales": [
-                "en-US",
-                "de-DE",
-                "ja-JP"
-            ]
+            locales: ["en-US", "de-DE", "ja-JP"],
         },
         "**/*.xliff": {
-            "rules": {
+            rules: {
                 "resource-icu-plurals": true,
                 "resource-quote-style": true,
                 "resource-url-match": true,
-                "resource-named-params": "localeOnly"
-            }
-        }
-    }
+                "resource-named-params": "localeOnly",
+            },
+        },
+    },
 };
 
 const config2 = {
-    "name": "test2",
-    "locales": [
-        "en-US",
-        "de-DE",
-        "ja-JP",
-        "ko-KR"
-    ],
-    "plugins": [
-        "plugin-test"
-    ],
-    "excludes": [
-        "node_modules/**",
-        ".git/**",
-        "docs/**"
-    ],
-    "rulesets": {
-        "test": {
+    name: "test2",
+    locales: ["en-US", "de-DE", "ja-JP", "ko-KR"],
+    plugins: ["plugin-test"],
+    excludes: ["node_modules/**", ".git/**", "docs/**"],
+    rulesets: {
+        test: {
             "resource-icu-plurals": true,
             "resource-quote-style": true,
             "resource-url-match": true,
-            "resource-named-params": "localeOnly"
-        }
+            "resource-named-params": "localeOnly",
+        },
     },
-    "filetypes": {
+    filetypes: {
         "json-modified": {
-            "parsers": [ "parser-xyz" ],
-            "ruleset": [ "test" ]
-        }
+            parsers: ["parser-xyz"],
+            ruleset: ["test"],
+        },
     },
-    "paths": {
+    paths: {
         // it has an odd filename extension, so we have to explicitly name the
         // parser above as the one from our plugin-test
-        "**/*.pdq": "json-modified"
-    }
+        "**/*.pdq": "json-modified",
+    },
 };
 
-const project = new Project(".", {
-    pluginManager: new PluginManager()
-}, config);
+const project = new Project(
+    ".",
+    {
+        pluginManager: new PluginManager(),
+    },
+    config
+);
 
-const project2 = new Project(".", {
-    pluginManager: new PluginManager()
-}, config2);
+const project2 = new Project(
+    ".",
+    {
+        pluginManager: new PluginManager(),
+    },
+    config2
+);
 
 describe("testLintableFile", () => {
     beforeAll(() => {
@@ -132,12 +120,16 @@ describe("testLintableFile", () => {
         expect.assertions(2);
 
         const filetype = project.getFileTypeForPath("test/testfiles/test.xliff");
-        const lf = new LintableFile("a", {
-            settings: {
-                template: "x"
+        const lf = new LintableFile(
+            "a",
+            {
+                settings: {
+                    template: "x",
+                },
+                filetype,
             },
-            filetype
-        }, project);
+            project
+        );
         expect(lf).toBeTruthy();
         expect(lf.getFilePath()).toBe("a");
     });
@@ -146,12 +138,16 @@ describe("testLintableFile", () => {
         expect.assertions(2);
 
         const filetype = project.getFileTypeForPath("src/filemanager/xrs/messages_de_DE.properties");
-        const lf = new LintableFile("src/filemanager/xrs/messages_de_DE.properties", {
-            settings: {
-                template: "[dir]/messages_[localeUnder].properties"
+        const lf = new LintableFile(
+            "src/filemanager/xrs/messages_de_DE.properties",
+            {
+                settings: {
+                    template: "[dir]/messages_[localeUnder].properties",
+                },
+                filetype,
             },
-            filetype
-        }, project);
+            project
+        );
         expect(lf).toBeTruthy();
         expect(lf.getLocaleFromPath()).toBe("de-DE");
     });
@@ -160,12 +156,16 @@ describe("testLintableFile", () => {
         expect.assertions(2);
 
         const filetype = project.getFileTypeForPath("src/filemanager/xrs/Excludes.java");
-        const lf = new LintableFile("src/filemanager/xrs/Excludes.java", {
-            settings: {
-                template: "[dir]/messages_[localeUnder].properties"
+        const lf = new LintableFile(
+            "src/filemanager/xrs/Excludes.java",
+            {
+                settings: {
+                    template: "[dir]/messages_[localeUnder].properties",
+                },
+                filetype,
             },
-            filetype
-        }, project);
+            project
+        );
         expect(lf).toBeTruthy();
         expect(lf.getLocaleFromPath()).toBe("");
     });
@@ -174,11 +174,14 @@ describe("testLintableFile", () => {
         expect.assertions(2);
 
         const filetype = project.getFileTypeForPath("src/filemanager/xrs/messages_de_DE.properties");
-        const lf = new LintableFile("src/filemanager/xrs/messages_de_DE.properties", {
-            settings: {
+        const lf = new LintableFile(
+            "src/filemanager/xrs/messages_de_DE.properties",
+            {
+                settings: {},
+                filetype,
             },
-            filetype
-        }, project);
+            project
+        );
         expect(lf).toBeTruthy();
         expect(lf.getLocaleFromPath()).toBe("");
     });
@@ -187,11 +190,14 @@ describe("testLintableFile", () => {
         expect.assertions(4);
 
         const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.xliff");
-        const lf = new LintableFile("test/testfiles/xliff/test.xliff", {
-            settings: {
+        const lf = new LintableFile(
+            "test/testfiles/xliff/test.xliff",
+            {
+                settings: {},
+                filetype,
             },
-            filetype
-        }, project);
+            project
+        );
         expect(lf).toBeTruthy();
         lf.findIssues("de-DE");
         const ir = lf.getIRs()[0];
@@ -205,11 +211,14 @@ describe("testLintableFile", () => {
         expect.assertions(9);
 
         const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.xliff");
-        const lf = new LintableFile("test/testfiles/xliff/test.xliff", {
-            settings: {
+        const lf = new LintableFile(
+            "test/testfiles/xliff/test.xliff",
+            {
+                settings: {},
+                filetype,
             },
-            filetype
-        }, project);
+            project
+        );
         expect(lf).toBeTruthy();
         lf.findIssues("de-DE");
         const ir = lf.getIRs();
@@ -228,11 +237,14 @@ describe("testLintableFile", () => {
         expect.assertions(5);
 
         const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.xliff");
-        const lf = new LintableFile("test/testfiles/xliff/test.xliff", {
-            settings: {
+        const lf = new LintableFile(
+            "test/testfiles/xliff/test.xliff",
+            {
+                settings: {},
+                filetype,
             },
-            filetype
-        }, project);
+            project
+        );
         expect(lf).toBeTruthy();
         lf.findIssues("de-DE");
         const ir = lf.getIRs();
@@ -246,11 +258,14 @@ describe("testLintableFile", () => {
         expect.assertions(8);
 
         const filetype = project.getFileTypeForPath("test/ilib-mock/index.js");
-        const lf = new LintableFile("test/ilib-mock/index.js", {
-            filetype,
-            settings: {
-            }
-        }, project);
+        const lf = new LintableFile(
+            "test/ilib-mock/index.js",
+            {
+                filetype,
+                settings: {},
+            },
+            project
+        );
         expect(lf).toBeTruthy();
         lf.findIssues("de-DE");
         const ir = lf.getIRs();
@@ -268,11 +283,14 @@ describe("testLintableFile", () => {
         expect.assertions(7);
 
         const filetype = project2.getFileTypeForPath("test/testfiles/strings.pdq");
-        const lf = new LintableFile("test/testfiles/strings.pdq", {
-            filetype,
-            settings: {
-            }
-        }, project2);
+        const lf = new LintableFile(
+            "test/testfiles/strings.pdq",
+            {
+                filetype,
+                settings: {},
+            },
+            project2
+        );
         expect(lf).toBeTruthy();
         lf.findIssues("de-DE");
         const ir = lf.getIRs();
@@ -289,11 +307,14 @@ describe("testLintableFile", () => {
         expect.assertions(8);
 
         const filetype = project.getFileTypeForPath("test/testfiles/strings.pdq");
-        const lf = new LintableFile("test/testfiles/strings.pdq", {
-            filetype,
-            settings: {
-            }
-        }, project);
+        const lf = new LintableFile(
+            "test/testfiles/strings.pdq",
+            {
+                filetype,
+                settings: {},
+            },
+            project
+        );
         expect(lf).toBeTruthy();
         lf.findIssues("de-DE");
         const ir = lf.getIRs();
@@ -312,9 +333,13 @@ describe("testLintableFile", () => {
         expect.assertions(4);
 
         const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.pdq");
-        const lf = new LintableFile("test/testfiles/xliff/test.pdq", {
-            filetype
-        }, project);
+        const lf = new LintableFile(
+            "test/testfiles/xliff/test.pdq",
+            {
+                filetype,
+            },
+            project
+        );
 
         expect(lf).toBeTruthy();
         const source = lf.getSourceFile();
@@ -327,29 +352,35 @@ describe("testLintableFile", () => {
         expect.assertions(2);
 
         const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.pdq");
-        const lf = new LintableFile("test/testfiles/xliff/test.pdq", {
-            filetype
-        }, project);
+        const lf = new LintableFile(
+            "test/testfiles/xliff/test.pdq",
+            {
+                filetype,
+            },
+            project
+        );
         expect(lf).toBeTruthy();
 
-        const irs = [new IntermediateRepresentation({
-            type: "resource",
-            ir: [
-                new ResourceString({
-                    source: "Asdf asdf",
-                    sourceLocale: "en-US",
-                    target: "Asdf asdf in German",
-                    targetLocale: "de-DE",
-                    key: "foobar",
-                    datatype: "plaintext",
-                    restype: "string",
-                    project: "webapp",
-                    pathName: "foo/bar/asdf.java",
-                    comment: "foobar is where it's at!"
-                })
-            ],
-            sourceFile: lf.getSourceFile()
-        })];
+        const irs = [
+            new IntermediateRepresentation({
+                type: "resource",
+                ir: [
+                    new ResourceString({
+                        source: "Asdf asdf",
+                        sourceLocale: "en-US",
+                        target: "Asdf asdf in German",
+                        targetLocale: "de-DE",
+                        key: "foobar",
+                        datatype: "plaintext",
+                        restype: "string",
+                        project: "webapp",
+                        pathName: "foo/bar/asdf.java",
+                        comment: "foobar is where it's at!",
+                    }),
+                ],
+                sourceFile: lf.getSourceFile(),
+            }),
+        ];
 
         lf.setIRs(irs);
 
@@ -360,30 +391,36 @@ describe("testLintableFile", () => {
         expect.assertions(3);
 
         const filetype = project.getFileTypeForPath("test/testfiles/xliff/test.pdq");
-        const lf = new LintableFile("test/testfiles/xliff/test.pdq", {
-            filetype
-        }, project);
+        const lf = new LintableFile(
+            "test/testfiles/xliff/test.pdq",
+            {
+                filetype,
+            },
+            project
+        );
         expect(lf).toBeTruthy();
 
         // just use an array of plain object instead
-        const irs = [{
-            type: "resource",
-            ir: [
-                new ResourceString({
-                    source: "Asdf asdf",
-                    sourceLocale: "en-US",
-                    target: "Asdf asdf in German",
-                    targetLocale: "de-DE",
-                    key: "foobar",
-                    datatype: "plaintext",
-                    restype: "string",
-                    project: "webapp",
-                    pathName: "foo/bar/asdf.java",
-                    comment: "foobar is where it's at!"
-                })
-            ],
-            sourceFile: lf.getSourceFile()
-        }];
+        const irs = [
+            {
+                type: "resource",
+                ir: [
+                    new ResourceString({
+                        source: "Asdf asdf",
+                        sourceLocale: "en-US",
+                        target: "Asdf asdf in German",
+                        targetLocale: "de-DE",
+                        key: "foobar",
+                        datatype: "plaintext",
+                        restype: "string",
+                        project: "webapp",
+                        pathName: "foo/bar/asdf.java",
+                        comment: "foobar is where it's at!",
+                    }),
+                ],
+                sourceFile: lf.getSourceFile(),
+            },
+        ];
 
         expect(() => {
             // should reject this because the elements of the array are not the right type

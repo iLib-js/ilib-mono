@@ -17,18 +17,24 @@
  * limitations under the License.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
-import log4js from 'log4js';
-import mm from 'micromatch';
+import fs from "node:fs";
+import path from "node:path";
+import log4js from "log4js";
+import mm from "micromatch";
 
-import { FileStats, SourceFile, Formatter } from 'ilib-lint-common';
+import { FileStats, SourceFile, Formatter, Result } from "ilib-lint-common";
 
-import LintableFile from './LintableFile.js';
-import DirItem from './DirItem.js';
-import FileType from './FileType.js';
-import { FolderConfigurationProvider } from './config/ConfigurationProvider.js';
-import ResultComparator from './ResultComparator.js';
+import LintableFile from "./LintableFile.js";
+import DirItem from "./DirItem.js";
+import FileType from "./FileType.js";
+import { FolderConfigurationProvider } from "./config/ConfigurationProvider.js";
+import ResultComparator from "./ResultComparator.js";
+import FixerManager from "./FixerManager.js";
+import ParserManager from "./ParserManager.js";
+import PluginManager from "./PluginManager.js";
+import RuleManager from "./RuleManager.js";
+import SerializerManager from "./SerializerManager.js";
+import TransformerManager from "./TransformerManager.js";
 
 const logger = log4js.getLogger("ilib-lint.root.Project");
 
@@ -41,18 +47,18 @@ const rulesetDefinitions = {
         "resource-named-params": true,
         "resource-snake-case": true,
         "resource-camel-case": true,
-    }
+    },
 };
 
 const xliffFileTypeDefinition = {
     name: "xliff",
     glob: "**/*.xliff",
-    ruleset: [ "resource-check-all" ]
+    ruleset: ["resource-check-all"],
 };
 
 const unknownFileTypeDefinition = {
     name: "unknown",
-    glob: "**/*"
+    glob: "**/*",
 };
 
 /**
@@ -61,13 +67,14 @@ const unknownFileTypeDefinition = {
  * class.
  *
  * @private
- * @param {Object} instance the instance to check
+ * @template {abstract new (...args: any[]) => any} Class
+ * @param {InstanceType<Class>} instance the instance to check
  * @param {String} methodName the name of the method to check
  * @param {Class} parentClass the parent class of the instance or one of its ancestors
  * @returns {boolean} true if the method is defined in the class itself
  */
 function isOwnMethod(instance, methodName, parentClass) {
-    return typeof(instance[methodName]) === 'function' && instance[methodName] !== parentClass.prototype[methodName];
+    return typeof instance[methodName] === "function" && instance[methodName] !== parentClass.prototype[methodName];
 }
 
 /**
@@ -81,17 +88,27 @@ function isOwnMethod(instance, methodName, parentClass) {
  */
 class Project extends DirItem {
     /**
+     * The plugin manager for this run of the ilib-lint tool
+     * @type {PluginManager}
+     */
+    pluginMgr;
+
+    /**
      * Construct a new project.
      *
      * @param {String} root root directory for this project
      * @param {Object} options properties controlling how this run of the linter
      * works, mostly from the command-line options
+     * @param {PluginManager} options.pluginManager the plugin manager to use for this project
+     * @param {Record<string, unknown>} [options.settings] the settings from the ilib-lint config that
+     *  apply to this file
      * @param {Object} config contents of a configuration file for this project
      */
     constructor(root, options, config) {
         super(root, options, config);
 
-        this.files = [];
+        /** @type {DirItem[]} */
+        this.dirItems = [];
 
         if (!options || !root || !config || !options.pluginManager) {
             throw "Insufficient params given to Project constructor";
@@ -106,7 +123,7 @@ class Project extends DirItem {
             this.name = config.name;
         }
 
-        this.sourceLocale = (config?.sourceLocale) || (options?.opt?.sourceLocale);
+        this.sourceLocale = config?.sourceLocale || options?.opt?.sourceLocale;
         this.config.autofix = options?.opt?.fix === true || config?.autofix === true;
 
         this.pluginMgr = this.options.pluginManager;
@@ -115,8 +132,14 @@ class Project extends DirItem {
         ruleMgr.addRuleSetDefinitions(rulesetDefinitions);
 
         this.filetypes = {
-            "xliff": new FileType({project: this, ...xliffFileTypeDefinition}),
-            "unknown": new FileType({project: this, ...unknownFileTypeDefinition})
+            xliff: new FileType({ project: this, ...xliffFileTypeDefinition }),
+            unknown: new FileType({ project: this, ...unknownFileTypeDefinition }),
+        };
+
+        this.resultStats = {
+            errors: 0,
+            warnings: 0,
+            suggestions: 0,
         };
     }
 
@@ -146,7 +169,7 @@ class Project extends DirItem {
     async walk(root) {
         let list;
 
-        if (typeof(root) !== "string") {
+        if (typeof root !== "string") {
             return [];
         }
 
@@ -155,11 +178,16 @@ class Project extends DirItem {
         let pathName, included, stat, glob;
 
         try {
-            stat = fs.statSync(root, {throwIfNoEntry: false});
+            stat = fs.statSync(
+                root,
+                // @ts-expect-error: `throwIfNoEntry` is only available since 14.17.0
+                // older versions don't throw so it's OK to pass it here
+                { throwIfNoEntry: false }
+            );
             if (stat) {
                 if (stat.isDirectory()) {
                     const currentFolderConfigurationProvider = new FolderConfigurationProvider(root);
-                    if (root !== this.root && await currentFolderConfigurationProvider.hasConfigurationFile()) {
+                    if (root !== this.root && (await currentFolderConfigurationProvider.hasConfigurationFile())) {
                         const config = await currentFolderConfigurationProvider.loadConfiguration();
                         const newProject = new Project(root, this.getOptions(), config);
                         includes = newProject.getIncludes();
@@ -206,7 +234,7 @@ class Project extends DirItem {
                                     excludes = settings.excludes || excludes;
                                     included = excludes ? !mm.isMatch(root, excludes) : true;
                                 }
-                            }
+                            },
                         });
                     }
 
@@ -214,10 +242,16 @@ class Project extends DirItem {
                         logger.trace(`${root} ... included`);
                         glob = glob || "**";
                         const filetype = this.getFileTypeForPath(root);
-                        this.add(new LintableFile(root, {
-                            settings: this.getSettings(glob),
-                            filetype
-                        }, this));
+                        this.add(
+                            new LintableFile(
+                                root,
+                                {
+                                    settings: this.getSettings(glob),
+                                    filetype,
+                                },
+                                this
+                            )
+                        );
                     } else {
                         logger.trace(`${root} ... excluded`);
                     }
@@ -226,10 +260,7 @@ class Project extends DirItem {
                 logger.warn(`File ${root} does not exist.`);
             }
         } catch (e) {
-            // if the readdirSync did not work, it's maybe a file?
-            if (fs.existsSync(root)) {
-                this.add(new LintableFile(root, {}, this));
-            }
+            logger.error(`Error while walking directory ${root}`, e);
         }
 
         return this.get();
@@ -245,94 +276,79 @@ class Project extends DirItem {
     async scan(paths) {
         for (const pathName of paths) {
             await this.walk(pathName);
-        };
+        }
     }
 
     /**
      * Initialize this project. This returns a promise to load the
      * plugins and initializes them.
      *
-     * @returns {Promise} a promise to initialize the project
-     * @accept {boolean} true when everything was initialized correct
-     * @reject the initialization failed
+     * @returns {Promise<void>} a promise to initialize the project
      */
     async init() {
-        let promise = Promise.resolve(true);
-
         if (this.config.plugins) {
-            promise = promise.then(() => {
-                return this.pluginMgr.load(this.config.plugins);
-            });
+            await this.pluginMgr.load(this.config.plugins);
         }
 
         // initialize any projects or files that have an init method.
-        this.files.forEach(file => {
-            if (typeof(file.init) === 'function') {
-                promise = promise.then(() => {
-                    return file.init();
+        await Promise.all(this.dirItems.map((dirItem) => dirItem.init()));
+
+        // This configuration processing below was moved here from the
+        // constructor. The reason is that it has to be done after
+        // the plugins are already loaded because the plugins themselves
+        // may be providing some of the parsers, rules, rulesets, etc.
+        // that are referenced in the config.
+
+        const ruleMgr = this.pluginMgr.getRuleManager();
+        const fmtMgr = this.pluginMgr.getFormatterManager();
+        const fixerMgr = this.pluginMgr.getFixerManager();
+        if (this.config.rules) {
+            ruleMgr.add(this.config.rules);
+        }
+        if (this.config.rulesets) {
+            ruleMgr.addRuleSetDefinitions(this.config.rulesets);
+        }
+        if (this.config.formatters) {
+            fmtMgr.add(this.config.formatters);
+        }
+        if (this.config.fixers) {
+            fixerMgr.add(this.config.fixers);
+        }
+
+        if (this.config.filetypes) {
+            for (let ft in this.config.filetypes) {
+                this.filetypes[ft] = new FileType({
+                    name: ft,
+                    project: this,
+                    ...this.config.filetypes[ft],
                 });
             }
-        });
-
-        return promise.then(() => {
-            // This configuration processing below was moved here from the
-            // constructor. The reason is that it has to be done after
-            // the plugins are already loaded because the plugins themselves
-            // may be providing some of the parsers, rules, rulesets, etc.
-            // that are referenced in the config.
-
-            const ruleMgr = this.pluginMgr.getRuleManager();
-            const fmtMgr = this.pluginMgr.getFormatterManager();
-            const fixerMgr = this.pluginMgr.getFixerManager();
-            if (this.config.rules) {
-                ruleMgr.add(this.config.rules);
-            }
-            if (this.config.rulesets) {
-                ruleMgr.addRuleSetDefinitions(this.config.rulesets);
-            }
-            if (this.config.formatters) {
-                fmtMgr.add(this.config.formatters);
-            }
-            if (this.config.fixers) {
-                fixerMgr.add(this.config.fixers);
-            }
-
-            if (this.config.filetypes) {
-                for (let ft in this.config.filetypes) {
-                    this.filetypes[ft] = new FileType({
-                        name: ft,
+        }
+        if (this.config.paths) {
+            this.mappings = this.config.paths;
+            for (let glob in this.mappings) {
+                let mapping = this.mappings[glob];
+                if (typeof mapping === "object") {
+                    // this is an "on-the-fly" file type
+                    this.filetypes[glob] = new FileType({
+                        name: glob,
                         project: this,
-                        ...this.config.filetypes[ft]
+                        ...mapping,
                     });
-                }
-            }
-            if (this.config.paths) {
-                this.mappings = this.config.paths;
-                for (let glob in this.mappings) {
-                    let mapping = this.mappings[glob];
-                    if (typeof(mapping) === 'object') {
-                        // this is an "on-the-fly" file type
-                        this.filetypes[glob] = new FileType({
-                            name: glob,
-                            project: this,
-                            ...mapping
-                        });
-                    } else if (typeof(mapping) === 'string') {
-                        if (!this.filetypes[mapping]) {
-                            throw `Mapping ${glob} is configured to use unknown filetype ${mapping}`;
-                        }
+                } else if (typeof mapping === "string") {
+                    if (!this.filetypes[mapping]) {
+                        throw `Mapping ${glob} is configured to use unknown filetype ${mapping}`;
                     }
                 }
             }
-            const formatterName = this.options?.opt?.formatter || this.options.formatter || "ansi-console-formatter";
-            this.formatter = fmtMgr.get(formatterName);
-            if (!this.formatter) {
-                logger.error(`Could not find formatter ${formatterName}. Aborting...`);
-                process.exit(3);
-            }
+        }
 
-            return true;
-        });
+        const formatterName = this.options?.opt?.formatter || this.options.formatter || "ansi-console-formatter";
+        const formatter = fmtMgr.get(formatterName);
+        if (!formatter) {
+            throw new Error(`Could not find formatter ${formatterName}`);
+        }
+        this.formatter = formatter;
     }
 
     /**
@@ -356,7 +372,7 @@ class Project extends DirItem {
      * @returns {Array.<String>} the includes for this project
      */
     getIncludes() {
-        return this.includes;
+        return this.includes ?? [];
     }
 
     /**
@@ -447,25 +463,6 @@ class Project extends DirItem {
     }
 
     /**
-     * Return the named file type definition. Projects have two
-     * default file types that are always defined for every project:
-     * "xliff", and "unknown".
-     *
-     * - xliff - handles all *.xliff files using the XliffParser.
-     * It uses the default resources rule set to perform all regular
-     * resource checks.
-     * - unknown - handles all file types that are not otherwise
-     * matched. It does not perform any rule checks on any file.
-     *
-     * @param {String} name the name or the glob expression used to
-     * identify the requested file type
-     * @returns {FileType} the requested file type, or undefined if
-     * there is no such file type
-     */
-    getFileType(name) {
-    }
-
-    /**
      * Using the path mappings, find the file type that applies for
      * the given path. If no mappings apply, the "unkown" file type
      * will be returned.
@@ -481,9 +478,7 @@ class Project extends DirItem {
                 // if it is a string, it names the file type. If it is
                 // something else, then it is an on-the-fly file type
                 // definition
-                const name = typeof(this.mappings[glob]) === 'string' ?
-                    this.mappings[glob] :
-                    glob;
+                const name = typeof this.mappings[glob] === "string" ? this.mappings[glob] : glob;
                 return this.filetypes[name] || this.filetypes.unknown;
             }
         }
@@ -511,7 +506,7 @@ class Project extends DirItem {
      * @param {DirItem} item directory item to add
      */
     add(item) {
-        this.files.push(item);
+        this.dirItems.push(item);
     }
 
     /**
@@ -519,40 +514,44 @@ class Project extends DirItem {
      * @returns {Array.<LintableFile>} the lintable files in this project.
      */
     get() {
-        return this.files.flatMap(dirItem => {
-            if (dirItem instanceof LintableFile) {
-                return dirItem;
-            } else if (dirItem instanceof DirItem) {
-                return dirItem.get();
-            }
-        });
+        return this.dirItems
+            .flatMap((dirItem) => {
+                if (dirItem instanceof LintableFile) {
+                    return dirItem;
+                } else if (dirItem instanceof Project) {
+                    return dirItem.get();
+                } else {
+                    return undefined;
+                }
+            })
+            .filter((file) => !!file);
     }
 
     /**
      * Find all issues with the files located within this project and
      * all subprojects, and return them together in an array.
      *
+     * @param {Array.<String>} locales the locales to find issues for
      * @returns {Array.<Result>} a list of results
      */
     findIssues(locales) {
         this.fileStats = new FileStats();
-        if (!this.files || this.files.length === 0) {
-            return [];
-        }
-        return this.files.flatMap(file => {
-            //logger.debug(`Examining ${file.filePath}`);
-            if (!this.options.opt.quiet && this.options.opt.progressInfo) {
-                logger.info("Examing path   : " + file.filePath);
-            }
-            try {
-                const results = file.findIssues(locales);
-                this.fileStats.addStats(file.getStats());
-                return results;
-            } catch (e) {
-                logger.error(`Error while finding issues in the file ${file.filePath}`);
-                logger.error(e);
-            }
-        }).filter(result => result);
+
+        return this.get()
+            .flatMap((file) => {
+                if (!this.options.opt.quiet && this.options.opt.progressInfo) {
+                    logger.info(`Finding issues in file [${file.filePath}]`);
+                }
+                try {
+                    const results = file.findIssues(locales);
+                    this.fileStats?.addStats(file.getStats());
+                    return results;
+                } catch (e) {
+                    logger.error(`Error finding issues in file [${file.filePath}]`, e);
+                    return undefined;
+                }
+            })
+            .filter((result) => !!result);
     }
 
     /**
@@ -562,7 +561,7 @@ class Project extends DirItem {
      * @param {Array.<Result>} results the results of the linting process
      */
     applyTransformers(results) {
-        this.files.forEach(file => file.applyTransformers(results));
+        this.get().forEach((file) => file.applyTransformers(results));
     }
 
     /**
@@ -571,8 +570,8 @@ class Project extends DirItem {
      */
     serialize() {
         if (this.options.opt.write) {
-            const lintables = this.get();
-            lintables.forEach(file => {
+            const files = this.get();
+            files.forEach((file) => {
                 const irs = file.getIRs();
                 const fileType = file.getFileType();
                 const serializer = fileType.getSerializer();
@@ -581,7 +580,7 @@ class Project extends DirItem {
                     if (!this.options.opt.overwrite) {
                         let outputPath = `${sourceFile.getPath()}.modified`;
                         sourceFile = new SourceFile(outputPath, {
-                            file: sourceFile
+                            file: sourceFile,
                         });
                     }
                     sourceFile.write();
@@ -608,14 +607,16 @@ class Project extends DirItem {
             throw new Error("Attempt to calculate the I18N score without having retrieved the issues first.");
         }
 
-        const base = (this.fileStats.modules || this.fileStats.lines || this.fileStats.files || this.fileStats.bytes || 1);
-        const demeritPoints = this.resultStats.errors * 5 + this.resultStats.warnings * 3 + this.resultStats.suggestions;
+        const base =
+            this.fileStats.modules || this.fileStats.lines || this.fileStats.files || this.fileStats.bytes || 1;
+        const demeritPoints =
+            this.resultStats.errors * 5 + this.resultStats.warnings * 3 + this.resultStats.suggestions;
 
         // divide demerit points by the base so that larger projects are not penalized for
         // having more issues just because they have more files, lines, or modules
         // y intercept = 100
         // lim(x->infinity) of f(x) = 0
-        return 100 / (1.0 + demeritPoints/base);
+        return 100 / (1.0 + demeritPoints / base);
     }
 
     /**
@@ -624,8 +625,6 @@ class Project extends DirItem {
      * @returns {Number} the exit value
      */
     run() {
-        let exitValue = 0;
-
         let startTime = new Date();
 
         const results = this.findIssues(this.options.opt.locales);
@@ -635,7 +634,7 @@ class Project extends DirItem {
         this.resultStats = {
             errors: 0,
             warnings: 0,
-            suggestions: 0
+            suggestions: 0,
         };
 
         let totalTime = (endTime.getTime() - startTime.getTime()) / 1000;
@@ -646,7 +645,7 @@ class Project extends DirItem {
         results.sort(ResultComparator);
         let resultAll;
         if (results) {
-            results.forEach(result => {
+            results.forEach((result) => {
                 if (result.severity === "error") {
                     this.resultStats.errors++;
                 } else if (result.severity === "warning") {
@@ -657,10 +656,10 @@ class Project extends DirItem {
             });
         }
         const fmt = new Intl.NumberFormat("en-US", {
-            maxFractionDigits: 2
+            maxFractionDigits: 2,
         });
         const score = this.getScore();
-        if (isOwnMethod(this.formatter, "formatOutput", Formatter)) {
+        if (this.formatter && isOwnMethod(this.formatter, "formatOutput", Formatter)) {
             resultAll = this.formatter.formatOutput({
                 name: this.options.opt.name || this.project.name,
                 fileStats: this.fileStats,
@@ -668,12 +667,12 @@ class Project extends DirItem {
                 results: results,
                 score: score,
                 time: totalTime,
-                errorsOnly : this.options.opt.errorsOnly || false
+                errorsOnly: this.options.opt.errorsOnly || false,
             });
         } else {
             let outputArray = [];
-            results.forEach(result => {
-                const str = this.formatter.format(result);
+            results.forEach((result) => {
+                const str = this.formatter?.format(result);
                 if (str) {
                     if (result.severity === "error") {
                         if (!this.options.opt.output) {
@@ -697,26 +696,51 @@ class Project extends DirItem {
                     }
                 }
                 return str;
-            })
+            });
 
             const lines = [
                 `Total Elapse Time: ${String(totalTime)} seconds`,
-                `                             ${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}${`Average over`.padEnd(15, ' ')}`,
-                `                   Total     ${`${String(this.fileStats.files)} Files`.padEnd(15, ' ')}${`${String(this.fileStats.modules)} Modules`.padEnd(15, ' ')}${`${String(this.fileStats.lines)} Lines`.padEnd(15, ' ')}`
+                `                             ${`Average over`.padEnd(15, " ")}${`Average over`.padEnd(
+                    15,
+                    " "
+                )}${`Average over`.padEnd(15, " ")}`,
+                `                   Total     ${`${String(this.fileStats.files)} Files`.padEnd(15, " ")}${`${String(
+                    this.fileStats.modules
+                )} Modules`.padEnd(15, " ")}${`${String(this.fileStats.lines)} Lines`.padEnd(15, " ")}`,
             ];
             if (results.length) {
-                lines.push(`Errors:            ${String(this.resultStats.errors).padEnd(10, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.errors/this.fileStats.lines).padEnd(15, ' ')}`);
+                lines.push(
+                    `Errors:            ${String(this.resultStats.errors).padEnd(10, " ")}${fmt
+                        .format(this.resultStats.errors / this.fileStats.files)
+                        .padEnd(15, " ")}${fmt
+                        .format(this.resultStats.errors / this.fileStats.modules)
+                        .padEnd(15, " ")}${fmt.format(this.resultStats.errors / this.fileStats.lines).padEnd(15, " ")}`
+                );
                 if (!this.options.errorsOnly) {
                     lines.push(
-                        `Warnings:          ${String(this.resultStats.warnings).padEnd(10, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.warnings/this.fileStats.lines).padEnd(15, ' ')}`);
+                        `Warnings:          ${String(this.resultStats.warnings).padEnd(10, " ")}${fmt
+                            .format(this.resultStats.warnings / this.fileStats.files)
+                            .padEnd(15, " ")}${fmt
+                            .format(this.resultStats.warnings / this.fileStats.modules)
+                            .padEnd(15, " ")}${fmt
+                            .format(this.resultStats.warnings / this.fileStats.lines)
+                            .padEnd(15, " ")}`
+                    );
                     lines.push(
-                        `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.files).padEnd(15, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.modules).padEnd(15, ' ')}${fmt.format(this.resultStats.suggestions/this.fileStats.lines).padEnd(15, ' ')}`);
+                        `Suggestions:       ${String(this.resultStats.suggestions).padEnd(10, " ")}${fmt
+                            .format(this.resultStats.suggestions / this.fileStats.files)
+                            .padEnd(15, " ")}${fmt
+                            .format(this.resultStats.suggestions / this.fileStats.modules)
+                            .padEnd(15, " ")}${fmt
+                            .format(this.resultStats.suggestions / this.fileStats.lines)
+                            .padEnd(15, " ")}`
+                    );
                 }
             }
             lines.push(`I18N Score (0-100) ${fmt.format(score)}`);
 
             if (!this.options.opt.output) {
-                lines.forEach(line => {
+                lines.forEach((line) => {
                     logger.info(line);
                 });
             }
@@ -735,26 +759,89 @@ class Project extends DirItem {
             }
         }
 
-        if (this.options.opt["max-errors"]) {
-            exitValue = this.resultStats.errors > this.options.opt["max-errors"] ? 2 : 0;
-        } else if (this.options.opt["max-warnings"]) {
-            exitValue = this.resultStats.warnings > this.options.opt["max-warnings"] ? 1 : 0;
-        } else if (this.options.opt["max-suggestions"]) {
-            exitValue = this.resultStats.suggestions > this.options.opt["max-suggestions"] ? 1 : 0;
-        } else if (this.options.opt["min-score"]) {
-            exitValue = score < this.options.opt["min-score"] ? 2 : 0;
-        } else if (this.options.errorsOnly) {
-            exitValue = this.resultStats.errors > 0 ? 2 : 0;
-        } else {
-            exitValue = this.resultStats.errors > 0 ? 2 : ((this.resultStats.warnings > 0) ? 1 : 0);
+        return this.getExitValue();
+    }
+
+    /**
+     * Status codes for the exit value of the run method.
+     * @private
+     * @readonly
+     */
+    static exitValues = /** @type {const} */ ({
+        ERROR: 2,
+        WARNING: 1,
+        SUCCESS: 0,
+    });
+
+    /** @private */
+    getExitValue() {
+        // TODO fix types of project options and then clean up these local variables
+        // TODO refactor runtime defaults to be closer to the definition of the options
+        // currently defaults are based on this command line documentation
+        // https://github.com/iLib-js/ilib-mono/blob/f252e4cf2fc573b51cbc5070778d67827f3174eb/packages/ilib-lint/src/index.js#L121-L143
+
+        /**
+         * Maximum number of errors to still pass
+         * @type {number}
+         */
+        // @ts-expect-error: options.opt is not typed
+        const maxErrors = this.options.opt["max-errors"] ?? 0;
+
+        /**
+         * Maximum number of warnings to still pass
+         * @type {number}
+         */
+        // @ts-expect-error: options.opt is not typed
+        const maxWarnings = this.options.opt["max-warnings"] ?? 0;
+
+        /**
+         * Maximum number of suggestions to still pass
+         * @type {number | undefined}
+         */
+        // @ts-expect-error: options.opt is not typed
+        const maxSuggestions = this.options.opt["max-suggestions"] ?? undefined;
+
+        /**
+         * Minimum score to pass
+         * @type {number | undefined}
+         */
+        // @ts-expect-error: options.opt is not typed
+        const minScore = this.options.opt["min-score"] ?? undefined;
+
+        /**
+         * Only return errors and supress warnings
+         * @type {boolean}
+         */
+        // @ts-expect-error: options.errorsOnly is not typed
+        const errorsOnly = Boolean(this.options.errorsOnly);
+
+        if (this.resultStats.errors > maxErrors) {
+            return Project.exitValues.ERROR;
         }
 
-        return exitValue;
+        if (minScore !== undefined) {
+            const score = this.getScore();
+            if (score < minScore) {
+                return Project.exitValues.ERROR;
+            }
+        }
+
+        // errorsOnly suppresses checking warning and suggestion counts
+        if (!errorsOnly) {
+            if (this.resultStats.warnings > maxWarnings) {
+                return Project.exitValues.WARNING;
+            }
+            if (maxSuggestions !== undefined && this.resultStats.suggestions > maxSuggestions) {
+                return Project.exitValues.WARNING;
+            }
+        }
+
+        return Project.exitValues.SUCCESS;
     }
 
     clear() {
-        this.files = [];
+        this.dirItems = [];
     }
-};
+}
 
 export default Project;

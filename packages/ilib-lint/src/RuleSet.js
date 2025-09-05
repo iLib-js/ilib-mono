@@ -16,7 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import log4js from 'log4js';
+import log4js from "log4js";
+import { Rule } from "ilib-lint-common";
 
 const logger = log4js.getLogger("ilib-lint.RuleSet");
 
@@ -31,7 +32,7 @@ class RuleSet {
      * Construct an ilib-lint rule set.
      *
      * @constructor
-     * @param {Array.<Rule>} rules a list of rules to initialize
+     * @param {Array.<Rule>} [rules] a list of rules to initialize
      * this set
      */
     constructor(rules) {
@@ -43,10 +44,10 @@ class RuleSet {
 
     /**
      * Add a rule instnace to this rule set.
-     * @param {Rule} rule the instance to add
+     * @param {Rule} [rule] the instance to add
      */
     addRule(rule) {
-        if (!rule || typeof(rule) !== 'object' || !rule.getName()) return;
+        if (!rule || typeof rule !== "object" || !rule.getName()) return;
         logger.trace(`Adding rule ${rule.getName()} to the set`);
         this.rules[rule.getName()] = rule;
     }
@@ -57,10 +58,10 @@ class RuleSet {
      * override the previous definition. This way, the rule is
      * only ever added once.
      *
-     * @param {Array.<Rule>} rules a list of rule instances to add
+     * @param {Array.<Rule>} [rules] a list of rule instances to add
      */
     add(rules) {
-        if (!rules || typeof(rules) !== 'object' || !Array.isArray(rules)) return;
+        if (!rules || typeof rules !== "object" || !Array.isArray(rules)) return;
         rules.forEach(this.addRule.bind(this));
     }
 
@@ -71,7 +72,7 @@ class RuleSet {
      * @param {String} name unique name of the rule to remove
      */
     removeRule(name) {
-        if (typeof(name) !== 'string' || !this.rules[name]) return;
+        if (typeof name !== "string" || !this.rules[name]) return;
         delete this.rules[name];
     }
 
@@ -88,14 +89,14 @@ class RuleSet {
 
     /**
      * Return a list of rule instances in this set.
-     * @param {String} type optional parameter that restricts
+     * @param {String} [type] optional parameter that restricts
      * the type of rules returned. If no type is specified,
      * all rules are returned.
      *
      * @returns {Array.<Rule>} a list of rule instances
      */
     getRules(type) {
-        return Object.values(this.rules).filter(rule => {
+        return Object.values(this.rules).filter((rule) => {
             return !type || rule.getRuleType() === type;
         });
     }
@@ -107,6 +108,6 @@ class RuleSet {
     getSize() {
         return Object.keys(this.rules).length;
     }
-};
+}
 
 export default RuleSet;
