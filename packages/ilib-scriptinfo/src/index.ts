@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-// Re-export the main ScriptInfo class as default
-export { default as ScriptInfo } from './ScriptInfo';
+// Export the factory function as default
+export { default } from './ScriptInfo';
+
+// Re-export the ScriptInfo class for advanced usage
+export { ScriptInfo } from './ScriptInfo';
 
 // Re-export the ScriptDirection enum
 export { ScriptDirection } from './ScriptDirection';
-
-// Also export ScriptInfo as default for convenience
-export { default } from './ScriptInfo';

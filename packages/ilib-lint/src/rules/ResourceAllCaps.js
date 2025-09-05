@@ -23,7 +23,7 @@ import {Result} from 'ilib-lint-common';
 import Locale from 'ilib-locale';
 import {isAlpha, isUpper} from 'ilib-ctype';
 import CaseMapper from 'ilib-casemapper';
-import ScriptInfo from 'ilib-scriptinfo';
+import scriptInfoFactory from 'ilib-scriptinfo';
 import LocaleMatcher from 'ilib-localematcher';
 
 // type imports
@@ -66,18 +66,18 @@ class ResourceAllCaps extends ResourceRule {
             return;
         }
 
-        const isAllCaps = this.isAllCaps(source);
+        const isAllCaps = ResourceAllCaps.isAllCaps(source);
         if (!isAllCaps) {
             return;
         }
 
         // Check if the target locale supports capital letters
-        if (!this.hasCapitalLetters(resource.targetLocale || 'en-US')) {
+        if (!ResourceAllCaps.hasCapitalLetters(resource.targetLocale || 'en-US')) {
             return;
         }
 
         // Check if target matches the ALL CAPS style
-        if (this.isAllCaps(target)) {
+        if (ResourceAllCaps.isAllCaps(target)) {
             return;
         }
 
@@ -89,9 +89,9 @@ class ResourceAllCaps extends ResourceRule {
             rule: this,
             locale: resource.targetLocale,
             pathName: file,
+            fix: this.createFix(resource, target, file, index, category),
             highlight: `<e0>${target}</e0>`
         });
-        result.fix = this.createFix(resource, target, file, index, category);
         return result;
     }
 
@@ -130,7 +130,7 @@ class ResourceAllCaps extends ResourceRule {
      * @returns {boolean} Returns true for a string that is in ALL CAPS (all letter characters are uppercase and at least 2 letter characters exist).
      * Otherwise, returns false.
      */
-    isAllCaps(string) {
+    static isAllCaps(string) {
         if (!string || typeof string !== 'string') {
             return false;
         }
@@ -158,11 +158,16 @@ class ResourceAllCaps extends ResourceRule {
     }
 
     /**
+     * A language by itself cannot have capitalization; Instead, it's a property of a script.
+     * Therefore, if no script is explicitly specified in the locale, use LocaleMatcher to guess the likely full
+     * locale, which includes the script tag. Then check if the script supports capital letters.
+     * This is a guess of course because you cannot know for sure exactly what full locale
+     * corresponds to the source locale.
      * @public
      * @param {string} locale The locale to check for capital letter support.
      * @returns {boolean} Returns true if the locale's script supports capital letters, false otherwise.
      */
-    hasCapitalLetters(locale) {
+    static hasCapitalLetters(locale) {
         if (!locale) {
             return true; // Default to true for unknown locales
         }
@@ -182,8 +187,8 @@ class ResourceAllCaps extends ResourceRule {
             }
 
             if (script) {
-                const scriptInfo = new ScriptInfo(script);
-                return scriptInfo.getCasing();
+                const scriptInfo = scriptInfoFactory(script);
+                return scriptInfo?.getCasing() ?? true;
             }
 
             return true; // Default to true for unknown scripts

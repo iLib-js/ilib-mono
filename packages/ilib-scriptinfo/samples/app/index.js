@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync } from 'fs';
-import pkg from 'ilib-scriptinfo';
-const { ScriptInfo, ScriptDirection } = pkg;
+import scriptInfoFactory, { ScriptInfo, ScriptDirection } from 'ilib-scriptinfo';
 
 /**
  * Sample command-line application demonstrating ilib-scriptinfo usage.
@@ -103,8 +102,8 @@ function searchScriptCodes(searchTerm, allScripts) {
     const searchLower = searchTerm.toLowerCase();
     
     for (const code of allScripts) {
-        const scriptInfo = new ScriptInfo(code);
-        const name = scriptInfo.getName();
+        const scriptInfo = scriptInfoFactory(code);
+        const name = scriptInfo?.getName();
         
         // Check if the search term matches the code (case-insensitive)
         if (code.toLowerCase().includes(searchLower)) {
@@ -149,7 +148,7 @@ function main() {
     const scriptCodeToUse = correctCaseCode || inputScriptCode;
     
     // Create a ScriptInfo instance for the script code
-    const scriptInfo = ScriptInfo.create(scriptCodeToUse);
+    const scriptInfo = scriptInfoFactory(scriptCodeToUse);
     
     // Check if script was recognized
     if (!scriptInfo) {
@@ -174,7 +173,7 @@ function main() {
             // Show some example script codes
             const examples = allScripts.slice(0, 10); // Show first 10 as examples
             examples.forEach(code => {
-                const example = ScriptInfo.create(code);
+                const example = scriptInfoFactory(code);
                 if (example) {
                     console.log(`   ${code} - ${example.getName()}`);
                 }

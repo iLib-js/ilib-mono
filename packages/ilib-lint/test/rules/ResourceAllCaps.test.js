@@ -1115,9 +1115,7 @@ describe('ResourceAllCaps.isAllCaps', () => {
             {name: "all caps with dots", source: "ALL.CAPS.TEXT"},
         ]
     )("returns `true` if source string is $name", ({source}) => {
-        const rule = new ResourceAllCaps({});
-
-        const result = rule.isAllCaps(source);
+        const result = ResourceAllCaps.isAllCaps(source);
 
         expect(result).toBe(true);
     });
@@ -1138,9 +1136,7 @@ describe('ResourceAllCaps.isAllCaps', () => {
         {name: "null", source: null},
         {name: "undefined", source: undefined},
     ])("returns `false` if source string is $name", ({source}) => {
-        const rule = new ResourceAllCaps({});
-
-        const result = rule.isAllCaps(source || "");
+        const result = ResourceAllCaps.isAllCaps(source || "");
 
         expect(result).toBe(false);
     });
@@ -1149,9 +1145,7 @@ describe('ResourceAllCaps.isAllCaps', () => {
         {name: "null", source: null},
         {name: "undefined", source: undefined},
     ])("returns `false` if source string is $name", ({source}) => {
-        const rule = new ResourceAllCaps({});
-
-        const result = rule.isAllCaps(source || "");
+        const result = ResourceAllCaps.isAllCaps(source || "");
 
         expect(result).toBe(false);
     });
@@ -1180,9 +1174,7 @@ describe('ResourceAllCaps.hasCapitalLetters', () => {
         {name: "Latvian", locale: "lv-LV"},
         {name: "Lithuanian", locale: "lt-LT"},
     ])("returns `true` for $name locale", ({locale}) => {
-        const rule = new ResourceAllCaps({});
-
-        const result = rule.hasCapitalLetters(locale);
+        const result = ResourceAllCaps.hasCapitalLetters(locale);
 
         expect(result).toBe(true);
     });
@@ -1218,9 +1210,7 @@ describe('ResourceAllCaps.hasCapitalLetters', () => {
         {name: "Amharic", locale: "am-ET"},
         {name: "Tigrinya", locale: "ti-ET"},
     ])("returns `false` for $name locale", ({locale}) => {
-        const rule = new ResourceAllCaps({});
-
-        const result = rule.hasCapitalLetters(locale);
+        const result = ResourceAllCaps.hasCapitalLetters(locale);
 
         expect(result).toBe(false);
     });
