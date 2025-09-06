@@ -1,8 +1,7 @@
 {
-  "name": "ilib-scriptinfo-sample",
+  "name": "ilib-scriptinfo-legacy-sample",
   "version": "0.0.0",
-  "description": "Sample command-line app demonstrating ilib-scriptinfo usage",
-  "type": "module",
+  "description": "Legacy CommonJS sample app demonstrating ilib-scriptinfo usage with ES5 syntax",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -10,5 +9,8 @@
   },
   "dependencies": {
     "ilib-scriptinfo": "workspace:^"
+  },
+  "engines": {
+    "node": ">=0.10.0"
   }
-} 
+}

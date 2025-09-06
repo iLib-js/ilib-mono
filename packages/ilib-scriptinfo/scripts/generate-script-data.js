@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /*
- * generate-script-data.js - Generate ScriptData.js from ucd-full package
+ * generate-script-data.mjs - Generate ScriptData.ts from ucd-full package
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -19,8 +19,17 @@
  * limitations under the License.
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Create require function for module resolution
+const require = createRequire(import.meta.url);
 
 function generateScriptData() {
     try {
@@ -120,4 +129,4 @@ ${scriptData.map(entry => `    [${entry.map((val, i) => {
 }
 
 // Run the generator
-generateScriptData(); 
+generateScriptData();
