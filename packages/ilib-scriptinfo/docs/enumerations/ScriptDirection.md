@@ -18,7 +18,7 @@ Left-to-right writing direction
 
 #### Defined in
 
-[index.ts:27](https://github.com/iLib-js/ilib-mono/blob/0b76a4b893ca9a570f06cd6f0821e7f81ba67455/packages/ilib-scriptinfo/src/index.ts#L27)
+[ScriptDirection.ts:25](https://github.com/iLib-js/ilib-mono/blob/792cc31c3c0b58d9ce2952f5c37ae16b46acf0bc/packages/ilib-scriptinfo/src/ScriptDirection.ts#L25)
 
 ***
 
@@ -30,4 +30,4 @@ Right-to-left writing direction
 
 #### Defined in
 
-[index.ts:29](https://github.com/iLib-js/ilib-mono/blob/0b76a4b893ca9a570f06cd6f0821e7f81ba67455/packages/ilib-scriptinfo/src/index.ts#L29)
+[ScriptDirection.ts:27](https://github.com/iLib-js/ilib-mono/blob/792cc31c3c0b58d9ce2952f5c37ae16b46acf0bc/packages/ilib-scriptinfo/src/ScriptDirection.ts#L27)

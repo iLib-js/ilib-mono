@@ -4,12 +4,6 @@
 
 # ilib-scriptinfo
 
-## References
-
-### default
-
-Renames and re-exports [ScriptInfo](classes/ScriptInfo.md)
-
 ## Enumerations
 
 - [ScriptDirection](enumerations/ScriptDirection.md)
@@ -17,3 +11,7 @@ Renames and re-exports [ScriptInfo](classes/ScriptInfo.md)
 ## Classes
 
 - [ScriptInfo](classes/ScriptInfo.md)
+
+## Functions
+
+- [default](functions/default.md)

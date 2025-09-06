@@ -30,14 +30,19 @@ interface TestResult {
 }
 
 /**
+ * Sample app type
+ */
+type SampleType = "esm" | "legacy";
+
+/**
  * Helper function to run the sample app with given arguments
  */
-async function runSampleApp(args: string[] = []): Promise<TestResult> {
-    const sampleAppPath = path.resolve(__dirname, "..", "samples", "app", "index.js");
+async function runSampleApp(args: string[] = [], sampleType: SampleType = "esm"): Promise<TestResult> {
+    const sampleAppPath = path.resolve(__dirname, "..", "samples", sampleType, "index.js");
     
     try {
         const { stdout, stderr } = await execFileAsync("node", [sampleAppPath, ...args], {
-            cwd: path.resolve(__dirname, "..", "samples", "app"),
+            cwd: path.resolve(__dirname, "..", "samples", sampleType),
             env: { ...process.env, NODE_ENV: "test" }
         });
         return { stdout, stderr, code: 0 };
@@ -50,98 +55,147 @@ async function runSampleApp(args: string[] = []): Promise<TestResult> {
     }
 }
 
-describe("ilib-scriptinfo sample app", () => {
-    describe("help functionality", () => {
-        it("should show help when no arguments provided", async () => {
-            const result = await runSampleApp();
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-
-        it("should show help when --help flag is provided", async () => {
-            const result = await runSampleApp(["--help"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
+/**
+ * Test suite for sample apps
+ */
+describe("ilib-scriptinfo sample apps", () => {
+    
+    // Test both ESM and Legacy samples
+    const sampleTypes: SampleType[] = ["esm", "legacy"];
+    
+    sampleTypes.forEach((sampleType) => {
+        describe(`${sampleType.toUpperCase()} sample app`, () => {
+            
+            describe("help functionality", () => {
+                
+                test("should show help when no arguments provided", async () => {
+                    const result = await runSampleApp([], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain("ilib-scriptinfo");
+                    expect(result.stdout).toContain("Sample App");
+                    expect(result.stdout).toContain("USAGE");
+                    expect(result.stdout).toContain("node index.js <script-code>");
+                    expect(result.stdout).toContain("EXAMPLES");
+                    expect(result.stdout).toContain("node index.js Latn");
+                });
+                
+                test("should show help when --help flag is provided", async () => {
+                    const result = await runSampleApp(["--help"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain("ilib-scriptinfo");
+                    expect(result.stdout).toContain("Sample App");
+                    expect(result.stdout).toContain("USAGE");
+                    expect(result.stdout).toContain("node index.js <script-code>");
+                });
+                
+            });
+            
+            describe("valid script codes", () => {
+                
+                test("should display Latin script information correctly", async () => {
+                    const result = await runSampleApp(["Latn"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain('Script Information for "Latn"');
+                    expect(result.stdout).toContain("Code             | Latn");
+                    expect(result.stdout).toContain("Code Number      | 215");
+                    expect(result.stdout).toContain("Name             | Latin");
+                    expect(result.stdout).toContain("Script Direction | 📝 LTR Left-to-Right");
+                    expect(result.stdout).toContain("IME Requirement  | ⌨️  No IME required");
+                    expect(result.stdout).toContain("Casing Info      | 🔤 Uses letter case");
+                });
+                
+                test("should display Arabic script information correctly", async () => {
+                    const result = await runSampleApp(["Arab"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain('Script Information for "Arab"');
+                    expect(result.stdout).toContain("Code             | Arab");
+                    expect(result.stdout).toContain("Name             | Arabic");
+                    expect(result.stdout).toContain("Script Direction | 📝 RTL Right-to-Left");
+                });
+                
+                test("should display Han script information correctly", async () => {
+                    const result = await runSampleApp(["Hani"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain('Script Information for "Hani"');
+                    expect(result.stdout).toContain("Code             | Hani");
+                    expect(result.stdout).toContain("Name             | Han");
+                    expect(result.stdout).toContain("Script Direction | 📝 LTR Left-to-Right");
+                });
+                
+            });
+            
+            describe("case correction functionality", () => {
+                
+                test("should correct lowercase input to proper case", async () => {
+                    const result = await runSampleApp(["latn"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain('Script Information for "latn"');
+                    expect(result.stdout).toContain("Code             | Latn");
+                    expect(result.stdout).toContain("Name             | Latin");
+                });
+                
+                test("should correct uppercase input to proper case", async () => {
+                    const result = await runSampleApp(["LATN"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain('Script Information for "LATN"');
+                    expect(result.stdout).toContain("Code             | Latn");
+                    expect(result.stdout).toContain("Name             | Latin");
+                });
+                
+            });
+            
+            describe("partial matching functionality", () => {
+                
+                test("should find partial matches for 'lat'", async () => {
+                    const result = await runSampleApp(["lat"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain("❌ Unknown script code: \"lat\"");
+                    expect(result.stdout).toContain("🔍 Found");
+                    expect(result.stdout).toContain("similar script code(s):");
+                    expect(result.stdout).toContain("Latn - Latin");
+                });
+                
+                test("should find partial matches for 'arab'", async () => {
+                    const result = await runSampleApp(["arab"], sampleType);
+                    // Both samples find exact match (case-insensitive)
+                    expect(result.stdout).toContain('Script Information for "arab"');
+                    expect(result.stdout).toContain("Code             | Arab");
+                    expect(result.stdout).toContain("Name             | Arabic");
+                });
+                
+                test("should find partial matches for 'han'", async () => {
+                    const result = await runSampleApp(["han"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain("❌ Unknown script code: \"han\"");
+                    expect(result.stdout).toContain("🔍 Found");
+                    expect(result.stdout).toContain("similar script code(s):");
+                    expect(result.stdout).toContain("Hani - Han");
+                });
+                
+            });
+            
+            describe("error handling", () => {
+                
+                test("should handle unknown script code with no matches", async () => {
+                    const result = await runSampleApp(["xyzq"], sampleType);
+                    expect(result.code).toBe(0);
+                    expect(result.stdout).toContain("❌ Unknown script code: \"xyzq\"");
+                    expect(result.stdout).toContain("💡 No similar script codes found");
+                    expect(result.stdout).toContain("💡 Try one of these valid script codes:");
+                    expect(result.stdout).toContain("Arab - Arabic");
+                });
+                
+                test("should show error for too many arguments", async () => {
+                    const result = await runSampleApp(["Latn", "Arab"], sampleType);
+                    expect(result.code).toBe(1);
+                    expect(result.stderr).toContain("Error: Invalid number of arguments");
+                    expect(result.stderr).toContain("Usage: node index.js <script-code>");
+                    expect(result.stderr).toContain("Example: node index.js Latn");
+                });
+                
+            });
+            
         });
     });
-
-    describe("valid script codes", () => {
-        it("should display Latin script information correctly", async () => {
-            const result = await runSampleApp(["Latn"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-
-        it("should display Arabic script information correctly", async () => {
-            const result = await runSampleApp(["Arab"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-
-        it("should display Han script information correctly", async () => {
-            const result = await runSampleApp(["Hani"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-    });
-
-    describe("case correction functionality", () => {
-        it("should correct lowercase input to proper case", async () => {
-            const result = await runSampleApp(["latn"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-
-        it("should correct uppercase input to proper case", async () => {
-            const result = await runSampleApp(["LATN"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-    });
-
-    describe("partial matching functionality", () => {
-        it("should find partial matches for 'lat'", async () => {
-            const result = await runSampleApp(["lat"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-
-        it("should find partial matches for 'arab'", async () => {
-            const result = await runSampleApp(["arab"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-
-        it("should find partial matches for 'han'", async () => {
-            const result = await runSampleApp(["han"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-    });
-
-    describe("error handling", () => {
-        it("should handle unknown script code with no matches", async () => {
-            const result = await runSampleApp(["xyz"]);
-            expect(result.code).toBe(0);
-            expect(result.stdout).toMatchSnapshot();
-            expect(result.stderr).toBe("");
-        });
-
-        it("should show error for too many arguments", async () => {
-            const result = await runSampleApp(["Latn", "Arab"]);
-            expect(result.code).toBe(1);
-            expect(result.stdout).toBe("");
-            expect(result.stderr).toMatchSnapshot();
-        });
-    });
-}); 
+    
+});

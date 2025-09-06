@@ -6,18 +6,26 @@ const config = {
         name: "ilib-scriptinfo",
         color: "blackBright",
     },
-    preset: undefined,
+    preset: 'ts-jest/presets/default-esm',
+    extensionsToTreatAsEsm: ['.ts'],
     testMatch: [
-        "**/test/**/*.test.ts"
+        "**/test/**/*.test.ts",
+        "**/test/**/*.test.js"
     ],
     moduleFileExtensions: ['ts', 'js'],
+    moduleNameMapper: {
+        '^(\\.{1,2}/.*)\\.js$': '$1',
+    },
     transform: {
         '^.+\\.ts$': ['ts-jest', {
+            useESM: true,
             tsconfig: {
-                types: ['jest', 'node']
+                types: ['jest', 'node'],
+                module: 'ES2020',
+                moduleResolution: 'node'
             }
         }]
     }
 }
 
-module.exports = config; 
+module.exports = config;

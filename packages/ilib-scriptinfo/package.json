@@ -8,7 +8,7 @@
     "exports": {
         ".": {
             "import": "./lib/index.js",
-            "require": "./lib/index.js",
+            "require": "./lib-cjs/index.js",
             "types": "./lib/index.d.ts"
         }
     },
@@ -49,6 +49,7 @@
     "files": [
         "src",
         "lib",
+        "lib-cjs",
         "README.md",
         "LICENSE",
         "CHANGELOG.md"
@@ -58,23 +59,25 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "npm-run-all --npm-path pnpm build:data build:ts",
-        "build:ts": "tsc",
-        "build:data": "node scripts/generate-script-data.cjs",
+        "build": "npm-run-all --npm-path pnpm build:data build:ts build:ts:cjs",
+        "build:ts": "tsc --project tsconfig.esm.json && tsc-esm-fix",
+        "build:ts:cjs": "tsc --project tsconfig.cjs.json && cp src-cjs/index.js lib-cjs/index.js && echo '{\"type\": \"commonjs\"}' > lib-cjs/package.json",
+        "build:data": "node scripts/generate-script-data.js",
         "coverage": "pnpm test:cli --coverage",
         "test": "pnpm test:all",
         "test:jest": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:generator": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node test/generate-script-data.test.js",
         "test:karma": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS\" karma start karma.conf.cjs --reporters dots",
         "test:cli": "pnpm test:jest",
         "test:web": "pnpm test:karma --single-run",
         "test:watch": "pnpm test:jest --watch",
-        "test:all": "npm-run-all --npm-path pnpm test:cli test:web test:e2e",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:web test:e2e test:generator",
         "test:e2e": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.cjs",
         "test:e2e:watch": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.cjs --watch",
-        "sample": "LANG=en_US.UTF8 node samples/app/index.js",
+        "sample": "LANG=en_US.UTF8 node samples/esm/index.js",
         "debug": "pnpm build:dev; node --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
         "debug:web": "pnpm test:karma",
-        "clean": "git clean -f -d src test; rm -rf lib",
+        "clean": "git clean -f -d src test; rm -rf lib lib-cjs",
         "doc": "npm-run-all --npm-path pnpm doc:md doc:html",
         "doc:md": "mkdir -p docs && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
         "doc:html": "mkdir -p docs && typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts"
@@ -83,12 +86,8 @@
         "@ilib-mono/e2e-test": "workspace:*",
         "@types/jest": "^29.5.0",
         "@types/node": "^20.0.0",
-        "docdash": "^2.0.2",
-        "expect": "^29.7.0",
         "ilib": "^14.21.1",
         "jest": "^29.7.0",
-        "jsdoc": "^4.0.2",
-        "jsdoc-to-markdown": "^8.0.0",
         "karma": "^6.4.2",
         "karma-assert": "^1.0.1",
         "karma-chrome-launcher": "^3.2.0",
@@ -96,9 +95,9 @@
         "karma-jasmine": "^5.1.0",
         "karma-webpack": "^5.0.0",
         "npm-run-all": "^4.1.5",
-        "semver": "^7.6.3",
         "ts-jest": "^29.1.0",
         "ts-loader": "^9.5.0",
+        "tsc-esm-fix": "^3.1.2",
         "typedoc": "^0.26.11",
         "typedoc-plugin-markdown": "^4.2.10",
         "typescript": "^5.0.0",
