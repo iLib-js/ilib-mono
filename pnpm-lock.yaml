@@ -268,9 +268,6 @@ importers:
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
-      ucd-full:
-        specifier: ^15.1.0
-        version: 15.1.0
       webpack:
         specifier: ^5.90.0
         version: 5.95.0(webpack-cli@5.1.4)
@@ -469,8 +466,8 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
       ucd-full:
-        specifier: ^15.1.0
-        version: 15.1.0
+        specifier: ^16.0.1
+        version: 16.0.1
       webpack:
         specifier: ^5.90.0
         version: 5.95.0(webpack-cli@5.1.4)
@@ -8586,8 +8583,8 @@ packages:
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
-  ucd-full@15.1.0:
-    resolution: {integrity: sha512-/iqcsrx50EivxUfNxaHmYVZuxUBowUIq4HZylCHeOPE/BH+Xq+tdxNB4DicnWPccHBbWkZxHL8zvra4wfN4loQ==}
+  ucd-full@16.0.1:
+    resolution: {integrity: sha512-XnDN5vR6TNr0+2Tp4mAl5J59HZLji1IhWbIwvTD6G1mpzz4Vjg8vjyBm7VNyd+D/fnDridl9/cTHIKMXojvdeA==}
 
   uglify-js-export@3.19.3:
     resolution: {integrity: sha512-q5uyaOepquFzA/77CqU2sAIgq9LBARs2jo1x0KaRK2D3uf0Kf0GvLlc+mtHKGU1mIyHB+J8kIMvusT8eCvBDhw==}
@@ -16595,7 +16592,7 @@ snapshots:
 
   uc.micro@2.1.0: {}
 
-  ucd-full@15.1.0: {}
+  ucd-full@16.0.1: {}
 
   uglify-js-export@3.19.3: {}
 
