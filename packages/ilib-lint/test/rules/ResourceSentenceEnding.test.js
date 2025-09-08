@@ -2842,6 +2842,66 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual.source).toBe("What is this?");
         expect(actual.pathName).toBe("a/b/c.xliff");
     });
+    // Test for webOS Xliff files ---------------------------------
+    // Test with the wrong target extracted
+    test("Test with the wrong target extracted", () => {
+        expect.assertions(4);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "en-US",
+            source: "{num} channels have been blocked.",
+            targetLocale: "sk-SK",
+            target: "Počet zablokovaných kanálov: {num}",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        // this.getLastSentenceFromContent(target, targetLocaleObj); return '{num}'
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain("Sentence ending should be \".\" (U+002E) for sk-SK locale instead of \"\"");
+        // received "{num}<e0/>"
+        // https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/rules/ResourceSentenceEnding.js#L754
+        // ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
+        expect(actual?.highlight).toBe("Počet zablokovaných kanálov: {num}<e0></e0>");
+    });
+    // Test with the wrong target extracted2
+    test("Test with the wrong target extracted", () => {
+        expect.assertions(4);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "en-US",
+            source: "If you need to adjust the zoom area or unable to automatically zoom the sign language screen, select 'Manual Zoom.'",
+            targetLocale: "it-IT",
+            target: "Se devi modificare l'area dello zoom o non è possibile applicare automaticamente lo zoom alla schermata della lingua dei segni, seleziona \"Zoom manuale\".",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        // this.getLastSentenceFromContent(target, targetLocaleObj); return '{num}'
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain("Sentence ending should be \".\" (U+002E) for it-IT locale instead of \"\"");
+        // https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/rules/ResourceSentenceEnding.js#L754
+        // ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
+        //received "Zoom manuale<e0/>"
+        expect(actual?.highlight).toBe("");
+    });
+    ///// ---------------------------------
 
     // Test for ResourcePlural with no sentence ending punctuation issues
     test("ResourcePlural with no sentence ending punctuation issues", () => {
