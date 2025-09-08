@@ -2873,7 +2873,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual?.highlight).toBe("Počet zablokovaných kanálov: {num}<e0></e0>");
     });
     // Test with the wrong target extracted2
-    test("Test with the wrong target extracted", () => {
+    test("Test with the wrong target extracted2", () => {
         expect.assertions(4);
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
@@ -2887,7 +2887,6 @@ describe("ResourceSentenceEnding rule", function() {
             pathName: "a/b/c.xliff",
             lineNumber: 25
         });
-        // this.getLastSentenceFromContent(target, targetLocaleObj); return '{num}'
         const actual = rule.matchString({
             source: resource.getSource(),
             target: resource.getTarget(),
@@ -2901,6 +2900,84 @@ describe("ResourceSentenceEnding rule", function() {
         //received "Zoom manuale<e0/>"
         expect(actual?.highlight).toBe("");
     });
+    // Test with the wrong target extracted3
+    test("Test with the wrong target extracted3", () => {
+        expect.assertions(2);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "en-US",
+            source: "Title: ",
+            targetLocale: "af-ZA",
+            target: "Title: ",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+        // https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/rules/ResourceSentenceEnding.js#L754
+        // ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
+        //received " "
+    });
+
+    // Test with Spanish
+    test("Test with the Spanish", () => {
+        expect.assertions(2);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "es-ES",
+            source: "Which do you prefer: a cooler tone or a warmer tone?",
+            targetLocale: "es-ES",
+            target: "¿Qué prefiere: un tono más frío o más cálido?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        //ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
+        //'un tono más frío o más cálido?'
+        expect(actual).toBeUndefined();
+    });
+
+    // Test with Spanish2
+    test("Test with the Spanish2", () => {
+        expect.assertions(2);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "es-ES",
+            source: "Then, how much contrast between the bright and dark parts of the screen would you prefer?",
+            targetLocale: "es-ES",
+            target: "Entonces, ¿cuánto contraste prefiere entre las partes claras y oscuras de la pantalla?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        expect(actual).toBeUndefined();
+    });
+
+    
     ///// ---------------------------------
 
     // Test for ResourcePlural with no sentence ending punctuation issues
