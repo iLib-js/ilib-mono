@@ -1,5 +1,11 @@
 # ilib-lint-common
 
+## 3.6.0
+
+### Minor Changes
+
+- a164407: Allow updating the `dirty` flag on `IntermediateRepresentation`
+
 ## 3.5.0
 
 ### Minor Changes
