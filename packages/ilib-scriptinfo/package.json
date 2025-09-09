@@ -66,7 +66,7 @@
         "coverage": "pnpm test:cli --coverage",
         "test": "pnpm test:all",
         "test:jest": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node",
-        "test:generator": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node test/generate-script-data.test.js",
+        "test:generator": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node test/generate-script-data.test.ts",
         "test:karma": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS\" karma start karma.conf.cjs --reporters dots",
         "test:cli": "pnpm test:jest",
         "test:web": "pnpm test:karma --single-run",

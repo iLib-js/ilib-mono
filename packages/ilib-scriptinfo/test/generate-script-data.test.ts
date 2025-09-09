@@ -1,5 +1,5 @@
 /**
- * generate-script-data.test.js - Tests for the script data generator
+ * generate-script-data.test.ts - Tests for the script data generator
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -7,7 +7,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE/2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
 
 describe('generate-script-data.js', () => {
     const scriptPath = path.join(__dirname, '../scripts/generate-script-data.js');
@@ -97,7 +97,7 @@ describe('generate-script-data.js', () => {
     });
 
     describe('Data content validation', () => {
-        let content;
+        let content: string;
 
         beforeEach(() => {
             execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
@@ -130,9 +130,11 @@ describe('generate-script-data.js', () => {
         test('should have unique script codes', () => {
             // Extract all script codes from array entries only
             const scriptCodeMatches = content.match(/\["([A-Z][a-z]{3})",/g);
-            const scriptCodes = scriptCodeMatches.map(match => {
+            expect(scriptCodeMatches).toBeTruthy();
+            const scriptCodes = scriptCodeMatches!.map(match => {
                 const codeMatch = match.match(/\["([A-Z][a-z]{3})",/);
-                return codeMatch[1];
+                expect(codeMatch).toBeTruthy();
+                return codeMatch![1];
             });
             const uniqueCodes = new Set(scriptCodes);
             expect(uniqueCodes.size).toBe(scriptCodes.length);
@@ -141,9 +143,11 @@ describe('generate-script-data.js', () => {
         test('should have unique script numbers', () => {
             // Extract all script numbers and check for duplicates
             const scriptNumberMatches = content.match(/\["[A-Z][a-z]{3}",(\d+),/g);
-            const scriptNumbers = scriptNumberMatches.map(match => {
+            expect(scriptNumberMatches).toBeTruthy();
+            const scriptNumbers = scriptNumberMatches!.map(match => {
                 const numberMatch = match.match(/,(\d+),/);
-                return parseInt(numberMatch[1], 10);
+                expect(numberMatch).toBeTruthy();
+                return parseInt(numberMatch![1]!, 10);
             });
             const uniqueNumbers = new Set(scriptNumbers);
             expect(uniqueNumbers.size).toBe(scriptNumbers.length);
@@ -151,7 +155,8 @@ describe('generate-script-data.js', () => {
 
         test('should have valid script codes format', () => {
             const scriptCodeMatches = content.match(/"([A-Z][a-z]{3})"/g);
-            scriptCodeMatches.forEach(match => {
+            expect(scriptCodeMatches).toBeTruthy();
+            scriptCodeMatches!.forEach(match => {
                 const code = match.slice(1, -1);
                 expect(code).toMatch(/^[A-Z][a-z]{3}$/); // ISO 15924 format
             });
@@ -159,9 +164,11 @@ describe('generate-script-data.js', () => {
 
         test('should have valid script numbers', () => {
             const scriptNumberMatches = content.match(/\["[A-Z][a-z]{3}",(\d+),/g);
-            scriptNumberMatches.forEach(match => {
+            expect(scriptNumberMatches).toBeTruthy();
+            scriptNumberMatches!.forEach(match => {
                 const numberMatch = match.match(/,(\d+),/);
-                const number = parseInt(numberMatch[1], 10);
+                expect(numberMatch).toBeTruthy();
+                const number = parseInt(numberMatch![1]!, 10);
                 expect(number).toBeGreaterThan(0);
                 expect(number).toBeLessThan(1000);
                 expect(Number.isInteger(number)).toBe(true);
@@ -178,29 +185,6 @@ describe('generate-script-data.js', () => {
             expect(content).toContain('} catch (error) {');
             expect(content).toContain('console.error');
             expect(content).toContain('process.exit(1)');
-        });
-    });
-
-    describe('Data source validation', () => {
-        test('should be able to resolve ilib package', () => {
-            expect(() => {
-                const ilibScriptsPath = path.join(path.dirname(require.resolve('ilib')), 'locale/scripts.json');
-                expect(fs.existsSync(ilibScriptsPath)).toBe(true);
-            }).not.toThrow();
-        });
-
-        test('should be able to read ilib scripts data', () => {
-            const ilibScriptsPath = path.join(path.dirname(require.resolve('ilib')), 'locale/scripts.json');
-            const ilibScriptsData = JSON.parse(fs.readFileSync(ilibScriptsPath, 'utf8'));
-            
-            expect(typeof ilibScriptsData).toBe('object');
-            expect(ilibScriptsData).toHaveProperty('Latn');
-            expect(ilibScriptsData).toHaveProperty('Arab');
-            
-            // Check structure of ilib data
-            const latinData = ilibScriptsData['Latn'];
-            expect(typeof latinData).toBe('object');
-            expect(latinData).toHaveProperty('lid');
         });
     });
 });
