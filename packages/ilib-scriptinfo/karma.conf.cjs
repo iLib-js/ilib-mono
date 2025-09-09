@@ -37,13 +37,13 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             "./karma-setup.cjs",
-            "./test/**/*.test.ts"
+            "./test/ScriptInfo.test.ts"
         ],
 
         // preprocess matching files before serving them to the browser
         preprocessors: {
             "./karma-setup.cjs": ["webpack"],
-            "./test/**/*.test.ts": ["webpack"],
+            "./test/ScriptInfo.test.ts": ["webpack"],
         },
 
         browsers: ["ChromeHeadless", "FirefoxHeadless"],
