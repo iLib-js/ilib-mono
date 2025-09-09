@@ -152,7 +152,7 @@ class FileType {
 
         this.name = options.name;
         this.project = options.project;
-        this.locales = options.locales;
+        this.locales = options.locales || this.project.getLocales();
         this.template = options.template;
 
         const parserNames = options.parsers;
@@ -244,7 +244,7 @@ class FileType {
     }
 
     getLocales() {
-        return this.locales || this.project.getLocales();
+        return this.locales;
     }
 
     getTemplate() {

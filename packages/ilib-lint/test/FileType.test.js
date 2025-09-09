@@ -38,20 +38,21 @@ ruleMgr.addRuleSetDefinition("no-state-checker", {
 const project = new Project(
     "x",
     {
-        locales: ["fr-FR", "nl-NL"],
         pluginManager,
     },
-    {}
+    {
+        locales: ["fr-FR", "nl-NL"],
+    }
 );
 
 const projectWithValidPlugins = new Project(
     "y",
     {
-        locales: ["fr-FR", "nl-NL"],
         pluginManager,
     },
     {
         plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
         fileTypes: {
             test: {
                 name: "test",
@@ -67,11 +68,11 @@ const projectWithValidPlugins = new Project(
 const projectWithParserAndUnknownSerializer = new Project(
     "z",
     {
-        locales: ["fr-FR", "nl-NL"],
         pluginManager,
     },
     {
         plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
         fileTypes: {
             test: {
                 name: "test",
@@ -105,11 +106,11 @@ serializerMgr.add([MockSerializer]);
 const projectWithWrongTypeOfSerializer = new Project(
     "a",
     {
-        locales: ["fr-FR", "nl-NL"],
         pluginManager,
     },
     {
         plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
         fileTypes: {
             test: {
                 name: "test",
@@ -126,11 +127,11 @@ const projectWithWrongTypeOfSerializer = new Project(
 const projectWithParserAndUnknownTransformers = new Project(
     "q",
     {
-        locales: ["fr-FR", "nl-NL"],
         pluginManager,
     },
     {
         plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
         fileTypes: {
             test: {
                 name: "test",
@@ -162,11 +163,11 @@ transformerMgr.add([MockTransformer]);
 const projectWithWrongTypeOfTransformers = new Project(
     "a",
     {
-        locales: ["fr-FR", "nl-NL"],
         pluginManager,
     },
     {
         plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
         fileTypes: {
             test: {
                 name: "test",
@@ -183,10 +184,10 @@ const projectWithWrongTypeOfTransformers = new Project(
 const projectWithDefaultParser = new Project(
     "a",
     {
-        locales: ["fr-FR", "nl-NL"],
         pluginManager,
     },
     {
+        locales: ["fr-FR", "nl-NL"],
         fileTypes: {
             test: {
                 name: "test",
