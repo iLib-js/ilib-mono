@@ -1,5 +1,13 @@
 # ilib-lint
 
+## 2.18.1
+
+### Patch Changes
+
+- cd9f188: Fixed ErrorFilterTransformer clearing the dirty flag when all issues have been autofixed
+- Updated dependencies [ff57dc9]
+  - ilib-ctype@1.3.0
+
 ## 2.18.0
 
 ### Minor Changes
@@ -51,14 +59,14 @@
   Now you can list the exceptions by locale in the parameters
   to the rule:
   `    "rulesets": {
-    "myruleset": {
-      "resource-icu-plural-translated": {
-        "exceptions": {
-          "it-IT": ["File", "Files"]
-        }
+  "myruleset": {
+    "resource-icu-plural-translated": {
+      "exceptions": {
+        "it-IT": ["File", "Files"]
       }
     }
-  }` - Exceptions are entire phrases, not individual words. The idea
+  }
+}` - Exceptions are entire phrases, not individual words. The idea
   of the rule is to catch entire plural categories that the
   translators missed, and the idea of the exceptions to avoid
   those few false positives that pop up infrequently.
