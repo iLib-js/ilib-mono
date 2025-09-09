@@ -3245,4 +3245,491 @@ describe("ResourceSentenceEnding rule", function() {
             });
         });
     });
+
+    // Tests for spaces at the end of strings
+    describe("Spaces at end of strings", () => {
+        describe("Target strings with spaces after punctuation", () => {
+            test("should detect punctuation correctly when target has spaces after period", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "This is a sentence.",
+                    target: "これは文です。   " // spaces after Japanese period
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should detect incorrect punctuation when target has spaces after wrong punctuation", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "This is a sentence.",
+                    target: "これは文です.   " // spaces after English period instead of Japanese
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeDefined();
+                expect(result?.description).toContain('Sentence ending should be "。" (U+3002) for ja-JP locale instead of "." (U+002E)');
+            });
+
+            test("should detect punctuation correctly when target has spaces after question mark", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "What is this?",
+                    target: "これは何ですか？   " // spaces after Japanese question mark
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should detect incorrect punctuation when target has spaces after wrong question mark", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "What is this?",
+                    target: "これは何ですか?   " // spaces after English question mark instead of Japanese
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeDefined();
+                expect(result?.description).toContain('Sentence ending should be "？" (U+FF1F) for ja-JP locale instead of "?" (U+003F)');
+            });
+
+            test("should detect punctuation correctly when target has spaces after exclamation mark", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "Amazing!",
+                    target: "すごい！   " // spaces after Japanese exclamation mark
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should detect incorrect punctuation when target has spaces after wrong exclamation mark", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "Amazing!",
+                    target: "すごい!   " // spaces after English exclamation mark instead of Japanese
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeDefined();
+                expect(result?.description).toContain('Sentence ending should be "！" (U+FF01) for ja-JP locale instead of "!" (U+0021)');
+            });
+        });
+
+        describe("Target strings with quotes and spaces after punctuation", () => {
+            test("should detect punctuation correctly when target has quotes and spaces after punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE",
+                    source: "She said, 'Hello World!'",
+                    target: "Sie sagte: „Hallo Welt!“   " // German quotes with spaces after
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should detect incorrect punctuation when target has quotes and spaces after wrong punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE",
+                    source: "She said, 'Hello World!'",
+                    target: "Sie sagte: „Hallo Welt!“   " // German quotes with English exclamation instead of German
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                // German uses the same punctuation as English, so no error expected
+                expect(result).toBeUndefined();
+            });
+
+            test("should handle complex quoted content with spaces", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE",
+                    source: "She said, 'What is this?'",
+                    target: "Sie sagte: „Was ist das?“   " // German quotes with spaces after
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should detect punctuation correctly with French quotes and spaces", () => {
+                expect.assertions(4);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "fr-FR",
+                    source: "She said, 'Hello World!'",
+                    target: "Elle a dit : « Bonjour le monde ! »   " // French quotes with spaces after
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                // This should trigger a spacing error (regular space vs non-breaking space)
+                expect(result).toBeDefined();
+                expect(result?.description).toContain('Sentence ending should be');
+                expect(result?.description).toContain('U+202F U+0021');
+                expect(result?.description).toContain('U+0020 U+0021');
+            });
+
+            test("should detect incorrect punctuation with French quotes and wrong punctuation", () => {
+                expect.assertions(4);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "fr-FR",
+                    source: "She said, 'Hello World!'",
+                    target: "Elle a dit : « Bonjour le monde ! »   " // French quotes with English exclamation instead of French
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeDefined();
+                expect(result?.description).toContain('Sentence ending should be');
+                expect(result?.description).toContain('U+202F U+0021');
+                expect(result?.description).toContain('U+0020 U+0021');
+            });
+
+            test("should handle Spanish quotes with spaces after punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "es-ES",
+                    source: "She said, 'What is this?'",
+                    target: "Ella dijo: «¿Qué es esto?»   " // Spanish quotes with spaces after
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+        });
+
+        describe("Source strings with spaces after punctuation", () => {
+            test("should handle source with spaces after punctuation correctly", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "This is a sentence.   ", // spaces after English period
+                    target: "これは文です。" // correct Japanese punctuation
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should handle source with spaces after question mark correctly", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "What is this?   ", // spaces after English question mark
+                    target: "これは何ですか？" // correct Japanese punctuation
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should handle source with spaces after exclamation mark correctly", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "Amazing!   ", // spaces after English exclamation mark
+                    target: "すごい！" // correct Japanese punctuation
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+        });
+
+        describe("Both source and target with spaces after punctuation", () => {
+            test("should handle both source and target with spaces after correct punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "This is a sentence.   ", // spaces after English period
+                    target: "これは文です。   " // spaces after Japanese period
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should detect incorrect punctuation when both have spaces but target is wrong", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "This is a sentence.   ", // spaces after English period
+                    target: "これは文です.   " // spaces after English period instead of Japanese
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeDefined();
+                expect(result?.description).toContain('Sentence ending should be "。" (U+3002) for ja-JP locale instead of "." (U+002E)');
+            });
+
+            test("should handle complex case with quotes and spaces in both source and target", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE",
+                    source: "She said, 'Hello World!'   ", // spaces after English exclamation
+                    target: "Sie sagte: „Hallo Welt!“   " // German quotes with spaces after
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+        });
+
+        describe("Edge cases with multiple spaces and mixed whitespace", () => {
+            test("should handle target with multiple spaces after punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "This is a sentence.",
+                    target: "これは文です。      " // multiple spaces after Japanese period
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should handle target with tabs and spaces after punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "This is a sentence.",
+                    target: "これは文です。\t  " // tab and spaces after Japanese period
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+
+            test("should handle target with newlines after punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.key",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP",
+                    source: "This is a sentence.",
+                    target: "これは文です。\n  " // newline and spaces after Japanese period
+                });
+
+                const result = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "test.xliff"
+                });
+
+                expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
+            });
+        });
+    });
 });
