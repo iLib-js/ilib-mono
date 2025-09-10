@@ -19,58 +19,57 @@
  * limitations under the License.
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 function generateScriptData() {
-    try {
-        // Read the local ilib scripts.json file
-        const ilibScriptsPath = path.join(path.dirname(require.resolve('ilib')), 'locale/scripts.json');
-        const ilibScriptsData = JSON.parse(fs.readFileSync(ilibScriptsPath, 'utf8'));
-        
-        // Read the local ucd-full ScriptInfo.json file for comprehensive script list
-        const ucdFullPath = path.join(path.dirname(require.resolve('ucd-full')), 'ScriptInfo.json');
-        const ucdFullData = JSON.parse(fs.readFileSync(ucdFullPath, 'utf8'));
-        
-        // Process the data using ucd-full as the primary source for all scripts
-        const scriptData = [];
-        
-        ucdFullData.iso15924.forEach(ucdScript => {
-            const code = ucdScript.code;
-            const number = parseInt(ucdScript.number, 10);
-            const name = ucdScript.englishName;
-            
-            // Create long identifier from name (replace spaces and special chars with underscores)
-            let longId = name.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
-            
-            // Handle special cases for long identifiers
-            if (ucdScript.pva) {
-                longId = ucdScript.pva;
+    // Read the local ilib scripts.json file
+    const ilibScriptsPath = path.join(path.dirname(require.resolve("ilib")), "locale/scripts.json");
+    const ilibScriptsData = JSON.parse(fs.readFileSync(ilibScriptsPath, "utf8"));
+
+    // Read the local ucd-full ScriptInfo.json file for comprehensive script list
+    const ucdFullPath = path.join(path.dirname(require.resolve("ucd-full")), "ScriptInfo.json");
+    const ucdFullData = JSON.parse(fs.readFileSync(ucdFullPath, "utf8"));
+
+    // Process the data using ucd-full as the primary source for all scripts
+    const scriptData = [];
+
+    ucdFullData.iso15924.forEach((ucdScript) => {
+        const code = ucdScript.code;
+        const number = parseInt(ucdScript.number, 10);
+        const name = ucdScript.englishName;
+
+        // Create long identifier from name (replace spaces and special chars with underscores)
+        let longId = name.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, "_");
+
+        // Handle special cases for long identifiers
+        if (ucdScript.pva) {
+            longId = ucdScript.pva;
+        }
+
+        // Create array entry: [code, number, name, longId, rtl?, ime?, casing?]
+        const entry = [code, number, name, longId];
+
+        // Backfill with ilib data if available
+        if (ilibScriptsData[code]) {
+            const ilibScript = ilibScriptsData[code];
+
+            // Use ilib's long identifier if available (it's more standardized)
+            if (ilibScript.lid) {
+                entry[3] = ilibScript.lid;
             }
-            
-            // Create array entry: [code, number, name, longId, rtl?, ime?, casing?]
-            const entry = [code, number, name, longId];
-            
-            // Backfill with ilib data if available
-            if (ilibScriptsData[code]) {
-                const ilibScript = ilibScriptsData[code];
-                
-                // Use ilib's long identifier if available (it's more standardized)
-                if (ilibScript.lid) {
-                    entry[3] = ilibScript.lid;
-                }
-                
-                // Add boolean flags as optional array indices 4-6
-                if (ilibScript.rtl) entry[4] = true;
-                if (ilibScript.ime) entry[5] = true;
-                if (ilibScript.casing) entry[6] = true;
-            }
-            
-            scriptData.push(entry);
-        });
-        
-        // Generate the output file content with ESM format
-        const outputContent = `/*
+
+            // Add boolean flags as optional array indices 4-6
+            if (ilibScript.rtl) entry[4] = true;
+            if (ilibScript.ime) entry[5] = true;
+            if (ilibScript.casing) entry[6] = true;
+        }
+
+        scriptData.push(entry);
+    });
+
+    // Generate the output file content with ESM format
+    const outputContent = `/*
  * ScriptData.ts - Generated script data from ucd-full and ilib packages
  *
  * Copyright © 2025 JEDLSoft
@@ -98,26 +97,28 @@ function generateScriptData() {
 export type ScriptDataEntry = [string, number, string, string, boolean?, boolean?, boolean?];
 
 export const scriptData: ScriptDataEntry[] = [
-${scriptData.map(entry => `    [${entry.map((val, i) => {
-    if (i < 4) return JSON.stringify(val);
-    return val === true ? 'true' : '';
-}).join(',')}]`).join(',\n')}
+${scriptData
+    .map(
+        (entry) =>
+            `    [${entry
+                .map((val, i) => {
+                    if (i < 4) return JSON.stringify(val);
+                    return val === true ? "true" : "";
+                })
+                .join(",")}]`
+    )
+    .join(",\n")}
 ];
 `;
-        
-        // Write the output file
-        const outputPath = path.join(__dirname, '../src/ScriptData.ts');
-        fs.writeFileSync(outputPath, outputContent, 'utf8');
-        
-        console.log(`✅ Generated TS ScriptData.ts with ${scriptData.length} scripts`);
-        console.log(`📁 Output file: ${outputPath}`);
-        console.log(`📊 Source: ucd-full package (${ucdFullData.iso15924.length} scripts) + ilib package backfill`);
-        
-    } catch (error) {
-        console.error('❌ Error generating script data:', error.message);
-        process.exit(1);
-    }
+
+    // Write the output file
+    const outputPath = path.join(__dirname, "../src/ScriptData.ts");
+    fs.writeFileSync(outputPath, outputContent, "utf8");
+
+    console.log(`✅ Generated TS ScriptData.ts with ${scriptData.length} scripts`);
+    console.log(`📁 Output file: ${outputPath}`);
+    console.log(`📊 Source: ucd-full package (${ucdFullData.iso15924.length} scripts) + ilib package backfill`);
 }
 
 // Run the generator
-generateScriptData(); 
+generateScriptData();
