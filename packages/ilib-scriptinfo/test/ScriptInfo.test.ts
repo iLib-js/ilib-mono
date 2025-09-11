@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import scriptInfoFactory, { ScriptInfo, ScriptDirection } from '../src/index';
+import { scriptInfoFactory, ScriptInfo, ScriptDirection } from '../src/index';
 
 describe('ScriptInfo', () => {
     describe('Constructor and basic functionality', () => {

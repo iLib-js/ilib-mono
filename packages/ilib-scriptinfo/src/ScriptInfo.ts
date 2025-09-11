@@ -91,7 +91,7 @@ interface ScriptInfoData {
  * }
  * ```
  */
-export default function scriptInfoFactory(script: string | number | null | undefined): ScriptInfo | undefined {
+export function scriptInfoFactory(script: string | number | null | undefined): ScriptInfo | undefined {
     if (!script) return undefined;
     
     const scriptString = String(script).trim();

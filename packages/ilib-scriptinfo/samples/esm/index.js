@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync } from 'fs';
-import scriptInfoFactory, { ScriptInfo, ScriptDirection } from 'ilib-scriptinfo';
+import { scriptInfoFactory, ScriptInfo, ScriptDirection } from 'ilib-scriptinfo';
 
 /**
  * Sample command-line application demonstrating ilib-scriptinfo usage.
