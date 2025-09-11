@@ -1,4 +1,4 @@
-name: E2E Test affected
+name: Test E2E Affected
 # Test Affected workflow
 # This workflow runs tests and generates coverage reports for packages affected by changes in a pull request.
 # It uses Turborepo to determine affected packages and runs their tests in parallel.
@@ -7,8 +7,8 @@ name: E2E Test affected
 on: pull_request
 
 jobs:
-    test-affected:
-        name: Test Affected
+    test-e2e-affected:
+        name: Test E2E Affected
         runs-on: ubuntu-latest
         env:
             # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
@@ -17,7 +17,7 @@ jobs:
             TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
         strategy:
             matrix:
-                node-version: [20]
+                node-version: [22]
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
