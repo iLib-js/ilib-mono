@@ -376,10 +376,9 @@ webOSXliff.prototype.toStringData = function(units) {
 
     // now finally add each of the units to the json
     var files = {};
-    var index = 1;
     var fileIndex = 1;
-    var datatype;
-    var groupIndex = 1;
+    var groupIndexMap = {}; // key: project+datatype, value: groupIndex
+    var unitIndexMap = {};  // key: project+groupIndex, value: unitIndex
 
     for (var i = 0; i < units.length; i++) {
         var tu = units[i];
@@ -387,6 +386,14 @@ webOSXliff.prototype.toStringData = function(units) {
             console.log("undefined?");
         }
         var hashKey = tu.project;
+        var datatype = tu.datatype || "javascript";
+        var groupKey = hashKey + "_" + datatype;
+
+        if (!groupIndexMap[groupKey]) {
+            groupIndexMap[groupKey] = Object.keys(groupIndexMap).length + 1;
+        }
+        var groupIndex = groupIndexMap[groupKey];
+
         var file = files[hashKey];
         if (!file) {
             files[hashKey] = file = {
@@ -394,22 +401,32 @@ webOSXliff.prototype.toStringData = function(units) {
                     "id": tu.project + "_f" + fileIndex++,
                     "original": tu.project
                 },
-                group : [
-                    {
-                        _attributes: {
-                            "id": tu.project + "_g" + groupIndex++,
-                            "name": tu.datatype || "javascript"
-                        },
-                        unit: []
-                    }
-                ]
+                group: []
             };
         }
 
+        var groupSet = file.group.find(g => g._attributes.name === datatype);
+        if (!groupSet) {
+            groupSet = {
+                _attributes: {
+                    "id": tu.project + "_g" + groupIndex,
+                    "name": datatype
+                },
+                unit: []
+            };
+            file.group.push(groupSet);
+        }
+
+        var unitKey = tu.project + "_g" + groupIndex;
+        if (!unitIndexMap[unitKey]) {
+            unitIndexMap[unitKey] = 1;
+        }
+        var unitIndex = unitIndexMap[unitKey]++;
+
         var tujson = {
             _attributes: {
-                "id": (tu.id || index++),
-                 "name": (tu.source !== tu.key) ? escapeAttr(tu.key) : undefined,
+                "id": tu.project + "_g" + groupIndex + "_" + unitIndex,
+                "name": (tu.source !== tu.key) ? escapeAttr(tu.key) : undefined,
             }
         };
 
@@ -436,10 +453,6 @@ webOSXliff.prototype.toStringData = function(units) {
             }
         ];
 
-        if (tu.id && tu.id > index) {
-            index = tu.id + 1;
-        }
-
         if (tu.target) {
             tujson.segment[0].target = {
                 _attributes: {
@@ -449,30 +462,7 @@ webOSXliff.prototype.toStringData = function(units) {
             };
         }
 
-        datatype = tu.datatype || "javascript";
-        if (!files[hashKey].group) {
-            files[hashKey].group = [];
-        }
-
-        var groupSet = {
-            _attributes: {},
-            unit: []
-        }
-
-        var existGroup = files[hashKey].group.filter(function(item) {
-            if (item._attributes.name === datatype) {
-                return item;
-            }
-        })
-
-        if (existGroup.length > 0) {
-            existGroup[0].unit.push(tujson);
-        } else {
-            groupSet._attributes.id = tu.project+ "_g" + groupIndex++;
-            groupSet._attributes.name = datatype;
-            files[hashKey].group.push(groupSet);
-            groupSet.unit.push(tujson);
-        }
+        groupSet.unit.push(tujson);
     }
 
     // sort the file tags so that they come out in the same order each time

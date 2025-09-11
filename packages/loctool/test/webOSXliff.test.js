@@ -402,7 +402,7 @@ describe("webOSxliff", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="de-DE" xmlns="urn:oasis:names:tc:xliff:document:2.0">\n' +
         '  <file id="sample-webos-cs_f1" original="sample-webos-c">\n' +
         '      <group id="sample-webos-c_g1" name="c">\n' +
-        '        <unit id="1">\n' +
+        '        <unit id="sample-webos-c_g1_1">\n' +
         '          <segment>\n' +
         '            <source>Asdf asdf</source>\n' +
         '            <target>foobarfoo</target>\n' +
@@ -437,7 +437,7 @@ describe("webOSxliff", function() {
         'srcLang="en-KR" trgLang="ko-KR">\n' +
         '  <file id="sample-webos-cs_f1" original="sample-webos-c">\n' +
         '      <group id="sample-webos-c_g1" name="c">\n' +
-        '        <unit id="1">\n' +
+        '        <unit id="sample-webos-c_g1_1">\n' +
         '          <mda:metadata>\n' +
         '            <mda:metaGroup category="device-type">\n' +
         '              <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
@@ -499,7 +499,7 @@ describe("webOSxliff", function() {
         '       srcLang="en-KR" trgLang="ko-KR">\n' +
         '  <file id="sample-webos-cs_f1" original="sample-webos-c">\n' +
         '      <group id="sample-webos-c_g1" name="c">\n' +
-        '        <unit id="1">\n' +
+        '        <unit id="sample-webos-c_g1_1">\n' +
         '          <mda:metadata>\n' +
         '            <mda:metaGroup category="device-type">\n' +
         '              <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
@@ -539,7 +539,7 @@ describe("webOSxliff", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns="urn:oasis:names:tc:xliff:document:2.0">\n' +
         '  <file id="sample-webos-cs_f1" original="sample-webos-c">\n' +
         '      <group id="sample-webos-c_g1" name="c">\n' +
-        '        <unit id="1">\n' +
+        '        <unit id="sample-webos-c_g1_1">\n' +
         '          <segment>\n' +
         '            <source>NOT AVAILABLE</source>\n' +
         '            <target>이용이 불가능합니다</target>\n' +
@@ -581,19 +581,19 @@ describe("webOSxliff", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
-        '      <unit id="3">\n' +
+        '      <unit id="sample1_g1_1">\n' +
         '        <segment>\n' +
         '          <source>OK</source>\n' +
         '          <target>(updated) 확인!</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="4">\n' +
+        '      <unit id="sample1_g1_2">\n' +
         '        <segment>\n' +
         '          <source>Time Settings</source>\n' +
         '          <target>시간 설정</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="5">\n' +
+        '      <unit id="sample1_g1_3">\n' +
         '        <notes>\n' +
         '          <note>new</note>\n' +
         '        </notes>\n' +
@@ -614,8 +614,8 @@ describe("webOSxliff", function() {
         settings.xliffVersion = 2;
         settings.xliffStyle = "webOS";
         settings.infiles = [
-            "test/testfiles/xliff20/app1/en-US.xliff",
-            "test/testfiles/xliff20/app2/en-US.xliff",
+            "test/testfiles/xliff_webOS/app1/en-US.xliff",
+            "test/testfiles/xliff_webOS/app2/en-US.xliff",
         ];
         var target = XliffMerge(settings);
         expect(target).toBeTruthy();
@@ -626,13 +626,13 @@ describe("webOSxliff", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
-        '      <unit id="app1_1">\n' +
+        '      <unit id="app1_g1_1">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2">\n' +
+        '      <unit id="app1_g1_2">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -640,7 +640,7 @@ describe("webOSxliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="app1_g2" name="x-json">\n' +
-        '      <unit id="app1_3">\n' +
+        '      <unit id="app1_g2_1">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -650,13 +650,13 @@ describe("webOSxliff", function() {
         '  </file>\n' +
         '  <file id="app2_f2" original="app2">\n' +
         '    <group id="app2_g3" name="javascript">\n' +
-        '      <unit id="app2_1">\n' +
+        '      <unit id="app2_g3_1">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2a</source>\n' +
         '          <target>app2: String 2a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2">\n' +
+        '      <unit id="app2_g3_2">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2b</source>\n' +
         '          <target>app2: String 2b</target>\n' +
@@ -686,13 +686,13 @@ describe("webOSxliff", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
-        '      <unit id="3">\n' +
+        '      <unit id="sample1_g1_1">\n' +
         '        <segment>\n' +
         '          <source>OK</source>\n' +
         '          <target>확인</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="4">\n' +
+        '      <unit id="sample1_g1_2">\n' +
         '        <segment>\n' +
         '          <source>Time Settings</source>\n' +
         '          <target>시간 설정</target>\n' +
@@ -702,19 +702,19 @@ describe("webOSxliff", function() {
         '  </file>\n' +
         '  <file id="sample2_f2" original="sample2">\n' +
         '    <group id="sample2_g2" name="c">\n' +
-        '      <unit id="1">\n' +
+        '      <unit id="sample2_g2_1">\n' +
         '        <segment>\n' +
         '          <source>No</source>\n' +
         '          <target>아니오</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="2">\n' +
+        '      <unit id="sample2_g2_2">\n' +
         '        <segment>\n' +
         '          <source>Yes</source>\n' +
         '          <target>예</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="7">\n' +
+        '      <unit id="sample2_g2_3">\n' +
         '        <mda:metadata>\n' +
         '          <mda:metaGroup category="device-type">\n' +
         '            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
@@ -752,13 +752,13 @@ describe("webOSxliff", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
-        '      <unit id="3">\n' +
+        '      <unit id="sample1_g1_1">\n' +
         '        <segment>\n' +
         '          <source>OK</source>\n' +
         '          <target>확인</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="4">\n' +
+        '      <unit id="sample1_g1_2">\n' +
         '        <segment>\n' +
         '          <source>Time Settings</source>\n' +
         '          <target>시간 설정</target>\n' +
@@ -768,19 +768,19 @@ describe("webOSxliff", function() {
         '  </file>\n' +
         '  <file id="sample2_f2" original="sample2">\n' +
         '    <group id="sample2_g2" name="c">\n' +
-        '      <unit id="1">\n' +
+        '      <unit id="sample2_g2_1">\n' +
         '        <segment>\n' +
         '          <source>No</source>\n' +
         '          <target>아니오</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="2">\n' +
+        '      <unit id="sample2_g2_2">\n' +
         '        <segment>\n' +
         '          <source>Yes</source>\n' +
         '          <target>예</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="7">\n' +
+        '      <unit id="sample2_g2_3">\n' +
         '        <mda:metadata>\n' +
         '          <mda:metaGroup category="device-type">\n' +
         '            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
@@ -817,13 +817,13 @@ describe("webOSxliff", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
-        '      <unit id="3">\n' +
+        '      <unit id="sample1_g1_1">\n' +
         '        <segment>\n' +
         '          <source>OK</source>\n' +
         '          <target>확인</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="4">\n' +
+        '      <unit id="sample1_g1_2">\n' +
         '        <segment>\n' +
         '          <source>Time Settings</source>\n' +
         '          <target>시간 설정</target>\n' +
@@ -833,19 +833,19 @@ describe("webOSxliff", function() {
         '  </file>\n' +
         '  <file id="sample3_f2" original="sample3">\n' +
         '    <group id="sample3_g2" name="x-qml">\n' +
-        '      <unit id="sample3_1">\n' +
+        '      <unit id="sample3_g2_1">\n' +
         '        <segment>\n' +
         '          <source>OK</source>\n' +
         '          <target>확인</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="sample3_2" name="login">\n' +
+        '      <unit id="sample3_g2_2" name="login">\n' +
         '        <segment>\n' +
         '          <source>Device Sign In</source>\n' +
         '          <target>기기 로그인</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="sample3_3" name="login">\n' +
+        '      <unit id="sample3_g2_3" name="login">\n' +
         '        <segment>\n' +
         '          <source>Sign In</source>\n' +
         '          <target>로그인</target>\n' +
@@ -853,7 +853,7 @@ describe("webOSxliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="sample3_g3" name="x-json">\n' +
-        '      <unit id="sample3_10">\n' +
+        '      <unit id="sample3_g3_1">\n' +
         '        <notes>\n' +
         '          <note>for json</note>\n' +
         '        </notes>\n' +
@@ -872,7 +872,7 @@ describe("webOSxliff", function() {
         var settings = {};
         settings.xliffVersion = 2;
         settings.infiles = [
-            "test/testfiles/xliff20/merge-en-US-style.xliff",
+            "test/testfiles/xliff_webOS/merge-en-US-style.xliff",
         ];
         settings.xliffStyle = "webOS"
         var superset = XliffSplit(settings);
@@ -885,13 +885,13 @@ describe("webOSxliff", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app2_f1" original="app2">\n' +
         '    <group id="app2_g1" name="javascript">\n' +
-        '      <unit id="app2_1">\n' +
+        '      <unit id="app2_g1_1">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2a</source>\n' +
         '          <target>app2: String 2a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2">\n' +
+        '      <unit id="app2_g1_2">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2b</source>\n' +
         '          <target>app2: String 2b</target>\n' +
@@ -922,19 +922,19 @@ describe("webOSxliff", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample2_f1" original="sample2">\n' +
         '    <group id="sample2_g1" name="c">\n' +
-        '      <unit id="1">\n' +
+        '      <unit id="sample2_g1_1">\n' +
         '        <segment>\n' +
         '          <source>No</source>\n' +
         '          <target>아니오</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="2">\n' +
+        '      <unit id="sample2_g1_2">\n' +
         '        <segment>\n' +
         '          <source>Yes</source>\n' +
         '          <target>예</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="7">\n' +
+        '      <unit id="sample2_g1_3">\n' +
         '        <mda:metadata>\n' +
         '          <mda:metaGroup category="device-type">\n' +
         '            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
@@ -972,13 +972,13 @@ describe("webOSxliff", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
-        '      <unit id="3">\n' +
+        '      <unit id="sample1_g1_1">\n' +
         '        <segment>\n' +
         '          <source>OK</source>\n' +
         '          <target>확인</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="4">\n' +
+        '      <unit id="sample1_g1_2">\n' +
         '        <segment>\n' +
         '          <source>Time Settings</source>\n' +
         '          <target>시간 설정</target>\n' +
