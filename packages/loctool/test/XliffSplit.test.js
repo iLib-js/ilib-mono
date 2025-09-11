@@ -158,7 +158,7 @@ describe("xliffsplit", function() {
         var settings = {};
         settings.xliffVersion = 2;
         settings.infiles = [
-            "test/testfiles/xliff20/merge-en-US-style.xliff",
+            "test/testfiles/xliff_webOS/merge-en-US-style.xliff",
         ];
         settings.xliffStyle = "webOS"
         var superset = XliffSplit(settings);
@@ -171,13 +171,13 @@ describe("xliffsplit", function() {
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app2_f1" original="app2">\n' +
         '    <group id="app2_g1" name="javascript">\n' +
-        '      <unit id="app2_1">\n' +
+        '      <unit id="app2_g1_1">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2a</source>\n' +
         '          <target>app2: String 2a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2">\n' +
+        '      <unit id="app2_g1_2">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2b</source>\n' +
         '          <target>app2: String 2b</target>\n' +
