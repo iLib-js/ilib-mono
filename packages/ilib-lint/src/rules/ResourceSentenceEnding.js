@@ -382,8 +382,11 @@ class ResourceSentenceEnding extends ResourceRule {
         if (!content) return content;
         // Only treat .!?。？！ as sentence-ending punctuation, not ¿ or ¡
         const allSentenceEnding = this.getExpectedPunctuationRegex(targetLocaleObj);
+        // Fix: Use a regex that finds the last sentence, properly handling trailing whitespace
+        // First, trim trailing whitespace to avoid matching spaces instead of sentences
+        const trimmedContent = content.trim();
         const sentenceEndingRegex = new RegExp(`[^${allSentenceEnding}]+\\p{P}?\\w*$`, 'gu');
-        const match = sentenceEndingRegex.exec(content);
+        const match = sentenceEndingRegex.exec(trimmedContent);
         if (match !== null && match.length > 0) {
             let lastSentence = match[0].trim();
             const quoteChars = ResourceSentenceEnding.allQuoteChars;
