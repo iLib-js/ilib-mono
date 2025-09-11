@@ -34,12 +34,10 @@ const require = createRequire(import.meta.url);
 function generateScriptData() {
     try {
         // Read the local ilib scripts.json file
-        const ilibScriptsPath = path.join(path.dirname(require.resolve('ilib')), 'locale/scripts.json');
-        const ilibScriptsData = JSON.parse(fs.readFileSync(ilibScriptsPath, 'utf8'));
+        const ilibScriptsData = require('ilib/locale/scripts.json');
         
         // Read the local ucd-full ScriptInfo.json file for comprehensive script list
-        const ucdFullPath = path.join(path.dirname(require.resolve('ucd-full')), 'ScriptInfo.json');
-        const ucdFullData = JSON.parse(fs.readFileSync(ucdFullPath, 'utf8'));
+        const ucdFullData = require('ucd-full/ScriptInfo.json');
         
         // Process the data using ucd-full as the primary source for all scripts
         const scriptData = [];
@@ -82,7 +80,7 @@ function generateScriptData() {
         const outputContent = `/*
  * ScriptData.ts - Generated script data from ucd-full and ilib packages
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © @currentYear@ JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +110,7 @@ ${scriptData.map(entry => `    [${entry.map((val, i) => {
     return val === true ? 'true' : '';
 }).join(',')}]`).join(',\n')}
 ];
-`;
+`.replace('@currentYear@', new Date().getFullYear());
         
         // Write the output file
         const outputPath = path.join(__dirname, '../src/ScriptData.ts');
