@@ -79,7 +79,6 @@ const optionConfig = {
     locales: {
         short: "l",
         varName: "LOCALES",
-        "default": "en-AU,en-CA,en-GB,en-IN,en-NG,en-PH,en-PK,en-US,en-ZA,de-DE,fr-CA,fr-FR,es-AR,es-ES,es-MX,id-ID,it-IT,ja-JP,ko-KR,pt-BR,ru-RU,tr-TR,vi-VN,zxx-XX,zh-Hans-CN,zh-Hant-HK,zh-Hant-TW,zh-Hans-SG",
         help: "Locales you want your app to support. Value is a comma-separated list of BCP-47 style locale tags. Default: the top 20 locales on the internet by traffic."
     },
     sourceLocale: {
@@ -188,15 +187,15 @@ if (paths.length === 0) {
 
 if (options.opt.locales) {
     options.opt.locales = options.opt.locales.split(/,/g);
+    // normalize the locale specs
+    options.opt.locales = options.opt.locales.map(spec => {
+        let loc = new Locale(spec);
+        if (!loc.getLanguage()) {
+            loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
+        }
+        return loc.getSpec();
+    });
 }
-// normalize the locale specs
-options.opt.locales = options.opt.locales.map(spec => {
-    let loc = new Locale(spec);
-    if (!loc.getLanguage()) {
-        loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
-    }
-    return loc.getSpec();
-});
 
 if (options.opt.fix || options.opt.overwrite) {
     // The write option indicates that modified files should be written back to disk.
