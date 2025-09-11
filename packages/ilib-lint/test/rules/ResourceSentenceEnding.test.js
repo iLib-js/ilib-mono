@@ -1691,9 +1691,9 @@ describe("ResourceSentenceEnding rule", function() {
         const resource = new ResourceString({
             key: "french.missing.nbsp.exclamation",
             sourceLocale: "en-US",
-            source: "Welcome!",
+            source: "Welcome to our site!",
             targetLocale: "fr-FR",
-            target: "Bienvenue!",
+            target: "Bienvenue sur notre site!",
             pathName: "a/b/c.xliff"
         });
 
@@ -1707,13 +1707,13 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending should be "\u202F!" (U+202F U+0021) for fr-FR locale instead of "!" (U+0021)');
         expect(actual?.id).toBe(resource.getKey());
-        expect(actual?.highlight).toBe("Bienvenue<e0/>!");
+        expect(actual?.highlight).toBe("Bienvenue sur notre site<e0/>!");
         expect(actual?.fix).toBeTruthy();
 
         // Check that the fix replaces the regular space with a non-breaking space
         const fix = actual?.fix;
         expect(fix?.commands).toHaveLength(1);
-        expect(fix?.commands[0].stringFix.position).toBe(9); // position of the space
+        expect(fix?.commands[0].stringFix.position).toBe(24); // position of the space
         expect(fix?.commands[0].stringFix.deleteCount).toBe(1); // delete 1 character (the regular space)
         expect(fix?.commands[0].stringFix.insertContent).toBe("\u202F"); // insert thin no-break space
     });
@@ -1727,9 +1727,9 @@ describe("ResourceSentenceEnding rule", function() {
         const resource = new ResourceString({
             key: "french.wrong.space.exclamation",
             sourceLocale: "en-US",
-            source: "Welcome!",
+            source: "Welcome to our site!",
             targetLocale: "fr-FR",
-            target: "Bienvenue !",
+            target: "Bienvenue sur notre site !",
             pathName: "a/b/c.xliff"
         });
 
@@ -1743,7 +1743,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending should be "\u202F!" (U+202F U+0021) for fr-FR locale instead of " !" (U+0020 U+0021)');
         expect(actual?.id).toBe(resource.getKey());
-        expect(actual?.highlight).toBe("Bienvenue<e0> (U+0020)</e0>!");
+        expect(actual?.highlight).toBe("Bienvenue sur notre site<e0> (U+0020)</e0>!");
         expect(actual?.fix).toBeTruthy();
     });
 
@@ -1842,9 +1842,9 @@ describe("ResourceSentenceEnding rule", function() {
         const resource = new ResourceString({
             key: "french.missing.nbsp.ellipsis",
             sourceLocale: "en-US",
-            source: "Loading...",
+            source: "Loading the file...",
             targetLocale: "fr-FR",
-            target: "Chargement...",
+            target: "Chargement du fichier...",
             pathName: "a/b/c.xliff"
         });
 
@@ -1856,12 +1856,12 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         expect(actual).toBeTruthy();
-        expect(actual?.highlight).toBe("Chargement<e0>... (U+002E U+002E U+002E)</e0>");
+        expect(actual?.highlight).toBe("Chargement du fichier<e0>... (U+002E U+002E U+002E)</e0>");
         expect(actual?.fix).toBeTruthy();
 
         const fix = actual?.fix;
         expect(fix?.commands).toHaveLength(1);
-        expect(fix?.commands[0].stringFix.position).toBe(10);
+        expect(fix?.commands[0].stringFix.position).toBe(21);
         expect(fix?.commands[0].stringFix.deleteCount).toBe(3);
         expect(fix?.commands[0].stringFix.insertContent).toBe("…");
     });
@@ -2031,9 +2031,9 @@ describe("ResourceSentenceEnding rule", function() {
         const resource = new ResourceString({
             key: "french.wrong.nbsp.type.exclamation",
             sourceLocale: "en-US",
-            source: "Welcome!",
+            source: "Welcome to our site!",
             targetLocale: "fr-FR",
-            target: "Bienvenue\u00A0!",
+            target: "Bienvenue sur notre site\u00A0!",
             pathName: "a/b/c.xliff"
         });
 
@@ -2048,13 +2048,13 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Sentence ending should be "\u202F!" (U+202F U+0021) for fr-FR locale instead of " !" (U+00A0 U+0021)');
         expect(actual?.id).toBe(resource.getKey());
-        expect(actual?.highlight).toBe("Bienvenue<e0> (U+00A0)</e0>!");
+        expect(actual?.highlight).toBe("Bienvenue sur notre site<e0> (U+00A0)</e0>!");
         expect(actual?.fix).toBeTruthy();
 
         // Check that the fix replaces the wrong no-break space with the correct one
         const fix = actual?.fix;
         expect(fix?.commands).toHaveLength(1);
-        expect(fix?.commands[0].stringFix.position).toBe(9); // position of the wrong no-break space
+        expect(fix?.commands[0].stringFix.position).toBe(24); // position of the wrong no-break space
         expect(fix?.commands[0].stringFix.deleteCount).toBe(1); // delete 1 character (wrong no-break space)
         expect(fix?.commands[0].stringFix.insertContent).toBe("\u202F"); // insert thin no-break space
     });
@@ -3150,12 +3150,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(3);
 
                 const rule = new ResourceSentenceEnding({
-                    punctuation: {
-                        "en-US": {
-                            period: ".",
-                            question: "?",
-                            exclamation: "!"
-                        }
+                    "en-US": {
+                        period: ".",
+                        question: "?",
+                        exclamation: "!"
                     }
                 });
                 const localeObj = new Locale("en-US");
@@ -3242,6 +3240,563 @@ describe("ResourceSentenceEnding rule", function() {
 
                 const result2 = rule.findIncorrectPunctuationPosition("Hello world…", "Hello world…", "…");
                 expect(result2).toEqual({ position: 11, length: 1 });
+            });
+        });
+    });
+
+    describe("Exception behaviors", () => {
+        describe("Short string exception", () => {
+            test("should not check sentence-ending punctuation for short string 'A.M.'", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.short1",
+                    source: "A.M.",
+                    target: "am",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+
+            test("should not check sentence-ending punctuation for short string 'Tues.'", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.short2",
+                    source: "Tues.",
+                    target: "Dins",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+
+            test("should not check sentence-ending punctuation for short string 'Dr.'", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.short3",
+                    source: "Dr.",
+                    target: "Herr Dr.",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+
+            test("should still check sentence-ending punctuation for longer strings", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.long",
+                    source: "This is a sentence.",
+                    target: "Das ist ein Satz",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should trigger a warning because target is missing punctuation
+                expect(actual).toBeTruthy();
+            });
+        });
+
+        describe("Minimum length configuration", () => {
+            test("should not check strings shorter than configured minimumLength", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: 15
+                });
+
+                const resource1 = new ResourceString({
+                    key: "test.short1",
+                    source: "Hello world.",
+                    target: "Hallo Welt",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual1 = rule.matchString({
+                    source: resource1.getSource(),
+                    target: resource1.getTarget(),
+                    resource: resource1,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual1).toBeUndefined();
+
+                const resource2 = new ResourceString({
+                    key: "test.short2",
+                    source: "Good morning.",
+                    target: "Guten Morgen",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual2 = rule.matchString({
+                    source: resource2.getSource(),
+                    target: resource2.getTarget(),
+                    resource: resource2,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual2).toBeUndefined();
+            });
+
+            test("should check strings longer than configured minimumLength", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: 15
+                });
+
+                const resource = new ResourceString({
+                    key: "test.long",
+                    source: "This is a longer sentence.",
+                    target: "Das ist ein längerer Satz",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should trigger a warning because target is missing punctuation
+                expect(actual).toBeTruthy();
+            });
+
+            test("should use default minimumLength when not configured", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding();
+
+                const resource1 = new ResourceString({
+                    key: "test.short",
+                    source: "Hi.",
+                    target: "Hallo",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual1 = rule.matchString({
+                    source: resource1.getSource(),
+                    target: resource1.getTarget(),
+                    resource: resource1,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual1).toBeUndefined();
+
+                const resource2 = new ResourceString({
+                    key: "test.long",
+                    source: "This is a sentence.",
+                    target: "Das ist ein Satz",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual2 = rule.matchString({
+                    source: resource2.getSource(),
+                    target: resource2.getTarget(),
+                    resource: resource2,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should trigger a warning because target is missing punctuation
+                expect(actual2).toBeTruthy();
+            });
+
+            test("should handle minimumLength of 0 (check all strings)", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: 0
+                });
+
+                const resource = new ResourceString({
+                    key: "test.short",
+                    source: "Hey you.",
+                    target: "Hallo, du!",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should trigger a warning because target is missing punctuation and the minimum length is 0
+                expect(actual).toBeTruthy();
+            });
+
+            test("should handle very high minimumLength (check almost no strings)", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: 100
+                });
+
+                const resource = new ResourceString({
+                    key: "test.long",
+                    source: "This is a sentence.",
+                    target: "Das ist ein Satz",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should not trigger because string is shorter than minimumLength
+                expect(actual).toBeUndefined();
+            });
+
+            test("should handle very high minimumLength (check almost no strings) with a long string", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: 100
+                });
+
+                const resource = new ResourceString({
+                    key: "test.long",
+                    source: "This is a sentence. This is another sentence. This is a third sentence. This is a fourth sentence. This is a fifth sentence.",
+                    target: "Das ist ein Satz. Das ist ein anderer Satz. Das ist ein dritter Satz. Das ist ein vierter Satz. Das ist ein fünfter Satz",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should not trigger because string is longer than the long minimumLength
+                expect(actual).toBeTruthy();
+            });
+        });
+
+        describe("No space exception", () => {
+            test("should not check sentence-ending punctuation for string with no spaces in snake case", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.nospace1",
+                    source: "FONT_NAME_FRONTEND_ADMIN!",
+                    target: "FONT_NAME_FRONTEND_ADMIN!",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+
+            test("should not check sentence-ending punctuation for string with no spaces in kebab case", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.nospace2",
+                    source: "sentence-ending-rule:",
+                    target: "sentence-ending-rule:",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+
+            test("should still check sentence-ending punctuation for strings with spaces", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.withspace",
+                    source: "This is a sentence.",
+                    target: "Das ist ein Satz",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should trigger a warning because target is missing punctuation
+                expect(actual).toBeTruthy();
+            });
+
+            test("should check sentence-ending punctuation for string with spaces and has dashes or underscores", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.spaces.dashes",
+                    source: "The variable-value is font_name_frontend_admin",
+                    target: "Die Variable-Wert heißt font_name_frontend_admin.",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeTruthy();
+            });
+
+            test("should check sentence-ending punctuation for string with all caps", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.allcaps",
+                    source: "THIS IS A SENTENCE.",
+                    target: "DAS IST EIN SATZ",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should trigger a warning because target is missing punctuation
+                expect(actual).toBeTruthy();
+            });
+
+            test("should check sentence-ending punctuation for string with no spaces, caps, dashes, or underscores", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                const resource = new ResourceString({
+                    key: "test.nocaps",
+                    source: "supercalifragilisticexpialidocious",
+                    target: "Das ist ein verückter Wort! Wer hat es erfunden?",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // source is not a sentence because it has no spaces, so no warning should be generated
+                expect(actual).toBeUndefined();
+            });
+        });
+
+        describe("Explicit exception list", () => {
+            test("should not check sentence-ending punctuation for string in exception list even when target lacks punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    "de-DE": {
+                        exceptions: ["For your appointment, please see the Dr."]
+                    }
+                });
+
+                const resource = new ResourceString({
+                    key: "test.exception",
+                    source: "For your appointment, please see the Dr.",
+                    target: "für Ihren Termin, bitte sehen Sie den Herr Dr",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+
+            test("should still check sentence-ending punctuation for strings not in exception list", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    "de-DE": {
+                        exceptions: ["Please see the Dr. for your appointment."]
+                    }
+                });
+
+                const resource = new ResourceString({
+                    key: "test.noexception",
+                    source: "This is a sentence.",
+                    target: "Das ist ein Satz",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // This should trigger a warning because target is missing punctuation
+                expect(actual).toBeTruthy();
+            });
+
+            test("should handle multiple exceptions with missing target punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    "de-DE": {
+                        exceptions: ["Please see the Dr. for your appointment.", "Visit today with the Prof.", "Call the Rev. tomorrow."]
+                    }
+                });
+
+                const resource = new ResourceString({
+                    key: "test.exception1",
+                    source: "Visit today with the Prof.",
+                    target: "Besuchen Sie heute mit den Prof",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+
+            test("should handle multiple exceptions with missing target punctuation", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    "de-DE": {
+                        exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev."]
+                    }
+                });
+
+                const resource = new ResourceString({
+                    key: "test.exception2",
+                    source: "Tomorrow, call the Rev.",
+                    target: "Rufen Sie den Rev morgen an",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+
+            test("should handle multiple exceptions with missing target punctuation and case insensitivity", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    "de-DE": {
+                        exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev.", "please see the doctor for your appointment."]
+                    }
+                });
+
+                const resource = new ResourceString({
+                    key: "test.exception2",
+                    source: "Please see the Doctor for your Appointment.",
+                    target: "Rufen Sie den Herr Dr morgen an",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
             });
         });
     });
