@@ -8,7 +8,7 @@
     "exports": {
         ".": {
             "import": "./lib/index.js",
-            "require": "./lib-cjs/index.js",
+            "require": "./lib/index.js",
             "types": "./lib/index.d.ts"
         }
     },
@@ -49,7 +49,6 @@
     "files": [
         "src",
         "lib",
-        "lib-cjs",
         "README.md",
         "LICENSE",
         "CHANGELOG.md"
@@ -59,9 +58,8 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "npm-run-all --npm-path pnpm build:data build:ts build:ts:cjs",
-        "build:ts": "tsc --project tsconfig.esm.json && tsc-esm-fix",
-        "build:ts:cjs": "tsc --project tsconfig.cjs.json && cp src-cjs/index.js lib-cjs/index.js && echo '{\"type\": \"commonjs\"}' > lib-cjs/package.json",
+        "build": "npm-run-all --npm-path pnpm build:data build:ts",
+        "build:ts": "tsc && echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:data": "node scripts/generate-script-data.js",
         "coverage": "pnpm test:cli --coverage",
         "test": "pnpm test:all",
@@ -77,7 +75,7 @@
         "sample": "LANG=en_US.UTF8 node samples/esm/index.js",
         "debug": "pnpm build:dev; node --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
         "debug:web": "pnpm test:karma",
-        "clean": "git clean -f -d src test; rm -rf lib lib-cjs",
+        "clean": "git clean -f -d src test; rm -rf lib",
         "doc": "npm-run-all --npm-path pnpm doc:md doc:html",
         "doc:md": "mkdir -p docs && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
         "doc:html": "mkdir -p docs && typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts"
@@ -97,7 +95,6 @@
         "npm-run-all": "^4.1.5",
         "ts-jest": "^29.1.0",
         "ts-loader": "^9.5.0",
-        "tsc-esm-fix": "^3.1.2",
         "typedoc": "^0.26.11",
         "typedoc-plugin-markdown": "^4.2.10",
         "typescript": "^5.0.0",

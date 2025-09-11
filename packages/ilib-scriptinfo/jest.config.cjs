@@ -6,8 +6,7 @@ const config = {
         name: "ilib-scriptinfo",
         color: "blackBright",
     },
-    preset: 'ts-jest/presets/default-esm',
-    extensionsToTreatAsEsm: ['.ts'],
+    preset: 'ts-jest',
     testMatch: [
         "**/test/**/*.test.ts",
         "**/test/**/*.test.js"
@@ -18,10 +17,9 @@ const config = {
     },
     transform: {
         '^.+\\.ts$': ['ts-jest', {
-            useESM: true,
             tsconfig: {
                 types: ['jest', 'node'],
-                module: 'ES2020',
+                module: 'CommonJS',
                 moduleResolution: 'node'
             }
         }]

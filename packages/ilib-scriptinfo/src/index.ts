@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-// Export the factory function as default
-export { default } from './ScriptInfo';
+// Export the factory function as a named export
+export { scriptInfoFactory } from './ScriptInfo';
 
 // Re-export the ScriptInfo class for advanced usage
 export { ScriptInfo } from './ScriptInfo';

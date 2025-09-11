@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
-var scriptInfoFactory = require('ilib-scriptinfo');
-var ScriptInfo = scriptInfoFactory.ScriptInfo;
-var ScriptDirection = scriptInfoFactory.ScriptDirection;
+var scriptInfoFactory = require('ilib-scriptinfo').scriptInfoFactory;
+var ScriptInfo = require('ilib-scriptinfo').ScriptInfo;
+var ScriptDirection = require('ilib-scriptinfo').ScriptDirection;
 
 /**
  * Sample command-line application demonstrating ilib-scriptinfo usage with CommonJS.

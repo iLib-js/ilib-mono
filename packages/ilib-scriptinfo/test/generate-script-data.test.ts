@@ -77,7 +77,7 @@ describe('generate-script-data.js', () => {
         test('should have correct file header', () => {
             const content = fs.readFileSync(outputPath, 'utf8');
             expect(content).toContain('ScriptData.ts - Generated script data');
-            expect(content).toContain('Copyright © 2025 JEDLSoft');
+            expect(content).toContain(`Copyright © ${new Date().getFullYear()} JEDLSoft`);
             expect(content).toContain('This file is auto-generated');
         });
 
