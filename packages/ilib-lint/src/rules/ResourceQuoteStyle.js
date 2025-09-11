@@ -171,10 +171,7 @@ class ResourceQuoteStyle extends ResourceRule {
         // match the all types of Unicode non-breaking spaces which are used in some
         // locales to separate the quote from the text.
         let startQuote, endQuote;
-        if (isOptionalPunctuationLanguage) {
-            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartChars}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}'"]))(\\W|$)`, "gu");
-        } else if (sourceStyle.ascii) {
+        if (sourceStyle.ascii) {
             if (regExps.target.quotesAll.test(tar)) return;
             startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartChars}'])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
             endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}']))(\\W|$)`, "gu");
