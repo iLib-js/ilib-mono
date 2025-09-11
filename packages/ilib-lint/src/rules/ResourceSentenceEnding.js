@@ -85,24 +85,24 @@ const punctuationMap = {
 
 /**
  * @ignore
- * @typedef {{period: string, question: string, exclamation: string, ellipsis: string, colon: string, exceptions?: string[]}} LocaleOptions
- * @property {string} period - Custom period punctuation for this locale
- * @property {string} question - Custom question mark punctuation for this locale
- * @property {string} exclamation - Custom exclamation mark punctuation for this locale
- * @property {string} ellipsis - Custom ellipsis punctuation for this locale
- * @property {string} colon - Custom colon punctuation for this locale
+ * @typedef {{period?: string, question?: string, exclamation?: string, ellipsis?: string, colon?: string, exceptions?: string[]}} LocaleOptions
+ * @property {string} [period] - Custom period punctuation for this locale
+ * @property {string} [question] - Custom question mark punctuation for this locale
+ * @property {string} [exclamation] - Custom exclamation mark punctuation for this locale
+ * @property {string} [ellipsis] - Custom ellipsis punctuation for this locale
+ * @property {string} [colon] - Custom colon punctuation for this locale
  * @property {string[]} [exceptions] - Array of source strings to skip checking for this locale.
  *   Useful for handling special cases like abbreviations that should not be checked for sentence-ending punctuation.
 */
 /**
  * @ignore
- * @typedef {{minimumLength: number}} ResourceSentenceEndingFixedOptions
+ * @typedef {{minimumLength?: number}} ResourceSentenceEndingFixedOptions
  * @property {number} [minimumLength=10] - Minimum length of source string before the rule is applied.
  *   Strings shorter than this length will be skipped (useful for avoiding false positives on abbreviations).
  */
 /**
  * @ignore
- * @typedef {ResourceSentenceEndingFixedOptions & Record<string, LocaleOptions>} ResourceSentenceEndingOptions
+ * @typedef {ResourceSentenceEndingFixedOptions | Record<string, LocaleOptions>} ResourceSentenceEndingOptions
  */
 
 /**
