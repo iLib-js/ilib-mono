@@ -169,7 +169,7 @@ class ResourceSentenceEnding extends ResourceRule {
         this.link = "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-sentence-ending.md";
 
         // Initialize minimum length configuration
-        this.minimumLength = options?.minimumLength ?? 10;
+        this.minimumLength = Math.max(0, options?.minimumLength ?? 10);
 
         // Initialize custom punctuation mappings from configuration
         this.customPunctuationMap = {};
@@ -840,7 +840,12 @@ class ResourceSentenceEnding extends ResourceRule {
 
         // Exception 2: Check if source has no spaces AND doesn't end with sentence-ending punctuation (not a sentence)
         if (!source.includes(' ')) {
-            return undefined;
+            const trimmed = source.trim();
+            const lastChar = trimmed.charAt(trimmed.length - 1);
+            const sentenceEndingChars = ['.', '?', '!', '。', '？', '！', '…', ':'];
+            if (!sentenceEndingChars.includes(lastChar)) {
+                return undefined; // Not a sentence
+            }
         }
 
         // Exception 3: Check if source is in exception list

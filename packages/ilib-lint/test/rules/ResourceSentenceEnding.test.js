@@ -3523,6 +3523,110 @@ describe("ResourceSentenceEnding rule", function() {
                 // This should not trigger because string is longer than the long minimumLength
                 expect(actual).toBeTruthy();
             });
+
+            test("should handle negative minimumLength (treat as 0) - short string with spaces", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: -5
+                });
+
+                const resource = new ResourceString({
+                    key: "test.negative1",
+                    source: "a b.",
+                    target: "a b",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // Should trigger because negative minimumLength is treated as 0
+                expect(actual).toBeTruthy();
+            });
+
+            test("should handle negative minimumLength (treat as 0) - longer string with spaces", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: -5
+                });
+
+                const resource = new ResourceString({
+                    key: "test.negative2",
+                    source: "Hello world.",
+                    target: "Hallo Welt",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // Should trigger because negative minimumLength is treated as 0
+                expect(actual).toBeTruthy();
+            });
+
+            test("should handle floating point minimumLength - short string with spaces", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: 5.2
+                });
+
+                const resource = new ResourceString({
+                    key: "test.float1",
+                    source: "a b.",
+                    target: "a b",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // Should not trigger because "a b." (4 chars) < 5.2
+                expect(actual).toBeUndefined();
+            });
+
+            test("should handle floating point minimumLength - longer string with spaces", () => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding({
+                    minimumLength: 5.2
+                });
+
+                const resource = new ResourceString({
+                    key: "test.float2",
+                    source: "Hello world.",
+                    target: "Hallo Welt",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                // Should trigger because "Hello world." (12 chars) >= 5.2
+                expect(actual).toBeTruthy();
+            });
         });
 
         describe("No space exception", () => {
@@ -3924,7 +4028,7 @@ describe("ResourceSentenceEnding rule", function() {
                     key: "test.key",
                     sourceLocale: "en-US",
                     targetLocale: "ja-JP",
-                    source: "Amazing!",
+                    source: "That's amazing!",
                     target: "すごい!   " // spaces after English exclamation mark instead of Japanese
                 });
 
