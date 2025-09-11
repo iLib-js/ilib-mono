@@ -24,12 +24,10 @@ const path = require("path");
 
 function generateScriptData() {
     // Read the local ilib scripts.json file
-    const ilibScriptsPath = path.join(path.dirname(require.resolve("ilib")), "locale/scripts.json");
-    const ilibScriptsData = JSON.parse(fs.readFileSync(ilibScriptsPath, "utf8"));
+    const ilibScriptsData = require("ilib/locale/scripts.json");
 
     // Read the local ucd-full ScriptInfo.json file for comprehensive script list
-    const ucdFullPath = path.join(path.dirname(require.resolve("ucd-full")), "ScriptInfo.json");
-    const ucdFullData = JSON.parse(fs.readFileSync(ucdFullPath, "utf8"));
+    const ucdFullData = require("ucd-full/ScriptInfo.json");
 
     // Process the data using ucd-full as the primary source for all scripts
     const scriptData = [];
