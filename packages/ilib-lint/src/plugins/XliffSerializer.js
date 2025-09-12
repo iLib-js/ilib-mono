@@ -58,11 +58,14 @@ class XliffSerializer extends Serializer {
         if (!resources || resources.length === 0) {
             throw new Error("No resources found in intermediate representation");
         }
-        // produce the same version as the original file
-        const xliffVersion = this._getxliffVersion(ir.sourceFile.getContent());
+
+        // produce the same format as the original file
+        const xliffInfo = this._getXliffInfo(ir.sourceFile.getContent());
+
         const xliff = new ResourceXliff({
             path: ir.sourceFile.getPath(),
-            version: xliffVersion
+            version: xliffInfo.version,
+            style: xliffInfo.style
         });
         resources.forEach(resource => {
             xliff.addResource(resource);
@@ -78,19 +81,26 @@ class XliffSerializer extends Serializer {
     * Extracts the XLIFF version from the provided data.
     *
     * @param {String} data The XML data as a string.
-    * @returns {String} The XLIFF version extracted from the XML data,
-    * or the default version "1.2" if the version is not found or an error occurs.
+    * @returns {Object} the xliff version and style
     */
-    _getxliffVersion(data) {
-        const defaultVersion = "1.2";
-        if (!data) defaultVersion;
+    _getXliffInfo(data) {
+        const defaultInfo = {
+            version: "1.2",
+            style: "standard"
+        };
+        if (!data) return defaultInfo;
 
         try {
-            const parseData = xml2js(data);
-            return parseData?.elements?.[0]?.attributes?.version || defaultVersion;
+            const parsedData = xml2js(data);
+            const xmlVersion = parsedData?.elements?.[0]?.attributes?.version;
+            const projectAttr = parsedData?.elements?.[0]?.elements?.[0]?.attributes?.['l:project'];
+
+            return {
+                version: xmlVersion || defaultInfo.version,
+                style: (!projectAttr && xmlVersion === "2.0") ? "webOS" : "standard"
+            };
         } catch (e) {
-            // If an error occurs during XML parsing, return the default version.
-            return defaultVersion;
+            return defaultInfo;
         }
     }
 }
