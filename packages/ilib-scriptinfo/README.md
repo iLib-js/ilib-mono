@@ -17,8 +17,22 @@ npm install ilib-scriptinfo
 
 ## Quick Start
 
+### TypeScript
+```typescript
+import { scriptInfoFactory, ScriptDirection, ScriptInfo } from 'ilib-scriptinfo';
+
+// Get info about Latin script
+const latin: ScriptInfo | undefined = scriptInfoFactory('Latn');
+if (latin) {
+    console.log(latin.getName());           // "Latin"
+    console.log(latin.getScriptDirection()); // ScriptDirection.LTR
+    console.log(latin.getCasing());         // true (has upper/lowercase)
+}
+```
+
+### ES Modules (ESM)
 ```javascript
-import scriptInfoFactory from 'ilib-scriptinfo';
+import { scriptInfoFactory, ScriptDirection } from 'ilib-scriptinfo';
 
 // Get info about Latin script
 const latin = scriptInfoFactory('Latn');
@@ -37,13 +51,37 @@ if (arabic) {
 }
 ```
 
+### CommonJS (Legacy ES5)
+```javascript
+var scriptInfoFactory = require('ilib-scriptinfo').scriptInfoFactory;
+var ScriptDirection = require('ilib-scriptinfo').ScriptDirection;
+
+// Get info about Latin script
+var latin = scriptInfoFactory('Latn');
+if (latin) {
+    console.log(latin.getName());           // "Latin"
+    console.log(latin.getScriptDirection()); // ScriptDirection.LTR
+    console.log(latin.getCasing());         // true (has upper/lowercase)
+}
+```
+
 ## API
 
 ### Create a script info instance
-```javascript
-import scriptInfoFactory from 'ilib-scriptinfo';
+```typescript
+// TypeScript
+import { scriptInfoFactory, ScriptInfo } from 'ilib-scriptinfo';
+const script: ScriptInfo | undefined = scriptInfoFactory('Latn');
+```
 
+```javascript
+// ESM
+import { scriptInfoFactory } from 'ilib-scriptinfo';
 const script = scriptInfoFactory('Latn');  // 4-letter ISO 15924 code
+
+// CommonJS (ES5)
+var scriptInfoFactory = require('ilib-scriptinfo').scriptInfoFactory;
+var script = scriptInfoFactory('Latn');  // 4-letter ISO 15924 code
 // Returns ScriptInfo instance or undefined if script not found
 ```
 
@@ -57,10 +95,20 @@ const script = scriptInfoFactory('Latn');  // 4-letter ISO 15924 code
 - `getLongCode()` - Long identifier for the script
 
 ### Get all available scripts
-```javascript
-import scriptInfoFactory, { ScriptInfo } from 'ilib-scriptinfo';
+```typescript
+// TypeScript
+import { ScriptInfo } from 'ilib-scriptinfo';
+const allScripts: string[] = ScriptInfo.getAllScripts();
+```
 
+```javascript
+// ESM
+import { ScriptInfo } from 'ilib-scriptinfo';
 const allScripts = ScriptInfo.getAllScripts();
+
+// CommonJS (ES5)
+var ScriptInfo = require('ilib-scriptinfo').ScriptInfo;
+var allScripts = ScriptInfo.getAllScripts();
 // Returns array of all 226 script codes
 ```
 
