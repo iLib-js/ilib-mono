@@ -1,4 +1,4 @@
-name: Test affected
+name: Test Affected
 # Test Affected workflow
 # This workflow runs tests and generates coverage reports for packages affected by changes in a pull request.
 # It uses Turborepo to determine affected packages and runs their tests in parallel.
@@ -17,7 +17,7 @@ jobs:
             TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
         strategy:
             matrix:
-                node-version: [20]
+                node-version: [22]
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
