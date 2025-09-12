@@ -1,5 +1,11 @@
 # loctool
 
+## 2.31.2
+
+### Patch Changes
+
+- d3865cf: Assign structured unit IDs with group index during xliff serialization for webOS
+
 ## 2.31.1
 
 ### Patch Changes
