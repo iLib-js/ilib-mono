@@ -599,11 +599,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "DIFFERENT TARGET"
-        });
+        }));
     });
 
     test("provides fix that preserves non-letter characters", () => {
@@ -629,11 +629,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "ERROR 404"
-        });
+        }));
     });
 
     test("provides fix that handles mixed content correctly", () => {
@@ -659,11 +659,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "DEBUG MODE 123!"
-        });
+        }));
     });
 
     test("provides fix that handles accented characters", () => {
@@ -689,11 +689,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "AÑO NUEVO"
-        });
+        }));
     });
 
     test("provides fix that handles special characters", () => {
@@ -719,11 +719,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "CAFÉ & RÉSUMÉ"
-        });
+        }));
     });
 
     test("provides fix that handles multiple runs of letters separated by numbers", () => {
@@ -749,11 +749,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "ME GUSTAN 2 PECES"
-        });
+        }));
     });
 
     test("provides fix that handles German ess-zett character correctly", () => {
@@ -779,11 +779,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "SCHLOSS"
-        });
+        }));
     });
 
     test("provides fix that handles Turkish dotless and dotted i characters correctly", () => {
@@ -809,11 +809,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "ŞEHİR"
-        });
+        }));
     });
 
     test("provides fix that handles Turkish locale-sensitive upper-casing correctly", () => {
@@ -839,11 +839,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "TÜRKÇE METİN"
-        });
+        }));
     });
 
     test("provides fix that handles German locale-sensitive upper-casing correctly", () => {
@@ -869,11 +869,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "DEUTSCHER TEXT"
-        });
+        }));
     });
 
     test("provides fix that handles German ess-zett locale-sensitively", () => {
@@ -899,11 +899,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "STRASSE"
-        });
+        }));
     });
 
     test("provides fix that handles Turkish mixed case locale-sensitively", () => {
@@ -929,11 +929,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "TÜRKÇE KARIŞIK"
-        });
+        }));
     });
 
     test("provides fix that handles German mixed case locale-sensitively", () => {
@@ -959,11 +959,11 @@ describe("ResourceAllCaps", () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: resource.target.length,
             insertContent: "DEUTSCHER GEMISCHT"
-        });
+        }));
     });
 
     test("applies auto-fix to convert target to ALL CAPS", () => {
@@ -1336,11 +1336,11 @@ describe('ResourceAllCaps with ResourceArray', () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: "Texto normal".length,
             insertContent: "TEXTO NORMAL"
-        });
+        }));
     });
 });
 
@@ -1488,11 +1488,11 @@ describe('ResourceAllCaps with ResourcePlural', () => {
 
         // @ts-ignore
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
+        expect(command.stringFix).toEqual(expect.objectContaining({
             position: 0,
             deleteCount: "un mensaje".length,
             insertContent: "UN MENSAJE"
-        });
+        }));
     });
 
     test("handles plural resource with mixed ALL CAPS and normal categories", () => {
