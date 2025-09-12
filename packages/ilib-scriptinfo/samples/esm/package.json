@@ -1,0 +1,17 @@
+{
+  "name": "ilib-scriptinfo-esm-sample",
+  "version": "0.0.0",
+  "description": "Modern ES module sample app demonstrating ilib-scriptinfo usage",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js Latn"
+  },
+  "dependencies": {
+    "ilib-scriptinfo": "workspace:^"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 
