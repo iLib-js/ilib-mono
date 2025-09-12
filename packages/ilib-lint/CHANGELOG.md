@@ -1,5 +1,19 @@
 # ilib-lint
 
+## 2.18.2
+
+### Patch Changes
+
+- bd9293f: - Fixed a bug in the quote style rule which would cause infinite fix loops
+  - Quote detection in the source was not working properly for quote-optional
+    languages, such as Italian or Swedish, causing it to apply the same fix
+    over and over again
+- 4938290: - Fixed a bug where whitespace at the end of the target string would cause problems with the
+  sentence-ending punctuation rule
+  - Sentence-ending punctuation would not be found if there was one or more whitespace chars
+    at the end of the target string. (Source string was okay, though.)
+  - Rule now trims the whitespace from the target string before checking it.
+
 ## 2.18.1
 
 ### Patch Changes
