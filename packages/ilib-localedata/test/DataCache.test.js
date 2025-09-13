@@ -643,4 +643,85 @@ describe("DataCache", () => {
             expect(cache.getFilePromiseCount()).toBe(0);
         });
     });
+
+    describe('getBasenamesForLocale', () => {
+        test('should return empty array for invalid parameters', () => {
+            expect.assertions(4);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            // Test with null root
+            expect(cache.getBasenamesForLocale(null, 'en-US')).toEqual([]);
+            
+            // Test with null locale
+            expect(cache.getBasenamesForLocale('./test', null)).toEqual([]);
+            
+            // Test with undefined root
+            expect(cache.getBasenamesForLocale(undefined, 'en-US')).toEqual([]);
+            
+            // Test with undefined locale
+            expect(cache.getBasenamesForLocale('./test', undefined)).toEqual([]);
+        });
+
+        test('should return empty array for non-existent root', () => {
+            expect.assertions(1);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            expect(cache.getBasenamesForLocale('./nonexistent', 'en-US')).toEqual([]);
+        });
+
+        test('should return empty array for non-existent locale', () => {
+            expect.assertions(1);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            // Add some data for a different locale
+            cache.storeData('./test', 'info', 'en', { a: 'b' });
+            
+            expect(cache.getBasenamesForLocale('./test', 'fr-FR')).toEqual([]);
+        });
+
+        test('should return basenames for existing locale', () => {
+            expect.assertions(2);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            // Add data for multiple basenames
+            cache.storeData('./test', 'info', 'en-US', { a: 'b' });
+            cache.storeData('./test', 'numbers', 'en-US', { c: 'd' });
+            cache.storeData('./test', 'dates', 'en-US', { e: 'f' });
+            
+            const basenames = cache.getBasenamesForLocale('./test', 'en-US');
+            expect(basenames).toHaveLength(3);
+            expect(basenames.sort()).toEqual(['dates', 'info', 'numbers']);
+        });
+
+        test('should handle Locale objects', () => {
+            expect.assertions(1);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            // Add data using Locale object
+            const locale = new Locale('en-US');
+            cache.storeData('./test', 'info', locale, { a: 'b' });
+            cache.storeData('./test', 'numbers', locale, { c: 'd' });
+            
+            const basenames = cache.getBasenamesForLocale('./test', locale);
+            expect(basenames.sort()).toEqual(['info', 'numbers']);
+        });
+
+        test('should handle root locale', () => {
+            expect.assertions(1);
+            let cache = DataCache.getDataCache();
+            cache.clearData();
+
+            // Add data for root locale
+            cache.storeData('./test', 'info', 'root', { a: 'b' });
+            cache.storeData('./test', 'numbers', 'root', { c: 'd' });
+            
+            const basenames = cache.getBasenamesForLocale('./test', 'root');
+            expect(basenames.sort()).toEqual(['info', 'numbers']);
+        });
+    });
 });
