@@ -35,7 +35,7 @@ Many independent ilib packages structure their data using a hierarchical directo
 
 **Example Structure**:
 ```
-locale-data/
+locale/
 ├── en/
 │   ├── US/
 │   │   ├── name.json
@@ -203,8 +203,8 @@ LocaleData provides the public API for the package. It:
 - Provides backward compatibility
 
 **Key Methods**:
-- `loadData(params)` - Main data loading interface
-- `ensureLocale(locale, otherRoots)` - Pre-load locale data
+- `loadData(params)` - Main data loading interface. May be either synchronous or asynchronous.
+- `ensureLocale(locale, otherRoots)` - Pre-load locale data asynchronously
 - `checkCache(locale, basename)` - Check if data is cached
 - `cacheData(data, root)` - Store pre-populated data
 
@@ -257,8 +257,8 @@ Request B calls LocaleData.loadData("en-US", "info") (concurrent)
     ↓
 Both requests reach FileCache.loadFile("./locale/en-US.js")
     ↓
-Request A creates promise and caches it
-Request B finds cached promise and waits on it
+Request A creates promise, caches it, and waits on it
+Request B finds cached promise and waits on it as well
     ↓
 File loads once, both requests receive the same data
     ↓
@@ -270,7 +270,8 @@ No race condition, no duplicate file loading
 ### FileCache (Promise Caching)
 - **Purpose**: Prevent race conditions because multiple callers can wait on the same promise to load files
 - **Storage**: `Map<filePath, Promise>`
-- **Lifecycle**: Promises are cached permanently
+- **Lifecycle**: Promises are cached permanently. If a promise is already resolved and another request comes in for the same file at some later
+point in time, it can await the already resolved promise again, which will then resolve immediately and return the raw file data again.
 - **Clear**: Only cleared explicitly via `clearCache()`
 
 ### ParsedDataCache (Parsed Data Caching)

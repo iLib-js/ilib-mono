@@ -29,17 +29,17 @@ import Locale from 'ilib-locale';
  */
 function getLocaleSpec(locale) {
     if (!locale) return "root";
-    
+
     // Handle string-based locale identifiers
     if (typeof locale === 'string') {
         return locale === "root" ? "root" : locale;
     }
-    
+
     // Handle Locale objects
     if (typeof locale === 'object' && locale.getRegion && locale.getSpec) {
         return locale.getRegion() === "001" ? "root" : locale.getSpec();
     }
-    
+
     // Fallback to string representation
     return String(locale);
 }
@@ -316,6 +316,25 @@ class DataCache {
      */
     getFileDataCount() {
         return this.fileData.size;
+    }
+
+    /**
+     * Get all basenames for a specific root and locale
+     * @param {string} root the root directory
+     * @param {string} locale the locale identifier
+     * @returns {Array.<string>} array of basenames for this locale
+     */
+    getBasenamesForLocale(root, locale) {
+        if (!root || !locale) {
+            return [];
+        }
+
+        const localeSpec = getLocaleSpec(locale);
+        if (!this.data?.[root]?.[localeSpec]) {
+            return [];
+        }
+
+        return Object.keys(this.data[root][localeSpec]);
     }
 }
 
