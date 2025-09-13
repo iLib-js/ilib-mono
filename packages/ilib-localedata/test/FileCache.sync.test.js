@@ -345,5 +345,53 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(result2).toBe(result1);
             expect(fileCache.attemptCount()).toBe(1); // Should not increase
         });
+
+        test('should handle invalid file paths gracefully', () => {
+            expect.assertions(4);
+
+            // Test with null file path
+            const nullResult = fileCache.loadFileSync(null);
+            expect(nullResult).toBeUndefined();
+
+            // Test with undefined file path
+            const undefinedResult = fileCache.loadFileSync(undefined);
+            expect(undefinedResult).toBeUndefined();
+
+            // Test with empty string
+            const emptyResult = fileCache.loadFileSync('');
+            expect(emptyResult).toBeUndefined();
+
+            // Test with whitespace-only string
+            const whitespaceResult = fileCache.loadFileSync('   ');
+            expect(whitespaceResult).toBeUndefined();
+        });
+
+        test('should handle non-string file paths', () => {
+            expect.assertions(3);
+
+            // Test with number
+            const numberResult = fileCache.loadFileSync(123);
+            expect(numberResult).toBeUndefined();
+
+            // Test with object
+            const objectResult = fileCache.loadFileSync({ path: 'test' });
+            expect(objectResult).toBeUndefined();
+
+            // Test with boolean
+            const booleanResult = fileCache.loadFileSync(true);
+            expect(booleanResult).toBeUndefined();
+        });
+
+        test('should handle file loading errors gracefully', () => {
+            expect.assertions(2);
+
+            // Test with non-existent file
+            const nonExistentResult = fileCache.loadFileSync('test/nonexistent/file.json');
+            expect(nonExistentResult).toBeUndefined();
+
+            // Test with invalid file path that might cause errors
+            const invalidPathResult = fileCache.loadFileSync('test/files/../invalid/../../path.json');
+            expect(invalidPathResult).toBeUndefined();
+        });
     });
 });

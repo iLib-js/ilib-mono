@@ -759,4 +759,112 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
         });
     });
+
+    describe('Parameter Validation', () => {
+        test('should handle invalid parameters in getParsedData', async () => {
+            expect.assertions(6);
+
+            // Test with null locale
+            const nullLocaleResult = await parsedDataCache.getParsedData(null, ['./test/files3'], 'info');
+            expect(nullLocaleResult).toBeUndefined();
+
+            // Test with undefined locale
+            const undefinedLocaleResult = await parsedDataCache.getParsedData(undefined, ['./test/files3'], 'info');
+            expect(undefinedLocaleResult).toBeUndefined();
+
+            // Test with null roots
+            const nullRootsResult = await parsedDataCache.getParsedData(new Locale('en-US'), null, 'info');
+            expect(nullRootsResult).toBeUndefined();
+
+            // Test with empty roots array
+            const emptyRootsResult = await parsedDataCache.getParsedData(new Locale('en-US'), [], 'info');
+            expect(emptyRootsResult).toBeUndefined();
+
+            // Test with null basename
+            const nullBasenameResult = await parsedDataCache.getParsedData(new Locale('en-US'), ['./test/files3'], null);
+            expect(nullBasenameResult).toBeUndefined();
+
+            // Test with undefined basename
+            const undefinedBasenameResult = await parsedDataCache.getParsedData(new Locale('en-US'), ['./test/files3'], undefined);
+            expect(undefinedBasenameResult).toBeUndefined();
+        });
+
+        test('should handle invalid parameters in getParsedDataSync', () => {
+            expect.assertions(6);
+
+            // Test with null locale
+            const nullLocaleResult = parsedDataCache.getParsedDataSync(null, ['./test/files3'], 'info');
+            expect(nullLocaleResult).toBeUndefined();
+
+            // Test with undefined locale
+            const undefinedLocaleResult = parsedDataCache.getParsedDataSync(undefined, ['./test/files3'], 'info');
+            expect(undefinedLocaleResult).toBeUndefined();
+
+            // Test with null roots
+            const nullRootsResult = parsedDataCache.getParsedDataSync(new Locale('en-US'), null, 'info');
+            expect(nullRootsResult).toBeUndefined();
+
+            // Test with empty roots array
+            const emptyRootsResult = parsedDataCache.getParsedDataSync(new Locale('en-US'), [], 'info');
+            expect(emptyRootsResult).toBeUndefined();
+
+            // Test with null basename
+            const nullBasenameResult = parsedDataCache.getParsedDataSync(new Locale('en-US'), ['./test/files3'], null);
+            expect(nullBasenameResult).toBeUndefined();
+
+            // Test with undefined basename
+            const undefinedBasenameResult = parsedDataCache.getParsedDataSync(new Locale('en-US'), ['./test/files3'], undefined);
+            expect(undefinedBasenameResult).toBeUndefined();
+        });
+
+        test('should handle invalid parameters in hasParsedData', () => {
+            expect.assertions(6);
+
+            // Test with null root
+            expect(parsedDataCache.hasParsedData(null, 'info', 'en-US')).toBe(false);
+
+            // Test with undefined root
+            expect(parsedDataCache.hasParsedData(undefined, 'info', 'en-US')).toBe(false);
+
+            // Test with null basename
+            expect(parsedDataCache.hasParsedData('./test/files3', null, 'en-US')).toBe(false);
+
+            // Test with undefined basename
+            expect(parsedDataCache.hasParsedData('./test/files3', undefined, 'en-US')).toBe(false);
+
+            // Test with empty string root
+            expect(parsedDataCache.hasParsedData('', 'info', 'en-US')).toBe(false);
+
+            // Test with empty string basename
+            expect(parsedDataCache.hasParsedData('./test/files3', '', 'en-US')).toBe(false);
+        });
+
+        test('should handle invalid parameters in getCachedData', () => {
+            expect.assertions(6);
+
+            // Test with null root
+            const nullRootResult = parsedDataCache.getCachedData(null, 'info', 'en-US');
+            expect(nullRootResult).toBeUndefined();
+
+            // Test with undefined root
+            const undefinedRootResult = parsedDataCache.getCachedData(undefined, 'info', 'en-US');
+            expect(undefinedRootResult).toBeUndefined();
+
+            // Test with null basename
+            const nullBasenameResult = parsedDataCache.getCachedData('./test/files3', null, 'en-US');
+            expect(nullBasenameResult).toBeUndefined();
+
+            // Test with undefined basename
+            const undefinedBasenameResult = parsedDataCache.getCachedData('./test/files3', undefined, 'en-US');
+            expect(undefinedBasenameResult).toBeUndefined();
+
+            // Test with empty string root
+            const emptyRootResult = parsedDataCache.getCachedData('', 'info', 'en-US');
+            expect(emptyRootResult).toBeUndefined();
+
+            // Test with empty string basename
+            const emptyBasenameResult = parsedDataCache.getCachedData('./test/files3', '', 'en-US');
+            expect(emptyBasenameResult).toBeUndefined();
+        });
+    });
 });

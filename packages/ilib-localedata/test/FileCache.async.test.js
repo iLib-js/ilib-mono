@@ -413,5 +413,53 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect(result).toHaveProperty('default');
             expect(typeof result.default).toBe('function');
         });
+
+        test('should handle invalid file paths gracefully', async () => {
+            expect.assertions(4);
+
+            // Test with null file path
+            const nullResult = await fileCache.loadFile(null);
+            expect(nullResult).toBeUndefined();
+
+            // Test with undefined file path
+            const undefinedResult = await fileCache.loadFile(undefined);
+            expect(undefinedResult).toBeUndefined();
+
+            // Test with empty string
+            const emptyResult = await fileCache.loadFile('');
+            expect(emptyResult).toBeUndefined();
+
+            // Test with whitespace-only string
+            const whitespaceResult = await fileCache.loadFile('   ');
+            expect(whitespaceResult).toBeUndefined();
+        });
+
+        test('should handle non-string file paths', async () => {
+            expect.assertions(3);
+
+            // Test with number
+            const numberResult = await fileCache.loadFile(123);
+            expect(numberResult).toBeUndefined();
+
+            // Test with object
+            const objectResult = await fileCache.loadFile({ path: 'test' });
+            expect(objectResult).toBeUndefined();
+
+            // Test with boolean
+            const booleanResult = await fileCache.loadFile(true);
+            expect(booleanResult).toBeUndefined();
+        });
+
+        test('should handle file loading errors gracefully', async () => {
+            expect.assertions(2);
+
+            // Test with non-existent file
+            const nonExistentResult = await fileCache.loadFile('test/nonexistent/file.json');
+            expect(nonExistentResult).toBeUndefined();
+
+            // Test with invalid file path that might cause errors
+            const invalidPathResult = await fileCache.loadFile('test/files/../invalid/../../path.json');
+            expect(invalidPathResult).toBeUndefined();
+        });
     });
 });
