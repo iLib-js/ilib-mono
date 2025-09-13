@@ -54,7 +54,7 @@ function parseData(data, pathName) {
 
 /**
  * ParsedDataCache manages parsed locale data caching.
- * 
+ *
  * This class operates at the parsed data level, caching parsed data separated by locale and basename.
  * It uses FileCache to ensure shared promises for file loading, preventing race conditions.
  */
@@ -71,14 +71,14 @@ class ParsedDataCache {
 
     /**
      * Get parsed data for a locale and basename, loading and parsing files if necessary
-     * 
+     *
      * @param {string|Locale} locale - The locale to get data for
      * @param {Array.<string>} roots - Array of root directories to search
      * @param {string} basename - The basename of the data to load
      * @returns {Promise<Object|undefined>} Promise that resolves to the parsed data, or undefined if not found
      */
     async getParsedData(locale, roots, basename) {
-        
+
         // Validate parameters
         if (!locale || !Array.isArray(roots) || roots.length === 0 || !basename) {
             return undefined;
@@ -116,7 +116,7 @@ class ParsedDataCache {
 
     /**
      * Get parsed data for a locale and basename synchronously
-     * 
+     *
      * @param {string|Locale} locale - The locale to get data for
      * @param {Array.<string>} roots - Array of root directories to search
      * @param {string} basename - The basename of the data to load
@@ -153,7 +153,7 @@ class ParsedDataCache {
     /**
      * Common method to parse and cache .js file data
      * @private
-     * 
+     *
      * @param {string} rawData - The raw file content
      * @param {string} filePath - The path to the file
      * @param {string} root - The root directory for this data
@@ -175,7 +175,7 @@ class ParsedDataCache {
                         }
                     }
                 }
-                
+
                 return parsedData;
             }
         } catch (error) {
@@ -187,7 +187,7 @@ class ParsedDataCache {
     /**
      * Common method to parse and cache .json file data
      * @private
-     * 
+     *
      * @param {string} rawData - The raw file content
      * @param {string} filePath - The path to the file
      * @param {string} root - The root directory for this data
@@ -222,7 +222,7 @@ class ParsedDataCache {
     /**
      * Parse and cache hierarchical JSON file data
      * @private
-     * 
+     *
      * @param {string} rawData - The raw file content
      * @param {string} filePath - The path to the file
      * @param {string} root - The root directory for this data
@@ -232,7 +232,7 @@ class ParsedDataCache {
      */
     _parseAndCacheHierarchicalJsonFile(rawData, filePath, root, basename, locFile) {
         const dirPath = Path.dirname(locFile);
-        const hierarchicalLocale = (dirPath === '.') ? 'root' : dirPath.replace(/\//g, '-');            
+        const hierarchicalLocale = (dirPath === '.') ? 'root' : dirPath.replace(/\//g, '-');
         try {
             const parsedData = parseData(rawData, filePath) ?? null;
             this.dataCache.storeData(root, basename, hierarchicalLocale, parsedData);
@@ -246,7 +246,7 @@ class ParsedDataCache {
 
     /**
      * Parse and store unparsed data in memory as if it came from a .js file
-     * 
+     *
      * @param {Object|string|function} unparsedData - The unparsed data to process
      * @param {string} root - The root directory for this data
      * @returns {Object|undefined} The parsed data object, or undefined if parsing failed
@@ -258,7 +258,7 @@ class ParsedDataCache {
     /**
      * Check if we already have cached data for a locale and basename
      * @private
-     * 
+     *
      * @param {Locale} locale - The locale object
      * @param {Array.<string>} roots - Array of root directories
      * @param {string} basename - The basename to check
@@ -281,7 +281,7 @@ class ParsedDataCache {
     /**
      * Determine the appropriate file extension to try for JS files based on package.json
      * @private
-     * 
+     *
      * @param {string} root - The root directory
      * @returns {Array.<string>} Array of file extensions to try in order
      */
@@ -312,7 +312,7 @@ class ParsedDataCache {
     /**
      * Load data from .js files for a locale and basename
      * @private
-     * 
+     *
      * @param {Locale} locale - The locale object
      * @param {Array.<string>} roots - Array of root directories
      * @param {string} basename - The basename to load
@@ -322,7 +322,7 @@ class ParsedDataCache {
         // Try to load from .js files in each root
         for (const root of roots) {
             const extensions = this._getJsFileExtensions(root);
-            
+
             // First try to load the specific locale file
             for (const ext of extensions) {
                 try {
@@ -330,11 +330,11 @@ class ParsedDataCache {
                     const rawData = await this.fileCache.loadFile(jsPath);
                     if (rawData) {
                         const parsedData = this._parseAndCacheJsFile(rawData, jsPath, root);
-                        
+
                         if (parsedData) {
                             // Return the data for the specific basename and locale
                             const extractedData = this._extractBasenameData(parsedData, basename, locale);
-                            
+
                             if (extractedData) {
                                 return extractedData;
                             }
@@ -354,7 +354,7 @@ class ParsedDataCache {
     /**
      * Load data from .js files for a locale and basename synchronously
      * @private
-     * 
+     *
      * @param {Locale} locale - The locale object
      * @param {Array.<string>} roots - Array of root directories
      * @param {string} basename - The basename to load
@@ -373,11 +373,11 @@ class ParsedDataCache {
                         if (parsedData) {
                             // Return the data for the specific basename and locale
                             const extractedData = this._extractBasenameData(parsedData, basename, locale);
-                            
+
                             if (extractedData) {
                                 return extractedData;
                             }
-                            
+
                             // If we loaded the file but didn't find data for the requested locale,
                             // store null to indicate we checked
                             this.dataCache.storeData(root, basename, locale.getSpec(), null);
@@ -397,7 +397,7 @@ class ParsedDataCache {
     /**
      * Load data from individual .json files for a locale and basename
      * @private
-     * 
+     *
      * @param {Locale} locale - The locale object
      * @param {Array.<string> roots - Array of root directories
      * @param {string} basename - The basename to load
@@ -415,14 +415,10 @@ class ParsedDataCache {
                         // Return the data for the specific basename and locale
                         return this._extractBasenameData(parsedData, basename, locale);
                     }
-                    
-                    // If we loaded the file but didn't find data for the requested locale,
-                    // store null to indicate we checked
-                    this.dataCache.storeData(root, basename, locale.getSpec(), null);
-                } else {
-                    // File doesn't exist, store null to indicate we checked
-                    this.dataCache.storeData(root, basename, locale.getSpec(), null);
                 }
+                // If we loaded the file but didn't find data for the requested locale,
+                // or if the file doesn't exist, store null to indicate we checked
+                this.dataCache.storeData(root, basename, locale.getSpec(), null);
             } catch (error) {
                 // Continue to next root
             }
@@ -445,7 +441,7 @@ class ParsedDataCache {
                 // Continue to next root
             }
         }
-        
+
         // Return the data specifically for the requested locale/basename
         // Check all roots for cached data
         return this._getCachedDataForLocale(locale, roots, basename);
@@ -454,7 +450,7 @@ class ParsedDataCache {
     /**
      * Load data from individual .json files for a locale and basename synchronously
      * @private
-     * 
+     *
      * @param {Locale} locale - the locale object
      * @param {Array.<string>} roots - Array of root directories
      * @param {string} basename - The basename to load
@@ -472,14 +468,10 @@ class ParsedDataCache {
                         // Return the data for the specific basename and locale
                         return this._extractBasenameData(parsedData, basename, locale);
                     }
-                    
-                    // If we loaded the file but didn't find data for the requested locale,
-                    // store null to indicate we checked
-                    this.dataCache.storeData(root, basename, locale.getSpec(), null);
-                } else {
-                    // File doesn't exist, store null to indicate we checked
-                    this.dataCache.storeData(root, basename, locale.getSpec(), null);
                 }
+                // If we loaded the file but didn't find data for the requested locale,
+                // or if the file doesn't exist, store null to indicate we checked
+                this.dataCache.storeData(root, basename, locale.getSpec(), null);
             } catch (error) {
                 // Continue to next root
             }
@@ -502,7 +494,7 @@ class ParsedDataCache {
                 // Continue to next root
             }
         }
-        
+
         // Return the data specifically for the requested locale/basename
         // Check all roots for cached data
         return this._getCachedDataForLocale(locale, roots, basename);
@@ -511,7 +503,7 @@ class ParsedDataCache {
     /**
      * Extract data for a specific basename from parsed data
      * @private
-     * 
+     *
      * @param {Object} parsedData - The parsed data object
      * @param {string} basename - The basename to extract
      * @param {Locale} locale - The locale object to get data for
@@ -520,16 +512,18 @@ class ParsedDataCache {
     _extractBasenameData(parsedData, basename, locale) {
         // Only return data for the exact requested locale - no fallbacks
         const localeSpec = locale.getSpec();
-        
+
         if (parsedData[localeSpec] && parsedData[localeSpec][basename]) {
             return parsedData[localeSpec][basename];
         }
-        
+
         return undefined;
     }
 
     /**
-     * Get cached data for a specific root, basename, and locale without loading from files
+     * Get cached data for a specific root, basename, and locale without loading from files.
+     * If the code has never attempted to load the data or if it did not find the data,
+     * this method will return undefined to indicate that the data is not available.
      *
      * @param {string} root - The root directory
      * @param {string} basename - The basename of the data
@@ -544,11 +538,16 @@ class ParsedDataCache {
         if (locale === null) {
             locale = 'root';
         }
-        return this.dataCache.getData(root, basename, locale);
+        const data = this.dataCache.getData(root, basename, locale);
+        // If the data is null, it indicates that the code attempted to load the data but it was not found
+        // If the data is undefined, it indicates that the code did not attempt to load the data
+        // In either case, the data is not available and cannot be returned
+        return data || undefined;
     }
 
     /**
-     * Check if parsed data exists for a specific root, basename, and locale
+     * Check if parsed data exists for a specific root, basename, and locale.
+     * If the underlying files do not exist, it will return false.
      *
      * @param {string} root - The root directory
      * @param {string} basename - The basename of the data
@@ -564,7 +563,11 @@ class ParsedDataCache {
             locale = 'root';
         }
         const data = this.dataCache.getData(root, basename, locale);
-        return data !== undefined;
+
+        // If the data is null, it indicates that the code attempted to load the data but it was not found
+        // If the data is undefined, it indicates that the code did not attempt to load the data
+        // In either case, the data is not available and cannot be returned
+        return data !== undefined && data !== null;
     }
 
     /**
@@ -612,11 +615,11 @@ class ParsedDataCache {
     }
 
     /**
-     * Get the count of cached parsed data entries
-     * 
-     * @returns {number} The number of cached parsed data entries
+     * Get the count of cached entries (including null entries for failed attempts)
+     *
+     * @returns {number} The number of cached entries
      */
-    getParsedDataCount() {
+    getCachedEntryCount() {
         return this.dataCache.size();
     }
 }

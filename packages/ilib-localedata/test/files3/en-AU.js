@@ -1,23 +1,30 @@
 export default function getLocaleData() {
     return {
-    "root": {
-        "address": {
-            "region": "Province",
-            "postalCode": "Postal Code",
-            "country": "Country"
+        "root": {
+            "address": {
+                "region": "Province",
+                "postalCode": "Post Code",
+                "country": "Country",
+                "locality": "City"
+            },
+            "datefmt": {
+                "short": "MM/dd/yyyy",
+                "medium": "MMM dd, yyyy",
+                "long": "MMMM dd, yyyy"
+            }
         },
-        "datefmt": {
-            "short": "MM/dd/yyyy",
-            "medium": "MMM dd, yyyy",
-            "long": "MMMM dd, yyyy"
+        "en": {
+            "address": {
+                "postalCode": "Postal Code",
+                "country": "Country",
+                "locality": "Town"
+            }
+        },
+        "en-AU": {
+            "address": {
+                "region": "State",
+                "locality": "Township"
+            }
         }
-    },
-    "en": {
-        "address": {
-            "region": "Region",
-            "postalCode": "Postal Code",
-            "country": "Country"
-        }
-    }
-};
+    };
 };

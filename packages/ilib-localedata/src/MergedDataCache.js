@@ -24,13 +24,13 @@ import Locale from 'ilib-locale';
 
 /**
  * MergedDataCache manages parsed locale data and merged locale data caching.
- * 
+ *
  * This class operates at two levels:
  * 1. Parsed Data Cache: Uses ParsedDataCache to store parsed data separated by locale and basename
  * 2. Merged Data Cache: Stores the final merged result for a specific locale
- * 
- * The parsed data cache allows sharing of common locale data (e.g., "root" and "en" 
- * data shared between "en-US" and "en-GB"), while the merged data cache avoids 
+ *
+ * The parsed data cache allows sharing of common locale data (e.g., "root" and "en"
+ * data shared between "en-US" and "en-GB"), while the merged data cache avoids
  * re-merging the same locale data multiple times.
  */
 class MergedDataCache {
@@ -46,7 +46,7 @@ class MergedDataCache {
         this.loader = loader;
         this.dataCache = DataCache.getDataCache();
         this.parsedDataCache = new ParsedDataCache(loader);
-        
+
         // Set merge options with defaults
         this.mostSpecific = options.mostSpecific || false;
         this.returnOne = options.returnOne || false;
@@ -77,7 +77,7 @@ class MergedDataCache {
 
         // Create cache key for merged data
         const mergedCacheKey = this._createMergedCacheKey(loc, roots, basename);
-        
+
         // Check if we already have cached merged data
         const cachedMergedData = this.dataCache.getFileData(mergedCacheKey);
         if (cachedMergedData) {
@@ -95,18 +95,18 @@ class MergedDataCache {
         // Create a promise for this loading operation and cache it permanently
         const loadPromise = this._loadMergedDataInternal(loc, roots, basename, mergedCacheKey);
         this.dataCache.setFilePromise(mergedCacheKey, loadPromise);
-        
+
         // Await the promise and return its result
         return await loadPromise;
     }
 
     /**
      * Load merged locale data synchronously.
-     * 
+     *
      * If the data is loaded successfully, it will be cached. This method will
      * check the cache for the data and return it if it is found. If not, it will
      * load the data synchronously and cache it before returning it.
-     * 
+     *
      * @param {string|Locale} locale - The locale to load data for
      * @param {Array.<string>} roots - Array of root directories to search
      * @param {string} basename - The basename of the data to load
@@ -168,7 +168,24 @@ class MergedDataCache {
 
         // Create cache key and check if data exists
         const mergedCacheKey = this._createMergedCacheKey(loc, roots, basename);
-        return this.dataCache.getFileData(mergedCacheKey) !== undefined;
+        if (this.dataCache.getFileData(mergedCacheKey) !== undefined) {
+            return true;
+        }
+
+        // If no merged data is cached, check if parsed data exists for this basename
+        // This handles the case where ensureLocale loaded a JS file with multiple basenames
+        const subLocales = this._getSublocales(loc);
+        for (const root of roots) {
+            for (const sublocale of subLocales) {
+                const localeObj = sublocale === 'root' ? null : new Locale(sublocale);
+                const data = this.dataCache.getData(root, basename, localeObj);
+                if (data !== undefined) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -202,10 +219,10 @@ class MergedDataCache {
      *     }
      *   }
      * }
-     * 
+     *
      * This method defers to ParsedDataCache for data interpretation and storage.
      * No merging is performed - that will happen later when loadMergedData is called.
-     * 
+     *
      * @param {Object} data - The locale data in the above format
      * @param {string} root - The root from which this data was loaded
      */
@@ -225,7 +242,7 @@ class MergedDataCache {
     async _loadMergedDataInternal(loc, roots, basename, mergedCacheKey) {
         // Get the list of sublocales for this locale
         const subLocales = this._getSublocales(loc);
-        
+
         // Try to load from .js files first (pre-assembled data)
         let jsDataFound = false;
         for (let i = 0; i < roots.length; i++) {
@@ -246,12 +263,12 @@ class MergedDataCache {
         if (jsDataFound) {
             // Store null for any sublocales that don't have data
             this._storeNullForMissingSublocales(subLocales, roots, basename);
-            
+
             const mergedData = this._mergeParsedData(subLocales, basename, roots);
-            
+
             // Store the merged result for the requested locale
             this.dataCache.setFileData(mergedCacheKey, mergedData);
-            
+
             // Return the merged data directly
             return mergedData;
         }
@@ -262,13 +279,13 @@ class MergedDataCache {
         if (parsedData) {
             // Store null for any sublocales that don't have data
             this._storeNullForMissingSublocales(subLocales, roots, basename);
-            
+
             // Merge the data using the instance's merge preferences
             const mergedData = this._mergeParsedData(subLocales, basename, roots);
-            
+
             // Cache the merged result
             this.dataCache.setFileData(mergedCacheKey, mergedData);
-            
+
             // Return the merged data directly
             return mergedData;
         }
@@ -278,10 +295,10 @@ class MergedDataCache {
 
         // Merge the data using the instance's merge preferences
         const mergedData = this._mergeParsedData(subLocales, basename, roots);
-        
+
         // Cache the merged result
         this.dataCache.setFileData(mergedCacheKey, mergedData);
-        
+
         // Return the merged data directly
         return mergedData;
     }
@@ -293,7 +310,7 @@ class MergedDataCache {
     _loadMergedDataSyncInternal(loc, roots, basename, mergedCacheKey) {
         // Get the list of sublocales for this locale
         const subLocales = this._getSublocales(loc);
-        
+
         // Try to load from .js files first (pre-assembled data)
         let jsDataFound = false;
         for (let i = 0; i < roots.length; i++) {
@@ -314,12 +331,12 @@ class MergedDataCache {
         if (jsDataFound) {
             // Store null for any sublocales that don't have data
             this._storeNullForMissingSublocales(subLocales, roots, basename);
-            
+
             const mergedData = this._mergeParsedData(subLocales, basename, roots);
-            
+
             // Store the merged result for the requested locale
             this.dataCache.setFileData(mergedCacheKey, mergedData);
-            
+
             // Return the merged data directly
             return mergedData;
         }
@@ -342,10 +359,10 @@ class MergedDataCache {
 
         // Merge the data using the instance's merge preferences
         const mergedData = this._mergeParsedData(subLocales, basename, roots);
-        
+
         // Store the merged result for the requested locale
         this.dataCache.setFileData(mergedCacheKey, mergedData);
-        
+
         // Return the merged data directly
         return mergedData;
     }
@@ -490,22 +507,22 @@ class MergedDataCache {
     _getSublocales(locale) {
         const sublocales = ["root"];
         const spec = locale.getSpec();
-        
+
         if (spec === "root") {
             return sublocales;
         }
-        
+
         // Add language part
         const language = locale.getLanguage();
         if (language && language !== "root") {
             sublocales.push(language);
         }
-        
+
         // Add full locale spec if different from language
         if (spec !== language) {
             sublocales.push(spec);
         }
-        
+
         return sublocales;
     }
 
@@ -517,6 +534,52 @@ class MergedDataCache {
         const localeSpec = locale.getSpec();
         const rootsHash = roots.join('|');
         return `merged:${localeSpec}:${basename}:${rootsHash}`;
+    }
+
+    /**
+     * Cache merged data for all basenames found in JS files
+     * @private
+     *
+     * @param {Array.<string>} subLocales - Array of sublocale identifiers
+     * @param {Array.<string>} roots - Array of root directories
+     */
+    _cacheAllBasenamesFromJsFiles(subLocales, roots) {
+        // Get all basenames that have been cached in ParsedDataCache
+        const allBasenames = new Set();
+
+        for (const root of roots) {
+            for (const sublocale of subLocales) {
+                // Get all basenames for this root and sublocale
+                const basenames = this.dataCache.getBasenamesForLocale(root, sublocale);
+                if (basenames) {
+                    basenames.forEach(basename => allBasenames.add(basename));
+                }
+            }
+        }
+
+        // Cache merged data for each basename
+        for (const basename of allBasenames) {
+            const mergedData = this._mergeParsedData(subLocales, basename, roots);
+            if (mergedData && Object.keys(mergedData).length > 0) {
+                // Create cache key for this basename
+                const cacheKey = this._createMergedCacheKeyForBasename(subLocales, roots, basename);
+                this.dataCache.setFileData(cacheKey, mergedData);
+            }
+        }
+    }
+
+    /**
+     * Create cache key for merged data for a specific basename
+     * @private
+     *
+     * @param {Array.<string>} subLocales - Array of sublocale identifiers
+     * @param {Array.<string>} roots - Array of root directories
+     * @param {string} basename - The basename
+     * @returns {string} The cache key
+     */
+    _createMergedCacheKeyForBasename(subLocales, roots, basename) {
+        const rootsHash = JSUtils.hashCode(roots.join(','));
+        return `merged:${subLocales.join(',')}:${basename}:${rootsHash}`;
     }
 }
 
