@@ -39,6 +39,9 @@ export default class MockLoader extends Loader {
      */
     constructor(options) {
         super(options);
+
+        // start off in async mode even though this mock loader supports sync
+        this.sync = false;
     }
 
     getPlatforms() {
@@ -55,6 +58,9 @@ export default class MockLoader extends Loader {
 
     loadFile(pathName, options) {
         let { sync } = options || {};
+        if (typeof(sync) === "boolean" && sync && !this.sync) {
+            throw new Error("This loader does not support synchronous loading of data.");
+        }
         sync = typeof(sync) === "boolean" ? sync : this.sync;
 
         let text = pathName && pathName.length ? pathName : undefined;

@@ -34,6 +34,23 @@ describe("testNodeLoader", () => {
         expect(loader.supportsSync()).toBeTruthy();
     });
 
+    test("LoaderSetAsyncMode", () => {
+        expect.assertions(5);
+        var loader = LoaderFactory();
+        loader.setAsyncMode();
+        expect(loader.getSyncMode()).toBe(false);
+        expect(loader.supportsSync()).toBe(true);
+
+        expect(() => {
+            return loader.loadFile("./test/files/test.json", {sync: true});
+        }).toThrow("This loader does not support synchronous loading of data.");
+
+        // set it back to clean up
+        loader.setSyncMode();
+        expect(loader.getSyncMode()).toBe(true);
+        expect(loader.supportsSync()).toBe(true);
+    });
+
     test("LoadFileSync", () => {
         expect.assertions(1);
 
@@ -98,6 +115,9 @@ describe("testNodeLoader", () => {
 
         var loader = LoaderFactory();
 
+        // have to set async mode to test this because the factory sends you back a
+        // singleton and the other tests have messed with the mode already
+        loader.setAsyncMode();
         var promise = loader.loadFile("./test/files/test.json");
         return promise.then((content) => {
             expect(content).toBe(`{
@@ -115,6 +135,7 @@ describe("testNodeLoader", () => {
 
         var loader = LoaderFactory();
 
+        loader.setSyncMode();
         var content = loader.loadFiles([
             "./test/files/test.json",
             "./test/files/a/asdf.json"
@@ -504,9 +525,9 @@ describe("testNodeLoader", () => {
         var loader = LoaderFactory();
         loader.setAsyncMode();
 
-        var content = loader.loadFile("./test/files/asdf.mjs", {sync: true});
-        // should not throw an exception
-        expect(content).toBeUndefined();
+        expect(() => {
+            return loader.loadFile("./test/files/asdf.mjs", {sync: true});
+        }).toThrow("This loader does not support synchronous loading of data.");
     });
 
     test("loading a unknown type of js file synchronously which does not exist", () => {
