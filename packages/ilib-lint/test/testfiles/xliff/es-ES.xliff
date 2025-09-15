@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="es-ES">
-  <file id="home_f1" original="home">
-    <group id="home_g1" name="javascript">
-      <unit id="home_1">
+<xliff version="2.0" srcLang="en-US" trgLang="es-ES" xmlns:l="http://ilib-js.com/loctool">
+  <file original="foo/bar/asdf.js" l:project="webapp">
+    <group id="group_1" name="plaintext">
+      <unit id="1" type="res:string" l:datatype="plaintext">
         <segment>
           <source>App</source>
           <target>aplicación</target>
