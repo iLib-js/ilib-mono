@@ -29,6 +29,7 @@ import Location from './Location.js';
 import walk from './DirectoryWalk.js';
 import {convertPluralResToICU, convertICUToPluralRes} from './ResourceConvert.js';
 import escaperFactory from './EscaperFactory.js';
+import XliffFactory from './XliffFactory.js';
 
 import {
     formatPath,
@@ -74,5 +75,6 @@ export {
     convertPluralResToICU,
     convertICUToPluralRes,
     escaperFactory,
-    getLanguagePluralCategories
+    getLanguagePluralCategories,
+    XliffFactory
 };

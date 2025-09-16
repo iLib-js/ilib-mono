@@ -25,6 +25,7 @@ import ResourceArray from './ResourceArray.js';
 import ResourcePlural from './ResourcePlural.js';
 import TranslationSet from './TranslationSet.js';
 import Location from './Location.js';
+import XliffFactory from './XliffFactory.js';
 
 import { isEmpty } from './utils.js';
 
@@ -94,7 +95,7 @@ class ResourceXliff {
         }
         this.sourceLocale = this.sourceLocale || "en-US";
 
-        this.xliff = new Xliff(options);
+        this.xliff = XliffFactory(options);
         this.ts = new TranslationSet(this.sourceLocale);
     }
 
