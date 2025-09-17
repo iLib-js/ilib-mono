@@ -7,7 +7,8 @@ module.exports = function getLocaleData() {
             },
             "foo": {
                 "m": "n de",
-                "o": "p de"
+                "o": "p de",
+                "q": "r de"
             }
         }
     };

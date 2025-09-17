@@ -77,8 +77,9 @@ class FileCache {
             return promise;
         }
 
-        // Start loading the file
-        const loadPromise = this.loader.loadFile(filePath)
+        // Start loading the file. In this case, we don't want to use "await"
+        // because we want to cache the promise itself
+        const loadPromise = this.loader.loadFile(filePath, { sync: false })
             .then(data => {
                 if (data) {
                     // Store successful load in DataCache
@@ -122,15 +123,13 @@ class FileCache {
             return existingData;
         }
 
-        // Check if the loader supports sync operations
-        if (!this.loader.supportsSync()) {
-            this.logger.warn(`Loader does not support sync operations for file ${filePath}`);
-            // Store null to indicate we attempted but can't load
-            this.dataCache.setFileData(filePath, null);
-            return undefined;
-        }
-
         try {
+            // Check if the loader supports sync operations
+            if (!this.loader.getSyncMode()) {
+                this.logger.warn(`Loader does not support sync operations for file ${filePath}`);
+                throw new Error(`Loader does not support sync operations for file ${filePath}`);
+            }
+
             // Attempt to load the file synchronously
             const data = this.loader.loadFile(filePath, { sync: true });
 
@@ -147,7 +146,7 @@ class FileCache {
             // Store failed load in DataCache
             this.dataCache.setFileData(filePath, null);
             this.logger.warn(`Failed to load file ${filePath} synchronously: ${error.message}`);
-            return undefined;
+            throw error;
         }
     }
 
@@ -162,6 +161,16 @@ class FileCache {
             this.dataCache.removeFileData(filePath);
             this.dataCache.removeFilePromise(filePath);
         }
+    }
+
+    /**
+     * Get the cached data for a file.
+     * @param {string} filePath - The path to the file to get the cached data for
+     * @returns {Object|null|undefined} The cached data or null if failed/no data, undefined
+     * if the code has not attempted to load the file yet
+     */
+    getCachedData(filePath) {
+        return this.dataCache.getFileData(filePath);
     }
 
     /**

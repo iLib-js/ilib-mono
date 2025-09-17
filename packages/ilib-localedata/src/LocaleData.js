@@ -263,7 +263,7 @@ class LocaleData {
      * mode by default. The loader for the platform must support synchronous operation for this to work.
      * @param {Object} [options.mergeOptions] - options for merging locale data
      * @param {boolean} [options.mergeOptions.mostSpecific] - if true, return the most specific data available
-     * @param {boolean} [options.mergeOptions.returnOne] - if true, return only one result instead of merging
+     * @param {boolean} [options.mergeOptions.returnOne] - if true, return only the most locale-specific data available instead of merging
      * @param {boolean} [options.mergeOptions.crossRoots] - if true, merge data across all roots
      * @constructor
      */
@@ -368,7 +368,7 @@ class LocaleData {
      * 
      * The merging is done according to the flags specified in the parameters. The default is to merge the data
      * for all the sublocales in order. If the `mostSpecific` flag is true, only the most specific locale data is
-     * returned. If the `returnOne` flag is true, only the first file found is returned. If the `crossRoots` flag
+     * returned. If the `returnOne` flag is true, only the most locale-specific file found is returned. If the `crossRoots` flag
      * is true, the data is merged across all the roots. Once the data is merged, it is returned as a single object.
      * It is also cached in the cache for future use so that future calls to this method for the same locale and
      * basename will not need to load or merge the data again.
@@ -386,7 +386,7 @@ class LocaleData {
      * @param {string} params.basename the basename of the data to load
      * @param {boolean} [params.sync] whether to load the data synchronously or asynchronously
      * @param {boolean} [params.mostSpecific] if true, only return the most specific locale data
-     * @param {boolean} [params.returnOne] if true, only return the first file found
+     * @param {boolean} [params.returnOne] if true, only return the data for the most locale-specific file found
      * @param {boolean} [params.crossRoots] if true, merge data across all roots. Default is false.
      * @returns {Object|Promise.<Object>} the locale data if sync is true, or a promise to the locale data if sync is false
      * @throws {Error} if the data could not be loaded

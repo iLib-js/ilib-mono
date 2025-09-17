@@ -30,6 +30,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         // Clear any existing data cache
         DataCache.clearDataCache();
         loader = LoaderFactory();
+        loader.setAsyncMode();
         fileCache = new FileCache(loader);
         dataCache = DataCache.getDataCache();
     });
@@ -45,6 +46,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
 
             expect(fileCache.size()).toBe(0);
 
+            // load from the same file multiple times
             const filePath = 'test/files/fr/localeinfo.json';
             const result1 = await fileCache.loadFile(filePath);
             const result2 = await fileCache.loadFile(filePath);
@@ -54,51 +56,16 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect(fileCache.size()).toBe(1); // Promise remains in cache as marker
         });
 
-        test('should load data from multiple different files', async () => {
-            expect.assertions(4);
 
-            expect(fileCache.size()).toBe(0);
+        test('should store null for failed loads', async () => {
+            expect.assertions(2);
 
-            const filePath1 = 'test/files/file1.json';
-            const filePath2 = 'test/files/file2.json';
-
-            const result1 = await fileCache.loadFile(filePath1);
-            const result2 = await fileCache.loadFile(filePath2);
-
-            expect(typeof result1).toBe('string');
-            expect(typeof result2).toBe('string');
-            expect(result1).not.toBe(result2);
+            const filePath = 'test/files/nonexistent/file.json';
+            const result = await fileCache.loadFile(filePath);
+            expect(result).toBeUndefined();
+            expect(fileCache.attemptCount()).toBe(1);
         });
 
-        test('should load data from the same file multiple times', async () => {
-            expect.assertions(4);
-
-            expect(fileCache.size()).toBe(0);
-
-            const filePath = 'test/files/fr/localeinfo.json';
-            const result1 = await fileCache.loadFile(filePath);
-            const result2 = await fileCache.loadFile(filePath);
-
-            expect(typeof result1).toBe('string');
-            expect(result1).toBe(result2);
-            expect(fileCache.size()).toBe(1);
-        });
-
-        test('should load data from the same file multiple times even after the promise has been resolved', async () => {
-            expect.assertions(5);
-
-            expect(fileCache.size()).toBe(0);
-
-            const filePath = 'test/files/fr/localeinfo.json';
-            const result1 = await fileCache.loadFile(filePath);
-            expect(typeof result1).toBe('string');
-            expect(fileCache.size()).toBe(1);
-
-            // Load again after the first promise has resolved
-            const result2 = await fileCache.loadFile(filePath);
-            expect(result2).toBe(result1);
-            expect(fileCache.size()).toBe(1);
-        });
 
         test('should handle multiple concurrent requests for the same file', async () => {
             expect.assertions(6);
@@ -149,12 +116,13 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         });
 
         test('should handle file loading errors gracefully', async () => {
-            expect.assertions(2);
+            expect.assertions(3);
 
             const filePath = 'nonexistent/file.json';
             const result = await fileCache.loadFile(filePath);
 
             expect(result).toBeUndefined();
+            expect(fileCache.getCachedData(filePath)).toBeNull();
             expect(fileCache.attemptCount()).toBe(1);
         });
 
@@ -167,6 +135,31 @@ describe('FileCache Async Tests (Node and Browser)', () => {
 
             expect(result).toBeUndefined();
             expect(fileCache.attemptCount()).toBe(1);
+        });
+
+        test('should handle loader errors in catch block', async () => {
+            expect.assertions(3);
+            
+            const originalLoadFile = fileCache.loader.loadFile;
+            try {
+                // Create a custom loader that returns a rejected promise
+                fileCache.loader.loadFile = function(filePath, options) {
+                    return Promise.reject(new Error('File system error'));
+                };
+                
+                const filePath = 'test/error/file.json';
+                const result = await fileCache.loadFile(filePath);
+                
+                expect(result).toBeUndefined();
+                expect(fileCache.getCachedData(filePath)).toBeNull();
+                expect(fileCache.attemptCount()).toBe(1);
+            } catch (error) {
+                // ignore
+                console.log(error);
+            } finally {
+                // Restore original method
+                fileCache.loader.loadFile = originalLoadFile;
+            }
         });
     });
 

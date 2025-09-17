@@ -18,7 +18,7 @@
  */
 
 import FileCache from '../src/FileCache.js';
-import LoaderFactory from 'ilib-loader';
+import LoaderFactory, { Loader } from 'ilib-loader';
 import DataCache from '../src/DataCache.js';
 
 describe('FileCache Sync Tests (Node Only)', () => {
@@ -30,6 +30,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         // Clear any existing data cache
         DataCache.clearDataCache();
         loader = LoaderFactory();
+        loader.setSyncMode();
         fileCache = new FileCache(loader);
         dataCache = DataCache.getDataCache();
     });
@@ -47,44 +48,15 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(fileCache.dataCache).toBeDefined();
             expect(fileCache.dataCache).toBe(dataCache);
         });
-    });
 
-    describe('loadFile (sync behavior)', () => {
-        test('should load a file and return a promise', () => {
-            expect.assertions(3);
+        test('should throw if we attempt to create a FileCache instance with an async-only loader and then call the loadFileSync method', async () => {
+            expect.assertions(1);
 
-            expect(fileCache.size()).toBe(0);
+            let loader = LoaderFactory("nodejs");
+            loader.setAsyncMode();
+            const fileCache = new FileCache(loader);
 
-            const filePath = 'test/files/fr/localeinfo.json';
-            const promise = fileCache.loadFile(filePath);
-
-            expect(promise).toBeInstanceOf(Promise);
-            expect(fileCache.size()).toBe(1);
-        });
-
-        test('should return the same promise for the same file path when called multiple times', () => {
-            expect.assertions(3);
-
-            expect(fileCache.size()).toBe(0);
-
-            const filePath = 'test/files/fr/localeinfo.json';
-            const promise1 = fileCache.loadFile(filePath);
-            const promise2 = fileCache.loadFile(filePath);
-
-            expect(promise1).toBe(promise2);
-            expect(fileCache.size()).toBe(1);
-        });
-
-        test('should cache the promise and return it for subsequent calls', () => {
-            expect.assertions(2);
-
-            expect(fileCache.size()).toBe(0);
-
-            const filePath = 'test/files/fr/localeinfo.json';
-            fileCache.loadFile(filePath);
-            fileCache.loadFile(filePath);
-
-            expect(fileCache.size()).toBe(1);
+            expect(() => fileCache.loadFileSync('test/files/fr/localeinfo.json')).toThrow();
         });
     });
 
@@ -109,6 +81,15 @@ describe('FileCache Sync Tests (Node Only)', () => {
 
             expect(result).toBeUndefined();
             expect(fileCache.attemptCount()).toBe(1);
+        });
+
+        test('should store null for failed loads', () => {
+            expect.assertions(2);
+
+            const filePath = 'test/files/nonexistent/file.json';
+            const result = fileCache.loadFileSync(filePath);
+            expect(result).toBeUndefined();
+            expect(fileCache.getCachedData(filePath)).toBeNull();
         });
 
         test('should return cached result for previously loaded files', () => {
@@ -136,6 +117,40 @@ describe('FileCache Sync Tests (Node Only)', () => {
 
             expect(result).toBeUndefined();
             expect(fileCache.attemptCount()).toBe(1);
+        });
+
+        test('the right data is cached after a successful load', () => {
+            expect.assertions(2);
+
+            const filePath = 'test/files/fr/localeinfo.json';
+            const result = fileCache.loadFileSync(filePath);
+            expect(result).toBeDefined();
+
+            expect(fileCache.getCachedData(filePath)).toBe(result);
+        });
+
+        test('should return the same data from the cache asynchronously after loading synchronously', async () => {
+            expect.assertions(2);
+
+            const filePath = 'test/files/fr/localeinfo.json';
+            const result = fileCache.loadFileSync(filePath);
+            expect(result).toBeDefined();
+
+            // should have been loaded and cached by the time we get here so the promise should resolve
+            // immediately
+            const result2 = await fileCache.loadFile(filePath);
+            expect(result2).toBe(result);
+        });
+
+        test('should return the same data from the cache synchronously after loading asynchronously', async () => {
+            expect.assertions(2);
+
+            const filePath = 'test/files/fr/localeinfo.json';
+            const result = await fileCache.loadFile(filePath);
+            expect(result).toBeDefined();
+
+            const result2 = fileCache.loadFileSync(filePath);
+            expect(result2).toBe(result);
         });
     });
 

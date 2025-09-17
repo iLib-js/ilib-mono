@@ -28,6 +28,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
     beforeEach(() => {
         loader = LoaderFactory();
+        loader.setSyncMode(); // Enable sync mode for tests that need it
         parsedDataCache = new ParsedDataCache(loader);
     });
 
@@ -61,7 +62,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
                 expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(false);
                 expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en')).toBe(true);
-                expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'root')).toBe(true);
+                expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(true);
                 expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
                 // ParsedDataCache should return undefined for en-US since it doesn't exist in the file
                 // The file only has root and en data, not en-US data
@@ -79,7 +80,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
                 expect(parsedDataCache.hasParsedData('./test/files3', 'datefmt', 'en-GB')).toBe(false);
                 expect(parsedDataCache.hasParsedData('./test/files3', 'datefmt', 'en')).toBe(false);
-                expect(parsedDataCache.hasParsedData('./test/files3', 'datefmt', 'root')).toBe(true);
+                expect(parsedDataCache.hasParsedData('./test/files3', 'datefmt', null)).toBe(true);
                 expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
                 // ParsedDataCache should return undefined for en-GB since it doesn't exist in the file
                 // The file only has root and en data, not en-GB data
@@ -88,7 +89,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
                 // make sure en data is cached as null since it doesn't exist in the file
                 expect(parsedDataCache.hasParsedData('./test/files3', 'datefmt', 'en')).toBe(false);
                 // make sure root data is cached since it exists in the file
-                expect(parsedDataCache.hasParsedData('./test/files3', 'datefmt', 'root')).toBe(true);
+                expect(parsedDataCache.hasParsedData('./test/files3', 'datefmt', null)).toBe(true);
             });
 
             test('should load and cache data from .js files with only root data asynchronously', async () => {
@@ -102,7 +103,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
                 expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'en-GB')).toBe(false);
                 expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'en')).toBe(true);
-                expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'root')).toBe(true);
+                expect(parsedDataCache.hasParsedData('./test/files3', 'address', null)).toBe(true);
                 expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
                 // ParsedDataCache should return undefined for en-GB since it doesn't exist in the file
                 // The file only has root and en data, not en-GB data
@@ -125,7 +126,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
                 });
                 expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'en-AU')).toBe(true);
                 expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'en')).toBe(true);
-                expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'root')).toBe(true);
+                expect(parsedDataCache.hasParsedData('./test/files3', 'address', null)).toBe(true);
                 expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
 
                 const result2 = parsedDataCache.getCachedData(roots, basename, locale.getSpec());
@@ -135,7 +136,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
             test("should return nothing if the locale's .js file is not found", async () => {
                 expect.assertions(5);
-
+            
                 const locale = new Locale('kk-KZ');
                 const roots = ['./test/files3'];
                 const basename = 'address';
@@ -144,8 +145,8 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
                 expect(result).toBeUndefined();
                 expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'kk-KZ')).toBe(false);
                 expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'kk')).toBe(false);
-                expect(parsedDataCache.hasParsedData('./test/files3', 'address', 'root')).toBe(false);
-                expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
+                expect(parsedDataCache.hasParsedData('./test/files3', 'address', null)).toBe(false);
+                expect(parsedDataCache.getCachedEntryCount()).toBe(0);
             });
 
             test("should return the cached sublocale data on the second call", async () => {
@@ -159,7 +160,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
                 expect(result).toBeUndefined();
                 expect(parsedDataCache.hasParsedData('./test/files3', 'foo', 'en-US')).toBe(false);
                 expect(parsedDataCache.hasParsedData('./test/files3', 'foo', 'en')).toBe(true);
-                expect(parsedDataCache.hasParsedData('./test/files3', 'foo', 'root')).toBe(true);
+                expect(parsedDataCache.hasParsedData('./test/files3', 'foo', null)).toBe(true);
                 expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
 
                 const result2 = parsedDataCache.getCachedData(roots, basename, 'en');
@@ -169,7 +170,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
                     "m": "n en",
                     "o": "p en"
                 });
-                expect(parsedDataCache.getCachedEntryCount()).toBe(6); // 2 for the root, 2 for en, 2 for en-US
+                expect(parsedDataCache.getCachedEntryCount()).toBe(4); // 2 for the root, 2 for en
             });
         });
 
@@ -283,7 +284,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
                 const result = await parsedDataCache.getParsedData(locale, roots, basename);
 
                 expect(result).toBeUndefined();
-                expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0); // Should cache the attempted load
+                expect(parsedDataCache.getCachedEntryCount()).toBe(0);
             });
 
             test('should handle multiple roots and return data from the first available', async () => {
@@ -322,15 +323,15 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             expect.assertions(3);
 
             // First load some data to populate the cache
-            const locale = new Locale('root');
+            const locale = null;
             const roots = ['./test/files3'];
             const basename = 'info';
 
             const data = await parsedDataCache.getParsedData(locale, roots, basename);
 
-            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'root')).toBe(false);
-            expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
-            expect(data).toBeUndefined();
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(true);
+            expect(parsedDataCache.getCachedEntryCount()).toBe(2);
+            expect(data).toBeDefined();
         });
 
         test('should return false for non-existent parsed data', () => {
@@ -349,7 +350,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             await parsedDataCache.getParsedData(locale, roots, basename);
 
             expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(false);
-            expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
+            expect(parsedDataCache.getCachedEntryCount()).toBe(4);
         });
     });
 
@@ -466,8 +467,8 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             parsedDataCache.storeData(functionData, './test/files3');
 
             // The storeData method stores data with basename "memory.js"
-            expect(parsedDataCache.hasParsedData('./test/files3', 'memory.js', 'root')).toBe(true);
-            expect(parsedDataCache.getCachedData('./test/files3', 'memory.js', 'root')).toEqual({ a: 'b', c: 'd' });
+            expect(parsedDataCache.hasParsedData('./test/files3', 'memory.js', null)).toBe(true);
+            expect(parsedDataCache.getCachedData('./test/files3', 'memory.js', null)).toEqual({ a: 'b', c: 'd' });
         });
 
         test('should parse and store object-based data with default property correctly', () => {
@@ -486,8 +487,8 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
             parsedDataCache.storeData(objectData, './test/files3');
 
-            expect(parsedDataCache.hasParsedData('./test/files3', 'memory.js', 'root')).toBe(true);
-            expect(parsedDataCache.getCachedData('./test/files3', 'memory.js', 'root')).toEqual({ a: 'b', c: 'd' });
+            expect(parsedDataCache.hasParsedData('./test/files3', 'memory.js', null)).toBe(true);
+            expect(parsedDataCache.getCachedData('./test/files3', 'memory.js', null)).toEqual({ a: 'b', c: 'd' });
         });
 
         test('should parse and store object-based data with getLocaleData method correctly', () => {
@@ -508,8 +509,8 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
             parsedDataCache.storeData(objectData, './test/files3');
 
-            expect(parsedDataCache.hasParsedData('./test/files3', 'memory.js', 'root')).toBe(true);
-            expect(parsedDataCache.getCachedData('./test/files3', 'memory.js', 'root')).toEqual({ a: 'b', c: 'd' });
+            expect(parsedDataCache.hasParsedData('./test/files3', 'memory.js', null)).toBe(true);
+            expect(parsedDataCache.getCachedData('./test/files3', 'memory.js', null)).toEqual({ a: 'b', c: 'd' });
         });
 
         test('should parse and store string-based data correctly', () => {
@@ -526,8 +527,8 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
             parsedDataCache.storeData(stringData, './test/files3');
 
-            expect(parsedDataCache.hasParsedData('./test/files3', 'memory.js', 'root')).toBe(true);
-            expect(parsedDataCache.getCachedData('./test/files3', 'memory.js', 'root')).toEqual({ a: 'b', c: 'd' });
+            expect(parsedDataCache.hasParsedData('./test/files3', 'memory.js', null)).toBe(true);
+            expect(parsedDataCache.getCachedData('./test/files3', 'memory.js', null)).toEqual({ a: 'b', c: 'd' });
         });
 
         test('should handle invalid data gracefully', () => {
@@ -556,8 +557,8 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             expect(result).toBeUndefined();
 
             // Check that root data is stored
-            const rootInfo = parsedDataCache.getCachedData('./test/files3', 'info', 'root');
-            const rootFoo = parsedDataCache.getCachedData('./test/files3', 'foo', 'root');
+            const rootInfo = parsedDataCache.getCachedData('./test/files3', 'info', null);
+            const rootFoo = parsedDataCache.getCachedData('./test/files3', 'foo', null);
             expect(rootInfo).toEqual({"a": "b", "c": "d"});
             expect(rootFoo).toEqual({"m": "n", "o": "p"});
 
@@ -585,7 +586,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             expect(parsedDataCache.hasParsedData('./test/files4', 'info', 'en')).toBe(false);
 
             // Check that root data is not stored (this file exists but it is not loaded yet)
-            const rootData = parsedDataCache.getCachedData('./test/files4', 'info', 'root');
+            const rootData = parsedDataCache.getCachedData('./test/files4', 'info', null);
             expect(rootData).toBeUndefined(); // Root data won't be loaded unless specifically requested
         });
 
@@ -602,9 +603,9 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             expect(result).toBeUndefined();
             // multi data should be cached as null since it doesn't exist in the file
             expect(parsedDataCache.hasParsedData('./test/files4', 'info', 'multi')).toBe(false);
-            expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
+            expect(parsedDataCache.getCachedEntryCount()).toBe(0);
 
-            const rootData = parsedDataCache.getCachedData('./test/files4', 'info', 'root');
+            const rootData = parsedDataCache.getCachedData('./test/files4', 'info', null);
             expect(rootData).toBeUndefined(); // Root data won't be loaded unless specifically requested
         });
 
@@ -624,7 +625,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             expect(result).toBeUndefined();
 
             // Check that root data is stored
-            const rootInfo = parsedDataCache.getCachedData('./test/files3', 'info', 'root');
+            const rootInfo = parsedDataCache.getCachedData('./test/files3', 'info', null);
             expect(rootInfo).toEqual({"a": "b", "c": "d"});
         });
 
@@ -638,7 +639,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const result = await parsedDataCache.getParsedData(locale, roots, basename);
 
             expect(result).toBeUndefined();
-            expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0); // Should cache the attempted load
+            expect(parsedDataCache.getCachedEntryCount()).toBe(0);
         });
 
         test('should handle invalid .js file content correctly', async () => {
@@ -651,7 +652,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const result = await parsedDataCache.getParsedData(locale, roots, basename);
 
             expect(result).toBeUndefined();
-            expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0); // Should cache the attempted load
+            expect(parsedDataCache.getCachedEntryCount()).toBe(0);
         });
 
         test('should handle invalid JSON content correctly', async () => {
@@ -664,7 +665,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const result = await parsedDataCache.getParsedData(locale, roots, basename);
 
             expect(result).toBeUndefined();
-            expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0); // Should cache the attempted load
+            expect(parsedDataCache.getCachedEntryCount()).toBe(0);
         });
     });
 
@@ -683,7 +684,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             // Both calls should return undefined since en-US doesn't exist in the file
             expect(result1).toBeUndefined();
             expect(result2).toBeUndefined();
-            expect(parsedDataCache.getCachedEntryCount()).toBeGreaterThan(0);
+            expect(parsedDataCache.getCachedEntryCount()).toBe(4);
         });
 
         test('should cache data by locale and basename correctly', async () => {
@@ -696,7 +697,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             await parsedDataCache.getParsedData(locale, roots, basename);
 
             // Check that all basenames are stored for root
-            const rootInfo = parsedDataCache.getCachedData('./test/files3', 'info', 'root');
+            const rootInfo = parsedDataCache.getCachedData('./test/files3', 'info', null);
             expect(rootInfo).toEqual({"a": "b", "c": "d"});
 
             // Check that all basenames are stored for en
@@ -766,7 +767,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
             // Test with null locale
             const nullLocaleResult = await parsedDataCache.getParsedData(null, ['./test/files3'], 'info');
-            expect(nullLocaleResult).toBeUndefined();
+            expect(nullLocaleResult).toBeDefined();
 
             // Test with undefined locale
             const undefinedLocaleResult = await parsedDataCache.getParsedData(undefined, ['./test/files3'], 'info');
@@ -794,7 +795,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
             // Test with null locale
             const nullLocaleResult = parsedDataCache.getParsedDataSync(null, ['./test/files3'], 'info');
-            expect(nullLocaleResult).toBeUndefined();
+            expect(nullLocaleResult).toBeDefined();
 
             // Test with undefined locale
             const undefinedLocaleResult = parsedDataCache.getParsedDataSync(undefined, ['./test/files3'], 'info');
@@ -865,6 +866,210 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             // Test with empty string basename
             const emptyBasenameResult = parsedDataCache.getCachedData('./test/files3', '', 'en-US');
             expect(emptyBasenameResult).toBeUndefined();
+        });
+    });
+
+    describe('Edge Cases and Error Handling', () => {
+        test('should handle invalid JSON data gracefully (line 219)', async () => {
+            expect.assertions(1);
+
+            const locale = new Locale('fr-FR'); // Use different locale than en-US
+            const roots = ['./test/files3'];
+            const basename = 'invalid';
+
+            const result = await parsedDataCache.getParsedData(locale, roots, basename);
+            
+            // Should return undefined when JSON parsing fails (line 219)
+            expect(result).toBeUndefined();
+        });
+
+        test('should return correct extensions for ESM modules (line 298)', () => {
+            expect.assertions(1);
+
+            const extensions = parsedDataCache._getJsFileExtensions('./test/files3/esm-test');
+            
+            // Should return ['.cjs', '.js'] for ESM modules (line 298)
+            expect(extensions).toEqual(['.cjs', '.js']);
+        });
+
+        test('should handle invalid parameters in storeParsedData (lines 583, 587)', () => {
+            expect.assertions(4);
+
+            // Test with null root (line 583)
+            parsedDataCache.storeParsedData(null, 'info', 'en-US', { test: 'data' });
+            expect(parsedDataCache.hasParsedData(null, 'info', 'en-US')).toBe(false);
+
+            // Test with undefined basename (line 583)
+            parsedDataCache.storeParsedData('./test/files3', undefined, 'en-US', { test: 'data' });
+            expect(parsedDataCache.hasParsedData('./test/files3', undefined, 'en-US')).toBe(false);
+
+            // Test with null locale (line 587)
+            parsedDataCache.storeParsedData('./test/files3', 'info', null, { test: 'root data' });
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(true);
+
+            // Test with empty string root (line 583)
+            parsedDataCache.storeParsedData('', 'info', 'en-US', { test: 'data' });
+            expect(parsedDataCache.hasParsedData('', 'info', 'en-US')).toBe(false);
+        });
+
+        test('should handle invalid parameters in removeParsedData (lines 601, 605)', () => {
+            expect.assertions(4);
+
+            // First store some data to remove
+            parsedDataCache.storeParsedData('./test/files3', 'info', 'en-US', { test: 'data' });
+            parsedDataCache.storeParsedData('./test/files3', 'info', null, { test: 'root data' });
+
+            // Test with null root (line 601)
+            parsedDataCache.removeParsedData(null, 'info', 'en-US');
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(true); // Should still exist
+
+            // Test with undefined basename (line 601)
+            parsedDataCache.removeParsedData('./test/files3', undefined, 'en-US');
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(true); // Should still exist
+
+            // Test with null locale (line 605) - should remove root data
+            parsedDataCache.removeParsedData('./test/files3', 'info', null);
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(false);
+
+            // Test with empty string root (line 601)
+            parsedDataCache.removeParsedData('', 'info', 'en-US');
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(true); // Should still exist
+        });
+    });
+
+    describe('Multi-root data loading', () => {
+        test('should load data from all roots for a given locale', async () => {
+            expect.assertions(5);
+
+            // Load data for de-DE from multiple roots
+            const result = await parsedDataCache.getParsedData('de-DE', ['./test/files3', './test/files4'], 'foo');
+
+            expect(result).toBeDefined();
+            
+            // Verify data was loaded from files3
+            expect(parsedDataCache.hasParsedData('./test/files3', 'foo', 'de-DE')).toBe(true);
+            const files3Data = parsedDataCache.getCachedData('./test/files3', 'foo', 'de-DE');
+            expect(files3Data).toEqual({
+                "m": "n de",
+                "o": "p de",
+                "q": "r de"
+            });
+
+            // Verify data was loaded from files4
+            expect(parsedDataCache.hasParsedData('./test/files4', 'foo', 'de-DE')).toBe(true);
+            const files4Data = parsedDataCache.getCachedData('./test/files4', 'foo', 'de-DE');
+            expect(files4Data).toEqual({
+                "m": "n de-DE",
+                "o": "p de-DE"
+            });
+        });
+
+        test('should load data from all roots even when some roots have no data', async () => {
+            expect.assertions(5);
+
+            // Load data for en-US from multiple roots (files3 has data, files5 doesn't)
+            const result = await parsedDataCache.getParsedData('en-US', ['./test/files3', './test/files5'], 'info');
+
+            expect(result).toBeUndefined(); // should be undefined since en-US doesn't exist in the files5 root
+            
+            // Verify data was loaded from files3
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(false);
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en')).toBe(true);
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(true);
+            
+            // Verify files5 was checked but has no data
+            expect(parsedDataCache.hasParsedData('./test/files5', 'info', 'en-US')).toBe(false);
+        });
+
+        test('should load root data from all roots', async () => {
+            expect.assertions(5);
+debugger;
+            // Load root data from multiple roots
+            const result = await parsedDataCache.getParsedData(null, ['./test/files3', './test/files4'], 'info');
+
+            expect(result).toBeDefined();
+            
+            // Verify root data was loaded from files3
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(true);
+            const files3RootData = parsedDataCache.getCachedData('./test/files3', 'info', null);
+            expect(files3RootData).toEqual({
+                "a": "b root",
+                "c": "d root"
+            });
+
+            // Verify root data was loaded from files4
+            expect(parsedDataCache.hasParsedData('./test/files4', 'info', null)).toBe(true);
+            const files4RootData = parsedDataCache.getCachedData('./test/files4', 'info', null);
+            expect(files4RootData).toEqual({
+                "a": "b root",
+                "c": "d root"
+            });
+        });
+
+        test('should cache null for missing data in all roots', async () => {
+            expect.assertions(3);
+
+            // Try to load non-existent data from multiple roots
+            const result = await parsedDataCache.getParsedData('non-existent', ['./test/files3', './test/files4'], 'non-existent');
+
+            expect(result).toBeUndefined();
+            
+            expect(parsedDataCache.hasParsedData('./test/files3', 'non-existent', 'non-existent')).toBe(false);
+            expect(parsedDataCache.hasParsedData('./test/files4', 'non-existent', 'non-existent')).toBe(false);
+        });
+
+        test('should load different data formats from different roots', async () => {
+            expect.assertions(7);
+
+            // Load data from roots with different file formats (.js and .json)
+            const result = await parsedDataCache.getParsedData('en-US', ['./test/files3', './test/files4'], 'info');
+
+            expect(result).toBeDefined();
+            
+            // Verify .js file data from files3
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(false);
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en')).toBe(true);
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(true);
+            const jsData = parsedDataCache.getCachedData('./test/files3', 'info', 'en');
+            expect(jsData).toEqual({
+                "a": "b en",
+                "c": "d en"
+            });
+
+            // Verify .json file data from files4
+            expect(parsedDataCache.hasParsedData('./test/files4', 'info', 'en-US')).toBe(true);
+            const jsonData = parsedDataCache.getCachedData('./test/files4', 'info', 'en-US');
+            expect(jsonData).toEqual({
+                "a": "b",
+                "c": "d"
+            });
+        });
+
+        test('should maintain separate cache entries for each root', async () => {
+            expect.assertions(5);
+
+            // Load same locale/basename from different roots
+            await parsedDataCache.getParsedData('en-US', ['./test/files3'], 'info');
+            await parsedDataCache.getParsedData('en-US', ['./test/files4'], 'info');
+
+            // Verify separate cache entries exist
+            expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en')).toBe(true);
+            expect(parsedDataCache.hasParsedData('./test/files4', 'info', 'en-US')).toBe(true);
+
+            // Verify they contain different data
+            const files3Data = parsedDataCache.getCachedData('./test/files3', 'info', 'en');
+            const files4Data = parsedDataCache.getCachedData('./test/files4', 'info', 'en-US');
+            
+            expect(files3Data).not.toEqual(files4Data);
+            expect(files3Data).toEqual({
+                "a": "b en",
+                "c": "d en"
+            });
+
+            expect(files4Data).toEqual({
+                "a": "b",
+                "c": "d"
+            });
         });
     });
 });

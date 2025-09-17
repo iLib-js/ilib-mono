@@ -39,9 +39,6 @@ export default class MockLoader extends Loader {
      */
     constructor(options) {
         super(options);
-
-        // start off in async mode even though this mock loader supports sync
-        this.sync = false;
     }
 
     getPlatforms() {

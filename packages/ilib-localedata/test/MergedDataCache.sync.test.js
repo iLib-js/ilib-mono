@@ -28,6 +28,7 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
 
     beforeEach(() => {
         loader = LoaderFactory();
+        loader.setSyncMode();
         mergedDataCache = new MergedDataCache(loader);
         DataCache.clearDataCache();
     });
@@ -36,28 +37,76 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
         DataCache.clearDataCache();
     });
 
-    describe('loadMergedDataSync', () => {
-        test('should load and merge data synchronously when not cached', async () => {
-            expect.assertions(6);
+    describe('storeData', () => {
+        test('should store data correctly', () => {
+            expect.assertions(3);
             
-            const locale = new Locale("en-US");
-            const roots = ["./test/files7"];
-            const basename = "info";
+            const testData = {
+                "root": {
+                    "info": { "a": "b root", "c": "d root" }
+                }
+            };
             
-            // First load data asynchronously to cache it
-            await mergedDataCache.loadMergedData(locale, roots, basename);
+            mergedDataCache.storeData(testData, "./test/files3");
             
-            // Then retrieve it synchronously
-            const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            // Verify data was stored by checking if we can retrieve it
+            const cachedData = mergedDataCache.getCachedData("root", ["./test/files3"], "info");
+            expect(cachedData).toBeUndefined(); // Should be undefined because it's not merged yet
             
-            expect(result).toBeTruthy();
-            expect(mergedDataCache.hasMergedData("en-US", ["./test/files7"], "info")).toBe(true);
-            expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
-            expect(result).toEqual({ "a": "b en", "c": "d en" });
+            // Verify hasMergedData returns false for unmerged data
+            expect(mergedDataCache.hasMergedData("root", ["./test/files3"], "info")).toBe(false);
+            
+            // Verify getMergedDataCount is still 0
+            expect(mergedDataCache.getMergedDataCount()).toBe(0);
         });
 
-        test('should load and cache data from .js files with only root data synchronously', () => {
+        test('should store multiple locales and basenames', () => {
             expect.assertions(4);
+            
+            const testData = {
+                "root": {
+                    "info": { "a": "b", "c": "d" },
+                    "numbers": { "decimal": ".", "group": "," }
+                },
+                "en": {
+                    "info": { "a": "b en", "c": "d en" },
+                    "numbers": { "decimal": ".", "group": "," }
+                }
+            };
+            
+            mergedDataCache.storeData(testData, "./test/files3");
+            
+            // Verify data was stored (but not merged yet)
+            expect(mergedDataCache.hasMergedData("root", ["./test/files3"], "info")).toBe(false);
+            expect(mergedDataCache.hasMergedData("en", ["./test/files3"], "info")).toBe(false);
+            expect(mergedDataCache.hasMergedData("root", ["./test/files3"], "numbers")).toBe(false);
+            expect(mergedDataCache.getMergedDataCount()).toBe(0);
+        });
+
+        test('should handle invalid data gracefully', () => {
+            expect.assertions(2);
+            
+            // Test with null data
+            mergedDataCache.storeData(null, "./test/files3");
+            expect(mergedDataCache.getMergedDataCount()).toBe(0);
+            
+            // Test with undefined data
+            mergedDataCache.storeData(undefined, "./test/files3");
+            expect(mergedDataCache.getMergedDataCount()).toBe(0);
+        });
+    });
+
+    describe('loadMergedDataSync load data from stored data', () => {
+        test('should merge data from stored data synchronously', () => {
+            expect.assertions(4);
+            
+            // Store test data using the public API
+            const testData = {
+                "root": {
+                    "info": { "a": "b root", "c": "d root" }
+                }
+            };
+            mergedDataCache.storeData(testData, "./test/files3");
             
             const locale = new Locale("root");
             const roots = ["./test/files3"];
@@ -68,20 +117,52 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
             expect(result).toBeTruthy();
             expect(mergedDataCache.hasMergedData("root", ["./test/files3"], "info")).toBe(true);
             expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
-            expect(result).toEqual({ "a": "b", "c": "d" });
+            expect(result).toEqual({ "a": "b root", "c": "d root" });
         });
 
-        test('should fall back to .json files when .js files are not found synchronously', async () => {
+        test('should cache merged data after loading it synchronously', () => {
+            expect.assertions(6);
+
+            // Store test data using the public API
+            const testData = {
+                "root": {
+                    "info": { "a": "b root", "c": "d root" }
+                },
+                "en-US": {
+                    "info": { "a": "b en-US", "e": "f en-US" }
+                }
+            };
+
+            mergedDataCache.storeData(testData, "./test/files3");
+             const result = mergedDataCache.loadMergedDataSync("en-US", ["./test/files3"], "info");
+            expect(result).toBeTruthy();
+            expect(mergedDataCache.hasMergedData("en-US", ["./test/files3"], "info")).toBe(true);
+            expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result).toEqual({ "a": "b en-US", "c": "d root", "e": "f en-US" });
+
+            const result2 = mergedDataCache.getCachedData("en-US", ["./test/files3"], "info");
+            expect(result2).toBeTruthy();
+            expect(result2).toEqual(result);
+        });
+
+        test('should merge data from multiple sublocales synchronously', () => {
             expect.assertions(4);
+            
+            // Store test data using the public API
+            const testData = {
+                "root": {
+                    "info": { "a": "b", "c": "d" }
+                },
+                "en": {
+                    "info": { "a": "b en", "c": "d en" }
+                }
+            };
+            mergedDataCache.storeData(testData, "./test/files3");
             
             const locale = new Locale("en");
             const roots = ["./test/files3"];
             const basename = "info";
             
-            // First load data asynchronously to cache it
-            await mergedDataCache.loadMergedData(locale, roots, basename);
-            
-            // Then retrieve it synchronously
             const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
             
             expect(result).toBeTruthy();
@@ -90,24 +171,205 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
             expect(result).toEqual({ "a": "b en", "c": "d en" });
         });
 
-        test('should return undefined for invalid file content synchronously', () => {
+        test('should merge hierarchical data from stored data synchronously', () => {
+            expect.assertions(4);
+            
+            // Store hierarchical test data using the public API
+            const testData = {
+                "en": {
+                    "tester": { "a": "a from files2 en", "c": "c from files2 en" }
+                }
+            };
+            mergedDataCache.storeData(testData, "./test/files2");
+            
+            const locale = new Locale("en");
+            const roots = ["./test/files2"];
+            const basename = "tester";
+            
+            const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(result).toBeTruthy();
+            expect(mergedDataCache.hasMergedData("en", ["./test/files2"], "tester")).toBe(true);
+            expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result).toEqual({ "a": "a from files2 en", "c": "c from files2 en" });
+        });
+    });
+
+    describe('loadMergedDataSync load data from files', () => {
+        test('should load data from .js files synchronously', () => {
+            expect.assertions(6);
+
+            const locale = new Locale("hu-HU");
+            const roots = ["./test/files7"];
+            const basename = "address";
+
+            const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(result).toBeTruthy();
+            expect(mergedDataCache.hasMergedData("hu-HU", ["./test/files7"], "address")).toBe(true);
+            expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result).toEqual({
+                "region": "Megye",
+                "postalCode": "Irányítószám",
+                "country": "Ország"
+            });
+
+            const result2 = mergedDataCache.getCachedData("hu-HU", ["./test/files7"], "address");
+            expect(result2).toBeTruthy();
+            expect(result2).toEqual(result);
+        });
+
+        test('should load data from flat .json files synchronously', () => {
+            expect.assertions(6);
+
+            const locale = new Locale("hu-HU");
+            const roots = ["./test/files4"];
+            const basename = "foo";
+
+            const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(result).toBeTruthy();
+            expect(mergedDataCache.hasMergedData("hu-HU", ["./test/files4"], "foo")).toBe(true);
+            expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result).toEqual({
+                "m": "n hu-HU",
+                "o": "p hu-HU"
+            });
+
+            const result2 = mergedDataCache.getCachedData("hu-HU", ["./test/files4"], "foo");
+            expect(result2).toBeTruthy();
+            expect(result2).toEqual(result);
+        });
+
+        test('should load data from hierarchical .json files synchronously', () => {
+            expect.assertions(6);
+
+            const locale = new Locale("ja-JP");
+            const roots = ["./test/files2"];
+            const basename = "tester";
+
+            const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(result).toBeTruthy();
+            expect(mergedDataCache.hasMergedData("ja-JP", ["./test/files2"], "tester")).toBe(true);
+            expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result).toEqual({
+                "a": "b ja-JP from files2",
+                "x": {
+                   "m": "n ja-JP from files2"
+                }
+            });
+
+            const result2 = mergedDataCache.getCachedData("ja-JP", ["./test/files2"], "tester");
+            expect(result2).toBeTruthy();
+            expect(result2).toEqual(result);
+        });
+
+        test('should return undefined when no data is available in ParsedDataCache', () => {
+            expect.assertions(2);
+            
+            const locale = new Locale("en");
+            const roots = ["./test/files7"];
+            const basename = "tester";
+            
+            const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            // should return undefined because there is no data for the tester basename
+            expect(result).toBeUndefined();
+            expect(mergedDataCache.getMergedDataCount()).toBe(0);
+        });
+
+        test('should return undefined when no data is available for invalid locale', () => {
             expect.assertions(2);
             
             const locale = new Locale("invalid");
             const roots = ["./test/files3"];
-            const basename = "info";
+            const basename = "tester";
             
             const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
             
-            expect(result).toBeTruthy(); // Should return merged data (even if empty)
+            // should return undefined because there is no data for the invalid basename
+            expect(result).toBeUndefined();
+            expect(mergedDataCache.getMergedDataCount()).toBe(0);
+        });
+
+        test('should return undefined when no data is available for invalid basename', () => {
+            expect.assertions(2);
+            
+            const locale = new Locale("en");
+            const roots = ["./test/files2"];
+            const basename = "invalid";
+            
+            const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            // should return undefined because there is no data for the invalid basename
+            expect(result).toBeUndefined();
+            expect(mergedDataCache.getMergedDataCount()).toBe(0);
+        });
+
+        test('should load and merge data synchronously when cached by async load first', async () => {
+            expect.assertions(5);
+            
+            const locale = new Locale("en-US");
+            const roots = ["./test/files7"];
+            const basename = "info";
+            
+            // First load data asynchronously to cache it
+            const result1 = await mergedDataCache.loadMergedData(locale, roots, basename);
+            
+            // Then retrieve it synchronously
+            const result2 = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(result2).toBeTruthy();
+            expect(mergedDataCache.hasMergedData("en-US", ["./test/files7"], "info")).toBe(true);
             expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result2).toEqual({ "a": "b en", "c": "d en" });
+            expect(result2).toBe(result1);
+        });
+
+        test('should load and merge data synchronously when cached by sync load first', () => {
+            expect.assertions(5);
+            
+            const locale = new Locale("en-US");
+            const roots = ["./test/files7"];
+            const basename = "info";
+            
+            const result1 = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+
+            expect(mergedDataCache.hasMergedData("en-US", ["./test/files7"], "info")).toBe(true);
+
+            const result2 = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(result2).toBeTruthy();
+            expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result2).toEqual({ "a": "b en", "c": "d en" });
+            expect(result2).toBe(result1);
+        });
+
+        test('should load and merge data asynchronously when cached by sync load first', async () => {
+            expect.assertions(5);
+            
+            const locale = new Locale("en-US");
+            const roots = ["./test/files7"];
+            const basename = "info";
+            
+            const result1 = mergedDataCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(mergedDataCache.hasMergedData("en-US", ["./test/files7"], "info")).toBe(true);
+
+            const result2 = await mergedDataCache.loadMergedData(locale, roots, basename);
+            
+            expect(result2).toBeTruthy();
+            expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result2).toEqual({ "a": "b en", "c": "d en" });
+            expect(result2).toBe(result1);
         });
 
         test('should handle multiple roots and return data from the first available synchronously', () => {
             expect.assertions(4);
             
             const locale = new Locale("en-US");
-            const roots = ["./test/files4", "./test/files3"]; // First root doesn't exist
+            const roots = ["./test/files4", "./test/files3"];
             const basename = "info";
             
             const result = mergedDataCache.loadMergedDataSync(locale, roots, basename);
@@ -115,7 +377,61 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
             expect(result).toBeTruthy();
             expect(mergedDataCache.hasMergedData("en-US", ["./test/files4", "./test/files3"], "info")).toBe(true);
             expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
-            expect(result).toEqual({ "a": "b", "c": "d" }); // Should fall back to root data
+            expect(result).toEqual({ "a": "b", "c": "d" }); // should have data from files4, not files3
+        });
+
+        test('should handle multiple roots and return merged data when using crossRoots option', () => {
+            expect.assertions(4);
+            
+            // Store test data in both roots using the public API
+            const testData1 = {
+                "de-DE": {
+                    "info": { "a": "b de files3", "c": "d de files3" }
+                }
+            };
+            const testData2 = {
+                "de-DE": {
+                    "info": { "a": "b de files4", "c": "d de files4", "e": "f de files4" }
+                }
+            };
+            
+            const mergedCache = new MergedDataCache(loader, { crossRoots: true });
+            mergedCache.storeData(testData1, "./test/files3");
+            mergedCache.storeData(testData2, "./test/files4");
+            
+            const locale = new Locale("de-DE");
+            const roots = ["./test/files4", "./test/files3"];
+            const basename = "info";
+        
+            const result = mergedCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(result).toBeTruthy();
+            expect(mergedCache.hasMergedData("de-DE", ["./test/files4", "./test/files3"], "info")).toBe(true);
+            expect(mergedCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result).toEqual({
+                "a": "b de files3",
+                "c": "d de files3",
+                "e": "f de files4"
+            }); // should have data from files3 merged into files4
+        });
+
+        test('should handle multiple roots and return merged data when using the mostSpecific option', () => {
+            expect.assertions(4);
+            
+            const locale = new Locale("de-DE");
+            const roots = ["./test/files4"];
+            const basename = "foo";
+
+            const mergedCache = new MergedDataCache(loader, { mostSpecific: true });
+            const result = mergedCache.loadMergedDataSync(locale, roots, basename);
+            
+            expect(result).toBeTruthy();
+            expect(mergedCache.hasMergedData("de-DE", ["./test/files4"], "foo")).toBe(true);
+            expect(mergedCache.getMergedDataCount()).toBeGreaterThan(0);
+            expect(result).toEqual({
+                "m": "n de-DE",
+                "o": "p de-DE"
+            }); // should only have data from the de-DE locale, not merged with de and root data
         });
 
         test('should return data from first available root synchronously', () => {
@@ -136,11 +452,19 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
         test('should return cached data without reparsing when calling loadMergedDataSync twice', () => {
             expect.assertions(4);
             
+            // Store test data using the public API
+            const testData = {
+                "en-US": {
+                    "info": { "a": "b en-US", "c": "d en-US" }
+                }
+            };
+            mergedDataCache.storeData(testData, "./test/files3");
+            
             const locale = new Locale("en-US");
             const roots = ["./test/files3"];
             const basename = "info";
             
-            // First call - should load from file and parse
+            // First call - should load and merge data
             const result1 = mergedDataCache.loadMergedDataSync(locale, roots, basename);
             expect(result1).toBeTruthy();
             expect(mergedDataCache.hasMergedData("en-US", ["./test/files3"], "info")).toBe(true);

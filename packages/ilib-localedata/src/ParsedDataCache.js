@@ -70,7 +70,9 @@ class ParsedDataCache {
     }
 
     /**
-     * Get parsed data for a locale and basename, loading and parsing files if necessary
+     * Get parsed data for a locale and basename, loading and parsing files if necessary. This method can
+     * load ESM modules with .js or .mjs extensions, and CommonJS modules with .js or .cjs extensions (depending
+     * on the module type in the package.json file). It can also load flat .json files and hierarchical .json files.
      *
      * @param {string|Locale} locale - The locale to get data for
      * @param {Array.<string>} roots - Array of root directories to search
@@ -78,15 +80,14 @@ class ParsedDataCache {
      * @returns {Promise<Object|undefined>} Promise that resolves to the parsed data, or undefined if not found
      */
     async getParsedData(locale, roots, basename) {
-
         // Validate parameters
-        if (!locale || !Array.isArray(roots) || roots.length === 0 || !basename) {
+        if ((typeof locale !== 'string' && typeof locale !== 'object') || !Array.isArray(roots) || roots.length === 0 || !basename) {
             return undefined;
         }
 
         // Convert string locale to Locale object if needed
         const loc = (typeof locale === 'string') ? new Locale(locale) : locale;
-        if (typeof loc.getSpec !== 'function') {
+        if (loc !== null && typeof loc.getSpec !== 'function') {
             return undefined;
         }
 
@@ -98,24 +99,18 @@ class ParsedDataCache {
         }
 
 
-        // If not cached, try to load from .js files first
-        const jsData = await this._loadFromJsFiles(loc, roots, basename);
-        if (jsData) {
-            return jsData;
-        }
+        await Promise.all([
+            this._loadFromJsFiles(loc, roots, basename),
+            this._loadFromJsonFiles(loc, roots, basename)
+        ]);
 
-
-        // Fallback to loading from individual .json files
-        const jsonData = await this._loadFromJsonFiles(loc, roots, basename);
-        if (jsonData) {
-            return jsonData;
-        }
-
-        return undefined;
+        return this._getCachedDataForLocale(loc, roots, basename);
     }
 
     /**
-     * Get parsed data for a locale and basename synchronously
+     * Get parsed data for a locale and basename synchronously. This method cannot load ESM modules, as Javascript does
+     * not support synchronous loading of ESM modules. It can load CommonJS modules with .js or .cjs extensions (depending
+     * on the module type in the package.json file). It can also load flat .json files and hierarchical .json files.
      *
      * @param {string|Locale} locale - The locale to get data for
      * @param {Array.<string>} roots - Array of root directories to search
@@ -124,13 +119,13 @@ class ParsedDataCache {
      */
     getParsedDataSync(locale, roots, basename) {
         // Validate parameters
-        if (!locale || !Array.isArray(roots) || roots.length === 0 || !basename) {
+        if ((typeof locale !== 'string' && typeof locale !== 'object') || !Array.isArray(roots) || roots.length === 0 || !basename) {
             return undefined;
         }
 
         // Convert string locale to Locale object if needed
         const loc = (typeof locale === 'string') ? new Locale(locale) : locale;
-        if (typeof loc.getSpec !== 'function') {
+        if (loc !== null && typeof loc.getSpec !== 'function') {
             return undefined;
         }
 
@@ -140,14 +135,10 @@ class ParsedDataCache {
             return cachedData;
         }
 
-        // If not cached, try to load from .js files first
-        const jsData = this._loadFromJsFilesSync(loc, roots, basename);
-        if (jsData) {
-            return jsData;
-        }
+        this._loadFromJsFilesSync(loc, roots, basename);
+        this._loadFromJsonFilesSync(loc, roots, basename);
 
-        // Fallback to loading from individual .json files
-        return this._loadFromJsonFilesSync(loc, roots, basename);
+        return this._getCachedDataForLocale(loc, roots, basename);
     }
 
     /**
@@ -185,7 +176,7 @@ class ParsedDataCache {
     }
 
     /**
-     * Common method to parse and cache .json file data
+     * Common method to parse and cache flat .json file data
      * @private
      *
      * @param {string} rawData - The raw file content
@@ -238,8 +229,7 @@ class ParsedDataCache {
             this.dataCache.storeData(root, basename, hierarchicalLocale, parsedData);
             return parsedData;
         } catch (error) {
-            // Parsing failed so store null to indicate we checked
-            this.dataCache.storeData(root, basename, hierarchicalLocale, null);
+            // Parsing failed -- ignore
         }
         return undefined;
     }
@@ -279,6 +269,23 @@ class ParsedDataCache {
     }
 
     /**
+     * Determine the module type of a root directory based on package.json
+     * @private
+     *
+     * @param {string} root - The root directory
+     * @returns {string} The module type, either 'module' or 'commonjs'
+     */
+    _getModuleTypeSync(root) {
+        const packageJsonPath = `${root}/package.json`;
+        const packageJson = this.fileCache.loadFileSync(packageJsonPath);
+        if (packageJson) {
+            const pkg = JSON.parse(packageJson);
+            return pkg.type;
+        }
+        return 'commonjs';
+    }
+
+    /**
      * Determine the appropriate file extension to try for JS files based on package.json
      * @private
      *
@@ -287,26 +294,17 @@ class ParsedDataCache {
      */
     _getJsFileExtensions(root) {
         try {
+            const moduleType = this._getModuleTypeSync(root);
             // Check if there's a package.json in the root
-            const packageJsonPath = `${root}/package.json`;
-            const packageJson = this.fileCache.loadFileSync(packageJsonPath);
-            if (packageJson) {
-                const pkg = JSON.parse(packageJson);
-                if (pkg.type === 'module') {
-                    // If package.json says "type": "module", .js files are ESM and can't be loaded sync
-                    // Try .cjs first (CommonJS), then .js (ESM for async only)
-                    return ['.cjs', '.js'];
-                } else {
-                    // If package.json says "type": "commonjs" or no type, .js files are CommonJS
-                    // Try .js first, then .cjs
-                    return ['.js', '.cjs'];
-                }
+            if (moduleType === 'module') {
+                return ['.cjs', '.js'];
+            } else {
+                return ['.js', '.cjs'];
             }
         } catch (error) {
             // If we can't read package.json, assume .js files are CommonJS
+            return ['.js', '.cjs'];
         }
-        // Default: assume .js files are CommonJS
-        return ['.js', '.cjs'];
     }
 
     /**
@@ -321,34 +319,29 @@ class ParsedDataCache {
     async _loadFromJsFiles(locale, roots, basename) {
         // Try to load from .js files in each root
         for (const root of roots) {
-            const extensions = this._getJsFileExtensions(root);
+            // in async mode, we can load ESM modules using import() with .js or .mjs extensions, and CommonJS
+            // modules using import() with .cjs extensions. As such, we don't need to know the module type to load the files.
+            const extensions = ['.mjs', '.js', '.cjs'];
 
             // First try to load the specific locale file
             for (const ext of extensions) {
                 try {
-                    const jsPath = `${root}/${locale.getSpec()}${ext}`;
+                    const localeSpec = locale === null ? 'root' : locale.getSpec();
+                    const jsPath = `${root}/${localeSpec}${ext}`;
                     const rawData = await this.fileCache.loadFile(jsPath);
                     if (rawData) {
-                        const parsedData = this._parseAndCacheJsFile(rawData, jsPath, root);
-
-                        if (parsedData) {
-                            // Return the data for the specific basename and locale
-                            const extractedData = this._extractBasenameData(parsedData, basename, locale);
-
-                            if (extractedData) {
-                                return extractedData;
-                            }
-                        }
+                        // Parse and cache all data from this file
+                        this._parseAndCacheJsFile(rawData, jsPath, root);
                     }
                 } catch (error) {
                     // Continue to next extension
                     continue;
                 }
             }
-            // File doesn't exist with any of the extensions, so store null to indicate we checked
-            this.dataCache.storeData(root, basename, locale.getSpec(), null);
         }
-        return undefined;
+        
+        // Now get the specific data we need from the cache
+        return this._getCachedDataForLocale(locale, roots, basename);
     }
 
     /**
@@ -363,35 +356,29 @@ class ParsedDataCache {
     _loadFromJsFilesSync(locale, roots, basename) {
         // Try to load from .js files in each root
         for (const root of roots) {
-            const extensions = this._getJsFileExtensions(root);
+            // in sync mode, we cannot load ESM modules with import() or require(), so only try .cjs files which
+            // can be loaded synchronously. CommonJS modules can be loaded with require() without any issues.
+            const moduleType = this._getModuleTypeSync(root);
+            const extensions = (moduleType === 'module') ? ['.cjs'] : ['.js', '.cjs'];
+
             for (const ext of extensions) {
                 try {
-                    const jsPath = `${root}/${locale.getSpec()}${ext}`;
+                    const localeSpec = locale === null ? 'root' : locale.getSpec();
+                    const jsPath = `${root}/${localeSpec}${ext}`;
                     const rawData = this.fileCache.loadFileSync(jsPath);
                     if (rawData) {
-                        const parsedData = this._parseAndCacheJsFile(rawData, jsPath, root);
-                        if (parsedData) {
-                            // Return the data for the specific basename and locale
-                            const extractedData = this._extractBasenameData(parsedData, basename, locale);
-
-                            if (extractedData) {
-                                return extractedData;
-                            }
-
-                            // If we loaded the file but didn't find data for the requested locale,
-                            // store null to indicate we checked
-                            this.dataCache.storeData(root, basename, locale.getSpec(), null);
-                        }
+                        // Parse and cache all data from this file
+                        this._parseAndCacheJsFile(rawData, jsPath, root);
                     }
                 } catch (error) {
                     // Continue to next extension
                     continue;
                 }
             }
-            // File doesn't exist with any of the extensions, so store null to indicate we checked
-            this.dataCache.storeData(root, basename, locale.getSpec(), null);
         }
-        return undefined;
+        
+        // Now get the specific data we need from the cache
+        return this._getCachedDataForLocale(locale, roots, basename);
     }
 
     /**
@@ -407,25 +394,20 @@ class ParsedDataCache {
         // ASYNC VERSION - Try to load from flat .json files first (current behavior)
         for (const root of roots) {
             try {
-                const jsonPath = `${root}/${locale.getSpec()}.json`;
+                const localeSpec = locale === null ? 'root' : locale.getSpec();
+                const jsonPath = `${root}/${localeSpec}.json`;
                 const rawData = await this.fileCache.loadFile(jsonPath);
                 if (rawData) {
-                    const parsedData = this._parseAndCacheJsonFile(rawData, jsonPath, root);
-                    if (parsedData) {
-                        // Return the data for the specific basename and locale
-                        return this._extractBasenameData(parsedData, basename, locale);
-                    }
+                    // Parse and cache all data from this file
+                    this._parseAndCacheJsonFile(rawData, jsonPath, root);
                 }
-                // If we loaded the file but didn't find data for the requested locale,
-                // or if the file doesn't exist, store null to indicate we checked
-                this.dataCache.storeData(root, basename, locale.getSpec(), null);
             } catch (error) {
                 // Continue to next root
             }
         }
 
         // Get the list of hierarchical file paths to try
-        const locFiles = Utils.getLocFiles(locale, `${basename}.json`);
+        const locFiles = locale === null ? ['${basename}.json'] : Utils.getLocFiles(locale, `${basename}.json`);
 
         // Fall back to hierarchical .json files using Utils.getLocFiles
         for (const root of roots) {
@@ -435,15 +417,16 @@ class ParsedDataCache {
                     const jsonPath = `${root}/${locFile}`;
                     const rawData = await this.fileCache.loadFile(jsonPath);
                     // For hierarchical files, parse and cache the data directly
-                    this._parseAndCacheHierarchicalJsonFile(rawData, jsonPath, root, basename, locFile);
+                    if (rawData) {
+                        this._parseAndCacheHierarchicalJsonFile(rawData, jsonPath, root, basename, locFile);
+                    }
                 }
             } catch (error) {
                 // Continue to next root
             }
         }
-
-        // Return the data specifically for the requested locale/basename
-        // Check all roots for cached data
+        
+        // Now get the specific data we need from the cache
         return this._getCachedDataForLocale(locale, roots, basename);
     }
 
@@ -460,25 +443,20 @@ class ParsedDataCache {
         // SYNC VERSION - Try to load from flat .json files first (current behavior)
         for (const root of roots) {
             try {
-                const jsonPath = `${root}/${locale.getSpec()}.json`;
+                const localeSpec = locale === null ? 'root' : locale.getSpec();
+                const jsonPath = `${root}/${localeSpec}.json`;
                 const rawData = this.fileCache.loadFileSync(jsonPath);
                 if (rawData) {
-                    const parsedData = this._parseAndCacheJsonFile(rawData, jsonPath, root);
-                    if (parsedData) {
-                        // Return the data for the specific basename and locale
-                        return this._extractBasenameData(parsedData, basename, locale);
-                    }
+                    // Parse and cache all data from this file
+                    this._parseAndCacheJsonFile(rawData, jsonPath, root);
                 }
-                // If we loaded the file but didn't find data for the requested locale,
-                // or if the file doesn't exist, store null to indicate we checked
-                this.dataCache.storeData(root, basename, locale.getSpec(), null);
             } catch (error) {
                 // Continue to next root
             }
         }
 
         // Get the list of hierarchical file paths to try
-        const locFiles = Utils.getLocFiles(locale, `${basename}.json`);
+        const locFiles = locale === null ? ['${basename}.json'] : Utils.getLocFiles(locale, `${basename}.json`);
 
         // Fall back to hierarchical .json files using Utils.getLocFiles
         for (const root of roots) {
@@ -488,15 +466,16 @@ class ParsedDataCache {
                     const jsonPath = `${root}/${locFile}`;
                     const rawData = this.fileCache.loadFileSync(jsonPath);
                     // For hierarchical files, parse and cache the data directly
-                    this._parseAndCacheHierarchicalJsonFile(rawData, jsonPath, root, basename, locFile);
+                    if (rawData) {
+                        this._parseAndCacheHierarchicalJsonFile(rawData, jsonPath, root, basename, locFile);
+                    }
                 }
             } catch (error) {
                 // Continue to next root
             }
         }
-
-        // Return the data specifically for the requested locale/basename
-        // Check all roots for cached data
+        
+        // Now get the specific data we need from the cache
         return this._getCachedDataForLocale(locale, roots, basename);
     }
 
@@ -511,7 +490,7 @@ class ParsedDataCache {
      */
     _extractBasenameData(parsedData, basename, locale) {
         // Only return data for the exact requested locale - no fallbacks
-        const localeSpec = locale.getSpec();
+        const localeSpec = locale === null ? 'root' : locale.getSpec();
 
         if (parsedData[localeSpec] && parsedData[localeSpec][basename]) {
             return parsedData[localeSpec][basename];
