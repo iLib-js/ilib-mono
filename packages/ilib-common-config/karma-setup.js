@@ -1,7 +1,8 @@
 /*
- * index.ts - E2E test utilities exports
+ * karma-setup.cjs - set up the karma testing environment before
+ * running the tests
  *
- * Copyright © 2025, Box, Inc.
+ * Copyright © 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Add missing Jest functions
+window.test = window.it;
+window.test.each = (inputs) => (testName, test) =>
+  inputs.forEach((args) => window.it(testName, () => test(...args)));
+window.test.todo = function () {
+  return undefined;
+};
 
-export { LoctoolRunner } from "./runners/LoctoolRunner";
-export { LintRunner } from "./runners/LintRunner";
-
-export { default as jestConfig } from "./jest-e2e.config";
-
-export * from "./expectFile";
-export * from "./karma.config";
+window.expect.assertions = (num) => { return undefined; };

@@ -19,7 +19,7 @@
 
 const path = require("path");
 const fs = require("fs");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("@ilib-mono/e2e-test");
+const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-common-config");
 
 describe("samples", () => {
     describe("js-json", () => {
