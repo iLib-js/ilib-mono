@@ -6,7 +6,9 @@ A shared configuration package for ilib monorepo packages, providing common test
 
 This package serves as a central hub for shared testing and configuration utilities used across all ilib packages. It provides:
 
-- **E2E Testing Infrastructure**: Jest configuration and utilities for end-to-end testing
+- **Jest Configurations**: Shared Jest setups for CommonJS/ES5, ESM, TypeScript, and E2E testing
+- **TypeScript Configuration**: Shared TypeScript compilation settings
+- **E2E Testing Infrastructure**: Utilities and runners for end-to-end testing
 - **Shared Karma Configuration**: Unified browser testing setup for all packages
 - **Testing Utilities**: Common test runners and assertion helpers
 - **Consistent Configuration**: Standardized testing patterns across the monorepo
@@ -23,9 +25,124 @@ Since this is a workspace-only package, add it as a devDependency in your packag
 }
 ```
 
+## Jest Configuration
+
+The package provides shared Jest configurations for different types of ilib packages, ensuring consistent testing setup across the monorepo.
+
+### For CommonJS/ES5 Packages
+
+Most ilib packages use CommonJS with ES5-style code. Use this configuration:
+
+> **⚠️ Important**: For CommonJS/ES5 packages, you must use **Jest v26 or earlier** because Jest v27+ was rewritten in ESM and is incompatible with CommonJS packages.
+
+```javascript
+// jest.config.js
+var jestConfig = require('ilib-common-config').jestConfig;
+
+var config = Object.assign({}, jestConfig, {
+    displayName: {
+        name: "your-package-name",
+        color: "blueBright", // Choose from available colors
+    }
+    // Add any package-specific Jest overrides here
+});
+
+module.exports = config;
+```
+
+### For ESM Packages
+
+Modern packages using ES modules should use this configuration:
+
+> **✅ Compatible**: ESM packages can use the **latest version of Jest** (v27+).
+
+```javascript
+// jest.config.js
+import { jestEsmConfig } from 'ilib-common-config';
+
+const config = {
+    ...jestEsmConfig,
+    displayName: {
+        name: "your-package-name",
+        color: "green",
+    },
+    // Add any package-specific Jest overrides here
+};
+
+export default config;
+```
+
+### For TypeScript Packages
+
+TypeScript packages should use this configuration:
+
+> **✅ Compatible**: TypeScript packages can use the **latest version of Jest** (v27+).
+
+```javascript
+// jest.config.js
+import { tsJestConfig } from 'ilib-common-config';
+
+const config = {
+    ...tsJestConfig,
+    displayName: {
+        name: "your-package-name",
+        color: "cyan",
+    },
+    // Add any package-specific Jest overrides here
+};
+
+export default config;
+```
+
+### For E2E Testing
+
+E2E tests use a specialized Jest configuration:
+
+> **✅ Compatible**: E2E tests can use the **latest version of Jest** (v27+) since they typically run in a modern environment.
+
+```javascript
+// test-e2e/jest.config.cjs
+const { jestE2eConfig } = require('ilib-common-config');
+
+const config = {
+    ...jestE2eConfig,
+    displayName: {
+        name: "your-package-name e2e",
+        color: "blackBright", // or "yellow", "green", etc.
+    },
+};
+
+module.exports = config;
+```
+
+### Available Colors
+
+Choose from these predefined colors for your package's display name:
+- `blackBright`, `blueBright`, `green`, `cyan`, `black`, `magentaBright`, `blue`, `yellow`, `red`, `white`
+
+The idea is that when we run all of the tests in the CI, we want to have a full variety of colors so that it
+is easy to see which output comes from which package.
+
+### Common Overrides
+
+The shared configurations include common settings, but you can override any property by merging your custom settings with the shared configuration. The shared configs provide sensible defaults, but you can customize:
+
+- **`testPathIgnorePatterns`** - Additional patterns to ignore during test discovery
+- **`globalSetup`** - Custom setup file to run before all tests
+- **`moduleFileExtensions`** - Additional file extensions to recognize as modules
+- **`transformIgnorePatterns`** - Custom patterns for files to skip transformation
+- **`testMatch`** - Custom patterns for test file discovery
+- **`setupFilesAfterEnv`** - Additional setup files to run after the test environment is set up
+- **`collectCoverageFrom`** - Custom patterns for coverage collection
+- **`coverageThreshold`** - Custom coverage thresholds
+
+Simply merge your overrides with the shared configuration using the appropriate syntax for your package type (ES5/CommonJS, ESM, or TypeScript as shown in the examples above).
+
 ## E2E Testing
 
 The package provides comprehensive E2E testing infrastructure for ilib packages. This follows the established pattern used by all ilib packages like `ilib-loctool-ghfm`, `ilib-loctool-po`, and others.
+
+> **Note**: For Jest configuration for E2E tests, see the [Jest Configuration](#jest-configuration) section above.
 
 ### Quick Setup
 
@@ -45,13 +162,13 @@ The package provides comprehensive E2E testing infrastructure for ilib packages.
    └── samples.e2e.test.js
    ```
 
-3. **Configure Jest** using the shared configuration:
+3. **Configure Jest** using the shared E2E configuration (see [Jest Configuration](#jest-configuration) section above for details):
    ```javascript
    // test-e2e/jest.config.cjs
-   const { jestConfig: baseConfig } = require('ilib-common-config');
+   const { jestE2eConfig } = require('ilib-common-config');
 
    const config = {
-       ...baseConfig,
+       ...jestE2eConfig,
        displayName: {
            name: "your-package-name e2e",
            color: "blackBright", // or "yellow", "green", etc.
@@ -180,6 +297,47 @@ All ilib packages follow this standardized E2E testing pattern:
      }
    }
    ```
+
+## TypeScript Configuration
+
+The package provides shared TypeScript configurations for consistent compilation and testing across all ilib packages.
+
+### Shared TypeScript Base Configuration
+
+Use the shared base TypeScript configuration by extending it in your `tsconfig.json`:
+
+```json
+{
+    "extends": "../ilib-common-config/tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src"
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "lib",
+        "test"
+    ]
+}
+```
+
+Many projects will not require anything beyond what the base provides, but the ability to extend it is there for
+flexibility, just in case.
+
+> **Note**: For Jest configuration for TypeScript packages, see the [Jest Configuration](#jest-configuration) section above.
+
+### TypeScript Configuration Features
+
+The shared configuration provides:
+
+- **Consistent Compilation**: Standard TypeScript settings across all packages
+- **Declaration Generation**: Automatic `.d.ts` and `.d.ts.map` file generation
+- **Source Maps**: Full source map support for debugging
+- **Strict Type Checking**: Balanced strictness for code quality without breaking existing code
+- **Jest Integration**: Pre-configured ts-jest settings for testing
 
 ## Karma Configuration
 

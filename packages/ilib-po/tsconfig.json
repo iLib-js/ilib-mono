@@ -1,11 +1,8 @@
 {
-    "extends": "@tsconfig/node12",
+    "extends": "../ilib-common-config/tsconfig.base.json",
     "compilerOptions": {
         "allowJs": true,
-        "noEmit": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitOverride": true,
-        "noImplicitAny": true
+        "noEmit": true
     },
     "include": ["."],
     "exclude": ["node_modules", "lib", "docs"]

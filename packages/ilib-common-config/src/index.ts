@@ -20,7 +20,17 @@
 export { LoctoolRunner } from "./runners/LoctoolRunner";
 export { LintRunner } from "./runners/LintRunner";
 
-export { default as jestConfig } from "./jest-e2e.config";
+export { default as jestE2eConfig } from "./jest-e2e.config";
 
 export * from "./expectFile";
 export * from "./karma.config";
+
+// Export shared TypeScript configurations
+// @ts-ignore - ts-jest.config.js doesn't have TypeScript declarations
+export { default as tsJestConfig } from "../ts-jest.config.js";
+
+// Export shared Jest configurations
+// @ts-ignore - jest.config.js doesn't have TypeScript declarations
+export { default as jestConfig } from "../jest.config.js";
+// @ts-ignore - jest-esm.config.js doesn't have TypeScript declarations
+export { default as jestEsmConfig } from "../jest-esm.config.js";
