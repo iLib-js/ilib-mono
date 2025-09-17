@@ -59,7 +59,7 @@
         "micromatch": "^4.0.8"
     },
     "devDependencies": {
-        "@ilib-mono/e2e-test": "workspace:^",
+        "ilib-common-config": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

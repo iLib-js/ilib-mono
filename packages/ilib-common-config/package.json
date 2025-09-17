@@ -1,10 +1,10 @@
 {
-  "name": "@ilib-mono/e2e-test",
+  "name": "ilib-common-config",
   "version": "0.0.0",
   "private": true,
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "description": "Internal package for E2E testing of ilib packages",
+  "description": "Internal package for common configuration of things like E2E testing",
   "scripts": {
     "build": "tsc"
   },

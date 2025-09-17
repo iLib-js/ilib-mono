@@ -75,6 +75,6 @@
     "devDependencies": {
         "jest": "^29.7.0",
         "loctool": "workspace:^",
-        "@ilib-mono/e2e-test": "workspace:^"
+        "ilib-common-config": "workspace:^"
     }
 }

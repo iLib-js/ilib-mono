@@ -61,7 +61,7 @@
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "@ilib-mono/e2e-test": "workspace:^",
+        "ilib-common-config": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

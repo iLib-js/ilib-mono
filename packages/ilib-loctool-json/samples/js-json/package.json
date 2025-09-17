@@ -3,7 +3,7 @@
   "private": true,
   "description": "Sample localization project",
   "devDependencies": {
-    "@ilib-mono/e2e-test": "workspace:^",
+    "ilib-common-config": "workspace:^",
     "ilib-loctool-javascript": "workspace:^",
     "ilib-loctool-json": "workspace:^",
     "loctool": "workspace:^"
