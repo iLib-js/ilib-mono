@@ -52,10 +52,15 @@ class ResourceAllCaps extends ResourceRule {
     /**
      * Check if a source string is in ALL CAPS and if the target string matches the casing style.
      * @override
-     * @param {{source: (String|undefined), target: (String|undefined), file: String, resource: Resource}} params
+     * @param {Object} params parameters for the string matching
+     * @param {string} params.source the source string to match against
+     * @param {string} params.target the target string to match against
+     * @param {string} params.file the file path where the resources came from
+     * @param {Resource} params.resource the resource that contains the source and/or target string
+     * @param {number} [params.index] the index of the resource
+     * @param {string} [params.category] the category of the resource
      * @returns {Result|undefined} A Result with severity 'error' if the source string is in ALL CAPS and target string is not in ALL CAPS, otherwise undefined.
      */
-    // @ts-ignore - index and category are documented in JSDoc but not in TypeScript definitions
     matchString({source, target, file, resource, index, category}) {
         if (!source || !target) {
             return;
@@ -110,7 +115,11 @@ class ResourceAllCaps extends ResourceRule {
             locale,
             direction: "toupper"
         });
-        const upperCaseTarget = casemapper.map(target) || target;
+        const upperCaseTarget = casemapper.map(target);
+        if (!upperCaseTarget) {
+            // if we could not upper-case the target, then we cannot fix it, so don't return a fix
+            return undefined;
+        }
 
         const command = ResourceFixer.createStringCommand(0, target.length, upperCaseTarget);
         return ResourceFixer.createFix({
@@ -158,11 +167,15 @@ class ResourceAllCaps extends ResourceRule {
     }
 
     /**
+     * Checks if a locale supports letter upper- and lower-casing.
      * A language by itself cannot have capitalization; Instead, it's a property of a script.
-     * Therefore, if no script is explicitly specified in the locale, use LocaleMatcher to guess the likely full
-     * locale, which includes the script tag. Then check if the script supports capital letters.
-     * This is a guess of course because you cannot know for sure exactly what full locale
-     * corresponds to the source locale.
+     * Therefore, if no script is explicitly specified in the locale, this method will figure out
+     * what the script is. It will use LocaleMatcher to guess the most likely full
+     * locale, which always includes the script tag. This may not be the script that the caller intended
+     * to use with the locale, but it will be a good guess because most locales only use one script. 
+     * Very few locales use multiple scripts, though they do exist. (Kurdish and Serbian for example
+     * are commonly written in multiple scripts.) Once it has the name of the script, it will check whether
+     * that script supports letter casing.
      * @public
      * @param {string} locale The locale to check for capital letter support.
      * @returns {boolean} Returns true if the locale's script supports capital letters, false otherwise.

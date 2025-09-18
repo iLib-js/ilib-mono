@@ -118,124 +118,115 @@ function searchScriptCodes(searchTerm, allScripts) {
     return matches;
 }
 
-function main() {
-    const args = process.argv.slice(2);
-    
-    // Show help if no arguments or --help flag
-    if (args.length === 0 || args.includes('--help')) {
-        showHelp();
-        return;
-    }
-    
-    // Check for too many arguments
-    if (args.length > 1) {
-        console.error('Error: Invalid number of arguments');
-        console.error('');
-        console.error('Usage: node index.js <script-code>');
-        console.error('Example: node index.js Latn');
-        console.error('Example: node index.js Arab');
-        console.error('Example: node index.js Hani');
-        console.error('');
-        console.error('For more information, run: node index.js --help');
-        process.exit(1);
-    }
-    
-    const inputScriptCode = args[0];
-    const allScripts = ScriptInfo.getAllScripts();
-    
-    // Try to find the correct case for the script code
-    const correctCaseCode = findCorrectCase(inputScriptCode, allScripts);
-    const scriptCodeToUse = correctCaseCode || inputScriptCode;
-    
-    // Create a ScriptInfo instance for the script code
-    const scriptInfo = scriptInfoFactory(scriptCodeToUse);
-    
-    // Check if script was recognized
-    if (!scriptInfo) {
-        console.log(`\n❌ Unknown script code: "${inputScriptCode}"`);
-        
-        // Search for similar script codes
-        const matches = searchScriptCodes(inputScriptCode, allScripts);
-        
-        if (matches.length > 0) {
-            console.log(`🔍 Found ${matches.length} similar script code(s):`);
-            matches.forEach(match => {
-                console.log(`   ${match.code} - ${match.name}`);
-            });
-            
-            if (matches.length === 1) {
-                console.log(`\n💡 Did you mean: ${matches[0].code}?`);
-            }
-        } else {
-            console.log(`💡 No similar script codes found for "${inputScriptCode}"`);
-            console.log(`💡 Try one of these valid script codes:`);
-            
-            // Show some example script codes
-            const examples = allScripts.slice(0, 10); // Show first 10 as examples
-            examples.forEach(code => {
-                const example = scriptInfoFactory(code);
-                if (example) {
-                    console.log(`   ${code} - ${example.getName()}`);
-                }
-            });
-            
-            if (allScripts.length > 10) {
-                console.log(`   ... and ${allScripts.length - 10} more scripts`);
-            }
-        }
-        
-        console.log('\n');
-        return;
-    }
-    
-    // Print header
-    console.log(`\nScript Information for "${inputScriptCode}"`);
-    console.log('='.repeat(50));
-    
-    // Get all available properties and their values
-    const properties = [
-        { name: 'Code', value: scriptCodeToUse },
-        { name: 'Code Number', value: scriptInfo.getCodeNumber().toString() },
-        { name: 'Name', value: scriptInfo.getName() },
-        { name: 'Long Code', value: scriptInfo.getLongCode() }
-    ];
-    
-    // Add emoji+English information to the table for better readability
-    // Add direction information with emoji
-    const direction = scriptInfo.getScriptDirection();
-    const directionEmoji = direction === ScriptDirection.RTL ? '📝 RTL' : '📝 LTR';
-    const directionText = direction === ScriptDirection.RTL ? 'Right-to-Left' : 'Left-to-Right';
-    properties.push({ name: 'Script Direction', value: `${directionEmoji} ${directionText}` });
-    
-    // Add IME information with emoji
-    if (scriptInfo.getNeedsIME()) {
-        properties.push({ name: 'IME Requirement', value: '⌨️  Requires Input Method Editor' });
-    } else {
-        properties.push({ name: 'IME Requirement', value: '⌨️  No IME required' });
-    }
-    
-    // Add casing information with emoji
-    if (scriptInfo.getCasing()) {
-        properties.push({ name: 'Casing Info', value: '🔤 Uses letter case (uppercase/lowercase)' });
-    } else {
-        properties.push({ name: 'Casing Info', value: '🔤 No letter case' });
-    }
-    
-    // Find the maximum length of property names for alignment
-    const maxNameLength = Math.max(...properties.map(p => p.name.length));
-    
-    // Print properties in tabular format
-    properties.forEach(property => {
-        const paddedName = property.name.padEnd(maxNameLength);
-        console.log(`${paddedName} | ${property.value}`);
-    });
-    
-    // Print footer
-    console.log('='.repeat(50));
-    console.log('\n');
+const args = process.argv.slice(2);
+
+// Show help if no arguments or --help flag
+if (args.length === 0 || args.includes('--help')) {
+    showHelp();
+    process.exit(0);
 }
 
-// Run the application
-if (import.meta.url === `file://${process.argv[1]}`) {
-    main();
+// Check for too many arguments
+if (args.length > 1) {
+    console.error('Error: Invalid number of arguments');
+    console.error('');
+    console.error('Usage: node index.js <script-code>');
+    console.error('Example: node index.js Latn');
+    console.error('');
+    console.error('For more information, run: node index.js --help');
+    process.exit(1);
 }
+
+const inputScriptCode = args[0];
+const allScripts = ScriptInfo.getAllScripts();
+
+// Try to find the correct case for the script code
+const correctCaseCode = findCorrectCase(inputScriptCode, allScripts);
+const scriptCodeToUse = correctCaseCode || inputScriptCode;
+
+// Create a ScriptInfo instance for the script code
+const scriptInfo = scriptInfoFactory(scriptCodeToUse);
+
+// Check if script was recognized
+if (!scriptInfo) {
+    console.log(`\n❌ Unknown script code: "${inputScriptCode}"`);
+    
+    // Search for similar script codes
+    const matches = searchScriptCodes(inputScriptCode, allScripts);
+    
+    if (matches.length > 0) {
+        console.log(`🔍 Found ${matches.length} similar script code(s):`);
+        matches.forEach(match => {
+            console.log(`   ${match.code} - ${match.name}`);
+        });
+        
+        if (matches.length === 1) {
+            console.log(`\n💡 Did you mean: ${matches[0].code}?`);
+        }
+    } else {
+        console.log(`💡 No similar script codes found for "${inputScriptCode}"`);
+        console.log(`💡 Try one of these valid script codes:`);
+        
+        // Show some example script codes
+        const examples = allScripts.slice(0, 10); // Show first 10 as examples
+        examples.forEach(code => {
+            const example = scriptInfoFactory(code);
+            if (example) {
+                console.log(`   ${code} - ${example.getName()}`);
+            }
+        });
+        
+        if (allScripts.length > 10) {
+            console.log(`   ... and ${allScripts.length - 10} more scripts`);
+        }
+    }
+    
+    console.log('\n');
+    process.exit(0);
+}
+
+// Print header
+console.log(`\nScript Information for "${inputScriptCode}"`);
+console.log('='.repeat(50));
+
+// Get all available properties and their values
+const properties = [
+    { name: 'Code', value: scriptCodeToUse },
+    { name: 'Code Number', value: scriptInfo.getCodeNumber().toString() },
+    { name: 'Name', value: scriptInfo.getName() },
+    { name: 'Long Code', value: scriptInfo.getLongCode() }
+];
+
+// Add emoji+English information to the table for better readability
+// Add direction information with emoji
+const direction = scriptInfo.getScriptDirection();
+const directionEmoji = direction === ScriptDirection.RTL ? '📝 RTL' : '📝 LTR';
+const directionText = direction === ScriptDirection.RTL ? 'Right-to-Left' : 'Left-to-Right';
+properties.push({ name: 'Script Direction', value: `${directionEmoji} ${directionText}` });
+
+// Add IME information with emoji
+if (scriptInfo.getNeedsIME()) {
+    properties.push({ name: 'IME Requirement', value: '⌨️  Requires Input Method Editor' });
+} else {
+    properties.push({ name: 'IME Requirement', value: '⌨️  No IME required' });
+}
+
+// Add casing information with emoji
+if (scriptInfo.getCasing()) {
+    properties.push({ name: 'Casing Info', value: '🔤 Uses letter case (uppercase/lowercase)' });
+} else {
+    properties.push({ name: 'Casing Info', value: '🔤 No letter case' });
+}
+
+// Find the maximum length of property names for alignment
+const maxNameLength = Math.max(...properties.map(p => p.name.length));
+
+// Print properties in tabular format
+properties.forEach(property => {
+    const paddedName = property.name.padEnd(maxNameLength);
+    console.log(`${paddedName} | ${property.value}`);
+});
+
+// Print footer
+console.log('='.repeat(50));
+console.log('\n');

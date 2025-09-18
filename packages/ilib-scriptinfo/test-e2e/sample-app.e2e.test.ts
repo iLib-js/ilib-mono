@@ -45,8 +45,8 @@ async function runSampleApp(args: string[] = [], sampleType: SampleType = "esm")
 
     if (sampleType === "typescript") {
         // For TypeScript, use tsx to run directly
-        command = "npx";
-        commandArgs = ["tsx", "index.ts", ...args];
+        command = "tsx";
+        commandArgs = [path.resolve(sampleDir, "index.ts"), ...args];
     } else {
         // For ESM and Legacy, use node with index.js
         const sampleAppPath = path.resolve(sampleDir, "index.js");
@@ -73,7 +73,6 @@ async function runSampleApp(args: string[] = [], sampleType: SampleType = "esm")
  * Test suite for sample apps
  */
 describe("ilib-scriptinfo sample apps", () => {
-
     // Test ESM, Legacy, and TypeScript samples
     const sampleTypes: SampleType[] = ["esm", "legacy", "typescript"];
 
@@ -91,7 +90,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain("node index.js <script-code>");
                     expect(result.stdout).toContain("EXAMPLES");
                     expect(result.stdout).toContain("node index.js Latn");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
                 test("should show help when --help flag is provided", async () => {
                     const result = await runSampleApp(["--help"], sampleType);
@@ -100,7 +99,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain("Sample App");
                     expect(result.stdout).toContain("USAGE");
                     expect(result.stdout).toContain("node index.js <script-code>");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
             });
 
@@ -116,7 +115,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain("Script Direction | 📝 LTR Left-to-Right");
                     expect(result.stdout).toContain("IME Requirement  | ⌨️  No IME required");
                     expect(result.stdout).toContain("Casing Info      | 🔤 Uses letter case");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
                 test("should display Arabic script information correctly", async () => {
                     const result = await runSampleApp(["Arab"], sampleType);
@@ -125,7 +124,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain("Code             | Arab");
                     expect(result.stdout).toContain("Name             | Arabic");
                     expect(result.stdout).toContain("Script Direction | 📝 RTL Right-to-Left");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
                 test("should display Han script information correctly", async () => {
                     const result = await runSampleApp(["Hani"], sampleType);
@@ -134,7 +133,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain("Code             | Hani");
                     expect(result.stdout).toContain("Name             | Han");
                     expect(result.stdout).toContain("Script Direction | 📝 LTR Left-to-Right");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
             });
 
@@ -146,7 +145,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain('Script Information for "latn"');
                     expect(result.stdout).toContain("Code             | Latn");
                     expect(result.stdout).toContain("Name             | Latin");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
                 test("should correct uppercase input to proper case", async () => {
                     const result = await runSampleApp(["LATN"], sampleType);
@@ -154,7 +153,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain('Script Information for "LATN"');
                     expect(result.stdout).toContain("Code             | Latn");
                     expect(result.stdout).toContain("Name             | Latin");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
             });
 
@@ -167,7 +166,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain("🔍 Found");
                     expect(result.stdout).toContain("similar script code(s):");
                     expect(result.stdout).toContain("Latn - Latin");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
                 test("should find partial matches for 'arab'", async () => {
                     const result = await runSampleApp(["arab"], sampleType);
@@ -175,7 +174,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain('Script Information for "arab"');
                     expect(result.stdout).toContain("Code             | Arab");
                     expect(result.stdout).toContain("Name             | Arabic");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
                 test("should find partial matches for 'han'", async () => {
                     const result = await runSampleApp(["han"], sampleType);
@@ -184,7 +183,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain("🔍 Found");
                     expect(result.stdout).toContain("similar script code(s):");
                     expect(result.stdout).toContain("Hani - Han");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
             });
 
@@ -197,7 +196,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stdout).toContain("💡 No similar script codes found");
                     expect(result.stdout).toContain("💡 Try one of these valid script codes:");
                     expect(result.stdout).toContain("Arab - Arabic");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
                 test("should show error for too many arguments", async () => {
                     const result = await runSampleApp(["Latn", "Arab"], sampleType);
@@ -205,7 +204,7 @@ describe("ilib-scriptinfo sample apps", () => {
                     expect(result.stderr).toContain("Error: Invalid number of arguments");
                     expect(result.stderr).toContain("Usage: node index.js <script-code>");
                     expect(result.stderr).toContain("Example: node index.js Latn");
-                }, sampleType === "typescript" ? 15000 : 5000);
+                });
 
             });
 
