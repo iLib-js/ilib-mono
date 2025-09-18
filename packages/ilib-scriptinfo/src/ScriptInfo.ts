@@ -29,11 +29,8 @@ import { ScriptDirection } from './ScriptDirection';
  * @internal
  */
 function getScriptInfo(code: string): ScriptInfoData | undefined {
-    const index = scriptData.findIndex((entry: ScriptDataEntry) => entry[0] === code);
-    if (index === -1) return undefined;
-    
-    const data = scriptData[index];
-    if (!data) return undefined;
+    const data = scriptData.find(entry => entry[0] === code);
+    if (!data) return null;
     
     return {
         nb: data[1],

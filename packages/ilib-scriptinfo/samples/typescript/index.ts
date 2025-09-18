@@ -173,44 +173,29 @@ function displayScriptInfo(scriptCode: string): void {
     console.log(`Script Direction | ${directionEmoji}`);
     console.log(`IME Requirement  | ${imeEmoji}`);
     console.log(`Casing Info      | ${casingEmoji}`);
-    
-    console.log("\n✨ TypeScript Features Demonstrated:");
-    console.log("• Type-safe factory function call");
-    console.log("• IntelliSense support for all methods");
-    console.log("• Enum type safety for ScriptDirection");
-    console.log("• Compile-time type checking");
-    console.log("• Type annotations for better documentation");
+    }
+
+const args: string[] = process.argv.slice(2);
+
+// Type-safe argument handling
+if (args.length === 0) {
+    showHelp();
+    process.exit(0);
 }
 
-/**
- * Main function with full TypeScript type safety
- */
-function main(): void {
-    const args: string[] = process.argv.slice(2);
-    
-    // Type-safe argument handling
-    if (args.length === 0) {
-        showHelp();
-        return;
-    }
-    
-    if (args.length > 1) {
-        console.error("Error: Invalid number of arguments");
-        console.error("Usage: node index.js <script-code>");
-        console.error("Example: node index.js Latn");
-        process.exit(1);
-    }
-    
-    const scriptCode: string = args[0];
-    
-    if (scriptCode === "--help" || scriptCode === "-h") {
-        showHelp();
-        return;
-    }
-    
-    // Display script information with full type safety
-    displayScriptInfo(scriptCode);
+if (args.length > 1) {
+    console.error("Error: Invalid number of arguments");
+    console.error("Usage: node index.js <script-code>");
+    console.error("Example: node index.js Latn");
+    process.exit(1);
 }
 
-// Run the main function
-main();
+const scriptCode: string = args[0];
+
+if (scriptCode === "--help" || scriptCode === "-h") {
+    showHelp();
+    process.exit(0);
+}
+
+// Display script information with full type safety
+displayScriptInfo(scriptCode);
