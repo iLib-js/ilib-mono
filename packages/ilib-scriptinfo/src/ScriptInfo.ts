@@ -30,7 +30,7 @@ import { ScriptDirection } from './ScriptDirection';
  */
 function getScriptInfo(code: string): ScriptInfoData | undefined {
     const data = scriptData.find(entry => entry[0] === code);
-    if (!data) return null;
+    if (!data) return undefined;
     
     return {
         nb: data[1],
