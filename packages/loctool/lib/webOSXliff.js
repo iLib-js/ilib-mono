@@ -78,7 +78,7 @@ var webOSXliff = function webOSXliff(options) {
 webOSXliff.prototype.parse = function(xliff) {
     var sourceLocale = xliff._attributes["srcLang"] || this.project.sourceLocale;
     var targetLocale = xliff._attributes["trgLang"];
-    
+
     if (xliff.file) {
         var files = ilib.isArray(xliff.file) ? xliff.file : [ xliff.file ];
          for (var i = 0; i < files.length; i++) {
@@ -182,6 +182,93 @@ webOSXliff.prototype._hashKey = function(project, context, sourceLocale, targetL
 };
 
 /**
+ * Merges new metadata into base metadata by category and type,
+ * overwriting existing types and adding new ones as needed.
+ *
+ * @param {Object} newMetadata - Metadata object with updates.
+ * @param {Object} baseMetadata - Original metadata to merge into.
+ * @returns {Object} Merged metadata object.
+ */
+webOSXliff.prototype._mergeMetadata = function(newMetadata, baseMetadata) {
+    if (!baseMetadata) return newMetadata;
+    if (!newMetadata) return baseMetadata;
+
+    function normalizeGroup(metaGroup) {
+        if (!metaGroup) {
+            return [];
+        }
+        return Array.isArray(metaGroup) ? metaGroup : [metaGroup];
+    }
+
+    function normalizeMeta(meta) {
+        if (!meta) {
+            return [];
+        }
+        var arr = Array.isArray(meta) ? meta : [meta];
+        return arr.filter(function (m) { return m; });
+    }
+
+    var baseGroups = normalizeGroup(baseMetadata["mda:metaGroup"]);
+    var newGroups = normalizeGroup(newMetadata["mda:metaGroup"]);
+    console.log("Base Groups:", JSON.stringify(baseGroups, null, 2));
+    console.log("New Groups:", JSON.stringify(newGroups, null, 2));
+    var groupMap = new Map();
+
+    // Index base groups
+    baseGroups.forEach(function (group) {
+        var category = group && group._attributes && group._attributes.category;
+        if (!category) return;
+
+        var metaMap = new Map();
+        normalizeMeta(group["mda:meta"]).forEach(function (meta) {
+            var type = meta && meta._attributes && meta._attributes.type;
+            if (type) metaMap.set(type, meta);
+        });
+
+        groupMap.set(category, {
+            _attributes: { category: category },
+            metaMap: metaMap
+        });
+    });
+
+    // Merge new groups
+    newGroups.forEach(function (group) {
+        var category = group && group._attributes && group._attributes.category;
+        if (!category) return;
+
+        var newMetaArray = normalizeMeta(group["mda:meta"]);
+        var targetGroup = groupMap.get(category);
+
+        if (!targetGroup) {
+            var metaMap = new Map();
+            newMetaArray.forEach(function (meta) {
+                var type = meta && meta._attributes && meta._attributes.type;
+                if (type) metaMap.set(type, meta);
+            });
+            groupMap.set(category, {
+                _attributes: { category: category },
+                metaMap: metaMap
+            });
+        } else {
+            newMetaArray.forEach(function (meta) {
+                var type = meta && meta._attributes && meta._attributes.type;
+                if (type) targetGroup.metaMap.set(type, meta);
+            });
+        }
+    });
+
+    // Reconstruct
+    var mergedGroups = Array.from(groupMap.values()).map(function (group) {
+    return {
+        _attributes: group._attributes,
+        "mda:meta": Array.from(group.metaMap.values())
+    };
+    });
+
+    return { "mda:metaGroup": mergedGroups };
+}
+
+/**
  * Add this translation unit to this xliff.
  *
  * @param {TranslationUnit} unit the translation unit to add to this xliff
@@ -206,7 +293,12 @@ webOSXliff.prototype.addTranslationUnit = function(unit) {
     var oldUnit = this.tuhash[hashKeyTarget];
     if (oldUnit && !this.allowDups) {
         logger.trace("Merging unit");
+
         // update the old unit with this new info
+        if (unit.metadata || oldUnit.metadata) {
+            // update metadata
+            unit.metadata = this._mergeMetadata(unit.metadata, oldUnit.metadata);
+        }
         JSUtils.shallowCopy(unit, oldUnit);
     } else {
         if (this.version >= 2 && this.tu.length) {
@@ -316,7 +408,7 @@ webOSXliff.prototype.getTranslationSet = function() {
                 flavor: tu.flavor,
                 metadata: tu.metadata
             });
-            
+
             if (tu.target) {
                 res.setTarget(tu.target);
             }

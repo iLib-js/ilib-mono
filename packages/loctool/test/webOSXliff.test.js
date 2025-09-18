@@ -347,7 +347,7 @@ describe("webOSxliff", function() {
             project: "webapp",
             origin: "target"
         });
-        
+
         x.addResource(res);
         expect(x.size()).toBe(1);
     });
@@ -992,7 +992,7 @@ describe("webOSxliff", function() {
     });
     test("webOSXliffMerge_write_en_US_CustomStyle_wrongStyle", function() {
         expect.assertions(2);
-    
+
         var settings = {};
         settings.xliffVersion = 2;
         settings.xliffStyle = "custommm";
@@ -1000,7 +1000,7 @@ describe("webOSxliff", function() {
             "test/testfiles/xliff20/app1/en-US.xliff",
             "test/testfiles/xliff20/app2/en-US.xliff",
         ];
-    
+
         var target = XliffMerge(settings);
         expect(target).toBeTruthy();
         var actual = target.serialize();
@@ -1048,6 +1048,176 @@ describe("webOSxliff", function() {
         '    </group>\n' +
         '  </file>\n' +
         '</xliff>';
+        expect(actual).toBe(expected);
+    });
+    test("webOSXliffMerge_write_with_metadata", function() {
+        expect.assertions(2);
+
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.xliffStyle = "webOS";
+        settings.infiles = [
+            "test/testfiles/xliff_webOS/metadata_merge/base/app1/en-US.xliff",
+            "test/testfiles/xliff_webOS/metadata_merge/new/app1/en-US.xliff",
+        ];
+        var target = XliffMerge(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '  <file id="app1_f1" original="app1">\n' +
+        '    <group id="app1_g1" name="javascript">\n' +
+        '      <unit id="app1_g1_1">\n' +
+        '        <mda:metadata>\n' +
+        '          <mda:metaGroup category="device-type">\n' +
+        '            <mda:meta type="Monitor">Monitor {arg1}.</mda:meta>\n' +
+        '            <mda:meta type="StanbyME">(changed) StanbyME {arg1}.</mda:meta>\n' +
+        '            <mda:meta type="TV">(added) TV {arg1}.</mda:meta>\n' +
+        '          </mda:metaGroup>\n' +
+        '        </mda:metadata>\n' +
+        '        <segment>\n' +
+        '          <source>%deviceType% {arg1}.</source>\n' +
+        '          <target>(changed) %deviceType% {arg1}.</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_g1_2">\n' +
+        '        <mda:metadata>\n' +
+        '          <mda:metaGroup category="device-type">\n' +
+        '            <mda:meta type="webOS">webOS specific settings text</mda:meta>\n' +
+        '            <mda:meta type="TV">(added) TV specific settings</mda:meta>\n' +
+        '          </mda:metaGroup>\n' +
+        '        </mda:metadata>\n' +
+        '        <segment>\n' +
+        '          <source>Settings</source>\n' +
+        '          <target>Settings</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_g1_3">\n' +
+        '        <segment>\n' +
+        '          <source>Simple text without metadata</source>\n' +
+        '          <target>Simple text without metadata</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_g1_4">\n' +
+        '        <mda:metadata>\n' +
+        '          <mda:metaGroup category="feature">\n' +
+        '            <mda:meta type="premium">Premium feature text</mda:meta>\n' +
+        '          </mda:metaGroup>\n' +
+        '        </mda:metadata>\n' +
+        '        <segment>\n' +
+        '          <source>New text with metadata</source>\n' +
+        '          <target>New text with metadata</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+
+    test("webOSXliffMerge_write_with_metadata_2", function() {
+        expect.assertions(2);
+
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.xliffStyle = "webOS";
+        settings.infiles = [
+            "test/testfiles/xliff_webOS/en-US_metadata.xliff",
+            "test/testfiles/xliff_webOS/app1/en-US.xliff",
+        ];
+        var target = XliffMerge(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '  <file id="app1_f1" original="app1">\n' +
+        '    <group id="app1_g1" name="cpp">\n' +
+        '      <unit id="app1_g1_1">\n' +
+        '        <mda:metadata>\n' +
+        '          <mda:metaGroup category="device-type">\n' +
+        '            <mda:meta type="StanbyME">(changed) StanbyME {arg1}.</mda:meta>\n' +
+        '            <mda:meta type="TV">(added) TV {arg1}.</mda:meta>\n' +
+        '          </mda:metaGroup>\n' +
+        '        </mda:metadata>\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1a</source>\n' +
+        '          <target>app1:String 1a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_g1_2">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="app1_g2" name="x-json">\n' +
+        '      <unit id="app1_g2_1">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+    test("webOSXliffMerge_write_with_metadata_3", function() {
+        expect.assertions(2);
+
+        var settings = {};
+        settings.xliffVersion = 2;
+        settings.xliffStyle = "webOS";
+        settings.infiles = [
+            "test/testfiles/xliff_webOS/app1/en-US.xliff",
+            "test/testfiles/xliff_webOS/en-US_metadata.xliff",
+        ];
+        var target = XliffMerge(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '  <file id="app1_f1" original="app1">\n' +
+        '    <group id="app1_g1" name="cpp">\n' +
+        '      <unit id="app1_g1_1">\n' +
+        '        <mda:metadata>\n' +
+        '          <mda:metaGroup category="device-type">\n' +
+        '            <mda:meta type="StanbyME">(changed) StanbyME {arg1}.</mda:meta>\n' +
+        '            <mda:meta type="TV">(added) TV {arg1}.</mda:meta>\n' +
+        '          </mda:metaGroup>\n' +
+        '        </mda:metadata>\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1a</source>\n' +
+        '          <target>(changed) app1:String 1a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_g1_2">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="app1_g2" name="x-json">\n' +
+        '      <unit id="app1_g2_1">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
         expect(actual).toBe(expected);
     });
 })
