@@ -1,4 +1,4 @@
-const { jestConfig: baseConfig } = require("ilib-common-config");
+const baseConfig = require("../ilib-common-config/jest.config.js");
 
 const config = {
     ...baseConfig,

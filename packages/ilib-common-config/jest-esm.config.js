@@ -30,16 +30,6 @@ const config = {
     ],
     // ESM module file extensions
     moduleFileExtensions: ['js', 'jsx', 'json'],
-    // ESM transform configuration
-    transform: {
-        '^.+\\.js$': ['babel-jest', {
-            presets: [['@babel/preset-env', { modules: 'commonjs' }]]
-        }]
-    },
-    // ESM transform ignore patterns
-    transformIgnorePatterns: [
-        '/node_modules/(?!(ilib-.*)/)'
-    ],
     // ESM module directories
     moduleDirectories: ['node_modules', 'src']
 };

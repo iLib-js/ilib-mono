@@ -54,7 +54,7 @@ module.exports = config;
 
 ### For ESM Packages
 
-Modern packages using ES modules should use this configuration:
+Modern packages using ES modules should use this configuration. This configuration uses Jest's native ESM support without requiring Babel transformation:
 
 > **✅ Compatible**: ESM packages can use the **latest version of Jest** (v27+).
 

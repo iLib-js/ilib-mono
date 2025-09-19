@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 var semver = require('semver');
-const { jestConfig: baseConfig } = require("ilib-common-config");
+const baseConfig = require("../ilib-common-config/jest.config.js");
 
 var config = Object.assign({}, baseConfig, {
     displayName: {
