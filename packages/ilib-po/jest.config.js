@@ -1,5 +1,5 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
-const baseConfig = require("../../jest.config.js");
+const { tsJestConfig: baseConfig } = require("ilib-common-config");
 
 module.exports = {
     ...baseConfig,
