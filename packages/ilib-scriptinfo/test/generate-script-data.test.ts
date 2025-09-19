@@ -21,11 +21,15 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 
-describe('generate-script-data.js', () => {
-    const scriptPath = path.join(__dirname, '../scripts/generate-script-data.js');
-    const outputPath = path.join(__dirname, '../src/ScriptData.ts');
-    const originalOutputPath = path.join(__dirname, '../src/ScriptData.ts.backup');
+const scriptPath = path.join(__dirname, '../scripts/generate-script-data.js');
+const outputPath = path.join(__dirname, '../src/ScriptData.ts');
+const originalOutputPath = path.join(__dirname, '../src/ScriptData.ts.backup');
 
+function runScript() {
+   return execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
+}
+
+describe('generate-script-data.js', () => {
     beforeAll(() => {
         // Backup the original ScriptData.ts if it exists
         if (fs.existsSync(outputPath)) {
@@ -40,29 +44,24 @@ describe('generate-script-data.js', () => {
             fs.unlinkSync(originalOutputPath);
         } else {
             // If no original backup, regenerate the file for other tests
-            execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
+            runScript();
         }
-    });
-
-    beforeEach(() => {
-        // Don't delete the file - just regenerate it
-        // This ensures other tests can still use it
     });
 
     describe('Script execution', () => {
         test('should run without errors', () => {
             expect(() => {
-                execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
+                runScript();
             }).not.toThrow();
         });
 
         test('should generate output file', () => {
-            execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
+            runScript();
             expect(fs.existsSync(outputPath)).toBe(true);
         });
 
         test('should output success message', () => {
-            const output = execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
+            const output = runScript();
             expect(output).toContain('✅ Generated TS ScriptData.ts');
             expect(output).toContain('📁 Output file:');
             expect(output).toContain('📊 Source: ucd-full package');
@@ -71,7 +70,7 @@ describe('generate-script-data.js', () => {
 
     describe('Generated file structure', () => {
         beforeEach(() => {
-            execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
+            runScript();
         });
 
         test('should have correct file header', () => {
@@ -100,7 +99,7 @@ describe('generate-script-data.js', () => {
         let content: string;
 
         beforeEach(() => {
-            execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
+            runScript();
             content = fs.readFileSync(outputPath, 'utf8');
         });
 
