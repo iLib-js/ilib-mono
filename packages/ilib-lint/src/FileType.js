@@ -52,13 +52,6 @@ class FileType {
     name;
 
     /**
-     * The list of locales to use with this file type
-     * @type {Array.<String>|undefined}
-     * @readonly
-     */
-    locales;
-
-    /**
      * The intermediate representation type of this file type.
      * @type {String}
      * @readonly
@@ -114,7 +107,6 @@ class FileType {
      * of this file type as documented above
      * @param {String} options.name the name or glob spec for this file type
      * @param {Project} options.project the Project that this file type is a part of
-     * @param {Array.<String>} [options.locales] list of locales to use with this file type
      * @param {String} [options.template] the path name template for this file type
      * which shows how to extract the locale from the path
      * name if the path includes it. Many file types
@@ -152,7 +144,6 @@ class FileType {
 
         this.name = options.name;
         this.project = options.project;
-        this.locales = options.locales;
         this.template = options.template;
 
         const parserNames = options.parsers;
@@ -241,10 +232,6 @@ class FileType {
 
     getProject() {
         return this.project;
-    }
-
-    getLocales() {
-        return this.locales || this.project.getLocales();
     }
 
     getTemplate() {
