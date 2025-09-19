@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-/**
+/*
  * ResourceSentenceEnding - Checks that sentence-ending punctuation is appropriate for the target locale
  *
  * This rule checks if the source string ends with certain punctuation marks and ensures
@@ -43,16 +43,21 @@ import Locale from 'ilib-locale';
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 import { isSpace } from 'ilib-ctype';
 
-/** @ignore
- * @typedef {import("ilib-tools-common").Resource} Resource */
-/** @ignore
- * @typedef {import("ilib-lint-common").Fix} Fix */
-/** @ignore
- * @typedef {import("../plugins/resource/ResourceFix.js").default} ResourceFix */
-
 /**
- * Default punctuation for each punctuation type
  * @ignore
+ * @typedef {import("ilib-tools-common").Resource} Resource
+ */
+/**
+ * @ignore
+ * @typedef {import("ilib-lint-common").Fix} Fix
+ */
+/**
+ * @ignore
+ * @typedef {import("../plugins/resource/ResourceFix.js").default} ResourceFix
+ */
+
+/*
+ * Default punctuation for each punctuation type
  */
 const defaults = {
     'period': '.',
@@ -62,9 +67,8 @@ const defaults = {
     'colon': ':'
 };
 
-/**
+/*
  * Punctuation map for each language, with default punctuation for each punctuation type
- * @ignore
  */
 const punctuationMap = {
     'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
@@ -93,13 +97,15 @@ const punctuationMap = {
  * @property {string} [colon] - Custom colon punctuation for this locale
  * @property {string[]} [exceptions] - Array of source strings to skip checking for this locale.
  *   Useful for handling special cases like abbreviations that should not be checked for sentence-ending punctuation.
-*/
+ */
+
 /**
  * @ignore
  * @typedef {{minimumLength?: number}} ResourceSentenceEndingFixedOptions
  * @property {number} [minimumLength=10] - Minimum length of source string before the rule is applied.
  *   Strings shorter than this length will be skipped (useful for avoiding false positives on abbreviations).
  */
+
 /**
  * @ignore
  * @typedef {ResourceSentenceEndingFixedOptions | Record<string, LocaleOptions>} ResourceSentenceEndingOptions
