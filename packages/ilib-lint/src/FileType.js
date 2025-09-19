@@ -29,6 +29,42 @@ import Project from "./Project.js";
 const logger = log4js.getLogger("ilib-lint.FileType");
 
 /**
+ * Default locales for the linter if none are specified on the command line or in the config file. These are the top
+ * 27 locales on the internet by volume as of 2015. (Maybe we should update this list?)
+ * @type {readonly string[]}
+ */
+const defaultLocales = [
+    "en-AU",
+    "en-CA",
+    "en-GB",
+    "en-IN",
+    "en-NG",
+    "en-PH",
+    "en-PK",
+    "en-US",
+    "en-ZA",
+    "de-DE",
+    "fr-CA",
+    "fr-FR",
+    "es-AR",
+    "es-ES",
+    "es-MX",
+    "id-ID",
+    "it-IT",
+    "ja-JP",
+    "ko-KR",
+    "pt-BR",
+    "ru-RU",
+    "tr-TR",
+    "vi-VN",
+    "zxx-XX",
+    "zh-Hans-CN",
+    "zh-Hant-HK",
+    "zh-Hant-TW",
+    "zh-Hans-SG"
+];
+
+/**
  * @class Represent a type of file in an ilib-lint project.
  *
  * Each file is classified into a particular file type. If
@@ -152,7 +188,7 @@ class FileType {
 
         this.name = options.name;
         this.project = options.project;
-        this.locales = options.locales || this.project.getLocales();
+        this.locales = options.locales || this.project.getLocales() || defaultLocales;
         this.template = options.template;
 
         const parserNames = options.parsers;
