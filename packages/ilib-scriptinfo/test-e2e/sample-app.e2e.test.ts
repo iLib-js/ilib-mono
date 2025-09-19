@@ -76,8 +76,7 @@ describe("ilib-scriptinfo sample apps", () => {
     // Test ESM, Legacy, and TypeScript samples
     const sampleTypes: SampleType[] = ["esm", "legacy", "typescript"];
 
-    sampleTypes.forEach((sampleType) => {
-        describe(`${sampleType.toUpperCase()} sample app`, () => {
+    describe.each(sampleTypes)(`%s sample app`, (sampleType) => {
 
             describe("help functionality", () => {
 
