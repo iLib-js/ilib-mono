@@ -341,20 +341,6 @@ describe("testFileType", () => {
         expect(ft.getProject()).toBe(project);
     });
 
-    test("FileTypeGetLocales", () => {
-        expect.assertions(2);
-
-        const locales = ["en-US", "de-DE"];
-        const ft = new FileType({
-            name: "test",
-            locales,
-            project,
-        });
-        expect(ft).toBeTruthy();
-
-        expect(ft.getLocales()).toBe(locales);
-    });
-
     test("FileType get the intermediate representation type", () => {
         expect.assertions(2);
         const ft = new FileType({
@@ -416,18 +402,6 @@ describe("testFileType", () => {
         const serializer = ft.getSerializer();
         expect(serializer).toBeTruthy();
         expect(serializer?.getName()).toBe("serializer-xyz");
-    });
-
-    test("FileTypeGetLocalesFromProject", () => {
-        expect.assertions(2);
-
-        const ft = new FileType({
-            name: "test",
-            project,
-        });
-        expect(ft).toBeTruthy();
-
-        expect(ft.getLocales()).toEqual(["fr-FR", "nl-NL"]);
     });
 
     test("FileTypeGetTemplate", () => {

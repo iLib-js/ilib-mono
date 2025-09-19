@@ -288,7 +288,7 @@ describe("testProject", () => {
         expect(project.getOptions()).toBe(options);
     });
 
-    test("ProjectGetLocalesOptions", () => {
+    test("ProjectLocalesOptions", () => {
         expect.assertions(2);
 
         const locales = ["en-US", "ko-KR"];
@@ -302,10 +302,10 @@ describe("testProject", () => {
         });
         expect(project).toBeTruthy();
 
-        expect(project.getLocales()).toBe(locales);
+        expect(project.locales).toEqual(locales);
     });
 
-    test("ProjectGetLocalesFallbackToConfig", () => {
+    test("ProjectLocalesFallbackToConfig", () => {
         expect.assertions(2);
 
         const options = {
@@ -314,7 +314,7 @@ describe("testProject", () => {
         const project = new Project("x", options, genericConfig);
         expect(project).toBeTruthy();
 
-        expect(project.getLocales()).toBe(genericConfig.locales);
+        expect(project.locales).toEqual(genericConfig.locales);
     });
 
     test("ProjectGetSourceLocaleFallbackToConfig", () => {

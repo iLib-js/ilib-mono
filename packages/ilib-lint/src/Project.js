@@ -78,6 +78,42 @@ function isOwnMethod(instance, methodName, parentClass) {
 }
 
 /**
+ * Default locales for the linter if none are specified on the command line or in the config file. These are the top
+ * 27 locales on the internet by volume as of 2015. (Maybe we should update this list?)
+ * @type {string[]}
+ */
+const defaultLocales = [
+    "en-AU",
+    "en-CA",
+    "en-GB",
+    "en-IN",
+    "en-NG",
+    "en-PH",
+    "en-PK",
+    "en-US",
+    "en-ZA",
+    "de-DE",
+    "fr-CA",
+    "fr-FR",
+    "es-AR",
+    "es-ES",
+    "es-MX",
+    "id-ID",
+    "it-IT",
+    "ja-JP",
+    "ko-KR",
+    "pt-BR",
+    "ru-RU",
+    "tr-TR",
+    "vi-VN",
+    "zxx-XX",
+    "zh-Hans-CN",
+    "zh-Hant-HK",
+    "zh-Hant-TW",
+    "zh-Hans-SG"
+];
+
+/**
  * @class Represent an ilin-lint project.
  *
  * A project is defined as a root directory and a configuration that
@@ -124,7 +160,11 @@ class Project extends DirItem {
         }
 
         this.sourceLocale = config?.sourceLocale || options?.opt?.sourceLocale;
-        this.locales = this.options?.opt?.locales || this.config.locales;
+        /**
+         * @readonly
+         * @type {string[]}
+         */
+        this.locales = this.options?.opt?.locales || this.config.locales || defaultLocales;
 
         this.config.autofix = options?.opt?.fix === true || config?.autofix === true;
 
