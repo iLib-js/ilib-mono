@@ -1,4 +1,4 @@
-const { jestEsmConfig: baseConfig } = require("ilib-common-config");
+import baseConfig from '../ilib-common-config/jest-esm.config.js';
 
 const config = {
     ...baseConfig,
@@ -8,4 +8,4 @@ const config = {
     },
 };
 
-module.exports = config;
+export default config;
