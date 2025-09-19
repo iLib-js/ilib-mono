@@ -12,6 +12,10 @@
       "test": {
         "dependsOn": ["build", "^test"]
       },
+      "test:web": {
+        "dependsOn": ["build", "^test:web"],
+        "outputs": ["samples/**"]
+      },
       "test:e2e": {
         "dependsOn": ["build", "^test:e2e"],
         "outputs": ["samples/**"]
