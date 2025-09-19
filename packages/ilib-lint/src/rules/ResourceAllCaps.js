@@ -107,7 +107,7 @@ class ResourceAllCaps extends ResourceRule {
      * @param {string} file the file path
      * @param {number} [index] the index for array resources
      * @param {string} [category] the category for plural resources
-     * @returns {ResourceFix} the fix for this rule
+     * @returns {ResourceFix | undefined} the fix for this rule
      */
     createFix(resource, target, file, index, category) {
         const locale = resource.targetLocale || 'en-US';
