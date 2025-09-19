@@ -46,6 +46,7 @@ import ResourceXML from '../rules/ResourceXML.js';
 import ResourceCamelCase from '../rules/ResourceCamelCase.js';
 import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
 import ResourceKebabCase from '../rules/ResourceKebabCase.js';
+import ResourceAllCaps from '../rules/ResourceAllCaps.js';
 import ResourceGNUPrintfMatch from '../rules/ResourceGNUPrintfMatch.js';
 import ResourceReturnChar from '../rules/ResourceReturnChar.js';
 import StringFixer from './string/StringFixer.js';
@@ -542,6 +543,7 @@ class BuiltinPlugin extends Plugin {
             ResourceCamelCase,
             ResourceSnakeCase,
             ResourceKebabCase,
+            ResourceAllCaps,
             ResourceGNUPrintfMatch,
             ResourceReturnChar,
             FileEncodingRule,
