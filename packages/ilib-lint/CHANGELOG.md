@@ -1,5 +1,13 @@
 # ilib-lint
 
+## 2.18.3
+
+### Patch Changes
+
+- c43b5cb: - Fixed bug: now get and use the right locales
+  - command-line overrides the config file which overrides the default
+  - before, it only ever used the defaults!
+
 ## 2.18.2
 
 ### Patch Changes
