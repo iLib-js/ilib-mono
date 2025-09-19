@@ -1,4 +1,4 @@
-const baseConfig = require('../../jest.config.js');
+const baseConfig = require("../ilib-common-config/jest-esm.config.js");
 
 const config = {
     ...baseConfig,

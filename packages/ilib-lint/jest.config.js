@@ -1,4 +1,4 @@
-const baseConfig = require("../../jest.config.js");
+import baseConfig from '../ilib-common-config/jest.config.js';
 
 const config = {
     ...baseConfig,
@@ -8,4 +8,4 @@ const config = {
     },
 };
 
-module.exports = config;
+export default config;
