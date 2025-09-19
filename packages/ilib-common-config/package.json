@@ -22,6 +22,9 @@
     "karma-edge-launcher": "^0.4.2",
     "karma-jasmine": "^5.1.0",
     "karma-webpack": "^5.0.0",
+    "ts-loader": "^9.0.0",
+    "babel-loader": "^9.0.0",
+    "@babel/preset-env": "^7.0.0",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {

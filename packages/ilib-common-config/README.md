@@ -28,6 +28,8 @@ Since this is a workspace-only package, add it as a devDependency in your packag
 ## Jest Configuration
 
 The package provides shared Jest configurations for different types of ilib packages, ensuring consistent testing setup across the monorepo.
+For most packages, you only need to define the "displayName" property with the "name" and "color" properties inside of that. The base
+jest configuration will typically take care of the rest.
 
 ### For CommonJS/ES5 Packages
 
@@ -125,18 +127,8 @@ is easy to see which output comes from which package.
 
 ### Common Overrides
 
-The shared configurations include common settings, but you can override any property by merging your custom settings with the shared configuration. The shared configs provide sensible defaults, but you can customize:
+If you need some settings that differ from the base jest configuration, you can override them in your configuration. For a complete list of available Jest configuration options, see the [Jest Configuration Documentation](https://jestjs.io/docs/configuration).
 
-- **`testPathIgnorePatterns`** - Additional patterns to ignore during test discovery
-- **`globalSetup`** - Custom setup file to run before all tests
-- **`moduleFileExtensions`** - Additional file extensions to recognize as modules
-- **`transformIgnorePatterns`** - Custom patterns for files to skip transformation
-- **`testMatch`** - Custom patterns for test file discovery
-- **`setupFilesAfterEnv`** - Additional setup files to run after the test environment is set up
-- **`collectCoverageFrom`** - Custom patterns for coverage collection
-- **`coverageThreshold`** - Custom coverage thresholds
-
-Simply merge your overrides with the shared configuration using the appropriate syntax for your package type (ES5/CommonJS, ESM, or TypeScript as shown in the examples above).
 
 ## E2E Testing
 
@@ -162,6 +154,8 @@ The package provides comprehensive E2E testing infrastructure for ilib packages.
    └── samples.e2e.test.js
    ```
 
+All of your e2e test files should have the suffix `.e2e.test.js`
+
 3. **Configure Jest** using the shared E2E configuration (see [Jest Configuration](#jest-configuration) section above for details):
    ```javascript
    // test-e2e/jest.config.cjs
@@ -177,6 +171,8 @@ The package provides comprehensive E2E testing infrastructure for ilib packages.
 
    module.exports = config;
    ```
+
+Typically, you only need to define the displayName.name and displayName.color properties just like a regular jest config.
 
 4. **Add test script** to your `package.json`:
    ```json
@@ -195,27 +191,6 @@ The shared Jest configuration provides:
 - **Base Configuration**: Consistent Jest settings across all packages
 - **Customizable Display Name**: Each package can set its own name and color
 
-**Available Colors**: `blackBright`, `yellow`, `green`, `blue`, `magenta`, `cyan`, `white`, `red`
-
-### Real-World Examples
-
-Here are examples from actual ilib packages using the shared E2E configuration:
-
-#### ilib-loctool-po
-```javascript
-// test-e2e/jest.config.cjs
-const { jestConfig: baseConfig } = require('ilib-common-config');
-
-const config = {
-    ...baseConfig,
-    displayName: {
-        name: "ilib-loctool-po e2e",
-        color: "yellow",
-    },
-};
-
-module.exports = config;
-```
 
 ### E2E Test Utilities
 
@@ -276,27 +251,6 @@ it("should produce expected output file", () => {
 });
 ```
 
-### E2E Testing Pattern
-
-All ilib packages follow this standardized E2E testing pattern:
-
-1. **Create test-e2e directory**:
-   ```
-   test-e2e/
-   ├── jest.config.cjs
-   └── samples.e2e.test.js
-   ```
-
-2. **Configure Jest** using the shared configuration
-3. **Use the provided runners** for tool execution
-4. **Add package.json script**:
-   ```json
-   {
-     "scripts": {
-       "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
-     }
-   }
-   ```
 
 ## TypeScript Configuration
 
@@ -325,51 +279,13 @@ Use the shared base TypeScript configuration by extending it in your `tsconfig.j
 ```
 
 Many projects will not require anything beyond what the base provides, but the ability to extend it is there for
-flexibility, just in case.
+flexibility, just in case. For a complete list of available TypeScript configuration options, see the [TypeScript Configuration Documentation](https://www.typescriptlang.org/tsconfig).
 
 > **Note**: For Jest configuration for TypeScript packages, see the [Jest Configuration](#jest-configuration) section above.
-
-### TypeScript Configuration Features
-
-The shared configuration provides:
-
-- **Consistent Compilation**: Standard TypeScript settings across all packages
-- **Declaration Generation**: Automatic `.d.ts` and `.d.ts.map` file generation
-- **Source Maps**: Full source map support for debugging
-- **Strict Type Checking**: Balanced strictness for code quality without breaking existing code
-- **Jest Integration**: Pre-configured ts-jest settings for testing
 
 ## Karma Configuration
 
 The package provides a shared Karma configuration for browser testing. This ensures consistent testing setup across all packages while allowing package-specific customizations.
-
-### Browser Detection
-
-The shared configuration automatically detects which browsers are installed on your system and only includes those browsers in the test configuration. This prevents test failures due to missing browser installations.
-
-**Supported Browsers:**
-- **Chrome** - Detected via standard installation paths
-- **Firefox** - Detected via standard installation paths
-- **Opera** - Detected via standard installation paths
-- **Edge** - Detected via standard installation paths (Windows only)
-
-Only browsers that are actually installed will be included in the test configuration, ensuring reliable test execution.
-
-### Browser Support
-
-The shared configuration automatically detects your operating system and includes appropriate browsers:
-
-#### Cross-Platform Browsers (All OS)
-- **Chrome** (with ChromeHeadless custom launcher)
-- **Firefox** (with FirefoxHeadless custom launcher)
-- **Opera** (with OperaHeadless custom launcher)
-
-#### Platform-Specific Browsers (Auto-detected)
-- **Edge** (with EdgeHeadless custom launcher) - Windows only
-
-The configuration automatically includes platform-specific browsers when available, ensuring optimal browser coverage while maintaining CI compatibility.
-
-By default, tests run in all available browsers for your platform, ensuring optimal cross-browser compatibility.
 
 ### Quick Start
 
@@ -381,32 +297,14 @@ module.exports = function (config) {
     config.set(createKarmaConfig({
         files: ["./test/**/*.test.js"],
         preprocessors: { "./test/**/*.test.js": ["webpack"] }
+        // if necessary, package-specific configuration goes here
     }));
 };
 ```
 
-### Webpack Configuration
-
-The shared configuration includes comprehensive webpack settings that are common across ilib packages:
-
-- **Babel Configuration**: Optimized for both Node.js and browser environments
-- **Externals**: Common ilib package externals (e.g., `log4js`)
-- **Loaders**: Automatic TypeScript and JavaScript support
-- **Package-Specific Overrides**: You can still override any webpack setting
-
-Most packages can now use the shared configuration without any webpack customization, as the common settings are already included.
-
-### Features
-
-- **Automatic Setup**: Shared karma-setup.js is automatically included
-- **Environment Detection**: Automatically detects TypeScript vs JavaScript packages
-- **Deep Merging**: Package-specific webpack configs merge with base configuration
-- **Validation**: Ensures required properties are provided
-- **Type Safety**: Full TypeScript support with interfaces
-
 ### Documentation
 
-For complete Karma configuration documentation, see [docs/KARMA.md](./docs/KARMA.md).
+For complete Karma configuration documentation, including browser detection, webpack settings, and advanced usage, see [docs/KARMA.md](./docs/KARMA.md).
 
 ## API Reference
 

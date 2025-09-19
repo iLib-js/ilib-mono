@@ -27,31 +27,15 @@ module.exports = function (config) {
 };
 ```
 
+Your local karma.conf.js only needs to define the files and the preprocessors properties and you are ready to start testing!
+
 ### TypeScript Package Usage
 
-For TypeScript packages, the configuration automatically detects `.ts` files and configures appropriate loaders:
-
-```javascript
-const { createKarmaConfig } = require('ilib-common-config');
-
-module.exports = function (config) {
-    config.set(createKarmaConfig({
-        // TypeScript files are auto-detected
-        // Note: shared karma-setup.js is automatically included
-        files: [
-            "./test/**/*.test.ts"
-        ],
-
-        preprocessors: {
-            "./test/**/*.test.ts": ["webpack"],
-        }
-    }));
-};
-```
+For TypeScript packages, the configuration automatically detects `.ts` files in the `files` property and configures appropriate loaders.
 
 ### Advanced Usage
 
-You can override any configuration option. The shared configuration uses deep merging, so you can override specific webpack settings without replacing the entire configuration:
+You can override any configuration option. The shared configuration uses deep merging, so you can override specific webpack settings without replacing the entire configuration. Example:
 
 ```javascript
 const { createKarmaConfig } = require('ilib-common-config');
@@ -111,6 +95,8 @@ module.exports = function (config) {
 };
 ```
 
+The full list of properties you can put into the karma configuration file is documented [here](https://karma-runner.github.io/6.4/config/configuration-file.html).
+
 ## Automatic Setup File Inclusion
 
 The shared configuration automatically includes the `karma-setup.js` file from `../ilib-common-config/karma-setup.js`, which provides Jest-compatible functions for browser testing. You don't need to manually include it in your files array - it's added automatically as the first file.
@@ -128,8 +114,8 @@ If either is missing or invalid, the function will throw a clear error message.
 
 The configuration automatically detects your package type:
 
-- **TypeScript packages**: Detected by `.ts` files in the `files` array
-- **JavaScript packages**: Detected by `.js` files only
+- **TypeScript packages**: Detected by finding `.ts` files in the `files` array
+- **JavaScript packages**: Detected by finding `.js` files only
 
 Based on detection, it configures:
 - **Webpack extensions**: `['.ts', '.js']` for TypeScript, `['.js']` for JavaScript
@@ -137,47 +123,6 @@ Based on detection, it configures:
 - **Babel configuration**: Comprehensive preset with Node.js and browser targets
 - **Externals**: Common ilib package externals (e.g., `log4js`)
 
-## Webpack Configuration
-
-The shared configuration includes a comprehensive webpack setup that handles both TypeScript and JavaScript files:
-
-**Default Webpack Settings:**
-- **Mode**: `development`
-- **Target**: `web`
-- **Externals**: `{ "log4js": "log4js" }` (common across ilib packages)
-- **Babel Configuration**:
-  - `minified: false`
-  - `compact: false`
-  - `@babel/preset-env` with Node.js and browser targets
-  - `add-module-exports` plugin for CommonJS compatibility
-
-**Automatic Loader Detection:**
-- **TypeScript files** (`.ts`): Uses `ts-loader` with `transpileOnly: true`
-- **JavaScript files** (`.js`): Uses `babel-loader` with comprehensive preset configuration
-
-**Package-Specific Overrides:**
-You can override any webpack setting by providing a `webpack` property in your configuration. The shared configuration uses a custom deep merge function to combine settings with your package-specific overrides.
-
-```javascript
-// Example: Adding package-specific webpack configuration
-const { createKarmaConfig } = require('ilib-common-config');
-
-module.exports = function (config) {
-    config.set(createKarmaConfig({
-        files: ["./test/**/*.test.js"],
-        preprocessors: { "./test/**/*.test.js": ["webpack"] },
-
-        // Package-specific webpack overrides
-        webpack: {
-            resolve: {
-                alias: {
-                    "custom-module": "./test/mock-module"
-                }
-            }
-        }
-    }));
-};
-```
 
 ## Browser Support
 
@@ -198,28 +143,6 @@ The shared configuration automatically detects which browsers are installed on y
 
 Only browsers that are actually installed will be included in the test configuration, ensuring reliable test execution.
 
-### Supported Browsers
-
-The shared configuration automatically detects your operating system and includes appropriate browsers:
-
-#### Cross-Platform Browsers (All OS)
-- **Chrome** (with ChromeHeadless custom launcher)
-- **Firefox** (with FirefoxHeadless custom launcher)
-- **Opera** (with OperaHeadless custom launcher)
-
-#### Platform-Specific Browsers (Auto-detected)
-- **Edge** (with EdgeHeadless custom launcher) - Windows only
-
-The configuration automatically includes platform-specific browsers when available, ensuring optimal browser coverage while maintaining CI compatibility.
-
-### Default Browsers
-By default, tests run in all available browsers for your platform:
-
-- **Windows**: ChromeHeadless, FirefoxHeadless, OperaHeadless, EdgeHeadless
-- **macOS**: ChromeHeadless, FirefoxHeadless, OperaHeadless
-- **Linux**: ChromeHeadless, FirefoxHeadless, OperaHeadless
-
-The configuration automatically detects your platform and includes all available browsers.
 
 ### Custom Browser Selection
 You can override the default browsers for package-specific needs:
@@ -228,28 +151,8 @@ You can override the default browsers for package-specific needs:
 // Use only Chrome
 browsers: ["ChromeHeadless"]
 
-// Use all available browsers (includes platform-specific ones)
-browsers: ["ChromeHeadless", "FirefoxHeadless", "OperaHeadless", "SafariHeadless", "EdgeHeadless"]
-
-// Use specific browsers
-browsers: ["Chrome", "Firefox", "Opera", "Safari", "Edge"]  // Non-headless versions
 ```
 
-### Cross-Platform Considerations
-
-#### Automatic OS Detection
-The configuration automatically detects your operating system and includes appropriate browsers:
-
-- **Windows** - Chrome, Firefox, Opera, Edge
-- **macOS** - Chrome, Firefox, Opera, Safari
-- **Linux** - Chrome, Firefox, Opera
-
-#### CI Compatibility
-- **Cross-platform browsers** (Chrome, Firefox, Opera) work on all CI platforms
-- **Platform-specific browsers** (Safari, Edge) are automatically excluded on incompatible platforms
-- **Graceful degradation** - Missing browsers are automatically skipped
-
-The configuration automatically handles missing browsers gracefully - if a browser isn't installed, Karma will skip it and continue with available browsers.
 
 ## Default Configuration
 
@@ -267,34 +170,26 @@ The shared configuration provides:
 
 ## Package Dependencies
 
-Make sure your package has the required dependencies:
+The shared Karma configuration automatically provides all necessary dependencies. You only need to add `ilib-common-config` to your package:
 
 ```json
 {
   "devDependencies": {
-    "ilib-common-config": "workspace:*",
-    "karma": "^6.4.0",
-    "karma-webpack": "^5.0.0",
-    "karma-chrome-launcher": "^3.2.0",
-    "karma-firefox-launcher": "^2.1.3",
-    "karma-opera-launcher": "^1.0.0",
-    "karma-safari-launcher": "^1.0.0",
-    "karma-edge-launcher": "^0.4.2",
-    "ts-loader": "^9.0.0",
-    "babel-loader": "^9.0.0",
-    "@babel/preset-env": "^7.0.0"
+    "ilib-common-config": "workspace:*"
   }
 }
 ```
+
+All Karma-related dependencies (karma, karma-webpack, browser launchers, loaders, etc.) are automatically available through the shared configuration package.
 
 ## Migration from Individual Configs
 
 To migrate from an existing karma configuration:
 
-1. Add `ilib-common-config` as a devDependency
-2. Replace your `config.set()` call with `createKarmaConfig()`
+1. Add `ilib-common-config` as a devDependency as per the previous section
+2. Replace the parameter to your `config.set()` call with `createKarmaConfig()`
 3. Keep only package-specific settings (files, preprocessors, custom webpack rules)
-4. Remove shared configuration (plugins, frameworks, browsers, base webpack config)
+4. Remove shared configuration (plugins, frameworks, browsers, base webpack config) to just use the standard karma config
 5. Remove any karma-setup files from your files array (automatically included)
 
 Example migration:
@@ -342,54 +237,3 @@ module.exports = function (config) {
 };
 ```
 
-## Real-World Example
-
-Here's how `ilib-locale` uses the shared configuration:
-
-```javascript
-const { createKarmaConfig } = require('ilib-common-config');
-
-module.exports = function (config) {
-    config.set(createKarmaConfig({
-        files: [
-            "./test/**/*.test.js"
-        ],
-        preprocessors: {
-            "./test/**/*.test.js": ["webpack"],
-        },
-        browsers: ["ChromeHeadless"],  // Override default browsers
-        webpack: {
-            externals: {
-                "log4js": "log4js"  // Package-specific external
-            },
-            module: {
-                rules: [
-                    {
-                        test: /\.js$/,
-                        exclude: /\/node_modules\//,
-                        use: {
-                            loader: 'babel-loader',
-                            options: {
-                                minified: false,
-                                compact: false,
-                                presets: [[
-                                    '@babel/preset-env',
-                                    {
-                                        "targets": {
-                                            "node": process.versions.node,
-                                            "browsers": "cover 99.5%"
-                                        }
-                                    }
-                                ]],
-                                plugins: ["add-module-exports"]
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    }));
-};
-```
-
-This configuration successfully runs 178 tests with the shared setup! 🎉
