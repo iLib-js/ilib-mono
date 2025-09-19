@@ -1,5 +1,4 @@
-name: Test affected
-# Test Affected workflow
+name: Test Affected
 # This workflow runs tests and generates coverage reports for packages affected by changes in a pull request.
 # It uses Turborepo to determine affected packages and runs their tests in parallel.
 # Coverage reports are merged and processed for coverage reporting in PR comments.
@@ -33,10 +32,6 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: pnpm
-            - name: Install Chrome
-              uses: browser-actions/setup-chrome@v1
-            - name: Install Firefox
-              uses: browser-actions/setup-firefox@v1
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: List affected packages
@@ -47,7 +42,7 @@ jobs:
                   echo "Affected packages: $LIST"
                   echo list=$(echo "$LIST" | jq -c .) >> "$GITHUB_OUTPUT"
             - name: Run unit tests tests with coverage
-              run: pnpm coverage:ci:affected
+              run: pnpm ci:coverage:unit:affected
             - name: Generate coverage paths
               id: coverage-paths
               env:

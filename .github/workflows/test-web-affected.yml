@@ -1,10 +1,10 @@
-name: Test E2E Affected
+name: Test Web Affected
 
 on: pull_request
 
 jobs:
-    test-e2e-affected:
-        name: Test E2E Affected
+    test-web-affected:
+        name: Test Web Affected
         runs-on: ubuntu-latest
         env:
             # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
@@ -35,5 +35,5 @@ jobs:
               uses: browser-actions/setup-firefox@v1
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
-            - name: Run E2E tests
-              run: pnpm ci:test:e2e:affected
+            - name: Run web tests
+              run: pnpm ci:test:web:affected

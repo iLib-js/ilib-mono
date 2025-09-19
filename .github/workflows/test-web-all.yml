@@ -1,4 +1,4 @@
-name: Test E2E All
+name: Test Web All
 
 on:
     push:
@@ -6,8 +6,8 @@ on:
             - main
 
 jobs:
-    test-e2e-all:
-        name: Test E2E All
+    test-web-all:
+        name: Test Web All
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -29,4 +29,4 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run tests
-              run: pnpm ci:test:e2e:all
+              run: pnpm ci:test:web:all
