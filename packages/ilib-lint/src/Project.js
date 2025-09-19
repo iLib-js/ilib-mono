@@ -78,6 +78,42 @@ function isOwnMethod(instance, methodName, parentClass) {
 }
 
 /**
+ * Default locales for the linter if none are specified on the command line or in the config file. These are the top
+ * 27 locales on the internet by volume as of 2015. (Maybe we should update this list?)
+ * @type {readonly string[]}
+ */
+const defaultLocales = [
+    "en-AU",
+    "en-CA",
+    "en-GB",
+    "en-IN",
+    "en-NG",
+    "en-PH",
+    "en-PK",
+    "en-US",
+    "en-ZA",
+    "de-DE",
+    "fr-CA",
+    "fr-FR",
+    "es-AR",
+    "es-ES",
+    "es-MX",
+    "id-ID",
+    "it-IT",
+    "ja-JP",
+    "ko-KR",
+    "pt-BR",
+    "ru-RU",
+    "tr-TR",
+    "vi-VN",
+    "zxx-XX",
+    "zh-Hans-CN",
+    "zh-Hant-HK",
+    "zh-Hant-TW",
+    "zh-Hans-SG"
+];
+
+/**
  * @class Represent an ilin-lint project.
  *
  * A project is defined as a root directory and a configuration that
@@ -124,6 +160,12 @@ class Project extends DirItem {
         }
 
         this.sourceLocale = config?.sourceLocale || options?.opt?.sourceLocale;
+        /**
+         * @readonly
+         * @type {string[]}
+         */
+        this.locales = this.options?.opt?.locales || this.config.locales || [...defaultLocales];
+
         this.config.autofix = options?.opt?.fix === true || config?.autofix === true;
 
         this.pluginMgr = this.options.pluginManager;
@@ -402,14 +444,6 @@ class Project extends DirItem {
     }
 
     /**
-     * Return the list of global locales for this project.
-     * @returns {Array.<String>} the list of global locales for this project
-     */
-    getLocales() {
-        return this.options.locales || this.config.locales;
-    }
-
-    /**
      * Return the plugin manager for this project.
      * @returns {PluginManager} the plugin manager for this project
      */
@@ -627,7 +661,7 @@ class Project extends DirItem {
     run() {
         let startTime = new Date();
 
-        const results = this.findIssues(this.options.opt.locales);
+        const results = this.findIssues(this.locales);
         this.applyTransformers(results);
         this.serialize();
         let endTime = new Date();
