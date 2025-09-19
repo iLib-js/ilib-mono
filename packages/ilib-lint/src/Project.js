@@ -80,7 +80,7 @@ function isOwnMethod(instance, methodName, parentClass) {
 /**
  * Default locales for the linter if none are specified on the command line or in the config file. These are the top
  * 27 locales on the internet by volume as of 2015. (Maybe we should update this list?)
- * @type {string[]}
+ * @type {readonly string[]}
  */
 const defaultLocales = [
     "en-AU",
@@ -164,7 +164,7 @@ class Project extends DirItem {
          * @readonly
          * @type {string[]}
          */
-        this.locales = this.options?.opt?.locales || this.config.locales || defaultLocales;
+        this.locales = this.options?.opt?.locales || this.config.locales || [...defaultLocales];
 
         this.config.autofix = options?.opt?.fix === true || config?.autofix === true;
 
