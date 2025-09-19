@@ -90,8 +90,7 @@
         "typedoc-plugin-markdown": "^4.2.10",
         "typescript": "^5.3.3",
         "ucd-full": "^16.0.1",
-        "webpack": "^5.89.0",
-        "webpack-cli": "^5.1.4"
+        "webpack": "^5.89.0"
     },
     "dependencies": {
         "@log4js-node/log4js-api": "^1.0.2"
