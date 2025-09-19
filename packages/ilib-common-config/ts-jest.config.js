@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-const baseConfig = require('../../jest.config.js');
-
 const config = {
-    ...baseConfig,
+    // Base configuration from root jest.config.js
+    displayName: "ilib-mono repo",
+    coverageReporters: ["html", "json-summary", ["text", { file: "../coverage.txt" }]],
+    reporters: ["default", ["jest-junit", { outputName: "junit.xml" }]],
     preset: 'ts-jest',
     testMatch: [
         "**/test/**/*.test.ts",

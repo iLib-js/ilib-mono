@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import baseConfig from '../../jest.config.js';
-
 const config = {
-    ...baseConfig,
+    displayName: "ilib-mono repo",
+    coverageReporters: ["html", "json-summary", ["text", { file: "../coverage.txt" }]],
+    reporters: ["default", ["jest-junit", { outputName: "junit.xml" }]],
+    testMatch: ["**/__tests__/**/*.?([mc])[jt]s?(x)", "**/test/**/?(*.)+(spec|test).?([mc])[jt]s?(x)"],
     // ESM-specific overrides for ilib packages
     testPathIgnorePatterns: [
         "/node_modules/",
@@ -43,4 +44,4 @@ const config = {
     moduleDirectories: ['node_modules', 'src']
 };
 
-export default config;
+module.exports = config;
