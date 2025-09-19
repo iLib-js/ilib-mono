@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-const { createKarmaConfig } = require('ilib-common-config');
+const { createKarmaConfig } = require('ilib-common-config/lib/karma.config.js');
 
 module.exports = function (config) {
     config.set(createKarmaConfig({
@@ -30,6 +30,16 @@ module.exports = function (config) {
         // Package-specific preprocessors
         preprocessors: {
             "./test/**/*.test.js": ["webpack"],
+        },
+
+        // Disable Node.js polyfills to reduce webpack warnings
+        webpack: {
+            resolve: {
+                fallback: {
+                    "stream": false,
+                    "buffer": false
+                }
+            }
         }
     }));
 };

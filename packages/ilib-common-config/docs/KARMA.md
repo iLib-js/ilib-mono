@@ -14,7 +14,7 @@ const { createKarmaConfig } = require('ilib-common-config');
 module.exports = function (config) {
     config.set(createKarmaConfig({
         // Required: Package-specific files to load
-        // Note: shared karma-setup.cjs is automatically included
+        // Note: shared karma-setup.js is automatically included
         files: [
             "./test/**/*.test.js"
         ],
@@ -37,7 +37,7 @@ const { createKarmaConfig } = require('ilib-common-config');
 module.exports = function (config) {
     config.set(createKarmaConfig({
         // TypeScript files are auto-detected
-        // Note: shared karma-setup.cjs is automatically included
+        // Note: shared karma-setup.js is automatically included
         files: [
             "./test/**/*.test.ts"
         ],
@@ -60,9 +60,9 @@ module.exports = function (config) {
     config.set(createKarmaConfig({
         // Override browsers for specific package needs
         browsers: ["ChromeHeadless"],
-        
+
         // Required: Package-specific files
-        // Note: shared karma-setup.cjs is automatically included
+        // Note: shared karma-setup.js is automatically included
         files: [
             "./test/**/*.test.js",
             "./src/**/*.js"  // Include source files if needed
@@ -134,15 +134,132 @@ The configuration automatically detects your package type:
 Based on detection, it configures:
 - **Webpack extensions**: `['.ts', '.js']` for TypeScript, `['.js']` for JavaScript
 - **Loaders**: `ts-loader` + `babel-loader` for TypeScript, `babel-loader` only for JavaScript
+- **Babel configuration**: Comprehensive preset with Node.js and browser targets
+- **Externals**: Common ilib package externals (e.g., `log4js`)
+
+## Webpack Configuration
+
+The shared configuration includes a comprehensive webpack setup that handles both TypeScript and JavaScript files:
+
+**Default Webpack Settings:**
+- **Mode**: `development`
+- **Target**: `web`
+- **Externals**: `{ "log4js": "log4js" }` (common across ilib packages)
+- **Babel Configuration**:
+  - `minified: false`
+  - `compact: false`
+  - `@babel/preset-env` with Node.js and browser targets
+  - `add-module-exports` plugin for CommonJS compatibility
+
+**Automatic Loader Detection:**
+- **TypeScript files** (`.ts`): Uses `ts-loader` with `transpileOnly: true`
+- **JavaScript files** (`.js`): Uses `babel-loader` with comprehensive preset configuration
+
+**Package-Specific Overrides:**
+You can override any webpack setting by providing a `webpack` property in your configuration. The shared configuration uses a custom deep merge function to combine settings with your package-specific overrides.
+
+```javascript
+// Example: Adding package-specific webpack configuration
+const { createKarmaConfig } = require('ilib-common-config');
+
+module.exports = function (config) {
+    config.set(createKarmaConfig({
+        files: ["./test/**/*.test.js"],
+        preprocessors: { "./test/**/*.test.js": ["webpack"] },
+
+        // Package-specific webpack overrides
+        webpack: {
+            resolve: {
+                alias: {
+                    "custom-module": "./test/mock-module"
+                }
+            }
+        }
+    }));
+};
+```
+
+## Browser Support
+
+### Browser Detection
+
+The shared configuration automatically detects which browsers are installed on your system and only includes those browsers in the test configuration. This prevents test failures due to missing browser installations.
+
+**Supported Browsers:**
+- **Chrome** - Detected via `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` (macOS) or `C:\Program Files\Google\Chrome\Application\chrome.exe` (Windows)
+- **Firefox** - Detected via `/Applications/Firefox.app/Contents/MacOS/firefox` (macOS) or `C:\Program Files\Mozilla Firefox\firefox.exe` (Windows)
+- **Opera** - Detected via `/Applications/Opera.app/Contents/MacOS/Opera` (macOS) or `C:\Program Files\Opera\opera.exe` (Windows)
+- **Edge** - Detected via `C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe` (Windows only)
+
+**Cross-Platform Detection:**
+- **macOS**: Checks for browser applications in `/Applications/`
+- **Windows**: Checks for browser executables in `Program Files` directories
+- **Linux**: Uses `which` command to check if browser is in PATH
+
+Only browsers that are actually installed will be included in the test configuration, ensuring reliable test execution.
+
+### Supported Browsers
+
+The shared configuration automatically detects your operating system and includes appropriate browsers:
+
+#### Cross-Platform Browsers (All OS)
+- **Chrome** (with ChromeHeadless custom launcher)
+- **Firefox** (with FirefoxHeadless custom launcher)
+- **Opera** (with OperaHeadless custom launcher)
+
+#### Platform-Specific Browsers (Auto-detected)
+- **Edge** (with EdgeHeadless custom launcher) - Windows only
+
+The configuration automatically includes platform-specific browsers when available, ensuring optimal browser coverage while maintaining CI compatibility.
+
+### Default Browsers
+By default, tests run in all available browsers for your platform:
+
+- **Windows**: ChromeHeadless, FirefoxHeadless, OperaHeadless, EdgeHeadless
+- **macOS**: ChromeHeadless, FirefoxHeadless, OperaHeadless
+- **Linux**: ChromeHeadless, FirefoxHeadless, OperaHeadless
+
+The configuration automatically detects your platform and includes all available browsers.
+
+### Custom Browser Selection
+You can override the default browsers for package-specific needs:
+
+```javascript
+// Use only Chrome
+browsers: ["ChromeHeadless"]
+
+// Use all available browsers (includes platform-specific ones)
+browsers: ["ChromeHeadless", "FirefoxHeadless", "OperaHeadless", "SafariHeadless", "EdgeHeadless"]
+
+// Use specific browsers
+browsers: ["Chrome", "Firefox", "Opera", "Safari", "Edge"]  // Non-headless versions
+```
+
+### Cross-Platform Considerations
+
+#### Automatic OS Detection
+The configuration automatically detects your operating system and includes appropriate browsers:
+
+- **Windows** - Chrome, Firefox, Opera, Edge
+- **macOS** - Chrome, Firefox, Opera, Safari
+- **Linux** - Chrome, Firefox, Opera
+
+#### CI Compatibility
+- **Cross-platform browsers** (Chrome, Firefox, Opera) work on all CI platforms
+- **Platform-specific browsers** (Safari, Edge) are automatically excluded on incompatible platforms
+- **Graceful degradation** - Missing browsers are automatically skipped
+
+The configuration automatically handles missing browsers gracefully - if a browser isn't installed, Karma will skip it and continue with available browsers.
 
 ## Default Configuration
 
 The shared configuration provides:
 
-- **Plugins**: karma-webpack, karma-jasmine, karma-chrome-launcher, karma-firefox-launcher, karma-assert
-- **Frameworks**: Jasmine
-- **Browsers**: ChromeHeadless, FirefoxHeadless
-- **Webpack**: 
+- **Plugins**: karma-webpack, karma-jasmine, karma-chrome-launcher, karma-firefox-launcher, karma-opera-launcher, karma-edge-launcher (Windows), karma-assert
+- **Frameworks**: Jasmine, webpack
+- **Browsers**: All available browsers for the current platform (default)
+- **Custom Launchers**: ChromeHeadless, FirefoxHeadless, OperaHeadless, EdgeHeadless (Windows)
+- **Webpack**:
   - Mode: development
   - Target: web
   - Automatic loader configuration based on file types
@@ -158,6 +275,11 @@ Make sure your package has the required dependencies:
     "ilib-common-config": "workspace:*",
     "karma": "^6.4.0",
     "karma-webpack": "^5.0.0",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-firefox-launcher": "^2.1.3",
+    "karma-opera-launcher": "^1.0.0",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-edge-launcher": "^0.4.2",
     "ts-loader": "^9.0.0",
     "babel-loader": "^9.0.0",
     "@babel/preset-env": "^7.0.0"
@@ -186,7 +308,7 @@ module.exports = function (config) {
         browsers: ["ChromeHeadless"],
         files: ["./test/**/*.test.js"],
         preprocessors: { "./test/**/*.test.js": ["webpack"] },
-        webpack: { 
+        webpack: {
             mode: "development",
             target: "web",
             module: {

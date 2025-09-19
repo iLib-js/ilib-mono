@@ -230,12 +230,12 @@ const { LoctoolRunner } = require('ilib-common-config');
 
 describe("samples", () => {
     const projectPath = path.resolve(__dirname, "..", "samples", "your-sample");
-    
+
     beforeAll(async () => {
         const loctool = new LoctoolRunner(projectPath);
         await loctool.run("localize");
     });
-    
+
     test("that it produces expected output", () => {
         // Your assertions here
     });
@@ -251,12 +251,12 @@ const { LintRunner } = require('ilib-common-config');
 
 describe("linting", () => {
     const projectPath = path.resolve(__dirname, "..", "samples", "your-sample");
-    
+
     beforeAll(async () => {
         const linter = new LintRunner(projectPath);
         await linter.run();
     });
-    
+
     test("that is passes linting", () => {
         // Your assertions here
     });
@@ -343,6 +343,34 @@ The shared configuration provides:
 
 The package provides a shared Karma configuration for browser testing. This ensures consistent testing setup across all packages while allowing package-specific customizations.
 
+### Browser Detection
+
+The shared configuration automatically detects which browsers are installed on your system and only includes those browsers in the test configuration. This prevents test failures due to missing browser installations.
+
+**Supported Browsers:**
+- **Chrome** - Detected via standard installation paths
+- **Firefox** - Detected via standard installation paths
+- **Opera** - Detected via standard installation paths
+- **Edge** - Detected via standard installation paths (Windows only)
+
+Only browsers that are actually installed will be included in the test configuration, ensuring reliable test execution.
+
+### Browser Support
+
+The shared configuration automatically detects your operating system and includes appropriate browsers:
+
+#### Cross-Platform Browsers (All OS)
+- **Chrome** (with ChromeHeadless custom launcher)
+- **Firefox** (with FirefoxHeadless custom launcher)
+- **Opera** (with OperaHeadless custom launcher)
+
+#### Platform-Specific Browsers (Auto-detected)
+- **Edge** (with EdgeHeadless custom launcher) - Windows only
+
+The configuration automatically includes platform-specific browsers when available, ensuring optimal browser coverage while maintaining CI compatibility.
+
+By default, tests run in all available browsers for your platform, ensuring optimal cross-browser compatibility.
+
 ### Quick Start
 
 ```javascript
@@ -356,6 +384,17 @@ module.exports = function (config) {
     }));
 };
 ```
+
+### Webpack Configuration
+
+The shared configuration includes comprehensive webpack settings that are common across ilib packages:
+
+- **Babel Configuration**: Optimized for both Node.js and browser environments
+- **Externals**: Common ilib package externals (e.g., `log4js`)
+- **Loaders**: Automatic TypeScript and JavaScript support
+- **Package-Specific Overrides**: You can still override any webpack setting
+
+Most packages can now use the shared configuration without any webpack customization, as the common settings are already included.
 
 ### Features
 

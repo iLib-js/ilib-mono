@@ -47,6 +47,7 @@
         "test:watch": "pnpm test:jest --watch",
         "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
         "clean": "git clean -f -d *",
+        "test:all": "npm-run-all --npm-path pnpm test test:e2e",
         "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
     },
     "engines": {
