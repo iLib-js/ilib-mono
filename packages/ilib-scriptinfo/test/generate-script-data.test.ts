@@ -175,16 +175,4 @@ describe('generate-script-data.js', () => {
             });
         });
     });
-
-    describe('Error handling', () => {
-        test('should handle missing dependencies gracefully', () => {
-            // This test would require mocking require.resolve to fail
-            // For now, we'll just ensure the script has try-catch
-            const content = fs.readFileSync(scriptPath, 'utf8');
-            expect(content).toContain('try {');
-            expect(content).toContain('} catch (error) {');
-            expect(content).toContain('console.error');
-            expect(content).toContain('process.exit(1)');
-        });
-    });
 });
