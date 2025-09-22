@@ -19,7 +19,7 @@
 
 const path = require("path");
 const fs = require("fs");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-common-config");
+const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-internal");
 
 describe("samples", () => {
     describe("tap-i18n", () => {

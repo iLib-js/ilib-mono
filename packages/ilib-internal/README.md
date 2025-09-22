@@ -1,4 +1,4 @@
-# ilib-common-config
+# ilib-internal
 
 A shared configuration package for ilib monorepo packages, providing common testing utilities, E2E testing infrastructure, and shared Karma configurations.
 
@@ -20,7 +20,7 @@ Since this is a workspace-only package, add it as a devDependency in your packag
 ```json
 {
     "devDependencies": {
-        "ilib-common-config": "workspace:*"
+        "ilib-internal": "workspace:^"
     }
 }
 ```
@@ -39,7 +39,7 @@ Most ilib packages use CommonJS with ES5-style code. Use this configuration:
 
 ```javascript
 // jest.config.js
-var jestConfig = require("ilib-common-config").jestConfig;
+var jestConfig = require("ilib-internal").jestConfig;
 
 var config = Object.assign({}, jestConfig, {
     displayName: {
@@ -60,7 +60,7 @@ Modern packages using ES modules should use this configuration. This configurati
 
 ```javascript
 // jest.config.js
-import { jestEsmConfig } from "ilib-common-config";
+import { jestEsmConfig } from "ilib-internal";
 
 const config = {
     ...jestEsmConfig,
@@ -82,7 +82,7 @@ TypeScript packages should use this configuration:
 
 ```javascript
 // jest.config.js
-import { tsJestConfig } from "ilib-common-config";
+import { tsJestConfig } from "ilib-internal";
 
 const config = {
     ...tsJestConfig,
@@ -104,7 +104,7 @@ E2E tests use a specialized Jest configuration:
 
 ```javascript
 // test-e2e/jest.config.cjs
-const { jestE2eConfig } = require("ilib-common-config");
+const { jestE2eConfig } = require("ilib-internal");
 
 const config = {
     ...jestE2eConfig,
@@ -143,7 +143,7 @@ The package provides comprehensive E2E testing infrastructure for ilib packages.
     ```json
     {
         "devDependencies": {
-            "ilib-common-config": "workspace:*"
+            "ilib-internal": "workspace:^"
         }
     }
     ```
@@ -161,7 +161,7 @@ All of your e2e test files should have the suffix `.e2e.test.js`
 
     ```javascript
     // test-e2e/jest.config.cjs
-    const { jestE2eConfig } = require("ilib-common-config");
+    const { jestE2eConfig } = require("ilib-internal");
 
     const config = {
         ...jestE2eConfig,
@@ -202,7 +202,7 @@ The package provides several utilities for E2E testing:
 Run loctool commands in your E2E tests:
 
 ```javascript
-const { LoctoolRunner } = require("ilib-common-config");
+const { LoctoolRunner } = require("ilib-internal");
 
 describe("samples", () => {
     const projectPath = path.resolve(__dirname, "..", "samples", "your-sample");
@@ -223,7 +223,7 @@ describe("samples", () => {
 Run ilib-lint commands in your E2E tests:
 
 ```javascript
-const { LintRunner } = require("ilib-common-config");
+const { LintRunner } = require("ilib-internal");
 
 describe("linting", () => {
     const projectPath = path.resolve(__dirname, "..", "samples", "your-sample");
@@ -244,7 +244,7 @@ describe("linting", () => {
 Compare files against snapshots in E2E tests:
 
 ```javascript
-const { expectFileToMatchSnapshot } = require("ilib-common-config");
+const { expectFileToMatchSnapshot } = require("ilib-internal");
 
 it("should produce expected output file", () => {
     const outputPath = path.resolve(projectPath, "output.xliff");
@@ -262,7 +262,7 @@ Use the shared base TypeScript configuration by extending it in your `tsconfig.j
 
 ```json
 {
-    "extends": "ilib-common-config/tsconfig.base.json",
+    "extends": "ilib-internal/tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./lib",
         "rootDir": "./src"
@@ -285,7 +285,7 @@ The package provides a shared Karma configuration for browser testing. This ensu
 
 ```javascript
 // karma.conf.js
-const { createKarmaConfig } = require("ilib-common-config");
+const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
     config.set(
@@ -318,7 +318,7 @@ For complete Karma configuration documentation, including browser detection, web
 The package provides full TypeScript support with proper interfaces:
 
 ```typescript
-import { createKarmaConfig, SharedKarmaConfigOptions } from "ilib-common-config";
+import { createKarmaConfig, SharedKarmaConfigOptions } from "ilib-internal";
 
 const options: SharedKarmaConfigOptions = {
     files: ["./test/**/*.test.ts"],

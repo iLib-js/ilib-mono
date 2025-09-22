@@ -88,7 +88,7 @@
         "grunt-contrib-clean": "^2.0.1",
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-uglify": "^5.2.2",
-        "ilib-common-config": "workspace:*",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "jest-mock": "^29.7.0",
         "jsdoc": "^4.0.2",

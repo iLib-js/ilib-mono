@@ -62,7 +62,7 @@
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "ilib-common-config": "workspace:^",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

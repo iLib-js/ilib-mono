@@ -63,7 +63,7 @@
         "types": "tsc -p ./jsconfig.json"
     },
     "devDependencies": {
-        "ilib-common-config": "workspace:^",
+        "ilib-internal": "workspace:^",
         "@tsconfig/node14": "^14.1.2",
         "@types/jest": "^29.5.14",
         "@types/micromatch": "^4.0.9",

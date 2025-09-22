@@ -19,7 +19,7 @@
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { LintRunner } from "ilib-common-config";
+import { LintRunner } from "ilib-internal";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

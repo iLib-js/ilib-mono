@@ -147,9 +147,9 @@ importers:
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       ilib-mock:
         specifier: file:test/ilib-mock/ilib-mock-1.0.0.tgz
         version: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz
@@ -220,9 +220,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
-        specifier: workspace:*
-        version: link:../ilib-common-config
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -320,9 +320,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
-        specifier: workspace:*
-        version: link:../ilib-common-config
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -362,60 +362,6 @@ importers:
       webpack-cli:
         specifier: ^5.1.4
         version: 5.1.4(webpack@5.95.0)
-
-  packages/ilib-common-config:
-    devDependencies:
-      '@babel/preset-env':
-        specifier: ^7.0.0
-        version: 7.28.3(@babel/core@7.28.4)
-      '@tsconfig/node12':
-        specifier: ^12.1.4
-        version: 12.1.4
-      '@types/jest':
-        specifier: ^29
-        version: 29.5.14
-      '@types/karma':
-        specifier: ^6.3.0
-        version: 6.3.9
-      '@types/node':
-        specifier: '12'
-        version: 12.20.55
-      babel-loader:
-        specifier: ^9.0.0
-        version: 9.2.1(@babel/core@7.28.4)(webpack@5.101.3)
-      jest:
-        specifier: ^29
-        version: 29.7.0(@types/node@12.20.55)(node-notifier@8.0.2)
-      karma:
-        specifier: ^6.4.0
-        version: 6.4.4
-      karma-assert:
-        specifier: ^1.0.1
-        version: 1.0.1
-      karma-chrome-launcher:
-        specifier: ^3.2.0
-        version: 3.2.0
-      karma-edge-launcher:
-        specifier: ^0.4.2
-        version: 0.4.2(karma@6.4.4)
-      karma-firefox-launcher:
-        specifier: ^2.1.3
-        version: 2.1.3
-      karma-jasmine:
-        specifier: ^5.1.0
-        version: 5.1.0(karma@6.4.4)
-      karma-opera-launcher:
-        specifier: ^1.0.0
-        version: 1.0.0(karma@6.4.4)
-      karma-webpack:
-        specifier: ^5.0.0
-        version: 5.0.1(webpack@5.101.3)
-      ts-loader:
-        specifier: ^9.0.0
-        version: 9.5.4(typescript@5.6.3)(webpack@5.101.3)
-      typescript:
-        specifier: ^5.3.3
-        version: 5.6.3
 
   packages/ilib-ctype:
     dependencies:
@@ -474,12 +420,12 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
-        specifier: workspace:*
-        version: link:../ilib-common-config
       ilib-data-utils:
         specifier: workspace:^
         version: link:../ilib-data-utils
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -559,9 +505,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -625,9 +571,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
-        specifier: workspace:*
-        version: link:../ilib-common-config
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -674,15 +620,69 @@ importers:
         specifier: 14.21.0
         version: 14.21.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
+
+  packages/ilib-internal:
+    devDependencies:
+      '@babel/preset-env':
+        specifier: ^7.0.0
+        version: 7.28.3(@babel/core@7.28.4)
+      '@tsconfig/node12':
+        specifier: ^12.1.4
+        version: 12.1.4
+      '@types/jest':
+        specifier: ^29
+        version: 29.5.14
+      '@types/karma':
+        specifier: ^6.3.0
+        version: 6.3.9
+      '@types/node':
+        specifier: '12'
+        version: 12.20.55
+      babel-loader:
+        specifier: ^9.0.0
+        version: 9.2.1(@babel/core@7.28.4)(webpack@5.101.3)
+      jest:
+        specifier: ^29
+        version: 29.7.0(@types/node@12.20.55)(node-notifier@8.0.2)
+      karma:
+        specifier: ^6.4.0
+        version: 6.4.4
+      karma-assert:
+        specifier: ^1.0.1
+        version: 1.0.1
+      karma-chrome-launcher:
+        specifier: ^3.2.0
+        version: 3.2.0
+      karma-edge-launcher:
+        specifier: ^0.4.2
+        version: 0.4.2(karma@6.4.4)
+      karma-firefox-launcher:
+        specifier: ^2.1.3
+        version: 2.1.3
+      karma-jasmine:
+        specifier: ^5.1.0
+        version: 5.1.0(karma@6.4.4)
+      karma-opera-launcher:
+        specifier: ^1.0.0
+        version: 1.0.0(karma@6.4.4)
+      karma-webpack:
+        specifier: ^5.0.0
+        version: 5.0.1(webpack@5.101.3)
+      ts-loader:
+        specifier: ^9.0.0
+        version: 9.5.4(typescript@5.6.3)(webpack@5.101.3)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.6.3
 
   packages/ilib-istring:
     dependencies:
@@ -859,12 +859,12 @@ importers:
       i18nlint-plugin-test-old:
         specifier: file:test/i18nlint-plugin-test-old
         version: file:packages/ilib-lint/test/i18nlint-plugin-test-old
-      ilib-common-config:
-        specifier: workspace:^
-        version: link:../ilib-common-config
       ilib-es6:
         specifier: ^14.21.0
         version: 14.21.0
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       ilib-lint-plugin-obsolete:
         specifier: file:test/ilib-lint-plugin-obsolete
         version: file:packages/ilib-lint/test/ilib-lint-plugin-obsolete
@@ -893,9 +893,9 @@ importers:
         specifier: workspace:^
         version: link:../ilib-tools-common
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.0.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -917,9 +917,9 @@ importers:
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -948,9 +948,9 @@ importers:
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -976,9 +976,9 @@ importers:
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1007,9 +1007,9 @@ importers:
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1041,9 +1041,9 @@ importers:
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1099,9 +1099,9 @@ importers:
       ilib-common:
         specifier: workspace:^
         version: link:../ilib-common
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       intl-messageformat:
         specifier: ^10.7.6
         version: 10.7.6
@@ -1199,9 +1199,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
-        specifier: workspace:*
-        version: link:../ilib-common-config
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1293,9 +1293,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
-        specifier: workspace:*
-        version: link:../ilib-common-config
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1445,9 +1445,9 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1479,9 +1479,9 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1510,9 +1510,9 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1571,9 +1571,9 @@ importers:
         specifier: ^2.0.0
         version: 2.0.3
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1657,9 +1657,9 @@ importers:
         specifier: '>=0.0.6'
         version: 0.0.6
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1685,9 +1685,9 @@ importers:
         specifier: workspace:^
         version: link:../message-accumulator
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1701,9 +1701,9 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1720,9 +1720,9 @@ importers:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       ilib-loctool-json:
         specifier: workspace:^
         version: link:../ilib-loctool-json
@@ -1742,9 +1742,9 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1827,9 +1827,9 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1839,9 +1839,9 @@ importers:
 
   packages/ilib-loctool-json/samples/js-json:
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../../../ilib-common-config
+        version: link:../../../ilib-internal
       ilib-loctool-javascript:
         specifier: workspace:^
         version: link:../../../ilib-loctool-javascript
@@ -1876,9 +1876,9 @@ importers:
         specifier: '>=0.0.6'
         version: 0.0.6
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1892,9 +1892,9 @@ importers:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1920,9 +1920,9 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1945,9 +1945,9 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -1964,9 +1964,9 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2016,9 +2016,9 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2041,9 +2041,9 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2066,9 +2066,9 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       ilib-loctool-javascript-resource:
         specifier: workspace:^
         version: link:../ilib-loctool-javascript-resource
@@ -2100,9 +2100,9 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2125,9 +2125,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2150,9 +2150,9 @@ importers:
         specifier: ^14.18.0
         version: 14.20.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2166,9 +2166,9 @@ importers:
         specifier: ^14.17.0
         version: 14.20.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2191,9 +2191,9 @@ importers:
         specifier: ^4.0.5
         version: 4.0.8
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2222,9 +2222,9 @@ importers:
         specifier: ^1.6.11
         version: 1.6.11
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2253,9 +2253,9 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2272,9 +2272,9 @@ importers:
         specifier: 2.2.1
         version: 2.2.1
     devDependencies:
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2306,9 +2306,9 @@ importers:
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@12.20.55)(node-notifier@8.0.2)
@@ -2382,9 +2382,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2476,9 +2476,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2542,9 +2542,9 @@ importers:
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
         version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2630,9 +2630,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
-        specifier: workspace:*
-        version: link:../ilib-common-config
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^30.1.3
         version: 30.1.3(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2721,9 +2721,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2833,9 +2833,9 @@ importers:
       cldr-core:
         specifier: 46.1.0
         version: 46.1.0
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       ilib-loctool-mock:
         specifier: file:test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz
         version: file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz
@@ -2897,9 +2897,9 @@ importers:
       grunt-contrib-nodeunit:
         specifier: ^5.0.0
         version: 5.0.0(coveralls@3.1.1)(typescript@5.6.3)
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -2934,9 +2934,9 @@ importers:
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
-      ilib-common-config:
+      ilib-internal:
         specifier: workspace:^
-        version: link:../ilib-common-config
+        version: link:../ilib-internal
       ilib-tools-common:
         specifier: workspace:^
         version: link:../ilib-tools-common

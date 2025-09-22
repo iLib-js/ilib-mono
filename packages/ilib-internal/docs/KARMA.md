@@ -9,7 +9,7 @@ This package provides a shared Karma configuration for all ilib packages, allowi
 Create a `karma.conf.js` file in your package root:
 
 ```javascript
-const { createKarmaConfig } = require("ilib-common-config");
+const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
     config.set(
@@ -38,7 +38,7 @@ For TypeScript packages, the configuration automatically detects `.ts` files in 
 You can override any configuration option. The shared configuration uses deep merging, so you can override specific webpack settings without replacing the entire configuration. Example:
 
 ```javascript
-const { createKarmaConfig } = require("ilib-common-config");
+const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
     config.set(
@@ -101,7 +101,7 @@ The full list of properties you can put into the karma configuration file is doc
 
 ## Automatic Setup File Inclusion
 
-The shared configuration automatically includes the `karma-setup.js` file from `ilib-common-config/karma-setup.js`, which provides Jest-compatible functions for browser testing. You don't need to manually include it in your files array - it's added automatically as the first file.
+The shared configuration automatically includes the `karma-setup.js` file from `ilib-internal/karma-setup.js`, which provides Jest-compatible functions for browser testing. You don't need to manually include it in your files array - it's added automatically as the first file.
 
 ## Required Properties
 
@@ -172,12 +172,12 @@ The shared configuration provides:
 
 ## Package Dependencies
 
-The shared Karma configuration automatically provides all necessary dependencies. You only need to add `ilib-common-config` to your package:
+The shared Karma configuration automatically provides all necessary dependencies. You only need to add `ilib-internal` to your package:
 
 ```json
 {
     "devDependencies": {
-        "ilib-common-config": "workspace:*"
+        "ilib-internal": "workspace:^"
     }
 }
 ```
@@ -188,7 +188,7 @@ All Karma-related dependencies (karma, karma-webpack, browser launchers, loaders
 
 To migrate from an existing karma configuration:
 
-1. Add `ilib-common-config` as a devDependency as per the previous section
+1. Add `ilib-internal` as a devDependency as per the previous section
 2. Replace the parameter to your `config.set()` call with `createKarmaConfig()`
 3. Keep only package-specific settings (files, preprocessors, custom webpack rules)
 4. Remove shared configuration (plugins, frameworks, browsers, base webpack config) to just use the standard karma config
@@ -231,7 +231,7 @@ module.exports = function (config) {
 **After:**
 
 ```javascript
-const { createKarmaConfig } = require("ilib-common-config");
+const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
     config.set(

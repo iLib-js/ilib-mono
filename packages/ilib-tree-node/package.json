@@ -65,7 +65,7 @@
         "grunt-contrib-clean": "^2.0.1",
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^5.0.0",
-        "ilib-common-config": "workspace:^",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.2",
         "jsdoc-to-markdown": "^8.0.1",

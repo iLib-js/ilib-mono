@@ -36,7 +36,7 @@
         "ilib-tools-common": "workspace:^"
     },
     "devDependencies": {
-        "ilib-common-config": "workspace:^",
+        "ilib-internal": "workspace:^",
         "jest": "^29.0.0"
     }
 }

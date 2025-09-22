@@ -88,7 +88,7 @@
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-nodeunit": "^5.0.0",
         "grunt-contrib-uglify": "^5.2.2",
-        "ilib-common-config": "workspace:*",
+        "ilib-internal": "workspace:^",
         "ilib-data-utils": "workspace:^",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.2",

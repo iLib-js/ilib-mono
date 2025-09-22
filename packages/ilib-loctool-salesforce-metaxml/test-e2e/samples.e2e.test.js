@@ -19,7 +19,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-common-config");
+const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-internal");
 
 describe("samples", () => {
     describe("salesforce", () => {

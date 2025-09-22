@@ -1,4 +1,4 @@
-const { jestE2eConfig: baseConfig } = require('ilib-common-config');
+const { jestE2eConfig: baseConfig } = require("ilib-internal");
 
 const config = {
     ...baseConfig,

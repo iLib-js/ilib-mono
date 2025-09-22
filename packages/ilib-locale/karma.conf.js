@@ -1,6 +1,6 @@
 /*
  * karma.conf.js - configure the karma testing environment
- * This package uses the shared karma configuration from ilib-common-config
+ * This package uses the shared karma configuration from ilib-internal
  *
  * Copyright © 2023, JEDLSoft
  *
@@ -18,18 +18,18 @@
  * limitations under the License.
  */
 
-const { createKarmaConfig } = require('ilib-common-config');
+const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
-    config.set(createKarmaConfig({
-        // Package-specific files to load (shared karma-setup.js is added automatically)
-        files: [
-            "./test/**/*.test.js"
-        ],
+    config.set(
+        createKarmaConfig({
+            // Package-specific files to load (shared karma-setup.js is added automatically)
+            files: ["./test/**/*.test.js"],
 
-        // Package-specific preprocessors
-        preprocessors: {
-            "./test/**/*.test.js": ["webpack"],
-        }
-    }));
+            // Package-specific preprocessors
+            preprocessors: {
+                "./test/**/*.test.js": ["webpack"],
+            },
+        })
+    );
 };

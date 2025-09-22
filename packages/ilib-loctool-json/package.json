@@ -60,7 +60,7 @@
         "micromatch": "^4.0.8"
     },
     "devDependencies": {
-        "ilib-common-config": "workspace:^",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }
