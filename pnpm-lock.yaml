@@ -383,9 +383,6 @@ importers:
       babel-loader:
         specifier: ^9.0.0
         version: 9.2.1(@babel/core@7.28.4)(webpack@5.101.3)
-      ilib-common-config:
-        specifier: workspace:^
-        version: 'link:'
       jest:
         specifier: ^29
         version: 29.7.0(@types/node@12.20.55)(node-notifier@8.0.2)
