@@ -55,6 +55,7 @@
         "yaml": "2.2.1"
     },
     "devDependencies": {
+        "ilib-common-config": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

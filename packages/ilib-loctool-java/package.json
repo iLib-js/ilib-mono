@@ -55,6 +55,7 @@
         "ilib": "^14.18.0"
     },
     "devDependencies": {
+        "ilib-common-config": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

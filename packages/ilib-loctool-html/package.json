@@ -58,6 +58,7 @@
         "message-accumulator": "workspace:^"
     },
     "devDependencies": {
+        "ilib-common-config": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

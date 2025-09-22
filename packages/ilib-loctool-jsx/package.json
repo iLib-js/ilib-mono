@@ -56,6 +56,7 @@
         "ilib-loctool-javascript-resource": "workspace:^"
     },
     "devDependencies": {
+        "ilib-common-config": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

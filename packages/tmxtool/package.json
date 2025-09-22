@@ -63,6 +63,7 @@
     },
     "devDependencies": {
         "docdash": "^2.0.2",
+        "ilib-common-config": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.2",
