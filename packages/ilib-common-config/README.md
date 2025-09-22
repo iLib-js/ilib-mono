@@ -6,12 +6,12 @@ A shared configuration package for ilib monorepo packages, providing common test
 
 This package serves as a central hub for shared testing and configuration utilities used across all ilib packages. It provides:
 
-- **Jest Configurations**: Shared Jest setups for CommonJS/ES5, ESM, TypeScript, and E2E testing
-- **TypeScript Configuration**: Shared TypeScript compilation settings
-- **E2E Testing Infrastructure**: Utilities and runners for end-to-end testing
-- **Shared Karma Configuration**: Unified browser testing setup for all packages
-- **Testing Utilities**: Common test runners and assertion helpers
-- **Consistent Configuration**: Standardized testing patterns across the monorepo
+-   **Jest Configurations**: Shared Jest setups for CommonJS/ES5, ESM, TypeScript, and E2E testing
+-   **TypeScript Configuration**: Shared TypeScript compilation settings
+-   **E2E Testing Infrastructure**: Utilities and runners for end-to-end testing
+-   **Shared Karma Configuration**: Unified browser testing setup for all packages
+-   **Testing Utilities**: Common test runners and assertion helpers
+-   **Consistent Configuration**: Standardized testing patterns across the monorepo
 
 ## Installation
 
@@ -19,9 +19,9 @@ Since this is a workspace-only package, add it as a devDependency in your packag
 
 ```json
 {
-  "devDependencies": {
-    "ilib-common-config": "workspace:*"
-  }
+    "devDependencies": {
+        "ilib-common-config": "workspace:*"
+    }
 }
 ```
 
@@ -39,13 +39,13 @@ Most ilib packages use CommonJS with ES5-style code. Use this configuration:
 
 ```javascript
 // jest.config.js
-var jestConfig = require('ilib-common-config').jestConfig;
+var jestConfig = require("ilib-common-config").jestConfig;
 
 var config = Object.assign({}, jestConfig, {
     displayName: {
         name: "your-package-name",
         color: "blueBright", // Choose from available colors
-    }
+    },
     // Add any package-specific Jest overrides here
 });
 
@@ -60,7 +60,7 @@ Modern packages using ES modules should use this configuration. This configurati
 
 ```javascript
 // jest.config.js
-import { jestEsmConfig } from 'ilib-common-config';
+import { jestEsmConfig } from "ilib-common-config";
 
 const config = {
     ...jestEsmConfig,
@@ -82,7 +82,7 @@ TypeScript packages should use this configuration:
 
 ```javascript
 // jest.config.js
-import { tsJestConfig } from 'ilib-common-config';
+import { tsJestConfig } from "ilib-common-config";
 
 const config = {
     ...tsJestConfig,
@@ -104,7 +104,7 @@ E2E tests use a specialized Jest configuration:
 
 ```javascript
 // test-e2e/jest.config.cjs
-const { jestE2eConfig } = require('ilib-common-config');
+const { jestE2eConfig } = require("ilib-common-config");
 
 const config = {
     ...jestE2eConfig,
@@ -120,7 +120,8 @@ module.exports = config;
 ### Available Colors
 
 Choose from these predefined colors for your package's display name:
-- `blackBright`, `blueBright`, `green`, `cyan`, `black`, `magentaBright`, `blue`, `yellow`, `red`, `white`
+
+-   `blackBright`, `blueBright`, `green`, `cyan`, `black`, `magentaBright`, `blue`, `yellow`, `red`, `white`
 
 The idea is that when we run all of the tests in the CI, we want to have a full variety of colors so that it
 is easy to see which output comes from which package.
@@ -128,7 +129,6 @@ is easy to see which output comes from which package.
 ### Common Overrides
 
 If you need some settings that differ from the base jest configuration, you can override them in your configuration. For a complete list of available Jest configuration options, see the [Jest Configuration Documentation](https://jestjs.io/docs/configuration).
-
 
 ## E2E Testing
 
@@ -139,58 +139,59 @@ The package provides comprehensive E2E testing infrastructure for ilib packages.
 ### Quick Setup
 
 1. **Add dependency** to your `package.json`:
-   ```json
-   {
-     "devDependencies": {
-       "ilib-common-config": "workspace:*"
-     }
-   }
-   ```
+
+    ```json
+    {
+        "devDependencies": {
+            "ilib-common-config": "workspace:*"
+        }
+    }
+    ```
 
 2. **Create test-e2e directory structure**:
-   ```
-   test-e2e/
-   ├── jest.config.cjs
-   └── samples.e2e.test.js
-   ```
+    ```
+    test-e2e/
+    ├── jest.config.cjs
+    └── samples.e2e.test.js
+    ```
 
 All of your e2e test files should have the suffix `.e2e.test.js`
 
 3. **Configure Jest** using the shared E2E configuration (see [Jest Configuration](#jest-configuration) section above for details):
-   ```javascript
-   // test-e2e/jest.config.cjs
-   const { jestE2eConfig } = require('ilib-common-config');
 
-   const config = {
-       ...jestE2eConfig,
-       displayName: {
-           name: "your-package-name e2e",
-           color: "blackBright", // or "yellow", "green", etc.
-       },
-   };
+    ```javascript
+    // test-e2e/jest.config.cjs
+    const { jestE2eConfig } = require("ilib-common-config");
 
-   module.exports = config;
-   ```
+    const config = {
+        ...jestE2eConfig,
+        displayName: {
+            name: "your-package-name e2e",
+            color: "blackBright", // or "yellow", "green", etc.
+        },
+    };
+
+    module.exports = config;
+    ```
 
 Typically, you only need to define the displayName.name and displayName.color properties just like a regular jest config.
 
 4. **Add test script** to your `package.json`:
-   ```json
-   {
-     "scripts": {
-       "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
-     }
-   }
-   ```
+    ```json
+    {
+        "scripts": {
+            "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
+        }
+    }
+    ```
 
 ### Jest E2E Configuration Details
 
 The shared Jest configuration provides:
 
-- **Test Pattern**: Automatically finds files matching `**/*.e2e.test.?(c|m)(j|t)s`
-- **Base Configuration**: Consistent Jest settings across all packages
-- **Customizable Display Name**: Each package can set its own name and color
-
+-   **Test Pattern**: Automatically finds files matching `**/*.e2e.test.?(c|m)(j|t)s`
+-   **Base Configuration**: Consistent Jest settings across all packages
+-   **Customizable Display Name**: Each package can set its own name and color
 
 ### E2E Test Utilities
 
@@ -201,7 +202,7 @@ The package provides several utilities for E2E testing:
 Run loctool commands in your E2E tests:
 
 ```javascript
-const { LoctoolRunner } = require('ilib-common-config');
+const { LoctoolRunner } = require("ilib-common-config");
 
 describe("samples", () => {
     const projectPath = path.resolve(__dirname, "..", "samples", "your-sample");
@@ -222,7 +223,7 @@ describe("samples", () => {
 Run ilib-lint commands in your E2E tests:
 
 ```javascript
-const { LintRunner } = require('ilib-common-config');
+const { LintRunner } = require("ilib-common-config");
 
 describe("linting", () => {
     const projectPath = path.resolve(__dirname, "..", "samples", "your-sample");
@@ -243,14 +244,13 @@ describe("linting", () => {
 Compare files against snapshots in E2E tests:
 
 ```javascript
-const { expectFileToMatchSnapshot } = require('ilib-common-config');
+const { expectFileToMatchSnapshot } = require("ilib-common-config");
 
 it("should produce expected output file", () => {
     const outputPath = path.resolve(projectPath, "output.xliff");
     expectFileToMatchSnapshot(outputPath);
 });
 ```
-
 
 ## TypeScript Configuration
 
@@ -262,19 +262,13 @@ Use the shared base TypeScript configuration by extending it in your `tsconfig.j
 
 ```json
 {
-    "extends": "../ilib-common-config/tsconfig.base.json",
+    "extends": "ilib-common-config/tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./lib",
         "rootDir": "./src"
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "lib",
-        "test"
-    ]
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "lib", "test"]
 }
 ```
 
@@ -291,14 +285,16 @@ The package provides a shared Karma configuration for browser testing. This ensu
 
 ```javascript
 // karma.conf.js
-const { createKarmaConfig } = require('ilib-common-config');
+const { createKarmaConfig } = require("ilib-common-config");
 
 module.exports = function (config) {
-    config.set(createKarmaConfig({
-        files: ["./test/**/*.test.js"],
-        preprocessors: { "./test/**/*.test.js": ["webpack"] }
-        // if necessary, package-specific configuration goes here
-    }));
+    config.set(
+        createKarmaConfig({
+            files: ["./test/**/*.test.js"],
+            preprocessors: { "./test/**/*.test.js": ["webpack"] },
+            // if necessary, package-specific configuration goes here
+        })
+    );
 };
 ```
 
@@ -310,24 +306,24 @@ For complete Karma configuration documentation, including browser detection, web
 
 ### Exports
 
-- `createKarmaConfig(options)` - Creates a shared Karma configuration
-- `createKarmaConfigFunction(options)` - Helper for karma.conf.js files
-- `jestConfig` - Shared Jest configuration for E2E tests
-- `LoctoolRunner` - Utility for running loctool commands in tests
-- `LintRunner` - Utility for running ilib-lint commands in tests
-- `expectFileToMatchSnapshot(filePath)` - File snapshot assertion utility
+-   `createKarmaConfig(options)` - Creates a shared Karma configuration
+-   `createKarmaConfigFunction(options)` - Helper for karma.conf.js files
+-   `jestConfig` - Shared Jest configuration for E2E tests
+-   `LoctoolRunner` - Utility for running loctool commands in tests
+-   `LintRunner` - Utility for running ilib-lint commands in tests
+-   `expectFileToMatchSnapshot(filePath)` - File snapshot assertion utility
 
 ### TypeScript Support
 
 The package provides full TypeScript support with proper interfaces:
 
 ```typescript
-import { createKarmaConfig, SharedKarmaConfigOptions } from 'ilib-common-config';
+import { createKarmaConfig, SharedKarmaConfigOptions } from "ilib-common-config";
 
 const options: SharedKarmaConfigOptions = {
     files: ["./test/**/*.test.ts"],
     preprocessors: { "./test/**/*.test.ts": ["webpack"] },
-    type: "typescript"
+    type: "typescript",
 };
 ```
 

@@ -1,4 +1,4 @@
-import baseConfig from '../ilib-common-config/jest-esm.config.js';
+import baseConfig from "ilib-common-config/jest-esm.config.js";
 
 const config = {
     ...baseConfig,
@@ -6,11 +6,10 @@ const config = {
         name: "ilib-lint-react",
         color: "blue",
     },
-    moduleFileExtensions: ['js', 'jsx', 'json'],
-    transform: {
-    },
-    transformIgnorePatterns: ['/node_modules/'],
-    moduleDirectories: ['node_modules', 'src']
+    moduleFileExtensions: ["js", "jsx", "json"],
+    transform: {},
+    transformIgnorePatterns: ["/node_modules/"],
+    moduleDirectories: ["node_modules", "src"],
 };
 
 export default config;

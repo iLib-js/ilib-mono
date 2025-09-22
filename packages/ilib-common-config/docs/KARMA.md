@@ -9,21 +9,21 @@ This package provides a shared Karma configuration for all ilib packages, allowi
 Create a `karma.conf.js` file in your package root:
 
 ```javascript
-const { createKarmaConfig } = require('ilib-common-config');
+const { createKarmaConfig } = require("ilib-common-config");
 
 module.exports = function (config) {
-    config.set(createKarmaConfig({
-        // Required: Package-specific files to load
-        // Note: shared karma-setup.js is automatically included
-        files: [
-            "./test/**/*.test.js"
-        ],
+    config.set(
+        createKarmaConfig({
+            // Required: Package-specific files to load
+            // Note: shared karma-setup.js is automatically included
+            files: ["./test/**/*.test.js"],
 
-        // Required: Package-specific preprocessors
-        preprocessors: {
-            "./test/**/*.test.js": ["webpack"],
-        }
-    }));
+            // Required: Package-specific preprocessors
+            preprocessors: {
+                "./test/**/*.test.js": ["webpack"],
+            },
+        })
+    );
 };
 ```
 
@@ -38,60 +38,62 @@ For TypeScript packages, the configuration automatically detects `.ts` files in 
 You can override any configuration option. The shared configuration uses deep merging, so you can override specific webpack settings without replacing the entire configuration. Example:
 
 ```javascript
-const { createKarmaConfig } = require('ilib-common-config');
+const { createKarmaConfig } = require("ilib-common-config");
 
 module.exports = function (config) {
-    config.set(createKarmaConfig({
-        // Override browsers for specific package needs
-        browsers: ["ChromeHeadless"],
+    config.set(
+        createKarmaConfig({
+            // Override browsers for specific package needs
+            browsers: ["ChromeHeadless"],
 
-        // Required: Package-specific files
-        // Note: shared karma-setup.js is automatically included
-        files: [
-            "./test/**/*.test.js",
-            "./src/**/*.js"  // Include source files if needed
-        ],
+            // Required: Package-specific files
+            // Note: shared karma-setup.js is automatically included
+            files: [
+                "./test/**/*.test.js",
+                "./src/**/*.js", // Include source files if needed
+            ],
 
-        // Required: Package-specific preprocessors
-        preprocessors: {
-            "./test/**/*.test.js": ["webpack"],
-            "./src/**/*.js": ["webpack"]
-        },
-
-        // Additional webpack configuration (merged with base config)
-        webpack: {
-            externals: {
-                "log4js": "log4js"  // Example: exclude from bundle
+            // Required: Package-specific preprocessors
+            preprocessors: {
+                "./test/**/*.test.js": ["webpack"],
+                "./src/**/*.js": ["webpack"],
             },
-            module: {
-                rules: [
-                    {
-                        test: /\.js$/,
-                        exclude: /\/node_modules\//,
-                        use: {
-                            loader: 'babel-loader',
-                            options: {
-                                minified: false,
-                                compact: false,
-                                presets: [[
-                                    '@babel/preset-env',
-                                    {
-                                        "targets": {
-                                            "node": process.versions.node,
-                                            "browsers": "cover 99.5%"
-                                        }
-                                    }
-                                ]],
-                                plugins: [
-                                    "add-module-exports"
-                                ]
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    }));
+
+            // Additional webpack configuration (merged with base config)
+            webpack: {
+                externals: {
+                    log4js: "log4js", // Example: exclude from bundle
+                },
+                module: {
+                    rules: [
+                        {
+                            test: /\.js$/,
+                            exclude: /\/node_modules\//,
+                            use: {
+                                loader: "babel-loader",
+                                options: {
+                                    minified: false,
+                                    compact: false,
+                                    presets: [
+                                        [
+                                            "@babel/preset-env",
+                                            {
+                                                targets: {
+                                                    node: process.versions.node,
+                                                    browsers: "cover 99.5%",
+                                                },
+                                            },
+                                        ],
+                                    ],
+                                    plugins: ["add-module-exports"],
+                                },
+                            },
+                        },
+                    ],
+                },
+            },
+        })
+    );
 };
 ```
 
@@ -99,14 +101,14 @@ The full list of properties you can put into the karma configuration file is doc
 
 ## Automatic Setup File Inclusion
 
-The shared configuration automatically includes the `karma-setup.js` file from `../ilib-common-config/karma-setup.js`, which provides Jest-compatible functions for browser testing. You don't need to manually include it in your files array - it's added automatically as the first file.
+The shared configuration automatically includes the `karma-setup.js` file from `ilib-common-config/karma-setup.js`, which provides Jest-compatible functions for browser testing. You don't need to manually include it in your files array - it's added automatically as the first file.
 
 ## Required Properties
 
 The `createKarmaConfig` function validates that you provide:
 
-- **`files`**: Array of file patterns to load in the browser (must be non-empty)
-- **`preprocessors`**: Object mapping file patterns to preprocessor arrays
+-   **`files`**: Array of file patterns to load in the browser (must be non-empty)
+-   **`preprocessors`**: Object mapping file patterns to preprocessor arrays
 
 If either is missing or invalid, the function will throw a clear error message.
 
@@ -114,15 +116,15 @@ If either is missing or invalid, the function will throw a clear error message.
 
 The configuration automatically detects your package type:
 
-- **TypeScript packages**: Detected by finding `.ts` files in the `files` array
-- **JavaScript packages**: Detected by finding `.js` files only
+-   **TypeScript packages**: Detected by finding `.ts` files in the `files` array
+-   **JavaScript packages**: Detected by finding `.js` files only
 
 Based on detection, it configures:
-- **Webpack extensions**: `['.ts', '.js']` for TypeScript, `['.js']` for JavaScript
-- **Loaders**: `ts-loader` + `babel-loader` for TypeScript, `babel-loader` only for JavaScript
-- **Babel configuration**: Comprehensive preset with Node.js and browser targets
-- **Externals**: Common ilib package externals (e.g., `log4js`)
 
+-   **Webpack extensions**: `['.ts', '.js']` for TypeScript, `['.js']` for JavaScript
+-   **Loaders**: `ts-loader` + `babel-loader` for TypeScript, `babel-loader` only for JavaScript
+-   **Babel configuration**: Comprehensive preset with Node.js and browser targets
+-   **Externals**: Common ilib package externals (e.g., `log4js`)
 
 ## Browser Support
 
@@ -131,42 +133,42 @@ Based on detection, it configures:
 The shared configuration automatically detects which browsers are installed on your system and only includes those browsers in the test configuration. This prevents test failures due to missing browser installations.
 
 **Supported Browsers:**
-- **Chrome** - Detected via `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` (macOS) or `C:\Program Files\Google\Chrome\Application\chrome.exe` (Windows)
-- **Firefox** - Detected via `/Applications/Firefox.app/Contents/MacOS/firefox` (macOS) or `C:\Program Files\Mozilla Firefox\firefox.exe` (Windows)
-- **Opera** - Detected via `/Applications/Opera.app/Contents/MacOS/Opera` (macOS) or `C:\Program Files\Opera\opera.exe` (Windows)
-- **Edge** - Detected via `C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe` (Windows only)
+
+-   **Chrome** - Detected via `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` (macOS) or `C:\Program Files\Google\Chrome\Application\chrome.exe` (Windows)
+-   **Firefox** - Detected via `/Applications/Firefox.app/Contents/MacOS/firefox` (macOS) or `C:\Program Files\Mozilla Firefox\firefox.exe` (Windows)
+-   **Opera** - Detected via `/Applications/Opera.app/Contents/MacOS/Opera` (macOS) or `C:\Program Files\Opera\opera.exe` (Windows)
+-   **Edge** - Detected via `C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe` (Windows only)
 
 **Cross-Platform Detection:**
-- **macOS**: Checks for browser applications in `/Applications/`
-- **Windows**: Checks for browser executables in `Program Files` directories
-- **Linux**: Uses `which` command to check if browser is in PATH
+
+-   **macOS**: Checks for browser applications in `/Applications/`
+-   **Windows**: Checks for browser executables in `Program Files` directories
+-   **Linux**: Uses `which` command to check if browser is in PATH
 
 Only browsers that are actually installed will be included in the test configuration, ensuring reliable test execution.
 
-
 ### Custom Browser Selection
+
 You can override the default browsers for package-specific needs:
 
 ```javascript
 // Use only Chrome
-browsers: ["ChromeHeadless"]
-
+browsers: ["ChromeHeadless"];
 ```
-
 
 ## Default Configuration
 
 The shared configuration provides:
 
-- **Plugins**: karma-webpack, karma-jasmine, karma-chrome-launcher, karma-firefox-launcher, karma-opera-launcher, karma-edge-launcher (Windows), karma-assert
-- **Frameworks**: Jasmine, webpack
-- **Browsers**: All available browsers for the current platform (default)
-- **Custom Launchers**: ChromeHeadless, FirefoxHeadless, OperaHeadless, EdgeHeadless (Windows)
-- **Webpack**:
-  - Mode: development
-  - Target: web
-  - Automatic loader configuration based on file types
-- **Base Path**: Empty string (current directory)
+-   **Plugins**: karma-webpack, karma-jasmine, karma-chrome-launcher, karma-firefox-launcher, karma-opera-launcher, karma-edge-launcher (Windows), karma-assert
+-   **Frameworks**: Jasmine, webpack
+-   **Browsers**: All available browsers for the current platform (default)
+-   **Custom Launchers**: ChromeHeadless, FirefoxHeadless, OperaHeadless, EdgeHeadless (Windows)
+-   **Webpack**:
+    -   Mode: development
+    -   Target: web
+    -   Automatic loader configuration based on file types
+-   **Base Path**: Empty string (current directory)
 
 ## Package Dependencies
 
@@ -174,9 +176,9 @@ The shared Karma configuration automatically provides all necessary dependencies
 
 ```json
 {
-  "devDependencies": {
-    "ilib-common-config": "workspace:*"
-  }
+    "devDependencies": {
+        "ilib-common-config": "workspace:*"
+    }
 }
 ```
 
@@ -195,6 +197,7 @@ To migrate from an existing karma configuration:
 Example migration:
 
 **Before:**
+
 ```javascript
 module.exports = function (config) {
     config.set({
@@ -212,28 +215,30 @@ module.exports = function (config) {
                         test: /\.js$/,
                         exclude: /\/node_modules\//,
                         use: {
-                            loader: 'babel-loader',
+                            loader: "babel-loader",
                             options: {
-                                presets: ['@babel/preset-env']
-                            }
-                        }
-                    }
-                ]
-            }
-        }
+                                presets: ["@babel/preset-env"],
+                            },
+                        },
+                    },
+                ],
+            },
+        },
     });
 };
 ```
 
 **After:**
+
 ```javascript
-const { createKarmaConfig } = require('ilib-common-config');
+const { createKarmaConfig } = require("ilib-common-config");
 
 module.exports = function (config) {
-    config.set(createKarmaConfig({
-        files: ["./test/**/*.test.js"],
-        preprocessors: { "./test/**/*.test.js": ["webpack"] }
-    }));
+    config.set(
+        createKarmaConfig({
+            files: ["./test/**/*.test.js"],
+            preprocessors: { "./test/**/*.test.js": ["webpack"] },
+        })
+    );
 };
 ```
-

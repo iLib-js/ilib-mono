@@ -1,4 +1,4 @@
-const baseConfig = require("../ilib-common-config/jest.config.js");
+const baseConfig = require("ilib-common-config/jest.config.js");
 
 const config = {
     ...baseConfig,
@@ -6,10 +6,9 @@ const config = {
         name: "loctool",
         color: "blueBright",
     },
-    "testPathIgnorePatterns": ["/tools/", "/node_modules/", "/tstests/"],
-    "modulePathIgnorePatterns": ["/tstests/"],
-    "globalSetup": "./test/setupTests.js"
-}
+    testPathIgnorePatterns: ["/tools/", "/node_modules/", "/tstests/"],
+    modulePathIgnorePatterns: ["/tstests/"],
+    globalSetup: "./test/setupTests.js",
+};
 
 module.exports = config;
-

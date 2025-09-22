@@ -1,4 +1,4 @@
-const baseConfig = require("../ilib-common-config/jest-esm.config.js");
+const baseConfig = require("ilib-common-config/jest-esm.config.js");
 
 const config = {
     ...baseConfig,
@@ -6,6 +6,6 @@ const config = {
         name: "ilib-lint-java",
         color: "blue",
     },
-}
+};
 
-module.exports = config; 
+module.exports = config;

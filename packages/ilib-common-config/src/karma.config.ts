@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import * as os from 'os';
-import * as fs from 'fs';
-import { execSync } from 'child_process';
+import * as os from "os";
+import * as fs from "fs";
+import { execSync } from "child_process";
 
 /**
  * Simple deep merge function to avoid circular dependency with ilib-common
@@ -32,11 +32,11 @@ function deepMerge(target: any, source: any): any {
         return target;
     }
 
-    if (typeof source !== 'object' || Array.isArray(source)) {
+    if (typeof source !== "object" || Array.isArray(source)) {
         return source;
     }
 
-    if (typeof target !== 'object' || Array.isArray(target)) {
+    if (typeof target !== "object" || Array.isArray(target)) {
         return source;
     }
 
@@ -44,8 +44,12 @@ function deepMerge(target: any, source: any): any {
 
     for (const key in source) {
         if (source.hasOwnProperty(key)) {
-            if (typeof source[key] === 'object' && !Array.isArray(source[key]) &&
-                typeof target[key] === 'object' && !Array.isArray(target[key])) {
+            if (
+                typeof source[key] === "object" &&
+                !Array.isArray(source[key]) &&
+                typeof target[key] === "object" &&
+                !Array.isArray(target[key])
+            ) {
                 result[key] = deepMerge(target[key], source[key]);
             } else {
                 result[key] = source[key];
@@ -59,7 +63,7 @@ function deepMerge(target: any, source: any): any {
 export interface SharedKarmaConfigOptions {
     files: string[];
     preprocessors: { [pattern: string]: string[] };
-    type?: 'typescript' | 'javascript';
+    type?: "typescript" | "javascript";
     browsers?: string[];
     webpack?: any;
     [key: string]: any;
@@ -80,29 +84,29 @@ function isBrowserInstalled(browserName: string): boolean {
         const platform = os.platform();
 
         switch (platform) {
-            case 'win32':
+            case "win32":
                 // Windows paths
                 const windowsPaths: { [key: string]: string } = {
-                    chrome: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-                    firefox: 'C:\\Program Files\\Mozilla Firefox\\firefox.exe',
-                    opera: 'C:\\Program Files\\Opera\\opera.exe',
-                    edge: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+                    chrome: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+                    firefox: "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
+                    opera: "C:\\Program Files\\Opera\\opera.exe",
+                    edge: "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
                 };
                 return fs.existsSync(windowsPaths[browserName]);
 
-            case 'darwin':
+            case "darwin":
                 // macOS paths
                 const macPaths: { [key: string]: string } = {
-                    chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-                    firefox: '/Applications/Firefox.app/Contents/MacOS/firefox',
-                    opera: '/Applications/Opera.app/Contents/MacOS/Opera'
+                    chrome: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+                    firefox: "/Applications/Firefox.app/Contents/MacOS/firefox",
+                    opera: "/Applications/Opera.app/Contents/MacOS/Opera",
                 };
                 return fs.existsSync(macPaths[browserName]);
 
-            case 'linux':
+            case "linux":
                 // Linux - check if executable is in PATH
                 try {
-                    execSync(`which ${browserName}`, { stdio: 'ignore' });
+                    execSync(`which ${browserName}`, { stdio: "ignore" });
                     return true;
                 } catch {
                     return false;
@@ -120,7 +124,7 @@ type BrowserInfo = {
     plugins: string[];
     customLaunchers: { [key: string]: BrowserConfig };
     browsers: string[];
-}
+};
 
 /**
  * Detects available browsers based on the current operating system
@@ -128,52 +132,47 @@ type BrowserInfo = {
  */
 export function getAvailableBrowsers(): BrowserInfo {
     const platform = os.platform();
-    const plugins = [
-        "karma-webpack",
-        "karma-jasmine",
-        "karma-assert"
-    ];
+    const plugins = ["karma-webpack", "karma-jasmine", "karma-assert"];
 
     const customLaunchers: { [key: string]: BrowserConfig } = {};
     const browsers: string[] = [];
 
     // Cross-platform browsers - only add if installed
-    if (isBrowserInstalled('chrome')) {
+    if (isBrowserInstalled("chrome")) {
         plugins.push("karma-chrome-launcher");
         customLaunchers.ChromeHeadless = {
-            base: 'Chrome',
-            flags: ['--headless', '--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage']
+            base: "Chrome",
+            flags: ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"],
         };
-        browsers.push('ChromeHeadless');
+        browsers.push("ChromeHeadless");
     }
 
-    if (isBrowserInstalled('firefox')) {
+    if (isBrowserInstalled("firefox")) {
         plugins.push("karma-firefox-launcher");
         customLaunchers.FirefoxHeadless = {
-            base: 'Firefox',
-            flags: ['-headless']
+            base: "Firefox",
+            flags: ["-headless"],
         };
-        browsers.push('FirefoxHeadless');
+        browsers.push("FirefoxHeadless");
     }
 
-    if (isBrowserInstalled('opera')) {
+    if (isBrowserInstalled("opera")) {
         plugins.push("karma-opera-launcher");
         customLaunchers.OperaHeadless = {
-            base: 'Opera',
-            flags: ['--headless', '--disable-gpu', '--no-sandbox']
+            base: "Opera",
+            flags: ["--headless", "--disable-gpu", "--no-sandbox"],
         };
-        browsers.push('OperaHeadless');
+        browsers.push("OperaHeadless");
     }
 
     // Platform-specific browsers
-    if (platform === 'win32' && isBrowserInstalled('edge')) {
+    if (platform === "win32" && isBrowserInstalled("edge")) {
         plugins.push("karma-edge-launcher");
         customLaunchers.EdgeHeadless = {
-            base: 'Edge',
-            flags: ['--headless', '--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage'],
+            base: "Edge",
+            flags: ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"],
         };
-        browsers.push('EdgeHeadless');
-
+        browsers.push("EdgeHeadless");
     }
 
     return { plugins, customLaunchers, browsers };
@@ -199,23 +198,24 @@ export { isBrowserInstalled };
 export function createKarmaConfig(options: SharedKarmaConfigOptions): any {
     // Validate required properties
     if (!options.files || !Array.isArray(options.files) || options.files.length === 0) {
-        throw new Error('createKarmaConfig: options.files is required and must be a non-empty array');
+        throw new Error("createKarmaConfig: options.files is required and must be a non-empty array");
     }
 
-    if (!options.preprocessors || typeof options.preprocessors !== 'object') {
-        throw new Error('createKarmaConfig: options.preprocessors is required and must be an object');
+    if (!options.preprocessors || typeof options.preprocessors !== "object") {
+        throw new Error("createKarmaConfig: options.preprocessors is required and must be an object");
     }
 
     // Auto-detect TypeScript if not explicitly specified
-    const isTypeScript = options.type === 'typescript' ||
-                        (options.type !== 'javascript' && options.files.some(f => f.includes('.ts')));
+    const isTypeScript =
+        options.type === "typescript" ||
+        (options.type !== "javascript" && options.files.some((f) => f.includes(".ts")));
 
     // Automatically add the shared karma-setup.js file
-    const sharedSetupFile = '../ilib-common-config/karma-setup.js';
+    const sharedSetupFile = "ilib-common-config/karma-setup.js";
     const files = [sharedSetupFile, ...options.files];
     const preprocessors = {
-        [sharedSetupFile]: ['webpack'],
-        ...options.preprocessors
+        [sharedSetupFile]: ["webpack"],
+        ...options.preprocessors,
     };
 
     // Get available browsers based on OS
@@ -241,80 +241,82 @@ export function createKarmaConfig(options: SharedKarmaConfigOptions): any {
             mode: "development",
             target: "web",
             externals: {
-                "log4js": "log4js"
+                log4js: "log4js",
             },
             resolve: {
-                extensions: isTypeScript ? ['.ts', '.js'] : ['.js']
+                extensions: isTypeScript ? [".ts", ".js"] : [".js"],
             },
             module: {
-                rules: isTypeScript ? [
-                    {
-                        test: /\.ts$/,
-                        exclude: /\/node_modules\//,
-                        use: {
-                            loader: 'ts-loader',
-                            options: {
-                                transpileOnly: true
-                            }
-                        }
-                    },
-                    {
-                        test: /\.js$/,
-                        exclude: /\/node_modules\//,
-                        use: {
-                            loader: 'babel-loader',
-                            options: {
-                                minified: false,
-                                compact: false,
-                                presets: [[
-                                    '@babel/preset-env',
-                                    {
-                                        "targets": {
-                                            "node": process.versions.node,
-                                            "browsers": "cover 99.5%"
-                                        }
-                                    }
-                                ]],
-                                plugins: [
-                                    "add-module-exports"
-                                ]
-                            }
-                        }
-                    }
-                ] : [
-                    {
-                        test: /\.js$/,
-                        exclude: /\/node_modules\//,
-                        use: {
-                            loader: 'babel-loader',
-                            options: {
-                                minified: false,
-                                compact: false,
-                                presets: [[
-                                    '@babel/preset-env',
-                                    {
-                                        "targets": {
-                                            "node": process.versions.node,
-                                            "browsers": "cover 99.5%"
-                                        }
-                                    }
-                                ]],
-                                plugins: [
-                                    "add-module-exports"
-                                ]
-                            }
-                        }
-                    }
-                ]
-            }
-        }
+                rules: isTypeScript
+                    ? [
+                          {
+                              test: /\.ts$/,
+                              exclude: /\/node_modules\//,
+                              use: {
+                                  loader: "ts-loader",
+                                  options: {
+                                      transpileOnly: true,
+                                  },
+                              },
+                          },
+                          {
+                              test: /\.js$/,
+                              exclude: /\/node_modules\//,
+                              use: {
+                                  loader: "babel-loader",
+                                  options: {
+                                      minified: false,
+                                      compact: false,
+                                      presets: [
+                                          [
+                                              "@babel/preset-env",
+                                              {
+                                                  targets: {
+                                                      node: process.versions.node,
+                                                      browsers: "cover 99.5%",
+                                                  },
+                                              },
+                                          ],
+                                      ],
+                                      plugins: ["add-module-exports"],
+                                  },
+                              },
+                          },
+                      ]
+                    : [
+                          {
+                              test: /\.js$/,
+                              exclude: /\/node_modules\//,
+                              use: {
+                                  loader: "babel-loader",
+                                  options: {
+                                      minified: false,
+                                      compact: false,
+                                      presets: [
+                                          [
+                                              "@babel/preset-env",
+                                              {
+                                                  targets: {
+                                                      node: process.versions.node,
+                                                      browsers: "cover 99.5%",
+                                                  },
+                                              },
+                                          ],
+                                      ],
+                                      plugins: ["add-module-exports"],
+                                  },
+                              },
+                          },
+                      ],
+            },
+        },
     };
 
     // Merge package-specific options with base configuration
     const mergedConfig = deepMerge(baseConfig, {
         ...options,
         files: files,
-        preprocessors: preprocessors
+        preprocessors: preprocessors,
     });
 
     return mergedConfig;
@@ -326,8 +328,10 @@ export function createKarmaConfig(options: SharedKarmaConfigOptions): any {
  * @param options - Package-specific configuration options
  * @returns A function that can be used as karma.config.js
  */
-export function createKarmaConfigFunction(options: SharedKarmaConfigOptions = {} as SharedKarmaConfigOptions): (config: any) => void {
-    return function(config: any) {
+export function createKarmaConfigFunction(
+    options: SharedKarmaConfigOptions = {} as SharedKarmaConfigOptions
+): (config: any) => void {
+    return function (config: any) {
         config.set(createKarmaConfig(options));
     };
 }

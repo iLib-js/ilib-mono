@@ -1,4 +1,4 @@
-const baseConfig = require("../ilib-common-config/jest.config.js");
+const baseConfig = require("ilib-common-config/jest.config.js");
 
 const config = {
     ...baseConfig,
@@ -6,6 +6,6 @@ const config = {
         name: "ilib-loctool-mrkdwn",
         color: "black",
     },
-}
+};
 
 module.exports = config;

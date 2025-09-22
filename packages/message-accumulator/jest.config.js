@@ -16,8 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var semver = require('semver');
-const baseConfig = require("../ilib-common-config/jest.config.js");
+var semver = require("semver");
+const baseConfig = require("ilib-common-config/jest.config.js");
 
 var config = Object.assign({}, baseConfig, {
     displayName: {
@@ -26,16 +26,17 @@ var config = Object.assign({}, baseConfig, {
     },
 });
 
-var settings = semver.major(process.versions.node) < 14 ?
-    Object.assign(config, {
-        transformIgnorePatterns: ['/node_modules/'],
-        moduleDirectories: ['node_modules', 'src']
-    }) :
-    Object.assign(config, {
-        moduleFileExtensions: ['js', 'jsx', 'json'],
-        transform: {},
-        transformIgnorePatterns: ['/node_modules/'],
-        moduleDirectories: ['node_modules', 'src']
-    });
+var settings =
+    semver.major(process.versions.node) < 14
+        ? Object.assign(config, {
+              transformIgnorePatterns: ["/node_modules/"],
+              moduleDirectories: ["node_modules", "src"],
+          })
+        : Object.assign(config, {
+              moduleFileExtensions: ["js", "jsx", "json"],
+              transform: {},
+              transformIgnorePatterns: ["/node_modules/"],
+              moduleDirectories: ["node_modules", "src"],
+          });
 
 module.exports = settings;
