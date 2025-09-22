@@ -211,7 +211,7 @@ export function createKarmaConfig(options: SharedKarmaConfigOptions): any {
         (options.type !== "javascript" && options.files.some((f) => f.includes(".ts")));
 
     // Automatically add the shared karma-setup.js file
-    const sharedSetupFile = "ilib-common-config/karma-setup.js";
+    const sharedSetupFile = require.resolve("../karma-setup.js");
     const files = [sharedSetupFile, ...options.files];
     const preprocessors = {
         [sharedSetupFile]: ["webpack"],
