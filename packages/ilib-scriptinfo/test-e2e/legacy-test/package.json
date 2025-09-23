@@ -1,0 +1,10 @@
+{
+    "name": "Legacy E2E Test",
+    "type": "commonjs",
+    "dependencies": {
+        "ilib-scriptinfo": "workspace:^"
+    },
+    "scripts": {
+        "test": "node index.js"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "name": "ESM E2E Test",
+    "type": "module",
+    "dependencies": {
+        "ilib-scriptinfo": "workspace:^"
+    },
+    "scripts": {
+        "test": "node index.js"
+    }
+}

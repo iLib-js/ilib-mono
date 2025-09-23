@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /*
- * generate-script-data.mjs - Generate ScriptData.ts from ucd-full package
+ * generate-script-data.js - Generate ScriptData.ts from ucd-full package
  *
  * Copyright © 2025 JEDLSoft
  *

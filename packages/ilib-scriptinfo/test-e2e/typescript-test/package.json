@@ -1,0 +1,13 @@
+{
+    "name": "TypeScript E2E Test",
+    "type": "module",
+    "dependencies": {
+        "ilib-scriptinfo": "workspace:^"
+    },
+    "scripts": {
+        "test": "tsx index.ts"
+    },
+    "devDependencies": {
+        "tsx": "^4.20.5"
+    }
+}

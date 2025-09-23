@@ -6,7 +6,8 @@
   "main": "index.ts",
   "scripts": {
     "start": "tsx index.ts",
-    "test": "tsx index.ts Latn"
+    "test": "tsx index.ts Latn",
+    "run:sample": "tsx index.ts"
   },
   "dependencies": {
     "ilib-scriptinfo": "workspace:^"

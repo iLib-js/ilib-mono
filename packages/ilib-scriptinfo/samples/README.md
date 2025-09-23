@@ -1,101 +1,50 @@
 # Sample Applications
 
-This directory contains sample applications demonstrating different ways to use `ilib-scriptinfo` depending on your project's requirements.
+This directory contains a sample application demonstrating how to use `ilib-scriptinfo` with TypeScript. Usage from plain Javascript (whether that is ES6 code or older ES5 code) is very similar.
 
-## Available Samples
+This sample shows the core functionality of the ilib-scriptinfo library:
 
-### 🚀 Modern ES Module Sample (`esm/`)
+### Key Library Usage Examples
 
-**Best for**: Modern projects using ES modules and latest JavaScript features
+```typescript
+import { scriptInfoFactory, ScriptInfo, ScriptDirection } from 'ilib-scriptinfo';
 
-- **Module System**: ES Modules (`import`/`export`)
-- **Node.js Version**: 14.0.0+
-- **JavaScript Version**: ES2020+
-- **Features**: `for...of`, `Array.includes()`, `import.meta.url`, template literals
+// Get script information using the factory function
+const latin: ScriptInfo | undefined = scriptInfoFactory('Latn');
+if (latin) {
+    console.log(latin.getName());           // "Latin"
+    console.log(latin.getScriptDirection()); // ScriptDirection.LTR
+    console.log(latin.getCasing());         // true (has upper/lowercase)
+}
 
-```bash
-cd samples/esm
-pnpm install
-node index.js Latn
+// Get all available scripts using the static method
+const allScripts: string[] = ScriptInfo.getAllScripts();
+console.log(`Total scripts: ${allScripts.length}`); // 226 scripts
 ```
 
-### 📘 TypeScript Sample (`typescript/`)
-
-**Best for**: Projects using TypeScript with full type safety and IntelliSense support
-
-- **Module System**: ES Modules with TypeScript (`import`/`export`)
-- **Node.js Version**: 16.0.0+
-- **JavaScript Version**: ES2020+ (compiled from TypeScript)
-- **Features**: Full type safety, IntelliSense, compile-time error checking, enum type safety
+### Running the Sample
 
 ```bash
 cd samples/typescript
 pnpm install
-tsx index.ts Latn
+pnpm run:sample Latn
 ```
 
-### 🔧 Legacy CommonJS Sample (`legacy/`)
+### What This Sample Demonstrates
 
-**Best for**: Projects requiring maximum compatibility with older Node.js versions
+- **Factory Function**: `scriptInfoFactory()` to create script info instances
+- **Instance Methods**: Accessing script properties like name, direction, casing
+- **Static Methods**: `ScriptInfo.getAllScripts()` to get all available scripts
+- **Type Safety**: Full TypeScript support with IntelliSense
+- **Error Handling**: Graceful handling of unknown script codes
+- **Case Correction**: Automatic correction of script code casing
 
-- **Module System**: CommonJS (`require`/`module.exports`)
-- **Node.js Version**: 0.10.0+
-- **JavaScript Version**: ES5
-- **Features**: `var`, traditional `for` loops, string concatenation, `Array.indexOf()`
+### Library Features Highlighted
 
-```bash
-cd samples/legacy
-pnpm install
-node index.js Latn
-```
+- **Type Safety**: All methods are fully typed with IntelliSense support
+- **Enum Support**: `ScriptDirection.LTR` and `ScriptDirection.RTL` enum values
+- **Comprehensive Data**: Access to all 226 Unicode scripts
+- **Script Properties**: Direction, casing, IME requirements, and more
+- **Easy Integration**: Simple import and use in any TypeScript project
 
-## Quick Comparison
-
-| Feature | Modern (`esm/`) | TypeScript (`typescript/`) | Legacy (`legacy/`) |
-|---------|-----------------|----------------------------|-------------------|
-| **Module System** | ES Modules | ES Modules + TypeScript | CommonJS |
-| **Import Syntax** | `import { scriptInfoFactory } from 'ilib-scriptinfo'` | `import { scriptInfoFactory, ScriptInfo } from 'ilib-scriptinfo'` | `var scriptInfoFactory = require('ilib-scriptinfo').scriptInfoFactory` |
-| **Type Safety** | Runtime only | Compile-time + IntelliSense | Runtime only |
-| **Node.js Version** | 14.0.0+ | 16.0.0+ | 0.10.0+ |
-| **Execution** | `node index.js` | `tsx index.ts` | `node index.js` |
-| **Loop Style** | `for (const code of allScripts)` | `for (const code of allScripts)` | `for (var i = 0; i < allScripts.length; i++)` |
-| **Array Methods** | `code.includes(searchTerm)` | `code.includes(searchTerm)` | `code.indexOf(searchTerm) !== -1` |
-| **Variables** | `const`/`let` | `const`/`let` with types | `var` |
-| **Strings** | Template literals | Template literals | String concatenation |
-| **Main Detection** | `import.meta.url === \`file://\${process.argv[1]}\`` | `import.meta.url === \`file://\${process.argv[1]}\`` | `require.main === module` |
-
-## Which Sample Should I Use?
-
-### Choose TypeScript (`typescript/`) if:
-- ✅ You're using TypeScript in your project
-- ✅ You want full type safety and IntelliSense support
-- ✅ You're using Node.js 16.0.0 or later
-- ✅ You want compile-time error checking
-- ✅ You prefer modern development tools
-- ✅ You're building a new TypeScript project
-
-### Choose Modern (`esm/`) if:
-- ✅ You're using Node.js 14.0.0 or later
-- ✅ You want to use ES modules
-- ✅ You prefer modern JavaScript syntax
-- ✅ You're building a new project
-- ✅ You want the latest language features
-- ✅ You don't need TypeScript
-
-### Choose Legacy (`legacy/`) if:
-- ✅ You need to support Node.js 0.10.0 or earlier
-- ✅ You're using CommonJS modules
-- ✅ You're maintaining an existing project
-- ✅ You prefer traditional JavaScript syntax
-- ✅ You need maximum compatibility
-
-## All samples demonstrate:
-- ✅ Script code lookup and validation
-- ✅ Case-insensitive search
-- ✅ Partial matching
-- ✅ Error handling
-- ✅ Help system
-- ✅ Tabular output formatting
-- ✅ Consistent API usage patterns
-
-Choose the sample that best fits your project's requirements!
+This sample focuses on demonstrating the library's core functionality rather than being a comprehensive application. The actual library usage is just a few lines of code! Extra utilities functions used in the index.ts are implemented in utils.ts, but they are not relevant as an example of the usage of this library.

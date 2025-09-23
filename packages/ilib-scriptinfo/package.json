@@ -1,8 +1,8 @@
 {
     "name": "ilib-scriptinfo",
     "version": "0.0.0",
-    "main": "./lib/index.js",
-    "types": "./lib/index.d.ts",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
     "description": "Script information utilities for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
     "keywords": [
         "internationalization",
@@ -85,10 +85,10 @@
         "npm-run-all": "^4.1.5",
         "ts-jest": "^29.2.5",
         "ts-loader": "^9.5.0",
-        "tsx": "^4.0.0",
+        "tsx": "^4.20.5",
         "typedoc": "^0.26.11",
         "typedoc-plugin-markdown": "^4.2.10",
-        "typescript": "^5.3.3",
+        "typescript": "^5.6.3",
         "ucd-full": "^16.0.1",
         "webpack": "^5.89.0"
     },

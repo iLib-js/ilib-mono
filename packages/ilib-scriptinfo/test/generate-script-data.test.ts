@@ -128,7 +128,8 @@ describe('generate-script-data.js', () => {
 
         test('should have unique script codes', () => {
             // Extract all script codes from array entries only
-            expect(content).toMatch(/\["([A-Z][a-z]{3})",/g);
+            const scriptCodeMatches = content.match(/\["([A-Z][a-z]{3})",/g);
+            expect(scriptCodeMatches).toBeTruthy();
             const scriptCodes = scriptCodeMatches!.map(match => {
                 const codeMatch = match.match(/\["([A-Z][a-z]{3})",/);
                 expect(codeMatch).toBeTruthy();
