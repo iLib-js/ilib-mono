@@ -21,25 +21,15 @@ import { scriptData, type ScriptDataEntry } from './ScriptData';
 import { ScriptDirection } from './ScriptDirection';
 
 /**
- * Helper function to get script info with boolean flags from the script data.
+ * Helper function to find script data entry by code.
  *
  * @param code - The ISO 15924 4-letter script code
- * @returns ScriptInfoData object if found, undefined otherwise
+ * @returns ScriptDataEntry if found, undefined otherwise
  *
  * @internal
  */
-function getScriptInfo(code: string): ScriptInfoData | undefined {
-    const data = scriptData.find(entry => entry[0] === code);
-    if (!data) return undefined;
-    
-    return {
-        nb: data[1],
-        nm: data[2],
-        lid: data[3],
-        rtl: data[4] || false,
-        ime: data[5] || false,
-        casing: data[6] || false
-    };
+function findScriptData(code: string): ScriptDataEntry | undefined {
+    return scriptData.find(entry => entry[0] === code);
 }
 
 /**
@@ -53,17 +43,6 @@ function getAllScriptCodes(): string[] {
     return scriptData.map((entry: ScriptDataEntry) => entry[0]);
 }
 
-/**
- * Interface for script information data.
- */
-interface ScriptInfoData {
-    nb: number;
-    nm: string;
-    lid: string;
-    rtl: boolean;
-    ime: boolean;
-    casing: boolean;
-}
 
 /**
  * Factory function to create a ScriptInfo instance.
@@ -94,10 +73,10 @@ export function scriptInfoFactory(script: string | number | null | undefined): S
     const scriptString = String(script).trim();
     if (!scriptString) return undefined;
     
-    const info = getScriptInfo(scriptString);
-    if (!info) return undefined;
+    const data = findScriptData(scriptString);
+    if (!data) return undefined;
     
-    return new ScriptInfo(scriptString, info);
+    return new ScriptInfo(scriptString, data);
 }
 
 /**
@@ -234,17 +213,17 @@ export class ScriptInfo {
      *
      * @private
      * @param script - The ISO 15924 4-letter script code
-     * @param info - The script information data
+     * @param data - The script data entry from ScriptData
      * @internal
      */
-    constructor(script: string, info: ScriptInfoData) {
+    constructor(script: string, data: ScriptDataEntry) {
         this.code = script;
-        this.codeNumber = info.nb;
-        this.name = info.nm;
-        this.longCode = info.lid;
-        this.scriptDirection = info.rtl ? ScriptDirection.RTL : ScriptDirection.LTR;
-        this.needsIME = info.ime || false;
-        this.casing = info.casing || false;
+        this.codeNumber = data[1];
+        this.name = data[2];
+        this.longCode = data[3];
+        this.scriptDirection = data[4] ? ScriptDirection.RTL : ScriptDirection.LTR;
+        this.needsIME = data[5] || false;
+        this.casing = data[6] || false;
     }
 
     /**
