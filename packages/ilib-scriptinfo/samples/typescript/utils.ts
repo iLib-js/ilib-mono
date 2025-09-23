@@ -46,7 +46,7 @@ export function searchScriptCodes(searchTerm: string, allScripts: string[]): Arr
 
     for (const code of allScripts) {
         const scriptInfo: ScriptInfo | undefined = scriptInfoFactory(code);
-        const name: string | undefined = scriptInfo?.getName();
+        const name: string | undefined = scriptInfo?.name;
 
         // Check if the search term matches the code (case-insensitive)
         if (code.toLowerCase().includes(searchLower)) {

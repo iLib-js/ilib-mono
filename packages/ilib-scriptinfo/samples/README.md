@@ -12,9 +12,9 @@ import { scriptInfoFactory, ScriptInfo, ScriptDirection } from 'ilib-scriptinfo'
 // Get script information using the factory function
 const latin: ScriptInfo | undefined = scriptInfoFactory('Latn');
 if (latin) {
-    console.log(latin.getName());           // "Latin"
-    console.log(latin.getScriptDirection()); // ScriptDirection.LTR
-    console.log(latin.getCasing());         // true (has upper/lowercase)
+    console.log(latin.name);           // "Latin"
+    console.log(latin.scriptDirection); // ScriptDirection.LTR
+    console.log(latin.casing);         // true (has upper/lowercase)
 }
 
 // Get all available scripts using the static method
@@ -33,7 +33,7 @@ pnpm run:sample Latn
 ### What This Sample Demonstrates
 
 - **Factory Function**: `scriptInfoFactory()` to create script info instances
-- **Instance Methods**: Accessing script properties like name, direction, casing
+- **Instance Properties**: Accessing script properties like name, direction, casing
 - **Static Methods**: `ScriptInfo.getAllScripts()` to get all available scripts
 - **Type Safety**: Full TypeScript support with IntelliSense
 - **Error Handling**: Graceful handling of unknown script codes

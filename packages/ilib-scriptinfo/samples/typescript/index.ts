@@ -52,22 +52,22 @@ function displayScriptInfo(scriptCode: string): void {
         commonScripts.forEach(s => {
             const sInfo: ScriptInfo | undefined = scriptInfoFactory(s);
             if (sInfo) {
-                console.log(`   ${s} - ${sInfo.getName()}`);
+                console.log(`   ${s} - ${sInfo.name}`);
             }
         });
         return;
     }
 
-    // Display script properties (instance method usage)
-    const direction: ScriptDirection = script.getScriptDirection();
+    // Display script properties (instance property usage)
+    const direction: ScriptDirection = script.scriptDirection;
     const directionEmoji: string = direction === ScriptDirection.LTR ? "📝 LTR Left-to-Right" : "📝 RTL Right-to-Left";
-    const imeEmoji: string = script.getNeedsIME() ? "⌨️  IME required" : "⌨️  No IME required";
-    const casingEmoji: string = script.getCasing() ? "🔤 Uses letter case" : "🔤 No letter case";
+    const imeEmoji: string = script.needsIME ? "⌨️  IME required" : "⌨️  No IME required";
+    const casingEmoji: string = script.casing ? "🔤 Uses letter case" : "🔤 No letter case";
 
-    console.log(`Code             | ${script.getCode()}`);
-    console.log(`Code Number      | ${script.getCodeNumber()}`);
-    console.log(`Name             | ${script.getName()}`);
-    console.log(`Long Code        | ${script.getLongCode()}`);
+    console.log(`Code             | ${script.code}`);
+    console.log(`Code Number      | ${script.codeNumber}`);
+    console.log(`Name             | ${script.name}`);
+    console.log(`Long Code        | ${script.longCode}`);
     console.log(`Script Direction | ${directionEmoji}`);
     console.log(`IME Requirement  | ${imeEmoji}`);
     console.log(`Casing Info      | ${casingEmoji}`);

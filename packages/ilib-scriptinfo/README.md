@@ -24,9 +24,9 @@ import { scriptInfoFactory, ScriptDirection, ScriptInfo } from 'ilib-scriptinfo'
 // Get info about Latin script
 const latin: ScriptInfo | undefined = scriptInfoFactory('Latn');
 if (latin) {
-    console.log(latin.getName());           // "Latin"
-    console.log(latin.getScriptDirection()); // ScriptDirection.LTR
-    console.log(latin.getCasing());         // true (has upper/lowercase)
+    console.log(latin.name);           // "Latin"
+    console.log(latin.scriptDirection); // ScriptDirection.LTR
+    console.log(latin.casing);         // true (has upper/lowercase)
 }
 ```
 
@@ -37,17 +37,17 @@ import { scriptInfoFactory, ScriptDirection } from 'ilib-scriptinfo';
 // Get info about Latin script
 const latin = scriptInfoFactory('Latn');
 if (latin) {
-    console.log(latin.getName());           // "Latin"
-    console.log(latin.getScriptDirection()); // ScriptDirection.LTR
-    console.log(latin.getCasing());         // true (has upper/lowercase)
+    console.log(latin.name);           // "Latin"
+    console.log(latin.scriptDirection); // ScriptDirection.LTR
+    console.log(latin.casing);         // true (has upper/lowercase)
 }
 
 // Get info about Arabic script
 const arabic = scriptInfoFactory('Arab');
 if (arabic) {
-    console.log(arabic.getName());          // "Arabic"
-    console.log(arabic.getScriptDirection()); // ScriptDirection.RTL
-    console.log(arabic.getCasing());        // false (no letter case)
+    console.log(arabic.name);          // "Arabic"
+    console.log(arabic.scriptDirection); // ScriptDirection.RTL
+    console.log(arabic.casing);        // false (no letter case)
 }
 ```
 
@@ -59,9 +59,9 @@ var ScriptDirection = require('ilib-scriptinfo').ScriptDirection;
 // Get info about Latin script
 var latin = scriptInfoFactory('Latn');
 if (latin) {
-    console.log(latin.getName());           // "Latin"
-    console.log(latin.getScriptDirection()); // ScriptDirection.LTR
-    console.log(latin.getCasing());         // true (has upper/lowercase)
+    console.log(latin.name);           // "Latin"
+    console.log(latin.scriptDirection); // ScriptDirection.LTR
+    console.log(latin.casing);         // true (has upper/lowercase)
 }
 ```
 
@@ -86,13 +86,13 @@ var script = scriptInfoFactory('Latn');  // 4-letter ISO 15924 code
 ```
 
 ### Get script properties
-- `getName()` - Script name in English
-- `getScriptDirection()` - ScriptDirection.LTR or ScriptDirection.RTL 
-- `getCasing()` - Whether script uses letter case
-- `getNeedsIME()` - Whether script typically needs input method editor
-- `getCodeNumber()` - ISO 15924 numeric code
-- `getCode()` - ISO 15924 4-letter code
-- `getLongCode()` - Long identifier for the script
+- `name` - Script name in English
+- `scriptDirection` - ScriptDirection.LTR or ScriptDirection.RTL 
+- `casing` - Whether script uses letter case
+- `needsIME` - Whether script typically needs input method editor
+- `codeNumber` - ISO 15924 numeric code
+- `code` - ISO 15924 4-letter code
+- `longCode` - Long identifier for the script
 
 ### Get all available scripts
 ```typescript

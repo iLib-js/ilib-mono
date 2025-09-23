@@ -29,7 +29,7 @@ describe('ScriptInfo', () => {
         test('should create a script info instance with valid script code', () => {
             const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
-            expect(si?.getCode()).toBe('Latn');
+            expect(si?.code).toBe('Latn');
         });
 
         test('should handle undefined script code', () => {
@@ -52,37 +52,37 @@ describe('ScriptInfo', () => {
         test('should get script code number for Latin', () => {
             const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
-            expect(si?.getCodeNumber()).toBe(215);
+            expect(si?.codeNumber).toBe(215);
         });
 
         test('should get script name for Latin', () => {
             const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
-            expect(si?.getName()).toBe('Latin');
+            expect(si?.name).toBe('Latin');
         });
 
         test('should get script long code for Latin', () => {
             const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
-            expect(si?.getLongCode()).toBe('Latin');
+            expect(si?.longCode).toBe('Latin');
         });
 
         test('should get script direction for Latin', () => {
             const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
-            expect(si?.getScriptDirection()).toBe(ScriptDirection.LTR);
+            expect(si?.scriptDirection).toBe(ScriptDirection.LTR);
         });
 
         test('should get script casing for Latin', () => {
             const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
-            expect(si?.getCasing()).toBe(true);
+            expect(si?.casing).toBe(true);
         });
 
         test('should get script IME requirement for Latin', () => {
             const si = scriptInfoFactory('Latn');
             expect(si).toBeDefined();
-            expect(si?.getNeedsIME()).toBe(false);
+            expect(si?.needsIME).toBe(false);
         });
     });
 
@@ -90,30 +90,30 @@ describe('ScriptInfo', () => {
         test('should handle RTL script direction', () => {
             const si = scriptInfoFactory('Arab');
             expect(si).toBeDefined();
-            expect(si?.getScriptDirection()).toBe(ScriptDirection.RTL);
+            expect(si?.scriptDirection).toBe(ScriptDirection.RTL);
         });
 
         test('should handle RTL script casing', () => {
             const si = scriptInfoFactory('Arab');
             expect(si).toBeDefined();
-            expect(si?.getCasing()).toBe(false);
+            expect(si?.casing).toBe(false);
         });
 
         test('should handle RTL script IME requirement', () => {
             const si = scriptInfoFactory('Arab');
             expect(si).toBeDefined();
-            expect(si?.getNeedsIME()).toBe(false);
+            expect(si?.needsIME).toBe(false);
         });
 
         test('should get script properties for Hebrew (RTL)', () => {
             const si = scriptInfoFactory('Hebr');
             expect(si).toBeDefined();
-            expect(si?.getCode()).toBe('Hebr');
-            expect(si?.getCodeNumber()).toBe(125);
-            expect(si?.getName()).toBe('Hebrew');
-            expect(si?.getScriptDirection()).toBe(ScriptDirection.RTL);
-            expect(si?.getCasing()).toBe(false);
-            expect(si?.getNeedsIME()).toBe(false);
+            expect(si?.code).toBe('Hebr');
+            expect(si?.codeNumber).toBe(125);
+            expect(si?.name).toBe('Hebrew');
+            expect(si?.scriptDirection).toBe(ScriptDirection.RTL);
+            expect(si?.casing).toBe(false);
+            expect(si?.needsIME).toBe(false);
         });
     });
 
@@ -189,9 +189,9 @@ describe('ScriptInfo', () => {
             for (const scriptCode of allScripts) {
                 const scriptInfo = scriptInfoFactory(scriptCode);
                 expect(scriptInfo).toBeDefined();
-                expect(scriptInfo?.getCode()).toBe(scriptCode);
-                expect(scriptInfo?.getName()).toBeDefined();
-                expect(scriptInfo?.getCodeNumber()).toBeDefined();
+                expect(scriptInfo?.code).toBe(scriptCode);
+                expect(scriptInfo?.name).toBeDefined();
+                expect(scriptInfo?.codeNumber).toBeDefined();
             }
         });
 
@@ -206,36 +206,36 @@ describe('ScriptInfo', () => {
         test('should handle Chinese Han script', () => {
             const si = scriptInfoFactory('Hani');
             expect(si).toBeDefined();
-            expect(si?.getName()).toBe('Han (Hanzi, Kanji, Hanja)');
-            expect(si?.getNeedsIME()).toBe(true);
+            expect(si?.name).toBe('Han (Hanzi, Kanji, Hanja)');
+            expect(si?.needsIME).toBe(true);
         });
 
         test('should handle Korean Hangul script', () => {
             const si = scriptInfoFactory('Hang');
             expect(si).toBeDefined();
-            expect(si?.getName()).toBe('Hangul (Hangŭl, Hangeul)');
-            expect(si?.getNeedsIME()).toBe(true);
+            expect(si?.name).toBe('Hangul (Hangŭl, Hangeul)');
+            expect(si?.needsIME).toBe(true);
         });
 
         test('should handle Japanese Hiragana script', () => {
             const si = scriptInfoFactory('Hira');
             expect(si).toBeDefined();
-            expect(si?.getName()).toBe('Hiragana');
-            expect(si?.getNeedsIME()).toBe(false);
+            expect(si?.name).toBe('Hiragana');
+            expect(si?.needsIME).toBe(false);
         });
 
         test('should handle Thai script', () => {
             const si = scriptInfoFactory('Thai');
             expect(si).toBeDefined();
-            expect(si?.getName()).toBe('Thai');
-            expect(si?.getCasing()).toBe(false);
+            expect(si?.name).toBe('Thai');
+            expect(si?.casing).toBe(false);
         });
 
         test('should handle Devanagari script', () => {
             const si = scriptInfoFactory('Deva');
             expect(si).toBeDefined();
-            expect(si?.getName()).toBe('Devanagari (Nagari)');
-            expect(si?.getNeedsIME()).toBe(false);
+            expect(si?.name).toBe('Devanagari (Nagari)');
+            expect(si?.needsIME).toBe(false);
         });
     });
 }); 

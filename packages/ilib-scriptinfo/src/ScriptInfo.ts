@@ -77,14 +77,14 @@ interface ScriptInfoData {
  * 
  * const latin = scriptInfoFactory('Latn');
  * if (latin) {
- *     console.log(latin.getName()); // "Latin"
- *     console.log(latin.getScriptDirection()); // "ltr" (left-to-right)
+ *     console.log(latin.name); // "Latin"
+ *     console.log(latin.scriptDirection); // "ltr" (left-to-right)
  * }
  * 
  * const unknown = scriptInfoFactory('Xyz');
  * if (unknown) {
  *     // This won't execute - unknown will be undefined
- *     console.log(unknown.getName());
+ *     console.log(unknown.name);
  * }
  * ```
  */
@@ -117,161 +117,134 @@ export function scriptInfoFactory(script: string | number | null | undefined): S
  *
  * const latin = scriptInfoFactory('Latn');
  * if (latin) {
- *     console.log(latin.getName()); // "Latin"
- *     console.log(latin.getScriptDirection()); // "ltr" (left-to-right)
+ *     console.log(latin.name); // "Latin"
+ *     console.log(latin.scriptDirection); // "ltr" (left-to-right)
  * }
  * ```
  */
 export class ScriptInfo {
-    private script: string;
-    private info: ScriptInfoData;
-
     /**
-     * Internal constructor - use createScriptInfo() instead.
-     * 
-     * @param script - The ISO 15924 4-letter script code
-     * @param info - The script information data
-     * @internal
-     */
-    constructor(script: string, info: ScriptInfoData) {
-        this.script = script;
-        this.info = info;
-    }
-
-    /**
-     * Gets the ISO 15924 4-letter script code.
-     *
-     * @returns The script code as a string
+     * The ISO 15924 4-letter script code.
      *
      * @example
      * ```typescript
      * const latin = scriptInfoFactory('Latn');
      * if (latin) {
-     *     console.log(latin.getCode()); // "Latn"
+     *     console.log(latin.code); // "Latn"
      * }
      * ```
      */
-    getCode(): string {
-        return this.script;
-    }
+    readonly code: string;
 
     /**
-     * Gets the ISO 15924 script number.
-     *
-     * @returns The numeric script code, or `undefined` if not recognized
+     * The ISO 15924 script number.
      *
      * @example
      * ```typescript
      * const latin = scriptInfoFactory('Latn');
      * if (latin) {
-     *     console.log(latin.getCodeNumber()); // 215
+     *     console.log(latin.codeNumber); // 215
      * }
      * ```
      */
-    getCodeNumber(): number | undefined {
-        return this.info?.nb;
-    }
+    readonly codeNumber: number;
 
     /**
-     * Gets the English name of the script.
-     *
-     * @returns The script name in English, or `undefined` if not recognized
+     * The English name of the script.
      *
      * @example
      * ```typescript
      * const latin = scriptInfoFactory('Latn');
      * if (latin) {
-     *     console.log(latin.getName()); // "Latin"
+     *     console.log(latin.name); // "Latin"
      * }
      * ```
      */
-    getName(): string | undefined {
-        return this.info?.nm;
-    }
+    readonly name: string;
 
     /**
-     * Gets the long identifier for the script.
-     *
-     * @returns The long script identifier, or `undefined` if not recognized
+     * The long identifier for the script.
      *
      * @example
      * ```typescript
      * const latin = scriptInfoFactory('Latn');
      * if (latin) {
-     *     console.log(latin.getLongCode()); // "Latin"
+     *     console.log(latin.longCode); // "Latin"
      * }
      * ```
      */
-    getLongCode(): string | undefined {
-        return this.info?.lid;
-    }
+    readonly longCode: string;
 
     /**
-     * Gets the writing direction of the script.
-     *
-     * @returns `ScriptDirection.LTR` for left-to-right scripts,
-     *          `ScriptDirection.RTL` for right-to-left scripts,
-     *          or `ScriptDirection.LTR` as default for unknown scripts
+     * The writing direction of the script.
      *
      * @example
      * ```typescript
      * const latin = scriptInfoFactory('Latn');
      * if (latin) {
-     *     console.log(latin.getScriptDirection()); // ScriptDirection.LTR
+     *     console.log(latin.scriptDirection); // ScriptDirection.LTR
      * }
      * 
      * const arabic = scriptInfoFactory('Arab');
      * if (arabic) {
-     *     console.log(arabic.getScriptDirection()); // ScriptDirection.RTL
+     *     console.log(arabic.scriptDirection); // ScriptDirection.RTL
      * }
      * ```
      */
-    getScriptDirection(): ScriptDirection {
-        return this.info?.rtl ? ScriptDirection.RTL : ScriptDirection.LTR;
-    }
+    readonly scriptDirection: ScriptDirection;
 
     /**
-     * Checks if the script requires an Input Method Editor (IME).
-     *
-     * @returns `true` if the script requires an IME, `false` otherwise
+     * Whether the script requires an Input Method Editor (IME).
      *
      * @example
      * ```typescript
      * const chinese = scriptInfoFactory('Hani');
      * if (chinese) {
-     *     console.log(chinese.getNeedsIME()); // true
+     *     console.log(chinese.needsIME); // true
      * }
      * 
      * const latin = scriptInfoFactory('Latn');
      * if (latin) {
-     *     console.log(latin.getNeedsIME()); // false
+     *     console.log(latin.needsIME); // false
      * }
      * ```
      */
-    getNeedsIME(): boolean {
-        return this.info?.ime || false;
-    }
+    readonly needsIME: boolean;
 
     /**
-     * Checks if the script has special casing behavior.
-     *
-     * @returns `true` if the script has special casing, `false` otherwise
+     * Whether the script has special casing behavior.
      *
      * @example
      * ```typescript
      * const latin = scriptInfoFactory('Latn');
      * if (latin) {
-     *     console.log(latin.getCasing()); // true
+     *     console.log(latin.casing); // true
      * }
      * 
      * const thai = scriptInfoFactory('Thai');
      * if (thai) {
-     *     console.log(thai.getCasing()); // false
+     *     console.log(thai.casing); // false
      * }
      * ```
      */
-    getCasing(): boolean {
-        return this.info?.casing || false;
+    readonly casing: boolean;
+
+    /**
+     * Internal constructor - use scriptInfoFactory() instead.
+     *
+     * @private
+     * @param script - The ISO 15924 4-letter script code
+     * @param info - The script information data
+     * @internal
+     */
+    constructor(script: string, info: ScriptInfoData) {
+        this.code = script;
+        this.codeNumber = info.nb;
+        this.name = info.nm;
+        this.longCode = info.lid;
+        this.scriptDirection = info.rtl ? ScriptDirection.RTL : ScriptDirection.LTR;
+        this.needsIME = info.ime || false;
+        this.casing = info.casing || false;
     }
 
     /**
