@@ -63,7 +63,6 @@
         "types": "tsc -p ./jsconfig.json"
     },
     "devDependencies": {
-        "ilib-internal": "workspace:^",
         "@tsconfig/node14": "^14.1.2",
         "@types/jest": "^29.5.14",
         "@types/micromatch": "^4.0.9",
@@ -72,12 +71,13 @@
         "docdash": "^2.0.2",
         "i18nlint-plugin-test-old": "file:test/i18nlint-plugin-test-old",
         "ilib-es6": "^14.21.0",
+        "ilib-internal": "workspace:^",
         "ilib-lint-plugin-obsolete": "file:test/ilib-lint-plugin-obsolete",
         "ilib-lint-plugin-test": "file:test/ilib-lint-plugin-test",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.3",
         "jsdoc-to-markdown": "^8.0.3",
-        "typescript": "^5.5.4"
+        "typescript": "^5.9.2"
     },
     "dependencies": {
         "@formatjs/intl": "^2.10.4",
