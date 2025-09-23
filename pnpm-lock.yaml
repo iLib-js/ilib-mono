@@ -2426,6 +2426,28 @@ importers:
         specifier: ^5.0.0
         version: 5.6.3
 
+  packages/ilib-scriptinfo/test-e2e/esm-test:
+    dependencies:
+      ilib-scriptinfo:
+        specifier: workspace:^
+        version: link:../..
+
+  packages/ilib-scriptinfo/test-e2e/legacy-test:
+    dependencies:
+      ilib-scriptinfo:
+        specifier: workspace:^
+        version: link:../..
+
+  packages/ilib-scriptinfo/test-e2e/typescript-test:
+    dependencies:
+      ilib-scriptinfo:
+        specifier: workspace:^
+        version: link:../..
+    devDependencies:
+      tsx:
+        specifier: ^4.20.5
+        version: 4.20.5
+
   packages/ilib-tmx:
     dependencies:
       '@log4js-node/log4js-api':
