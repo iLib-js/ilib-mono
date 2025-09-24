@@ -21,9 +21,9 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 
-const scriptPath = path.join(__dirname, '../scripts/generate-script-data.js');
-const outputPath = path.join(__dirname, '../src/ScriptData.ts');
-const originalOutputPath = path.join(__dirname, '../src/ScriptData.ts.backup');
+const scriptPath = path.join(__dirname, '../generate-script-data.js');
+const outputPath = path.join(__dirname, '../../src/ScriptData.ts');
+const originalOutputPath = path.join(__dirname, '../../src/ScriptData.ts.backup');
 
 function runScript() {
    return execSync(`node "${scriptPath}"`, { encoding: 'utf8' });
