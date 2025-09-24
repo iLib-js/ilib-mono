@@ -20,6 +20,7 @@
 import { ResourceXliff } from 'ilib-tools-common';
 import { Serializer, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 import { getXliffInfo } from './utils.js';
+import XliffFactory from './XliffFactory.js';
 /**
  * @class Serializer for XLIFF files based on the ilib-xliff library.
  */
@@ -60,11 +61,13 @@ class XliffSerializer extends Serializer {
 
         // produce the same format as the original file
         const xliffInfo = getXliffInfo(ir.sourceFile.getContent());
-
-        const xliff = new ResourceXliff({
-            path: ir.sourceFile.getPath(),
+        const xliffObj = XliffFactory({
             version: xliffInfo.version,
             style: xliffInfo.style
+        });
+        const xliff = new ResourceXliff({
+            path: ir.sourceFile.getPath(),
+            xliff: xliffObj
         });
         resources.forEach(resource => {
             xliff.addResource(resource);

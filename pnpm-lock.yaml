@@ -762,6 +762,12 @@ importers:
       ilib-tools-common:
         specifier: workspace:^
         version: link:../ilib-tools-common
+      ilib-xliff:
+        specifier: workspace:^
+        version: link:../ilib-xliff
+      ilib-xliff-webos:
+        specifier: ^1.0.2
+        version: 1.0.2
       intl-messageformat:
         specifier: ^10.5
         version: 10.7.3
@@ -2295,9 +2301,6 @@ importers:
       ilib-xliff:
         specifier: workspace:^
         version: link:../ilib-xliff
-      ilib-xliff-webos:
-        specifier: ^1.0.2
-        version: 1.0.2
       intl-messageformat:
         specifier: ^10.7.11
         version: 10.7.11

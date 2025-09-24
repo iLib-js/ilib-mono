@@ -22,9 +22,9 @@ import { Xliff } from "ilib-xliff";
 import { webOSXliff } from "ilib-xliff-webos";
 
 const xliffClasses = {
-    webOS: webOSXliff,
-    standard: Xliff,
-    default: Xliff,
+    'webOS': webOSXliff,
+    'standard': Xliff,
+    'default': Xliff,
     '1.2': Xliff,
     '2.0': Xliff,
     '1': Xliff,
@@ -38,21 +38,33 @@ const xliffClasses = {
  * @param {Object} props properties of the xliff file to be passed to the
  * actual resource subclass constructor
  * @param {string} [props.style] the xliff format style
+ * @param {string} [props.version] the xliff format version
  * 
  * @returns {(Xliff|undefined)} An instance of the corresponding XLIFF class, or `undefined` if the style is invalid.
  */
-function XliffFactory(props) {
-    let style = props && XliffFactory.availableStyles.includes(props.style)
+function XliffFactory(props = {}) {
+    const {style, version} = props;
+    let key;
+
+    if (style && xliffClasses[style]) {
+        key = style; //'style' has a higher priority than 'version' because version 1.0 is not supported for the 'webOS' style.
+    } else if (version && xliffClasses[version]) {
+        key = version;
+    } else {
+        key = 'default';
+    }
+    /*let style = props && XliffFactory.availableStyles.includes(props.style)
         ? props.style
         : XliffFactory.defaultStyle;
-
-    let XliffClass = xliffClasses[style];
-
+    */
+    //let version = props && props.version ? props.version : '1.2';
+    let XliffClass = xliffClasses[key];
     return XliffClass ? new XliffClass(props) : undefined;
 }
 
 XliffFactory.availableStyles = ['default', 'standard', 'webOS', '1.2', '2.0', '1', '2'];
 XliffFactory.defaultStyle = 'standard';
+
 
 /**
  * Get the available xliff styles

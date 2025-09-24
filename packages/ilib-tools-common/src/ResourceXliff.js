@@ -25,8 +25,6 @@ import ResourceArray from './ResourceArray.js';
 import ResourcePlural from './ResourcePlural.js';
 import TranslationSet from './TranslationSet.js';
 import Location from './Location.js';
-import XliffFactory from './XliffFactory.js';
-
 import { isEmpty } from './utils.js';
 
 const logger = log4js.getLogger("tools-common.ResourceXliff");
@@ -76,7 +74,8 @@ class ResourceXliff {
      * two instances of the same resource may have been extracted from different source files.
      * @param {string} [options.version] The version of xliff that will be produced by this instance. This
      * may be either "1.2" or "2.0"
-     */
+     * @param {Xliff} [options.xliff] The xliff instance to use for this resource xliff instance.
+    */
     constructor(options) {
         if (options) {
             this["tool-id"] = options["tool-id"];
@@ -94,8 +93,7 @@ class ResourceXliff {
             }
         }
         this.sourceLocale = this.sourceLocale || "en-US";
-
-        this.xliff = XliffFactory(options);
+        this.xliff = options?.xliff ?? new Xliff(options);
         this.ts = new TranslationSet(this.sourceLocale);
     }
 

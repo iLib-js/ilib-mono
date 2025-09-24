@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { XliffFactory } from "../src/index.js";
+import XliffFactory from '../src/plugins/XliffFactory.js';
 import { Xliff } from "ilib-xliff";
 import { webOSXliff } from "ilib-xliff-webos";
 
