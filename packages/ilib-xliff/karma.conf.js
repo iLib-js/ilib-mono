@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-const { createKarmaConfig } = require("ilib-internal/lib/karma.config.js");
+const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
     config.set(
