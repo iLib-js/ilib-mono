@@ -201,7 +201,7 @@ class ResourceAllCaps extends ResourceRule {
 
             if (script) {
                 const scriptInfo = scriptInfoFactory(script);
-                return scriptInfo?.getCasing() ?? true;
+                return scriptInfo?.casing ?? true;
             }
 
             return true; // Default to true for unknown scripts

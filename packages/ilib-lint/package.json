@@ -55,6 +55,7 @@
         "test:watch": "pnpm test:jest --watch",
         "test:all": "npm-run-all --npm-path pnpm test test:e2e",
         "test:e2e": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs",
+        "test:all": "pnpm test:jest test:e2e",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
         "lint": "node src/index.js",
         "clean": "git clean -f -d src test",

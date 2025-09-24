@@ -2,26 +2,22 @@
 
 exports[`ilib-scriptinfo simple package loading CommonJS module loading works 1`] = `
 "{
-    "script": "Latn",
-    "info": {
-        "nb": 215,
-        "nm": "Latin",
-        "lid": "Latin",
-        "rtl": false,
-        "ime": false,
-        "casing": true
-    }
+    "code": "Latn",
+    "codeNumber": 215,
+    "name": "Latin",
+    "longCode": "Latin",
+    "scriptDirection": "ltr",
+    "needsIME": false,
+    "casing": true
 }
 {
-    "script": "Arab",
-    "info": {
-        "nb": 160,
-        "nm": "Arabic",
-        "lid": "Arabic",
-        "rtl": true,
-        "ime": false,
-        "casing": false
-    }
+    "code": "Arab",
+    "codeNumber": 160,
+    "name": "Arabic",
+    "longCode": "Arabic",
+    "scriptDirection": "rtl",
+    "needsIME": false,
+    "casing": false
 }
 [
     "Adlm",
@@ -256,26 +252,22 @@ exports[`ilib-scriptinfo simple package loading CommonJS module loading works 1`
 
 exports[`ilib-scriptinfo simple package loading ESM module loading works 1`] = `
 "{
-    "script": "Latn",
-    "info": {
-        "nb": 215,
-        "nm": "Latin",
-        "lid": "Latin",
-        "rtl": false,
-        "ime": false,
-        "casing": true
-    }
+    "code": "Latn",
+    "codeNumber": 215,
+    "name": "Latin",
+    "longCode": "Latin",
+    "scriptDirection": "ltr",
+    "needsIME": false,
+    "casing": true
 }
 {
-    "script": "Arab",
-    "info": {
-        "nb": 160,
-        "nm": "Arabic",
-        "lid": "Arabic",
-        "rtl": true,
-        "ime": false,
-        "casing": false
-    }
+    "code": "Arab",
+    "codeNumber": 160,
+    "name": "Arabic",
+    "longCode": "Arabic",
+    "scriptDirection": "rtl",
+    "needsIME": false,
+    "casing": false
 }
 [
     "Adlm",
@@ -510,26 +502,22 @@ exports[`ilib-scriptinfo simple package loading ESM module loading works 1`] = `
 
 exports[`ilib-scriptinfo simple package loading TypeScript module loading works 1`] = `
 "{
-    "script": "Latn",
-    "info": {
-        "nb": 215,
-        "nm": "Latin",
-        "lid": "Latin",
-        "rtl": false,
-        "ime": false,
-        "casing": true
-    }
+    "code": "Latn",
+    "codeNumber": 215,
+    "name": "Latin",
+    "longCode": "Latin",
+    "scriptDirection": "ltr",
+    "needsIME": false,
+    "casing": true
 }
 {
-    "script": "Arab",
-    "info": {
-        "nb": 160,
-        "nm": "Arabic",
-        "lid": "Arabic",
-        "rtl": true,
-        "ime": false,
-        "casing": false
-    }
+    "code": "Arab",
+    "codeNumber": 160,
+    "name": "Arabic",
+    "longCode": "Arabic",
+    "scriptDirection": "rtl",
+    "needsIME": false,
+    "casing": false
 }
 [
     "Adlm",
