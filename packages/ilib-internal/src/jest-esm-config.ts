@@ -1,5 +1,5 @@
 /*
- * jest.config.js - shared Jest configuration for CommonJS packages
+ * jest-esm.config.js - shared Jest configuration for ESM packages
  *
  * Copyright © 2025 JEDLSoft
  *
@@ -18,23 +18,20 @@
  */
 
 const config = {
-    // Base configuration from root jest.config.js
     displayName: "ilib-mono repo",
     coverageReporters: ["html", "json-summary", ["text", { file: "../coverage.txt" }]],
     reporters: ["default", ["jest-junit", { outputName: "junit.xml" }]],
     testMatch: ["**/__tests__/**/*.?([mc])[jt]s?(x)", "**/test/**/?(*.)+(spec|test).?([mc])[jt]s?(x)"],
-    // Common overrides for ilib packages
+    // ESM-specific overrides for ilib packages
     testPathIgnorePatterns: [
         "/node_modules/",
         "/tools/",
         "/coverage/"
     ],
-    // Standard module file extensions for ilib packages
-    moduleFileExtensions: ['js', 'json'],
-    // Common transform ignore patterns
-    transformIgnorePatterns: [
-        '/node_modules/(?!(ilib-.*)/)'
-    ]
+    // ESM module file extensions
+    moduleFileExtensions: ['js', 'jsx', 'json'],
+    // ESM module directories
+    moduleDirectories: ['node_modules', 'src']
 };
 
-module.exports = config;
+export default config;
