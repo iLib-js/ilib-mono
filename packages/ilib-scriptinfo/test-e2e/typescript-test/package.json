@@ -7,7 +7,7 @@
         "ilib-scriptinfo": "workspace:^"
     },
     "scripts": {
-        "test": "tsx index.ts"
+        "run": "tsx index.ts"
     },
     "devDependencies": {
         "tsx": "^4.20.5"

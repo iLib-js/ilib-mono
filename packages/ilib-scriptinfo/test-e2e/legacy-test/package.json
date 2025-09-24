@@ -7,6 +7,6 @@
         "ilib-scriptinfo": "workspace:^"
     },
     "scripts": {
-        "test": "node index.js"
+        "run": "node index.js"
     }
 }

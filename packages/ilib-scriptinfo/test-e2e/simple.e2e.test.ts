@@ -35,7 +35,7 @@ async function runSimpleTest(testDir: string): Promise<TestResult> {
     const testPath = path.resolve(__dirname, testDir);
     
     let command: string = "pnpm"
-    let commandArgs: string[] = ["--silent", "test"]
+    let commandArgs: string[] = ["--silent", "run"]
 
     try {
         const { stdout, stderr } = await execFileAsync(command, commandArgs, {
