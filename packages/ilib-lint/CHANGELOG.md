@@ -1,5 +1,22 @@
 # ilib-lint
 
+## 2.19.0
+
+### Minor Changes
+
+- 17d0665: - ResourceSentenceEnding rule enhancements to support various exception
+  - Added minimumLength configuration option (default: 10) to skip checking short strings/abbreviations
+  - Added automatic skipping of strings with no spaces
+  - Added exceptions array per locale to skip specific source strings from checking
+  - Enhanced punctuation detection for quoted content to handle punctuation after closing quotes
+  - Updated rule documentation with new configuration options and examples
+
+### Patch Changes
+
+- c43b5cb: - Fixed bug: now get and use the right locales
+  - command-line overrides the config file which overrides the default
+  - before, it only ever used the defaults!
+
 ## 2.18.2
 
 ### Patch Changes
