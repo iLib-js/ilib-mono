@@ -31,15 +31,13 @@ The package provides shared Jest configurations for different types of ilib pack
 For most packages, you only need to define the "displayName" property with the "name" and "color" properties inside of that. The base
 jest configuration will typically take care of the rest.
 
-### For CommonJS/ES5 Packages
+### For CommonJS Packages
 
-Most ilib packages use CommonJS with ES5-style code. Use this configuration:
-
-> **⚠️ Important**: For CommonJS/ES5 packages, you must use **Jest v26 or earlier** because Jest v27+ was rewritten in ESM and is incompatible with CommonJS packages.
+Most ilib packages use CommonJS. Use this configuration:
 
 ```javascript
 // jest.config.js
-var jestConfig = require("ilib-internal").jestConfig;
+var { jestConfig } = require("ilib-internal");
 
 var config = Object.assign({}, jestConfig, {
     displayName: {
@@ -54,9 +52,7 @@ module.exports = config;
 
 ### For ESM Packages
 
-Modern packages using ES modules should use this configuration. This configuration uses Jest's native ESM support without requiring Babel transformation:
-
-> **✅ Compatible**: ESM packages can use the **latest version of Jest** (v27+).
+Modern packages using ES modules should use this configuration:
 
 ```javascript
 // jest.config.js
@@ -78,8 +74,6 @@ export default config;
 
 TypeScript packages should use this configuration:
 
-> **✅ Compatible**: TypeScript packages can use the **latest version of Jest** (v27+).
-
 ```javascript
 // jest.config.js
 import { tsJestConfig } from "ilib-internal";
@@ -100,8 +94,6 @@ export default config;
 
 E2E tests use a specialized Jest configuration:
 
-> **✅ Compatible**: E2E tests can use the **latest version of Jest** (v27+) since they typically run in a modern environment.
-
 ```javascript
 // test-e2e/jest.config.cjs
 const { jestE2eConfig } = require("ilib-internal");
@@ -121,10 +113,9 @@ module.exports = config;
 
 Choose from these predefined colors for your package's display name:
 
--   `blackBright`, `blueBright`, `green`, `cyan`, `black`, `magentaBright`, `blue`, `yellow`, `red`, `white`
+-   `blackBright`, `blueBright`, `green`, `cyan`, `black`, `magentaBright`, `blue`, `yellow`, `white`
 
-The idea is that when we run all of the tests in the CI, we want to have a full variety of colors so that it
-is easy to see which output comes from which package.
+The idea is that when we run all of the tests in the CI, we want to have a full variety of colors so that it is easy to see which output comes from which package.
 
 ### Common Overrides
 
@@ -289,11 +280,13 @@ const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
     config.set(
-        createKarmaConfig({
-            files: ["./test/**/*.test.js"],
-            preprocessors: { "./test/**/*.test.js": ["webpack"] },
-            // if necessary, package-specific configuration goes here
-        })
+        createKarmaConfig(
+            // if needed, provide object with package-specific configuration
+            {
+                files: ["./test/**/*.test.js"],
+                preprocessors: { "./test/**/*.test.js": ["webpack"] },
+            }
+        )
     );
 };
 ```
