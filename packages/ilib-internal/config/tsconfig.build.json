@@ -1,0 +1,12 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "_version": "12.1.0",
+
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "outDir": "${configDir}/lib",
+        "declaration": true,
+        "declarationMap": true
+    }
+}

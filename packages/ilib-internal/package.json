@@ -6,7 +6,11 @@
     "types": "lib/index.d.ts",
     "description": "Internal package for common configuration of things like E2E testing",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc -p tsconfig.build.json"
+    },
+    "exports": {
+        ".": "./lib/index.js",
+        "./config/*.json": "./config/*.json"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.0.0",
