@@ -1,4 +1,4 @@
-import baseConfig from "ilib-internal/jest-esm.config.js";
+import { jestEsmConfig as baseConfig } from "ilib-internal";
 
 const config = {
     ...baseConfig,
