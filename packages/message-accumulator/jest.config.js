@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 var semver = require("semver");
-const { jestConfig: baseConfig } = require("ilib-internal");
+const { jestConfig } = require("ilib-internal");
 
-var config = Object.assign({}, baseConfig, {
+var config = Object.assign({}, jestConfig, {
     displayName: {
         name: "message-accumulator",
         color: "blueBright",

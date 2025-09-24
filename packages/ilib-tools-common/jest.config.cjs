@@ -1,7 +1,7 @@
-const { jestConfig: baseConfig } = require("ilib-internal");
+const { jestConfig } = require("ilib-internal");
 
 const config = {
-    ...baseConfig,
+    ...jestConfig,
     displayName: {
         name: "ilib-tools-common",
         color: "blackBright",

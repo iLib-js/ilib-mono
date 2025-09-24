@@ -1,7 +1,7 @@
-import { jestEsmConfig as baseConfig } from "ilib-internal";
+import { jestEsmConfig } from "ilib-internal";
 
 const config = {
-    ...baseConfig,
+    ...jestEsmConfig,
     testEnvironment: "node",
     displayName: {
         name: "ilib-lint-apple",

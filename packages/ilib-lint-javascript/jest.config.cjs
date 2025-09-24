@@ -1,7 +1,7 @@
-const { jestEsmConfig: baseConfig } = require("ilib-internal");
+const { jestEsmConfig } = require("ilib-internal");
 
 const config = {
-    ...baseConfig,
+    ...jestEsmConfig,
     displayName: {
         name: "ilib-lint-box",
         color: "yellow",

@@ -1,7 +1,7 @@
-import { jestConfig as baseConfig } from "ilib-internal";
+import { jestConfig } from "ilib-internal";
 
 const config = {
-    ...baseConfig,
+    ...jestConfig,
     displayName: {
         name: "ilib-lint",
         color: "blackBright",

@@ -1,7 +1,7 @@
-const { tsJestConfig: baseConfig } = require("ilib-internal");
+const { tsJestConfig } = require("ilib-internal");
 
 module.exports = {
-    ...baseConfig,
+    ...tsJestConfig,
     displayName: {
         name: "ilib-po",
         color: "white",
