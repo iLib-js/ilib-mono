@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
-const config = {
+import type { Config } from "jest";
+
+const config: Config = {
     // Base configuration from root jest.config.js
     displayName: "ilib-mono repo",
     coverageReporters: ["html", "json-summary", ["text", { file: "../coverage.txt" }]],
@@ -26,6 +28,13 @@ const config = {
     testMatch: [
         "**/test/**/*.test.ts",
         "**/test/**/*.test.js"
+    ],
+    testPathIgnorePatterns: [
+        "/node_modules/",
+        "/tools/",
+        "/coverage/",
+        "/test-e2e/",
+        "/scripts/"
     ],
     moduleFileExtensions: ['ts', 'js'],
     moduleNameMapper: {

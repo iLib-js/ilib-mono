@@ -29,5 +29,6 @@ import jestConfig from "./jest-config";
 import jestEsmConfig from "./jest-esm-config";
 import tsJestConfig from "./ts-jest-config";
 import jestE2eConfig from "./jest-e2e-config";
+import tsJestE2eConfig from "./ts-jest-e2e-config";
 
-export { jestE2eConfig, tsJestConfig, jestConfig, jestEsmConfig };
+export { jestE2eConfig, tsJestConfig, jestConfig, jestEsmConfig, tsJestE2eConfig };
