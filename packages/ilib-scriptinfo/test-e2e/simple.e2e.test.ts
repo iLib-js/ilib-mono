@@ -40,7 +40,7 @@ async function runSimpleTest(testDir: string): Promise<TestResult> {
     try {
         const { stdout, stderr } = await execFileAsync(command, commandArgs, {
             cwd: testPath,
-            env: { ...process.env, NODE_ENV: "test" }
+            env: { ...process.env, NODE_ENV: "start" }
         });
         return { stdout, stderr, code: 0 };
     } catch (error: any) {
