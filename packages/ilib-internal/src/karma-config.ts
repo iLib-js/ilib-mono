@@ -21,6 +21,12 @@ import * as os from "os";
 import * as fs from "fs";
 import { execSync } from "child_process";
 
+const defaultFiles = ["./test/**/*.test.js"];
+
+const defaultPreprocessors = {
+    "./test/**/*.test.js": ["webpack"],
+};
+
 /**
  * Simple deep merge function to avoid circular dependency with ilib-common
  * @param target - Target object to merge into
@@ -61,8 +67,8 @@ function deepMerge(target: any, source: any): any {
 }
 
 export interface SharedKarmaConfigOptions {
-    files: string[];
-    preprocessors: { [pattern: string]: string[] };
+    files?: string[];
+    preprocessors?: { [pattern: string]: string[] };
     type?: "typescript" | "javascript";
     browsers?: string[];
     webpack?: any;
@@ -195,14 +201,13 @@ export { isBrowserInstalled };
  * @param options - Package-specific options to merge with the base configuration
  * @returns Merged karma configuration
  */
-export function createKarmaConfig(options: SharedKarmaConfigOptions): any {
-    // Validate required properties
-    if (!options.files || !Array.isArray(options.files) || options.files.length === 0) {
-        throw new Error("createKarmaConfig: options.files is required and must be a non-empty array");
+export function createKarmaConfig(options: SharedKarmaConfigOptions = {} as SharedKarmaConfigOptions): any {
+    if (!options.files) {
+        options.files = defaultFiles;
     }
 
-    if (!options.preprocessors || typeof options.preprocessors !== "object") {
-        throw new Error("createKarmaConfig: options.preprocessors is required and must be an object");
+    if (!options.preprocessors) {
+        options.preprocessors = defaultPreprocessors;
     }
 
     // Auto-detect TypeScript if not explicitly specified
