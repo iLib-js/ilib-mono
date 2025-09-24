@@ -1,10 +1,12 @@
-import baseConfig from '../../jest.config.js';
+import { jestEsmConfig } from "ilib-internal";
 
-export default {
-    ...baseConfig,
+const config = {
+    ...jestEsmConfig,
     testEnvironment: "node",
     displayName: {
         name: "ilib-lint-apple",
-        color: "blue"
-    }
-}; 
+        color: "blue",
+    },
+};
+
+export default config;

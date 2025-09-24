@@ -1,11 +1,11 @@
-const baseConfig = require("../../jest.config.js");
+import { jestConfig } from "ilib-internal";
 
 const config = {
-    ...baseConfig,
+    ...jestConfig,
     displayName: {
         name: "ilib-lint",
         color: "blackBright",
     },
 };
 
-module.exports = config;
+export default config;

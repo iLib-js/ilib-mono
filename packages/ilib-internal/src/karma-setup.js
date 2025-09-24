@@ -2,7 +2,7 @@
  * karma-setup.js - set up the karma testing environment before
  * running the tests
  *
- * Copyright © 2024, JEDLSoft
+ * Copyright © 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Add missing Jest functions
+
+/*
+ * Add missing Jest functions. This is a workaround to allow Karma to run Jest tests
+ * using the Jasmine framework. Jest and Jasmine's expect libraries are closely
+ * related, but not identical. This shim allows us to use the Jest syntax in our unit
+ * tests and share those tests between Jest on Nodejs and Jasmine on a browser.
+ */
 window.test = window.it;
 window.test.each = (inputs) => (testName, test) =>
-  inputs.forEach((args) => window.it(testName, () => test(...args)));
+    inputs.forEach((args) => window.it(testName, () => test(...args)));
 window.test.todo = function () {
-  return undefined;
+    return undefined;
 };
 
 window.expect.assertions = (num) => { return undefined; };
-

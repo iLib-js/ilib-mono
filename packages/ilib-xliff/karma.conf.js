@@ -1,6 +1,6 @@
 /*
- * karma-setup.js - set up the karma testing environment before
- * running the tests
+ * karma.conf.js - configure the karma testing environment
+ * This package uses the shared karma configuration from ilib-internal
  *
  * Copyright © 2023, JEDLSoft
  *
@@ -17,13 +17,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Add missing Jest functions
-window.test = window.it;
-window.test.each = (inputs) => (testName, test) =>
-  inputs.forEach((args) => window.it(testName, () => test(...args)));
-window.test.todo = function () {
-  return undefined;
+
+const { createKarmaConfig } = require("ilib-internal");
+
+module.exports = function (config) {
+    config.set(
+        createKarmaConfig({
+            // Disable Node.js polyfills to reduce webpack warnings
+            webpack: {
+                resolve: {
+                    fallback: {
+                        stream: false,
+                        buffer: false,
+                    },
+                },
+            },
+        })
+    );
 };
-
-window.expect.assertions = (num) => { return undefined; };
-

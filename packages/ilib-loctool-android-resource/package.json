@@ -48,6 +48,7 @@
         "test:watch": "node node_modules/jest/bin/jest.js --watch",
         "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i",
         "clean": "git clean -f -d *",
+        "test:all": "npm-run-all --npm-path pnpm test test:e2e",
         "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
     },
     "engines": {
@@ -61,6 +62,6 @@
     "devDependencies": {
         "jest": "^29.7.0",
         "loctool": "workspace:^",
-        "@ilib-mono/e2e-test": "workspace:^"
+        "ilib-internal": "workspace:^"
     }
 }
