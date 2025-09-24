@@ -1,4 +1,4 @@
-const baseConfig = require("ilib-internal").tsJestConfig;
+const { tsJestConfig: baseConfig } = require("ilib-internal");
 
 module.exports = {
     ...baseConfig,
