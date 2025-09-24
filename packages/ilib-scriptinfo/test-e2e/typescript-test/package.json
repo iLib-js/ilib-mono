@@ -1,5 +1,7 @@
 {
     "name": "TypeScript E2E Test",
+    "version": "0.0.0",
+    "private": true,
     "type": "module",
     "dependencies": {
         "ilib-scriptinfo": "workspace:^"
