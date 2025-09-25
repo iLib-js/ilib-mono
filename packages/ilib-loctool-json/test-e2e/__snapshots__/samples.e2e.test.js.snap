@@ -45,29 +45,5 @@ exports[`samples json should produce an extracted XLIFF file 1`] = `
       </trans-unit>
     </body>
   </file>
-  <file original="i18n/sample.json" source-language="en-US" target-language="de-DE" product-name="sample-json">
-    <body>
-      <trans-unit id="1" resname="project.whatever.translate.me" restype="string" datatype="json">
-        <source>Translate me</source>
-        <target state="new">Translate me</target>
-      </trans-unit>
-      <trans-unit id="2" resname="project.whatever.and.me" restype="string" datatype="json">
-        <source>And me</source>
-        <target state="new">And me</target>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="i18n/sample.json" source-language="en-US" target-language="ko-KR" product-name="sample-json">
-    <body>
-      <trans-unit id="1" resname="project.whatever.translate.me" restype="string" datatype="json">
-        <source>Translate me</source>
-        <target state="new">Translate me</target>
-      </trans-unit>
-      <trans-unit id="2" resname="project.whatever.and.me" restype="string" datatype="json">
-        <source>And me</source>
-        <target state="new">And me</target>
-      </trans-unit>
-    </body>
-  </file>
 </xliff>"
 `;
