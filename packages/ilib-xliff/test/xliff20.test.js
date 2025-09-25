@@ -881,10 +881,9 @@ describe("XLIFF 2.0", () => {
 
         expect(tulist).toBeTruthy();
         expect(tulist.length).toBe(2);
-
         expect(tulist[0].source).toBe("Asdf asdf");
         expect(tulist[0].sourceLocale).toBe("en-US");
-        expect(!tulist[0].target).toBeTruthy();
+        expect(tulist[0].target).toBeUndefined();
         expect(tulist[0].targetLocale).toBe("de-DE");
         expect(tulist[0].key).toBe("foobar");
         expect(tulist[0].file).toBe("foo/bar/asdf.java");
@@ -896,7 +895,7 @@ describe("XLIFF 2.0", () => {
 
         expect(tulist[1].source).toBe("baby baby");
         expect(tulist[1].sourceLocale).toBe("en-US");
-        expect(!tulist[1].target).toBeTruthy();
+        expect(tulist[1].target).toBeUndefined();
         expect(tulist[1].targetLocale).toBe("de-DE");
         expect(tulist[1].key).toBe("huzzah");
         expect(tulist[1].file).toBe("foo/bar/j.java");
@@ -905,6 +904,44 @@ describe("XLIFF 2.0", () => {
         expect(tulist[1].id).toBe("2");
         expect(typeof(tulist[1].translate)).toBe('undefined');
         expect(tulist[1].location).toEqual({line: 11, char: 5});
+    });
+
+    test('should deserialize XLIFF 2.0 when target value is missing', () => {
+        const x = new Xliff({version: 2.0});
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff version="2.0" srcLang="en-US" trgLang="de-DE" \n' +
+                '  xmlns:l="http://ilib-js.com/loctool">\n' +
+                '  <file original="foo/bar/asdf.java" l:project="androidapp">\n' +
+                '    <unit id="1" name="foobar" type="res:string" l:datatype="plaintext">\n' +
+                '      <segment>\n' +
+                '        <source>Asdf asdf</source>\n' +
+                '        <target></target>\n' +
+                '      </segment>\n' +
+                '    </unit>\n' +
+                '  </file>\n' +
+                '</xliff>');
+
+        let tulist = x.getTranslationUnits();
+
+        expect(tulist).toBeTruthy();
+        expect(tulist.length).toBe(1);
+
+        expect(tulist[0].source).toBe("Asdf asdf");
+        expect(tulist[0].sourceLocale).toBe("en-US");
+        expect(!tulist[0].target).toBeTruthy();
+        expect(tulist[0].target).toBe("");
+        expect(tulist[0].targetLocale).toBe("de-DE");
+        expect(tulist[0].key).toBe("foobar");
+        expect(tulist[0].file).toBe("foo/bar/asdf.java");
+        expect(tulist[0].project).toBe("androidapp");
+        expect(tulist[0].resType).toBe("string");
+        expect(tulist[0].id).toBe("1");
+        expect(typeof(tulist[0].translate)).toBe('undefined');
+        expect(tulist[0].location).toEqual({line: 4, char: 5});
+
     });
 
     test('should deserialize XLIFF 2.0 with source and target', () => {
