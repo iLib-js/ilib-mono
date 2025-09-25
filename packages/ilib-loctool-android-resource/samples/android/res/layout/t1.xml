@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/ask_picker_title_marginBottom"
         android:gravity="center_horizontal"
-        android:text="@string/text_Unlimited_Gigabytes_of_Data"
+        android:text="Unlimited Gigabytes of Data"
         android:textSize="17sp"/>
 
     <com.myproduct.customviews.RobotoLightTextView
@@ -47,5 +47,5 @@
         android:layout_marginTop="@dimen/ask_picker_row_button_marginTop"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:text="@string/text_Choose"/>
+        android:text="Choose"/>
 </LinearLayout>
