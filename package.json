@@ -4,7 +4,7 @@
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "scripts": {
     "build": "turbo build",
-    "postinstall": "cp git-hooks/* .git/hooks/",
+    "postinstall": "cp git-hooks/* .git/hooks/ && ./scripts/setup-git-skip-worktree.sh",
     "ci:coverage:unit:affected": "turbo coverage --concurrency=5 --affected",
     "ci:test:unit:all": "turbo test --concurrency=5",
     "ci:test:unit:affected": "turbo test --concurrency=5 --affected",

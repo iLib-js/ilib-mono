@@ -92,3 +92,30 @@ In case you need to install Git Hooks manually, you can run:
 ```bash
 pnpm postinstall
 ```
+
+Or run the setup script directly:
+
+```bash
+./scripts/setup-git-skip-worktree.sh
+```
+
+#### 5. Auto-Modified Files Setup
+
+Some files in this repository get automatically modified by e2e tests and sample projects. These files are automatically set to `skip-worktree` to prevent accidental commits. The setup happens automatically during `pnpm install`.
+
+**Files with skip-worktree:**
+- `packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml`
+- `packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml`
+
+**To commit changes to these files:**
+```bash
+git update-index --no-skip-worktree <file>
+git add <file>
+git commit -m "Update <file>"
+git update-index --skip-worktree <file>
+```
+
+**To check which files are being skipped:**
+```bash
+git ls-files -v | grep "^S"
+```

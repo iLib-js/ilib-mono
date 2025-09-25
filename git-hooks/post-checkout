@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# post-checkout hook to automatically set up skip-worktree for auto-modified files
+# This runs after git checkout, clone, or pull
+
+echo "🔧 Setting up git skip-worktree for auto-modified files..."
+
+# Function to set skip-worktree for a file
+setup_skip_worktree() {
+    local file="$1"
+    if [ -f "$file" ] && git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
+        git update-index --skip-worktree "$file"
+        echo "✅ Set skip-worktree for $file"
+    else
+        echo "⚠️  File $file not found or not tracked"
+    fi
+}
+
+# Set up skip-worktree for files that get auto-modified by e2e tests
+setup_skip_worktree "packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml"
+setup_skip_worktree "packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml"
+# Add more files here as needed
+
+echo "🎉 Skip-worktree setup complete!"
+echo "💡 These files will be ignored by git to prevent accidental commits."
+echo "   To commit changes: git update-index --no-skip-worktree <file>"
