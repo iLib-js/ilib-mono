@@ -32,9 +32,22 @@ describe("samples", () => {
         });
 
         afterAll(() => {
-            if (fs.existsSync(xliffPath)) {
-                fs.unlinkSync(xliffPath);
-            }
+            // Clean up all generated files and directories
+            const filesToClean = [
+                xliffPath, // sample-regex-extracted.xliff
+                path.resolve(projectPath, "sample-regex-new-de-DE.xliff"),
+                path.resolve(projectPath, "sample-regex-new-ko-KR.xliff")
+            ];
+            
+            filesToClean.forEach(file => {
+                if (fs.existsSync(file)) {
+                    if (fs.statSync(file).isDirectory()) {
+                        fs.rmSync(file, { recursive: true, force: true });
+                    } else {
+                        fs.unlinkSync(file);
+                    }
+                }
+            });
         });
 
         it("should produce an extracted XLIFF file", () => {

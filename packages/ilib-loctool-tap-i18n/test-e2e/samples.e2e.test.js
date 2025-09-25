@@ -32,9 +32,24 @@ describe("samples", () => {
         });
 
         afterAll(() => {
-            if (fs.existsSync(xliffPath)) {
-                fs.unlinkSync(xliffPath);
-            }
+            // Clean up all generated files and directories
+            const filesToClean = [
+                xliffPath, // sample-tap-i18n-extracted.xliff
+                path.resolve(projectPath, "sample-tap-i18n-new-ko-KR.xliff"),
+                path.resolve(projectPath, "sample-tap-i18n-new-nl-NL.xliff"),
+                path.resolve(projectPath, "languages/ko-KR.i18n.yml"),
+                path.resolve(projectPath, "languages/nl-NL.i18n.yml")
+            ];
+            
+            filesToClean.forEach(file => {
+                if (fs.existsSync(file)) {
+                    if (fs.statSync(file).isDirectory()) {
+                        fs.rmSync(file, { recursive: true, force: true });
+                    } else {
+                        fs.unlinkSync(file);
+                    }
+                }
+            });
         });
 
         it("should produce an extracted XLIFF file", () => {

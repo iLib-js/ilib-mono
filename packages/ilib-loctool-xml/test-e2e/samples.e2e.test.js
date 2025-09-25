@@ -32,9 +32,26 @@ describe("samples", () => {
         });
 
         afterAll(() => {
-            if (fs.existsSync(xliffPath)) {
-                fs.unlinkSync(xliffPath);
-            }
+            // Clean up all generated files and directories
+            const filesToClean = [
+                xliffPath, // sample-xml-extracted.xliff
+                path.resolve(projectPath, "sample-xml-new-de-DE.xliff"),
+                path.resolve(projectPath, "sample-xml-new-nl-NL.xliff"),
+                path.resolve(projectPath, "xml/res/values-de-rDE"),
+                path.resolve(projectPath, "xml/res/values-nl-rNL"),
+                path.resolve(projectPath, "xml/test_de_DE.properties"),
+                path.resolve(projectPath, "xml/test_nl.properties")
+            ];
+            
+            filesToClean.forEach(file => {
+                if (fs.existsSync(file)) {
+                    if (fs.statSync(file).isDirectory()) {
+                        fs.rmSync(file, { recursive: true, force: true });
+                    } else {
+                        fs.unlinkSync(file);
+                    }
+                }
+            });
         });
 
         it("should produce an extracted XLIFF file", () => {
