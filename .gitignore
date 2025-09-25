@@ -4,7 +4,6 @@
 
 # Build Outputs
 packages/*/lib/
-packages/*/lib-cjs/
 *.tgz
 
 # Dependencies
