@@ -93,29 +93,25 @@ In case you need to install Git Hooks manually, you can run:
 pnpm postinstall
 ```
 
-Or run the setup script directly:
-
-```bash
-./scripts/setup-git-skip-worktree.sh
-```
-
 #### 5. Auto-Modified Files Setup
 
-Some files in this repository get automatically modified by e2e tests and sample projects. These files are automatically set to `skip-worktree` to prevent accidental commits. The setup happens automatically during `pnpm install`.
+Some files in this repository get automatically modified by e2e tests and sample projects. These files use a backup approach to prevent accidental commits.
 
-**Files with skip-worktree:**
-- `packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml`
-- `packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml`
+**Files with backup approach:**
+- `packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml` (backup: `t1.xml.original`)
+- `packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml` (backup: `t1.xml.original`)
 
-**To commit changes to these files:**
+**How it works:**
+- The original files are backed up as `.original` files
+- Before each e2e test run, the backup files are copied over the working files
+- This ensures tests always start with a clean state
+- Modified files can be committed normally without special git commands
+
+**To update the backup files:**
 ```bash
-git update-index --no-skip-worktree <file>
-git add <file>
-git commit -m "Update <file>"
-git update-index --skip-worktree <file>
-```
-
-**To check which files are being skipped:**
-```bash
-git ls-files -v | grep "^S"
+# After making changes to t1.xml, update the backup
+cp packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml.original
+cp packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml.original
+git add packages/*/samples/android/res/layout/t1.xml.original
+git commit -m "Update backup files for auto-modified test files"
 ```

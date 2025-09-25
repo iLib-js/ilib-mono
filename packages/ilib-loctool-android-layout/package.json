@@ -43,8 +43,6 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "setup": "git update-index --skip-worktree samples/android/res/layout/t1.xml && echo '✅ Set skip-worktree for auto-modified files'",
-        "setup:reset": "git update-index --no-skip-worktree samples/android/res/layout/t1.xml && echo '✅ Reset skip-worktree for auto-modified files'",
         "coverage": "pnpm test -- --coverage",
         "test": "pnpm test:cli",
         "test:watch": "node node_modules/jest/bin/jest.js --watch",
@@ -54,7 +52,7 @@
         "clean:test:restore": "./scripts/restore-auto-modified-files.sh",
         "test:cli": "node node_modules/jest/bin/jest.js",
         "test:all": "npm-run-all --npm-path pnpm test test:e2e",
-        "test:e2e": "npm-run-all --npm-path pnpm clean:test:restore test:e2e:test",
+        "test:e2e": "npm-run-all --npm-path pnpm clean:test clean:test:restore test:e2e:test",
         "test:e2e:test": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs",
         "test:e2e:snapshot": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs --updateSnapshot"
     },

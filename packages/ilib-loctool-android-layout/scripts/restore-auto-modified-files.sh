@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # restore-auto-modified-files.sh
-# Restores files that are set to skip-worktree to their committed state
-# Also cleans up files created by loctool
+# Restores files from backup (.original) files before running e2e tests
 
-echo "🔄 Restoring auto-modified files to committed state..."
+echo "🔄 Restoring auto-modified files from backup..."
 
 # List of files that get automatically modified by e2e tests
 AUTO_MODIFIED_FILES=(
@@ -12,22 +11,15 @@ AUTO_MODIFIED_FILES=(
     # Add more files here as needed
 )
 
-# Restore skip-worktree files
+# Restore files from backup
 for file in "${AUTO_MODIFIED_FILES[@]}"; do
-    if [ -f "$file" ]; then
-        # Temporarily disable skip-worktree
-        git update-index --no-skip-worktree "$file" 2>/dev/null
-        
-        # Restore file to committed state
-        git checkout HEAD -- "$file" 2>/dev/null
-        
-        # Re-enable skip-worktree
-        git update-index --skip-worktree "$file" 2>/dev/null
-        
-        echo "✅ Restored $file"
+    backup_file="${file}.original"
+    if [ -f "$backup_file" ]; then
+        cp "$backup_file" "$file"
+        echo "✅ Restored $file from $backup_file"
     else
-        echo "⚠️  File $file not found"
+        echo "⚠️  Backup file $backup_file not found"
     fi
 done
 
-echo "🎉 All auto-modified files restored to committed state!"
+echo "🎉 All auto-modified files restored from backup!"
