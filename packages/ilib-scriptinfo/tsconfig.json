@@ -1,5 +1,5 @@
 {
     "extends": "ilib-internal/config/tsconfig.base.json",
     "include": ["."],
-    "exclude": ["node_modules", "lib", "docs", "test", "test-e2e"]
+    "exclude": ["node_modules", "lib", "docs", "test", "test-e2e", "samples"]
 } 

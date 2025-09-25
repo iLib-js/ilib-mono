@@ -50,7 +50,7 @@
     },
     "scripts": {
         "build": "npm-run-all --npm-path pnpm build:data build:ts",
-        "build:ts": "tsc && echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:ts": "tsc && mkdir -p lib && echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:data": "node scripts/generate-script-data.js",
         "coverage": "pnpm test:cli --coverage",
         "test": "pnpm test:cli",
