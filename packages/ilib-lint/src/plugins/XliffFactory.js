@@ -22,9 +22,9 @@ import { Xliff } from "ilib-xliff";
 import { webOSXliff } from "ilib-xliff-webos";
 
 const xliffClasses = {
-    'webOS': webOSXliff,
-    'standard': Xliff,
-    'default': Xliff,
+    default: Xliff,
+    webOS: webOSXliff,
+    standard: Xliff,
     '1.2': Xliff,
     '2.0': Xliff,
     '1': Xliff,
@@ -53,18 +53,12 @@ function XliffFactory(props = {}) {
     } else {
         key = 'default';
     }
-    /*let style = props && XliffFactory.availableStyles.includes(props.style)
-        ? props.style
-        : XliffFactory.defaultStyle;
-    */
-    //let version = props && props.version ? props.version : '1.2';
     let XliffClass = xliffClasses[key];
     return XliffClass ? new XliffClass(props) : undefined;
 }
 
-XliffFactory.availableStyles = ['default', 'standard', 'webOS', '1.2', '2.0', '1', '2'];
+XliffFactory.availableStyles = Object.keys(xliffClasses);
 XliffFactory.defaultStyle = 'standard';
-
 
 /**
  * Get the available xliff styles
@@ -72,7 +66,7 @@ XliffFactory.defaultStyle = 'standard';
  * @returns {Array.<String>} Returns an array of possible XLIFF styles.
  */
 XliffFactory.getAllStyles = function () {
-    return this.availableStyles;
+    return XliffFactory.availableStyles;
 }
 
 export default XliffFactory;

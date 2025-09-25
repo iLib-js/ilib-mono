@@ -40,8 +40,8 @@ describe("XliffFactory", function() {
     });
     test("XliffFactory_getAllStyles", function() {
         expect.assertions(1);
-        var list = ['default', 'standard', 'webOS', '1.2', '2.0', '1', '2'];
-        expect(XliffFactory.getAllStyles()).toEqual(list);
+        var list = ['1', '1.2', '2', '2.0', 'default', 'standard', 'webOS'];
+        expect(XliffFactory.getAllStyles().sort()).toEqual(list);
     });
     test("XliffFactory_style_standard", function() {
         expect.assertions(2);

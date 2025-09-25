@@ -16,14 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import fs from 'fs';
 
 import { ResourceString } from 'ilib-tools-common';
-
 import { IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 import XliffParser from '../src/plugins/XliffParser.js';
 
-import {describe, expect, test} from '@jest/globals';
 
 /**
  * @jest-environment node
