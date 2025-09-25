@@ -8,6 +8,7 @@ echo "🔧 Setting up git skip-worktree for auto-modified files..."
 # List of files that get automatically modified by e2e tests
 AUTO_MODIFIED_FILES=(
     "packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml"
+    "packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml"
     # Add more files here as needed
 )
 
