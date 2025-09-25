@@ -39,7 +39,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-js-new-ko-KR.xliff"),
                 path.resolve(projectPath, "resources")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {
@@ -73,7 +73,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-js-json-new-ko-KR.xliff"),
                 path.resolve(projectPath, "resources")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {
@@ -107,7 +107,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-php-resource-new-ko-KR.xliff"),
                 path.resolve(projectPath, "resources")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {

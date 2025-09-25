@@ -42,7 +42,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "xml/test_de_DE.properties"),
                 path.resolve(projectPath, "xml/test_nl.properties")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {

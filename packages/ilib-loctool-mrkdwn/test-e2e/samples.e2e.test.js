@@ -39,7 +39,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "translations/de"),
                 path.resolve(projectPath, "translations/ko")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {

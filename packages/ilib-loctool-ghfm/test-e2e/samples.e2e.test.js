@@ -39,7 +39,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-md-new-nl-NL.xliff"),
                 path.resolve(projectPath, "locale")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {

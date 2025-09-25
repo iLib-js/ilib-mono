@@ -39,19 +39,19 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-new-ru-RU.xliff"),
                 path.resolve(projectPath, "res/values/strings-auto.xml")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     fs.unlinkSync(file);
                 }
             });
-            
+
             // Clean up generated directories
             const dirsToClean = [
                 path.resolve(projectPath, "res/values-ko"),
                 path.resolve(projectPath, "res/values-ru")
             ];
-            
+
             dirsToClean.forEach(dir => {
                 if (fs.existsSync(dir)) {
                     fs.rmSync(dir, { recursive: true, force: true });

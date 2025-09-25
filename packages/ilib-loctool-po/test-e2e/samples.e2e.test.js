@@ -39,7 +39,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-po-new-ru-RU.xliff"),
                 path.resolve(projectPath, "resources")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {

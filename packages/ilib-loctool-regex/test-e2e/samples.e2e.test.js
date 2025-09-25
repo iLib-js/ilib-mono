@@ -38,7 +38,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-regex-new-de-DE.xliff"),
                 path.resolve(projectPath, "sample-regex-new-ko-KR.xliff")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {

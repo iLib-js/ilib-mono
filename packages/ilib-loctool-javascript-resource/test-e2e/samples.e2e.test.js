@@ -39,7 +39,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-js-new-ko-KR.xliff"),
                 path.resolve(projectPath, "resources")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {
@@ -71,7 +71,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "sample-regex-new-de-DE.xliff"),
                 path.resolve(projectPath, "sample-regex-new-ko-KR.xliff")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {

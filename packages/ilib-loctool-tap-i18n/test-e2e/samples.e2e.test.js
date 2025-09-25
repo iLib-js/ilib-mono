@@ -40,7 +40,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "languages/ko-KR.i18n.yml"),
                 path.resolve(projectPath, "languages/nl-NL.i18n.yml")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {

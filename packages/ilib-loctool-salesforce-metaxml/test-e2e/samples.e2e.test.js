@@ -40,7 +40,7 @@ describe("samples", () => {
                 path.resolve(projectPath, "force-app/main/default/translations/de.translation-meta.xml"),
                 path.resolve(projectPath, "force-app/main/default/translations/nl_NL.translation-meta.xml")
             ];
-            
+
             filesToClean.forEach(file => {
                 if (fs.existsSync(file)) {
                     if (fs.statSync(file).isDirectory()) {
