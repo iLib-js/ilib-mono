@@ -1,214 +1,751 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ilib-scriptinfo simple package loading CommonJS module loading works 1`] = `
-"Lifecycle scripts:
-  start
-    node index.js
-
-Commands of the root workspace project (to run them, use "pnpm -w run"):
-  build
-    turbo build
-  postinstall
-    cp git-hooks/* .git/hooks/
-  ci:coverage:unit:affected
-    turbo coverage --concurrency=5 --affected
-  ci:test:unit:all
-    turbo test --concurrency=5
-  ci:test:unit:affected
-    turbo test --concurrency=5 --affected
-  ci:test:web:all
-    turbo test:web --concurrency=5
-  ci:test:web:affected
-    turbo test:web --concurrency=5 --affected
-  ci:test:e2e:all
-    turbo test:e2e --concurrency=5
-  ci:test:e2e:affected
-    turbo test:e2e --concurrency=5 --affected
-  ci:release
-    pnpm build && pnpm changeset publish
-  coverage
-    pnpm coverage:unit:affected
-  coverage:unit:affected
-    turbo coverage --affected
-  coverage:unit:all
-    turbo coverage
-  test
-    pnpm test:unit:affected
-  test:unit
-    pnpm test:unit:affected
-  test:unit:all
-    turbo test
-  test:unit:affected
-    turbo test --affected --output-logs=new-only
-  test:unit:force
-    turbo test --force
-  test:web
-    pnpm test:web:affected
-  test:web:all
-    turbo test:web
-  test:web:affected
-    turbo test:web --affected --output-logs=new-only
-  test:web:force
-    turbo test:web --force
-  test:e2e
-    pnpm test:e2e:affected
-  test:e2e:all
-    turbo test:e2e
-  test:e2e:affected
-    turbo test:e2e --affected --output-logs=new-only
-  test:e2e:force
-    turbo test:e2e --force
-  doc
-    pnpm -F '[origin/main]' doc
-  run:loctool
-    NODE_PATH=packages node --inspect packages/loctool/loctool.js
-  run:lint
-    NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js
-  run:samples
-    pnpm -F '{packages/*/samples/*}' run:sample
-  run:samples:affected
-    pnpm -F '{packages/*/samples/*}[origin/main]' run:sample
+"{
+    "code": "Latn",
+    "codeNumber": 215,
+    "name": "Latin",
+    "longCode": "Latin",
+    "scriptDirection": "ltr",
+    "needsIME": false,
+    "casing": true
+}
+{
+    "code": "Arab",
+    "codeNumber": 160,
+    "name": "Arabic",
+    "longCode": "Arabic",
+    "scriptDirection": "rtl",
+    "needsIME": false,
+    "casing": false
+}
+[
+    "Adlm",
+    "Afak",
+    "Aghb",
+    "Ahom",
+    "Arab",
+    "Aran",
+    "Armi",
+    "Armn",
+    "Avst",
+    "Bali",
+    "Bamu",
+    "Bass",
+    "Batk",
+    "Beng",
+    "Berf",
+    "Bhks",
+    "Blis",
+    "Bopo",
+    "Brah",
+    "Brai",
+    "Bugi",
+    "Buhd",
+    "Cakm",
+    "Cans",
+    "Cari",
+    "Cham",
+    "Cher",
+    "Chis",
+    "Chrs",
+    "Cirt",
+    "Copt",
+    "Cpmn",
+    "Cprt",
+    "Cyrl",
+    "Cyrs",
+    "Deva",
+    "Diak",
+    "Dogr",
+    "Dsrt",
+    "Dupl",
+    "Egyd",
+    "Egyh",
+    "Egyp",
+    "Elba",
+    "Elym",
+    "Ethi",
+    "Gara",
+    "Geok",
+    "Geor",
+    "Glag",
+    "Gong",
+    "Gonm",
+    "Goth",
+    "Gran",
+    "Grek",
+    "Gujr",
+    "Gukh",
+    "Guru",
+    "Hanb",
+    "Hang",
+    "Hani",
+    "Hano",
+    "Hans",
+    "Hant",
+    "Hatr",
+    "Hebr",
+    "Hira",
+    "Hluw",
+    "Hmng",
+    "Hmnp",
+    "Hntl",
+    "Hrkt",
+    "Hung",
+    "Inds",
+    "Ital",
+    "Jamo",
+    "Java",
+    "Jpan",
+    "Jurc",
+    "Kali",
+    "Kana",
+    "Kawi",
+    "Khar",
+    "Khmr",
+    "Khoj",
+    "Kitl",
+    "Kits",
+    "Knda",
+    "Kore",
+    "Kpel",
+    "Krai",
+    "Kthi",
+    "Lana",
+    "Laoo",
+    "Latf",
+    "Latg",
+    "Latn",
+    "Leke",
+    "Lepc",
+    "Limb",
+    "Lina",
+    "Linb",
+    "Lisu",
+    "Loma",
+    "Lyci",
+    "Lydi",
+    "Mahj",
+    "Maka",
+    "Mand",
+    "Mani",
+    "Marc",
+    "Maya",
+    "Medf",
+    "Mend",
+    "Merc",
+    "Mero",
+    "Mlym",
+    "Modi",
+    "Mong",
+    "Moon",
+    "Mroo",
+    "Mtei",
+    "Mult",
+    "Mymr",
+    "Nagm",
+    "Nand",
+    "Narb",
+    "Nbat",
+    "Newa",
+    "Nkdb",
+    "Nkgb",
+    "Nkoo",
+    "Nshu",
+    "Ogam",
+    "Olck",
+    "Onao",
+    "Orkh",
+    "Orya",
+    "Osge",
+    "Osma",
+    "Ougr",
+    "Palm",
+    "Pauc",
+    "Pcun",
+    "Pelm",
+    "Perm",
+    "Phag",
+    "Phli",
+    "Phlp",
+    "Phlv",
+    "Phnx",
+    "Plrd",
+    "Piqd",
+    "Prti",
+    "Psin",
+    "Qaaa",
+    "Qabx",
+    "Ranj",
+    "Rjng",
+    "Rohg",
+    "Roro",
+    "Runr",
+    "Samr",
+    "Sara",
+    "Sarb",
+    "Saur",
+    "Seal",
+    "Sgnw",
+    "Shaw",
+    "Shrd",
+    "Shui",
+    "Sidd",
+    "Sidt",
+    "Sind",
+    "Sinh",
+    "Sogd",
+    "Sogo",
+    "Sora",
+    "Soyo",
+    "Sund",
+    "Sunu",
+    "Sylo",
+    "Syrc",
+    "Syre",
+    "Syrj",
+    "Syrn",
+    "Tagb",
+    "Takr",
+    "Tale",
+    "Talu",
+    "Taml",
+    "Tang",
+    "Tavt",
+    "Tayo",
+    "Telu",
+    "Teng",
+    "Tfng",
+    "Tglg",
+    "Thaa",
+    "Thai",
+    "Tibt",
+    "Tirh",
+    "Tnsa",
+    "Todr",
+    "Tols",
+    "Toto",
+    "Tutg",
+    "Ugar",
+    "Vaii",
+    "Visp",
+    "Vith",
+    "Wara",
+    "Wcho",
+    "Wole",
+    "Xpeo",
+    "Xsux",
+    "Yezi",
+    "Yiii",
+    "Zanb",
+    "Zinh",
+    "Zmth",
+    "Zsye",
+    "Zsym",
+    "Zxxx",
+    "Zyyy",
+    "Zzzz"
+]
 "
 `;
 
 exports[`ilib-scriptinfo simple package loading ESM module loading works 1`] = `
-"Lifecycle scripts:
-  start
-    node index.js
-
-Commands of the root workspace project (to run them, use "pnpm -w run"):
-  build
-    turbo build
-  postinstall
-    cp git-hooks/* .git/hooks/
-  ci:coverage:unit:affected
-    turbo coverage --concurrency=5 --affected
-  ci:test:unit:all
-    turbo test --concurrency=5
-  ci:test:unit:affected
-    turbo test --concurrency=5 --affected
-  ci:test:web:all
-    turbo test:web --concurrency=5
-  ci:test:web:affected
-    turbo test:web --concurrency=5 --affected
-  ci:test:e2e:all
-    turbo test:e2e --concurrency=5
-  ci:test:e2e:affected
-    turbo test:e2e --concurrency=5 --affected
-  ci:release
-    pnpm build && pnpm changeset publish
-  coverage
-    pnpm coverage:unit:affected
-  coverage:unit:affected
-    turbo coverage --affected
-  coverage:unit:all
-    turbo coverage
-  test
-    pnpm test:unit:affected
-  test:unit
-    pnpm test:unit:affected
-  test:unit:all
-    turbo test
-  test:unit:affected
-    turbo test --affected --output-logs=new-only
-  test:unit:force
-    turbo test --force
-  test:web
-    pnpm test:web:affected
-  test:web:all
-    turbo test:web
-  test:web:affected
-    turbo test:web --affected --output-logs=new-only
-  test:web:force
-    turbo test:web --force
-  test:e2e
-    pnpm test:e2e:affected
-  test:e2e:all
-    turbo test:e2e
-  test:e2e:affected
-    turbo test:e2e --affected --output-logs=new-only
-  test:e2e:force
-    turbo test:e2e --force
-  doc
-    pnpm -F '[origin/main]' doc
-  run:loctool
-    NODE_PATH=packages node --inspect packages/loctool/loctool.js
-  run:lint
-    NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js
-  run:samples
-    pnpm -F '{packages/*/samples/*}' run:sample
-  run:samples:affected
-    pnpm -F '{packages/*/samples/*}[origin/main]' run:sample
+"{
+    "code": "Latn",
+    "codeNumber": 215,
+    "name": "Latin",
+    "longCode": "Latin",
+    "scriptDirection": "ltr",
+    "needsIME": false,
+    "casing": true
+}
+{
+    "code": "Arab",
+    "codeNumber": 160,
+    "name": "Arabic",
+    "longCode": "Arabic",
+    "scriptDirection": "rtl",
+    "needsIME": false,
+    "casing": false
+}
+[
+    "Adlm",
+    "Afak",
+    "Aghb",
+    "Ahom",
+    "Arab",
+    "Aran",
+    "Armi",
+    "Armn",
+    "Avst",
+    "Bali",
+    "Bamu",
+    "Bass",
+    "Batk",
+    "Beng",
+    "Berf",
+    "Bhks",
+    "Blis",
+    "Bopo",
+    "Brah",
+    "Brai",
+    "Bugi",
+    "Buhd",
+    "Cakm",
+    "Cans",
+    "Cari",
+    "Cham",
+    "Cher",
+    "Chis",
+    "Chrs",
+    "Cirt",
+    "Copt",
+    "Cpmn",
+    "Cprt",
+    "Cyrl",
+    "Cyrs",
+    "Deva",
+    "Diak",
+    "Dogr",
+    "Dsrt",
+    "Dupl",
+    "Egyd",
+    "Egyh",
+    "Egyp",
+    "Elba",
+    "Elym",
+    "Ethi",
+    "Gara",
+    "Geok",
+    "Geor",
+    "Glag",
+    "Gong",
+    "Gonm",
+    "Goth",
+    "Gran",
+    "Grek",
+    "Gujr",
+    "Gukh",
+    "Guru",
+    "Hanb",
+    "Hang",
+    "Hani",
+    "Hano",
+    "Hans",
+    "Hant",
+    "Hatr",
+    "Hebr",
+    "Hira",
+    "Hluw",
+    "Hmng",
+    "Hmnp",
+    "Hntl",
+    "Hrkt",
+    "Hung",
+    "Inds",
+    "Ital",
+    "Jamo",
+    "Java",
+    "Jpan",
+    "Jurc",
+    "Kali",
+    "Kana",
+    "Kawi",
+    "Khar",
+    "Khmr",
+    "Khoj",
+    "Kitl",
+    "Kits",
+    "Knda",
+    "Kore",
+    "Kpel",
+    "Krai",
+    "Kthi",
+    "Lana",
+    "Laoo",
+    "Latf",
+    "Latg",
+    "Latn",
+    "Leke",
+    "Lepc",
+    "Limb",
+    "Lina",
+    "Linb",
+    "Lisu",
+    "Loma",
+    "Lyci",
+    "Lydi",
+    "Mahj",
+    "Maka",
+    "Mand",
+    "Mani",
+    "Marc",
+    "Maya",
+    "Medf",
+    "Mend",
+    "Merc",
+    "Mero",
+    "Mlym",
+    "Modi",
+    "Mong",
+    "Moon",
+    "Mroo",
+    "Mtei",
+    "Mult",
+    "Mymr",
+    "Nagm",
+    "Nand",
+    "Narb",
+    "Nbat",
+    "Newa",
+    "Nkdb",
+    "Nkgb",
+    "Nkoo",
+    "Nshu",
+    "Ogam",
+    "Olck",
+    "Onao",
+    "Orkh",
+    "Orya",
+    "Osge",
+    "Osma",
+    "Ougr",
+    "Palm",
+    "Pauc",
+    "Pcun",
+    "Pelm",
+    "Perm",
+    "Phag",
+    "Phli",
+    "Phlp",
+    "Phlv",
+    "Phnx",
+    "Plrd",
+    "Piqd",
+    "Prti",
+    "Psin",
+    "Qaaa",
+    "Qabx",
+    "Ranj",
+    "Rjng",
+    "Rohg",
+    "Roro",
+    "Runr",
+    "Samr",
+    "Sara",
+    "Sarb",
+    "Saur",
+    "Seal",
+    "Sgnw",
+    "Shaw",
+    "Shrd",
+    "Shui",
+    "Sidd",
+    "Sidt",
+    "Sind",
+    "Sinh",
+    "Sogd",
+    "Sogo",
+    "Sora",
+    "Soyo",
+    "Sund",
+    "Sunu",
+    "Sylo",
+    "Syrc",
+    "Syre",
+    "Syrj",
+    "Syrn",
+    "Tagb",
+    "Takr",
+    "Tale",
+    "Talu",
+    "Taml",
+    "Tang",
+    "Tavt",
+    "Tayo",
+    "Telu",
+    "Teng",
+    "Tfng",
+    "Tglg",
+    "Thaa",
+    "Thai",
+    "Tibt",
+    "Tirh",
+    "Tnsa",
+    "Todr",
+    "Tols",
+    "Toto",
+    "Tutg",
+    "Ugar",
+    "Vaii",
+    "Visp",
+    "Vith",
+    "Wara",
+    "Wcho",
+    "Wole",
+    "Xpeo",
+    "Xsux",
+    "Yezi",
+    "Yiii",
+    "Zanb",
+    "Zinh",
+    "Zmth",
+    "Zsye",
+    "Zsym",
+    "Zxxx",
+    "Zyyy",
+    "Zzzz"
+]
 "
 `;
 
 exports[`ilib-scriptinfo simple package loading TypeScript module loading works 1`] = `
-"Lifecycle scripts:
-  start
-    tsx index.ts
-
-Commands of the root workspace project (to run them, use "pnpm -w run"):
-  build
-    turbo build
-  postinstall
-    cp git-hooks/* .git/hooks/
-  ci:coverage:unit:affected
-    turbo coverage --concurrency=5 --affected
-  ci:test:unit:all
-    turbo test --concurrency=5
-  ci:test:unit:affected
-    turbo test --concurrency=5 --affected
-  ci:test:web:all
-    turbo test:web --concurrency=5
-  ci:test:web:affected
-    turbo test:web --concurrency=5 --affected
-  ci:test:e2e:all
-    turbo test:e2e --concurrency=5
-  ci:test:e2e:affected
-    turbo test:e2e --concurrency=5 --affected
-  ci:release
-    pnpm build && pnpm changeset publish
-  coverage
-    pnpm coverage:unit:affected
-  coverage:unit:affected
-    turbo coverage --affected
-  coverage:unit:all
-    turbo coverage
-  test
-    pnpm test:unit:affected
-  test:unit
-    pnpm test:unit:affected
-  test:unit:all
-    turbo test
-  test:unit:affected
-    turbo test --affected --output-logs=new-only
-  test:unit:force
-    turbo test --force
-  test:web
-    pnpm test:web:affected
-  test:web:all
-    turbo test:web
-  test:web:affected
-    turbo test:web --affected --output-logs=new-only
-  test:web:force
-    turbo test:web --force
-  test:e2e
-    pnpm test:e2e:affected
-  test:e2e:all
-    turbo test:e2e
-  test:e2e:affected
-    turbo test:e2e --affected --output-logs=new-only
-  test:e2e:force
-    turbo test:e2e --force
-  doc
-    pnpm -F '[origin/main]' doc
-  run:loctool
-    NODE_PATH=packages node --inspect packages/loctool/loctool.js
-  run:lint
-    NODE_PATH=packages node --inspect packages/ilib-lint/src/index.js
-  run:samples
-    pnpm -F '{packages/*/samples/*}' run:sample
-  run:samples:affected
-    pnpm -F '{packages/*/samples/*}[origin/main]' run:sample
+"{
+    "code": "Latn",
+    "codeNumber": 215,
+    "name": "Latin",
+    "longCode": "Latin",
+    "scriptDirection": "ltr",
+    "needsIME": false,
+    "casing": true
+}
+{
+    "code": "Arab",
+    "codeNumber": 160,
+    "name": "Arabic",
+    "longCode": "Arabic",
+    "scriptDirection": "rtl",
+    "needsIME": false,
+    "casing": false
+}
+[
+    "Adlm",
+    "Afak",
+    "Aghb",
+    "Ahom",
+    "Arab",
+    "Aran",
+    "Armi",
+    "Armn",
+    "Avst",
+    "Bali",
+    "Bamu",
+    "Bass",
+    "Batk",
+    "Beng",
+    "Berf",
+    "Bhks",
+    "Blis",
+    "Bopo",
+    "Brah",
+    "Brai",
+    "Bugi",
+    "Buhd",
+    "Cakm",
+    "Cans",
+    "Cari",
+    "Cham",
+    "Cher",
+    "Chis",
+    "Chrs",
+    "Cirt",
+    "Copt",
+    "Cpmn",
+    "Cprt",
+    "Cyrl",
+    "Cyrs",
+    "Deva",
+    "Diak",
+    "Dogr",
+    "Dsrt",
+    "Dupl",
+    "Egyd",
+    "Egyh",
+    "Egyp",
+    "Elba",
+    "Elym",
+    "Ethi",
+    "Gara",
+    "Geok",
+    "Geor",
+    "Glag",
+    "Gong",
+    "Gonm",
+    "Goth",
+    "Gran",
+    "Grek",
+    "Gujr",
+    "Gukh",
+    "Guru",
+    "Hanb",
+    "Hang",
+    "Hani",
+    "Hano",
+    "Hans",
+    "Hant",
+    "Hatr",
+    "Hebr",
+    "Hira",
+    "Hluw",
+    "Hmng",
+    "Hmnp",
+    "Hntl",
+    "Hrkt",
+    "Hung",
+    "Inds",
+    "Ital",
+    "Jamo",
+    "Java",
+    "Jpan",
+    "Jurc",
+    "Kali",
+    "Kana",
+    "Kawi",
+    "Khar",
+    "Khmr",
+    "Khoj",
+    "Kitl",
+    "Kits",
+    "Knda",
+    "Kore",
+    "Kpel",
+    "Krai",
+    "Kthi",
+    "Lana",
+    "Laoo",
+    "Latf",
+    "Latg",
+    "Latn",
+    "Leke",
+    "Lepc",
+    "Limb",
+    "Lina",
+    "Linb",
+    "Lisu",
+    "Loma",
+    "Lyci",
+    "Lydi",
+    "Mahj",
+    "Maka",
+    "Mand",
+    "Mani",
+    "Marc",
+    "Maya",
+    "Medf",
+    "Mend",
+    "Merc",
+    "Mero",
+    "Mlym",
+    "Modi",
+    "Mong",
+    "Moon",
+    "Mroo",
+    "Mtei",
+    "Mult",
+    "Mymr",
+    "Nagm",
+    "Nand",
+    "Narb",
+    "Nbat",
+    "Newa",
+    "Nkdb",
+    "Nkgb",
+    "Nkoo",
+    "Nshu",
+    "Ogam",
+    "Olck",
+    "Onao",
+    "Orkh",
+    "Orya",
+    "Osge",
+    "Osma",
+    "Ougr",
+    "Palm",
+    "Pauc",
+    "Pcun",
+    "Pelm",
+    "Perm",
+    "Phag",
+    "Phli",
+    "Phlp",
+    "Phlv",
+    "Phnx",
+    "Plrd",
+    "Piqd",
+    "Prti",
+    "Psin",
+    "Qaaa",
+    "Qabx",
+    "Ranj",
+    "Rjng",
+    "Rohg",
+    "Roro",
+    "Runr",
+    "Samr",
+    "Sara",
+    "Sarb",
+    "Saur",
+    "Seal",
+    "Sgnw",
+    "Shaw",
+    "Shrd",
+    "Shui",
+    "Sidd",
+    "Sidt",
+    "Sind",
+    "Sinh",
+    "Sogd",
+    "Sogo",
+    "Sora",
+    "Soyo",
+    "Sund",
+    "Sunu",
+    "Sylo",
+    "Syrc",
+    "Syre",
+    "Syrj",
+    "Syrn",
+    "Tagb",
+    "Takr",
+    "Tale",
+    "Talu",
+    "Taml",
+    "Tang",
+    "Tavt",
+    "Tayo",
+    "Telu",
+    "Teng",
+    "Tfng",
+    "Tglg",
+    "Thaa",
+    "Thai",
+    "Tibt",
+    "Tirh",
+    "Tnsa",
+    "Todr",
+    "Tols",
+    "Toto",
+    "Tutg",
+    "Ugar",
+    "Vaii",
+    "Visp",
+    "Vith",
+    "Wara",
+    "Wcho",
+    "Wole",
+    "Xpeo",
+    "Xsux",
+    "Yezi",
+    "Yiii",
+    "Zanb",
+    "Zinh",
+    "Zmth",
+    "Zsye",
+    "Zsym",
+    "Zxxx",
+    "Zyyy",
+    "Zzzz"
+]
 "
 `;

@@ -35,12 +35,12 @@ async function runSimpleTest(testDir: string): Promise<TestResult> {
     const testPath = path.resolve(__dirname, testDir);
     
     let command: string = "pnpm"
-    let commandArgs: string[] = ["--silent", "run"]
+    let commandArgs: string[] = ["--silent", "start"]
 
     try {
         const { stdout, stderr } = await execFileAsync(command, commandArgs, {
             cwd: testPath,
-            env: { ...process.env, NODE_ENV: "start" }
+            env: { ...process.env, NODE_ENV: "node" }
         });
         return { stdout, stderr, code: 0 };
     } catch (error: any) {
