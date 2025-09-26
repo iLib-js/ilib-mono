@@ -357,11 +357,12 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
-     * Get a regex that matches all expected punctuation for a given locale
+     * Get a regex that matches all expected punctuation for a given locale, excluding colons
+     * This is used by getLastSentenceFromContent to avoid splitting on colons in the middle of sentences
      * @param {Locale} localeObj locale of the punctuation
-     * @returns {string} regex string that matches all expected punctuation for the locale
+     * @returns {string} regex string that matches all expected punctuation for the locale except colons
      */
-    getExpectedPunctuationRegex(localeObj) {
+    getExpectedPunctuationRegexWithoutColons(localeObj) {
         const language = localeObj.getLanguage();
         let config;
         if (language) {
@@ -372,7 +373,10 @@ class ResourceSentenceEnding extends ResourceRule {
         } else {
             config = defaults;
         }
-        return Object.values(config).join('').replace(/\./g, '\\.').replace(/\?/g, '\\?');
+        // Exclude colons from the punctuation regex
+        const punctuationWithoutColons = { ...config };
+        delete punctuationWithoutColons.colon;
+        return Object.values(punctuationWithoutColons).join('').replace(/\./g, '\\.').replace(/\?/g, '\\?');
     }
 
     /**
@@ -487,11 +491,13 @@ class ResourceSentenceEnding extends ResourceRule {
     getLastSentenceFromContent(content, targetLocaleObj) {
         if (!content) return content;
         // Only treat .!?。？！ as sentence-ending punctuation, not ¿ or ¡
-        const allSentenceEnding = this.getExpectedPunctuationRegex(targetLocaleObj);
+        // Exclude colons from sentence-ending punctuation for this function because
+        // colons in the middle of a sentence should not split the sentence
+        const sentenceEndingWithoutColons = this.getExpectedPunctuationRegexWithoutColons(targetLocaleObj);
         // Fix: Use a regex that finds the last sentence, properly handling trailing whitespace
         // First, trim trailing whitespace to avoid matching spaces instead of sentences
         const trimmedContent = content.trim();
-        const sentenceEndingRegex = new RegExp(`[^${allSentenceEnding}]+\\p{P}?\\w*$`, 'gu');
+        const sentenceEndingRegex = new RegExp(`[^${sentenceEndingWithoutColons}]+\\p{P}?\\w*$`, 'gu');
         const match = sentenceEndingRegex.exec(trimmedContent);
         if (match !== null && match.length > 0) {
             let lastSentence = match[0].trim();
@@ -965,7 +971,18 @@ class ResourceSentenceEnding extends ResourceRule {
 
             // For Spanish, check for inverted punctuation at the beginning
             if (targetLanguage === 'es' && (sourceEnding.type === 'question' || sourceEnding.type === 'exclamation')) {
-                if (!this.hasCorrectSpanishInvertedPunctuation(lastSentence, sourceEnding.type)) {
+                // For Spanish inverted punctuation, we need to check the appropriate part of the target:
+                // - If source ends with quote, check the quoted content (lastSentence already contains this)
+                // - If source doesn't end with quote, check the full target string
+                // - However, if lastSentence is the result of getLastSentenceFromContent (which extracts
+                //   only the part after the last sentence-ending punctuation), we should check the full target
+                //   because inverted punctuation should be at the beginning of the entire sentence
+                // For Spanish inverted punctuation, we need to check the appropriate part of the target:
+                // - If source ends with quote, check the quoted content (lastSentence already contains this)
+                // - If source doesn't end with quote, check the lastSentence (which contains the relevant part)
+                //   because inverted punctuation should be at the beginning of the sentence being checked
+                const stringToCheck = lastSentence;
+                if (!this.hasCorrectSpanishInvertedPunctuation(stringToCheck, sourceEnding.type)) {
                     // Spanish target is missing inverted punctuation at the beginning
                     const quoteChars = ResourceSentenceEnding.allQuoteChars;
                     let quotedContentStart = -1;
