@@ -1,5 +1,5 @@
 /*
- * index.ts - E2E test utilities exports
+ * ts-jest-e2e-config.ts - ts-jest configuration for E2E tests
  *
  * Copyright © 2025, Box, Inc.
  *
@@ -17,18 +17,17 @@
  * limitations under the License.
  */
 
-export { LoctoolRunner } from "./runners/LoctoolRunner";
-export { LintRunner } from "./runners/LintRunner";
+import type { Config } from "jest";
 
-export { expectFile, expectFileToMatchSnapshot } from "./expectFile";
-export { createKarmaConfig, createKarmaConfigFunction } from "./karma-config";
-
-// configs
-
-import jestConfig from "./jest-config";
-import jestEsmConfig from "./jest-esm-config";
 import tsJestConfig from "./ts-jest-config";
-import jestE2eConfig from "./jest-e2e-config";
-import tsJestE2eConfig from "./ts-jest-e2e-config";
 
-export { jestE2eConfig, tsJestConfig, jestConfig, jestEsmConfig, tsJestE2eConfig };
+const config: Config = {
+    ...tsJestConfig,
+    testMatch: ["**/*.e2e.test.?(c|m)(j|t)s"],
+    testPathIgnorePatterns: [
+        "/node_modules/",
+        "/scripts/"
+    ]
+};
+
+export default config;

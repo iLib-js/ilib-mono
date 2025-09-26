@@ -22,9 +22,13 @@ import * as fs from "fs";
 import { execSync } from "child_process";
 
 const defaultFiles = ["./test/**/*.test.js"];
+const defaultFilesTS = ["./test/**/*.test.ts"];
 
 const defaultPreprocessors = {
     "./test/**/*.test.js": ["webpack"],
+};
+const defaultPreprocessorsTS = {
+    "./test/**/*.test.ts": ["webpack"],
 };
 
 /**
@@ -202,18 +206,18 @@ export { isBrowserInstalled };
  * @returns Merged karma configuration
  */
 export function createKarmaConfig(options: SharedKarmaConfigOptions = {} as SharedKarmaConfigOptions): any {
-    if (!options.files) {
-        options.files = defaultFiles;
-    }
-
-    if (!options.preprocessors) {
-        options.preprocessors = defaultPreprocessors;
-    }
-
     // Auto-detect TypeScript if not explicitly specified
     const isTypeScript =
         options.type === "typescript" ||
-        (options.type !== "javascript" && options.files.some((f) => f.includes(".ts")));
+        (options.type !== "javascript" && options.files?.some((f) => f.includes(".ts")));
+
+    if (!options.files) {
+        options.files = isTypeScript ? defaultFilesTS : defaultFiles;
+    }
+
+    if (!options.preprocessors) {
+        options.preprocessors = isTypeScript ? defaultPreprocessorsTS : defaultPreprocessors;
+    }
 
     // Automatically add the shared karma-setup.js file
     const sharedSetupFile = require.resolve("./karma-setup.js");
