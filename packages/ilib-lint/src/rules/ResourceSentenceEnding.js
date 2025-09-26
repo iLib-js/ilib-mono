@@ -546,26 +546,53 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
-     * Check if Spanish target has the correct inverted punctuation at the beginning of the last sentence
+     * Check if Spanish target has the correct inverted punctuation in the last sentence
      * @param {string} lastSentence - The last sentence of the target string (already stripped of quotes)
      * @param {string} sourceEndingType - The type of ending punctuation in source
-     * @returns {boolean} - True if Spanish target has correct inverted punctuation at start of last sentence
+     * @returns {Object} - Object with {correct: boolean, position: number} where position is where inverted punctuation should be
      */
     hasCorrectSpanishInvertedPunctuation(lastSentence, sourceEndingType) {
-        if (!lastSentence || typeof lastSentence !== 'string') return false;
+        if (!lastSentence || typeof lastSentence !== 'string') return { correct: false, position: 0 };
         // Only check for questions and exclamations
         if (sourceEndingType !== 'question' && sourceEndingType !== 'exclamation') {
-            return true; // Not applicable for other punctuation types
+            return { correct: true, position: 0 }; // Not applicable for other punctuation types
         }
         // Strip any leading quote characters before checking for inverted punctuation
         const quoteChars = ResourceSentenceEnding.allQuoteChars;
         let strippedSentence = lastSentence;
+        let strippedOffset = 0;
         while (strippedSentence.length > 0 && (quoteChars.includes(strippedSentence.charAt(0)) || isSpace(strippedSentence.charAt(0)))) {
             strippedSentence = strippedSentence.slice(1);
+            strippedOffset++;
         }
-        // Check for inverted punctuation at the beginning of the stripped last sentence
+
         const expectedInverted = sourceEndingType === 'question' ? '¿' : '¡';
-        return strippedSentence.startsWith(expectedInverted);
+
+        // Search backwards from the end of the sentence
+        // If we find the correct inverted punctuation first, it's correct
+        // If we find sentence-ending punctuation first, it's incorrect
+        for (let i = strippedSentence.length - 1; i >= 0; i--) {
+            const char = strippedSentence.charAt(i);
+
+            // If we find the correct inverted punctuation, it's correct
+            if (char === expectedInverted) {
+                return { correct: true, position: strippedOffset };
+            }
+
+            // If we find sentence-ending punctuation (excluding the final one),
+            // we've reached the start of this sentence without finding inverted punctuation
+            if (char === '.' || char === '!' || char === '?' || char === '。' || char === '！' || char === '？') {
+                // Skip the final punctuation at the end
+                if (i === strippedSentence.length - 1) {
+                    continue;
+                }
+                // Found sentence-ending punctuation before inverted punctuation
+                return { correct: false, position: strippedOffset };
+            }
+        }
+
+        // If we reach the start without finding either, it's incorrect
+        return { correct: false, position: strippedOffset };
     }
 
     /**
@@ -982,7 +1009,8 @@ class ResourceSentenceEnding extends ResourceRule {
                 // - If source doesn't end with quote, check the lastSentence (which contains the relevant part)
                 //   because inverted punctuation should be at the beginning of the sentence being checked
                 const stringToCheck = lastSentence;
-                if (!this.hasCorrectSpanishInvertedPunctuation(stringToCheck, sourceEnding.type)) {
+                const invertedPunctuationResult = this.hasCorrectSpanishInvertedPunctuation(stringToCheck, sourceEnding.type);
+                if (!invertedPunctuationResult.correct) {
                     // Spanish target is missing inverted punctuation at the beginning
                     const quoteChars = ResourceSentenceEnding.allQuoteChars;
                     let quotedContentStart = -1;
@@ -998,7 +1026,17 @@ class ResourceSentenceEnding extends ResourceRule {
                         const afterQuote = target.substring(quotedContentStart);
                         highlight = `${beforeQuote}<e0/>${afterQuote}`;
                     } else {
-                        highlight = `<e0/>${target}`;
+                        // For multi-sentence strings, find where the last sentence starts
+                        const lastSentenceStart = target.lastIndexOf(lastSentence);
+                        if (lastSentenceStart !== -1) {
+                            // Use the position from hasCorrectSpanishInvertedPunctuation for more precise highlighting
+                            const highlightPosition = lastSentenceStart + invertedPunctuationResult.position;
+                            const beforeHighlight = target.substring(0, highlightPosition);
+                            const afterHighlight = target.substring(highlightPosition);
+                            highlight = `${beforeHighlight}<e0/>${afterHighlight}`;
+                        } else {
+                            highlight = `<e0/>${target}`;
+                        }
                     }
 
                     // Add prefix for array/plural resources

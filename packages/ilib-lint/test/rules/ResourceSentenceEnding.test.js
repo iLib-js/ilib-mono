@@ -782,6 +782,22 @@ describe("ResourceSentenceEnding rule", function() {
             highlight: "<e0/>Que prefiere: un tono más frío o más cálido?",
             description: "Spanish question with colon should trigger warning for missing inverted punctuation"
         },
+        // Bug test: Spanish inverted punctuation with subordinate clause
+        {
+            targetLocale: "es-ES",
+            source: "Then, what contrast would you like to have between the light and dark parts of the screen?",
+            target: "Entonces, ¿cuánto constraste prefiere entre las partes claras y oscuras de la plantalla?",
+            expectedResult: undefined,
+            description: "Spanish question with subordinate clause should have correct inverted punctuation"
+        },
+        // Bug test: Spanish inverted punctuation with name and comma
+        {
+            targetLocale: "es-ES",
+            source: "Pablo, where are you going?",
+            target: "Pablo, ¿adónde vas?",
+            expectedResult: undefined,
+            description: "Spanish question with name and comma should have correct inverted punctuation"
+        },
         // Optional punctuation language tests
         {
             targetLocale: "th-TH",
@@ -1029,9 +1045,9 @@ describe("ResourceSentenceEnding rule", function() {
         const resource = new ResourceString({
             key: "spanish.inverted.question.missing.opening",
             sourceLocale: "en-US",
-            source: "What is this?",
+            source: "Pablo, what is this?",
             targetLocale: "es-ES",
-            target: "Qué es esto?",
+            target: "Pablo, qué es esto?",
             pathName: "a/b/c.xliff",
             lineNumber: 25
         });
@@ -1046,7 +1062,36 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain('Spanish question should start with "¿" (U+00BF) for es-ES locale');
         expect(actual?.id).toBe(resource.getKey());
-        expect(actual?.highlight).toBe("<e0/>Qué es esto?");
+        expect(actual?.highlight).toBe("<e0/>Pablo, qué es esto?");
+    });
+
+    test("Spanish inverted punctuation - missing opening question mark in a multi-sentence string", () => {
+        expect.assertions(5);
+
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "spanish.inverted.question.missing.opening",
+            sourceLocale: "en-US",
+            source: "What a mess! Pablo, what is this?",
+            targetLocale: "es-ES",
+            target: "¡Qué desastre! Pablo, qué es esto?",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain('Spanish question should start with "¿" (U+00BF) for es-ES locale');
+        expect(actual?.id).toBe(resource.getKey());
+        expect(actual?.highlight).toBe("¡Qué desastre! <e0/>Pablo, qué es esto?");
     });
 
     test("Spanish inverted punctuation - missing opening exclamation mark", () => {
@@ -3323,30 +3368,30 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding();
-                expect(rule.hasCorrectSpanishInvertedPunctuation("¿Qué es esto?", "question")).toBe(true);
+                expect(rule.hasCorrectSpanishInvertedPunctuation("¿Qué es esto?", "question").correct).toBe(true);
             });
 
             test("should return true for correct Spanish exclamation punctuation", () => {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding();
-                expect(rule.hasCorrectSpanishInvertedPunctuation("¡Hola!", "exclamation")).toBe(true);
+                expect(rule.hasCorrectSpanishInvertedPunctuation("¡Hola!", "exclamation").correct).toBe(true);
             });
 
             test("should return false for missing inverted punctuation", () => {
                 expect.assertions(2);
 
                 const rule = new ResourceSentenceEnding();
-                expect(rule.hasCorrectSpanishInvertedPunctuation("Qué es esto?", "question")).toBe(false);
-                expect(rule.hasCorrectSpanishInvertedPunctuation("Hola!", "exclamation")).toBe(false);
+                expect(rule.hasCorrectSpanishInvertedPunctuation("Qué es esto?", "question").correct).toBe(false);
+                expect(rule.hasCorrectSpanishInvertedPunctuation("Hola!", "exclamation").correct).toBe(false);
             });
 
             test("should return true for non-question/exclamation types", () => {
                 expect.assertions(2);
 
                 const rule = new ResourceSentenceEnding();
-                expect(rule.hasCorrectSpanishInvertedPunctuation("Hola mundo.", "period")).toBe(true);
-                expect(rule.hasCorrectSpanishInvertedPunctuation("Hola mundo...", "ellipsis")).toBe(true);
+                expect(rule.hasCorrectSpanishInvertedPunctuation("Hola mundo.", "period").correct).toBe(true);
+                expect(rule.hasCorrectSpanishInvertedPunctuation("Hola mundo...", "ellipsis").correct).toBe(true);
             });
         });
 
