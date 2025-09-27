@@ -7,14 +7,14 @@ Make sure you've got them installed in correct versions before continuing.
 
 Versions used for development:
 
-- Node.js: version specified in `.nvmrc` file
-- pnpm: version specified in `package.json` file
+-   Node.js: version specified in `.nvmrc` file
+-   pnpm: version specified in `package.json` file
 
 You can find installation instructions at:
 
-- [nodejs.org](https://nodejs.org/)
-- [github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
-- [pnpm.io/](https://pnpm.io/)
+-   [nodejs.org](https://nodejs.org/)
+-   [github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
+-   [pnpm.io/](https://pnpm.io/)
 
 ### Repository clone
 
@@ -28,7 +28,7 @@ or with SSH:
 
 ```bash
 git clone git@github.com:iLib-js/ilib-mono.git
-````
+```
 
 Navigate to the project root directory:
 

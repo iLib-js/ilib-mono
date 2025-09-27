@@ -23,6 +23,8 @@ export { LintRunner } from "./runners/LintRunner";
 export { expectFile, expectFileToMatchSnapshot } from "./expectFile";
 export { createKarmaConfig, createKarmaConfigFunction } from "./karma-config";
 
+export { FSSnapshot } from "./FSSnapshot";
+
 // configs
 
 import jestConfig from "./jest-config";

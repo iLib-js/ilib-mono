@@ -18,23 +18,33 @@
  */
 
 const path = require("path");
-const fs = require("fs");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-internal");
+const { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } = require("ilib-internal");
 
 describe("samples", () => {
     describe("xml", () => {
+        /** @type {FSSnapshot} */
+        let fsSnapshot;
         const projectPath = path.resolve(__dirname, "..", "samples", "xml");
         const xliffPath = path.resolve(projectPath, "sample-xml-extracted.xliff");
 
         beforeAll(async () => {
+            fsSnapshot = FSSnapshot.create(
+                [
+                    "sample-xml-extracted.xliff",
+                    "sample-xml-new-de-DE.xliff",
+                    "sample-xml-new-nl-NL.xliff",
+                    "xml/res/values-de-rDE",
+                    "xml/res/values-nl-rNL",
+                    "xml/test_de_DE.properties",
+                    "xml/test_nl.properties",
+                ].map((p) => path.resolve(projectPath, p))
+            );
             const loctool = new LoctoolRunner(projectPath);
             await loctool.run("localize");
         });
 
         afterAll(() => {
-            if (fs.existsSync(xliffPath)) {
-                fs.unlinkSync(xliffPath);
-            }
+            fsSnapshot.restore();
         });
 
         it("should produce an extracted XLIFF file", () => {
