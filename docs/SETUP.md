@@ -7,14 +7,14 @@ Make sure you've got them installed in correct versions before continuing.
 
 Versions used for development:
 
-- Node.js: version specified in `.nvmrc` file
-- pnpm: version specified in `package.json` file
+-   Node.js: version specified in `.nvmrc` file
+-   pnpm: version specified in `package.json` file
 
 You can find installation instructions at:
 
-- [nodejs.org](https://nodejs.org/)
-- [github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
-- [pnpm.io/](https://pnpm.io/)
+-   [nodejs.org](https://nodejs.org/)
+-   [github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
+-   [pnpm.io/](https://pnpm.io/)
 
 ### Repository clone
 
@@ -28,7 +28,7 @@ or with SSH:
 
 ```bash
 git clone git@github.com:iLib-js/ilib-mono.git
-````
+```
 
 Navigate to the project root directory:
 
@@ -91,27 +91,4 @@ In case you need to install Git Hooks manually, you can run:
 
 ```bash
 pnpm postinstall
-```
-
-#### 5. Auto-Modified Files Setup
-
-Some files in this repository get automatically modified by e2e tests and sample projects. These files use a backup approach to prevent accidental commits.
-
-**Files with backup approach:**
-- `packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml` (backup: `t1.xml.original`)
-- `packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml` (backup: `t1.xml.original`)
-
-**How it works:**
-- The original files are backed up as `.original` files
-- Before each e2e test run, the backup files are copied over the working files
-- This ensures tests always start with a clean state
-- Modified files can be committed normally without special git commands
-
-**To update the backup files:**
-```bash
-# After making changes to t1.xml, update the backup
-cp packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml packages/ilib-loctool-android-layout/samples/android/res/layout/t1.xml.original
-cp packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml packages/ilib-loctool-android-resource/samples/android/res/layout/t1.xml.original
-git add packages/*/samples/android/res/layout/t1.xml.original
-git commit -m "Update backup files for auto-modified test files"
 ```
