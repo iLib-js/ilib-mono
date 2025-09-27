@@ -18,36 +18,27 @@
  */
 
 const path = require("path");
-const fs = require("fs");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-internal");
+const { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } = require("ilib-internal");
 
 describe("samples", () => {
     describe("regex", () => {
+        /** @type {FSSnapshot} */
+        let fsSnapshot;
         const projectPath = path.resolve(__dirname, "..", "samples", "regex");
         const xliffPath = path.resolve(projectPath, "sample-regex-extracted.xliff");
 
         beforeAll(async () => {
+            fsSnapshot = FSSnapshot.create(
+                ["sample-regex-extracted.xliff", "sample-regex-new-de-DE.xliff", "sample-regex-new-ko-KR.xliff"].map(
+                    (p) => path.resolve(projectPath, p)
+                )
+            );
             const loctool = new LoctoolRunner(projectPath);
             await loctool.run("localize");
         });
 
         afterAll(() => {
-            // Clean up all generated files and directories
-            const filesToClean = [
-                xliffPath, // sample-regex-extracted.xliff
-                path.resolve(projectPath, "sample-regex-new-de-DE.xliff"),
-                path.resolve(projectPath, "sample-regex-new-ko-KR.xliff")
-            ];
-
-            filesToClean.forEach(file => {
-                if (fs.existsSync(file)) {
-                    if (fs.statSync(file).isDirectory()) {
-                        fs.rmSync(file, { recursive: true, force: true });
-                    } else {
-                        fs.unlinkSync(file);
-                    }
-                }
-            });
+            fsSnapshot.restore();
         });
 
         it("should produce an extracted XLIFF file", () => {

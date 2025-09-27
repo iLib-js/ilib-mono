@@ -18,38 +18,31 @@
  */
 
 const path = require("path");
-const fs = require("fs");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-internal");
+const { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } = require("ilib-internal");
 
 describe("samples", () => {
     describe("tap-i18n", () => {
+        /** @type {FSSnapshot} */
+        let fsSnapshot;
         const projectPath = path.resolve(__dirname, "..", "samples", "tap-i18n");
         const xliffPath = path.resolve(projectPath, "sample-tap-i18n-extracted.xliff");
 
         beforeAll(async () => {
+            fsSnapshot = FSSnapshot.create(
+                [
+                    "sample-tap-i18n-extracted.xliff",
+                    "sample-tap-i18n-new-ko-KR.xliff",
+                    "sample-tap-i18n-new-nl-NL.xliff",
+                    "languages/ko-KR.i18n.yml",
+                    "languages/nl-NL.i18n.yml",
+                ].map((p) => path.resolve(projectPath, p))
+            );
             const loctool = new LoctoolRunner(projectPath);
             await loctool.run("localize");
         });
 
         afterAll(() => {
-            // Clean up all generated files and directories
-            const filesToClean = [
-                xliffPath, // sample-tap-i18n-extracted.xliff
-                path.resolve(projectPath, "sample-tap-i18n-new-ko-KR.xliff"),
-                path.resolve(projectPath, "sample-tap-i18n-new-nl-NL.xliff"),
-                path.resolve(projectPath, "languages/ko-KR.i18n.yml"),
-                path.resolve(projectPath, "languages/nl-NL.i18n.yml")
-            ];
-
-            filesToClean.forEach(file => {
-                if (fs.existsSync(file)) {
-                    if (fs.statSync(file).isDirectory()) {
-                        fs.rmSync(file, { recursive: true, force: true });
-                    } else {
-                        fs.unlinkSync(file);
-                    }
-                }
-            });
+            fsSnapshot.restore();
         });
 
         it("should produce an extracted XLIFF file", () => {

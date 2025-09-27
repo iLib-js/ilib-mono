@@ -18,40 +18,33 @@
  */
 
 const path = require("path");
-const fs = require("fs");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-internal");
+const { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } = require("ilib-internal");
 
 describe("samples", () => {
     describe("xml", () => {
+        /** @type {FSSnapshot} */
+        let fsSnapshot;
         const projectPath = path.resolve(__dirname, "..", "samples", "xml");
         const xliffPath = path.resolve(projectPath, "sample-xml-extracted.xliff");
 
         beforeAll(async () => {
+            fsSnapshot = FSSnapshot.create(
+                [
+                    "sample-xml-extracted.xliff",
+                    "sample-xml-new-de-DE.xliff",
+                    "sample-xml-new-nl-NL.xliff",
+                    "xml/res/values-de-rDE",
+                    "xml/res/values-nl-rNL",
+                    "xml/test_de_DE.properties",
+                    "xml/test_nl.properties",
+                ].map((p) => path.resolve(projectPath, p))
+            );
             const loctool = new LoctoolRunner(projectPath);
             await loctool.run("localize");
         });
 
         afterAll(() => {
-            // Clean up all generated files and directories
-            const filesToClean = [
-                xliffPath, // sample-xml-extracted.xliff
-                path.resolve(projectPath, "sample-xml-new-de-DE.xliff"),
-                path.resolve(projectPath, "sample-xml-new-nl-NL.xliff"),
-                path.resolve(projectPath, "xml/res/values-de-rDE"),
-                path.resolve(projectPath, "xml/res/values-nl-rNL"),
-                path.resolve(projectPath, "xml/test_de_DE.properties"),
-                path.resolve(projectPath, "xml/test_nl.properties")
-            ];
-
-            filesToClean.forEach(file => {
-                if (fs.existsSync(file)) {
-                    if (fs.statSync(file).isDirectory()) {
-                        fs.rmSync(file, { recursive: true, force: true });
-                    } else {
-                        fs.unlinkSync(file);
-                    }
-                }
-            });
+            fsSnapshot.restore();
         });
 
         it("should produce an extracted XLIFF file", () => {
