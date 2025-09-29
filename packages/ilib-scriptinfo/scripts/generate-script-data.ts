@@ -19,63 +19,51 @@
  * limitations under the License.
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
-
-// Get __dirname equivalent in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Create require function for module resolution
-const require = createRequire(import.meta.url);
+import fs from "fs";
+import path from "path";
+import { ScriptDataEntry } from "../src/ScriptData";
+import ilibScriptsData from "ilib/locale/scripts.json";
+import ucdFullData from "ucd-full/ScriptInfo.json";
 
 function generateScriptData() {
     try {
-        // Read the local ilib scripts.json file
-        const ilibScriptsData = require('ilib/locale/scripts.json');
-        
-        // Read the local ucd-full ScriptInfo.json file for comprehensive script list
-        const ucdFullData = require('ucd-full/ScriptInfo.json');
-        
         // Process the data using ucd-full as the primary source for all scripts
-        const scriptData = [];
-        
-        ucdFullData.iso15924.forEach(ucdScript => {
+        const scriptData: ScriptDataEntry[] = [];
+
+        ucdFullData.iso15924.forEach((ucdScript) => {
             const code = ucdScript.code;
             const number = parseInt(ucdScript.number, 10);
             const name = ucdScript.englishName;
-            
+
             // Create long identifier from name (replace spaces and special chars with underscores)
-            let longId = name.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
-            
+            let longId = name.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, "_");
+
             // Handle special cases for long identifiers
             if (ucdScript.pva) {
                 longId = ucdScript.pva;
             }
-            
+
             // Create array entry: [code, number, name, longId, rtl?, ime?, casing?]
-            const entry = [code, number, name, longId];
-            
+            const entry: ScriptDataEntry = [code, number, name, longId];
+
             // Backfill with ilib data if available
-            if (ilibScriptsData[code]) {
-                const ilibScript = ilibScriptsData[code];
-                
+            if (code in ilibScriptsData) {
+                const ilibScript = ilibScriptsData[code as keyof typeof ilibScriptsData];
+
                 // Use ilib's long identifier if available (it's more standardized)
                 if (ilibScript.lid) {
                     entry[3] = ilibScript.lid;
                 }
-                
+
                 // Add boolean flags as optional array indices 4-6
-                if (ilibScript.rtl) entry[4] = true;
-                if (ilibScript.ime) entry[5] = true;
-                if (ilibScript.casing) entry[6] = true;
+                if ("rtl" in ilibScript && ilibScript.rtl) entry[4] = true;
+                if ("ime" in ilibScript && ilibScript.ime) entry[5] = true;
+                if ("casing" in ilibScript && ilibScript.casing) entry[6] = true;
             }
-            
+
             scriptData.push(entry);
         });
-        
+
         // Generate the output file content with ESM format
         const outputContent = `/*
  * ScriptData.ts - Generated script data from ucd-full and ilib packages
@@ -105,23 +93,29 @@ function generateScriptData() {
 export type ScriptDataEntry = [string, number, string, string, boolean?, boolean?, boolean?];
 
 export const scriptData: ScriptDataEntry[] = [
-${scriptData.map(entry => `    [${entry.map((val, i) => {
-    if (i < 4) return JSON.stringify(val);
-    return val === true ? 'true' : '';
-}).join(',')}]`).join(',\n')}
+${scriptData
+    .map(
+        (entry) =>
+            `    [${entry
+                .map((val, i) => {
+                    if (i < 4) return JSON.stringify(val);
+                    return val === true ? "true" : "";
+                })
+                .join(",")}]`
+    )
+    .join(",\n")}
 ];
-`.replace('@currentYear@', new Date().getFullYear());
-        
+`.replace("@currentYear@", new Date().getFullYear().toString());
+
         // Write the output file
-        const outputPath = path.join(__dirname, '../src/ScriptData.ts');
-        fs.writeFileSync(outputPath, outputContent, 'utf8');
-        
+        const outputPath = path.join(__dirname, "../src/ScriptData.ts");
+        fs.writeFileSync(outputPath, outputContent, "utf8");
+
         console.log(`✅ Generated TS ScriptData.ts with ${scriptData.length} scripts`);
         console.log(`📁 Output file: ${outputPath}`);
         console.log(`📊 Source: ucd-full package (${ucdFullData.iso15924.length} scripts) + ilib package backfill`);
-        
     } catch (error) {
-        console.error('❌ Error generating script data:', error.message);
+        console.error("❌ Error generating script data:", error instanceof Error ? error.message : String(error));
         process.exit(1);
     }
 }
