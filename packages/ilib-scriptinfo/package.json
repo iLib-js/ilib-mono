@@ -1,0 +1,99 @@
+{
+    "name": "ilib-scriptinfo",
+    "version": "0.0.0",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "description": "Script information utilities for ilib. iLib is a cross-engine library of internationalization (i18n) classes written in pure JS",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "script",
+        "writing-system",
+        "unicode",
+        "locale",
+        "translation",
+        "iso-15924"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-scriptinfo",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        },
+        {
+            "name": "Goun Lee",
+            "email": "goun.lee@lge.com"
+        }
+    ],
+    "files": [
+        "lib",
+        "src",
+        "README.md",
+        "LICENSE",
+        "CHANGELOG.md"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono.git"
+    },
+    "scripts": {
+        "build": "npm-run-all --npm-path pnpm build:data build:ts",
+        "build:ts": "tsc -p tsconfig.build.json",
+        "build:data": "tsx scripts/generate-script-data.ts",
+        "coverage": "pnpm test:cli --coverage",
+        "test": "pnpm test:cli",
+        "test:cli": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:karma": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS\" karma start karma.conf.js --reporters dots",
+        "test:web": "pnpm test:karma --single-run",
+        "test:watch": "pnpm test:jest --watch",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:web test:e2e test:generator",
+        "test:e2e": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js",
+        "test:e2e:watch": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js --watch",
+        "test:e2e:snapshot": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js --updateSnapshot",
+        "sample": "LANG=en_US.UTF8 node samples/esm/index.js",
+        "debug": "pnpm build:dev; node --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
+        "debug:web": "pnpm test:karma",
+        "clean": "git clean -f -d src test; rm -rf lib",
+        "doc": "npm-run-all --npm-path pnpm doc:md doc:html",
+        "doc:md": "mkdir -p docs && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
+        "doc:html": "mkdir -p docs && typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts"
+    },
+    "devDependencies": {
+        "@types/jest": "^29.5.14",
+        "@types/node": "12",
+        "babel-loader": "^10.0.0",
+        "ilib": "^14.21.1",
+        "ilib-internal": "workspace:^",
+        "jest": "^29.7.0",
+        "karma": "^6.4.2",
+        "karma-assert": "^1.0.1",
+        "karma-chrome-launcher": "^3.2.0",
+        "karma-firefox-launcher": "^2.1.3",
+        "karma-jasmine": "^5.1.0",
+        "karma-webpack": "^5.0.0",
+        "npm-run-all": "^4.1.5",
+        "ts-jest": "^29.2.5",
+        "ts-loader": "^9.5.0",
+        "tsx": "^4.20.5",
+        "typedoc": "^0.26.11",
+        "typedoc-plugin-markdown": "^4.2.10",
+        "typescript": "^5.6.3",
+        "ucd-full": "^16.0.1",
+        "webpack": "^5.89.0"
+    },
+    "dependencies": {
+        "@log4js-node/log4js-api": "^1.0.2"
+    }
+}

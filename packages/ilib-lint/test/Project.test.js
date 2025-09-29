@@ -309,7 +309,7 @@ describe("testProject", () => {
         expect.assertions(2);
 
         const options = {
-            pluginManager,
+            pluginManager
         };
         const project = new Project("x", options, genericConfig);
         expect(project).toBeTruthy();

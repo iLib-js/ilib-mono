@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
-const config = {
+import type { Config } from "jest";
+
+const config: Config = {
     displayName: "ilib-mono repo",
     coverageReporters: ["html", "json-summary", ["text", { file: "../coverage.txt" }]],
     reporters: ["default", ["jest-junit", { outputName: "junit.xml" }]],

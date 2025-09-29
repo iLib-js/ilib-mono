@@ -1,7 +1,7 @@
 /*
- * ts-jest.config.js - shared ts-jest configuration for ilib packages
+ * ts-jest-e2e-config.ts - ts-jest configuration for E2E tests
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,9 @@ import { createDefaultPreset, type JestConfigWithTsJest } from "ts-jest";
 
 const config: JestConfigWithTsJest = {
     ...createDefaultPreset(),
-    displayName: "ilib-mono repo",
-    coverageReporters: ["html", "json-summary", ["text", { file: "../coverage.txt" }]],
-    reporters: ["default", ["jest-junit", { outputName: "junit.xml" }]],
-    // per current convention, unit test config is placed in the package root,
-    // but unit tests are in the test subdirectory test/ so we add it to the testMatch path
-    testMatch: ["<rootDir>/test/**/*.test.?(c|m)(j|t)s"],
+    // per current convention, e2e test config should be placed in the test-e2e/ directory
+    // so it's already hidden within the rootDir prefix
+    testMatch: ["<rootDir>/**/*.e2e.test.?(c|m)(j|t)s"],
 };
 
 export default config;

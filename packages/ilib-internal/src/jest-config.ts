@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
-const config = {
+import type { Config } from "jest";
+
+const config: Config = {
     // Base configuration from root jest.config.js
     displayName: "ilib-mono repo",
     coverageReporters: ["html", "json-summary", ["text", { file: "../coverage.txt" }]],
     reporters: ["default", ["jest-junit", { outputName: "junit.xml" }]],
-    testMatch: ["**/__tests__/**/*.?([mc])[jt]s?(x)", "**/test/**/?(*.)+(spec|test).?([mc])[jt]s?(x)"],
+    testMatch: ["**/test/**/?(*.)+(spec|test).?([mc])[jt]s?(x)"],
     // Common overrides for ilib packages
     testPathIgnorePatterns: [
         "/node_modules/",
