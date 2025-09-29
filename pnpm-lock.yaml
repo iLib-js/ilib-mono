@@ -2432,23 +2432,23 @@ importers:
         specifier: ^5.0.0
         version: 5.9.2
 
-  packages/ilib-scriptinfo/test-e2e/esm-test:
+  packages/ilib-scriptinfo/test-e2e/__resources__/esm-test:
     dependencies:
       ilib-scriptinfo:
         specifier: workspace:^
-        version: link:../..
+        version: link:../../..
 
-  packages/ilib-scriptinfo/test-e2e/legacy-test:
+  packages/ilib-scriptinfo/test-e2e/__resources__/legacy-test:
     dependencies:
       ilib-scriptinfo:
         specifier: workspace:^
-        version: link:../..
+        version: link:../../..
 
-  packages/ilib-scriptinfo/test-e2e/typescript-test:
+  packages/ilib-scriptinfo/test-e2e/__resources__/typescript-test:
     dependencies:
       ilib-scriptinfo:
         specifier: workspace:^
-        version: link:../..
+        version: link:../../..
     devDependencies:
       tsx:
         specifier: ^4.20.5

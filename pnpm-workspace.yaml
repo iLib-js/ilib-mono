@@ -1,4 +1,4 @@
 packages:
-  - "packages/*"
-  - "packages/*/samples/*"
-  - "packages/*/test-e2e/*"
+    - "packages/*"
+    - "packages/*/samples/*"
+    - "packages/*/test-e2e/__resources__/*"

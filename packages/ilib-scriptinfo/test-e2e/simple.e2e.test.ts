@@ -33,21 +33,21 @@ interface TestResult {
  */
 async function runSimpleTest(testDir: string): Promise<TestResult> {
     const testPath = path.resolve(__dirname, testDir);
-    
-    let command: string = "pnpm"
-    let commandArgs: string[] = ["--silent", "start"]
+
+    let command: string = "pnpm";
+    let commandArgs: string[] = ["--silent", "start"];
 
     try {
         const { stdout, stderr } = await execFileAsync(command, commandArgs, {
             cwd: testPath,
-            env: { ...process.env, NODE_ENV: "node" }
+            env: { ...process.env, NODE_ENV: "node" },
         });
         return { stdout, stderr, code: 0 };
     } catch (error: any) {
-        return { 
-            stdout: error.stdout || "", 
-            stderr: error.stderr || "", 
-            code: error.code || 1 
+        return {
+            stdout: error.stdout || "",
+            stderr: error.stderr || "",
+            code: error.code || 1,
         };
     }
 }
@@ -56,26 +56,24 @@ async function runSimpleTest(testDir: string): Promise<TestResult> {
  * Test suite for simple package loading
  */
 describe("ilib-scriptinfo simple package loading", () => {
-    
     test("ESM module loading works", async () => {
-        const result = await runSimpleTest("esm-test");
+        const result = await runSimpleTest("__resources__/esm-test");
         expect(result.code).toBe(0);
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
     }, 10000);
-    
+
     test("CommonJS module loading works", async () => {
-        const result = await runSimpleTest("legacy-test");
+        const result = await runSimpleTest("__resources__/legacy-test");
         expect(result.code).toBe(0);
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
     }, 10000);
-    
+
     test("TypeScript module loading works", async () => {
-        const result = await runSimpleTest("typescript-test");
+        const result = await runSimpleTest("__resources__/typescript-test");
         expect(result.code).toBe(0);
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
     }, 15000);
-    
 });
