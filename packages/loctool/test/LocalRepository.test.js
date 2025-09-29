@@ -1152,6 +1152,53 @@ describe("localrepository", function() {
         });
     });
 
+    test("LocalRepositoryConstructorWithTranslationsDirArrayWithDuplicateElements", function() {
+        expect.assertions(17);
+
+        // should read all xliffs from both directories
+        var repo = new LocalRepository({
+            sourceLocale: "en-US",
+            translationsDir: ["./test/testfiles/xliff20/app3",
+                              "./test/testfiles/xliff20/app3",
+                              "./test/testfiles/../testfiles/xliff20/app3/"],
+        });
+
+        expect(repo).toBeTruthy();
+        expect(repo.translationsDir.length).toBe(3);
+
+        repo.init(function(){
+            repo.getBy({
+                reskey: "String 1a"
+            }, function(err, resources) {
+                expect(resources).toBeTruthy();
+                expect(resources.length).toBe(2);
+
+                resources.sort(function(left, right) {
+                    var leftLocale = left.getTargetLocale();
+                    var rightLocale = right.getTargetLocale();
+                    return leftLocale < rightLocale ? -1 : (leftLocale > rightLocale ? 1 : 0);
+                });
+
+                expect(resources[0].getKey()).toBe("String 1a");
+                expect(resources[0].getProject()).toBe("app3");
+                expect(resources[0].getSourceLocale()).toBe("en-KR");
+                expect(resources[0].getSource()).toBe("app3:String 1a");
+                expect(resources[0].getTargetLocale()).toBe("de-DE");
+                expect(resources[0].getTarget()).toBe("Das app3:String 1a");
+
+                expect(resources[1].getKey()).toBe("String 1a");
+                expect(resources[1].getProject()).toBe("app3");
+                expect(resources[1].getSourceLocale()).toBe("en-KR");
+                expect(resources[1].getSource()).toBe("app3:String 1a");
+                expect(resources[1].getTargetLocale()).toBe("en-US");
+                expect(resources[1].getTarget()).toBe("app3:String 1a");
+
+                repo.close(function() {
+                });
+            });
+        })
+        expect(repo.translationsDir.length).toBe(1);
+    });
     /*
         test("LocalRepositoryGetResource", function() {
         expect.assertions(9);
