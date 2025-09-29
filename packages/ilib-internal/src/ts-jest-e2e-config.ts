@@ -17,17 +17,13 @@
  * limitations under the License.
  */
 
-import type { Config } from "jest";
+import { createDefaultPreset, type JestConfigWithTsJest } from "ts-jest";
 
-import tsJestConfig from "./ts-jest-config";
-
-const config: Config = {
-    ...tsJestConfig,
-    testMatch: ["**/*.e2e.test.?(c|m)(j|t)s"],
-    testPathIgnorePatterns: [
-        "/node_modules/",
-        "/scripts/"
-    ]
+const config: JestConfigWithTsJest = {
+    ...createDefaultPreset(),
+    // per current convention, e2e test config should be placed in the test-e2e/ directory
+    // so it's already hidden within the rootDir prefix
+    testMatch: ["<rootDir>/**/*.e2e.test.?(c|m)(j|t)s"],
 };
 
 export default config;

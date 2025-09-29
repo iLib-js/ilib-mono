@@ -17,38 +17,16 @@
  * limitations under the License.
  */
 
-import type { Config } from "jest";
+import { createDefaultPreset, type JestConfigWithTsJest } from "ts-jest";
 
-const config: Config = {
-    // Base configuration from root jest.config.js
+const config: JestConfigWithTsJest = {
+    ...createDefaultPreset(),
     displayName: "ilib-mono repo",
     coverageReporters: ["html", "json-summary", ["text", { file: "../coverage.txt" }]],
     reporters: ["default", ["jest-junit", { outputName: "junit.xml" }]],
-    preset: 'ts-jest',
-    testMatch: [
-        "**/test/**/*.test.ts",
-        "**/test/**/*.test.js"
-    ],
-    testPathIgnorePatterns: [
-        "/node_modules/",
-        "/tools/",
-        "/coverage/",
-        "/test-e2e/",
-        "/scripts/"
-    ],
-    moduleFileExtensions: ['ts', 'js'],
-    moduleNameMapper: {
-        '^(\\.{1,2}/.*)\\.js$': '$1',
-    },
-    transform: {
-        '^.+\\.ts$': ['ts-jest', {
-            tsconfig: {
-                types: ['jest', 'node'],
-                module: 'CommonJS',
-                moduleResolution: 'node'
-            }
-        }]
-    }
+    // per current convention, unit test config is placed in the package root,
+    // but unit tests are in the test subdirectory test/ so we add it to the testMatch path
+    testMatch: ["<rootDir>/test/**/*.test.?(c|m)(j|t)s"],
 };
 
 export default config;

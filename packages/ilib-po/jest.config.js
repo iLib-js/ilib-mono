@@ -6,10 +6,4 @@ module.exports = {
         name: "ilib-po",
         color: "white",
     },
-    testEnvironment: "node",
-    transform: {
-        "^.+\\.tsx?$": ["ts-jest", {}],
-    },
-    rootDir: "test",
-    setupFiles: ["<rootDir>/../jest.setup.js"],
 };
