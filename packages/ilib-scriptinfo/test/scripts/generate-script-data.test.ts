@@ -21,7 +21,7 @@ import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
 
-const packageRoot = path.resolve(__dirname, "..");
+const packageRoot = path.resolve(__dirname, "../..");
 const scriptPath = path.resolve(packageRoot, "scripts", "generate-script-data.ts");
 const outputPath = path.resolve(packageRoot, "src", "ScriptData.ts");
 const originalOutputPath = path.resolve(packageRoot, "src", "ScriptData.ts.backup");
