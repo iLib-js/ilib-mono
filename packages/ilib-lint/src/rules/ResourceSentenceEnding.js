@@ -549,7 +549,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * Check if Spanish target has the correct inverted punctuation in the last sentence
      * @param {string} lastSentence - The last sentence of the target string (already stripped of quotes)
      * @param {string} sourceEndingType - The type of ending punctuation in source
-     * @returns {Object} - Object with {correct: boolean, position: number} where position is where inverted punctuation should be
+     * @returns {{correct: boolean, position: number}} - position is where inverted punctuation should be
      */
     hasCorrectSpanishInvertedPunctuation(lastSentence, sourceEndingType) {
         if (!lastSentence || typeof lastSentence !== 'string') return { correct: false, position: 0 };
