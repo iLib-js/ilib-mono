@@ -17,24 +17,32 @@
  * limitations under the License.
  */
 
-const fs = require("fs");
 const path = require("path");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("ilib-internal");
+const { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } = require("ilib-internal");
 
 describe("samples", () => {
     describe("salesforce", () => {
+        /** @type {FSSnapshot} */
+        let fsSnapshot;
         const projectPath = path.resolve(__dirname, "..", "samples", "salesforce");
         const xliffPath = path.resolve(projectPath, "sample-metaxml-extracted.xliff");
 
         beforeAll(async () => {
+            fsSnapshot = FSSnapshot.create(
+                [
+                    "sample-metaxml-extracted.xliff",
+                    "sample-metaxml-new-de-DE.xliff",
+                    "sample-metaxml-new-nl-NL.xliff",
+                    "force-app/main/default/translations/de.translation-meta.xml",
+                    "force-app/main/default/translations/nl_NL.translation-meta.xml",
+                ].map((p) => path.resolve(projectPath, p))
+            );
             const loctool = new LoctoolRunner(projectPath);
             await loctool.run("localize");
         });
 
         afterAll(() => {
-            if (fs.existsSync(xliffPath)) {
-                fs.unlinkSync(xliffPath);
-            }
+            fsSnapshot.restore();
         });
 
         it("should produce an extracted XLIFF file", () => {

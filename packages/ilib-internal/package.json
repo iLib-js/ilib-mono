@@ -15,6 +15,7 @@
     "devDependencies": {
         "@babel/preset-env": "^7.0.0",
         "@tsconfig/node12": "^12.1.4",
+        "@types/fs-extra": "^11.0.4",
         "@types/jest": "^29",
         "@types/karma": "^6.3.0",
         "@types/node": "12",
@@ -34,5 +35,8 @@
     },
     "peerDependencies": {
         "jest": "^29"
+    },
+    "dependencies": {
+        "fs-extra": "^11.3.2"
     }
 }
