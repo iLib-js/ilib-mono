@@ -530,6 +530,12 @@ export const ctype_ranges = {
             78943
         ]
     ],
+    "egyptian hieroglyphs extended-a": [
+        [
+            78944,
+            82943
+        ]
+    ],
     "elbasan": [
         [
             66816,
@@ -586,6 +592,12 @@ export const ctype_ranges = {
         [
             124896,
             124927
+        ]
+    ],
+    "garay": [
+        [
+            68928,
+            69007
         ]
     ],
     "geometric": [
@@ -674,6 +686,12 @@ export const ctype_ranges = {
         [
             2560,
             2687
+        ]
+    ],
+    "gurung khema": [
+        [
+            90368,
+            90431
         ]
     ],
     "halfmarks": [
@@ -1024,6 +1042,12 @@ export const ctype_ranges = {
             70399
         ]
     ],
+    "kirat rai": [
+        [
+            93504,
+            93567
+        ]
+    ],
     "lao": [
         [
             3712,
@@ -1298,6 +1322,12 @@ export const ctype_ranges = {
             43647
         ]
     ],
+    "myanmar extended-c": [
+        [
+            71376,
+            71423
+        ]
+    ],
     "nabataean": [
         [
             67712,
@@ -1362,6 +1392,12 @@ export const ctype_ranges = {
         [
             5760,
             5791
+        ]
+    ],
+    "ol onal": [
+        [
+            124368,
+            124415
         ]
     ],
     "olchiki": [
@@ -1693,6 +1729,12 @@ export const ctype_ranges = {
             7375
         ]
     ],
+    "sunuwar": [
+        [
+            72640,
+            72703
+        ]
+    ],
     "supersub": [
         [
             8304,
@@ -1721,6 +1763,12 @@ export const ctype_ranges = {
         [
             129792,
             130047
+        ]
+    ],
+    "symbols for legacy computing supplement": [
+        [
+            117760,
+            118463
         ]
     ],
     "syriac": [
@@ -1849,10 +1897,22 @@ export const ctype_ranges = {
             70879
         ]
     ],
+    "todhri": [
+        [
+            67008,
+            67071
+        ]
+    ],
     "toto": [
         [
             123536,
             123583
+        ]
+    ],
+    "tulu-tigalari": [
+        [
+            70528,
+            70655
         ]
     ],
     "ugaritic": [

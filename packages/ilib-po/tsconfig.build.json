@@ -1,16 +1,5 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "noEmit": false,
-        "outDir": "lib",
-        "declaration": true,
-        "declarationMap": true
-    },
-    "include": [
-        "src",
-        "types"
-    ],
-    "exclude": [
-        "src/**/*.test.ts"
-    ]
+    "extends": "ilib-internal/config/tsconfig.build.json",
+    "include": ["src", "types"],
+    "exclude": ["src/**/*.test.ts"]
 }

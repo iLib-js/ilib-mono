@@ -1214,18 +1214,8 @@ describe("testResourceQuoteStyle", () => {
             resource,
             file: "a/b/c.xliff"
         });
-        // For Italian, if quotes are present, they should be the correct style
-        const expected = expect.objectContaining({
-            severity: "warning",
-            description: "Quote style for the locale it-IT should be «text» or there should be no quotes in the target",
-            id: "quote.test",
-            source: 'This string contains "quotes" in it.',
-            highlight: 'Target: Questa stringa contiene <e0>"</e0>virgolette<e1>"</e1>.',
-            rule,
-            locale: "it-IT",
-            pathName: "a/b/c.xliff"
-        });
-        expect(actual).toEqual(expected);
+        // For Italian, if quotes are present, they are allowed to be ascii quotes
+        expect(actual).toBeFalsy();
     });
 
     test("ResourceQuoteStyleItalianOptionalQuotesWrongQuotesInTarget", () => {
@@ -1330,18 +1320,8 @@ describe("testResourceQuoteStyle", () => {
             resource,
             file: "a/b/c.xliff"
         });
-        // For Swedish, if quotes are present, they should be the correct style
-        const expected = expect.objectContaining({
-            severity: "warning",
-            description: "Quote style for the locale sv-SE should be ”text” or there should be no quotes in the target",
-            id: "quote.test",
-            source: 'This string contains "quotes" in it.',
-            highlight: 'Target: Denna sträng innehåller <e0>"</e0>citattecken<e1>"</e1>.',
-            rule,
-            locale: "sv-SE",
-            pathName: "a/b/c.xliff"
-        });
-        expect(actual).toEqual(expected);
+        // For Swedish, if quotes are present, they are allowed to be ascii quotes
+        expect(actual).toBeFalsy();
     });
 
     test("ResourceQuoteStyleSwedishOptionalQuotesWrongQuotesInTarget", () => {

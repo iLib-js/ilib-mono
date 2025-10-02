@@ -19,10 +19,12 @@
 
 import { Transformer, IntermediateRepresentation, Result, SourceFile } from "ilib-lint-common";
 import { ResourceString, ResourceArray, ResourcePlural } from "ilib-tools-common";
-import { jest } from '@jest/globals';
 
 import ErrorFilterTransformer from "../../src/plugins/ErrorFilterTransformer.js";
 import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
+
+// ESM support
+const jest = import.meta.jest;
 
 const sourceFile = new SourceFile("path/to/file.xliff", {
     sourceLocale: "en-US",
@@ -819,5 +821,21 @@ describe("ErrorFilterTransformer", () => {
         expect(ir.length).toBe(2);
         expect(ir[0]).toEqual(resource1);
         expect(ir[1]).toEqual(resource2);
+    });
+
+    test("should keep the dirty flag if the representation was already dirty", () => {
+        expect.assertions(1);
+
+        const eft = new ErrorFilterTransformer();
+        const representation = new IntermediateRepresentation({
+            type: "resource",
+            ir: [],
+            sourceFile,
+            dirty: true
+        });
+
+        const transformed = eft.transform(representation, []);
+
+        expect(transformed.isDirty()).toBeTruthy();
     });
 });

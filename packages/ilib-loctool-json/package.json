@@ -46,7 +46,9 @@
         "coverage": "pnpm test -- --coverage",
         "test": "node node_modules/jest/bin/jest.js",
         "test:watch": "node node_modules/jest/bin/jest.js --watch",
+        "test:all": "npm-run-all --npm-path pnpm test test:e2e",
         "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs",
+        "test:e2e:snapshot": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs --updateSnapshot",
         "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i",
         "clean": "git clean -f -d test samples"
     },
@@ -59,7 +61,7 @@
         "micromatch": "^4.0.8"
     },
     "devDependencies": {
-        "@ilib-mono/e2e-test": "workspace:^",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

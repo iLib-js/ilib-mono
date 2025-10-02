@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="en-US"
+       xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0">
+  <file original="app1" l:project="app1">
+    <group id="app1_g1" name="cpp">
+      <unit id="app1_g1_1">
+        <segment>
+          <source>app1:String 1a</source>
+          <target>app1:String 1a</target>
+        </segment>
+      </unit>
+      <unit id="app1_g1_2">
+        <segment>
+          <source>app1:String 1b</source>
+          <target>app1:String 1b</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="app1_g2" name="x-json">
+      <unit id="app1_g2_1">
+        <segment>
+          <source>app1:String 1c</source>
+          <target>app1:String 1c</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+  <file original="app2" l:project="app2">
+    <group id="app2_g3" name="javascript">
+      <unit id="app2_g3_1">
+        <segment>
+          <source>app2: String 2a</source>
+          <target>app2: String 2a</target>
+        </segment>
+      </unit>
+      <unit id="app2_g3_2">
+        <segment>
+          <source>app2: String 2b</source>
+          <target>app2: String 2b</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

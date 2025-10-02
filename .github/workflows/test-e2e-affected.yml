@@ -1,14 +1,10 @@
-name: E2E Test affected
-# Test Affected workflow
-# This workflow runs tests and generates coverage reports for packages affected by changes in a pull request.
-# It uses Turborepo to determine affected packages and runs their tests in parallel.
-# Coverage reports are merged and processed for coverage reporting in PR comments.
+name: Test E2E Affected
 
 on: pull_request
 
 jobs:
-    test-affected:
-        name: Test Affected
+    test-e2e-affected:
+        name: Test E2E Affected
         runs-on: ubuntu-latest
         env:
             # temporary workaround for `Failed to resolve base ref 'main' from GitHub Actions event`:
@@ -35,7 +31,9 @@ jobs:
                   cache: pnpm
             - name: Install Chrome
               uses: browser-actions/setup-chrome@v1
+            - name: Install Firefox
+              uses: browser-actions/setup-firefox@v1
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run E2E tests
-              run: pnpm test:e2e:ci:affected
+              run: pnpm ci:test:e2e:affected
