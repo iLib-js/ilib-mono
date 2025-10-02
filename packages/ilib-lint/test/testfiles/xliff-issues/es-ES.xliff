@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="es-ES">
+  <file id="sample-B_f1" original="sample-B">
+    <group id="sample-B_g1" name="javascript">
+      <unit id="picturewizard_g1_96">
+        <segment>
+          <source>Then, how much contrast between the bright and dark parts of the screen would you prefer?</source>
+          <target>Entonces, ¿cuánto contraste prefiere entre las partes claras y oscuras de la pantalla?</target>
+        </segment>
+      </unit>
+      <unit id="sample-B_g1_90">
+        <segment>
+          <source>Which do you prefer: a cooler tone or a warmer tone?</source>
+          <target>¿Qué prefiere: un tono más frío o más cálido?</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

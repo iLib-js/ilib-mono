@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="da-DK">
+  <file id="sample-B_f1" original="sample-B">
+    <group id="sample-B_g1" name="javascript">
+      <unit id="sample-B_g1_393">
+        <segment>
+          <source>If you need to adjust the zoom area or unable to automatically zoom the sign language screen, select 'Manual Zoom.'</source>
+          <target>Se devi modificare l'area dello zoom o non è possibile applicare automaticamente lo zoom alla schermata della lingua dei segni, seleziona "Zoom manuale".</target>
+        </segment>
+      </unit>
+      <unit id="sample-B_g1_386">
+        <notes>
+          <note>locale: af-ZA</note>
+        </notes>
+        <segment>
+          <source>Installing the high-quality language pack will provide more natural-sounding 'Audio Guidance.'</source>
+          <target>Die installering van die hoëgehalte taalpakket sal “Oudioleiding” verskaf wat meer natuurlik klink.</target>
+        </segment>
+      </unit>
+      <unit id="sample-B_g1_386">
+        <notes>
+          <note>locale: sk-SK</note>
+        </notes>
+        <segment>
+          <source>{num} channels have been blocked.</source>
+          <target>Počet zablokovaných kanálov: {num}</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
