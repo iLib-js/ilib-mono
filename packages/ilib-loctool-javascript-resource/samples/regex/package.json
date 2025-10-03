@@ -1,6 +1,7 @@
 {
   "name": "ilib-loctool-javascript-resource Regex Sample",
   "private": true,
+  "version": "0.0.0",
   "description": "Sample localization project for the regex-based loctool plugin",
   "devDependencies": {
     "ilib-loctool-javascript-resource": "workspace:^",

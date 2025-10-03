@@ -1,6 +1,7 @@
 {
   "name": "ilib-scriptinfo-typescript-sample",
   "private": true,
+  "version": "0.0.0",
   "description": "TypeScript sample app demonstrating ilib-scriptinfo usage with full type safety",
   "type": "module",
   "main": "index.ts",
