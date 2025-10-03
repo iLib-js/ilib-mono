@@ -57,21 +57,21 @@ async function runSimpleTest(testDir: string): Promise<TestResult> {
  */
 describe("ilib-scriptinfo simple package loading", () => {
     test("ESM module loading works", async () => {
-        const result = await runSimpleTest("__resources__/esm-test");
+        const result = await runSimpleTest("__testfiles__/esm-test");
         expect(result.code).toBe(0);
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
     }, 10000);
 
     test("CommonJS module loading works", async () => {
-        const result = await runSimpleTest("__resources__/legacy-test");
+        const result = await runSimpleTest("__testfiles__/legacy-test");
         expect(result.code).toBe(0);
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
     }, 10000);
 
     test("TypeScript module loading works", async () => {
-        const result = await runSimpleTest("__resources__/typescript-test");
+        const result = await runSimpleTest("__testfiles__/typescript-test");
         expect(result.code).toBe(0);
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
