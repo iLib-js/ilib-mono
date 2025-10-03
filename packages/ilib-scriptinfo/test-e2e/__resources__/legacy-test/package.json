@@ -1,6 +1,5 @@
 {
     "name": "Legacy E2E Test",
-    "version": "0.0.0",
     "private": true,
     "type": "commonjs",
     "dependencies": {

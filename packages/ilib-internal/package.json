@@ -1,6 +1,5 @@
 {
     "name": "ilib-internal",
-    "version": "0.0.0",
     "private": true,
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
