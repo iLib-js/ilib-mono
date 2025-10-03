@@ -2442,7 +2442,7 @@ importers:
   packages/ilib-scriptinfo/test-e2e/__testfiles__/esm-test:
     dependencies:
       ilib-scriptinfo:
-        specifier: file:../../..
+        specifier: workspace:^
         version: link:../../..
 
   packages/ilib-scriptinfo/test-e2e/__testfiles__/legacy-test:
