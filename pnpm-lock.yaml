@@ -2439,19 +2439,19 @@ importers:
         specifier: ^5.0.0
         version: 5.9.2
 
-  packages/ilib-scriptinfo/test-e2e/__resources__/esm-test:
+  packages/ilib-scriptinfo/test-e2e/__testfiles__/esm-test:
     dependencies:
       ilib-scriptinfo:
         specifier: workspace:^
         version: link:../../..
 
-  packages/ilib-scriptinfo/test-e2e/__resources__/legacy-test:
+  packages/ilib-scriptinfo/test-e2e/__testfiles__/legacy-test:
     dependencies:
       ilib-scriptinfo:
         specifier: workspace:^
         version: link:../../..
 
-  packages/ilib-scriptinfo/test-e2e/__resources__/typescript-test:
+  packages/ilib-scriptinfo/test-e2e/__testfiles__/typescript-test:
     dependencies:
       ilib-scriptinfo:
         specifier: workspace:^

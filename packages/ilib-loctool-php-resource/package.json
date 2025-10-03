@@ -43,7 +43,6 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
-        "build": "pnpm pack",
         "coverage": "pnpm test -- --coverage",
         "test": "jest",
         "test:watch": "jest --watch",

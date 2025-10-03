@@ -1,6 +1,7 @@
 {
   "name": "ilib-loctool-ghfm Sample",
   "private": true,
+  "version": "0.0.0",
   "description": "Sample localization project",
   "devDependencies": {
     "ilib-loctool-ghfm": "workspace:^",
