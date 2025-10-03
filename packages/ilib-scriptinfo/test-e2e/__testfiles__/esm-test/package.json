@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "dependencies": {
-        "ilib-scriptinfo": "file:../../.."
+        "ilib-scriptinfo": "workspace:^"
     },
     "scripts": {
         "start": "node index.js"
