@@ -1,7 +1,6 @@
 {
   "name": "ilib-loctool-android-layout Sample",
   "private": true,
-  "version": "0.0.0",
   "description": "Sample localization project",
   "devDependencies": {
     "ilib-loctool-android-layout": "workspace:^",
