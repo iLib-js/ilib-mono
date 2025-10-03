@@ -1,6 +1,7 @@
 {
     "name": "ilib-internal",
     "private": true,
+    "version": "0.0.0",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "description": "Internal package for common configuration of things like E2E testing",
