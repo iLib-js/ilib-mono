@@ -20,6 +20,7 @@
 import fs from "fs";
 
 import { ResourceArray, ResourcePlural, ResourceString, ResourceXliff } from "../src/index.js";
+import { Xliff } from "ilib-xliff";
 
 function diff(a, b) {
     const min = Math.min(a.length, b.length);
@@ -52,7 +53,7 @@ describe("testResourceXliff", () => {
     });
 
     test("ResourceXliffConstructorFull", () => {
-        expect.assertions(7);
+        expect.assertions(9);
 
         const x = new ResourceXliff({
             "tool-id": "loctool",
@@ -62,14 +63,16 @@ describe("testResourceXliff", () => {
             copyright: "Copyright 2016, My Company, Inc. All rights reserved.",
             path: "a/b/c.xliff"
         });
-        expect(x).toBeTruthy();
 
+        expect(x).toBeTruthy();
         expect(x["tool-id"]).toBe("loctool");
         expect(x["tool-name"]).toBe("Localization Tool");
         expect(x["tool-version"]).toBe("1.2.34");
         expect(x["tool-company"]).toBe("My Company, Inc.");
         expect(x.copyright).toBe("Copyright 2016, My Company, Inc. All rights reserved.");
         expect(x.path).toBe("a/b/c.xliff");
+        expect(x.xliff).toBeTruthy();
+        expect(x.xliff instanceof Xliff).toBeTruthy();
     });
 
     test("ResourceXliffGetPath", () => {
@@ -82,7 +85,6 @@ describe("testResourceXliff", () => {
 
         expect(x.getPath()).toBe("foo/bar/x.xliff");
     });
-
 
     test("ResourceXliffSetPath", () => {
         expect.assertions(3);
