@@ -546,6 +546,15 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
+     * Format punctuation for error messages - replace empty strings with "no punctuation"
+     * @param {string} punctuation - The punctuation string to format
+     * @returns {string} - The formatted punctuation string
+     */
+    static formatPunctuationForMessage(punctuation) {
+        return punctuation === '' ? 'no punctuation' : `"${punctuation}"`;
+    }
+
+    /**
      * Check if Spanish target has the correct inverted punctuation in the last sentence
      * @param {string} lastSentence - The last sentence of the target string (already stripped of quotes)
      * @param {string} sourceEndingType - The type of ending punctuation in source
@@ -985,7 +994,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 rule: this,
                 severity: "warning",
                 id: resource.getKey(),
-                description: `Sentence ending should be "" for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`,
+                description: `Sentence ending should be no punctuation for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`,
                 source,
                 highlight,
                 pathName: file,
@@ -1025,7 +1034,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 rule: this,
                 severity: "warning",
                 id: resource.getKey(),
-                description: `Sentence ending should be "${insertString}" (${unicodeCode}) for ${targetLocale} locale instead of ""`,
+                description: `Sentence ending should be "${insertString}" (${unicodeCode}) for ${targetLocale} locale instead of ${ResourceSentenceEnding.formatPunctuationForMessage('')}`,
                 source,
                 highlight,
                 pathName: file,
@@ -1187,7 +1196,7 @@ class ResourceSentenceEnding extends ResourceRule {
             const expectedUnicode = ResourceSentenceEnding.getUnicodeCodes(expectedPunctuation);
             const positionInfo = this.findIncorrectPunctuationPosition(target, lastSentence, targetEnding.original);
 
-            description = `Sentence ending should be "${expectedPunctuation}" (${expectedUnicode}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
+            description = `Sentence ending should be ${ResourceSentenceEnding.formatPunctuationForMessage(expectedPunctuation)} (${expectedUnicode}) for ${targetLocale} locale instead of ${ResourceSentenceEnding.formatPunctuationForMessage(targetEnding.original)} (${unicodeCode})`;
 
             if (positionInfo) {
                 const beforePunctuation = target.substring(0, positionInfo.position);
@@ -1203,7 +1212,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         const expectedUnicodeWithSpace = ResourceSentenceEnding.getUnicodeCodes(expectedWithSpace);
 
                         highlight = `${beforePunctuation}<e0/>`;
-                        description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of ""`;
+                        description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of no punctuation`;
                         fix = this.createPunctuationFix(resource, target, '', expectedWithSpace, index, category, targetLocaleObj);
                     } else {
                         // Target has some punctuation - check for spacing issues

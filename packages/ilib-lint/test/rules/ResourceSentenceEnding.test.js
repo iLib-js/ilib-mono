@@ -938,7 +938,7 @@ describe("ResourceSentenceEnding rule", function() {
                 targetLocale: "ms-MY",
                 source: "Hello world",
                 target: "Halo dunia.",
-                expectedResult: "Sentence ending should be \"\" for ms-MY locale instead of \".\" (U+002E)",
+                expectedResult: "Sentence ending should be no punctuation for ms-MY locale instead of \".\" (U+002E)",
                 highlight: "Halo dunia<e0>. (U+002E)</e0>",
                 description: "Extra punctuation in translation for optional punctuation language (Malay) when source has none - should be removed"
             },
@@ -946,7 +946,7 @@ describe("ResourceSentenceEnding rule", function() {
                 targetLocale: "tl-PH",
                 source: "Hello world",
                 target: "Kamusta mundo!",
-                expectedResult: "Sentence ending should be \"\" for tl-PH locale instead of \"!\" (U+0021)",
+                expectedResult: "Sentence ending should be no punctuation for tl-PH locale instead of \"!\" (U+0021)",
                 highlight: "Kamusta mundo<e0>! (U+0021)</e0>",
                 description: "Extra punctuation in translation for optional punctuation language (Tagalog) when source has none - should be removed"
             },
@@ -1701,7 +1701,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         expect(actual).toBeTruthy();
-        expect(actual?.description).toContain('Sentence ending should be "" for ja-JP locale instead of "。" (U+3002)');
+        expect(actual?.description).toContain('Sentence ending should be no punctuation for ja-JP locale instead of "。" (U+3002)');
         expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("こんにちは世界<e0>。 (U+3002)</e0>");
         expect(actual?.fix).toBeTruthy();
@@ -1732,7 +1732,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         expect(actual).toBeTruthy();
-        expect(actual?.description).toContain('Sentence ending should be "。" (U+3002) for ja-JP locale instead of ""');
+        expect(actual?.description).toContain('Sentence ending should be "。" (U+3002) for ja-JP locale instead of no punctuation');
         expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("こんにちは世界<e0/>");
         expect(actual?.fix).toBeTruthy();
@@ -2413,7 +2413,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "." (U+002E) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "." (U+002E) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -2448,7 +2448,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "\u202F!" (U+202F U+0021) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "\u202F!" (U+202F U+0021) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -2483,7 +2483,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "\u202F?" (U+202F U+003F) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "\u202F?" (U+202F U+003F) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -2518,7 +2518,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "\u202F:" (U+202F U+003A) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "\u202F:" (U+202F U+003A) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -2553,7 +2553,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "\u2026" (U+2026) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "\u2026" (U+2026) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
