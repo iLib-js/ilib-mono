@@ -806,36 +806,36 @@ describe("ResourceSentenceEnding rule", function() {
                 expectedResult: undefined,
                 description: "Spanish question with name and comma should have correct inverted punctuation"
             },
-        // Bug test: Spanish inverted punctuation with email address
-        {
-            targetLocale: "es-ES",
-            source: "Would you like to email me at tv.privacy@lge.com?",
-            target: "¿Le gustaría enviarme un correo electrónico a tv.privacy@lge.com?",
-            expectedResult: undefined,
-            description: "Spanish question with email address should have correct inverted punctuation"
-        },
-        {
-            targetLocale: "es-ES",
-            source: "Download the file from https://example.com/files/2342?param=foo.bar",
-            target: "Descarga el archivo desde https://example.com/files/2342?param=foo.bar",
-            expectedResult: undefined,
-            description: "Spanish statement with URL should not trigger sentence-ending punctuation error"
-        },
-        {
-            targetLocale: "es-ES",
-            source: "Can you download the file from https://example.com/files/2342?param=foo.bar?",
-            target: "¿Puedes descargar el archivo desde https://example.com/files/2342?param=foo.bar?",
-            expectedResult: undefined,
-            description: "Spanish question with URL should have correct inverted punctuation"
-        },
-        {
-            targetLocale: "es-ES",
-            source: "Can you download the file from https://example.com/files/2342?param=foo.bar?",
-            target: "Puedes descargar el archivo desde https://example.com/files/2342?param=foo.bar?",
-            expectedResult: "Spanish question should start with \"¿\" (U+00BF) for es-ES locale",
-            highlight: "<e0/>Puedes descargar el archivo desde https://example.com/files/2342?param=foo.bar?",
-            description: "Spanish question with URL should trigger warning for missing inverted punctuation"
-        },
+            // Bug test: Spanish inverted punctuation with email address
+            {
+                targetLocale: "es-ES",
+                source: "Would you like to email me at tv.privacy@lge.com?",
+                target: "¿Le gustaría enviarme un correo electrónico a tv.privacy@lge.com?",
+                expectedResult: undefined,
+                description: "Spanish question with email address should have correct inverted punctuation"
+            },
+            {
+                targetLocale: "es-ES",
+                source: "Download the file from https://example.com/files/2342?param=foo.bar",
+                target: "Descarga el archivo desde https://example.com/files/2342?param=foo.bar",
+                expectedResult: undefined,
+                description: "Spanish statement with URL should not trigger sentence-ending punctuation error"
+            },
+            {
+                targetLocale: "es-ES",
+                source: "Can you download the file from https://example.com/files/2342?param=foo.bar?",
+                target: "¿Puedes descargar el archivo desde https://example.com/files/2342?param=foo.bar?",
+                expectedResult: undefined,
+                description: "Spanish question with URL should have correct inverted punctuation"
+            },
+            {
+                targetLocale: "es-ES",
+                source: "Can you download the file from https://example.com/files/2342?param=foo.bar?",
+                target: "Puedes descargar el archivo desde https://example.com/files/2342?param=foo.bar?",
+                expectedResult: "Spanish question should start with \"¿\" (U+00BF) for es-ES locale",
+                highlight: "<e0/>Puedes descargar el archivo desde https://example.com/files/2342?param=foo.bar?",
+                description: "Spanish question with URL should trigger warning for missing inverted punctuation"
+            },
             // Optional punctuation language tests
             {
                 targetLocale: "th-TH",
