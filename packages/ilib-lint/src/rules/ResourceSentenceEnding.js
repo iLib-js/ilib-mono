@@ -41,7 +41,7 @@ import { Result } from 'ilib-lint-common';
 import ResourceRule from './ResourceRule.js';
 import Locale from 'ilib-locale';
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
-import { isSpace } from 'ilib-ctype';
+import { isSpace, isAlpha, isAlnum } from 'ilib-ctype';
 
 /**
  * @ignore
@@ -549,9 +549,10 @@ class ResourceSentenceEnding extends ResourceRule {
      * Check if Spanish target has the correct inverted punctuation in the last sentence
      * @param {string} lastSentence - The last sentence of the target string (already stripped of quotes)
      * @param {string} sourceEndingType - The type of ending punctuation in source
+     * @param {Locale} targetLocaleObj - The target locale object for custom punctuation configuration
      * @returns {{correct: boolean, position: number}} - position is where inverted punctuation should be
      */
-    hasCorrectSpanishInvertedPunctuation(lastSentence, sourceEndingType) {
+    hasCorrectSpanishInvertedPunctuation(lastSentence, sourceEndingType, targetLocaleObj) {
         if (!lastSentence || typeof lastSentence !== 'string') return { correct: false, position: 0 };
         // Only check for questions and exclamations
         if (sourceEndingType !== 'question' && sourceEndingType !== 'exclamation') {
@@ -581,11 +582,54 @@ class ResourceSentenceEnding extends ResourceRule {
 
             // If we find sentence-ending punctuation (excluding the final one),
             // we've reached the start of this sentence without finding inverted punctuation
-            if (char === '.' || char === '!' || char === '?' || char === '。' || char === '！' || char === '？') {
+            // Use locale-specific punctuation configuration
+            const sentenceEndingChars = this.getExpectedPunctuationRegexWithoutColons(targetLocaleObj);
+            const sentenceEndingRegex = new RegExp(`[${sentenceEndingChars}]`, 'u');
+            if (sentenceEndingRegex.test(char)) {
                 // Skip the final punctuation at the end
                 if (i === strippedSentence.length - 1) {
                     continue;
                 }
+
+                // Special handling for dots: check if it's part of a letter-dot-letter pattern
+                // (like email addresses, URLs, abbreviations, etc.)
+                if (char === '.') {
+                    // Check if this dot is part of a letter-dot-letter pattern
+                    const beforeDot = i > 0 ? strippedSentence.charAt(i - 1) : '';
+                    const afterDot = i < strippedSentence.length - 1 ? strippedSentence.charAt(i + 1) : '';
+
+                    // If it's letter-dot-letter, it's not sentence-ending punctuation
+                    // But exclude cases where the dot is part of an ellipsis (...)
+                    if (isAlpha(beforeDot) && isAlpha(afterDot)) {
+                        // Check if this is part of an ellipsis (three consecutive dots)
+                        const beforeBeforeDot = i > 1 ? strippedSentence.charAt(i - 2) : '';
+                        const afterAfterDot = i < strippedSentence.length - 2 ? strippedSentence.charAt(i + 2) : '';
+
+                        // If it's part of an ellipsis (...), treat it as sentence-ending punctuation
+                        if (beforeBeforeDot === '.' || afterAfterDot === '.') {
+                            // This is part of an ellipsis, so treat as sentence-ending punctuation
+                        } else {
+                            // This is a letter-dot-letter pattern, skip it
+                            continue;
+                        }
+                    }
+                }
+
+                // Special handling for question marks: check if it's part of a URL query parameter
+                // (like ?param=value in URLs)
+                if (char === '?') {
+                    // Check if this question mark is part of a URL query parameter
+                    const afterQuestion = i < strippedSentence.length - 1 ? strippedSentence.charAt(i + 1) : '';
+                    const beforeQuestion = i > 0 ? strippedSentence.charAt(i - 1) : '';
+
+                    // If it's followed by alphanumeric characters (like ?param=value),
+                    // it's likely part of a URL query parameter, not sentence-ending punctuation
+                    if (isAlnum(afterQuestion)) {
+                        // This is likely a URL query parameter, skip it
+                        continue;
+                    }
+                }
+
                 // Found sentence-ending punctuation before inverted punctuation
                 return { correct: false, position: strippedOffset };
             }
@@ -1008,8 +1052,14 @@ class ResourceSentenceEnding extends ResourceRule {
                 // - If source ends with quote, check the quoted content (lastSentence already contains this)
                 // - If source doesn't end with quote, check the lastSentence (which contains the relevant part)
                 //   because inverted punctuation should be at the beginning of the sentence being checked
-                const stringToCheck = lastSentence;
-                const invertedPunctuationResult = this.hasCorrectSpanishInvertedPunctuation(stringToCheck, sourceEnding.type);
+                // - Special case: if lastSentence is very short (like "com?" from email addresses or "bar?" from URLs),
+                //   use the full target string instead
+                let stringToCheck = lastSentence;
+                if (lastSentence.length < 10 && !lastSentence.startsWith('¿') && !lastSentence.startsWith('¡')) {
+                    // This might be a fragment from an email address, URL, or similar, use the full target
+                    stringToCheck = target;
+                }
+                const invertedPunctuationResult = this.hasCorrectSpanishInvertedPunctuation(stringToCheck, sourceEnding.type, targetLocaleObj);
                 if (!invertedPunctuationResult.correct) {
                     // Spanish target is missing inverted punctuation at the beginning
                     const quoteChars = ResourceSentenceEnding.allQuoteChars;
@@ -1028,13 +1078,14 @@ class ResourceSentenceEnding extends ResourceRule {
                     } else {
                         // For multi-sentence strings, find where the last sentence starts
                         const lastSentenceStart = target.lastIndexOf(lastSentence);
-                        if (lastSentenceStart !== -1) {
+                        if (lastSentenceStart !== -1 && stringToCheck === lastSentence) {
                             // Use the position from hasCorrectSpanishInvertedPunctuation for more precise highlighting
                             const highlightPosition = lastSentenceStart + invertedPunctuationResult.position;
                             const beforeHighlight = target.substring(0, highlightPosition);
                             const afterHighlight = target.substring(highlightPosition);
                             highlight = `${beforeHighlight}<e0/>${afterHighlight}`;
                         } else {
+                            // If we're using the full target string (due to URL/email special case), highlight at the beginning
                             highlight = `<e0/>${target}`;
                         }
                     }
