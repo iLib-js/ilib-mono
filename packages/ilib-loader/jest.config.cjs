@@ -16,23 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const { jestConfig } = require("ilib-internal");
 
-module.exports = {
-    testEnvironment: 'node',
-    testMatch: [
-        '**/test/**/*.test.js'
-    ],
+const config = {
+    ...jestConfig,
     testPathIgnorePatterns: [
         '.*/test/WebpackLoader\\.test\\.js$'
     ],
-    transform: {
-        '^.+\\.js$': ['babel-jest', {
-            presets: [['@babel/preset-env', {
-                targets: {
-                    node: 'current'
-                }
-            }]]
-        }]
+    displayName: {
+        name: "ilib-common",
+        color: "blackBright",
     },
+};
 
-}; 
+module.exports = config;
+

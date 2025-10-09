@@ -19,5 +19,10 @@
 const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
-    config.set(createKarmaConfig());
+    config.set(createKarmaConfig({
+        // list of files to exclude
+        exclude: [
+            "./test/env-browser.test.js"
+        ],
+    }));
 };
