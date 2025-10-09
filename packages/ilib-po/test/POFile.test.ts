@@ -35,7 +35,7 @@ describe("pofile", () => {
         expect.assertions(1);
 
         expect(() => {
-            const pof = new POFile(
+            new POFile(
                 // @ts-expect-error -- testing invalid args
                 { pathName: undefined }
             );

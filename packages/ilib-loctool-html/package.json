@@ -58,6 +58,7 @@
         "message-accumulator": "workspace:^"
     },
     "devDependencies": {
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

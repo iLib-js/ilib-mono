@@ -16,76 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var path = require('path');
+const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
-    config.set({
-        plugins: [
-            "karma-webpack",
-            "karma-jasmine",
-            "karma-chrome-launcher",
-            "karma-assert"
-        ],
-
-        // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: "",
-
-        // frameworks to use
-        // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ["jasmine"],
-
-        // list of files / patterns to load in the browser
-        // Include common tests and browser-specific tests, exclude Node.js-specific tests
-        files: [
-            "./karma-setup.js",
-            "./test/env.test.js",
+    config.set(createKarmaConfig({
+        // list of files to exclude
+        exclude: [
             "./test/env-browser.test.js"
         ],
-
-        // preprocess matching files before serving them to the browser
-        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-        preprocessors: {
-            // Use webpack to bundle our tests files
-            "./karma-setup.js": ["webpack"],
-            "./test/env.test.js": ["webpack"],
-            "./test/env-browser.test.js": ["webpack"],
-        },
-
-        browsers: ["ChromeHeadless"],
-        
-        webpack: {
-            mode: "development",
-            target: "web",
-            externals: {
-                "log4js": "log4js"
-            },
-            module: {
-                rules: [
-                    {
-                        test: /\.js$/,
-                        exclude: /\/node_modules\//,
-                        use: {
-                            loader: 'babel-loader',
-                            options: {
-                                minified: false,
-                                compact: false,
-                                presets: [[
-                                    '@babel/preset-env',
-                                    {
-                                        "targets": {
-                                            "node": process.versions.node,
-                                            "browsers": "cover 99.5%"
-                                        }
-                                    }
-                                ]],
-                                plugins: [
-                                    "add-module-exports"
-                                ]
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    });
+    }));
 };

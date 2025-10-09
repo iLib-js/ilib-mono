@@ -16,83 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var path = require('path');
+const path = require("path");
+const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
-    config.set({
-        plugins: [
-            "karma-webpack",
-            "karma-jasmine",
-            "karma-chrome-launcher",
-            "karma-firefox-launcher",
-            "karma-assert"
-        ],
-
-        // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: "",
-
-        // frameworks to use
-        // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ["jasmine", "webpack"],
-
-        // list of files / patterns to load in the browser
-        // Only include async tests for browser compatibility (exclude sync tests that require Node.js)
-        // Sync tests are excluded via the exclude pattern below
-        files: [
-            "./karma-setup.js",
-            "./test/**/*.test.js"
-        ],
-
+    config.set(createKarmaConfig({
         // list of files to exclude
-        // Exclude Node.js specific tests and sync-only tests that don't work in browsers
         exclude: [
-            "./test/LocaleDataNode.test.js",
-            "./test/**/*.sync.test.js"
+            "./test/LocaleDataNode.test.js"
         ],
 
-        // preprocess matching files before serving them to the browser
-        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-        preprocessors: {
-            // Use webpack to bundle our tests files
-            "./karma-setup.js": ["webpack"],
-            "./test/**/*.test.js": ["webpack"],
-        },
-
-        browsers: ["ChromeHeadless", "FirefoxHeadless"],
-        
         webpack: {
-            mode: "development",
-            target: "web",
-            externals: {
-                "log4js": "log4js"
-            },
-            module: {
-                rules: [
-                    {
-                        test: /\.js$/,
-                        exclude: /\/node_modules\//,
-                        use: {
-                            loader: 'babel-loader',
-                            options: {
-                                minified: false,
-                                compact: false,
-                                presets: [[
-                                    '@babel/preset-env',
-                                    {
-                                        "targets": {
-                                            "node": process.versions.node,
-                                            "browsers": "cover 99.5%"
-                                        }
-                                    }
-                                ]],
-                                plugins: [
-                                    "add-module-exports"
-                                ]
-                            }
-                        }
-                    }
-                ]
-            },
             resolve: {
                 fallback: {
                     buffer: require.resolve("buffer")
@@ -105,5 +39,5 @@ module.exports = function (config) {
                 }
             },
         }
-    });
+    }));
 }; 

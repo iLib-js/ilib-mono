@@ -22,11 +22,11 @@ import LoaderFactory, { registerLoader } from '../src/index.js';
 
 describe("testNodeLoader", () => {
     clearCache();
-    test("LoaderGetName", () => {
-        expect.assertions(1);
-        var loader = LoaderFactory();
-        expect(loader.getName()).toBe("Nodejs Loader");
-    });
+        test("LoaderGetName", () => {
+            expect.assertions(1);
+            var loader = LoaderFactory();
+            expect(loader.getName()).toBe("Nodejs Loader");
+        });
 
     test("LoaderSupportsSync", () => {
         expect.assertions(1);
