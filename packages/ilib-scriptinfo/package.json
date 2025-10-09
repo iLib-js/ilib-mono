@@ -90,7 +90,7 @@
         "typedoc": "^0.26.11",
         "typedoc-plugin-markdown": "^4.2.10",
         "typescript": "^5.6.3",
-        "ucd-full": "^16.0.1",
+        "ucd-full": "^17.0.0",
         "webpack": "^5.89.0"
     },
     "dependencies": {
