@@ -983,7 +983,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
         test('should load root data from all roots', async () => {
             expect.assertions(5);
-debugger;
+
             // Load root data from multiple roots
             const result = await parsedDataCache.getParsedData(null, ['./test/files3', './test/files4'], 'info');
 

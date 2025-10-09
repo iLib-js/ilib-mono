@@ -374,7 +374,7 @@ describe('MergedDataCache Async Tests (Node and Browser)', () => {
 
         test('should handle returnOne option', async () => {
             expect.assertions(2);
-debugger;
+
             const cache = new MergedDataCache(loader, { returnOne: true });
             cache.clearMergedData();
             const result = await cache.loadMergedData("en-US", ["./test/files3"], "info");
