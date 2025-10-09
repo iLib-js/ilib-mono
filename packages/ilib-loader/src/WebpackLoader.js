@@ -42,6 +42,7 @@ class WebpackLoader extends Loader {
     constructor(options) {
         super(options);
 
+        this.sync = false;
         this.logger = log4js.getLogger("ilib-loader");
     }
 
@@ -102,8 +103,9 @@ class WebpackLoader extends Loader {
      */
     loadFile(pathName, options) {
         if (!pathName || typeof(pathName) !== 'string') return undefined;
-        if (options && options.sync) {
-            throw "The webpack loader does not support synchronous loading of data.";
+        const { sync } = options || {};
+        if (typeof(sync) === "boolean" && sync && !this.sync) {
+            throw new Error("This loader does not support synchronous loading of data.");
         }
         this.logger.trace(`Loading file ${pathName} from webpack asynchronously`);
 
