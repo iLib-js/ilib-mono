@@ -15827,7 +15827,7 @@ snapshots:
 
   babel-loader@9.2.1(@babel/core@7.29.0)(webpack@5.106.2):
     dependencies:
-      '@babel/core': 7.29.0
+      '@babel/core': 7.26.0
       find-cache-dir: 4.0.0
       schema-utils: 4.3.3
       webpack: 5.106.2(webpack-cli@5.1.4)
