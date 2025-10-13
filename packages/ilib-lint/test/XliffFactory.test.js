@@ -66,7 +66,7 @@ describe("XliffFactory", function() {
             version: "1.0"
         });
         expect(xf).toBeTruthy();
-        expect(xf instanceof Xliff).toBeTruthy();
+        expect(xf instanceof webOSXliff).toBeTruthy();
     });
     test("XliffFactory_style_webOS_version2", function() {
         expect.assertions(2);
