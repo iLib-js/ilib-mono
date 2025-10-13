@@ -76,12 +76,7 @@ class XliffParser extends Parser {
      */
     parse(sourceFile) {
         const data = sourceFile.getContent();
-
-        const xliffInfo = getXliffInfo(data);
-        const xliffObj = XliffFactory({
-            version: xliffInfo.version,
-            style: xliffInfo.style
-        });
+        const xliffObj = XliffFactory(getXliffInfo(data));
 
         const xliff = new ResourceXliff({
             path: sourceFile.getPath(),

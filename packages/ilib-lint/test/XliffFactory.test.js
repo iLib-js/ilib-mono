@@ -59,6 +59,24 @@ describe("XliffFactory", function() {
         expect(xf).toBeTruthy();
         expect(xf instanceof webOSXliff).toBeTruthy();
     });
+    test("XliffFactory_style_webOS_version1", function() {
+        expect.assertions(2);
+        const xf = XliffFactory({
+            style: "webOS",
+            version: "1.0"
+        });
+        expect(xf).toBeTruthy();
+        expect(xf instanceof Xliff).toBeTruthy();
+    });
+    test("XliffFactory_style_webOS_version2", function() {
+        expect.assertions(2);
+        const xf = XliffFactory({
+            style: "webOS",
+            version: "2.0"
+        });
+        expect(xf).toBeTruthy();
+        expect(xf instanceof webOSXliff).toBeTruthy();
+    });
     test("XliffFactory_style_12", function() {
         expect.assertions(2);
         const xf = XliffFactory({
@@ -87,6 +105,14 @@ describe("XliffFactory", function() {
         expect.assertions(2);
         const xf = XliffFactory({
             style: "2"
+        });
+        expect(xf).toBeTruthy();
+        expect(xf instanceof Xliff).toBeTruthy();
+    });
+    test("XliffFactory_style_default", function() {
+        expect.assertions(2);
+        const xf = XliffFactory({
+            style: "default"
         });
         expect(xf).toBeTruthy();
         expect(xf instanceof Xliff).toBeTruthy();

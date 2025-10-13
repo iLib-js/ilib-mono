@@ -60,11 +60,7 @@ class XliffSerializer extends Serializer {
         }
 
         // produce the same format as the original file
-        const xliffInfo = getXliffInfo(ir.sourceFile.getContent());
-        const xliffObj = XliffFactory({
-            version: xliffInfo.version,
-            style: xliffInfo.style
-        });
+        const xliffObj = XliffFactory(getXliffInfo(ir.sourceFile.getContent()));
         const xliff = new ResourceXliff({
             path: ir.sourceFile.getPath(),
             xliff: xliffObj
