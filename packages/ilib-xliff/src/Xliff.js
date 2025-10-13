@@ -876,6 +876,8 @@ class Xliff {
                                             if (segment.target.state) {
                                                 state = segment.target._attributes.state;
                                             }
+                                        } else {
+                                            target = undefined;
                                         }
                                     }
                                 }

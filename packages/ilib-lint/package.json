@@ -1,6 +1,6 @@
 {
     "name": "ilib-lint",
-    "version": "2.18.1",
+    "version": "2.19.0",
     "type": "module",
     "main": "./src/index.js",
     "module": "./src/index.js",
@@ -49,11 +49,12 @@
         "node": ">=14.0.0"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
-        "test": "pnpm test:jest",
-        "test:jest": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "coverage": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+        "test": "pnpm test:cli",
+        "test:cli": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test:jest --watch",
         "test:e2e": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs",
+        "test:all": "pnpm test:cli test:e2e",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
         "lint": "node src/index.js",
         "clean": "git clean -f -d src test",
@@ -62,7 +63,6 @@
         "types": "tsc -p ./jsconfig.json"
     },
     "devDependencies": {
-        "@ilib-mono/e2e-test": "workspace:^",
         "@tsconfig/node14": "^14.1.2",
         "@types/jest": "^29.5.14",
         "@types/micromatch": "^4.0.9",
@@ -71,20 +71,24 @@
         "docdash": "^2.0.2",
         "i18nlint-plugin-test-old": "file:test/i18nlint-plugin-test-old",
         "ilib-es6": "^14.21.0",
+        "ilib-internal": "workspace:^",
         "ilib-lint-plugin-obsolete": "file:test/ilib-lint-plugin-obsolete",
         "ilib-lint-plugin-test": "file:test/ilib-lint-plugin-test",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.3",
         "jsdoc-to-markdown": "^8.0.3",
-        "typescript": "^5.5.4"
+        "typescript": "^5.9.2"
     },
     "dependencies": {
         "@formatjs/intl": "^2.10.4",
+        "ilib-casemapper": "workspace:^",
         "ilib-common": "workspace:^",
         "ilib-ctype": "workspace:^",
         "ilib-lint-common": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-localeinfo": "^1.1.0",
+        "ilib-localematcher": "^1.2.2",
+        "ilib-scriptinfo": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "intl-messageformat": "^10.5",
         "json5": "^2.2.3",

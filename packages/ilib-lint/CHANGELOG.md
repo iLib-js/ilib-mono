@@ -1,5 +1,53 @@
 # ilib-lint
 
+## 2.19.0
+
+### Minor Changes
+
+- 0270710: - Add new all capitals rule
+  - If the source string contains 2 or more alphabetic letter
+    characters and all alphabetic letter characters are upper-case,
+    and the target language uses a writing script that also
+    supports casing, then the target string should also be in
+    all upper-case to echo the style of the source.
+  - all characters that are not alphabetic letters are unmodified
+  - all strings written in scripts that do not support casing
+    are unmodified
+  - auto-fix available to automatically replace the target text
+    with the upper-cased version of the string. The text is
+    upper-cased locale-sensitively using ilib-casemapper.
+- 17d0665: - ResourceSentenceEnding rule enhancements to support various exception
+  - Added minimumLength configuration option (default: 10) to skip checking short strings/abbreviations
+  - Added automatic skipping of strings with no spaces
+  - Added exceptions array per locale to skip specific source strings from checking
+  - Enhanced punctuation detection for quoted content to handle punctuation after closing quotes
+  - Updated rule documentation with new configuration options and examples
+
+### Patch Changes
+
+- d6cb734: - Fixed two bugs in the sentence-ending punctuation rule
+  - if the target has a subordinate clause that is iterrogatory, then according to Spanish grammar rules, the inverted punctuation should come mid-sentence right before the clause. Now the rule checks for the inverted punctuation in a better way to handle this.
+  - colons in the middle of the string should not be considered sentence-ending punctuation when looking backwards for the inverted punctuation in Spanish
+- c43b5cb: - Fixed bug: now get and use the right locales
+  - command-line overrides the config file which overrides the default
+  - before, it only ever used the defaults!
+- Updated dependencies [0270710]
+  - ilib-scriptinfo@1.0.0
+
+## 2.18.2
+
+### Patch Changes
+
+- bd9293f: - Fixed a bug in the quote style rule which would cause infinite fix loops
+  - Quote detection in the source was not working properly for quote-optional
+    languages, such as Italian or Swedish, causing it to apply the same fix
+    over and over again
+- 4938290: - Fixed a bug where whitespace at the end of the target string would cause problems with the
+  sentence-ending punctuation rule
+  - Sentence-ending punctuation would not be found if there was one or more whitespace chars
+    at the end of the target string. (Source string was okay, though.)
+  - Rule now trims the whitespace from the target string before checking it.
+
 ## 2.18.1
 
 ### Patch Changes

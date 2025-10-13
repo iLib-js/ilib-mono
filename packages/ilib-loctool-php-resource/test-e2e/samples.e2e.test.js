@@ -18,23 +18,30 @@
  */
 
 const path = require("path");
-const fs = require("fs");
-const { expectFileToMatchSnapshot, LoctoolRunner } = require("@ilib-mono/e2e-test");
+const { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } = require("ilib-internal");
 
 describe("samples", () => {
     describe("php-resource", () => {
+        /** @type {FSSnapshot} */
+        let fsSnapshot;
         const projectPath = path.resolve(__dirname, "..", "samples", "php-resource");
         const xliffPath = path.resolve(projectPath, "sample-php-resource-extracted.xliff");
 
         beforeAll(async () => {
+            fsSnapshot = FSSnapshot.create(
+                [
+                    "sample-php-resource-extracted.xliff",
+                    "sample-php-resource-new-de-DE.xliff",
+                    "sample-php-resource-new-ko-KR.xliff",
+                    "resources",
+                ].map((p) => path.resolve(projectPath, p))
+            );
             const loctool = new LoctoolRunner(projectPath);
             await loctool.run("localize");
         });
 
         afterAll(() => {
-            if (fs.existsSync(xliffPath)) {
-                fs.unlinkSync(xliffPath);
-            }
+            fsSnapshot.restore();
         });
 
         it("should produce an extracted XLIFF file", () => {
@@ -42,18 +49,23 @@ describe("samples", () => {
         });
     });
     describe("regex", () => {
+        /** @type {FSSnapshot} */
+        let fsSnapshot;
         const projectPath = path.resolve(__dirname, "..", "samples", "regex");
         const xliffPath = path.resolve(projectPath, "sample-regex-extracted.xliff");
 
         beforeAll(async () => {
+            fsSnapshot = FSSnapshot.create(
+                ["sample-regex-extracted.xliff", "sample-regex-new-de-DE.xliff", "sample-regex-new-ko-KR.xliff"].map(
+                    (p) => path.resolve(projectPath, p)
+                )
+            );
             const loctool = new LoctoolRunner(projectPath);
             await loctool.run("localize");
         });
 
         afterAll(() => {
-            if (fs.existsSync(xliffPath)) {
-                fs.unlinkSync(xliffPath);
-            }
+            fsSnapshot.restore();
         });
 
         it("should produce an extracted XLIFF file", () => {

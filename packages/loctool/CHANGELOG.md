@@ -1,5 +1,18 @@
 # loctool
 
+## 2.31.3
+
+### Patch Changes
+
+- 7af420b: Clean up the xliff files for the loctool test by separating the test files for the XLIFF 2.0 format and the webOS XLIFF format, and deleting unnecessary files.
+- 6978961: Normalize and deduplicate translationsDir paths
+
+## 2.31.2
+
+### Patch Changes
+
+- d3865cf: Assign structured unit IDs with group index during xliff serialization for webOS
+
 ## 2.31.1
 
 ### Patch Changes

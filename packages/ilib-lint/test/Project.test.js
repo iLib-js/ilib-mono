@@ -288,29 +288,33 @@ describe("testProject", () => {
         expect(project.getOptions()).toBe(options);
     });
 
-    test("ProjectGetLocalesOptions", () => {
+    test("ProjectLocalesOptions", () => {
         expect.assertions(2);
 
+        const locales = ["en-US", "ko-KR"];
+
         const options = {
-            locales: ["en-US", "ko-KR"],
-            pluginManager,
+            pluginManager
         };
-        const project = new Project("x", options, genericConfig);
+        const project = new Project("x", options, {
+            ...genericConfig,
+            locales
+        });
         expect(project).toBeTruthy();
 
-        expect(project.getLocales()).toBe(options.locales);
+        expect(project.locales).toEqual(locales);
     });
 
-    test("ProjectGetLocalesFallbackToConfig", () => {
+    test("ProjectLocalesFallbackToConfig", () => {
         expect.assertions(2);
 
         const options = {
-            pluginManager,
+            pluginManager
         };
         const project = new Project("x", options, genericConfig);
         expect(project).toBeTruthy();
 
-        expect(project.getLocales()).toBe(genericConfig.locales);
+        expect(project.locales).toEqual(genericConfig.locales);
     });
 
     test("ProjectGetSourceLocaleFallbackToConfig", () => {
