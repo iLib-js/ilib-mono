@@ -32,10 +32,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchNoError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: "translated"
-        });
+        const rule = new ResourceStateChecker("translated");
         expect(rule).toBeTruthy();
 
         const actual = rule.match({
@@ -60,10 +57,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchArrayNoError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: [ "translated", "needs-review" ]
-        });
+        const rule = new ResourceStateChecker([ "translated", "needs-review" ]);
         expect(rule).toBeTruthy();
 
         const actual = rule.match({
@@ -88,10 +82,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: "translated"
-        });
+        const rule = new ResourceStateChecker("translated");
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -134,10 +125,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchArrayError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have one of these states:
-            param: [ "translated", "needs-review" ]
-        });
+        const rule = new ResourceStateChecker([ "translated", "needs-review" ]);
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -249,10 +237,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerNoState", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: [ "translated" ]
-        });
+        const rule = new ResourceStateChecker([ "translated" ]);
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -294,10 +279,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateChecker apply fix to correct the state", () => {
         expect.assertions(4);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: "translated"
-        });
+        const rule = new ResourceStateChecker("translated");
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -348,5 +330,73 @@ describe("testResourceStateChecker", () => {
         const fixedResource = ir.getRepresentation()[0];
         expect(fixedResource).toBeTruthy();
         expect(fixedResource.getState()).toBe("translated");
+    });
+
+    test("ResourceStateCheckerMatchSignedOffNoError", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceStateChecker("signed-off");
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            file: "a/b/c.xliff",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: '{count, plural, one {This is singular} other {This is plural}}',
+                    targetLocale: "de-DE",
+                    target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+                    pathName: "a/b/c.xliff",
+                    state: "signed-off"
+                })],
+                sourceFile
+            })
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceStateCheckerMatchSignedOffError", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceStateChecker("signed-off");
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "plural.test",
+            sourceLocale: "en-US",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            targetLocale: "de-DE",
+            target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+            pathName: "a/b/c.xliff",
+            state: "translated"
+        });
+        const actual = rule.match({
+            file: "a/b/c.xliff",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [resource],
+                sourceFile
+            })
+        });
+        const fix = ResourceFixer.createFix({
+            resource,
+            commands: [
+                ResourceFixer.createMetadataCommand("state", "signed-off")
+            ]
+        });
+        const expected = new Result({
+            severity: "error",
+            description: "Resources must have the following state: signed-off",
+            id: "plural.test",
+            highlight: 'Resource found with disallowed state: <e0>translated</e0>',
+            rule,
+            pathName: "a/b/c.xliff",
+            locale: "de-DE",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            fix
+        });
+        expect(actual).toStrictEqual(expected);
     });
 });

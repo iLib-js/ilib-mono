@@ -4,6 +4,51 @@ If you received this error, it means that there are resources in your project
 that have a disallowed state field. To resolve this, try changing the state of
 the resources to have one of the allowed states.
 
+## Configuration
+
+By default, this rule checks that all resources have the state "translated". You can configure it to check for different states in your `ilib-lint.json` configuration file:
+
+### Single State
+To require all resources to have a specific state (e.g., "signed-off"):
+
+```json
+{
+  "rulesets": {
+    "my-rule": {
+      "resource-state-checker": "signed-off"
+    }
+  }
+}
+```
+
+### Multiple Allowed States
+To allow resources to have any of several states:
+
+```json
+{
+  "rulesets": {
+    "my-rule": {
+      "resource-state-checker": ["translated", "needs-review"]
+    }
+  }
+}
+```
+
+### Default Behavior
+If you don't specify a parameter, the rule defaults to requiring "translated":
+
+```json
+{
+  "rulesets": {
+    "my-rule": {
+      "resource-state-checker": true
+    }
+  }
+}
+```
+
+## Examples
+
 For xliff 1.2 resources where you want the states to have the value "translated",
 they might look like this:
 
