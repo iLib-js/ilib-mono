@@ -27,8 +27,7 @@ import ResourceFixer from '../plugins/resource/ResourceFixer.js';
  */
 class ResourceStateChecker extends Rule {
     /**
-     * Make a new rule instance. The options parameter can have
-     * a "param" property in it that will contain one of the
+     * Make a new rule instance. The parameter can be one of the
      * following types of values:
      *
      * - string - all Resource instances should have a state value
@@ -37,7 +36,7 @@ class ResourceStateChecker extends Rule {
      *   a state value that is one of the values contained in
      *   this array
      *
-     * If there is no "param" property (ie. the user just put
+     * If no parameter is provided (ie. the user just put
      * `"resource-state-checker": true,` into their ruleset
      * configuration), then this checker will check that all
      * Resource instances have the state field value of
@@ -45,30 +44,29 @@ class ResourceStateChecker extends Rule {
      *
      * If the auto-fix feature is enabled, then this rule will
      * automatically fix the state of any Resource instances. If
-     * the "param" property is a string, then the state will be
-     * set to that string. If the "param" property is an array,
+     * the parameter is a string, then the state will be
+     * set to that string. If the parameter is an array,
      * then the state will be set to the first string in that array.
      *
-     * @param {Object} options options for this rule
-     * @param {String|Array<String>} [options.param] the state or states that
+     * @param {String|Array<String>} param the state or states that
      *   the resources must have. If this is a string, then all resources
      *   must have that state. If this is an array, then all resources
      *   must have one of the states in the array.
      * @constructor
      */
-    constructor(options) {
-        super(options);
+    constructor(param) {
+        super();
         this.name = "resource-state-checker";
         this.description = "Ensure that resources have a particular state.";
-        this.sourceLocale = (options && options.sourceLocale) || "en-US";
+        this.sourceLocale = "en-US";
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-state-checker.md";
 
-        if (options) {
-            if (typeof(options.param) === "string") {
+        if (param) {
+            if (typeof(param) === "string") {
                 // enforce the given string as the only state allowed
-                this.states = [ options.param ];
-            } else if (Array.isArray(options.param)) {
-                this.states = options.param;
+                this.states = [ param ];
+            } else if (Array.isArray(param)) {
+                this.states = param;
             }
         }
         if (!this.states) {
