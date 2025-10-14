@@ -104,14 +104,14 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect(fileCache.size()).toBe(1); // Should only have one cached promise
 
             const results = await Promise.all(promises);
-            
+
             // All results should be the same
             const firstResult = results[0];
             expect(typeof firstResult).toBe('string');
-            
+
             // Check that all results are identical
             expect(results.every(result => result === firstResult)).toBe(true);
-            
+
             expect(fileCache.size()).toBe(1); // Promise should remain in cache
         });
 
@@ -139,17 +139,17 @@ describe('FileCache Async Tests (Node and Browser)', () => {
 
         test('should handle loader errors in catch block', async () => {
             expect.assertions(3);
-            
+
             const originalLoadFile = fileCache.loader.loadFile;
             try {
                 // Create a custom loader that returns a rejected promise
                 fileCache.loader.loadFile = function(filePath, options) {
                     return Promise.reject(new Error('File system error'));
                 };
-                
+
                 const filePath = 'test/error/file.json';
                 const result = await fileCache.loadFile(filePath);
-                
+
                 expect(result).toBeUndefined();
                 expect(fileCache.getCachedData(filePath)).toBeNull();
                 expect(fileCache.attemptCount()).toBe(1);
@@ -168,7 +168,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect.assertions(5);
 
             const filePath = 'test/files/fr/localeinfo.json';
-            
+
             // Load file first time
             const result1 = await fileCache.loadFile(filePath);
             expect(typeof result1).toBe('string');
@@ -215,7 +215,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect.assertions(7);
 
             const filePath = 'test/files/fr/localeinfo.json';
-            
+
             // Simulate multiple callers requesting the same file at the same time
             const promises = [
                 fileCache.loadFile(filePath),
@@ -255,7 +255,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect(fileCache.size()).toBe(1); // Should only cache one promise
 
             const results = await Promise.all(promises);
-            
+
             // All results should be identical
             expect(results.every(result => result === results[0])).toBe(true);
             expect(fileCache.attemptCount()).toBe(1); // Only one actual load attempt
@@ -297,7 +297,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect(typeof result).toBe('object');
             expect(result).toHaveProperty('default');
             expect(typeof result.default).toBe('function');
-            
+
             // Call the function to get the actual data
             const data = result.default();
             expect(data).toHaveProperty('en');
@@ -307,7 +307,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect.assertions(4);
 
             const filePath = 'test/files3/en-US.js';
-            
+
             // First call - should load from file
             const result1 = await fileCache.loadFile(filePath);
             expect(typeof result1).toBe('object');
@@ -358,7 +358,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect(typeof result).toBe('object');
             expect(result).toHaveProperty('default');
             expect(typeof result.default).toBe('function');
-            
+
             // Call the function to get the actual data
             const data = result.default();
             expect(data).toHaveProperty('en');
@@ -368,7 +368,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect.assertions(4);
 
             const filePath = 'test/files7/en-US.js';
-            
+
             // First call - should load from file
             const result1 = await fileCache.loadFile(filePath);
             expect(typeof result1).toBe('object');

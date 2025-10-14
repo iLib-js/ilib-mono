@@ -339,7 +339,7 @@ class ParsedDataCache {
                 }
             }
         }
-        
+
         // Now get the specific data we need from the cache
         return this._getCachedDataForLocale(locale, roots, basename);
     }
@@ -376,7 +376,7 @@ class ParsedDataCache {
                 }
             }
         }
-        
+
         // Now get the specific data we need from the cache
         return this._getCachedDataForLocale(locale, roots, basename);
     }
@@ -425,7 +425,7 @@ class ParsedDataCache {
                 // Continue to next root
             }
         }
-        
+
         // Now get the specific data we need from the cache
         return this._getCachedDataForLocale(locale, roots, basename);
     }
@@ -474,7 +474,7 @@ class ParsedDataCache {
                 // Continue to next root
             }
         }
-        
+
         // Now get the specific data we need from the cache
         return this._getCachedDataForLocale(locale, roots, basename);
     }

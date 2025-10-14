@@ -350,7 +350,7 @@ describe('ParsedDataCache Sync Tests (Node Only)', () => {
             const result = parsedDataCache.getParsedDataSync('de-DE', ['./test/files7', './test/files4'], 'foo');
 
             expect(result).toBeDefined();
-            
+
             // Verify data was loaded from files7
             expect(parsedDataCache.hasParsedData('./test/files7', 'foo', 'de-DE')).toBe(true);
             const files7Data = parsedDataCache.getCachedData('./test/files7', 'foo', 'de-DE');
@@ -376,12 +376,12 @@ describe('ParsedDataCache Sync Tests (Node Only)', () => {
             const result = parsedDataCache.getParsedDataSync('en-US', ['./test/files7', './test/files5'], 'info');
 
             expect(result).toBeUndefined();
-            
+
             // Verify data was loaded from files7
             expect(parsedDataCache.hasParsedData('./test/files7', 'info', 'en-US')).toBe(false);
             expect(parsedDataCache.hasParsedData('./test/files7', 'info', 'en')).toBe(true);
             expect(parsedDataCache.hasParsedData('./test/files7', 'info', null)).toBe(true);
-            
+
             // Verify files5 was checked but has no data
             expect(parsedDataCache.hasParsedData('./test/files5', 'info', 'en-US')).toBe(false);
         });
@@ -393,7 +393,7 @@ describe('ParsedDataCache Sync Tests (Node Only)', () => {
             const result = parsedDataCache.getParsedDataSync(null, ['./test/files7', './test/files4'], 'info');
 
             expect(result).toBeDefined();
-            
+
             // Verify root data was loaded from files7
             expect(parsedDataCache.hasParsedData('./test/files7', 'info', null)).toBe(true);
             const files7RootData = parsedDataCache.getCachedData('./test/files7', 'info', null);
@@ -418,7 +418,7 @@ describe('ParsedDataCache Sync Tests (Node Only)', () => {
             const result = parsedDataCache.getParsedDataSync('non-existent', ['./test/files7', './test/files4'], 'non-existent');
 
             expect(result).toBeUndefined();
-            
+
             // Verify that null was cached for both roots (indicating attempted load)
             expect(parsedDataCache.hasParsedData('./test/files7', 'non-existent', 'non-existent')).toBe(false);
             expect(parsedDataCache.hasParsedData('./test/files4', 'non-existent', 'non-existent')).toBe(false);
@@ -431,7 +431,7 @@ describe('ParsedDataCache Sync Tests (Node Only)', () => {
             const result = parsedDataCache.getParsedDataSync('en-US', ['./test/files7', './test/files4'], 'info');
 
             expect(result).toBeDefined();
-            
+
             // Verify .js file data from files7
             expect(parsedDataCache.hasParsedData('./test/files7', 'info', 'en-US')).toBe(false);
             expect(parsedDataCache.hasParsedData('./test/files7', 'info', 'en')).toBe(true);
@@ -469,7 +469,7 @@ describe('ParsedDataCache Sync Tests (Node Only)', () => {
             // Verify they contain different data
             const files7Data = parsedDataCache.getCachedData('./test/files7', 'info', 'en');
             const files4Data = parsedDataCache.getCachedData('./test/files4', 'info', 'en-US');
-            
+
             expect(files7Data).not.toEqual(files4Data);
             expect(files7Data).toEqual({
                 "a": "b en",

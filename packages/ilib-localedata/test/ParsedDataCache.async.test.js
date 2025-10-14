@@ -136,7 +136,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
 
             test("should return nothing if the locale's .js file is not found", async () => {
                 expect.assertions(5);
-            
+
                 const locale = new Locale('kk-KZ');
                 const roots = ['./test/files3'];
                 const basename = 'address';
@@ -878,7 +878,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const basename = 'invalid';
 
             const result = await parsedDataCache.getParsedData(locale, roots, basename);
-            
+
             // Should return undefined when JSON parsing fails (line 219)
             expect(result).toBeUndefined();
         });
@@ -887,7 +887,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             expect.assertions(1);
 
             const extensions = parsedDataCache._getJsFileExtensions('./test/files3/esm-test');
-            
+
             // Should return ['.cjs', '.js'] for ESM modules (line 298)
             expect(extensions).toEqual(['.cjs', '.js']);
         });
@@ -945,7 +945,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const result = await parsedDataCache.getParsedData('de-DE', ['./test/files3', './test/files4'], 'foo');
 
             expect(result).toBeDefined();
-            
+
             // Verify data was loaded from files3
             expect(parsedDataCache.hasParsedData('./test/files3', 'foo', 'de-DE')).toBe(true);
             const files3Data = parsedDataCache.getCachedData('./test/files3', 'foo', 'de-DE');
@@ -971,12 +971,12 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const result = await parsedDataCache.getParsedData('en-US', ['./test/files3', './test/files5'], 'info');
 
             expect(result).toBeUndefined(); // should be undefined since en-US doesn't exist in the files5 root
-            
+
             // Verify data was loaded from files3
             expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(false);
             expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en')).toBe(true);
             expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(true);
-            
+
             // Verify files5 was checked but has no data
             expect(parsedDataCache.hasParsedData('./test/files5', 'info', 'en-US')).toBe(false);
         });
@@ -988,7 +988,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const result = await parsedDataCache.getParsedData(null, ['./test/files3', './test/files4'], 'info');
 
             expect(result).toBeDefined();
-            
+
             // Verify root data was loaded from files3
             expect(parsedDataCache.hasParsedData('./test/files3', 'info', null)).toBe(true);
             const files3RootData = parsedDataCache.getCachedData('./test/files3', 'info', null);
@@ -1013,7 +1013,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const result = await parsedDataCache.getParsedData('non-existent', ['./test/files3', './test/files4'], 'non-existent');
 
             expect(result).toBeUndefined();
-            
+
             expect(parsedDataCache.hasParsedData('./test/files3', 'non-existent', 'non-existent')).toBe(false);
             expect(parsedDataCache.hasParsedData('./test/files4', 'non-existent', 'non-existent')).toBe(false);
         });
@@ -1025,7 +1025,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             const result = await parsedDataCache.getParsedData('en-US', ['./test/files3', './test/files4'], 'info');
 
             expect(result).toBeDefined();
-            
+
             // Verify .js file data from files3
             expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en-US')).toBe(false);
             expect(parsedDataCache.hasParsedData('./test/files3', 'info', 'en')).toBe(true);
@@ -1059,7 +1059,7 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
             // Verify they contain different data
             const files3Data = parsedDataCache.getCachedData('./test/files3', 'info', 'en');
             const files4Data = parsedDataCache.getCachedData('./test/files4', 'info', 'en-US');
-            
+
             expect(files3Data).not.toEqual(files4Data);
             expect(files3Data).toEqual({
                 "a": "b en",

@@ -428,7 +428,7 @@ describe("DataCache", () => {
         expect.assertions(4);
         let cache = DataCache.getDataCache();
         cache.clearData();
-        
+
         cache.storeData("root", "basename", new Locale("en-US"), { x: "string" });
 
         let data = cache.getData("root", "basename", new Locale("en-US"));
@@ -447,8 +447,8 @@ describe("DataCache", () => {
     test("should store null data over undefined data", () => {
         expect.assertions(1);
         let cache = DataCache.getDataCache();
-        cache.clearData();  
-        
+        cache.clearData();
+
         cache.storeData("root", "basename", new Locale("en-US"), undefined);
         cache.storeData("root", "basename", new Locale("en-US"), null);
 
@@ -652,13 +652,13 @@ describe("DataCache", () => {
 
             // Test with null root
             expect(cache.getBasenamesForLocale(null, 'en-US')).toEqual([]);
-            
+
             // Test with null locale
             expect(cache.getBasenamesForLocale('./test', null)).toEqual([]);
-            
+
             // Test with undefined root
             expect(cache.getBasenamesForLocale(undefined, 'en-US')).toEqual([]);
-            
+
             // Test with undefined locale
             expect(cache.getBasenamesForLocale('./test', undefined)).toEqual([]);
         });
@@ -678,7 +678,7 @@ describe("DataCache", () => {
 
             // Add some data for a different locale
             cache.storeData('./test', 'info', 'en', { a: 'b' });
-            
+
             expect(cache.getBasenamesForLocale('./test', 'fr-FR')).toEqual([]);
         });
 
@@ -691,7 +691,7 @@ describe("DataCache", () => {
             cache.storeData('./test', 'info', 'en-US', { a: 'b' });
             cache.storeData('./test', 'numbers', 'en-US', { c: 'd' });
             cache.storeData('./test', 'dates', 'en-US', { e: 'f' });
-            
+
             const basenames = cache.getBasenamesForLocale('./test', 'en-US');
             expect(basenames).toHaveLength(3);
             expect(basenames.sort()).toEqual(['dates', 'info', 'numbers']);
@@ -706,7 +706,7 @@ describe("DataCache", () => {
             const locale = new Locale('en-US');
             cache.storeData('./test', 'info', locale, { a: 'b' });
             cache.storeData('./test', 'numbers', locale, { c: 'd' });
-            
+
             const basenames = cache.getBasenamesForLocale('./test', locale);
             expect(basenames.sort()).toEqual(['info', 'numbers']);
         });
@@ -719,7 +719,7 @@ describe("DataCache", () => {
             // Add data for root locale
             cache.storeData('./test', 'info', 'root', { a: 'b' });
             cache.storeData('./test', 'numbers', 'root', { c: 'd' });
-            
+
             const basenames = cache.getBasenamesForLocale('./test', 'root');
             expect(basenames.sort()).toEqual(['info', 'numbers']);
         });

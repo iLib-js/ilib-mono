@@ -54,11 +54,38 @@ class MergedDataCache {
     }
 
     /**
-     * Load merged locale data asynchronously
+     * Load all locale-specific data files for a locale asynchronously and cache the parsed data.
+     * This method looks for files named [locale].js or [locale].json in the specified roots,
+     * loads and parses them, and caches all the data for future use.
+     *
+     * The files should contain data structured with sublocales as top-level keys, and basenames
+     * as second-level keys. For example:
+     * {
+     *   "root": { "phonefmt": {...}, "localeinfo": {...} },
+     *   "en": { "localeinfo": {...} },
+     *   "en-US": { "phonefmt": {...} }
+     * }
+     *
+     * @param {string|Locale} locale - The locale to load data for
+     * @param {Array.<string>} roots - Array of root directories to search
+     * @returns {Promise<boolean>} Promise that resolves to true if any data was loaded and cached, false otherwise
+     */
+    async loadLocaleData(locale, roots) {
+        // TODO: Implement this method
+        // 1. Use ParsedDataCache to load [locale].js and [locale].json files from roots
+        // 2. Parse the data structure to extract sublocale and basename information
+        // 3. Cache each piece of data separately using ParsedDataCache.storeData()
+        // 4. Return true if any data was loaded, false otherwise
+        throw new Error("Not implemented yet");
+    }
+
+    /**
+     * Load merged locale data asynchronously for a specific basename.
+     *
      * @param {string|Locale} locale - The locale to load data for
      * @param {Array.<string>} roots - Array of root directories to search
      * @param {string} basename - The basename of the data to load (e.g., "ResBundle")
-     * @returns {Promise<Object>} Promise that resolves to the merged locale data
+     * @returns {Promise<Object>} Promise that resolves to the merged locale data for the specified basename
      */
     async loadMergedData(locale, roots, basename) {
         // Validate parameters
@@ -107,11 +134,28 @@ class MergedDataCache {
     }
 
     /**
-     * Load merged locale data synchronously.
+     * Load all locale-specific data files for a locale synchronously and cache the parsed data.
+     * This method looks for files named [locale].js or [locale].json in the specified roots,
+     * loads and parses them, and caches all the data for future use.
      *
-     * If the data is loaded successfully, it will be cached. This method will
-     * check the cache for the data and return it if it is found. If not, it will
-     * load the data synchronously and cache it before returning it.
+     * Note: This method can only load CommonJS modules and JSON files synchronously.
+     * ESM modules cannot be loaded synchronously and will be skipped.
+     *
+     * @param {string|Locale} locale - The locale to load data for
+     * @param {Array.<string>} roots - Array of root directories to search
+     * @returns {boolean} true if any data was loaded and cached, false otherwise
+     */
+    loadLocaleDataSync(locale, roots) {
+        // TODO: Implement this method
+        // 1. Use ParsedDataCache to load [locale].js and [locale].json files from roots synchronously
+        // 2. Parse the data structure to extract sublocale and basename information
+        // 3. Cache each piece of data separately using ParsedDataCache.storeData()
+        // 4. Return true if any data was loaded, false otherwise
+        throw new Error("Not implemented yet");
+    }
+
+    /**
+     * Load merged locale data synchronously for a specific basename.
      *
      * @param {string|Locale} locale - The locale to load data for
      * @param {Array.<string>} roots - Array of root directories to search
@@ -183,10 +227,50 @@ class MergedDataCache {
     }
 
     /**
-     * Clear all cached merged data
+     * Clear all cached data (both merged and parsed data)
      */
     clearMergedData() {
         this.dataCache.clearFileCache();
+        this.parsedDataCache.clearAllParsedData();
+    }
+
+    /**
+     * Check if data is available for a locale and basename in the specified roots
+     * @param {string|Locale} locale - The locale to check
+     * @param {Array.<string>} roots - Array of root directories
+     * @param {string} basename - The basename to check
+     * @returns {boolean} True if data is available for the locale and basename, false otherwise
+     */
+    hasLocaleData(locale, roots, basename) {
+        // Validate parameters
+        if (!locale) {
+            return false;
+        }
+        if (!Array.isArray(roots) || roots.length === 0) {
+            return false;
+        }
+        if (!basename) {
+            return false;
+        }
+
+        // Convert string locale to Locale object if needed
+        const loc = (typeof locale === 'string') ? new Locale(locale) : locale;
+        if (typeof loc.getSpec !== 'function') {
+            return false;
+        }
+
+        // Check if data exists for this locale and basename in any of the roots
+        for (const root of roots) {
+            if (this.parsedDataCache.hasParsedData(root, basename, loc.getSpec())) {
+                return true;
+            }
+            // Also check for root locale data
+            if (this.parsedDataCache.hasParsedData(root, basename, null)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

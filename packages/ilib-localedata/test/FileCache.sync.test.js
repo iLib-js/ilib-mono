@@ -96,7 +96,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(4);
 
             const filePath = 'test/files/fr/localeinfo.json';
-            
+
             // First call - should load from file
             const result1 = fileCache.loadFileSync(filePath);
             expect(typeof result1).toBe('string');
@@ -320,7 +320,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             const result = fileCache.loadFileSync(filePath);
 
             expect(typeof result).toBe('function');
-            
+
             // Call the function to get the actual data
             const data = result();
             expect(data).toBeDefined();
@@ -335,11 +335,11 @@ describe('FileCache Sync Tests (Node Only)', () => {
 
             // Verify it's a function
             expect(typeof result).toBe('function');
-            
+
             // Verify the function has the expected properties
             expect(result.name).toBe('getLocaleData');
             expect(result.length).toBe(0); // No parameters expected
-            
+
             // Verify calling the function returns the expected data structure
             const data = result();
             expect(data).toHaveProperty('root');
@@ -349,7 +349,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(4);
 
             const filePath = 'test/files7/en-US.js';
-            
+
             // First call - should load from file
             const result1 = fileCache.loadFileSync(filePath);
             expect(typeof result1).toBe('function');

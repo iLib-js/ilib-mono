@@ -282,7 +282,7 @@ class LocaleData {
         this.cache = DataCache.getDataCache();
         this.logger = log4js.getLogger("ilib-localedata");
         this.path = path;
-        
+
         // Create MergedDataCache instance with the merge options
         this.mergedDataCache = new MergedDataCache(this.loader, mergeOptions);
     }
@@ -311,9 +311,9 @@ class LocaleData {
 
     /**
      * Find locale data or load it in. <p>
-     * 
+     *
      * The data may be loaded from different sources:
-     * 
+     *
      * <ul>
      * <li>From a preassembled data file. This is a file that contains the locale data for a single locale
      * and includes all of the data for all of the basenames and all of the sublocales. The idea is that
@@ -331,7 +331,7 @@ class LocaleData {
      * translations in your app's resource bundles are typically generated
      * with the [loctool](https://github.com/ilib-js/ilib-mono/tree/main/packages/loctool) tool. In environments
      * where the data can be loaded directly from the file system, these files are typically stored in the
-     * "locale" directory in the root of the package. These json files are usually the source of the data for the 
+     * "locale" directory in the root of the package. These json files are usually the source of the data for the
      * preassembled data files.
      * </ul>
      *
@@ -348,24 +348,24 @@ class LocaleData {
      * that supports file system access, or it may be from another part of a bundle such as those constructed by
      * webpack or rollup. The Loader instance also knows how to load the data from the preassembled
      * data file.
-     * 
+     *
      * Regardless of how the data is loaded, the data for a particular basename is merged into a single object for the requested locale. The
      * requested locale is first decomposed into a hierarchy of sublocales. Generally, the data starts at the "root" locale
      * which is a sublocale shared by all locales. On top of the root data, it merges the the data from the less
      * specific sublocales to the more specific sublocales until the requested locale is reached. For example,
      * if the requested locale is "en-US", and the locale data loaded has information about the "root", the "en",
      * the "und-US", and the "en-US", the data will be merged in the following order:
-     * 
+     *
      * <ol>
      * <li>root
      * <li>en
      * <li>und-US
      * <li>en-US
      * </ol>
-     * 
+     *
      * See the [Utils.getSublocales](https://github.com/ilib-js/ilib-mono/tree/main/packages/ilib-common#utilsgetsublocales)
      * method for more details on how the sublocales are calculated.
-     * 
+     *
      * The merging is done according to the flags specified in the parameters. The default is to merge the data
      * for all the sublocales in order. If the `mostSpecific` flag is true, only the most specific locale data is
      * returned. If the `returnOne` flag is true, only the most locale-specific file found is returned. If the `crossRoots` flag
@@ -426,7 +426,7 @@ class LocaleData {
         // Determine which MergedDataCache instance to use
         let mergedDataCache = this.mergedDataCache;
         const hasRuntimeOptions = mostSpecific !== undefined || returnOne !== undefined || crossRoots !== undefined;
-        
+
         if (hasRuntimeOptions) {
             // Create a new instance with runtime merge options
             mergedDataCache = new MergedDataCache(this.loader, {
@@ -625,7 +625,7 @@ class LocaleData {
         if (typeof(locale) !== 'string' && typeof(locale) !== 'object') {
             throw new Error("Invalid parameter to ensureLocale");
         }
-        
+
         let loc = (typeof(locale) === 'string') ? new Locale(locale) : locale;
         if (locale && locale !== "root" && !loc.getLanguage()) {
             loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
@@ -647,21 +647,21 @@ class LocaleData {
         if (!mergedDataCache) {
             throw new Error("No loader available for this platform");
         }
-        
+
         try {
-            // Use MergedDataCache to load the data for the locale
-            // We'll load a common basename like "info" to ensure the locale is cached
-            const result = await mergedDataCache.loadMergedData(loc.getSpec(), roots, "info");
-            
-            // Return true if data was loaded and cached
-            return result !== undefined;
+            // Use MergedDataCache to load all locale-specific data for the locale
+            // This will look for [locale].js and [locale].json files and cache all the data
+            const result = await mergedDataCache.loadLocaleData(loc.getSpec(), roots);
+
+            // Return true if any data was loaded and cached
+            return result;
         } catch (error) {
             // If MergedDataCache failed to load the data, return false
-            // MergedDataCache should handle the case where only root data is available
+            // MergedDataCache should handle the case where no locale-specific files are found
             if (error.message && error.message.includes("No locale data found")) {
                 return false;
             }
-            
+
             // Re-throw unexpected errors
             throw error;
         }
@@ -777,7 +777,7 @@ class LocaleData {
             // Also clear the parsed data cache since cacheData stores data there
             mergedDataCache.parsedDataCache.clearAllParsedData();
         }
-        
+
         // Also clear the underlying DataCache for backward compatibility
         DataCache.clearDataCache();
     }
