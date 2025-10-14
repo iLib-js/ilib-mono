@@ -297,11 +297,11 @@ describe("testProject", () => {
         const locales = ["en-US", "ko-KR"];
 
         const options = {
-            pluginManager
+            pluginManager,
         };
         const project = new Project("x", options, {
             ...genericConfig,
-            locales
+            locales,
         });
         expect(project).toBeTruthy();
 
@@ -312,7 +312,7 @@ describe("testProject", () => {
         expect.assertions(2);
 
         const options = {
-            pluginManager
+            pluginManager,
         };
         const project = new Project("x", options, genericConfig);
         expect(project).toBeTruthy();
@@ -648,7 +648,7 @@ describe("testProject", () => {
         rmf("test/testproject/x/test.xyz.modified");
     });
 
-    fit("Verify that serialization recovers from errors", async () => {
+    test("Verify that serialization recovers from errors", async () => {
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
         expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
@@ -1101,5 +1101,68 @@ describe("testProject", () => {
 
         // clean-up
         rmf(modifiedFileName);
+    });
+
+    test("Recover from error when applying transformers on one of the files", async () => {
+        const project = new Project("test/testproject/x", { pluginManager, opt: {} }, testConfig2);
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("xliff");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["test/testfiles/xliff/param-problems.xliff", "test/testfiles/xliff/quote-problems.xliff"]);
+
+        const files = project.get();
+        expect(files).toBeTruthy();
+        expect(files.length).toBe(2);
+
+        const quoteProblemsFile = files.find(
+            (file) => file.getFilePath() === "test/testfiles/xliff/quote-problems.xliff"
+        );
+        expectToBeDefined(quoteProblemsFile);
+        const paramProblemsFile = files.find(
+            (file) => file.getFilePath() === "test/testfiles/xliff/param-problems.xliff"
+        );
+        expectToBeDefined(paramProblemsFile);
+
+        // patch the transformer to throw an error for one of the files
+        const transformer = quoteProblemsFile.getFileType().getTransformers()?.[0];
+        expectToBeDefined(transformer);
+        const originalTransform = transformer.transform;
+        const transformSpy = jest.spyOn(transformer, "transform");
+        transformSpy.mockImplementation((ir, results) => {
+            if (ir.getSourceFile().getPath() === "test/testfiles/xliff/quote-problems.xliff") {
+                throw new Error("Test error");
+            }
+            return originalTransform(ir, results);
+        });
+
+        const results = project.findIssues(["en-US"]);
+        expect(results).toBeTruthy();
+        expect(results.length).toBeGreaterThan(0);
+
+        // verify that the param problems file has been transformed correctly
+        // despite the error in the quote problems file
+
+        // findIssues calls the parsers, so we can only get the intermediate representations
+        // after we have called findIssues
+        let irs = paramProblemsFile.getIRs();
+        expect(irs.length).toBe(1);
+        let resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(7);
+
+        // should remove the resources that have problems
+        project.applyTransformers(results);
+
+        // make sure we deleted 2 of the 7 resources
+        irs = paramProblemsFile.getIRs();
+        expect(irs.length).toBe(1);
+        resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(5);
     });
 });
