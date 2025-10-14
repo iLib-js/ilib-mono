@@ -1164,5 +1164,8 @@ describe("testProject", () => {
         expect(irs.length).toBe(1);
         resources = irs[0].getRepresentation();
         expect(resources.length).toBe(5);
+
+        // cleanup
+        transformSpy.mockRestore();
     });
 });
