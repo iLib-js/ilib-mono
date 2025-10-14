@@ -18,10 +18,13 @@
  */
 import fs from "fs";
 import { ResourceString, Location } from "ilib-tools-common";
-import { Serializer, SourceFile } from "ilib-lint-common";
+import { expectToBeDefined } from "ilib-internal";
 
 import Project from "../src/Project.js";
 import PluginManager from "../src/PluginManager.js";
+
+// ESM support
+const jest = import.meta.jest;
 
 const pluginManager = new PluginManager();
 
@@ -643,6 +646,84 @@ describe("testProject", () => {
         rmf("test/testproject/x/empty.xyz.modified");
         rmf("test/testproject/x/test_ru_RU.xyz.modified");
         rmf("test/testproject/x/test.xyz.modified");
+    });
+
+    fit("Verify that serialization recovers from errors", async () => {
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
+
+        const project = new Project(
+            "test/testproject",
+            {
+                pluginManager,
+                opt: {
+                    write: true,
+                },
+            },
+            testConfig
+        );
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("parser-xyz")[0];
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["./test/testproject/x"]);
+
+        const issues = project.findIssues(["en-US"]);
+        expect(issues).toBeTruthy();
+
+        // artificially mark the files as modified
+        const files = project.get();
+        expect(files).toBeTruthy();
+        files.forEach((file) => {
+            // sneakily mark the file as dirty when it really hasn't been modified
+            file.irs[0].dirty = true;
+        });
+
+        // patch the serializer to throw an error when trying to serialize test/testproject/x/test_ru_RU.xyz
+        const serializer = files
+            .find((file) => file.getFilePath() === "test/testproject/x/test_ru_RU.xyz")
+            ?.getFileType()
+            .getSerializer();
+        expectToBeDefined(serializer);
+        const originalSerialize = serializer.serialize;
+        const serializeSpy = jest.spyOn(serializer, "serialize");
+        serializeSpy.mockImplementation((representations) => {
+            if (
+                representations.some(
+                    (representation) => representation.sourceFile.getPath() === "test/testproject/x/test_ru_RU.xyz"
+                )
+            ) {
+                throw new Error("test error");
+            }
+            return originalSerialize(representations);
+        });
+
+        project.serialize();
+
+        // this file should not have been serialized due to the error
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        // remaining files should have been serialized normally
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(true);
+        rmf("test/testproject/x/test_ru_RU.xyz.modified");
+        rmf("test/testproject/x/test.xyz.modified");
+        rmf("test/testproject/x/empty.xyz.modified");
+
+        // cleanup
+        serializeSpy.mockRestore();
     });
 
     test("Verify that serialization works when only some of the files are modified", async () => {
