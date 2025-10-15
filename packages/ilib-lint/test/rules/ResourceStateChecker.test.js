@@ -32,7 +32,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchNoError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker("translated");
+        const rule = new ResourceStateChecker({ param: "translated" });
         expect(rule).toBeTruthy();
 
         const actual = rule.match({
@@ -57,7 +57,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchArrayNoError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker([ "translated", "needs-review" ]);
+        const rule = new ResourceStateChecker({ param: [ "translated", "needs-review" ] });
         expect(rule).toBeTruthy();
 
         const actual = rule.match({
@@ -82,7 +82,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker("translated");
+        const rule = new ResourceStateChecker({ param: "translated" });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -125,7 +125,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchArrayError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker([ "translated", "needs-review" ]);
+        const rule = new ResourceStateChecker({ param: [ "translated", "needs-review" ] });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -237,7 +237,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerNoState", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker([ "translated" ]);
+        const rule = new ResourceStateChecker({ param: [ "translated" ] });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -279,7 +279,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateChecker apply fix to correct the state", () => {
         expect.assertions(4);
 
-        const rule = new ResourceStateChecker("translated");
+        const rule = new ResourceStateChecker({ param: "translated" });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -335,7 +335,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchSignedOffNoError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker("signed-off");
+        const rule = new ResourceStateChecker({ param: "signed-off" });
         expect(rule).toBeTruthy();
 
         const actual = rule.match({
@@ -360,7 +360,7 @@ describe("testResourceStateChecker", () => {
     test("ResourceStateCheckerMatchSignedOffError", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker("signed-off");
+        const rule = new ResourceStateChecker({ param: "signed-off" });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
