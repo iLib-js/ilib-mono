@@ -1192,7 +1192,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1229,7 +1229,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1301,7 +1301,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1341,7 +1341,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1381,7 +1381,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
                 expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1421,7 +1421,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1461,7 +1461,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1501,7 +1501,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1540,7 +1540,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1576,7 +1576,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1615,7 +1615,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1651,7 +1651,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -3623,7 +3623,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(2);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 15
+                    param: {
+                        minimumLength: 15
+                    }
                 });
 
                 const resource1 = new ResourceString({
@@ -3665,7 +3667,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 15
+                    param: {
+                        minimumLength: 15
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3732,7 +3736,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 0
+                    param: {
+                        minimumLength: 0
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3758,7 +3764,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 100
+                    param: {
+                        minimumLength: 100
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3784,7 +3792,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 100
+                    param: {
+                        minimumLength: 100
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3810,7 +3820,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: -5
+                    param: {
+                        minimumLength: -5
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3836,7 +3848,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: -5
+                    param: {
+                        minimumLength: -5
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3862,7 +3876,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 5.2
+                    param: {
+                        minimumLength: 5.2
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3888,7 +3904,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 5.2
+                    param: {
+                        minimumLength: 5.2
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -4053,8 +4071,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["For your appointment, please see the Dr."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["For your appointment, please see the Dr."]
+                        }
                     }
                 });
 
@@ -4080,8 +4100,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["Please see the Dr. for your appointment."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["Please see the Dr. for your appointment."]
+                        }
                     }
                 });
 
@@ -4108,8 +4130,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["Please see the Dr. for your appointment.", "Visit today with the Prof.", "Call the Rev. tomorrow."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["Please see the Dr. for your appointment.", "Visit today with the Prof.", "Call the Rev. tomorrow."]
+                        }
                     }
                 });
 
@@ -4135,8 +4159,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev."]
+                        }
                     }
                 });
 
@@ -4162,8 +4188,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev.", "please see the doctor for your appointment."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev.", "please see the doctor for your appointment."]
+                        }
                     }
                 });
 

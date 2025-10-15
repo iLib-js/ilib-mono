@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Rule } from 'ilib-lint-common';
+import { Rule, Result } from 'ilib-lint-common';
 
 import RuleManager from '../src/RuleManager.js';
 import ResourceMatcher from '../src/rules/ResourceMatcher.js';
@@ -26,8 +26,9 @@ class MockRule extends Rule {
         super(options);
         this.name = "resource-mock-programmatic";
         this.description = "Mock programmatic rule to test the rule manager";
-        if (options && options.style) {
-            this.style = options.style;
+        const param = this.getParam();
+        if (param && param.style) {
+            this.style = param.style;
         }
     }
 
@@ -40,13 +41,14 @@ class MockRule extends Rule {
      */
     match(options) {
         const { locale, resource, file } = options || {};
+        const target = resource.getTarget();
         return new Result({
             severity: "warning",
             id: resource.getKey(),
             source: resource.getSource(),
             rule: this,
             pathName: file,
-            highlight: `Target: ${tar.replace(/test/g, "<e0>$1</e0>")}`,
+            highlight: `Target: ${target.replace(/test/g, "<e0>$1</e0>")}`,
             description: `Target should not contain the word "test"`
         });
     }

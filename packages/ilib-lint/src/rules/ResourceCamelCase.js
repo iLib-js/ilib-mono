@@ -44,7 +44,9 @@ class ResourceCamelCase extends ResourceRule {
             "^\\s*[a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
             "^\\s*[A-Z][a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
         ];
-        this.exceptions = Array.isArray(options?.except) ? options.except : [];
+
+        const param = this.getParam() || {};
+        this.exceptions = Array.isArray(param?.except) ? param.except : [];
     }
 
     /**
