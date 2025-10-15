@@ -107,5 +107,39 @@ describe("testRule", () => {
         expect(rule.getLink()).toBe("https://github.com/docs/rule.md");
     });
 
+    test("RuleGetParamDefault", () => {
+        expect.assertions(2);
+
+        const rule = new MockRule();
+
+        expect(rule).toBeTruthy();
+
+        expect(rule.getParam()).toBeUndefined();
+    });
+
+    test("RuleGetParamString", () => {
+        expect.assertions(2);
+
+        const rule = new MockRule({
+            param: "signed-off"
+        });
+
+        expect(rule).toBeTruthy();
+
+        expect(rule.getParam()).toBe("signed-off");
+    });
+
+    test("RuleGetParamArray", () => {
+        expect.assertions(2);
+
+        const rule = new MockRule({
+            param: ["translated", "needs-review"]
+        });
+
+        expect(rule).toBeTruthy();
+
+        expect(rule.getParam()).toEqual(["translated", "needs-review"]);
+    });
+
 });
 
