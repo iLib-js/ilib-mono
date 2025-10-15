@@ -823,6 +823,9 @@ importers:
       ilib-lint-common:
         specifier: workspace:^
         version: link:../ilib-lint-common
+      ilib-lint-webos:
+        specifier: ^1.0.3
+        version: 1.0.3
       ilib-locale:
         specifier: workspace:^
         version: link:../ilib-locale
@@ -1160,6 +1163,15 @@ importers:
       ilib-lint-react:
         specifier: workspace:^
         version: link:../../../ilib-lint-react
+
+  packages/ilib-lint/samples/lint-webOS:
+    dependencies:
+      ilib-lint:
+        specifier: workspace:^
+        version: link:../..
+      ilib-lint-webos:
+        specifier: ^1.0.3
+        version: 1.0.3
 
   packages/ilib-loader:
     dependencies:
@@ -7243,11 +7255,19 @@ packages:
   ilib-istring@1.1.1:
     resolution: {integrity: sha512-j8UfwARn5FcjrP0qQ+DHA/Ds9RF72+PVQkfp1sHnF79EkY4wXFeEqXh/wm+O+ZRYp88twsmyvFKYSIaVBs9vgQ==}
 
+  ilib-lint-common@3.6.0:
+    resolution: {integrity: sha512-Nu3xXkbmn4ZemDQrhtPgDTo3MAz9eQ52QBrMwPxOvbrJClc8aouIhe25wMHymbsDe100pmIs8S+Tn/emGUPB7Q==}
+    engines: {node: '>=14.0.0'}
+
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
     resolution: {directory: packages/ilib-lint/test/ilib-lint-plugin-obsolete, type: directory}
 
   ilib-lint-plugin-test@file:packages/ilib-lint/test/ilib-lint-plugin-test:
     resolution: {directory: packages/ilib-lint/test/ilib-lint-plugin-test, type: directory}
+
+  ilib-lint-webos@1.0.3:
+    resolution: {integrity: sha512-Q0TqA5CLwHTd0XzcUivioNpSKKiie/C2JleV3wQJAE6Vr+3Kvt8k5L3OCSTKwv0tBfePFWhQytz6DZHNMve99w==}
+    engines: {node: '>=14.0.0'}
 
   ilib-loader@1.3.2:
     resolution: {integrity: sha512-1XwTd1Kq+fVL4gddapdP+eQ58JLWxxU5deUNbRSs8GeMJj/oR3qj5QhXOAgqqjl1LUFamM2oGjq5MMR1rjt2oA==}
@@ -16670,6 +16690,8 @@ snapshots:
       ilib-localedata: 1.5.2
       regenerator-runtime: 0.14.1
 
+  ilib-lint-common@3.6.0: {}
+
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
     dependencies:
       i18nlint-common: 2.2.1
@@ -16683,6 +16705,13 @@ snapshots:
       ilib-locale: link:packages/ilib-locale
       ilib-tools-common: link:packages/ilib-tools-common
       json5: 2.2.3
+
+  ilib-lint-webos@1.0.3:
+    dependencies:
+      ilib-lint-common: 3.6.0
+      log4js: 6.9.1
+    transitivePeerDependencies:
+      - supports-color
 
   ilib-loader@1.3.2:
     dependencies:
