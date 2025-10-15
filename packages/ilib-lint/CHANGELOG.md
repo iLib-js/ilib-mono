@@ -1,5 +1,17 @@
 # ilib-lint
 
+## 2.19.1
+
+### Patch Changes
+
+- 2726c86: - the sentence-ending punctuation rule now properly skips URLs and email addresses when
+  searching for the beginning of a sentence
+- f9ddf84: Fixed error handling during serialization and transformers - linter will now continue processing other files.
+- 93b6535: - Changed the message from the sentence-ending punctuation rule
+  so that it says 'no punctuation' instead of the empty string
+  "" to indicate that there should not be punctuation there. This
+  is less confusing to users.
+
 ## 2.19.0
 
 ### Minor Changes
