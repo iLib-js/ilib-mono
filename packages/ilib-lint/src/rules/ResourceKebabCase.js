@@ -21,7 +21,8 @@ class ResourceKebabCase extends ResourceRule {
         this.description = "Ensure that when source strings contain only kebab case and no whitespace, then the targets are the same";
         this.link = "https://gihub.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-kebab-case.md";
 
-        this.exceptions = Array.isArray(options?.except) ? options.except : [];
+        const param = this.getParam() || {};
+        this.exceptions = Array.isArray(param?.except) ? param.except : [];
     }
 
     /**

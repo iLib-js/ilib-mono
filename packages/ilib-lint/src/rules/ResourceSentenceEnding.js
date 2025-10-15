@@ -174,21 +174,24 @@ class ResourceSentenceEnding extends ResourceRule {
         this.description = "Checks that sentence-ending punctuation is appropriate for the locale of the target string and matches the punctuation in the source string";
         this.link = "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-sentence-ending.md";
 
+        // Get the parameter from the options
+        const param = this.getParam() || {};
+
         // Initialize minimum length configuration
-        this.minimumLength = Math.max(0, options?.minimumLength ?? 10);
+        this.minimumLength = Math.max(0, param?.minimumLength ?? 10);
 
         // Initialize custom punctuation mappings from configuration
         this.customPunctuationMap = {};
         // Initialize exception lists from configuration
         this.exceptionsMap = {};
 
-        if (options && typeof options === 'object' && !Array.isArray(options)) {
-            // options is an object with locale codes as keys and punctuation mappings as values
+        if (param && typeof param === 'object' && !Array.isArray(param)) {
+            // param is an object with locale codes as keys and punctuation mappings as values
             // Merge the default punctuation with the custom punctuation so that the custom
             // punctuation overrides the default and we don't have to specify all punctuation types.
             // Custom maps are stored by language, not locale, so that they apply to all locales of
             // that language.
-            for (const locale in options) {
+            for (const locale in param) {
                 const localeObj = new Locale(locale);
 
                 // only process config for valid locales
@@ -198,7 +201,7 @@ class ResourceSentenceEnding extends ResourceRule {
                     if (!language) continue;
 
                     // Separate punctuation mappings from exceptions
-                    const { exceptions, ...punctuationMappings } = options[locale];
+                    const { exceptions, ...punctuationMappings } = param[locale];
 
                     // Apply locale-specific defaults for any locale that usesthis language
                     const localeDefaults = this.getLocaleDefaults(language);
