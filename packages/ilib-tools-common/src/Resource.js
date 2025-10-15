@@ -18,9 +18,50 @@
  */
 
 const validStates = {
-    "new":true,
+    // XLIFF 1.2 standard states
+    "needs-translation":true,
+    "needs-l10n":true,
+    "needs-adaptation":true,
     "translated":true,
-    "accepted":true
+    "needs-review-translation":true,
+    "needs-review-l10n":true,
+    "needs-review-adaptation":true,
+    "final":true,
+    // ilib and mojito custom states (commonly used in workflows)
+    "new":true,  // alias for needs-translation
+    "signed-off":true,  // custom workflow state
+    "accepted":true  // custom workflow state
+};
+
+/**
+ * Check if a state is valid according to XLIFF 1.2 specification.
+ * Standard states are predefined, and custom states must start with "x-".
+ *
+ * @param {string} state the state to validate
+ * @returns {boolean} true if the state is valid
+ */
+function isValidState(state) {
+    // Must be a string
+    if (typeof state !== 'string') {
+        return false;
+    }
+
+    // Empty string is invalid
+    if (state.length === 0) {
+        return false;
+    }
+
+    // Check predefined states first
+    if (validStates[state]) {
+        return true;
+    }
+
+    // Custom states must start with "x-" and have content after the hyphen
+    if (state.startsWith('x-') && state.length > 2) {
+        return true;
+    }
+
+    return false;
 }
 
 const translationImportant = [
@@ -302,9 +343,14 @@ class Resource {
      * "translated", or "accepted".
      *
      * @param {string} state the state of this resource
+     * @throws {Error} if the state is invalid
      */
     setState(state) {
-        this.state = validStates[state] ? state : this.state;
+        if (!isValidState(state)) {
+            const validStatesList = Object.keys(validStates).join(', ');
+            throw new Error(`Attempt to set an invalid state on a resource: "${state}". Valid states are: ${validStatesList}, or custom states starting with "x-"`);
+        }
+        this.state = state;
         this.dirty = true;
     }
 

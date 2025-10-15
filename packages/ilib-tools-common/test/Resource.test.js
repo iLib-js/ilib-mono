@@ -886,7 +886,7 @@ describe("testResource", () => {
 
         expect(rs.isDirty()).toBeFalsy();
 
-        rs.setState("asdf");
+        rs.setState("translated");
 
         expect(rs.isDirty()).toBeTruthy();
     });
@@ -1019,6 +1019,172 @@ describe("testResource", () => {
         rs.clearDirty();
 
         expect(!rs.isDirty()).toBeTruthy();
+    });
+
+    // Test all valid XLIFF 1.2 standard states using test.each
+    test.each([
+        ["needs-translation"],
+        ["needs-l10n"],
+        ["needs-adaptation"],
+        ["translated"],
+        ["needs-review-translation"],
+        ["needs-review-l10n"],
+        ["needs-review-adaptation"],
+        ["final"]
+    ])("ResourceSetStateXLIFF12Standard - %s", (state) => {
+        expect.assertions(2);
+
+        const rs = new ResourceString({
+            reskey: "test.string",
+            resType: "string",
+            sourceLocale: "en-US",
+            targetLocale: "ja-JP",
+            pathName: "a/b/c.md",
+            state: "new"
+        });
+        expect(rs).toBeTruthy();
+
+        rs.setState(state);
+        expect(rs.getState()).toBe(state);
+    });
+
+    // Test ilib/mojito custom states using test.each
+    test.each([
+        ["new"],
+        ["signed-off"],
+        ["accepted"]
+    ])("ResourceSetStateIlibCustom - %s", (state) => {
+        expect.assertions(2);
+
+        const rs = new ResourceString({
+            reskey: "test.string",
+            resType: "string",
+            sourceLocale: "en-US",
+            targetLocale: "ja-JP",
+            pathName: "a/b/c.md",
+            state: "translated"
+        });
+        expect(rs).toBeTruthy();
+
+        rs.setState(state);
+        expect(rs.getState()).toBe(state);
+    });
+
+    // Test custom states with x- prefix using test.each
+    test.each([
+        ["x-pending-approval"],
+        ["x-initial-draft"],
+        ["x-rejected"],
+        ["x-ready-for-review"],
+        ["x-custom-workflow"],
+        ["x-multi-word-state"],
+        ["x-123-numeric"]
+    ])("ResourceSetStateCustomXPrefix - %s", (state) => {
+        expect.assertions(2);
+
+        const rs = new ResourceString({
+            reskey: "test.string",
+            resType: "string",
+            sourceLocale: "en-US",
+            targetLocale: "ja-JP",
+            pathName: "a/b/c.md",
+            state: "new"
+        });
+        expect(rs).toBeTruthy();
+
+        rs.setState(state);
+        expect(rs.getState()).toBe(state);
+    });
+
+    // Test invalid states that should throw errors
+    test.each([
+        ["invalid-state"],
+        ["not-x-prefixed"],
+        ["x"], // just "x" without hyphen
+        ["x-"], // x- with nothing after
+        [""], // empty string
+        [null], // null value
+        [undefined], // undefined value
+        [123], // numeric value
+        [{}], // object value
+        ["needs translation"], // space instead of hyphen
+        ["NEEDS-TRANSLATION"], // uppercase (case sensitive)
+        ["translated-extra"] // valid state with extra text
+    ])("ResourceSetStateInvalidThrowsError - %s", (invalidState) => {
+        expect.assertions(2);
+
+        const rs = new ResourceString({
+            reskey: "test.string",
+            resType: "string",
+            sourceLocale: "en-US",
+            targetLocale: "ja-JP",
+            pathName: "a/b/c.md",
+            state: "new"
+        });
+        expect(rs).toBeTruthy();
+
+        // Should throw an error when invalid state is set
+        expect(() => {
+            rs.setState(invalidState);
+        }).toThrow();
+    });
+
+    // Test specific error message content
+    test("ResourceSetStateErrorMessage", () => {
+        expect.assertions(2);
+
+        const rs = new ResourceString({
+            reskey: "test.string",
+            resType: "string",
+            sourceLocale: "en-US",
+            targetLocale: "ja-JP",
+            pathName: "a/b/c.md",
+            state: "new"
+        });
+        expect(rs).toBeTruthy();
+
+        // Should throw an error with specific message
+        expect(() => {
+            rs.setState("invalid-state");
+        }).toThrow('Attempt to set an invalid state on a resource: "invalid-state". Valid states are: needs-translation, needs-l10n, needs-adaptation, translated, needs-review-translation, needs-review-l10n, needs-review-adaptation, final, new, signed-off, accepted, or custom states starting with "x-"');
+    });
+
+    // Test state transitions between valid states
+    test("ResourceSetStateTransitions", () => {
+        expect.assertions(8);
+
+        const rs = new ResourceString({
+            reskey: "test.string",
+            resType: "string",
+            sourceLocale: "en-US",
+            targetLocale: "ja-JP",
+            pathName: "a/b/c.md",
+            state: "new"
+        });
+        expect(rs).toBeTruthy();
+
+        // Test progression through workflow states
+        rs.setState("needs-translation");
+        expect(rs.getState()).toBe("needs-translation");
+
+        rs.setState("translated");
+        expect(rs.getState()).toBe("translated");
+
+        rs.setState("needs-review-translation");
+        expect(rs.getState()).toBe("needs-review-translation");
+
+        rs.setState("final");
+        expect(rs.getState()).toBe("final");
+
+        // Test custom workflow states
+        rs.setState("x-pending-approval");
+        expect(rs.getState()).toBe("x-pending-approval");
+
+        rs.setState("signed-off");
+        expect(rs.getState()).toBe("signed-off");
+
+        rs.setState("accepted");
+        expect(rs.getState()).toBe("accepted");
     });
 
 });
