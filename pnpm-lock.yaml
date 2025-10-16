@@ -823,6 +823,9 @@ importers:
       ilib-lint-common:
         specifier: workspace:^
         version: link:../ilib-lint-common
+      ilib-lint-webos:
+        specifier: ^1.0.3
+        version: 1.0.3
       ilib-locale:
         specifier: workspace:^
         version: link:../ilib-locale
@@ -838,6 +841,12 @@ importers:
       ilib-tools-common:
         specifier: workspace:^
         version: link:../ilib-tools-common
+      ilib-xliff:
+        specifier: workspace:^
+        version: link:../ilib-xliff
+      ilib-xliff-webos:
+        specifier: ^1.0.2
+        version: 1.0.2
       intl-messageformat:
         specifier: ^10.5
         version: 10.7.3
@@ -1154,6 +1163,15 @@ importers:
       ilib-lint-react:
         specifier: workspace:^
         version: link:../../../ilib-lint-react
+
+  packages/ilib-lint/samples/lint-webOS:
+    dependencies:
+      ilib-lint:
+        specifier: workspace:^
+        version: link:../..
+      ilib-lint-webos:
+        specifier: ^1.0.3
+        version: 1.0.3
 
   packages/ilib-loader:
     dependencies:
@@ -7237,11 +7255,19 @@ packages:
   ilib-istring@1.1.1:
     resolution: {integrity: sha512-j8UfwARn5FcjrP0qQ+DHA/Ds9RF72+PVQkfp1sHnF79EkY4wXFeEqXh/wm+O+ZRYp88twsmyvFKYSIaVBs9vgQ==}
 
+  ilib-lint-common@3.6.0:
+    resolution: {integrity: sha512-Nu3xXkbmn4ZemDQrhtPgDTo3MAz9eQ52QBrMwPxOvbrJClc8aouIhe25wMHymbsDe100pmIs8S+Tn/emGUPB7Q==}
+    engines: {node: '>=14.0.0'}
+
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
     resolution: {directory: packages/ilib-lint/test/ilib-lint-plugin-obsolete, type: directory}
 
   ilib-lint-plugin-test@file:packages/ilib-lint/test/ilib-lint-plugin-test:
     resolution: {directory: packages/ilib-lint/test/ilib-lint-plugin-test, type: directory}
+
+  ilib-lint-webos@1.0.3:
+    resolution: {integrity: sha512-Q0TqA5CLwHTd0XzcUivioNpSKKiie/C2JleV3wQJAE6Vr+3Kvt8k5L3OCSTKwv0tBfePFWhQytz6DZHNMve99w==}
+    engines: {node: '>=14.0.0'}
 
   ilib-loader@1.3.2:
     resolution: {integrity: sha512-1XwTd1Kq+fVL4gddapdP+eQ58JLWxxU5deUNbRSs8GeMJj/oR3qj5QhXOAgqqjl1LUFamM2oGjq5MMR1rjt2oA==}
@@ -7286,6 +7312,9 @@ packages:
   ilib-tools-common@1.16.0:
     resolution: {integrity: sha512-0vKj3NDD7gXYTIwwZYcLNu0JSdeMN2uOde8g2AwsA6X3uXCPZmVaU26KoFMq+YBONRvYrIxtAK6fKgEK3gB4iA==}
     engines: {node: '>=10.0.0'}
+
+  ilib-xliff-webos@1.0.2:
+    resolution: {integrity: sha512-SRMVoQJcYgkkTH6o0wZOuwbRgPLrceB24vKDZZpGL692rv7nzoINQliQYLRfecW3APuNsvlxokDgwWJsnA0Oqw==}
 
   ilib-xliff@1.4.0:
     resolution: {integrity: sha512-/t1ZvrY4dI/iSs3pVAsUbfEJU/TGyYs5h34OqDkh1QnB7oer+YBR1Y1qcwCKK0DG7HHMvrUGxlW5x8PbYFpf3g==}
@@ -16661,6 +16690,8 @@ snapshots:
       ilib-localedata: 1.5.2
       regenerator-runtime: 0.14.1
 
+  ilib-lint-common@3.6.0: {}
+
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
     dependencies:
       i18nlint-common: 2.2.1
@@ -16674,6 +16705,13 @@ snapshots:
       ilib-locale: link:packages/ilib-locale
       ilib-tools-common: link:packages/ilib-tools-common
       json5: 2.2.3
+
+  ilib-lint-webos@1.0.3:
+    dependencies:
+      ilib-lint-common: 3.6.0
+      log4js: 6.9.1
+    transitivePeerDependencies:
+      - supports-color
 
   ilib-loader@1.3.2:
     dependencies:
@@ -16763,6 +16801,11 @@ snapshots:
       ilib-xliff: 1.4.0
       intl-messageformat: 10.7.11
       micromatch: 4.0.8
+
+  ilib-xliff-webos@1.0.2:
+    dependencies:
+      ilib-common: 1.1.6
+      ilib-xml-js: 1.7.0
 
   ilib-xliff@1.4.0:
     dependencies:
