@@ -1,7 +1,7 @@
 /*
  * Nodeloader.test.js - test the loader on nodejs
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import LoaderFactory, { registerLoader } from '../src/index.js';
 
 describe("testNodeLoader", () => {
     clearCache();
-
-    if (getPlatform() === "nodejs") {
         test("LoaderGetName", () => {
             expect.assertions(1);
             var loader = LoaderFactory();
@@ -488,9 +486,4 @@ describe("testNodeLoader", () => {
                 });
             });
         });
-    } else {
-        test("fake", () => {
-            expect(1+1).toBe(2);
-        });
-    }
 });
