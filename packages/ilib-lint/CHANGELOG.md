@@ -1,5 +1,51 @@
 # ilib-lint
 
+## 2.19.1
+
+### Patch Changes
+
+- 2726c86: - the sentence-ending punctuation rule now properly skips URLs and email addresses when
+  searching for the beginning of a sentence
+- f9ddf84: Fixed error handling during serialization and transformers - linter will now continue processing other files.
+- 93b6535: - Changed the message from the sentence-ending punctuation rule
+  so that it says 'no punctuation' instead of the empty string
+  "" to indicate that there should not be punctuation there. This
+  is less confusing to users.
+
+## 2.19.0
+
+### Minor Changes
+
+- 0270710: - Add new all capitals rule
+  - If the source string contains 2 or more alphabetic letter
+    characters and all alphabetic letter characters are upper-case,
+    and the target language uses a writing script that also
+    supports casing, then the target string should also be in
+    all upper-case to echo the style of the source.
+  - all characters that are not alphabetic letters are unmodified
+  - all strings written in scripts that do not support casing
+    are unmodified
+  - auto-fix available to automatically replace the target text
+    with the upper-cased version of the string. The text is
+    upper-cased locale-sensitively using ilib-casemapper.
+- 17d0665: - ResourceSentenceEnding rule enhancements to support various exception
+  - Added minimumLength configuration option (default: 10) to skip checking short strings/abbreviations
+  - Added automatic skipping of strings with no spaces
+  - Added exceptions array per locale to skip specific source strings from checking
+  - Enhanced punctuation detection for quoted content to handle punctuation after closing quotes
+  - Updated rule documentation with new configuration options and examples
+
+### Patch Changes
+
+- d6cb734: - Fixed two bugs in the sentence-ending punctuation rule
+  - if the target has a subordinate clause that is iterrogatory, then according to Spanish grammar rules, the inverted punctuation should come mid-sentence right before the clause. Now the rule checks for the inverted punctuation in a better way to handle this.
+  - colons in the middle of the string should not be considered sentence-ending punctuation when looking backwards for the inverted punctuation in Spanish
+- c43b5cb: - Fixed bug: now get and use the right locales
+  - command-line overrides the config file which overrides the default
+  - before, it only ever used the defaults!
+- Updated dependencies [0270710]
+  - ilib-scriptinfo@1.0.0
+
 ## 2.18.2
 
 ### Patch Changes

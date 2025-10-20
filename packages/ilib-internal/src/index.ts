@@ -21,6 +21,7 @@ export { LoctoolRunner } from "./runners/LoctoolRunner";
 export { LintRunner } from "./runners/LintRunner";
 
 export { expectFile, expectFileToMatchSnapshot } from "./expectFile";
+export { expectToBeDefined } from "./expectToBeDefined";
 export { createKarmaConfig, createKarmaConfigFunction } from "./karma-config";
 
 export { FSSnapshot } from "./FSSnapshot";

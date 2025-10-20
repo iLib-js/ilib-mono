@@ -1,7 +1,7 @@
 {
     "name": "Legacy E2E Test",
-    "version": "0.0.0",
     "private": true,
+    "version": "0.0.0",
     "type": "commonjs",
     "dependencies": {
         "ilib-scriptinfo": "workspace:^"
