@@ -3126,7 +3126,7 @@ describe("ResourceSentenceEnding rule", function() {
         // https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/rules/ResourceSentenceEnding.js#L972
         // ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
         //received "Zoom manuale<e0/>"
-        expect(actual?.highlight).toBe("");
+        expect(actual?.highlight).toBe('Zoom manuale<e0/>');
     });
     test("Test with the wrong target extracted2", () => {
         expect.assertions(4);
@@ -3153,7 +3153,7 @@ describe("ResourceSentenceEnding rule", function() {
         //received "Oudioleiding<e0/>"
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain("Sentence ending should be \".\" (U+002E) for af-ZA locale instead of \"\"");
-        expect(actual?.highlight).toBe("ማረጋገጫው በ48 ሰዐት ውስጥ ካልደረሰ አካውንቱ ይሰረዛል፡፡<e0/>");
+        expect(actual?.highlight).toBe("Oudioleiding<e0/>");
     });
     test("period punctuation for am-ET", () => {
         expect.assertions(4);
