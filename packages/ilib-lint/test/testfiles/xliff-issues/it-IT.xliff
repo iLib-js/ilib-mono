@@ -17,15 +17,6 @@
           <target>Die installering van die hoëgehalte taalpakket sal “Oudioleiding” verskaf wat meer natuurlik klink.</target>
         </segment>
       </unit>
-      <unit id="sample-B_g1_386">
-        <notes>
-          <note>locale: sk-SK</note>
-        </notes>
-        <segment>
-          <source>{num} channels have been blocked.</source>
-          <target>Počet zablokovaných kanálov: {num}</target>
-        </segment>
-      </unit>
     </group>
   </file>
 </xliff>

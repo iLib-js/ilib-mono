@@ -3095,6 +3095,33 @@ describe("ResourceSentenceEnding rule", function() {
         //received "Oudioleiding<e0/>"
         expect(actual).toBeTruthy();
         expect(actual?.description).toContain("Sentence ending should be \".\" (U+002E) for af-ZA locale instead of \"\"");
+        expect(actual?.highlight).toBe("ማረጋገጫው በ48 ሰዐት ውስጥ ካልደረሰ አካውንቱ ይሰረዛል፡፡<e0/>");
+    });
+    test("period punctuation for am-ET", () => {
+        expect.assertions(4);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+        debugger;
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "en-US",
+            source: "If verification is not received within 48 hours, the account will be deleted.",
+            targetLocale: "am-ET",
+            target: "ማረጋገጫው በ48 ሰዐት ውስጥ ካልደረሰ አካውንቱ ይሰረዛል፡፡",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/rules/ResourceSentenceEnding.js#L978
+        // const targetEnding = this.getEndingPunctuation(lastSentence, targetLocaleObj);
+        // return null. should be ፡
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain("Sentence ending should be \"።\" (U+1362) for am-ET locale instead of \"\፡");
         expect(actual?.highlight).toBe("");
     });
     // END ---------------------------------
