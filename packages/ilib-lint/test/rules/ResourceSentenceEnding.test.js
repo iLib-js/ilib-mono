@@ -3101,7 +3101,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect.assertions(4);
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
-        debugger;
+
         const resource = new ResourceString({
             key: "targetspace.test",
             sourceLocale: "en-US",
