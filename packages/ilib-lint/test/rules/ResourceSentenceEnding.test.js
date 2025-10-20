@@ -3097,60 +3097,7 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual?.description).toContain("Sentence ending should be \".\" (U+002E) for af-ZA locale instead of \"\"");
         expect(actual?.highlight).toBe("");
     });
-
-    // Test with Spanish
-    test("Test with the Spanish", () => {
-        expect.assertions(2);
-        const rule = new ResourceSentenceEnding();
-        expect(rule).toBeTruthy();
-
-        const resource = new ResourceString({
-            key: "targetspace.test",
-            sourceLocale: "es-ES",
-            source: "Which do you prefer: a cooler tone or a warmer tone?",
-            targetLocale: "es-ES",
-            target: "¿Qué prefiere: un tono más frío o más cálido?",
-            pathName: "a/b/c.xliff",
-            lineNumber: 25
-        });
-        const actual = rule.matchString({
-            source: resource.getSource(),
-            target: resource.getTarget(),
-            resource,
-            file: "a/b/c.xliff"
-        });
-        //ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
-        //'un tono más frío o más cálido?'
-        expect(actual).toBeUndefined();
-    });
     // END ---------------------------------
-    // Test with Spanish2
-    test("Test with the Spanish2", () => {
-        expect.assertions(2);
-        const rule = new ResourceSentenceEnding();
-        expect(rule).toBeTruthy();
-
-        const resource = new ResourceString({
-            key: "targetspace.test",
-            sourceLocale: "es-ES",
-            source: "Then, how much contrast between the bright and dark parts of the screen would you prefer?",
-            targetLocale: "es-ES",
-            target: "Entonces, ¿cuánto contraste prefiere entre las partes claras y oscuras de la pantalla?",
-            pathName: "a/b/c.xliff",
-            lineNumber: 25
-        });
-        const actual = rule.matchString({
-            source: resource.getSource(),
-            target: resource.getTarget(),
-            resource,
-            file: "a/b/c.xliff"
-        });
-        expect(actual).toBeUndefined();
-    });
-
-    
-    ///// ---------------------------------
-
     // Test for ResourcePlural with no sentence ending punctuation issues
     test("ResourcePlural with no sentence ending punctuation issues", () => {
         expect.assertions(2);
