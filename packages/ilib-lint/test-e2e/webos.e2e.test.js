@@ -19,16 +19,16 @@
 
 import path from "path";
 import { fileURLToPath } from "node:url";
-import { LintRunner, FSSnapshot } from "ilib-internal";
+import { LintRunner, FSSnapshot, expectFileToMatchSnapshot } from "ilib-internal";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-/* 
-* lint execute command: ilib-lint -c ilib-lint-config.json -f html-formatter -o webos-result.html --fix --write
-*/
+
 describe("samples", () => {
     describe("lint", () => {
         const projectPath = path.resolve(__dirname, "..", "samples", "lint-webOS");
-        let stdout;
+        const modifiedxliffPath = path.resolve(projectPath, "xliffs/am-ET.xliff.modified");
+        const modifiedxliffPath2 = path.resolve(projectPath, "xliffs/zh-Hans-CN.xliff.modified");
+
         let fsSnapshot;
         beforeAll(async () => {
             fsSnapshot = FSSnapshot.create([
@@ -39,17 +39,14 @@ describe("samples", () => {
 
             try {
                 const lintPath = path.resolve(__dirname, "..", "src", "index.js");
-                console.log(path.join(projectPath, "ilib-lint-config.json"))
                 const lint = new LintRunner(projectPath, lintPath);
-
-                const result = await lint.run(
+                await lint.run(
                     "-c", path.join(projectPath, "ilib-lint-config.json"),
                     "-f", "html-formatter",
                     "-o", "webos-result.html",
                     "--fix",
                     "--write"
                 );
-                stdout = "test test ...";
             } catch (error) {
                 console.error(">>>> Lint run failed:");
             }
@@ -59,9 +56,11 @@ describe("samples", () => {
             fsSnapshot.restore();
         });
 
-        test("should execute lint with webOS xliff files", () => {
-            console.log("stdout from lint:", stdout);
-            expect(stdout).toContain("...");
+        test("should generate the modified file (am-ET)", () => {
+            expectFileToMatchSnapshot(modifiedxliffPath);
+        });
+        test("should generate the modified file (zh-Hans-CN)", () => {
+            expectFileToMatchSnapshot(modifiedxliffPath2);
         });
     });
 });
