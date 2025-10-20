@@ -1,5 +1,5 @@
 /*
- * samples.e2e.test.js - E2E tests for ilib-lint samples
+ * webos.e2e.test.js - E2E tests for ilib-lint webOS sample
  *
  * Copyright © 2025 JEDLSoft
  *
