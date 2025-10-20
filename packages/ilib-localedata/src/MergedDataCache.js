@@ -71,12 +71,51 @@ class MergedDataCache {
      * @returns {Promise<boolean>} Promise that resolves to true if any data was loaded and cached, false otherwise
      */
     async loadLocaleData(locale, roots) {
-        // TODO: Implement this method
-        // 1. Use ParsedDataCache to load [locale].js and [locale].json files from roots
-        // 2. Parse the data structure to extract sublocale and basename information
-        // 3. Cache each piece of data separately using ParsedDataCache.storeData()
-        // 4. Return true if any data was loaded, false otherwise
-        throw new Error("Not implemented yet");
+        // Validate parameters
+        if ((typeof locale !== 'string' && typeof locale !== 'object') || locale === undefined || locale === "") {
+            throw new Error('Locale parameter is required');
+        }
+        if (!Array.isArray(roots) || roots.length === 0) {
+            throw new Error('Roots parameter must be a non-empty array');
+        }
+
+        // Convert string locale to Locale object if needed
+        const loc = (typeof locale === 'string') ? new Locale(locale) : locale;
+        if (loc !== null && typeof loc.getSpec !== 'function') {
+            throw new Error('Invalid locale parameter');
+        }
+
+        const localeSpec = loc.getSpec();
+        let dataLoaded = false;
+
+        // Only load the exact locale file, not iterate through sublocales
+        // This is required by ensureLocale() which should only load [locale].js or [locale].json files
+        for (const root of roots) {
+            // Try .js files first (multiple extensions)
+            const jsExtensions = ['.js', '.cjs', '.mjs'];
+            for (const ext of jsExtensions) {
+                const jsPath = `${root}/${localeSpec}${ext}`;
+                const parsedData = await this.parsedDataCache.loadAndParseFile(jsPath, root);
+                if (parsedData) {
+                    dataLoaded = true;
+                    break; // Found data, move to next root
+                }
+            }
+            
+            if (dataLoaded) {
+                break; // Found data, move to next root
+            }
+
+            // Try .json file as fallback
+            const jsonPath = `${root}/${localeSpec}.json`;
+            const parsedData = await this.parsedDataCache.loadAndParseFile(jsonPath, root);
+            if (parsedData) {
+                dataLoaded = true;
+                break; // Found data, move to next root
+            }
+        }
+
+        return dataLoaded;
     }
 
     /**
@@ -111,9 +150,16 @@ class MergedDataCache {
             return cachedMergedData;
         }
 
-        // Get parsed data from ParsedDataCache (handles .js, flat .json, hierarchical .json)
-        // ParsedDataCache already iterates through all roots and handles fallback logic
-        const parsedData = await this.parsedDataCache.getParsedData(loc, roots, basename);
+        // Get parsed data from ParsedDataCache by iterating through all locales
+        // ParsedDataCache now only loads data for specific locales, so we need to iterate
+        const localeSpec = loc === null ? 'root' : loc.getSpec();
+        const sublocales = Utils.getSublocales(localeSpec);
+        
+        // Load data for each locale (including parent locales)
+        for (const sublocale of sublocales) {
+            const sublocaleObj = sublocale === 'root' ? null : new Locale(sublocale);
+            await this.parsedDataCache.getParsedData(sublocaleObj, roots, basename);
+        }
 
         // Second check: another caller might have merged while we awaited
         const cachedMergedDataAgain = this.dataCache.getFileData(mergedCacheKey);
@@ -146,12 +192,51 @@ class MergedDataCache {
      * @returns {boolean} true if any data was loaded and cached, false otherwise
      */
     loadLocaleDataSync(locale, roots) {
-        // TODO: Implement this method
-        // 1. Use ParsedDataCache to load [locale].js and [locale].json files from roots synchronously
-        // 2. Parse the data structure to extract sublocale and basename information
-        // 3. Cache each piece of data separately using ParsedDataCache.storeData()
-        // 4. Return true if any data was loaded, false otherwise
-        throw new Error("Not implemented yet");
+        // Validate parameters
+        if ((typeof locale !== 'string' && typeof locale !== 'object') || locale === undefined || locale === "") {
+            throw new Error('Locale parameter is required');
+        }
+        if (!Array.isArray(roots) || roots.length === 0) {
+            throw new Error('Roots parameter must be a non-empty array');
+        }
+
+        // Convert string locale to Locale object if needed
+        const loc = (typeof locale === 'string') ? new Locale(locale) : locale;
+        if (loc !== null && typeof loc.getSpec !== 'function') {
+            throw new Error('Invalid locale parameter');
+        }
+
+        const localeSpec = loc.getSpec();
+        let dataLoaded = false;
+
+        // Only load the exact locale file, not iterate through sublocales
+        // This is required by ensureLocale() which should only load [locale].js or [locale].json files
+        for (const root of roots) {
+            // Try .js files first (only CommonJS modules in sync mode)
+            const jsExtensions = ['.js', '.cjs'];
+            for (const ext of jsExtensions) {
+                const jsPath = `${root}/${localeSpec}${ext}`;
+                const parsedData = this.parsedDataCache.loadAndParseFileSync(jsPath, root);
+                if (parsedData) {
+                    dataLoaded = true;
+                    break; // Found data, move to next root
+                }
+            }
+            
+            if (dataLoaded) {
+                break; // Found data, move to next root
+            }
+
+            // Try .json file as fallback
+            const jsonPath = `${root}/${localeSpec}.json`;
+            const parsedData = this.parsedDataCache.loadAndParseFileSync(jsonPath, root);
+            if (parsedData) {
+                dataLoaded = true;
+                break; // Found data, move to next root
+            }
+        }
+
+        return dataLoaded;
     }
 
     /**
@@ -184,9 +269,16 @@ class MergedDataCache {
             return cachedMergedData;
         }
 
-        // Get parsed data from ParsedDataCache (handles .js, flat .json, hierarchical .json)
-        // ParsedDataCache already iterates through all roots and handles fallback logic
-        const parsedData = this.parsedDataCache.getParsedDataSync(loc, roots, basename);
+        // Get parsed data from ParsedDataCache by iterating through all locales
+        // ParsedDataCache now only loads data for specific locales, so we need to iterate
+        const localeSpec = loc === null ? 'root' : loc.getSpec();
+        const sublocales = Utils.getSublocales(localeSpec);
+        
+        // Load data for each locale (including parent locales)
+        for (const sublocale of sublocales) {
+            const sublocaleObj = sublocale === 'root' ? null : new Locale(sublocale);
+            this.parsedDataCache.getParsedDataSync(sublocaleObj, roots, basename);
+        }
 
         // Merge the parsed data
         const mergedData = this._mergeParsedData(loc, basename, roots);

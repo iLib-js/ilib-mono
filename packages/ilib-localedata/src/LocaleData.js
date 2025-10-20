@@ -278,7 +278,7 @@ class LocaleData {
         } = options;
 
         this.loader = LoaderFactory();
-        this.sync = typeof(sync) === "boolean" && sync && (!this.loader || this.loader.supportsSync());
+        this.sync = typeof(sync) === "boolean" && sync && (this.loader && this.loader.supportsSync());
         this.cache = DataCache.getDataCache();
         this.logger = log4js.getLogger("ilib-localedata");
         this.path = path;
@@ -617,14 +617,23 @@ class LocaleData {
      * false if it could be found
      * @reject {Error} if there was an error while loading the data
      */
-    static async ensureLocale(locale, otherRoots) {
+    static ensureLocale(locale, otherRoots) {
         // Validate parameters - throw Error objects for invalid parameters
-        if (locale === undefined || locale === null) {
+        if (locale === null) {
+            throw new Error("Invalid locale parameter to ensureLocale");
+        }
+        if (locale === undefined) {
             throw new Error("Invalid parameter to ensureLocale");
         }
         if (typeof(locale) !== 'string' && typeof(locale) !== 'object') {
             throw new Error("Invalid parameter to ensureLocale");
         }
+
+        // Return async implementation
+        return this._ensureLocaleAsync(locale, otherRoots);
+    }
+
+    static async _ensureLocaleAsync(locale, otherRoots) {
 
         let loc = (typeof(locale) === 'string') ? new Locale(locale) : locale;
         if (locale && locale !== "root" && !loc.getLanguage()) {

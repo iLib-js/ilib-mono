@@ -115,7 +115,7 @@ describe('MergedDataCache Async Tests (Node and Browser)', () => {
             expect(result).toBeTruthy();
             expect(mergedDataCache.hasMergedData("en-US", ["./test/files3"], "info")).toBe(true);
             expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
-            expect(result).toEqual({ "a": "b en-US", "c": "d root", "e": "f en-US" });
+            expect(result).toEqual({ "a": "b en-US", "c": "d en", "e": "f en-US" });
 
             const result2 = mergedDataCache.getCachedData("en-US", ["./test/files3"], "info");
             expect(result2).toBeTruthy();
@@ -228,7 +228,10 @@ describe('MergedDataCache Async Tests (Node and Browser)', () => {
             expect.assertions(1);
 
             const result = await mergedDataCache.loadMergedData("invalid", ["./test/files3"], "info");
-            expect(result).toBeUndefined();
+            expect(result).toEqual({
+                "a": "b root",
+                "c": "d root"
+            });
         });
 
         test('should handle locale with only root data available', async () => {

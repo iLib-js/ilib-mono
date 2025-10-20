@@ -98,7 +98,6 @@ class ParsedDataCache {
             return cachedData;
         }
 
-
         await Promise.all([
             this._loadFromJsFiles(loc, roots, basename),
             this._loadFromJsonFiles(loc, roots, basename)
@@ -235,6 +234,56 @@ class ParsedDataCache {
     }
 
     /**
+     * Load and parse a specific file, caching the results.
+     * This is a low-level method that ParsedDataCache provides for higher layers.
+     *
+     * @param {string} filePath - The path to the file to load
+     * @param {string} root - The root directory for this data
+     * @returns {Promise<Object|undefined>} Promise that resolves to the parsed data, or undefined if not found
+     */
+    async loadAndParseFile(filePath, root) {
+        try {
+            const rawData = await this.fileCache.loadFile(filePath);
+            if (rawData) {
+                // Determine file type and parse accordingly
+                if (filePath.endsWith('.json')) {
+                    return this._parseAndCacheJsonFile(rawData, filePath, root);
+                } else {
+                    return this._parseAndCacheJsFile(rawData, filePath, root);
+                }
+            }
+        } catch (error) {
+            // File not found or other error
+        }
+        return undefined;
+    }
+
+    /**
+     * Load and parse a specific file synchronously, caching the results.
+     * This is a low-level method that ParsedDataCache provides for higher layers.
+     *
+     * @param {string} filePath - The path to the file to load
+     * @param {string} root - The root directory for this data
+     * @returns {Object|undefined} The parsed data, or undefined if not found
+     */
+    loadAndParseFileSync(filePath, root) {
+        try {
+            const rawData = this.fileCache.loadFileSync(filePath);
+            if (rawData) {
+                // Determine file type and parse accordingly
+                if (filePath.endsWith('.json')) {
+                    return this._parseAndCacheJsonFile(rawData, filePath, root);
+                } else {
+                    return this._parseAndCacheJsFile(rawData, filePath, root);
+                }
+            }
+        } catch (error) {
+            // File not found or other error
+        }
+        return undefined;
+    }
+
+    /**
      * Parse and store unparsed data in memory as if it came from a .js file
      *
      * @param {Object|string|function} unparsedData - The unparsed data to process
@@ -308,7 +357,112 @@ class ParsedDataCache {
     }
 
     /**
-     * Load data from .js files for a locale and basename
+     * Load data from .js files for a specific locale only (no parent locale iteration)
+     * @private
+     */
+    async _loadSpecificLocaleFromJsFiles(locale, roots, basename) {
+        const localeSpec = locale === null ? 'root' : locale.getSpec();
+        
+        for (const root of roots) {
+            // Try to load the specific locale file
+            const extensions = ['.mjs', '.js', '.cjs'];
+            
+            for (const ext of extensions) {
+                try {
+                    const jsPath = `${root}/${localeSpec}${ext}`;
+                    const rawData = await this.fileCache.loadFile(jsPath);
+                    if (rawData) {
+                        // Parse and cache data from this file
+                        this._parseAndCacheJsFile(rawData, jsPath, root);
+                        return; // Found data, no need to try other roots
+                    }
+                } catch (error) {
+                    // Continue to next extension
+                    continue;
+                }
+            }
+        }
+    }
+
+    /**
+     * Load data from .json files for a specific locale only (no parent locale iteration)
+     * @private
+     */
+    async _loadSpecificLocaleFromJsonFiles(locale, roots, basename) {
+        const localeSpec = locale === null ? 'root' : locale.getSpec();
+        
+        for (const root of roots) {
+            // Try to load the specific locale file
+            try {
+                const jsonPath = `${root}/${localeSpec}.json`;
+                const rawData = await this.fileCache.loadFile(jsonPath);
+                if (rawData) {
+                    // Parse and cache data from this file
+                    this._parseAndCacheJsonFile(rawData, jsonPath, root);
+                    return; // Found data, no need to try other roots
+                }
+            } catch (error) {
+                // Continue to next root
+                continue;
+            }
+        }
+    }
+
+    /**
+     * Load data from .js files for a specific locale only (no parent locale iteration) - sync version
+     * @private
+     */
+    _loadSpecificLocaleFromJsFilesSync(locale, roots, basename) {
+        const localeSpec = locale === null ? 'root' : locale.getSpec();
+        
+        for (const root of roots) {
+            // Try to load the specific locale file
+            const moduleType = this._getModuleTypeSync(root);
+            const extensions = (moduleType === 'module') ? ['.cjs'] : ['.js', '.cjs'];
+            
+            for (const ext of extensions) {
+                try {
+                    const jsPath = `${root}/${localeSpec}${ext}`;
+                    const rawData = this.fileCache.loadFileSync(jsPath);
+                    if (rawData) {
+                        // Parse and cache data from this file
+                        this._parseAndCacheJsFile(rawData, jsPath, root);
+                        return; // Found data, no need to try other roots
+                    }
+                } catch (error) {
+                    // Continue to next extension
+                    continue;
+                }
+            }
+        }
+    }
+
+    /**
+     * Load data from .json files for a specific locale only (no parent locale iteration) - sync version
+     * @private
+     */
+    _loadSpecificLocaleFromJsonFilesSync(locale, roots, basename) {
+        const localeSpec = locale === null ? 'root' : locale.getSpec();
+        
+        for (const root of roots) {
+            // Try to load the specific locale file
+            try {
+                const jsonPath = `${root}/${localeSpec}.json`;
+                const rawData = this.fileCache.loadFileSync(jsonPath);
+                if (rawData) {
+                    // Parse and cache data from this file
+                    this._parseAndCacheJsonFile(rawData, jsonPath, root);
+                    return; // Found data, no need to try other roots
+                }
+            } catch (error) {
+                // Continue to next root
+                continue;
+            }
+        }
+    }
+
+    /**
+     * Load data from .js files for a locale and basename (with parent locale iteration)
      * @private
      *
      * @param {Locale} locale - The locale object
@@ -324,6 +478,7 @@ class ParsedDataCache {
             const extensions = ['.mjs', '.js', '.cjs'];
 
             // First try to load the specific locale file
+            let foundSpecificFile = false;
             for (const ext of extensions) {
                 try {
                     const localeSpec = locale === null ? 'root' : locale.getSpec();
@@ -332,11 +487,20 @@ class ParsedDataCache {
                     if (rawData) {
                         // Parse and cache all data from this file
                         this._parseAndCacheJsFile(rawData, jsPath, root);
+                        foundSpecificFile = true;
+                        break;
                     }
                 } catch (error) {
                     // Continue to next extension
                     continue;
                 }
+            }
+            
+            // Only try parent locales if the specific locale file was not found
+            if (!foundSpecificFile) {
+                // For now, we don't do parent locale iteration in ParsedDataCache
+                // This should be handled by MergedDataCache
+                // TODO: Remove this fallback logic and have MergedDataCache handle locale iteration
             }
         }
 
@@ -361,6 +525,8 @@ class ParsedDataCache {
             const moduleType = this._getModuleTypeSync(root);
             const extensions = (moduleType === 'module') ? ['.cjs'] : ['.js', '.cjs'];
 
+            // First try to load the specific locale file
+            let foundSpecificFile = false;
             for (const ext of extensions) {
                 try {
                     const localeSpec = locale === null ? 'root' : locale.getSpec();
@@ -369,11 +535,20 @@ class ParsedDataCache {
                     if (rawData) {
                         // Parse and cache all data from this file
                         this._parseAndCacheJsFile(rawData, jsPath, root);
+                        foundSpecificFile = true;
+                        break;
                     }
                 } catch (error) {
                     // Continue to next extension
                     continue;
                 }
+            }
+            
+            // Only try parent locales if the specific locale file was not found
+            if (!foundSpecificFile) {
+                // For now, we don't do parent locale iteration in ParsedDataCache
+                // This should be handled by MergedDataCache
+                // TODO: Remove this fallback logic and have MergedDataCache handle locale iteration
             }
         }
 
