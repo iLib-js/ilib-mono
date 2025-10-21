@@ -47,6 +47,39 @@ If you don't specify a parameter, the rule defaults to requiring "translated":
 }
 ```
 
+## Valid States
+
+The resource-state-checker supports the following valid states:
+
+### XLIFF 2.0 Standard States
+- `initial`
+- `translated`
+- `reviewed`
+- `final`
+
+### XLIFF 1.2 Standard States
+- `new`
+- `needs-translation`
+- `needs-adaptation`
+- `needs-l10n`
+- `needs-review-translation`
+- `needs-review-adaptation`
+- `needs-review-l10n`
+- `signed-off`
+
+### Additional Common States
+- `needs-review`
+- `fuzzy`
+
+### Mojito Open Source Project States
+- `accepted`
+- `rejected`
+- `approved`
+- `needs-approval`
+
+### Custom States
+- Any state with `x-` prefix (e.g., `x-custom-state`, `x-my-workflow`)
+
 ## Examples
 
 For xliff 1.2 resources where you want the states to have the value "translated",
@@ -68,4 +101,32 @@ In xliff 2.0 resources, they might look like this:
         <target state="translated">Dies ist der Quelltext</target>
       </segment>
     </unit>
+```
+
+### Using Mojito States
+
+For projects using Mojito translation management, you can configure the checker to use Mojito-specific states:
+
+```json
+{
+  "rulesets": {
+    "my-rule": {
+      "resource-state-checker": ["accepted", "approved"]
+    }
+  }
+}
+```
+
+### Using Custom States
+
+You can also use custom states with the `x-` prefix for project-specific workflows:
+
+```json
+{
+  "rulesets": {
+    "my-rule": {
+      "resource-state-checker": ["x-ready-for-review", "x-approved-by-manager"]
+    }
+  }
+}
 ```
