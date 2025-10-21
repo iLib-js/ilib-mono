@@ -2201,4 +2201,92 @@ describe("testResourceQuoteStyle", () => {
         // No quotes in source, so no quotes expected in target
         expect(actual).toBeFalsy();
     });
+
+    test("Hawaiian glottal stop apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the \'okina.',
+            targetLocale: "haw-US",
+            target: "He huahana \"mākaukau\" no ka 'okina.",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.checkString(resource.getSource(), resource.getTarget(), resource, null, resource.getTargetLocale(), 0, "string");
+
+        // "'okina" is a Hawaiian glottal stop using apostrophe, not quotation marks
+        // Proper quotes are used for "mākaukau"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Hawaiian multiple glottal stops with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the \'okina and \'ohana.',
+            targetLocale: "haw-US",
+            target: "He huahana \"mākaukau\" no ka 'okina a me ka 'ohana.",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.checkString(resource.getSource(), resource.getTarget(), resource, null, resource.getTargetLocale(), 0, "string");
+
+        // "'okina" and "'ohana" are Hawaiian glottal stops using apostrophes, not quotation marks
+        // Proper quotes are used for "mākaukau"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Samoan glottal stop apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the \'ava.',
+            targetLocale: "sm-WS",
+            target: "O le oloa \"sauni\" mo le 'ava.",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.checkString(resource.getSource(), resource.getTarget(), resource, null, resource.getTargetLocale(), 0, "string");
+
+        // "'ava" is a Samoan glottal stop using apostrophe, not quotation marks
+        // Proper quotes are used for "sauni"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Samoan multiple glottal stops with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the \'ava and \'aiga.',
+            targetLocale: "sm-WS",
+            target: "O le oloa \"sauni\" mo le 'ava ma le 'aiga.",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.checkString(resource.getSource(), resource.getTarget(), resource, null, resource.getTargetLocale(), 0, "string");
+
+        // "'ava" and "'aiga" are Samoan glottal stops using apostrophes, not quotation marks
+        // Proper quotes are used for "sauni"
+        expect(actual).toBeFalsy();
+    });
 });
