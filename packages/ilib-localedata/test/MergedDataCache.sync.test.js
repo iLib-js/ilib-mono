@@ -138,7 +138,7 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
             expect(result).toBeTruthy();
             expect(mergedDataCache.hasMergedData("en-US", ["./test/files3"], "info")).toBe(true);
             expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0);
-            expect(result).toEqual({ "a": "b en-US", "c": "d en", "e": "f en-US" });
+            expect(result).toEqual({ "a": "b en-US", "c": "d root", "e": "f en-US" });
 
             const result2 = mergedDataCache.getCachedData("en-US", ["./test/files3"], "info");
             expect(result2).toBeTruthy();

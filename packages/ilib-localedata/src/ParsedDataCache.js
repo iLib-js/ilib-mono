@@ -478,7 +478,6 @@ class ParsedDataCache {
             const extensions = ['.mjs', '.js', '.cjs'];
 
             // First try to load the specific locale file
-            let foundSpecificFile = false;
             for (const ext of extensions) {
                 try {
                     const localeSpec = locale === null ? 'root' : locale.getSpec();
@@ -487,20 +486,11 @@ class ParsedDataCache {
                     if (rawData) {
                         // Parse and cache all data from this file
                         this._parseAndCacheJsFile(rawData, jsPath, root);
-                        foundSpecificFile = true;
-                        break;
                     }
                 } catch (error) {
                     // Continue to next extension
                     continue;
                 }
-            }
-            
-            // Only try parent locales if the specific locale file was not found
-            if (!foundSpecificFile) {
-                // For now, we don't do parent locale iteration in ParsedDataCache
-                // This should be handled by MergedDataCache
-                // TODO: Remove this fallback logic and have MergedDataCache handle locale iteration
             }
         }
 
@@ -525,8 +515,6 @@ class ParsedDataCache {
             const moduleType = this._getModuleTypeSync(root);
             const extensions = (moduleType === 'module') ? ['.cjs'] : ['.js', '.cjs'];
 
-            // First try to load the specific locale file
-            let foundSpecificFile = false;
             for (const ext of extensions) {
                 try {
                     const localeSpec = locale === null ? 'root' : locale.getSpec();
@@ -535,20 +523,11 @@ class ParsedDataCache {
                     if (rawData) {
                         // Parse and cache all data from this file
                         this._parseAndCacheJsFile(rawData, jsPath, root);
-                        foundSpecificFile = true;
-                        break;
                     }
                 } catch (error) {
                     // Continue to next extension
                     continue;
                 }
-            }
-            
-            // Only try parent locales if the specific locale file was not found
-            if (!foundSpecificFile) {
-                // For now, we don't do parent locale iteration in ParsedDataCache
-                // This should be handled by MergedDataCache
-                // TODO: Remove this fallback logic and have MergedDataCache handle locale iteration
             }
         }
 

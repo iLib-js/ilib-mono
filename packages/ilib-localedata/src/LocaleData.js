@@ -617,7 +617,7 @@ class LocaleData {
      * false if it could be found
      * @reject {Error} if there was an error while loading the data
      */
-    static ensureLocale(locale, otherRoots) {
+    static async ensureLocale(locale, otherRoots) {
         // Validate parameters - throw Error objects for invalid parameters
         if (locale === null) {
             throw new Error("Invalid locale parameter to ensureLocale");
@@ -628,12 +628,6 @@ class LocaleData {
         if (typeof(locale) !== 'string' && typeof(locale) !== 'object') {
             throw new Error("Invalid parameter to ensureLocale");
         }
-
-        // Return async implementation
-        return this._ensureLocaleAsync(locale, otherRoots);
-    }
-
-    static async _ensureLocaleAsync(locale, otherRoots) {
 
         let loc = (typeof(locale) === 'string') ? new Locale(locale) : locale;
         if (locale && locale !== "root" && !loc.getLanguage()) {

@@ -150,16 +150,9 @@ class MergedDataCache {
             return cachedMergedData;
         }
 
-        // Get parsed data from ParsedDataCache by iterating through all locales
-        // ParsedDataCache now only loads data for specific locales, so we need to iterate
-        const localeSpec = loc === null ? 'root' : loc.getSpec();
-        const sublocales = Utils.getSublocales(localeSpec);
-        
-        // Load data for each locale (including parent locales)
-        for (const sublocale of sublocales) {
-            const sublocaleObj = sublocale === 'root' ? null : new Locale(sublocale);
-            await this.parsedDataCache.getParsedData(sublocaleObj, roots, basename);
-        }
+        // Get parsed data from ParsedDataCache (handles .js, flat .json, hierarchical .json)
+        // ParsedDataCache already iterates through all roots and handles fallback logic
+        const parsedData = await this.parsedDataCache.getParsedData(loc, roots, basename);
 
         // Second check: another caller might have merged while we awaited
         const cachedMergedDataAgain = this.dataCache.getFileData(mergedCacheKey);
@@ -269,16 +262,9 @@ class MergedDataCache {
             return cachedMergedData;
         }
 
-        // Get parsed data from ParsedDataCache by iterating through all locales
-        // ParsedDataCache now only loads data for specific locales, so we need to iterate
-        const localeSpec = loc === null ? 'root' : loc.getSpec();
-        const sublocales = Utils.getSublocales(localeSpec);
-        
-        // Load data for each locale (including parent locales)
-        for (const sublocale of sublocales) {
-            const sublocaleObj = sublocale === 'root' ? null : new Locale(sublocale);
-            this.parsedDataCache.getParsedDataSync(sublocaleObj, roots, basename);
-        }
+        // Get parsed data from ParsedDataCache (handles .js, flat .json, hierarchical .json)
+        // ParsedDataCache already iterates through all roots and handles fallback logic
+        const parsedData = this.parsedDataCache.getParsedDataSync(loc, roots, basename);
 
         // Merge the parsed data
         const mergedData = this._mergeParsedData(loc, basename, roots);
