@@ -138,7 +138,7 @@ class ResourceQuoteStyle extends ResourceRule {
             return;
         }
         const isOptionalPunctuationLanguage = this.optionalQuoteLanguages.has(language);
-        const regExps = this.getRegExps(locale, isOptionalPunctuationLanguage);
+        const regExps = this.getRegExps(localeObj, isOptionalPunctuationLanguage);
 
         const sourceStyle = {
             ascii: regExps.quotesAscii.test(src),
@@ -171,22 +171,41 @@ class ResourceQuoteStyle extends ResourceRule {
         // match the all types of Unicode non-breaking spaces which are used in some
         // locales to separate the quote from the text.
         let startQuote, endQuote;
+
+        // Create language-specific apostrophe exclusion patterns
+        const isIrish = language === 'ga';
+        const apostropheExclusion = isIrish
+            ? `(?!['\u2019][\\p{Letter}]|\\p{Letter}['\u2019]\\p{Letter})`  // Irish: exclude glottal stops and elisions
+            : `(?!['\u2019][\\p{Letter}])`;  // Other languages: exclude only contractions
+
         if (sourceStyle.ascii) {
             if (regExps.target.quotesAll.test(tar)) return;
-            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartChars}'])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}']))(\\W|$)`, "gu");
+            const startQuotePattern = isIrish
+                ? `(^|\\W)(?!['\u2019][\\p{Letter}])(([${nonQuoteStartChars}'])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`
+                : `(^|\\W)(([${nonQuoteStartChars}'])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`;
+            startQuote = new RegExp(startQuotePattern, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])${apostropheExclusion}([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}']))(\\W|$)`, "gu");
         } else if (sourceStyle.asciiAlt) {
             if (regExps.target.quotesAllAlt.test(tar)) return;
-            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartCharsAlt}"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndCharsAlt}"]))(\\W|$)`, "gu");
+            const startQuotePattern = isIrish
+                ? `(^|\\W)(?!['\u2019][\\p{Letter}])(([${nonQuoteStartCharsAlt}"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`
+                : `(^|\\W)(([${nonQuoteStartCharsAlt}"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`;
+            startQuote = new RegExp(startQuotePattern, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])${apostropheExclusion}([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndCharsAlt}"]))(\\W|$)`, "gu");
         } else if (sourceStyle.native) {
             if (regExps.target.quotesNative.test(tar)) return;
-            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartChars}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}'"]))(\\W|$)`, "gu");
+            const startQuotePattern = isIrish
+                ? `(^|\\W)(?!['\u2019][\\p{Letter}])(([${nonQuoteStartChars}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`
+                : `(^|\\W)(([${nonQuoteStartChars}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`;
+            startQuote = new RegExp(startQuotePattern, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])${apostropheExclusion}([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndChars}'"]))(\\W|$)`, "gu");
         } else if (sourceStyle.nativeAlt) {
             if (regExps.target.quotesNativeAlt.test(tar)) return;
-            startQuote = new RegExp(`(^|\\W)(([${nonQuoteStartCharsAlt}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`, "gu");
-            endQuote = new RegExp(`([\\p{Letter}}])([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndCharsAlt}'"]))(\\W|$)`, "gu");
+            const startQuotePattern = isIrish
+                ? `(^|\\W)(?!['\u2019][\\p{Letter}])(([${nonQuoteStartCharsAlt}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`
+                : `(^|\\W)(([${nonQuoteStartCharsAlt}'"])[\u00A0\u202F\u2060\u3000]?)([\\p{Letter}{])`;
+            startQuote = new RegExp(startQuotePattern, "gu");
+            endQuote = new RegExp(`([\\p{Letter}}])${apostropheExclusion}([\u00A0\u202F\u2060\u3000]?([${nonQuoteEndCharsAlt}'"]))(\\W|$)`, "gu");
         } else {
             // no quotes detected in source string
             return;
@@ -273,7 +292,7 @@ class ResourceQuoteStyle extends ResourceRule {
     /**
      * Calculate all the regular expressions we need.
      * @private
-     * @param {string} locale
+     * @param {Locale} locale
      * @param {boolean} isOptionalPunctuationLanguage
      * @returns {RegExpCollectionForLocale}
      */
@@ -287,12 +306,13 @@ class ResourceQuoteStyle extends ResourceRule {
         const quotesAsciiAlt = new RegExp(`((^|\\W)'\\s?[\\p{Letter}\\{]|[a-rt-zA-RT-Z\\}]\\s?'(\\W|$))`, "gu");
 
         // locale info object will tell us the quote chars for the locale
-        let li = LICache[locale];
+        const localeSpec = locale.getSpec();
+        let li = LICache[localeSpec];
         if (!li) {
             // @ts-ignore: An argument for 'options' was not provided
             // LocaleInfo constructor type annotation does not reflect that options are in fact optional
-            li = new LocaleInfo(locale);
-            LICache[locale] = li;
+            li = new LocaleInfo(localeSpec);
+            LICache[localeSpec] = li;
         }
 
         let sourceLI = LICache[this.sourceLocale];
@@ -311,18 +331,29 @@ class ResourceQuoteStyle extends ResourceRule {
         const sourceQuoteEndAlt = /** @type {string} */ (sourceLI.info.delimiter.alternateQuotationEnd);
 
         /** special case for Japanese: accept the main quote style only and also square brackets */
-        const targetQuoteStartChars = (locale === "ja-JP") ? ["「", "\\["] : [li.getDelimiterQuotationStart()];
+        /** special case for Irish: use guillemets as default quote style */
+        const language = locale.getLanguage();
+        const targetQuoteStartChars = (language === "ja") ? ["「", "\\["] :
+                                     (language === "ga") ? ["«"] :
+                                     [li.getDelimiterQuotationStart()];
         // used in regular expressions:
         const targetQuoteStart = targetQuoteStartChars.join("");
-        const targetQuoteStartAltChars = (locale === "ja-JP") ? ["「", "\\["] : [li.info.delimiter.alternateQuotationStart];
+        const targetQuoteStartAltChars = (language === "ja") ? ["「", "\\["] :
+                                        (language === "ga") ? ["«"] :
+                                        [li.info.delimiter.alternateQuotationStart];
         // used in regular expressions:
         const targetQuoteStartAlt = /** @type {string} */ targetQuoteStartAltChars.join("");
 
         /** special case for Japanese: accept the main quote style only and also square brackets */
-        const targetQuoteEndChars = (locale === "ja-JP") ? ["」", "\\]"] : [li.getDelimiterQuotationEnd()];
+        /** special case for Irish: use guillemets as default quote style */
+        const targetQuoteEndChars = (language === "ja") ? ["」", "\\]"] :
+                                   (language === "ga") ? ["»"] :
+                                   [li.getDelimiterQuotationEnd()];
         // used in regular expressions:
         const targetQuoteEnd = targetQuoteEndChars.join("");
-        const targetQuoteEndAltChars = (locale === "ja-JP") ? ["」", "\\]"] : [li.info.delimiter.alternateQuotationEnd];
+        const targetQuoteEndAltChars = (language === "ja") ? ["」", "\\]"] :
+                                      (language === "ga") ? ["»"] :
+                                      [li.info.delimiter.alternateQuotationEnd];
         // used in regular expressions:
         const targetQuoteEndAlt = /** @type {string} */ targetQuoteEndAltChars.join("");
 

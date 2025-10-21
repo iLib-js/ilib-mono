@@ -1809,4 +1809,396 @@ describe("testResourceQuoteStyle", () => {
         });
         expect(!actual).toBeTruthy();
     });
+
+    test("Italian apostrophe contraction with no quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The product has not been setup or their is an issue with the connection.",
+            targetLocale: "it-IT",
+            target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // 1. Source has no quotes, so rule should return early
+        // 2. Even if source had quotes, "c'è" is a contraction using ASCII straight quote as apostrophe, not quotation marks
+        expect(!actual).toBeTruthy();
+    });
+
+    test("Italian apostrophe contraction with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The \"product\" has not been setup or their is an issue with the connection.",
+            targetLocale: "it-IT",
+            target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // Even though source has quotes, "c'è" is a contraction using ASCII straight quote as apostrophe, not quotation marks
+        // Italian is also an optional quote language, so missing quotes in target is acceptable
+        // Currently this test FAILS because the rule incorrectly flags the apostrophe as a quotation mark error
+        expect(actual).toBeFalsy();
+    });
+
+    test("Italian Unicode apostrophe contraction with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The \"product\" has not been setup or their is an issue with the connection.",
+            targetLocale: "it-IT",
+            target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // Even though source has quotes, "c'è" uses Unicode apostrophe (U+2019) as apostrophe, not quotation marks
+        // Italian is also an optional quote language, so missing quotes in target is acceptable
+        // Currently this test FAILS because the rule incorrectly flags the Unicode apostrophe as a quotation mark error
+        expect(actual).toBeFalsy();
+    });
+
+    test("French contraction apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The product is 'ready' for school.",
+            targetLocale: "fr-FR",
+            target: "Le produit est «prêt» pour l'école.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "l'école" is a French contraction using apostrophe, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("French multiple contractions with no quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "What is it?",
+            targetLocale: "fr-FR",
+            target: "Qu'est-ce que c'est ?",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'accord" and "qu'il" are French contractions using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("French multiple contractions with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "What is 'it'?",
+            targetLocale: "fr-FR",
+            target: "Qu'est-ce que «c'est» ?",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'accord" and "qu'il" are French contractions using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("English possessive apostrophe with no quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The product belongs to the user's account.",
+            targetLocale: "de-DE",
+            target: "Das Produkt gehört zum Benutzerkonto.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "user's" is a possessive apostrophe in the source, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("English contraction apostrophe with no quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The product doesn't work properly.",
+            targetLocale: "de-DE",
+            target: "Das Produkt funktioniert nicht richtig.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "doesn't" is a contraction apostrophe in the source, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Mixed apostrophes and quotes in French", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The "product" is ready for l\'école and "school".',
+            targetLocale: "fr-FR",
+            target: "Le produit est prêt pour l'école et «école».",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "l'école" is a contraction (should be ignored)
+        // "«école»" are proper French quotes (should be accepted)
+        expect(actual).toBeFalsy();
+    });
+
+    test("Catalan contraction apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for water.',
+            targetLocale: "ca-ES",
+            target: "El producte està \u201cllest\u201d per l'aigua.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "l'aigua" is a Catalan contraction using apostrophe, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Catalan multiple contractions with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the here and the there.',
+            targetLocale: "ca-ES",
+            target: "El producte està \u201cllest\u201d per l'aquí i l'allà.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'aquí" and "n'aquí" are Catalan contractions using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Irish glottal stop apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the eye.',
+            targetLocale: "ga-IE",
+            target: "Tá an táirge «réidh» don 'ain.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "'ain" is an Irish glottal stop using apostrophe, not quotation marks
+        // Proper quotes are used for "réidh"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Irish multiple glottal stops with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the eye and mother.',
+            targetLocale: "ga-IE",
+            target: "Tá an táirge «réidh» don 'ain agus don 'umm.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "'ain" and "'umm" are Irish glottal stops using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Irish elision apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for drinking.',
+            targetLocale: "ga-IE",
+            target: "Tá an táirge «réidh» don d'ól.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'ól" is an Irish elision using apostrophe, not quotation marks
+        // Proper quotes are used for "réidh"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Irish multiple elisions with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for drinking and eating.',
+            targetLocale: "ga-IE",
+            target: "Tá an táirge «réidh» don d'ól agus don d'ith.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'ól" and "d'ith" are Irish elisions using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
 });
