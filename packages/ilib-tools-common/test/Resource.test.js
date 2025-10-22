@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ResourceString } from "../src/index.js";
+import { ResourceString, isValidState } from "../src/index.js";
 
 // For the most part, we need to test ResourceString instead of Resource
 // directly because you cannot instantiate an abstract class. But, we
@@ -1146,45 +1146,90 @@ describe("testResource", () => {
         // Should throw an error with specific message
         expect(() => {
             rs.setState("invalid-state");
-        }).toThrow('Attempt to set an invalid state on a resource: "invalid-state". Valid states are: needs-translation, needs-l10n, needs-adaptation, translated, needs-review-translation, needs-review-l10n, needs-review-adaptation, final, new, signed-off, accepted, or custom states starting with "x-"');
+        }).toThrow('Attempt to set an invalid state on a resource: "invalid-state". Valid states are: accepted, approved, final, fuzzy, initial, needs-adaptation, needs-approval, needs-l10n, needs-review, needs-review-adaptation, needs-review-l10n, needs-review-translation, needs-translation, new, rejected, reviewed, signed-off, translated, or custom states starting with "x-"');
     });
 
-    // Test state transitions between valid states
-    test("ResourceSetStateTransitions", () => {
+    // Test isValidState function directly
+    test("isValidState should validate XLIFF 2.0 standard states", () => {
+        expect.assertions(4);
+
+        expect(isValidState("initial")).toBe(true);
+        expect(isValidState("translated")).toBe(true);
+        expect(isValidState("reviewed")).toBe(true);
+        expect(isValidState("final")).toBe(true);
+    });
+
+    test("isValidState should validate XLIFF 1.2 standard states", () => {
         expect.assertions(8);
 
-        const rs = new ResourceString({
-            reskey: "test.string",
-            resType: "string",
-            sourceLocale: "en-US",
-            targetLocale: "ja-JP",
-            pathName: "a/b/c.md",
-            state: "new"
-        });
-        expect(rs).toBeTruthy();
+        expect(isValidState("new")).toBe(true);
+        expect(isValidState("needs-translation")).toBe(true);
+        expect(isValidState("needs-l10n")).toBe(true);
+        expect(isValidState("needs-adaptation")).toBe(true);
+        expect(isValidState("needs-review-translation")).toBe(true);
+        expect(isValidState("needs-review-adaptation")).toBe(true);
+        expect(isValidState("needs-review-l10n")).toBe(true);
+        expect(isValidState("signed-off")).toBe(true);
+    });
 
-        // Test progression through workflow states
-        rs.setState("needs-translation");
-        expect(rs.getState()).toBe("needs-translation");
+    test("isValidState should validate additional common states", () => {
+        expect.assertions(2);
 
-        rs.setState("translated");
-        expect(rs.getState()).toBe("translated");
+        expect(isValidState("needs-review")).toBe(true);
+        expect(isValidState("fuzzy")).toBe(true);
+    });
 
-        rs.setState("needs-review-translation");
-        expect(rs.getState()).toBe("needs-review-translation");
+    test("isValidState should validate Mojito states", () => {
+        expect.assertions(4);
 
-        rs.setState("final");
-        expect(rs.getState()).toBe("final");
+        expect(isValidState("accepted")).toBe(true);
+        expect(isValidState("rejected")).toBe(true);
+        expect(isValidState("approved")).toBe(true);
+        expect(isValidState("needs-approval")).toBe(true);
+    });
 
-        // Test custom workflow states
-        rs.setState("x-pending-approval");
-        expect(rs.getState()).toBe("x-pending-approval");
+    test("isValidState should validate custom x- prefixed states", () => {
+        expect.assertions(7);
 
-        rs.setState("signed-off");
-        expect(rs.getState()).toBe("signed-off");
+        expect(isValidState("x-custom-state")).toBe(true);
+        expect(isValidState("x-pending-approval")).toBe(true);
+        expect(isValidState("x-ready-for-review")).toBe(true);
+        expect(isValidState("x-my-workflow")).toBe(true);
+        expect(isValidState("x-123-numeric")).toBe(true);
+        expect(isValidState("x-multi-word-state")).toBe(true);
+        expect(isValidState("x- ")).toBe(true); // x- with space is valid (current behavior)
+    });
 
-        rs.setState("accepted");
-        expect(rs.getState()).toBe("accepted");
+    test("isValidState should reject invalid states", () => {
+        expect.assertions(8);
+
+        expect(isValidState("invalid-state")).toBe(false);
+        expect(isValidState("translted")).toBe(false); // typo
+        expect(isValidState("xx-state")).toBe(false); // double x prefix
+        expect(isValidState("mystate")).toBe(false); // unrecognized state
+        expect(isValidState("needs translation")).toBe(false); // space instead of hyphen
+        expect(isValidState("NEEDS-TRANSLATION")).toBe(false); // uppercase
+        expect(isValidState("translated-extra")).toBe(false); // valid state with extra text
+        expect(isValidState("")).toBe(false); // empty string
+    });
+
+    test("isValidState should reject invalid x- prefixed states", () => {
+        expect.assertions(3);
+
+        expect(isValidState("x")).toBe(false); // just x
+        expect(isValidState("x-")).toBe(false); // x with just hyphen
+        expect(isValidState("x--state")).toBe(true); // double hyphen is actually valid
+    });
+
+    test("isValidState should reject non-string inputs", () => {
+        expect.assertions(6);
+
+        expect(isValidState(null)).toBe(false);
+        expect(isValidState(undefined)).toBe(false);
+        expect(isValidState(123)).toBe(false);
+        expect(isValidState({})).toBe(false);
+        expect(isValidState([])).toBe(false);
+        expect(isValidState(true)).toBe(false);
     });
 
 });

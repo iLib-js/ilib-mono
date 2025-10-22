@@ -49,33 +49,33 @@ If you don't specify a parameter, the rule defaults to requiring "translated":
 
 ## Valid States
 
-The resource-state-checker supports the following valid states:
+The resource-state-checker supports the following valid states (listed alphabetically):
 
 ### XLIFF 2.0 Standard States
-- `initial`
-- `translated`
-- `reviewed`
 - `final`
+- `initial`
+- `reviewed`
+- `translated`
 
 ### XLIFF 1.2 Standard States
-- `new`
-- `needs-translation`
 - `needs-adaptation`
 - `needs-l10n`
-- `needs-review-translation`
 - `needs-review-adaptation`
 - `needs-review-l10n`
+- `needs-review-translation`
+- `needs-translation`
+- `new`
 - `signed-off`
 
 ### Additional Common States
-- `needs-review`
 - `fuzzy`
+- `needs-review`
 
 ### Mojito Open Source Project States
 - `accepted`
-- `rejected`
 - `approved`
 - `needs-approval`
+- `rejected`
 
 ### Custom States
 - Any state with `x-` prefix (e.g., `x-custom-state`, `x-my-workflow`)
