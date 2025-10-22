@@ -19,6 +19,7 @@
  */
 
 import { Rule, Result } from 'ilib-lint-common';
+import { VALID_STATES, isValidState } from 'ilib-tools-common';
 
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
@@ -86,32 +87,9 @@ class ResourceStateChecker extends Rule {
      * @private
      */
     validateStates() {
-        // Valid states from XLIFF 1.2 and 2.0 specifications
-        const validStates = [
-            // XLIFF 2.0 standard states
-            "initial", "translated", "reviewed", "final",
-
-            // XLIFF 1.2 standard states
-            "new", "needs-translation", "needs-adaptation", "needs-l10n",
-            "needs-review-translation", "needs-review-adaptation", "needs-review-l10n",
-            "signed-off",
-
-            // Additional common states used in practice
-            "needs-review", "fuzzy",
-
-            // Mojito open source project states (from XliffState.java)
-            "accepted", "rejected", "approved", "needs-approval"
-        ];
-
         for (const state of this.states) {
-            // Allow custom states with x- prefix
-            if (state.startsWith("x-")) {
-                continue;
-            }
-
-            // Check if it's a valid standard state
-            if (!validStates.includes(state)) {
-                throw new Error(`Invalid state "${state}" in resource-state-checker configuration. Valid states are: ${validStates.join(", ")} or custom states with "x-" prefix.`);
+            if (!isValidState(state)) {
+                throw new Error(`Invalid state "${state}" in resource-state-checker configuration. Valid states are: ${VALID_STATES.join(", ")} or custom states with "x-" prefix.`);
             }
         }
     }

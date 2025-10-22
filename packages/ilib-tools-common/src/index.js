@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Resource from './Resource.js';
+import Resource, { VALID_STATES, isValidState } from './Resource.js';
 import ResourceString from './ResourceString.js';
 import ResourceArray from './ResourceArray.js';
 import ResourcePlural from './ResourcePlural.js';
@@ -49,6 +49,8 @@ import {
 
 export {
     Resource,
+    VALID_STATES,
+    isValidState,
     ResourceString,
     ResourceArray,
     ResourcePlural,

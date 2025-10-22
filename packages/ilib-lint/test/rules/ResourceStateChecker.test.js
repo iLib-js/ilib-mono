@@ -474,7 +474,7 @@ describe("testResourceStateChecker", () => {
         // should throw when the state has a typo
         expect(() => {
             new ResourceStateChecker({ param: "translted" });
-        }).toThrow('Invalid state "translted" in resource-state-checker configuration. Valid states are: initial, translated, reviewed, final, new, needs-translation, needs-adaptation, needs-l10n, needs-review-translation, needs-review-adaptation, needs-review-l10n, signed-off, needs-review, fuzzy, accepted, rejected, approved, needs-approval or custom states with "x-" prefix.');
+        }).toThrow('Invalid state "translted" in resource-state-checker configuration. Valid states are: accepted, approved, final, fuzzy, initial, needs-adaptation, needs-approval, needs-l10n, needs-review, needs-review-adaptation, needs-review-l10n, needs-review-translation, needs-translation, new, rejected, reviewed, signed-off, translated or custom states with "x-" prefix.');
     });
 
     test("should not accept invalid state with double x prefix in constructor", () => {
@@ -483,7 +483,7 @@ describe("testResourceStateChecker", () => {
         // should throw when the state has a double x prefix
         expect(() => {
             new ResourceStateChecker({ param: "xx-state" });
-        }).toThrow('Invalid state "xx-state" in resource-state-checker configuration. Valid states are: initial, translated, reviewed, final, new, needs-translation, needs-adaptation, needs-l10n, needs-review-translation, needs-review-adaptation, needs-review-l10n, signed-off, needs-review, fuzzy, accepted, rejected, approved, needs-approval or custom states with "x-" prefix.');
+        }).toThrow('Invalid state "xx-state" in resource-state-checker configuration. Valid states are: accepted, approved, final, fuzzy, initial, needs-adaptation, needs-approval, needs-l10n, needs-review, needs-review-adaptation, needs-review-l10n, needs-review-translation, needs-translation, new, rejected, reviewed, signed-off, translated or custom states with "x-" prefix.');
     });
 
     test("should not accept unrecognized state in constructor", () => {
@@ -492,7 +492,7 @@ describe("testResourceStateChecker", () => {
         // should throw when the state is not recognized
         expect(() => {
             new ResourceStateChecker({ param: "mystate" });
-        }).toThrow('Invalid state "mystate" in resource-state-checker configuration. Valid states are: initial, translated, reviewed, final, new, needs-translation, needs-adaptation, needs-l10n, needs-review-translation, needs-review-adaptation, needs-review-l10n, signed-off, needs-review, fuzzy, accepted, rejected, approved, needs-approval or custom states with "x-" prefix.');
+        }).toThrow('Invalid state "mystate" in resource-state-checker configuration. Valid states are: accepted, approved, final, fuzzy, initial, needs-adaptation, needs-approval, needs-l10n, needs-review, needs-review-adaptation, needs-review-l10n, needs-review-translation, needs-translation, new, rejected, reviewed, signed-off, translated or custom states with "x-" prefix.');
     });
 
     test("should accept Mojito accepted state", () => {

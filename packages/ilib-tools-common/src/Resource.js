@@ -18,27 +18,61 @@
  */
 
 const validStates = {
+    // XLIFF 2.0 standard states
+    "initial": true,
+    "translated": true,
+    "reviewed": true,
+    "final": true,
+
     // XLIFF 1.2 standard states
-    "needs-translation":true,
-    "needs-l10n":true,
-    "needs-adaptation":true,
-    "translated":true,
-    "needs-review-translation":true,
-    "needs-review-l10n":true,
-    "needs-review-adaptation":true,
-    "final":true,
-    // ilib and mojito custom states (commonly used in workflows)
-    "new":true,  // alias for needs-translation
-    "signed-off":true,  // custom workflow state
-    "accepted":true  // custom workflow state
+    "new": true,
+    "needs-translation": true,
+    "needs-adaptation": true,
+    "needs-l10n": true,
+    "needs-review-translation": true,
+    "needs-review-adaptation": true,
+    "needs-review-l10n": true,
+    "signed-off": true,
+
+    // Additional common states used in practice
+    "needs-review": true,
+    "fuzzy": true,
+
+    // Mojito open source project states (from XliffState.java)
+    "accepted": true,
+    "rejected": true,
+    "approved": true,
+    "needs-approval": true
 };
 
 /**
- * Check if a state is valid according to XLIFF 1.2 specification.
- * Standard states are predefined, and custom states must start with "x-".
+ * Array of all valid state names that can be used with Resource objects.
+ * This array is sorted alphabetically and includes states from:
+ * - XLIFF 2.0 standard states
+ * - XLIFF 1.2 standard states
+ * - Additional common states used in practice
+ * - Mojito open source project states
+ *
+ * Custom states with "x-" prefix are also valid but not included in this array.
+ *
+ * @example
+ * // Check if a state is valid
+ * if (VALID_STATES.includes(state)) {
+ *     console.log('Valid state');
+ * }
+ *
+ * @type {string[]}
+ * @since 1.19.0
+ */
+export const VALID_STATES = Object.keys(validStates).sort();
+
+/**
+ * Check if a state is valid according to XLIFF 1.2 or 2.0 specification
+ * or if the state is used with ilib or mojito.
  *
  * @param {string} state the state to validate
- * @returns {boolean} true if the state is valid
+ * @returns {boolean} true if the state is valid, false otherwise
+ * @since 1.19.0
  */
 function isValidState(state) {
     // Must be a string
@@ -63,6 +97,8 @@ function isValidState(state) {
 
     return false;
 }
+
+export { isValidState };
 
 const translationImportant = [
     "context",
@@ -347,8 +383,7 @@ class Resource {
      */
     setState(state) {
         if (!isValidState(state)) {
-            const validStatesList = Object.keys(validStates).join(', ');
-            throw new Error(`Attempt to set an invalid state on a resource: "${state}". Valid states are: ${validStatesList}, or custom states starting with "x-"`);
+            throw new Error(`Attempt to set an invalid state on a resource: "${state}". Valid states are: ${VALID_STATES.join(', ')}, or custom states starting with "x-"`);
         }
         this.state = state;
         this.dirty = true;
