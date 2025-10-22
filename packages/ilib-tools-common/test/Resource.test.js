@@ -1048,7 +1048,7 @@ describe("testResource", () => {
         expect(rs.getState()).toBe(state);
     });
 
-    // Test ilib/mojito custom states using test.each
+    // Test common states using test.each
     test.each([
         ["new"],
         ["signed-off"],
@@ -1173,15 +1173,10 @@ describe("testResource", () => {
     });
 
     test("isValidState should validate additional common states", () => {
-        expect.assertions(2);
+        expect.assertions(6);
 
         expect(isValidState("needs-review")).toBe(true);
         expect(isValidState("fuzzy")).toBe(true);
-    });
-
-    test("isValidState should validate Mojito states", () => {
-        expect.assertions(4);
-
         expect(isValidState("accepted")).toBe(true);
         expect(isValidState("rejected")).toBe(true);
         expect(isValidState("approved")).toBe(true);

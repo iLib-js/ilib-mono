@@ -19,12 +19,14 @@
 
 const validStates = {
     // XLIFF 2.0 standard states
+    // https://docs.oasis-open.org/xliff/xliff-core/v2.0/xliff-core-v2.0.html
     "initial": true,
     "translated": true,
     "reviewed": true,
     "final": true,
 
     // XLIFF 1.2 standard states
+    // from https://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html
     "new": true,
     "needs-translation": true,
     "needs-adaptation": true,
@@ -37,8 +39,6 @@ const validStates = {
     // Additional common states used in practice
     "needs-review": true,
     "fuzzy": true,
-
-    // Mojito open source project states (from XliffState.java)
     "accepted": true,
     "rejected": true,
     "approved": true,
@@ -51,7 +51,6 @@ const validStates = {
  * - XLIFF 2.0 standard states
  * - XLIFF 1.2 standard states
  * - Additional common states used in practice
- * - Mojito open source project states
  *
  * Custom states with "x-" prefix are also valid but not included in this array.
  *
@@ -68,7 +67,7 @@ export const VALID_STATES = Object.keys(validStates).sort();
 
 /**
  * Check if a state is valid according to XLIFF 1.2 or 2.0 specification
- * or if the state is used with ilib or mojito.
+ * or if the state is used with ilib projects.
  *
  * @param {string} state the state to validate
  * @returns {boolean} true if the state is valid, false otherwise
