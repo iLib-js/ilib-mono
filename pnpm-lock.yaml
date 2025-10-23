@@ -2569,6 +2569,9 @@ importers:
       ilib-xliff:
         specifier: workspace:^
         version: link:../ilib-xliff
+      ilib-xliff-webos:
+        specifier: ^1.0.3
+        version: 1.0.3
       intl-messageformat:
         specifier: ^10.7.11
         version: 10.7.11
@@ -7318,6 +7321,9 @@ packages:
 
   ilib-xliff-webos@1.0.2:
     resolution: {integrity: sha512-SRMVoQJcYgkkTH6o0wZOuwbRgPLrceB24vKDZZpGL692rv7nzoINQliQYLRfecW3APuNsvlxokDgwWJsnA0Oqw==}
+
+  ilib-xliff-webos@1.0.3:
+    resolution: {integrity: sha512-Aw7F4FgF29eaq9CHaaAwfisw3NjXQoTqAx3bGyqcxL1iJnz8V5WVDY/X8MzwSIOXM4G8VjrorRjbWlZW+iZQQg==}
 
   ilib-xliff@1.4.0:
     resolution: {integrity: sha512-/t1ZvrY4dI/iSs3pVAsUbfEJU/TGyYs5h34OqDkh1QnB7oer+YBR1Y1qcwCKK0DG7HHMvrUGxlW5x8PbYFpf3g==}
@@ -16806,6 +16812,11 @@ snapshots:
       micromatch: 4.0.8
 
   ilib-xliff-webos@1.0.2:
+    dependencies:
+      ilib-common: 1.1.6
+      ilib-xml-js: 1.7.0
+
+  ilib-xliff-webos@1.0.3:
     dependencies:
       ilib-common: 1.1.6
       ilib-xml-js: 1.7.0

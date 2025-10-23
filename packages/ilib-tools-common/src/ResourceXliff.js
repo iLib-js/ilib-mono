@@ -95,6 +95,13 @@ class ResourceXliff {
         this.sourceLocale = this.sourceLocale || "en-US";
         this.xliff = options?.xliff ?? new Xliff(options);
         this.ts = new TranslationSet(this.sourceLocale);
+
+        if (this.xliff.getTranslationUnits().length) {
+            const translationUnits = this.xliff.getTranslationUnits();
+            translationUnits.forEach(tu => {
+                this.ts.add(this.convertTransUnit(tu));
+            });
+        }
     }
 
     /**
