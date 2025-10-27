@@ -43,7 +43,7 @@
         "@types/ungap__structured-clone": "^1.2.0",
         "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
-        "loctool": "^2.25.2",
+        "loctool": "workspace:^",
         "prettier": "^3.3.3",
         "ts-jest": "^29.2.5",
         "typescript": "^5.5.4",
@@ -63,6 +63,6 @@
         "unist-util-visit": "^2"
     },
     "peerDependencies": {
-        "loctool": "^2.25.2"
+        "loctool": "workspace:^"
     }
 }
