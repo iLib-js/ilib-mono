@@ -16,7 +16,7 @@
  */
 
 import u from "unist-builder";
-import { fromComponents, toComponents } from "../escape";
+import { fromComponents, toComponents } from "../../../../src/markdown/ast-transformer/component/escape";
 
 import type { Node } from "unist";
 
@@ -372,7 +372,7 @@ describe("ast-transformer-component/escape", () => {
                 const actualAst = fromComponents(
                     ast,
                     [{ type: "wrapping" }, { type: "wrapping" }],
-                    mapComponentDataToNode,
+                    mapComponentDataToNode
                 );
                 /**
                  * ```markdown
@@ -406,7 +406,7 @@ describe("ast-transformer-component/escape", () => {
                 const actualAst = fromComponents(
                     ast,
                     [{ type: "wrapping" }, { type: "wrapping" }],
-                    mapComponentDataToNode,
+                    mapComponentDataToNode
                 );
                 /**
                  * ```markdown
@@ -429,7 +429,7 @@ describe("ast-transformer-component/escape", () => {
                 const actualAst = fromComponents(
                     ast,
                     [{ type: "wrapping-attr", value: "example.com" }],
-                    mapComponentDataToNode,
+                    mapComponentDataToNode
                 );
                 /**
                  * ```markdown
@@ -463,7 +463,7 @@ describe("ast-transformer-component/escape", () => {
                         { type: "wrapping-attr", value: "#000000" },
                         { type: "wrapping-attr", value: "#FFFFFF" },
                     ],
-                    mapComponentDataToNode,
+                    mapComponentDataToNode
                 );
                 /**
                  * ```markdown
@@ -510,7 +510,7 @@ describe("ast-transformer-component/escape", () => {
                         { type: "unit", value: "code" },
                         { type: "unit", value: "<html>" },
                     ],
-                    mapComponentDataToNode,
+                    mapComponentDataToNode
                 );
                 /**
                  * ```markdown
@@ -540,7 +540,7 @@ describe("ast-transformer-component/escape", () => {
                         { type: "unit", value: "code" },
                         { type: "unit", value: "<html>" },
                     ],
-                    mapComponentDataToNode,
+                    mapComponentDataToNode
                 );
                 /**
                  * ```markdown
@@ -570,7 +570,7 @@ describe("ast-transformer-component/escape", () => {
                 const actualAst = fromComponents(
                     ast,
                     [{ type: "wrapping" }, { type: "wrapping" }],
-                    mapComponentDataToNode,
+                    mapComponentDataToNode
                 );
                 /**
                  * ```markdown
@@ -610,7 +610,7 @@ describe("ast-transformer-component/escape", () => {
                         { type: "wrapping" }, // bold
                         { type: "wrapping" }, // italic
                     ],
-                    mapComponentDataToNode,
+                    mapComponentDataToNode
                 );
                 /**
                  * ```markdown

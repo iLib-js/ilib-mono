@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import unsupportedSyntax from "../syntax";
+import unsupportedSyntax from "../../../../src/markdown/micromark-plugin/unsupported/syntax";
 
 import fromMarkdown from "mdast-util-from-markdown";
 import unistUtilRemovePosition from "unist-util-remove-position";

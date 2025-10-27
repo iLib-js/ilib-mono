@@ -16,8 +16,11 @@
  */
 
 import u from "unist-builder";
-import { mapComponentDataToNode, mapNodeToComponentData } from "../mapping";
-import type { ComponentData } from "..";
+import {
+    mapComponentDataToNode,
+    mapNodeToComponentData,
+} from "../../../../src/markdown/ast-transformer/component/mapping";
+import type { ComponentData } from "../../../../src/markdown/ast-transformer/component/componentData";
 
 describe("ast-transformer-component/mapping", () => {
     describe("mdast -> component", () => {
@@ -34,7 +37,7 @@ describe("ast-transformer-component/mapping", () => {
                 const actual = mapNodeToComponentData(node);
                 const expected = { type: expectedComponentType };
                 expect(actual).toEqual(expected);
-            },
+            }
         );
 
         it.each([["html", "html", { value: "<p>HTML</p>" }]] as const)(
@@ -44,7 +47,7 @@ describe("ast-transformer-component/mapping", () => {
                 const actual = mapNodeToComponentData(node);
                 const expected = { type: expectedComponentType, ...expectedData };
                 expect(actual).toEqual(expected);
-            },
+            }
         );
 
         it.each([
@@ -58,7 +61,7 @@ describe("ast-transformer-component/mapping", () => {
                 const actual = mapNodeToComponentData(node);
                 const expected = { type: expectedComponentType, ...expectedData };
                 expect(actual).toEqual(expected);
-            },
+            }
         );
 
         it.each([
@@ -103,7 +106,7 @@ describe("ast-transformer-component/mapping", () => {
                 const actual = mapComponentDataToNode(componentData);
                 const expected = u(expectedNodeType, componentProps);
                 expect(actual).toEqual(expected);
-            },
+            }
         );
 
         it.each([

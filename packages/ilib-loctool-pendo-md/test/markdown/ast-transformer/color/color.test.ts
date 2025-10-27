@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { fromColorNodes, toColorNodes } from "../color";
+import { fromColorNodes, toColorNodes } from "../../../../src/markdown/ast-transformer/color/color";
 import u from "unist-builder";
 
 describe("ast-transformer-color", () => {

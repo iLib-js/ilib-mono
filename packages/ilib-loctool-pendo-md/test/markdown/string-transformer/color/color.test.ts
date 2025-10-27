@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { toHtmlTags, fromHtmlTags } from "../color";
+import { toHtmlTags, fromHtmlTags } from "../../../../src/markdown/string-transformer/color/color";
 
 describe("string-transformer-color", () => {
     describe("toXmlTags", () => {

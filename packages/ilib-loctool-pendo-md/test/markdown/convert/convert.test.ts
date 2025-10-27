@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import type { ComponentList } from "../../ast-transformer/component";
-import { backconvert, convert } from "../convert";
+import type { ComponentList } from "../../../src/markdown/ast-transformer/component";
+import { backconvert, convert } from "../../../src/markdown/convert/convert";
 
 describe("markdown/convert", () => {
     describe("convert", () => {
@@ -25,7 +25,7 @@ describe("markdown/convert", () => {
             const [escaped, _] = convert(markdown);
 
             expect(escaped).toBe(
-                `string with <c0>emphasis</c0>, <c1>underline</c1>, <c2>colored text</c2> and <c3>a link</c3>`,
+                `string with <c0>emphasis</c0>, <c1>underline</c1>, <c2>colored text</c2> and <c3>a link</c3>`
             );
         });
 
@@ -71,7 +71,7 @@ describe("markdown/convert", () => {
             const backconverted = backconvert(escaped, components);
 
             expect(backconverted).toBe(
-                `string with *emphasis*, ++underline++, {color: #FF0000}colored text{/color} and [a link](https://example.com)`,
+                `string with *emphasis*, ++underline++, {color: #FF0000}colored text{/color} and [a link](https://example.com)`
             );
         });
 
@@ -99,7 +99,7 @@ describe("markdown/convert", () => {
             const backconverted = backconvert(escapedShuffled, components);
 
             expect(backconverted).toBe(
-                `string with {color: #FF0000}colored text{/color}, ++underline++, *emphasis* and [a link](https://example.com)`,
+                `string with {color: #FF0000}colored text{/color}, ++underline++, *emphasis* and [a link](https://example.com)`
             );
         });
     });

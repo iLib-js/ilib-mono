@@ -16,7 +16,7 @@
  */
 
 import type { TranslationSet } from "loctool";
-import PendoXliffFile from "../PendoXliffFile";
+import PendoXliffFile from "../../src/loctool/PendoXliffFile";
 import fs from "node:fs";
 
 jest.mock("node:fs");
@@ -37,7 +37,9 @@ const makeXliff = (props: {
         note?: string;
     }[];
 }) => `<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file original="original-file" source-language="${props.sourceLocale}" target-language="${props.targetLocale}" datatype="${props.datatype}">
+    <file original="original-file" source-language="${props.sourceLocale}" target-language="${
+    props.targetLocale
+}" datatype="${props.datatype}">
         <body>${props.transUnits
             .map(
                 (unit) => `
@@ -45,7 +47,7 @@ const makeXliff = (props: {
                 <source>${unit.source}</source>
                 <target${unit.target ? ` state="translated"` : ""}>${unit.target ?? ""}</target>
                 <note>${unit.note ?? ""}</note>
-            </trans-unit>`,
+            </trans-unit>`
             )
             .join("\n")}
         </body>
@@ -57,7 +59,7 @@ const makeFakeTranslations = (
         locale: string;
         key: string;
         target: string;
-    }[],
+    }[]
 ) =>
     ({
         getAll: () =>
@@ -68,9 +70,9 @@ const makeFakeTranslations = (
                         getTarget: () => unit.target,
                         getTargetLocale: () => unit.locale,
                         getType: () => "string",
-                    }) as unknown,
+                    } as unknown)
             ),
-    }) as unknown;
+    } as unknown);
 
 describe("PendoXliffFile", () => {
     let file: PendoXliffFile;
@@ -177,7 +179,7 @@ describe("PendoXliffFile", () => {
                         source: "Email Address",
                         comment: "label for text input",
                     }),
-                ]),
+                ])
             );
         });
 
@@ -208,7 +210,7 @@ describe("PendoXliffFile", () => {
                             source: "Email <c0>Address</c0>",
                             comment: "label for text input [c0: color]",
                         }),
-                    ]),
+                    ])
                 );
             });
 
@@ -312,7 +314,7 @@ describe("PendoXliffFile", () => {
                         },
                     ],
                 }),
-                expect.anything(),
+                expect.anything()
             );
         });
 
@@ -357,7 +359,7 @@ describe("PendoXliffFile", () => {
                         },
                     ],
                 }),
-                expect.anything(),
+                expect.anything()
             );
         });
 
@@ -407,7 +409,7 @@ describe("PendoXliffFile", () => {
                         },
                     ],
                 }),
-                expect.anything(),
+                expect.anything()
             );
         });
 
@@ -458,7 +460,7 @@ describe("PendoXliffFile", () => {
                         },
                     ],
                 }),
-                expect.anything(),
+                expect.anything()
             );
         });
 
@@ -504,7 +506,7 @@ describe("PendoXliffFile", () => {
             expect(mockedFs.writeFileSync).toHaveBeenCalledWith(
                 mockLocalizedPathDifferent,
                 expect.any(String),
-                expect.anything(),
+                expect.anything()
             );
         });
     });
