@@ -59,8 +59,8 @@ const globalRegex = (regex: RegExp) => new RegExp(regex, "g");
  */
 export const toHtmlTags = (markdown: string) =>
     markdown
-        .replaceAll(globalRegex(tagRegex.opening), '<color value="$<value>">')
-        .replaceAll(globalRegex(tagRegex.closing), "</color>");
+        .replace(globalRegex(tagRegex.opening), '<color value="$<value>">')
+        .replace(globalRegex(tagRegex.closing), "</color>");
 
 /**
  * Backconverts the XML color tags into Pendo markdown extended color syntax
@@ -69,5 +69,5 @@ export const toHtmlTags = (markdown: string) =>
  */
 export const fromHtmlTags = (convertedString: string) =>
     convertedString
-        .replaceAll(globalRegex(htmlRegex.opening), "{color: $<value>}")
+        .replace(globalRegex(htmlRegex.opening), "{color: $<value>}")
         .replace(globalRegex(htmlRegex.closing), "{/color}");
