@@ -35,7 +35,6 @@
         "pkg": "npm pack",
         "test": "jest",
         "test:watch": "jest --watch",
-        "lint": "eslint .",
         "format": "prettier --check .",
         "prepare": "require-self"
     },
@@ -44,26 +43,17 @@
         "node": ">=18.18.0"
     },
     "devDependencies": {
-        "@eslint/js": "^9.9.1",
         "@tsconfig/node18": "^18.2.4",
-        "@types/eslint-config-prettier": "^6.11.3",
-        "@types/eslint__js": "^8.42.3",
         "@types/jest": "^29.5.12",
         "@types/micromatch": "^4.0.9",
         "@types/node": "18",
         "@types/ungap__structured-clone": "^1.2.0",
-        "eslint": "^9.9.1",
-        "eslint-config-prettier": "^9.1.0",
-        "globals": "^15.9.0",
-        "husky": "^9.1.5",
         "jest": "^29.7.0",
-        "lint-staged": "^15.2.10",
         "loctool": "^2.25.2",
         "prettier": "^3.3.3",
         "require-self": "^0.2.3",
         "ts-jest": "^29.2.5",
         "typescript": "^5.5.4",
-        "typescript-eslint": "^8.4.0",
         "unist-builder": "2"
     },
     "dependencies": {
