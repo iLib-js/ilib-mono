@@ -1819,7 +1819,7 @@ describe("testResourceQuoteStyle", () => {
         const resource = new ResourceString({
             key: "quote.test",
             sourceLocale: "en-US",
-            source: "The product has not been setup or their is an issue with the connection.",
+            source: "The product has not been setup or there is an issue with the connection.",
             targetLocale: "it-IT",
             target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
             pathName: "a/b/c.xliff"
@@ -1845,7 +1845,7 @@ describe("testResourceQuoteStyle", () => {
         const resource = new ResourceString({
             key: "quote.test",
             sourceLocale: "en-US",
-            source: "The \"product\" has not been setup or their is an issue with the connection.",
+            source: "The \"product\" has not been setup or there is an issue with the connection.",
             targetLocale: "it-IT",
             target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
             pathName: "a/b/c.xliff"
@@ -1872,7 +1872,7 @@ describe("testResourceQuoteStyle", () => {
         const resource = new ResourceString({
             key: "quote.test",
             sourceLocale: "en-US",
-            source: "The \"product\" has not been setup or their is an issue with the connection.",
+            source: "The \"product\" has not been setup or there is an issue with the connection.",
             targetLocale: "it-IT",
             target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
             pathName: "a/b/c.xliff"
