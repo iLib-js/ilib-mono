@@ -16,7 +16,7 @@
  */
 
 import type { File, ResourceString, TranslationSet } from "loctool";
-import fs from "node:fs";
+import fs from "fs";
 import { backconvert, convert } from "../markdown/convert";
 import type { ComponentList } from "../markdown/ast-transformer/component";
 import { xml2js, js2xml, type Element } from "ilib-xml-js";

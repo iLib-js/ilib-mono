@@ -17,9 +17,9 @@
 
 import type { TranslationSet } from "loctool";
 import PendoXliffFile from "../../src/loctool/PendoXliffFile";
-import fs from "node:fs";
+import fs from "fs";
 
-jest.mock("node:fs");
+jest.mock("fs");
 const mockedFs = jest.mocked(fs);
 
 const mockGetLocalizedPath = jest.fn();

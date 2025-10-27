@@ -16,7 +16,7 @@
  */
 
 import type { FileType, Project, API, TranslationSet, ResourceString } from "loctool";
-import path from "node:path";
+import path from "path";
 import PendoXliffFile, { type TranslationUnit } from "./PendoXliffFile";
 import micromatch from "micromatch";
 

@@ -38,7 +38,7 @@
         "@types/jest": "^29.5.12",
         "@types/mdast": "^3.0.15",
         "@types/micromatch": "^4.0.9",
-        "@types/node": "18",
+        "@types/node": "12",
         "@types/ungap__structured-clone": "^1.2.0",
         "@types/unist": "^2",
         "ilib-internal": "workspace:^",
