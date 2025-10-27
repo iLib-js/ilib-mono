@@ -242,15 +242,7 @@ CustomProject.prototype.defineFileTypes = function() {
  */
 CustomProject.prototype.extract = function(cb) {
     this.parent.prototype.extract.call(this, function() {
-        this.db.getBy({
-            project: this.options.id,
-        }, function(err, resources) {
-            logger.trace("Getting all resources. Length: " + resources.length);
-            // logger.trace("Getting all resources. tu length: " + this.db.ts.resources.length);
-            this.translations.addAll(resources);
-
-            cb();
-        }.bind(this));
+        cb();
     }.bind(this));
 };
 
