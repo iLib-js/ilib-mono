@@ -332,7 +332,7 @@ export class PendoXliffFileType implements FileType {
         return translationSet;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- noop, see comment in method
+    // @ts-expect-error -- noop, see comment in method
     addSet(set: TranslationSet): void {
         // no-op
         // it's not clear why would the filetype need to add a set of translations to itself
