@@ -24,13 +24,13 @@ import { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } from "ilib-inter
 describe("samples", () => {
     describe("pendo-md", () => {
         let fsSnapshot: FSSnapshot;
-        const projectPath = path.resolve(__dirname, "..", "samples", "pendo");
+        const projectPath = path.resolve(__dirname, "..", "samples", "pendo-md");
         const pathInProject = (p: string) => path.resolve(projectPath, p);
 
         const projectFiles = {
             loctool: {
-                extracted: pathInProject("ilib-loctool-pendo-md-test-extracted.xliff"),
-                new: pathInProject("ilib-loctool-pendo-md-test-new.xliff"),
+                extracted: pathInProject("pendo-md-extracted.xliff"),
+                new: pathInProject("pendo-md-new.xliff"),
             },
             pendo: {
                 source: pathInProject("l10n/xliff/guides/A000A00Aaa0aaa-AaaaAaa00A0a_en-US.xliff"),

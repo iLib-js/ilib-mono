@@ -1,6 +1,6 @@
 {
-    "name": "ilib-loctool-pendo-md-test",
-    "id": "ilib-loctool-pendo-md-test",
+    "name": "pendo-md",
+    "id": "pendo-md",
     "description": "translate strings exported from Pendo",
     "projectType": "custom",
     "sourceLocale": "en-US",
