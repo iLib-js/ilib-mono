@@ -1,9 +1,9 @@
 {
     "name": "ilib-loctool-pendo-md",
     "version": "1.0.0",
-    "main": "dist/index.js",
+    "main": "lib/index.js",
     "description": "A loctool plugin that knows how to process markdown inside of Pendo xliff files",
-    "types": "dist/index.d.ts",
+    "types": "lib/index.d.ts",
     "author": "Wadim Wawrzenczak <wwawrzenczak@box.com>",
     "license": "Apache-2.0",
     "keywords": [
@@ -25,14 +25,11 @@
     "files": [
         "README.md",
         "LICENSE",
-        "dist"
+        "lib"
     ],
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "clean": "rm -rf dist ; git clean -f -d *",
         "debug": "node --inspect-brk node_modules/.bin/jest -i",
-        "dist": "npm-run-all build test pkg",
-        "pkg": "npm pack",
         "test": "jest",
         "test:watch": "jest --watch",
         "format": "prettier --check .",
