@@ -336,27 +336,53 @@ class ResourceQuoteStyle extends ResourceRule {
         /** special case for Japanese: accept the main quote style only and also square brackets */
         /** special case for Irish/Hawaiian/Samoan: use guillemets as default quote style */
         const language = locale.getLanguage();
-        const targetQuoteStartChars = (language === "ja") ? ["「", "\\["] :
-                                     (language === "ga" || language === "haw" || language === "sm") ? ["«"] :
-                                     [li.getDelimiterQuotationStart()];
+        let targetQuoteStartChars;
+        let targetQuoteStartAltChars;
         // used in regular expressions:
+        switch (language) {
+            case "ja":
+                targetQuoteStartChars = ["「", "\\["];
+                targetQuoteStartAltChars = ["「", "\\["];
+                break;
+            case "ga":
+            case "haw":
+            case "sm":
+                targetQuoteStartChars = ["«"];
+                targetQuoteStartAltChars = ["«"];
+                break;
+            default:
+                targetQuoteStartChars = [li.getDelimiterQuotationStart()];
+                targetQuoteStartAltChars = [li.info.delimiter.alternateQuotationStart];
+                break;
+        }
         const targetQuoteStart = targetQuoteStartChars.join("");
-        const targetQuoteStartAltChars = (language === "ja") ? ["「", "\\["] :
-                                        (language === "ga" || language === "haw" || language === "sm") ? ["«"] :
-                                        [li.info.delimiter.alternateQuotationStart];
+
         // used in regular expressions:
         const targetQuoteStartAlt = /** @type {string} */ targetQuoteStartAltChars.join("");
 
         /** special case for Japanese: accept the main quote style only and also square brackets */
         /** special case for Irish/Hawaiian/Samoan: use guillemets as default quote style */
-        const targetQuoteEndChars = (language === "ja") ? ["」", "\\]"] :
-                                   (language === "ga" || language === "haw" || language === "sm") ? ["»"] :
-                                   [li.getDelimiterQuotationEnd()];
+        let targetQuoteEndChars;
         // used in regular expressions:
+        let targetQuoteEndAltChars;
+        switch (language) {
+            case "ja":
+                targetQuoteEndChars = ["」", "\\]"];
+                targetQuoteEndAltChars = ["」", "\\]"];
+                break;
+            case "ga":
+            case "haw":
+            case "sm":
+                targetQuoteEndChars = ["»"];
+                targetQuoteEndAltChars = ["»"];
+                break;
+            default:
+                targetQuoteEndChars = [li.getDelimiterQuotationEnd()];
+                targetQuoteEndAltChars = [li.info.delimiter.alternateQuotationEnd];
+                break;
+        }
         const targetQuoteEnd = targetQuoteEndChars.join("");
-        const targetQuoteEndAltChars = (language === "ja") ? ["」", "\\]"] :
-                                      (language === "ga" || language === "haw" || language === "sm") ? ["»"] :
-                                      [li.info.delimiter.alternateQuotationEnd];
+
         // used in regular expressions:
         const targetQuoteEndAlt = /** @type {string} */ targetQuoteEndAltChars.join("");
 
