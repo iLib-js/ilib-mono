@@ -59,9 +59,9 @@ export class PendoXliffFileType implements FileType {
     }
 
     /** human-readable file type name */
-    private static readonly name = "Pendo XLIFF";
+    private static readonly fileTypeName = "Pendo XLIFF";
     name(): string {
-        return PendoXliffFileType.name;
+        return PendoXliffFileType.fileTypeName;
     }
 
     /**
@@ -105,7 +105,7 @@ export class PendoXliffFileType implements FileType {
          signature based on https://github.com/iLib-js/ilib-loctool-tap-i18n/blob/7585e97497e16475bfce1fc034caf0c7716229e1/YamlFileType.js#L122 */
         const fileLocale: string = (this.loctoolAPI.utils as any).getLocaleFromPath(
             pathMapping.template,
-            pathInProject,
+            pathInProject
         );
         if (fileLocale !== this.sourceLocale) {
             return false;
@@ -151,7 +151,7 @@ export class PendoXliffFileType implements FileType {
             actualPath,
             (loctoolLocale) => path.join(this.project.getRoot(), this.getLocalizedPath(pathInProject, loctoolLocale)),
             (loctoolLocale) => this.getOuputLocale(loctoolLocale),
-            (units) => this.createTranslationSet(units),
+            (units) => this.createTranslationSet(units)
         );
 
         return this.files[pathInProject];
@@ -233,7 +233,7 @@ export class PendoXliffFileType implements FileType {
     private getMappingForPath(pathInProject: string) {
         return Object.entries(this.getPathMappings()).find(([pattern]) =>
             // note: this should be offloaded to loctool eventually
-            micromatch.isMatch(pathInProject, pattern),
+            micromatch.isMatch(pathInProject, pattern)
         )?.[1];
     }
 
@@ -306,7 +306,7 @@ export class PendoXliffFileType implements FileType {
                 // not sure if this is used by loctool anywhere,
                 // but it's required per the Resource interface definition
                 project: this.project.getProjectId(),
-            }),
+            })
         );
 
         // wrap in a translation set
