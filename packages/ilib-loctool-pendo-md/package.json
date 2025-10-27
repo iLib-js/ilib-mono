@@ -29,7 +29,8 @@
     ],
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "test": "node node_modules/jest/bin/jest.js"
+        "test": "node node_modules/jest/bin/jest.js",
+        "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.js"
     },
     "type": "commonjs",
     "devDependencies": {

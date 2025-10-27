@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.2">
-  <file original="" source-language="en" target-language="pl-PL" product-name="ilib-loctool-pendo-md-test">
+  <file original="" source-language="en-US" target-language="pl-PL" product-name="ilib-loctool-pendo-md-test">
     <body>
       <trans-unit id="1" resname="73e6c197-f1c0-4bb1-9b31-a40ce2270870|ariaLabel" restype="string" datatype="plaintext">
         <source>Close</source>

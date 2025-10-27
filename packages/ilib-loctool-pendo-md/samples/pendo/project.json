@@ -3,22 +3,25 @@
     "id": "ilib-loctool-pendo-md-test",
     "description": "translate strings exported from Pendo",
     "projectType": "custom",
-    "sourceLocale": "en",
-    "includes": ["l10n/xliff/guides/*.xl(if)?f"],
+    "sourceLocale": "en-US",
+    "includes": [
+        "l10n/xliff/guides/*_en-US.xliff"
+    ],
     "excludes": [],
     "settings": {
         "xliffsDir": "translations",
-        "locales": ["pl-PL"],
-        "localeMap": {
-            "pl-PL": "pl"
-        },
+        "locales": [
+            "pl-PL"
+        ],
         "pendo": {
             "mappings": {
-                "l10n/xliff/guides/*.xl(if)?f": {
+                "l10n/xliff/guides/*.xliff": {
                     "template": "[dir]/[basename]_[locale].[extension]"
                 }
             }
         }
     },
-    "plugins": ["ilib-loctool-pendo-md"]
+    "plugins": [
+        "ilib-loctool-pendo-md"
+    ]
 }
