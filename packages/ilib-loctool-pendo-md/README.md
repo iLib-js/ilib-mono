@@ -1,6 +1,6 @@
 # ilib-loctool-pendo-md
 
-[Loctool](https://github.com/iLib-js/loctool) plugin to handle translation strings exported from [Pendo](https://www.pendo.io/).
+[Loctool](../loctool/README.md) plugin to handle translation strings exported from [Pendo](https://www.pendo.io/).
 
 This plugin accepts an XLIFF file exported from Pendo (`<xliff version="1.2"><file datatype="pendoguide">`) and extracts existing translation units from it mapping them 1:1 to loctool Resources with **escaped Markdown syntax**.
 
@@ -87,7 +87,7 @@ Given a source Pendo XLIFF file `$PROJECT/guides/A000A00Aaa0aaa-AaaaAaa00A0a_en.
 
 ```xml
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file original="A000A00Aaa0aaa-AaaaAaa00A0a" datatype="pendoguide" source-language="en-US" target-language="">
+    <file original="A000A00Aaa0aaa-AaaaAaa00A0a" datatype="pendoguide" source-language="en" target-language="">
         <body>
             <group id="Aaaaaaaa0aAaaAAA0AAA0A0aAaa">
                 <trans-unit id="8de49842-c1fd-4536-905e-8817673b4c24|md">
@@ -105,18 +105,15 @@ and the following loctool configuration
 
 ```json
 {
-    "name": "ilib-loctool-pendo-md-test",
-    "id": "ilib-loctool-pendo-md-test",
+    "name": "pendo-md",
+    "id": "pendo-md",
     "description": "translate strings exported from Pendo",
     "projectType": "custom",
     "sourceLocale": "en",
-    "includes": ["guides/*.xliff"],
+    "includes": ["guides/*_en.xliff"],
     "settings": {
         "xliffsDir": "translations",
-        "locales": ["pl-PL"],
-        "localeMap": {
-            "pl-PL": "pl"
-        },
+        "locales": ["pl"],
         "pendo": {
             "mappings": {
                 "guides/*.xliff": {
@@ -135,12 +132,12 @@ invoking
 loctool localize "$PROJECT"
 ```
 
-will first run the _extract_ step and produce a loctool XLIFF with extracted **escaped** strings `$PROJECT/ilib-loctool-pendo-md-test-extracted.xliff`:
+will first run the _extract_ step and produce a loctool XLIFF with extracted **escaped** strings `$PROJECT/pendo-md-extracted.xliff`:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.2">
-  <file original="" source-language="en" product-name="ilib-loctool-pendo-md-test">
+  <file original="" source-language="en" product-name="pendo-md">
     <body>
       <trans-unit id="1" resname="8de49842-c1fd-4536-905e-8817673b4c24|md" restype="string" datatype="plaintext">
         <source>&lt;c0&gt;Callout!&lt;/c0&gt;</source>
@@ -160,7 +157,7 @@ Then, loctool will immediately run the _localize_ step and produce a (not really
 
 ```xml
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file original="A000A00Aaa0aaa-AaaaAaa00A0a" datatype="pendoguide" source-language="en-US" target-language="pl">
+    <file original="A000A00Aaa0aaa-AaaaAaa00A0a" datatype="pendoguide" source-language="en" target-language="pl">
         <body>
             <group id="Aaaaaaaa0aAaaAAA0AAA0A0aAaa">
                 <trans-unit id="8de49842-c1fd-4536-905e-8817673b4c24|md">
@@ -174,18 +171,14 @@ Then, loctool will immediately run the _localize_ step and produce a (not really
 </xliff>
 ```
 
-notice that:
+notice that target tag stays empty because there is no translation available yet.
 
-1. target tag stays empty because there is no translation available yet
-2. file name includes mapped output locale `pl` rather than the translation locale `pl-PL`
-3. `target-language` attribute is also filled using the mapped output locale
-
-Now you need to obtain translations. Assume you've sent the loctool XLIFF file `$PROJECT/ilib-loctool-pendo-md-test-extracted.xliff` to a linguist and received translations for locale `pl-PL`. Following your project's config, you put it in `$PROJECT/translations/ilib-loctool-pendo-md-test-pl-PL.xliff`:
+Now you need to obtain translations. Assume you've sent the loctool XLIFF file `$PROJECT/pendo-md-extracted.xliff` to a linguist and received translations for locale `pl`. Following your project's config, you put it in `$PROJECT/translations/pendo-md-pl.xliff`:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.2">
-  <file original="" source-language="en" target-language="pl-PL" product-name="ilib-loctool-pendo-md-test">
+  <file original="" source-language="en" target-language="pl" product-name="pendo-md">
     <body>
       <trans-unit id="1" resname="8de49842-c1fd-4536-905e-8817673b4c24|md" restype="string" datatype="plaintext">
         <source>&lt;c0&gt;Callout!&lt;/c0&gt;</source>
@@ -209,7 +202,7 @@ this time, it will load the _pl-PL_ translations from the file specified in your
 
 ```xml
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file original="A000A00Aaa0aaa-AaaaAaa00A0a" datatype="pendoguide" source-language="en-US" target-language="pl">
+    <file original="A000A00Aaa0aaa-AaaaAaa00A0a" datatype="pendoguide" source-language="en" target-language="pl">
         <body>
             <group id="Aaaaaaaa0aAaaAAA0AAA0A0aAaa">
                 <trans-unit id="8de49842-c1fd-4536-905e-8817673b4c24|md">
