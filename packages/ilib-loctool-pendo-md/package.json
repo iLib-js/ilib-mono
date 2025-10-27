@@ -36,15 +36,13 @@
         "prepare": "require-self"
     },
     "type": "commonjs",
-    "engines": {
-        "node": ">=18.18.0"
-    },
     "devDependencies": {
         "@tsconfig/node18": "^18.2.4",
         "@types/jest": "^29.5.12",
         "@types/micromatch": "^4.0.9",
         "@types/node": "18",
         "@types/ungap__structured-clone": "^1.2.0",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "^2.25.2",
         "prettier": "^3.3.3",

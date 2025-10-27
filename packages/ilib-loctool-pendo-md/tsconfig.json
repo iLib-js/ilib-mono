@@ -1,9 +1,5 @@
 {
-    "extends": "@tsconfig/node18",
-    "compilerOptions": {
-        "allowJs": true,
-        "noEmit": true
-    },
+    "extends": "ilib-internal/config/tsconfig.base.json",
     "include": ["."],
-    "exclude": ["node_modules", "lib"]
+    "exclude": ["node_modules", "lib", "docs"]
 }

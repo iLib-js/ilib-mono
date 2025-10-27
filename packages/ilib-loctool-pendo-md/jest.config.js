@@ -1,8 +1,9 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} **/
+const { tsJestConfig } = require("ilib-internal");
+
 module.exports = {
-    testEnvironment: "node",
-    transform: {
-        "^.+.tsx?$": ["ts-jest", {}],
+    ...tsJestConfig,
+    displayName: {
+        name: "ilib-loctool-pendo-md",
+        color: "cyan",
     },
-    rootDir: "src",
 };
