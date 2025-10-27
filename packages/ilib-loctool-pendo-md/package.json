@@ -29,10 +29,7 @@
     ],
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "debug": "node --inspect-brk node_modules/.bin/jest -i",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "format": "prettier --check ."
+        "test": "node node_modules/jest/bin/jest.js"
     },
     "type": "commonjs",
     "devDependencies": {
