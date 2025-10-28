@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import dedent from "dedent";
 import type { ComponentList } from "../../../src/markdown/ast-transformer/component";
 import { backconvert, convert } from "../../../src/markdown/convert/convert";
 
@@ -101,6 +102,21 @@ describe("markdown/convert", () => {
             expect(backconverted).toBe(
                 `string with {color: #FF0000}colored text{/color}, ++underline++, *emphasis* and [a link](https://example.com)`
             );
+        });
+    });
+
+    describe("roundtrip", () => {
+        fit("should correctly handle markdown unordered lists", () => {
+            // prettier-ignore
+            const markdown = dedent`
+            * **FOO** foo
+            * bar **BAR**
+            * **BAZ** baz
+            `;
+
+            const [escaped, components] = convert(markdown);
+            const backconverted = backconvert(escaped, components);
+            expect(backconverted).toBe(markdown);
         });
     });
 });
