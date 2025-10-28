@@ -619,24 +619,16 @@ class LocaleData {
      */
     static async ensureLocale(locale, otherRoots) {
         // Validate parameters - throw Error objects for invalid parameters
-        if (locale === null) {
+        // Validate that we have a valid locale object
+        if (locale === null || locale === undefined ||
+                (typeof(locale) !== 'string' && typeof(locale) !== 'object') ||
+                (typeof(locale) === 'object' && typeof(locale.getSpec) !== 'function')) {
             throw new Error("Invalid locale parameter to ensureLocale");
-        }
-        if (locale === undefined) {
-            throw new Error("Invalid parameter to ensureLocale");
-        }
-        if (typeof(locale) !== 'string' && typeof(locale) !== 'object') {
-            throw new Error("Invalid parameter to ensureLocale");
         }
 
         let loc = (typeof(locale) === 'string') ? new Locale(locale) : locale;
         if (locale && locale !== "root" && !loc.getLanguage()) {
             loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
-        }
-
-        // Validate that we have a valid locale object
-        if (!loc || typeof loc.getSpec !== 'function') {
-            throw new Error("Invalid locale parameter to ensureLocale");
         }
 
         // Get the list of roots to search

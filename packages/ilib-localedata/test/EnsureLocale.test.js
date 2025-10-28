@@ -174,14 +174,16 @@ describe('LocaleData.ensureLocale', () => {
         expect(typeof result).toBe("boolean");
     });
 
-    test('should handle invalid locale gracefully', () => {
+    test('should handle invalid locale gracefully', async () => {
         // Add a test root
         LocaleData.addGlobalRoot("./test/files");
 
         // Test with invalid locale - these should throw synchronously
         expect(() => LocaleData.ensureLocale(null)).toThrow("Invalid locale parameter to ensureLocale");
-        expect(() => LocaleData.ensureLocale(undefined)).toThrow("Invalid parameter to ensureLocale");
-        expect(() => LocaleData.ensureLocale(123)).toThrow("Invalid parameter to ensureLocale");
+        expect(() => LocaleData.ensureLocale(undefined)).toThrow("Invalid locale parameter to ensureLocale");
+        expect(() => LocaleData.ensureLocale(123)).toThrow("Invalid locale parameter to ensureLocale");
+        expect(() => LocaleData.ensureLocale({})).toThrow("Invalid locale parameter to ensureLocale");
+        expect(() => LocaleData.ensureLocale("en-US")).not.toThrow();
     });
 
     test('should work with multiple global roots', async () => {
