@@ -19,16 +19,13 @@
  */
 
 import log4js from '@log4js-node/log4js-api';
-import JSON5 from 'json5';
 
-import { getPlatform, getLocale, top } from 'ilib-env';
+import { getLocale, top } from 'ilib-env';
 import LoaderFactory from 'ilib-loader';
-import { Utils, JSUtils, Path } from 'ilib-common';
 import Locale from 'ilib-locale';
 import LocaleMatcher from 'ilib-localematcher';
 
 import DataCache from './DataCache.js';
-import FileCache from './FileCache.js';
 import MergedDataCache from './MergedDataCache.js';
 
 /**
@@ -265,6 +262,7 @@ class LocaleData {
      * @param {boolean} [options.mergeOptions.mostSpecific] - if true, return the most specific data available
      * @param {boolean} [options.mergeOptions.returnOne] - if true, return only the most locale-specific data available instead of merging
      * @param {boolean} [options.mergeOptions.crossRoots] - if true, merge data across all roots
+     * @throws {Error} if the synchronous mode is requested but the loader does not support synchronous operation
      * @constructor
      */
     constructor(options) {
@@ -278,7 +276,21 @@ class LocaleData {
         } = options;
 
         this.loader = LoaderFactory();
-        this.sync = typeof(sync) === "boolean" && sync && (this.loader && this.loader.supportsSync());
+        this.sync = false;
+
+        if (typeof(sync) === "boolean" && sync) {
+            // If sync mode is requested and supported, set the loader to sync mode
+            if (!this.loader) {
+                throw new Error("Synchronous mode is requested but no loader is available");
+            }
+            if (this.loader.supportsSync()) {
+                this.sync = true;
+                this.loader.setSyncMode();
+            } else {
+                throw new Error("Synchronous mode is requested but the loader does not support synchronous operation");
+            }
+        }
+
         this.cache = DataCache.getDataCache();
         this.logger = log4js.getLogger("ilib-localedata");
         this.path = path;

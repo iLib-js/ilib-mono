@@ -20,6 +20,9 @@
 import LocaleData from '../src/LocaleData.js';
 import Locale from 'ilib-locale';
 import DataCache from '../src/DataCache.js';
+import { setPlatform, getPlatform } from 'ilib-env';
+import { registerLoader } from 'ilib-loader';
+import MockLoader from './MockLoader.js';
 
 describe('LocaleData.ensureLocale', () => {
     beforeEach(() => {
@@ -178,12 +181,15 @@ describe('LocaleData.ensureLocale', () => {
         // Add a test root
         LocaleData.addGlobalRoot("./test/files");
 
-        // Test with invalid locale - these should throw synchronously
-        expect(() => LocaleData.ensureLocale(null)).toThrow("Invalid locale parameter to ensureLocale");
-        expect(() => LocaleData.ensureLocale(undefined)).toThrow("Invalid locale parameter to ensureLocale");
-        expect(() => LocaleData.ensureLocale(123)).toThrow("Invalid locale parameter to ensureLocale");
-        expect(() => LocaleData.ensureLocale({})).toThrow("Invalid locale parameter to ensureLocale");
-        expect(() => LocaleData.ensureLocale("en-US")).not.toThrow();
+        // Test with invalid locale - these should throw asynchronously
+        await expect(LocaleData.ensureLocale(null)).rejects.toThrow("Invalid locale parameter to ensureLocale");
+        await expect(LocaleData.ensureLocale(undefined)).rejects.toThrow("Invalid locale parameter to ensureLocale");
+        await expect(LocaleData.ensureLocale(123)).rejects.toThrow("Invalid locale parameter to ensureLocale");
+        await expect(LocaleData.ensureLocale({})).rejects.toThrow("Invalid locale parameter to ensureLocale");
+
+        // Test with valid locale - should not throw
+        const result = await LocaleData.ensureLocale("en-US");
+        expect(typeof result).toBe("boolean");
     });
 
     test('should work with multiple global roots', async () => {
@@ -194,5 +200,33 @@ describe('LocaleData.ensureLocale', () => {
         const result = await LocaleData.ensureLocale("en-US");
 
         expect(typeof result).toBe("boolean");
+    });
+
+
+    test('should throw error when called with undefined parameter', async () => {
+        expect.assertions(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files3");
+        await expect(LocaleData.ensureLocale()).rejects.toThrow("Invalid locale parameter to ensureLocale");
+    });
+
+    test('should throw error when called with boolean parameter', async () => {
+        expect.assertions(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files3");
+        await expect(LocaleData.ensureLocale(true)).rejects.toThrow("Invalid locale parameter to ensureLocale");
+    });
+
+    test('should throw error when called with number parameter', async () => {
+        expect.assertions(1);
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        LocaleData.addGlobalRoot("./test/files3");
+        await expect(LocaleData.ensureLocale(4)).rejects.toThrow("Invalid locale parameter to ensureLocale");
     });
 });

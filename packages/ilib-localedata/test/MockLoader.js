@@ -39,6 +39,8 @@ class MockLoader extends Loader {
      */
     constructor(options) {
         super(options);
+        // Track the sync support state for testing
+        this._mockSyncSupport = true;
     }
 
     getPlatforms() {
@@ -49,8 +51,23 @@ class MockLoader extends Loader {
         return "Mock Loader";
     }
 
+    /**
+     * Return true if this loader supports synchronous operation.
+     * For testing purposes, this can be temporarily set using setMockSyncSupport().
+     * @returns {boolean} true if this loader supports synchronous operation
+     */
     supportsSync() {
-        return true;
+        return this._mockSyncSupport;
+    }
+
+    /**
+     * Temporarily set whether this loader supports synchronous operations.
+     * This is useful for testing scenarios where you want to test behavior
+     * when the loader does not support sync operations.
+     * @param {boolean} value - true to enable sync support, false to disable it
+     */
+    setMockSyncSupport(value) {
+        this._mockSyncSupport = value;
     }
 
     loadFile(pathName, options) {
