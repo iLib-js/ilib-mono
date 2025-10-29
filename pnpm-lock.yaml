@@ -823,9 +823,6 @@ importers:
       ilib-lint-common:
         specifier: workspace:^
         version: link:../ilib-lint-common
-      ilib-lint-webos:
-        specifier: ^1.0.3
-        version: 1.0.3
       ilib-locale:
         specifier: workspace:^
         version: link:../ilib-locale
@@ -899,6 +896,9 @@ importers:
       ilib-lint-plugin-test:
         specifier: file:test/ilib-lint-plugin-test
         version: file:packages/ilib-lint/test/ilib-lint-plugin-test
+      ilib-lint-webos:
+        specifier: ^1.0.3
+        version: 1.0.3
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@14.18.63)(node-notifier@8.0.2)
