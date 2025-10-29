@@ -19,6 +19,8 @@
 
 import { ResourceXliff, Resource } from 'ilib-tools-common';
 import { FileStats, Parser, IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
+import { getXliffInfo } from './utils.js';
+import XliffFactory from './XliffFactory.js';
 
 /**
  * Count the number of words in the source strings of the resources.
@@ -74,8 +76,11 @@ class XliffParser extends Parser {
      */
     parse(sourceFile) {
         const data = sourceFile.getContent();
+        const xliffObj = XliffFactory(getXliffInfo(data));
+
         const xliff = new ResourceXliff({
-            path: sourceFile.getPath()
+            path: sourceFile.getPath(),
+            xliff: xliffObj
         });
 
         xliff.parse(data);

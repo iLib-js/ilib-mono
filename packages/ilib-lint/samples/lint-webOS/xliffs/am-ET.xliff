@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="am-ET" version="2.0">
+ <file id="sample-rs-edge-whitespace_f1" original="sample-rs-edge-whitespace">
+  <group id="sample-rs-edge-whitespace_g1" name="javascript">
+   <unit id="sample-rs-edge-whitespace_g1_1">
+    <segment>
+     <source>{%1} hour(s)</source>
+     <target>{%1} ሰዓት(ታት)</target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_2">
+    <segment>
+     <source>{%1} min(s)</source>
+     <target>{%1} ደቂቃ(ዎች)</target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_28">
+    <segment>
+     <source>Loading...</source>
+     <target>በመጫን ላይ...</target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_590"> <!--rule: resource-edge-whitespace-->
+    <segment>
+     <source>You can use your Magic Remote to determine the room’s acoustics and optimize your TV’s sound quality based on the results.</source>
+     <target>MAGIC REMOTE በመጠቀም የክፍሉን የድምጽ ማስተጋባት አና በውጤቶቹ መሰረት የቲቪዎን የድምጽ ጥራት ማሰተካከል እና መቆጣጠር ይችላሉ፡፡ </target>
+    </segment>
+   </unit>
+  </group>
+ </file>
+</xliff>

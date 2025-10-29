@@ -1,0 +1,11 @@
+{
+    "name": "lint-webos-sample",
+    "private": true,
+    "version": "0.0.0",
+    "description": "Sample application that demostrates how to use the ilib-lint tool with webOS xliff files",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "ilib-lint": "workspace:^",
+        "ilib-lint-webos": "^1.0.3"
+    }
+}

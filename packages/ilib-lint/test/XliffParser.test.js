@@ -16,14 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import fs from 'fs';
 
 import { ResourceString } from 'ilib-tools-common';
-
 import { IntermediateRepresentation, SourceFile } from 'ilib-lint-common';
 import XliffParser from '../src/plugins/XliffParser.js';
 
-import {describe, expect, test} from '@jest/globals';
 
 /**
  * @jest-environment node
@@ -147,6 +144,37 @@ describe("test the XliffParser plugin", () => {
         expect(ir).toBeTruthy();
         expect(ir.length).toBe(1);
         expect(ir[0] instanceof IntermediateRepresentation).toBeTruthy();
+
+        const stats = ir[0].getStats();
+        expect(stats).toBeTruthy();
+        expect(stats?.getFiles()).toBe(1);
+        expect(stats?.getLines()).toBe(13);
+        expect(stats?.getBytes()).toBe(3);
+        expect(stats?.getModules()).toBe(1);
+        expect(stats?.getWords()).toBe(1);
+    });
+
+    test("Parse a webOS xliff 2.0 file", () => {
+        expect.assertions(16);
+
+        const xp = new XliffParser();
+        const sourceFile = new SourceFile("test/testfiles/xliff/webOSXliff/es-ES.xliff", {});
+        const ir = xp.parse(sourceFile);
+        expect(ir).toBeTruthy();
+        expect(ir.length).toBe(1);
+        expect(ir[0] instanceof IntermediateRepresentation).toBeTruthy();
+
+        const resources = ir[0].getRepresentation();
+        expect(resources).toBeTruthy();
+        expect(resources.length).toBe(1);
+
+        const resource = resources[0];
+        expect(resource instanceof ResourceString).toBeTruthy();
+        expect(resource.getSourceLocale()).toBe("en-KR");
+        expect(resource.getSource()).toBe("App");
+
+        expect(resource.getTargetLocale()).toBe("es-ES");
+        expect(resource.getTarget()).toBe("aplicación");
 
         const stats = ir[0].getStats();
         expect(stats).toBeTruthy();
