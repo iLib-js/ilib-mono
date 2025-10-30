@@ -259,14 +259,9 @@ describe("testResourceXliff", () => {
         expect(actual).toBe(expected);
     }),
 
-    /* Make the ilib-xliff-webos import work correctly first, then run the test again.
-    * Error:
-    * ReferenceError: You are trying to `import` a file after the Jest environment has been torn down. From test/ResourceXliff.test.js.
-    */
-    test.skip("ResourceXliffOptionwebOSXliff", () => {
+    test("ResourceXliffOptionwebOSXliff", () => {
         const xf = new webOSXliff();
         expect(xf).toBeTruthy();
-
         let tu = new WebOSTU({
             source: "Asdf asdf",
             sourceLocale: "en-KR",
@@ -299,7 +294,7 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getDataType()).toBe("javascript");
     }),
 
-    test.skip("ResourceXliffOptionwebOSXliffAddResource", () => {
+    test("ResourceXliffOptionwebOSXliffAddResource", () => {
         const xf = new webOSXliff();
         expect(xf).toBeTruthy();
 
