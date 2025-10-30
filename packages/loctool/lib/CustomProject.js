@@ -241,9 +241,9 @@ CustomProject.prototype.defineFileTypes = function() {
  * extraction is done
  */
 CustomProject.prototype.extract = function(cb) {
-    this.parent.prototype.extract.call(this, function() {
+    this.parent.prototype.extract.call(this, () => {
         cb();
-    }.bind(this));
+    });
 };
 
 /**
