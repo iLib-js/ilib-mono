@@ -1,5 +1,11 @@
 # ilib-tools-common
 
+## 1.19.1
+
+### Patch Changes
+
+- 3ac309b: Add the xliff option to the ResourceXliff class so that it can be used in instances of ResourceXliff.
+
 ## 1.19.0
 
 ### Minor Changes
