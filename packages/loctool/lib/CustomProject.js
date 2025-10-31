@@ -234,19 +234,6 @@ CustomProject.prototype.defineFileTypes = function() {
 };
 
 /**
- * Extract all strings for all file types and when that is
- * done, call the callback function.
- *
- * @param {Function} cb callback function to call when the
- * extraction is done
- */
-CustomProject.prototype.extract = function(cb) {
-    this.parent.prototype.extract.call(this, () => {
-        cb();
-    });
-};
-
-/**
  * Return the resource file type for this project.
  * The resource file type will be able to read in and
  * write out resource files and other file types put
