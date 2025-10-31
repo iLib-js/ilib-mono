@@ -95,7 +95,7 @@ describe("ResourceCamelCase", () => {
 
     test("returns `undefined` if source string is an exception", () => {
         const options = {except: ["camelCaseException"]}
-        const rule = new ResourceCamelCase(options);
+        const rule = new ResourceCamelCase({ param: options });
         const resource = createTestResourceString({source: "camelCaseException", target: "some_target"});
 
         const result = rule.matchString({
@@ -187,7 +187,7 @@ describe("ResourceCamelCase", () => {
     test("returns error if source is in camel case and target is different", () => {
         const rule = new ResourceCamelCase({});
         const resource = createTestResourceString({
-            source: "camelCase", 
+            source: "camelCase",
             target: "differentTarget",
             location: new Location({
                 line: 45,
@@ -280,7 +280,7 @@ describe('ResourceCamelCase.isCamelCase', () => {
  * @param {string} param0.source The source string
  * @param {string} param0.target The target string
  * @param {Location} [param0.location] The location of the resource
- * 
+ *
  * @returns {ResourceString} The test resource string
  */
 function createTestResourceString({source, target, location}) {
