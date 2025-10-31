@@ -1,5 +1,21 @@
 # ilib-lint
 
+## 2.20.0
+
+### Minor Changes
+
+- 3ac309b: - Update to automatically extract the version and style from input xliff files to generate an autofix modified file according to the input file format.
+  - Add an `XliffFactory` to properly create instances in XLIFF format.
+
+### Patch Changes
+
+- d0b847a: Now supports use of apostrophes for contractions and ellisions
+  in those languages that use them. The Quote Style
+  Checker rule now does not give false positive results when the
+  apostrophes are used in contractions or ellisions. - Contractions: English, French, Portuguese, Catalan, Italian - Ellisions: Irish, Samoan, Hawaiian
+- Updated dependencies [3ac309b]
+  - ilib-tools-common@1.19.1
+
 ## 2.19.1
 
 ### Patch Changes

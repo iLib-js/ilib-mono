@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-pendo-md",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "lib/index.js",
     "description": "A loctool plugin that knows how to process markdown inside of Pendo xliff files",
     "types": "lib/index.d.ts",
