@@ -20,7 +20,7 @@
 import GlyphString from "../../lib/GlyphString.js";
 
 describe("testglyphstrasync", () => {
-    test("GlyphStrAsyncCharIteratorNormal", () => {
+    test("GlyphStrAsyncCharIteratorNormal", async () => {
         expect.assertions(8);
         GlyphString.create("aÄa").then((s) => { // the A umlaut is a decomposed char
             const it = s.charIterator();
@@ -35,7 +35,7 @@ describe("testglyphstrasync", () => {
             expect(it.next()).toBe(undefined);
         });
     });
-    test("GlyphStrAsyncCharIteratorEmpty", () => {
+    test("GlyphStrAsyncCharIteratorEmpty", async () => {
         expect.assertions(2);
         GlyphString.create("").then((s) => {
             const it = s.charIterator();
@@ -44,7 +44,7 @@ describe("testglyphstrasync", () => {
             expect(it.next()).toBe(undefined);
         });
     });
-    test("GlyphStrAsyncCharIteratorMultipleDecomposed", () => {
+    test("GlyphStrAsyncCharIteratorMultipleDecomposed", async () => {
         expect.assertions(8);
         GlyphString.create("aẬa").then((s) => {// the accented A is a decomposed char with 2 accents
             const it = s.charIterator();
@@ -59,20 +59,20 @@ describe("testglyphstrasync", () => {
             expect(it.next()).toBe(undefined);
         });
     });
-    test("GlyphStrAsyncTruncateWithCombiningAccentsWholeGlyphs", () => {
+    test("GlyphStrAsyncTruncateWithCombiningAccentsWholeGlyphs", async () => {
         expect.assertions(1);
         GlyphString.create("aẬbẬcẬdẬe").then((s) => { // the accented A is a decomposed char with 2 accents
             expect(s.truncate(4)).toBe("aẬbẬ");
         });
     });
-    test("GlyphStrAsyncTruncateThai", () => {
+    test("GlyphStrAsyncTruncateThai", async () => {
         expect.assertions(1);
         GlyphString.create("สวัุสดีคุณเป็นอย่างไรบ้าง").then((s) => {
             // this tests non-spacing marks that are also non-combining
             expect(s.truncate(4)).toBe("สวัุสดี");
         });
     });
-    test("GlyphStrAsyncTruncateDevanagari1", () => {
+    test("GlyphStrAsyncTruncateDevanagari1", async () => {
         expect.assertions(1);
         GlyphString.create("हैलो, आप कैसे हैं?").then((s) => {
             // if the 2nd base character has combining spacing accents on it,
@@ -81,13 +81,13 @@ describe("testglyphstrasync", () => {
             expect(s.truncate(2)).toBe("है");
         });
     });
-    test("GlyphStrAsyncEllipsizeDevanagari2", () => {
+    test("GlyphStrAsyncEllipsizeDevanagari2", async () => {
         expect.assertions(1);
         GlyphString.create("हैलो, आप कैसे हैं?").then((s) => {
             expect(s.ellipsize(8), "हैलो).toBe(आप …");
         });
     });
-    test("GlyphStrAsyncEllipsizeJapanese", () => {
+    test("GlyphStrAsyncEllipsizeJapanese", async () => {
         expect.assertions(1);
         GlyphString.create("ェドイン").then((s) => {
             expect(s.ellipsize(3)).toBe("ェド…");

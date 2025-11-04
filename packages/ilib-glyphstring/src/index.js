@@ -24,10 +24,8 @@ import { Utils, JSUtils, Path } from 'ilib-common';
 import IString from 'ilib-istring';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
+import CType from "ilib-ctype";
 
-var CType = require("./CType.js");
-
-// private constants used to calculate things about Jamo (Korean) characters
 const syllableBase = 0xAC00;
 const leadingJamoCount = 19;
 const vowelJamoCount = 21;
@@ -247,9 +245,9 @@ class GlyphString extends IString {
      * @returns {Promise} a promise to load a LocaleInfo instance. The resolved
      * value of the promise is the new instance of LocaleInfo,
      */
-    static create(string, options) {
+    static async create(string, options) {
         const gstr = new GlyphString(undefined, { ...options, _noinit: true });
-        return gstr.init(string, options, false);
+        return await gstr.init(string, options, false);
     }
 
     /**
