@@ -53,7 +53,7 @@
         "test:e2e:snapshot": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs --updateSnapshot"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=14.0.0 <23.0.0"
     },
     "dependencies": {
         "ilib": "^14.18.0",

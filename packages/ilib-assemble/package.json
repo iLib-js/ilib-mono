@@ -59,7 +59,7 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "engines": {
-        "node": ">=16.0"
+        "node": ">=14.0.0 <23.0.0"
     },
     "devDependencies": {
         "docdash": "^2.0.2",

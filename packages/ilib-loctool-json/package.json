@@ -53,7 +53,7 @@
         "clean": "git clean -f -d test samples"
     },
     "engines": {
-        "node": ">=10.0"
+        "node": ">=14.0.0 <23.0.0"
     },
     "dependencies": {
         "ilib": "^14.19.0",
