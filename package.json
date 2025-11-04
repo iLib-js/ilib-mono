@@ -49,7 +49,7 @@
         "prepare": "conditional-install"
     },
     "engines": {
-        "node": ">=8.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib": "^14.19.0",
