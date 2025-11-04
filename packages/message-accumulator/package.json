@@ -50,7 +50,7 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "engines": {
-        "node": ">=14.0.0 <23.0.0"
+        "node": ">=12 <23"
     },
     "scripts": {
         "build": "grunt babel",

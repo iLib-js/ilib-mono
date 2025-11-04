@@ -32,7 +32,7 @@
     "author": "JEDLSoft",
     "license": "Apache-2.0",
     "engines": {
-        "node": ">=14.0.0 <23.0.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib-lint-common": "workspace:^",
