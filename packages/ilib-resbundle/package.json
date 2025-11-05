@@ -54,6 +54,9 @@
         "type": "git",
         "url": "git@github.com:iLib-js/ilib-resbundle.git"
     },
+    "engines": {
+        "node": ">=14 <23"
+    },
     "scripts": {
         "build": "npm run build:prod",
         "build:prod": "grunt babel --mode=prod",
@@ -106,9 +109,10 @@
     "dependencies": {
         "ilib-common": "workspace:^",
         "ilib-ctype": "workspace:^",
-        "ilib-istring": "workspace:^",
+        "ilib-istring": "^1.1.1",
         "ilib-locale": "workspace:^",
         "ilib-localedata": "workspace:^",
-        "ilib-localeinfo": "^1.0.5"
+        "ilib-localeinfo": "^1.0.5",
+        "json5": "^2.2.3"
     }
 }

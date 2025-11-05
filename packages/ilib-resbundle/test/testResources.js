@@ -1555,6 +1555,7 @@ export const testResources = {
 
     testResBundleGetStringCyrlMissingPseudo: function(test) {
         test.expect(4);
+
         var rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
