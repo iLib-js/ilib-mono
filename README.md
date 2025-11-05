@@ -58,10 +58,13 @@ file for more details.
 
 ## Release Notes
 
-### v1.0.8
+### v1.0.9
 
 - update dependencies
 - now supports node v22
+
+### v1.0.8
+
 - can now deal with empty objects in the json
 
 ### v1.0.7
