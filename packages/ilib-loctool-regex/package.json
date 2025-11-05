@@ -58,7 +58,7 @@
         "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
     },
     "engines": {
-        "node": ">=12.0"
+        "node": ">=12 <23"
     },
     "devDependencies": {
         "ilib-loctool-javascript-resource": "workspace:^",

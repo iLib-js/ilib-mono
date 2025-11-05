@@ -46,7 +46,7 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "engines": {
-        "node": ">=14.0.0"
+        "node": ">=12 <23"
     },
     "scripts": {
         "coverage": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",

@@ -50,7 +50,7 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "engines": {
-        "node": ">=10.0.0"
+        "node": ">=12 <23"
     },
     "scripts": {
         "build": "pnpm build:data ; pnpm build:prod",

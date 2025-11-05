@@ -48,6 +48,9 @@
         "type": "git",
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
+    "engines": {
+        "node": ">=12 <23"
+    },
     "scripts": {
         "build": "pnpm build:prod",
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",

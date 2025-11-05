@@ -50,7 +50,7 @@
         "clean": "git clean -f -d *"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "he": "^1.2.0",
