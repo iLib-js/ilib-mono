@@ -1184,7 +1184,7 @@ describe("testResource", () => {
     });
 
     test("isValidState should validate custom x- prefixed states", () => {
-        expect.assertions(7);
+        expect.assertions(6);
 
         expect(isValidState("x-custom-state")).toBe(true);
         expect(isValidState("x-pending-approval")).toBe(true);
@@ -1192,7 +1192,6 @@ describe("testResource", () => {
         expect(isValidState("x-my-workflow")).toBe(true);
         expect(isValidState("x-123-numeric")).toBe(true);
         expect(isValidState("x-multi-word-state")).toBe(true);
-        expect(isValidState("x- ")).toBe(true); // x- with space is valid (current behavior)
     });
 
     test("isValidState should reject invalid states", () => {
@@ -1209,10 +1208,11 @@ describe("testResource", () => {
     });
 
     test("isValidState should reject invalid x- prefixed states", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         expect(isValidState("x")).toBe(false); // just x
         expect(isValidState("x-")).toBe(false); // x with just hyphen
+        expect(isValidState("x- ")).toBe(false); // x- with space
         expect(isValidState("x--state")).toBe(true); // double hyphen is actually valid
     });
 

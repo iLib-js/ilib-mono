@@ -90,8 +90,12 @@ function isValidState(state) {
     }
 
     // Custom states must start with "x-" and have content after the hyphen
-    if (state.startsWith('x-') && state.length > 2) {
-        return true;
+    if (state.startsWith('x-')) {
+        // Must have non-whitespace content after "x-"
+        const contentAfterX = state.substring(2);
+        if (contentAfterX.trim().length > 0) {
+            return true;
+        }
     }
 
     return false;
