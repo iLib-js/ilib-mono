@@ -41,7 +41,7 @@ var p = new CustomProject({
     targetDir: '.',
     nopseudo: true,
     openapi: {
-        schemas: ['./test/testfiles/custom-schema.json'],
+        schemas: ['./custom-schema.json'],
         mappings: {
             '**/openapi.json': {
                 schema: 'openapi-schema',
