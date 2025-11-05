@@ -46,8 +46,8 @@ class ResourceAllCaps extends ResourceRule {
         this.name = "resource-all-caps";
         this.description = "Ensure that when source strings are in ALL CAPS, then the targets are also in ALL CAPS";
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-all-caps.md";
-        const param = this.getParam() || {};
-        this.exceptions = Array.isArray(param.exceptions) ? param.exceptions : [];
+        const param = this.getParam();
+        this.exceptions = Array.isArray(param?.exceptions) ? param.exceptions : [];
     }
 
     /**
