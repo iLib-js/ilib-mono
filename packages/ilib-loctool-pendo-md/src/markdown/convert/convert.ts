@@ -99,6 +99,8 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     // ]]
     // transform the given mdast tree to find HTML nodes corresponding to <color ...> tags
     // and replace them with custom Color ast nodes
+    // This is paired with the colorString.toHtmlTags (Step 1), so that after this step the resulting AST
+    // looks as if there was an actual extension for parsing color tags (i.e. it produces AST nodes with type "color")
     const astWithColorNodes = colorAst.toColorNodes(astNoPosition);
 
     // [step 4]:
@@ -111,6 +113,9 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     //             ],
     //         ],
     //     ]]
+    // map every AST node that we want to escape with a non-standard abstract AST node with type "component";
+    // this component node is something that cannot be rendered, so within the same step we will replace it
+    // with a pair of HTML nodes <c0>...</c0> (opening and closing tags) or a single self-closing tag <c0/>
 
     // [step 4.2 - actual output]:
     //     [root: [
@@ -123,12 +128,12 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     //             html(</c0>),
     //         ],
     //     ]]
-    // transform the AST to replace supported markdown syntax using numbered components;
-    // also collect data about those components
+    // transform the abstract component nodes into Markdown HTML nodes
+    // also collect data about what those components are - so that we can backconvert them later
     const [astWithComponents, components] = component.toComponents(astWithColorNodes);
 
     // [step 5]: <c0><c1>pizza<c1> spaghetti</c0>
-    // reassemble the escaped string from the AST with components
+    // reassemble the transformed markdown AST into a string to produce the escaped string with numbered HTML elements
     const escapedString = toMarkdown(astWithComponents);
 
     // step 6:
