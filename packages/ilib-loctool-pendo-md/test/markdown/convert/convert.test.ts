@@ -106,12 +106,12 @@ describe("markdown/convert", () => {
     });
 
     describe("roundtrip", () => {
-        fit("should correctly handle markdown unordered lists", () => {
+        it("should correctly handle markdown unordered lists", () => {
             // prettier-ignore
             const markdown = dedent`
-            * **FOO** foo
-            * bar **BAR**
-            * **BAZ** baz
+            *   **FOO** foo
+            *   bar **BAR**
+            *   **BAZ** baz
             `;
 
             const [escaped, components] = convert(markdown);
