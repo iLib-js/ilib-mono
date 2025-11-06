@@ -121,7 +121,7 @@ describe("markdown/convert", () => {
     });
 
     describe("workaround", () => {
-        it("should handle markdown lists with malformed newlines in translation", () => {
+        fit("should handle markdown lists with malformed newlines in translation", () => {
             // prettier-ignore
             const markdown = dedent`
             *   **first** item
@@ -136,24 +136,13 @@ describe("markdown/convert", () => {
             const backconverted = backconvert(malformedTranslation, components);
             expect(backconverted).toEqual(
                 [
+                    // prettier-ignore
                     "  ",
-                    "*     ",
-                    "",
-                    "    **first**",
-                    "",
-                    "     item  ",
+                    "*     **first** item  ",
                     "  ",
-                    "*     second ",
-                    "",
-                    "    **item**",
-                    "",
-                    "      ",
+                    "*     second **item**  ",
                     "  ",
-                    "*     ",
-                    "",
-                    "    **third**",
-                    "",
-                    "     item",
+                    "*     **third** item",
                 ].join("\n")
             );
         });

@@ -21,6 +21,7 @@ import type { Node as UnistNode } from "unist";
 import type { Color } from "../color/color";
 import type { Underline } from "../../micromark-plugin/underline";
 
+import { mapListItemWithWorkaround } from "./mapListItemWithWorkaround";
 import type { UnistComponent } from "./unistComponent";
 
 /**
@@ -131,13 +132,7 @@ export const mapNodeToComponentData = (
  * Recreate a Component node from its mapped representation.
  */
 export const mapComponentDataToNode = (component: UnistComponent, data: ComponentData): Content => {
-    if (
-        data.type === "strong" ||
-        data.type === "emphasis" ||
-        data.type === "underline" ||
-        data.type === "delete" ||
-        data.type === "listItem"
-    ) {
+    if (data.type === "strong" || data.type === "emphasis" || data.type === "underline" || data.type === "delete") {
         return { type: data.type, children: component.children as any };
     }
 
@@ -147,6 +142,10 @@ export const mapComponentDataToNode = (component: UnistComponent, data: Componen
 
     if (data.type === "list") {
         return { type: data.type, spread: data.spread, ordered: data.ordered, children: component.children as any };
+    }
+
+    if (data.type === "listItem") {
+        return mapListItemWithWorkaround(component);
     }
 
     if (data.type === "color") {
