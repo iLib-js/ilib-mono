@@ -15,30 +15,36 @@
  * limitations under the License.
  */
 
-import baseFromMarkdown from "mdast-util-from-markdown";
-import baseToMarkdown from "mdast-util-to-markdown";
+import baseMarkdownParse from "mdast-util-from-markdown";
+import baseMarkdownStringify from "mdast-util-to-markdown";
 import strikethrough from "mdast-util-gfm-strikethrough";
 import strikethroughSyntax from "micromark-extension-gfm-strikethrough";
 import unistUtilRemovePosition from "unist-util-remove-position";
-import underline from "../micromark-plugin/underline";
-import colorString from "../string-transformer/color";
-import colorAst from "../ast-transformer/color";
-import component from "../ast-transformer/component";
-import unsupported from "../micromark-plugin/unsupported";
+import * as colorString from "./string-transformer/color";
+import * as colorAst from "./ast-transformer/color";
+import * as underline from "./micromark-plugin/underline";
+import * as unsupported from "./micromark-plugin/unsupported";
+import * as componentAst from "./ast-transformer/component";
 
+import type { ComponentData } from "./ast-transformer/component/mdastMapping";
 import type { Root } from "mdast";
-import type { ComponentList } from "../ast-transformer/component";
 
-const fromMarkdown = (markdown: string) =>
-    baseFromMarkdown(markdown, {
+/**
+ * Markdown parse function with injected extensions.
+ */
+const markdownParse = (markdown: string) =>
+    baseMarkdownParse(markdown, {
         extensions: [unsupported.syntax, strikethroughSyntax({ singleTilde: false }), underline.syntax()],
-        mdastExtensions: [strikethrough.fromMarkdown, underline.mdastEstension.fromMarkdown],
+        mdastExtensions: [strikethrough.fromMarkdown, underline.fromMarkdown],
     });
 
-const toMarkdown = (ast: Root) =>
-    baseToMarkdown(ast, {
+/**
+ * Markdown stringify function with injected extensions.
+ */
+const markdownStringify = (ast: Root) =>
+    baseMarkdownStringify(ast, {
         // note (intentional): in `toMarkdown`, mdast extensions should be passed to opt `extensions`
-        extensions: [strikethrough.toMarkdown, underline.mdastEstension.toMarkdown],
+        extensions: [strikethrough.toMarkdown, underline.toMarkdown],
     });
 
 /**
@@ -65,7 +71,7 @@ const toMarkdown = (ast: Root) =>
  *
  * @returns Tuple of escaped string and the list of components
  */
-export const convert = (markdown: string): readonly [string, ComponentList] => {
+export const convert = (markdown: string): readonly [string, ComponentData[]] => {
     // [step 0]: {color: #FFFFFF}*pizza* spaghetti{/color}
 
     // [step 1]: <color value="#FFFFFF">*pizza* spaghetti</color>
@@ -74,7 +80,7 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     // into HTML tags <color value="#000000"></color>
     // which are easier to process through AST transformations
     // @TODO this and related steps should be removed after implementing proper micromark extension for parsing color tags
-    const markdownWithColorAsHtml = colorString.toHtmlTags(markdown);
+    markdown = colorString.toHtmlTags(markdown);
 
     // [step 2]:
     //     [root: [paragraph: [html(<color value="#FFFFFF">), emphasis: [text(pizza)], text(spaghetti), html(</color>)]]]
@@ -82,11 +88,11 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     // use parser plugins to support syntax extensions
     // for GFM strikethrough (~~ ~~) and Pendo underline (++ ++)
     // and disable syntax which is NOT supported by Pendo (headings, blockquotes, code, autolinks etc.)
-    const ast = fromMarkdown(markdownWithColorAsHtml);
+    let ast = markdownParse(markdown);
 
     // remove position data from the AST since we don't need it for further processing
     // and also it does not reflect the original markdown string anyway
-    const astNoPosition = unistUtilRemovePosition(ast) as Root;
+    ast = unistUtilRemovePosition(ast, true) as Root;
 
     // [step 3]:
     // [root: [
@@ -101,10 +107,9 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     // and replace them with custom Color ast nodes
     // This is paired with the colorString.toHtmlTags (Step 1), so that after this step the resulting AST
     // looks as if there was an actual extension for parsing color tags (i.e. it produces AST nodes with type "color")
-    const astWithColorNodes = colorAst.toColorNodes(astNoPosition);
+    ast = colorAst.toColorNodes(ast);
 
     // [step 4]:
-    // [step 4.1 - internal conversion]:
     //     [root: [
     //         paragraph: [
     //             component(0, color): [
@@ -113,11 +118,12 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     //             ],
     //         ],
     //     ]]
-    // map every AST node that we want to escape with a non-standard abstract AST node with type "component";
-    // this component node is something that cannot be rendered, so within the same step we will replace it
-    // with a pair of HTML nodes <c0>...</c0> (opening and closing tags) or a single self-closing tag <c0/>
+    // map every AST node that we want to escape to a non-standard abstract AST node with type "component" (see ComponentNode)
+    // this component node is something that cannot be rendered, so in the next step we will replace it with a HTML representation
+    let components;
+    ({ tree: ast, components } = componentAst.toComponents(ast));
 
-    // [step 4.2 - actual output]:
+    // [step 5]:
     //     [root: [
     //         paragraph: [
     //             html(<c0>),
@@ -128,20 +134,19 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
     //             html(</c0>),
     //         ],
     //     ]]
-    // transform the abstract component nodes into Markdown HTML nodes
-    // also collect data about what those components are - so that we can backconvert them later
-    const [astWithComponents, components] = component.toComponents(astWithColorNodes);
+    // transform the ComponentNodes into HTML nodes
+    ast = componentAst.componentNodesToHtmlNodes(ast);
 
     // [step 5]: <c0><c1>pizza<c1> spaghetti</c0>
     // reassemble the transformed markdown AST into a string to produce the escaped string with numbered HTML elements
-    const escapedString = toMarkdown(astWithComponents);
+    let escapedMarkdown = markdownStringify(ast);
 
     // step 6:
     // trim the produced string to remove the trailing newline
     // (`toMarkdown` always inerts a newline at the end of a paragraph)
-    const trimmedEscapedString = escapedString.trimEnd();
+    escapedMarkdown = escapedMarkdown.trimEnd();
 
-    return [trimmedEscapedString, components] as const;
+    return [escapedMarkdown, components] as const;
 };
 
 /**
@@ -165,35 +170,39 @@ export const convert = (markdown: string): readonly [string, ComponentList] => {
  *
  * This is reverse operation to {@link convert} and should produce the original markdown string.
  */
-export const backconvert = (escapedString: string, components: ComponentList): string => {
+export const backconvert = (escapedMarkdown: string, components: ComponentData[]): string => {
     // step 1:
     // parse the escaped string into mdast;
     // use the same parser plugins as in `convert` to ensure compatibility
     // (most importantly, the unsupported syntax should match)
-    const ast = fromMarkdown(escapedString);
+    let ast = markdownParse(escapedMarkdown);
+
+    // step 2:
+    // transform the HTML nodes into Component nodes
+    ast = componentAst.htmlNodesToComponentNodes(ast);
 
     // step 2:
     // replace numbered components with original mdast nodes
     // (this includes custom Color nodes)
-    const astNoComponents = component.fromComponents(ast, components);
+    ast = componentAst.fromComponents(ast, components);
 
     // step 3:
     // replace custom Color nodes with HTML <color ...> tags
-    const astNoColorNodes = colorAst.fromColorNodes(astNoComponents);
+    ast = colorAst.fromColorNodes(ast);
 
     // step 4:
     // reassemble the backconverted string
-    const markdownWithColorAsHtml = toMarkdown(astNoColorNodes);
+    let backconvertedMarkdown = markdownStringify(ast);
 
     // step 5:
     // revert color tags <color value="#000000"></color>
     // back to Pendo markdown syntax {color: #000000}{/color}
-    const markdown = colorString.fromHtmlTags(markdownWithColorAsHtml);
+    backconvertedMarkdown = colorString.fromHtmlTags(backconvertedMarkdown);
 
     // step 6:
     // trim the produced string to remove the trailing newline
     // (`toMarkdown` always inerts a newline at the end of a paragraph)
-    const trimmedMarkdown = markdown.trimEnd();
+    backconvertedMarkdown = backconvertedMarkdown.trimEnd();
 
-    return trimmedMarkdown;
+    return backconvertedMarkdown;
 };

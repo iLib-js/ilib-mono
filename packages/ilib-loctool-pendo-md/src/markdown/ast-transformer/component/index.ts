@@ -1,5 +1,5 @@
 /**
- * Copyright © 2024, Box, Inc.
+ * Copyright © 2025, Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,7 @@
  * limitations under the License.
  */
 
-import { fromComponents as baseFromComponents, toComponents as baseToComponents } from "./escape";
-import { mapNodeToComponentData, mapComponentDataToNode } from "./mapping";
+export { toComponents, fromComponents } from "./escape";
+export { componentNodesToHtmlNodes, htmlNodesToComponentNodes } from "./htmlRepresentation";
 
-import type { Parent } from "mdast";
-import type { ComponentData, ComponentList } from "./componentData";
-
-// inject the component mapping into ast transform
-const toComponents = <T extends Parent>(ast: T) => baseToComponents(ast, mapNodeToComponentData);
-const fromComponents = <T extends Parent>(ast: T, components: ComponentList) =>
-    baseFromComponents(ast, components, mapComponentDataToNode);
-
-export { ComponentData, ComponentList };
-export default {
-    fromComponents,
-    toComponents,
-};
+export type { ComponentData } from "./mdastMapping";

@@ -19,8 +19,7 @@ import visit from "unist-util-visit";
 import { htmlRegex } from "../../string-transformer/color";
 import structuredClone from "@ungap/structured-clone";
 
-import type { Node } from "unist";
-import type { Content, Parent, HTML } from "mdast";
+import type { Root, Content, Parent, HTML } from "mdast";
 
 /**
  * Pendo markdown extension to represent a span of color.
@@ -47,7 +46,7 @@ const closingNodeRegex = new RegExp(`^${htmlRegex.closing.source}$`);
  * into a single custom node {@link Color}. All siblings between the opening and closing nodes
  * become nested children of the new node.
  */
-export const toColorNodes = <T extends Node>(tree: T): T => {
+export const toColorNodes = (tree: Root): Root => {
     // copy the tree to avoid modifying original
     const clone = structuredClone(tree);
 
@@ -136,7 +135,7 @@ export const toColorNodes = <T extends Node>(tree: T): T => {
  *
  * @see toColorNodes
  */
-export const fromColorNodes = <T extends Node>(tree: T): T => {
+export const fromColorNodes = (tree: Root): Root => {
     // copy the tree to avoid modifying original
     const clone = structuredClone(tree);
 

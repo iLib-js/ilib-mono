@@ -16,7 +16,7 @@
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- import used in JSDoc link
-import type astTransformerColor from "../../ast-transformer/color";
+import type { toColorNodes } from "../../ast-transformer/color";
 /**
  * Used to match post-conversion color opening and closing nodes
  * ```markdown
@@ -46,7 +46,7 @@ const globalRegex = (regex: RegExp) => new RegExp(regex, "g");
  * so that micromark would parse them as inline HTML nodes (rather than just plain text).
  *
  * This allows for further transformation of the AST to obtain custom Color nodes
- * \- see {@link astTransformerColor.toColorNodes}.
+ * \- see {@link toColorNodes}.
  *
  * Pendo extended markdown color syntax is
  * ```markdown

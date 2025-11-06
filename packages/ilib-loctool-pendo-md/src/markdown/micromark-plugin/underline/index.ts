@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import mdast from "./mdast";
-import syntax from "./syntax";
+import { fromMarkdown, toMarkdown } from "./mdast";
+import { syntax } from "./syntax";
 import type { Underline } from "./mdast";
 
 // extend available nodes in mdast types
@@ -28,9 +28,4 @@ declare module "mdast" {
     }
 }
 
-export type { Underline };
-
-export default {
-    mdastEstension: mdast,
-    syntax: syntax,
-};
+export { Underline, fromMarkdown, toMarkdown, syntax };

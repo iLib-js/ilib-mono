@@ -74,5 +74,3 @@ export const toMarkdown: Options = {
         },
     },
 };
-
-export default { fromMarkdown, toMarkdown };

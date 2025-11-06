@@ -16,8 +16,8 @@
  */
 
 import dedent from "dedent";
-import type { ComponentList } from "../../../src/markdown/ast-transformer/component";
-import { backconvert, convert } from "../../../src/markdown/convert/convert";
+import { backconvert, convert } from "../../../src/markdown/convert";
+import type { ComponentData } from "../../../src/markdown/ast-transformer/component/mdastMapping";
 
 describe("markdown/convert", () => {
     describe("convert", () => {
@@ -54,7 +54,7 @@ describe("markdown/convert", () => {
     describe("backconvert", () => {
         it("should backconvert escaped string to markdown syntax", () => {
             const escaped = `string with <c0>emphasis</c0>, <c1>underline</c1>, <c2>colored text</c2> and <c3>a link</c3>`;
-            const components: ComponentList = [
+            const components: ComponentData[] = [
                 { type: "emphasis" },
                 {
                     type: "underline",
@@ -79,7 +79,7 @@ describe("markdown/convert", () => {
         it("should backconvert shuffled escaped string to markdown syntax", () => {
             // components parsed from markdown string
             // string with *emphasis*, ++underline++, {color: #FF0000}colored text{/color} and [a link](https://example.com)
-            const components: ComponentList = [
+            const components: ComponentData[] = [
                 { type: "emphasis" },
                 {
                     type: "underline",

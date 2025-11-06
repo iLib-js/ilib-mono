@@ -48,5 +48,3 @@ export const syntax: SyntaxExtension = {
         ],
     },
 };
-
-export default syntax;

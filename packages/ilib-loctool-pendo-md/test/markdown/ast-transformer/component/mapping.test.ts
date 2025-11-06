@@ -19,8 +19,7 @@ import u from "unist-builder";
 import {
     mapComponentDataToNode,
     mapNodeToComponentData,
-} from "../../../../src/markdown/ast-transformer/component/mapping";
-import type { ComponentData } from "../../../../src/markdown/ast-transformer/component/componentData";
+} from "../../../../src/markdown/ast-transformer/component/mdastMapping";
 
 describe("ast-transformer-component/mapping", () => {
     describe("mdast -> component", () => {
@@ -30,22 +29,25 @@ describe("ast-transformer-component/mapping", () => {
             ["underline", "underline"],
             ["delete", "delete"],
             ["listItem", "listItem"],
-        ] as const)(
-            "maps mdast node %s to component data %s",
-            (nodeType, expectedComponentType: ComponentData["type"]) => {
-                const node = u(nodeType, [u("text", "text")]);
-                const actual = mapNodeToComponentData(node);
-                const expected = { type: expectedComponentType };
-                expect(actual).toEqual(expected);
-            }
-        );
+        ])("maps mdast node %s to component data %s", (nodeType, expectedComponentType) => {
+            const node = u(nodeType, [u("text", "text")]);
+            const actual = mapNodeToComponentData(node as any, 0);
+            const expected = {
+                component: { type: "component", componentIndex: 0, children: [u("text", "text")] },
+                data: { type: expectedComponentType },
+            };
+            expect(actual).toEqual(expected);
+        });
 
-        it.each([["html", "html", { value: "<p>HTML</p>" }]] as const)(
+        it.each([["html", "html", { value: "<p>HTML</p>" }]])(
             "maps mdast node with props %s to component data %s",
             (nodeType, expectedComponentType, expectedData) => {
                 const node = u(nodeType, expectedData);
-                const actual = mapNodeToComponentData(node);
-                const expected = { type: expectedComponentType, ...expectedData };
+                const actual = mapNodeToComponentData(node as any, 0);
+                const expected = {
+                    component: { type: "component", componentIndex: 0, children: [] },
+                    data: { type: expectedComponentType, ...expectedData },
+                };
                 expect(actual).toEqual(expected);
             }
         );
@@ -54,15 +56,19 @@ describe("ast-transformer-component/mapping", () => {
             ["link", "link", { url: "http://example.com" }],
             ["list", "list", { ordered: true }],
             ["color", "color", { value: "#ff0000" }],
-        ] as const)(
-            "maps complex mdast node %s to component data %s",
-            (nodeType, expectedComponentType, expectedData) => {
-                const node = u(nodeType, expectedData, [u("text", "text")]);
-                const actual = mapNodeToComponentData(node);
-                const expected = { type: expectedComponentType, ...expectedData };
-                expect(actual).toEqual(expected);
-            }
-        );
+        ])("maps complex mdast node %s to component data %s", (nodeType, expectedComponentType, expectedData) => {
+            const node = u(nodeType, expectedData, [u("text", "text")]);
+            const actual = mapNodeToComponentData(node as any, 0);
+            const expected = {
+                component: {
+                    type: "component",
+                    componentIndex: 0,
+                    children: [u("text", "text")],
+                },
+                data: { type: expectedComponentType, ...expectedData },
+            };
+            expect(actual).toEqual(expected);
+        });
 
         it.each([
             "root",
@@ -78,9 +84,9 @@ describe("ast-transformer-component/mapping", () => {
             "tableCell",
             "image",
             "not-a-real-mdast-node",
-        ] as const)("returns null for mdast node with no mapping %s", (nodeType) => {
+        ])("returns null for mdast node with no mapping %s", (nodeType) => {
             const node = u(nodeType, []);
-            const actual = mapNodeToComponentData(node);
+            const actual = mapNodeToComponentData(node as any, 0);
             expect(actual).toBeNull();
         });
     });
@@ -92,18 +98,20 @@ describe("ast-transformer-component/mapping", () => {
             ["underline", "underline"],
             ["delete", "delete"],
             ["listItem", "listItem"],
-        ] as const)("maps component data %s to simple mdast node %s", (componentType, expectedNodeType) => {
+        ])("maps component data %s to simple mdast node %s", (componentType, expectedNodeType) => {
+            const component = u("component", { componentIndex: 0, children: [u("text", "text")] });
             const componentData = { type: componentType };
-            const actual = mapComponentDataToNode(componentData);
-            const expected = u(expectedNodeType, []);
+            const actual = mapComponentDataToNode(component, componentData as any);
+            const expected = u(expectedNodeType, [u("text", "text")]);
             expect(actual).toEqual(expected);
         });
 
-        it.each([["html", { value: "<p>HTML</p>" }, "html"]] as const)(
+        it.each([["html", { value: "<p>HTML</p>" }, "html"]])(
             "maps component data %s to mdast node with props %s",
             (componentType, componentProps, expectedNodeType) => {
+                const component = u("component", { componentIndex: 0, children: [] });
                 const componentData = { type: componentType, ...componentProps };
-                const actual = mapComponentDataToNode(componentData);
+                const actual = mapComponentDataToNode(component, componentData as any);
                 const expected = u(expectedNodeType, componentProps);
                 expect(actual).toEqual(expected);
             }
@@ -114,13 +122,20 @@ describe("ast-transformer-component/mapping", () => {
             ["list", { ordered: true }, "list"],
             ["color", { value: "#ff0000" }, "color"],
         ])("maps component data %s to complex mdast node %s", (componentType, componentProps, expectedNodeType) => {
-            const componentData = { type: componentType, ...componentProps } as ComponentData;
-            const actual = mapComponentDataToNode(componentData);
+            const componentData = { type: componentType, ...componentProps };
+            const component = u("component", { componentIndex: 0, children: [] });
+            const actual = mapComponentDataToNode(component, componentData as any);
 
             const nodeProps = { ...componentProps };
             const expected = u(expectedNodeType, nodeProps, []);
 
             expect(actual).toEqual(expected);
+        });
+
+        it("throws an error for unknown component data type", () => {
+            const component = u("component", { componentIndex: 0, children: [] });
+            const componentData = { type: "not-a-known-component-data-type" };
+            expect(() => mapComponentDataToNode(component, componentData as any)).toThrow();
         });
     });
 });

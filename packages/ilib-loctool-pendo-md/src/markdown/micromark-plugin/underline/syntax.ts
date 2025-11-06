@@ -131,8 +131,8 @@ export const syntax = (options?: Options): SyntaxExtension => {
                                 // @ts-expect-error: seems to be real but not typed: https://github.com/micromark/micromark/blob/2.11.4/lib/constructs.mjs#L82
                                 (context.parser.constructs.insideSpan as unknown).null as [Construct, Construct],
                                 events.slice(open + 1, index),
-                                context,
-                            ),
+                                context
+                            )
                         );
 
                         // Closing.
@@ -213,5 +213,3 @@ export const syntax = (options?: Options): SyntaxExtension => {
         }
     }
 };
-
-export default syntax;

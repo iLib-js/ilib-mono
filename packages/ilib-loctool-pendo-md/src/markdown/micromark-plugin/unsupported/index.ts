@@ -15,8 +15,4 @@
  * limitations under the License.
  */
 
-import syntax from "./syntax";
-
-export default {
-    syntax,
-};
+export { syntax } from "./syntax";

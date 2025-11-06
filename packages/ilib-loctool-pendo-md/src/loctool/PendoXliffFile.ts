@@ -18,7 +18,7 @@
 import type { File, ResourceString, TranslationSet } from "loctool";
 import fs from "fs";
 import { backconvert, convert } from "../markdown/convert";
-import type { ComponentList } from "../markdown/ast-transformer/component";
+import type { ComponentData } from "../markdown/ast-transformer/component/mdastMapping";
 import { xml2js, js2xml, type Element } from "ilib-xml-js";
 
 /**
@@ -98,13 +98,13 @@ export class PendoXliffFile implements File {
      * Null values indicate that no components were found in the source string
      * and there is no need for backconversion.
      */
-    private componentLists?: { [unitKey: string]: ComponentList | null };
+    private componentLists?: { [unitKey: string]: ComponentData[] | null };
 
     constructor(
         sourceFilePath: string,
         getLocalizedPath: typeof this.getLocalizedPath,
         getOuputLocale: typeof this.getOuputLocale,
-        createTranslationSet: typeof this.createTranslationSet,
+        createTranslationSet: typeof this.createTranslationSet
     ) {
         this.sourceFilePath = sourceFilePath;
         this.getLocalizedPath = getLocalizedPath;
@@ -146,7 +146,7 @@ export class PendoXliffFile implements File {
         // <file datatype="pendoguide">
         return (xliff.elements?.filter(
             (el) =>
-                el.name === XLIFF.ELEMENT.FILE && el.attributes?.[XLIFF.ATTRIBUTE.DATATYPE] === XLIFF.VALUE.PENDOGUIDE,
+                el.name === XLIFF.ELEMENT.FILE && el.attributes?.[XLIFF.ATTRIBUTE.DATATYPE] === XLIFF.VALUE.PENDOGUIDE
         ) ?? []) as FileElement[];
     }
 
@@ -173,7 +173,7 @@ export class PendoXliffFile implements File {
         // <trans-unit> (aggregate from all groups and direct in body)
         const units =
             [...(groups?.flatMap((group) => group.elements ?? []) ?? []), ...(body.elements ?? [])].filter(
-                (el) => el.name === XLIFF.ELEMENT.TRANS_UNIT,
+                (el) => el.name === XLIFF.ELEMENT.TRANS_UNIT
             ) ?? [];
 
         return units as TransUnitElement[];
@@ -301,7 +301,7 @@ export class PendoXliffFile implements File {
         // and component lists for backconversion
         this.escapedUnits = escapedUnits.map(([unit]) => unit);
         this.componentLists = Object.fromEntries(
-            escapedUnits.map(([unit, componentList]) => [unit.key, componentList]),
+            escapedUnits.map(([unit, componentList]) => [unit.key, componentList])
         );
     }
 
@@ -364,7 +364,7 @@ export class PendoXliffFile implements File {
             const translationsForLocale = translations
                 .getAll()
                 .filter(
-                    (resource) => resource.getType() === "string" && resource.getTargetLocale() === loctoolLocale,
+                    (resource) => resource.getType() === "string" && resource.getTargetLocale() === loctoolLocale
                 ) as ResourceString[];
 
             // make a deep copy of the source xliff - don't mutate the file that's already loaded

@@ -21,8 +21,7 @@
 import fromMarkdown from "mdast-util-from-markdown";
 import toMarkdown from "mdast-util-to-markdown";
 
-import syntax from "../../../../src/markdown/micromark-plugin/underline/syntax";
-import mdast from "../../../../src/markdown/micromark-plugin/underline/mdast";
+import * as underline from "../../../../src/markdown/micromark-plugin/underline";
 import removePosition from "unist-util-remove-position";
 import u from "unist-builder";
 
@@ -30,11 +29,14 @@ import type { Root } from "mdast";
 
 const parse = (markdown: string, singlePlus?: boolean) =>
     removePosition(
-        fromMarkdown(markdown, { extensions: [syntax({ singlePlus })], mdastExtensions: [mdast.fromMarkdown] }),
+        fromMarkdown(markdown, {
+            extensions: [underline.syntax({ singlePlus })],
+            mdastExtensions: [underline.fromMarkdown],
+        }),
         true
     ) as Root;
 
-const stringify = (tree: Root) => toMarkdown(tree, { extensions: [mdast.toMarkdown] });
+const stringify = (tree: Root) => toMarkdown(tree, { extensions: [underline.toMarkdown] });
 
 describe("micromark-plugin-underline", () => {
     describe("markdown to mdast", () => {
