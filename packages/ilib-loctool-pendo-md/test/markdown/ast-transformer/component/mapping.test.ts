@@ -119,7 +119,7 @@ describe("ast-transformer-component/mapping", () => {
 
         it.each([
             ["link", { url: "http://example.com" }, "link"],
-            ["list", { ordered: true }, "list"],
+            ["list", { ordered: false, spread: false }, "list"],
             ["color", { value: "#ff0000" }, "color"],
         ])("maps component data %s to complex mdast node %s", (componentType, componentProps, expectedNodeType) => {
             const componentData = { type: componentType, ...componentProps };

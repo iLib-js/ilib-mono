@@ -64,7 +64,9 @@ export interface HTMLData extends BaseComponentData<HTML["type"]> {
 
 export interface ListData extends BaseComponentData<List["type"]> {
     /** Value of the ordered attribute of the original list node. */
-    ordered: boolean;
+    ordered?: boolean | null;
+    /** Value of the spread attribute of the original list node. */
+    spread?: boolean | null;
 }
 
 // Collected component datas
@@ -105,7 +107,7 @@ export const mapNodeToComponentData = (
     }
 
     if (node.type === "list") {
-        const data: ListData = { type: node.type, ordered: node.ordered ?? false };
+        const data: ListData = { type: node.type, ordered: node.ordered, spread: node.spread };
         return { component, data };
     }
 
@@ -144,7 +146,7 @@ export const mapComponentDataToNode = (component: UnistComponent, data: Componen
     }
 
     if (data.type === "list") {
-        return { type: data.type, ordered: data.ordered, children: component.children as any };
+        return { type: data.type, spread: data.spread, ordered: data.ordered, children: component.children as any };
     }
 
     if (data.type === "color") {
