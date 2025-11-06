@@ -40,16 +40,16 @@ Drugi akapit wieloakapitowego ciągu.
                     <source><![CDATA[First paragraph of a multi-paragraph string with list.
 
 This is a list:
-* first item
-* second item
-* third item]]></source>
+* **first** item
+* second **item**
+* **third** item]]></source>
                     <target state="translated">Pierwszy akapit wieloakapitowego ciągu z listą.
 
 To jest lista:
 
-*   pierwszy element
-*   drugi element
-*   trzeci element</target>
+*   **pierwszy** element
+*   **drugi** element
+*   **trzeci** element</target>
                     <note>TextView</note>
                 </trans-unit>
             </group>
@@ -94,24 +94,24 @@ This is a list:
 
 &lt;c1&gt;
 
-first item
+&lt;c2&gt;first&lt;/c2&gt; item
 
 &lt;/c1&gt;
 
-&lt;c2&gt;
-
-second item
-
-&lt;/c2&gt;
-
 &lt;c3&gt;
 
-third item
+second &lt;c4&gt;item&lt;/c4&gt;
 
 &lt;/c3&gt;
 
+&lt;c5&gt;
+
+&lt;c6&gt;third&lt;/c6&gt; item
+
+&lt;/c5&gt;
+
 &lt;/c0&gt;</source>
-        <note>TextView [c0: list, c1: listItem, c2: listItem, c3: listItem]</note>
+        <note>TextView [c0: list, c1: listItem, c2: strong, c3: listItem, c4: strong, c5: listItem, c6: strong]</note>
       </trans-unit>
     </body>
   </file>
