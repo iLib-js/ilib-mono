@@ -55,8 +55,9 @@ export const toComponents = (tree: Root) => {
         // replace the original node with the component node
         parent.children.splice(index, 1, component);
 
-        // descend into the children of the component node
-        return index;
+        // don't descend into children of the old node
+        // but visit the newly inserted node
+        return [visit.SKIP, index];
     });
 
     return { tree: clone, components };
@@ -97,8 +98,9 @@ export const fromComponents = (tree: Root, components: ComponentData[]): Root =>
         // replace the component node with the recreated mdast node
         parent.children.splice(index, 1, recreatedNode);
 
-        // descend into the children of the recreated node
-        return index;
+        // don't descend into children of the old node
+        // but visit the newly inserted node
+        return [visit.SKIP, index];
     });
 
     return clone;
