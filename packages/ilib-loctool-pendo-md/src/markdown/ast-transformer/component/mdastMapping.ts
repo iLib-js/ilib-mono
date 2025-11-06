@@ -16,6 +16,7 @@
  */
 
 import type { Link, List, HTML, Strong, Delete, Emphasis, Content, ListItem } from "mdast";
+import type { Node as UnistNode } from "unist";
 
 import type { Color } from "../color/color";
 import type { Underline } from "../../micromark-plugin/underline";
@@ -73,7 +74,13 @@ export type ComponentData = SimpleNodeData | LinkData | ListData | ColorData | H
  * Convert a mdast node to an escaped representation (typically a Component node) and its data representation.
  * Returns null if the node has no mapping.
  */
-export const mapNodeToComponentData = (node: Content, componentIndex: number) => {
+export const mapNodeToComponentData = (
+    node: Content,
+    componentIndex: number
+): {
+    component: UnistNode;
+    data: ComponentData;
+} | null => {
     const component = {
         type: "component",
         componentIndex,
