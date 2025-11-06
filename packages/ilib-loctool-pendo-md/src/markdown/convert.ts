@@ -177,6 +177,9 @@ export const backconvert = (escapedMarkdown: string, components: ComponentData[]
     // (most importantly, the unsupported syntax should match)
     let ast = markdownParse(escapedMarkdown);
 
+    // remove position data from the AST since we don't need it for further processing
+    ast = unistUtilRemovePosition(ast, true) as Root;
+
     // step 2:
     // transform the HTML nodes into Component nodes
     ast = componentAst.htmlNodesToComponentNodes(ast);
