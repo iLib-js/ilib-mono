@@ -119,4 +119,43 @@ describe("markdown/convert", () => {
             expect(backconverted).toBe(markdown);
         });
     });
+
+    describe("workaround", () => {
+        it("should handle markdown lists with malformed newlines in translation", () => {
+            // prettier-ignore
+            const markdown = dedent`
+            *   **first** item
+            *   second **item**
+            *   **third** item
+            `;
+
+            const [escaped, components] = convert(markdown);
+
+            const malformedTranslation = escaped.replace(/\n/g, " ");
+
+            const backconverted = backconvert(malformedTranslation, components);
+            expect(backconverted).toEqual(
+                [
+                    "  ",
+                    "*     ",
+                    "",
+                    "    **first**",
+                    "",
+                    "     item  ",
+                    "  ",
+                    "*     second ",
+                    "",
+                    "    **item**",
+                    "",
+                    "      ",
+                    "  ",
+                    "*     ",
+                    "",
+                    "    **third**",
+                    "",
+                    "     item",
+                ].join("\n")
+            );
+        });
+    });
 });
