@@ -29,7 +29,7 @@ import { UnistComponent } from "./unistComponent";
  * * second **item**
  * * **third** item
  * ```
- * this plugin will transform it into the following escaped string:
+ * this loctool plugin will transform it into the following escaped string:
  * ```xml
  * <source>&lt;c0&gt;
  *
@@ -58,32 +58,32 @@ import { UnistComponent } from "./unistComponent";
  * the mdast ListItem node must contain BlockContent nodes (in this case, Paragraphs). AST of this string looks like this:
  * ```text
  * |root: [
- * |    html(<c0>),
- * |    html(<c1>),
+ * |    html: "<c0>"
+ * |    html: "<c1>"
  * |    paragraph: [
- * |        html(<c2>),
- * |        text(first),
- * |        html(</c2>),
- * |        text(item)
- * |    ],
- * |    html(</c1>),
- * |    html(<c3>),
+ * |        html: "<c2>"
+ * |        text: "first"
+ * |        html: "</c2>"
+ * |        text: "item"
+ * |    ]
+ * |    html: "</c1>"
+ * |    html: "<c3>"
  * |    paragraph: [
- * |        text(second),
- * |        html(<c4>),
- * |        text(item),
- * |        html(</c4>)
- * |    ],
- * |    html(</c3>),
- * |    html(<c5>),
+ * |        text: "second"
+ * |        html: "<c4>"
+ * |        text: "item"
+ * |        html: "</c4>"
+ * |    ]
+ * |    html: "</c3>"
+ * |    html: "<c5>"
  * |    paragraph: [
- * |        html(<c6>),
- * |        text(third),
- * |        html(</c6>),
- * |        text(item)
- * |    ],
- * |    html(</c5>),
- * |    html(</c0>)
+ * |        html: "<c6>"
+ * |        text: "third"
+ * |        html: "</c6>"
+ * |        text: "item"
+ * |    ]
+ * |    html: "</c5>"
+ * |    html: "</c0>"
  * |]
  * ```
  *
@@ -98,33 +98,33 @@ import { UnistComponent } from "./unistComponent";
  * ```text
  * |root: [
  * |    paragraph: [
- * |        html(<c0>),
- * |        text( ),
- * |        html(<c1>),
- * |        text( ),
- * |        html(<c2>),
- * |        text(first),
- * |        html(</c2>),
- * |        text(item),
- * |        html(</c1>),
- * |        text( ),
- * |        html(<c3>),
- * |        text( second ),
- * |        html(<c4>),
- * |        text(item),
- * |        html(</c4>),
- * |        html(</c3>),
- * |        text( ),
- * |        html(<c5>),
- * |        text( ),
- * |        html(<c6>),
- * |        text(third),
- * |        html(</c6>),
- * |        text( item ),
- * |        html(</c5>),
- * |        text( ),
- * |        html(</c0>)
- * |    ],
+ * |        html: "<c0>"
+ * |        text: " "
+ * |        html: "<c1>"
+ * |        text: " "
+ * |        html: "<c2>"
+ * |        text: "first"
+ * |        html: "</c2>"
+ * |        text: "item"
+ * |        html: "</c1>"
+ * |        text: " "
+ * |        html: "<c3>"
+ * |        text: " second "
+ * |        html: "<c4>"
+ * |        text: "item"
+ * |        html: "</c4>"
+ * |        html: "</c3>"
+ * |        text: " "
+ * |        html: "<c5>"
+ * |        text: " "
+ * |        html: "<c6>"
+ * |        text: "third"
+ * |        html: "</c6>"
+ * |        text: " item "
+ * |        html: "</c5>"
+ * |        text: " "
+ * |        html: "</c0>
+ * |    ]
  * |]
  * ```
  *
@@ -187,7 +187,54 @@ import { UnistComponent } from "./unistComponent";
  * because without PhrasingContent node, mdast serializer inserts newline after every separate element of the list item.
  *
  * The workaround is to forcefully wrap the list item elements into a PhrasingContent node - in this case a Paragraph node.
- * This limits the amount of extraneous newlines inserted by the serializer to the minimum.
+ * This limits the amount of extraneous newlines inserted by the serializer to the minimum:
+ *
+ * ```text
+ * |root: [
+ * |    paragraph: [
+ * |        list: [
+ * |            text: " "
+ * |            listItem: [
+ * |                paragraph: [
+ * |                    text: " "
+ * |                    strong: [
+ * |                        text: "first"
+ * |                    ]
+ * |                ]
+ * |            ]
+ * |        ]
+ * |        text: " "
+ * |        listItem: [
+ * |            paragraph: [
+ * |                text: " second "
+ * |                strong: [
+ * |                    text: "item"
+ * |                ]
+ * |            ]
+ * |        ]
+ * |        text: " "
+ * |        listItem: [
+ * |            paragraph: [
+ * |                text: " "
+ * |            strong: [
+ * |                    text: "third"
+ * |                ]
+ * |            ]
+ * |        ]
+ * |        text: " "
+ * |    ]
+ * |    text: " "
+ * |]
+ * ```
+ * which renders to
+ * ```text
+ * |
+ * |*     **first** item
+ * |
+ * |*    second **item**
+ * |
+ * |*    **third** item
+ * ```
  */
 export const mapListItemWithWorkaround = (component: UnistComponent): Content => {
     const hasNonBlockContent = component.children.some(
