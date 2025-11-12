@@ -24,10 +24,22 @@ import * as colorString from "./string-transformer/color";
 import * as colorAst from "./ast-transformer/color";
 import * as underline from "./micromark-plugin/underline";
 import * as unsupported from "./micromark-plugin/unsupported";
-import * as componentAst from "./ast-transformer/component";
 
-import type { ComponentData } from "./ast-transformer/component/mdastMapping";
 import type { Root } from "mdast";
+import {
+    enumerateComponents,
+    extractComponentData,
+    flattenComponentNodes,
+    injectComponentData,
+    mapFromComponentAst,
+    mapMdastNode,
+    mapToComponentAst,
+    parseComponentString,
+    stringifyComponentTree,
+    unflattenComponentNodes,
+    unmapMdastNode,
+    type ComponentData,
+} from "./ast-transformer/component/work-in-progress";
 
 /**
  * Markdown parse function with injected extensions.
@@ -60,21 +72,28 @@ const markdownStringify = (ast: Root) =>
  * ```text
  * string with <c0>emphasis</c0>, <c1>underline</c1>, <c2>color</c2> and <c3>a link</c3>
  * ```
- * additionally, output data about those components
+ * additionally, output data about nodes which were escaped by these components
  * ```text
- * - c0: emphasis
- * - c1: underline
- * - c2: color #FF0000
- * - c3: link https://example.com
+ * {
+ *   0: [emphasis]
+ *   1: [underline]
+ *   2: [color(#FF0000)]
+ *   3: [link(https://example.com)]
+ * }
  * ```
  * to use it later for backconversion.
  *
  * @returns Tuple of escaped string and the list of components
  */
-export const convert = (markdown: string): readonly [string, ComponentData[]] => {
-    // [step 0]: {color: #FFFFFF}*pizza* spaghetti{/color}
+export const convert = (markdown: string): readonly [string, ComponentData] => {
+    // [step 0]:
+    // {color: #FFFFFF}*pizza* spaghetti{/color}
+    //
+    // input string is formatted as a subset of markdown with some custom extensions
 
-    // [step 1]: <color value="#FFFFFF">*pizza* spaghetti</color>
+    // [step 1]:
+    // <color value="#FFFFFF">*pizza* spaghetti</color>
+    //
     // pre-transform Pendo markdown string
     // to convert their custom Color tags {color: #000000}{/color}
     // into HTML tags <color value="#000000"></color>
@@ -83,7 +102,15 @@ export const convert = (markdown: string): readonly [string, ComponentData[]] =>
     markdown = colorString.toHtmlTags(markdown);
 
     // [step 2]:
-    //     [root: [paragraph: [html(<color value="#FFFFFF">), emphasis: [text(pizza)], text(spaghetti), html(</color>)]]]
+    // [root: [
+    //     paragraph: [
+    //         html(<color value="#FFFFFF">),
+    //         emphasis: [text(pizza)],
+    //         text(spaghetti),
+    //         html(</color>),
+    //     ],
+    // ]]
+    //
     // parse the pre-transformed markdown into mdast;
     // use parser plugins to support syntax extensions
     // for GFM strikethrough (~~ ~~) and Pendo underline (++ ++)
@@ -103,50 +130,60 @@ export const convert = (markdown: string): readonly [string, ComponentData[]] =>
     //         ],
     //     ],
     // ]]
+    //
     // transform the given mdast tree to find HTML nodes corresponding to <color ...> tags
     // and replace them with custom Color ast nodes
     // This is paired with the colorString.toHtmlTags (Step 1), so that after this step the resulting AST
     // looks as if there was an actual extension for parsing color tags (i.e. it produces AST nodes with type "color")
     ast = colorAst.toColorNodes(ast);
 
-    // [step 4]:
-    //     [root: [
-    //         paragraph: [
-    //             component(0, color): [
-    //                 component(1, emphasis): [text(pizza)],
-    //                 text(spaghetti),
-    //             ],
+    // [step 4.1]:
+    // [component(root): [
+    //     component(paragraph): [
+    //         component(color): [
+    //             component(emphasis): [text(pizza)],
+    //             text(spaghetti),
     //         ],
-    //     ]]
-    // map every AST node that we want to escape to a non-standard abstract AST node with type "component" (see ComponentNode)
-    // this component node is something that cannot be rendered, so in the next step we will replace it with a HTML representation
-    let components;
-    ({ tree: ast, components } = componentAst.toComponents(ast));
+    //     ],
+    // ]]
+    //
+    // map the markdown AST to a component tree which holds the original nodes
+    let componentTree = mapToComponentAst(ast, (node) => mapMdastNode(node as (typeof ast)["children"][number]));
+
+    // [step 4.2]:
+    // [component([root, paragraph, color]): [
+    //     component(emphasis): [text(pizza)],
+    //     text(spaghetti),
+    // ]]
+    //
+    // flatten the component tree to consolidate nested components where possible
+    componentTree = flattenComponentNodes(componentTree);
+
+    // [step 4.3]:
+    // [component([root, paragraph, color], -1): [
+    //     component(emphasis, 0): [text(pizza)],
+    //     text(spaghetti),
+    // ]]
+    //
+    // assign indices to the components (root is -1 to skip it in the stringified output)
+    componentTree = enumerateComponents(componentTree);
+
+    // [step 4.4]:
+    // {
+    //     -1: [root, paragraph, color],
+    //     0: [emphasis]
+    // }
+    //
+    // extract the component data from the component tree to use later for backconversion
+    const componentData = extractComponentData(componentTree);
 
     // [step 5]:
-    //     [root: [
-    //         paragraph: [
-    //             html(<c0>),
-    //             html(<c1>),
-    //             text(pizza),
-    //             html(</c1>),
-    //             text(spaghetti),
-    //             html(</c0>),
-    //         ],
-    //     ]]
-    // transform the ComponentNodes into HTML nodes
-    ast = componentAst.componentNodesToHtmlNodes(ast);
+    // <c0>pizza</c0> spaghetti
+    //
+    // serialize the enumerated component tree to a string
+    const escapedString = stringifyComponentTree(componentTree);
 
-    // [step 5]: <c0><c1>pizza<c1> spaghetti</c0>
-    // reassemble the transformed markdown AST into a string to produce the escaped string with numbered HTML elements
-    let escapedMarkdown = markdownStringify(ast);
-
-    // step 6:
-    // trim the produced string to remove the trailing newline
-    // (`toMarkdown` always inerts a newline at the end of a paragraph)
-    escapedMarkdown = escapedMarkdown.trimEnd();
-
-    return [escapedMarkdown, components] as const;
+    return [escapedString, componentData] as const;
 };
 
 /**
@@ -158,10 +195,12 @@ export const convert = (markdown: string): readonly [string, ComponentData[]] =>
  * ```
  * and a list of components like this
  * ```text
- * - c0: emphasis
- * - c1: underline
- * - c2: color #FF0000
- * - c3: link https://example.com
+ * {
+ *   0: [emphasis]
+ *   1: [underline]
+ *   2: [color(#FF0000)]
+ *   3: [link(https://example.com)]
+ * }
  * ```
  * transform it back to Pendo markdown syntax
  * ``` markdown
@@ -170,41 +209,85 @@ export const convert = (markdown: string): readonly [string, ComponentData[]] =>
  *
  * This is reverse operation to {@link convert} and should produce the original markdown string.
  */
-export const backconvert = (escapedMarkdown: string, components: ComponentData[]): string => {
-    // step 1:
-    // parse the escaped string into mdast;
-    // use the same parser plugins as in `convert` to ensure compatibility
-    // (most importantly, the unsupported syntax should match)
-    let ast = markdownParse(escapedMarkdown);
+export const backconvert = (escapedString: string, componentData: ComponentData): string => {
+    // [step 0]:
+    // <c0>pizza</c0> spaghetti
+    //
+    // input string is a translatable string with numbered components
 
-    // remove position data from the AST since we don't need it for further processing
-    ast = unistUtilRemovePosition(ast, true) as Root;
+    // [step 1]:
+    // [component(-1): [
+    //     component(0): [text(pizza)],
+    //     text(spaghetti),
+    // ]]
+    //
+    // parse the escaped string into a component tree
+    let componentTree = parseComponentString(escapedString);
 
-    // step 2:
-    // transform the HTML nodes into Component nodes
-    ast = componentAst.htmlNodesToComponentNodes(ast);
+    // [step 2]:
+    // [component([root, paragraph, color], -1): [
+    //     component(emphasis, 0): [text(pizza)],
+    //     text(spaghetti),
+    // ]]
+    //
+    // inject the component data into the component tree
+    componentTree = injectComponentData(componentTree, componentData);
 
-    // step 2:
-    // replace numbered components with original mdast nodes
-    // (this includes custom Color nodes)
-    ast = componentAst.fromComponents(ast, components);
+    // [step 3]:
+    // [component(root): [
+    //     component(paragraph): [
+    //         component(color): [
+    //             component(emphasis): [text(pizza)],
+    //             text(spaghetti),
+    //         ],
+    //     ],
+    // ]]
+    //
+    // unflatten the component tree to restore the original structure
+    componentTree = unflattenComponentNodes(componentTree);
 
-    // step 3:
+    // [step 4]:
+    // [root: [
+    //     paragraph: [
+    //         color(#FFFFFF): [
+    //             emphasis: [text(pizza)],
+    //             text(spaghetti),
+    //         ],
+    //     ],
+    // ]]
+    //
+    // recreate mdast from the injected component data
+    let ast = mapFromComponentAst(componentTree, (node) => unmapMdastNode(node)) as Root;
+
+    // [step 5]:
+    // [root: [
+    //     paragraph: [
+    //         html(<color value="#FFFFFF">),
+    //         emphasis: [text(pizza)],
+    //         text(spaghetti),
+    //         html(</color>),
+    //     ],
+    // ]]
+    //
     // replace custom Color nodes with HTML <color ...> tags
     ast = colorAst.fromColorNodes(ast);
 
-    // step 4:
-    // reassemble the backconverted string
+    // [step 6]:
+    // <color value="#FFFFFF">*pizza* spaghetti</color>
+    //
+    // render the reassembled mdast tree to a markdown string
     let backconvertedMarkdown = markdownStringify(ast);
 
-    // step 5:
+    // [step 7]:
+    // {color: #FFFFFF}*pizza* spaghetti{/color}
+    //
     // revert color tags <color value="#000000"></color>
     // back to Pendo markdown syntax {color: #000000}{/color}
     backconvertedMarkdown = colorString.fromHtmlTags(backconvertedMarkdown);
 
-    // step 6:
-    // trim the produced string to remove the trailing newline
-    // (`toMarkdown` always inerts a newline at the end of a paragraph)
+    // [step 8]:
+    // trim end of the rendered string to remove the trailing newline
+    // (`toMarkdown` always inserts a newline at the end of a paragraph)
     backconvertedMarkdown = backconvertedMarkdown.trimEnd();
 
     return backconvertedMarkdown;

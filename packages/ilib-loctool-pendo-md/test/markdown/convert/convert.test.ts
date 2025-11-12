@@ -17,7 +17,7 @@
 
 import dedent from "dedent";
 import { backconvert, convert } from "../../../src/markdown/convert";
-import type { ComponentData } from "../../../src/markdown/ast-transformer/component/mdastMapping";
+import type { ComponentData } from "../../../src/markdown/ast-transformer/component/work-in-progress";
 
 describe("markdown/convert", () => {
     describe("convert", () => {
@@ -34,40 +34,40 @@ describe("markdown/convert", () => {
             const markdown = `string with *emphasis*, ++underline++, {color: #FF0000}colored text{/color} and [a link](https://example.com)`;
             const [_, components] = convert(markdown);
 
-            expect(components).toEqual([
-                { type: "emphasis" },
-                {
-                    type: "underline",
-                },
-                {
-                    type: "color",
-                    value: "#FF0000",
-                },
-                {
-                    type: "link",
-                    url: "https://example.com",
-                },
-            ]);
+            expect(components).toEqual(
+                new Map([
+                    [
+                        -1,
+                        [
+                            { type: "root", children: [] },
+                            { type: "paragraph", children: [] },
+                        ],
+                    ],
+                    [0, [{ type: "emphasis", children: [] }]],
+                    [1, [{ type: "underline", children: [] }]],
+                    [2, [{ type: "color", value: "#FF0000", children: [] }]],
+                    [3, [{ type: "link", url: "https://example.com", children: [] }]],
+                ])
+            );
         });
     });
 
     describe("backconvert", () => {
         it("should backconvert escaped string to markdown syntax", () => {
             const escaped = `string with <c0>emphasis</c0>, <c1>underline</c1>, <c2>colored text</c2> and <c3>a link</c3>`;
-            const components: ComponentData[] = [
-                { type: "emphasis" },
-                {
-                    type: "underline",
-                },
-                {
-                    type: "color",
-                    value: "#FF0000",
-                },
-                {
-                    type: "link",
-                    url: "https://example.com",
-                },
-            ];
+            const components: ComponentData = new Map([
+                [
+                    -1,
+                    [
+                        { type: "root", children: [] },
+                        { type: "paragraph", children: [] },
+                    ],
+                ],
+                [0, [{ type: "emphasis", children: [] }]],
+                [1, [{ type: "underline", children: [] }]],
+                [2, [{ type: "color", value: "#FF0000", children: [] }]],
+                [3, [{ type: "link", url: "https://example.com", children: [] }]],
+            ]);
 
             const backconverted = backconvert(escaped, components);
 
@@ -79,20 +79,19 @@ describe("markdown/convert", () => {
         it("should backconvert shuffled escaped string to markdown syntax", () => {
             // components parsed from markdown string
             // string with *emphasis*, ++underline++, {color: #FF0000}colored text{/color} and [a link](https://example.com)
-            const components: ComponentData[] = [
-                { type: "emphasis" },
-                {
-                    type: "underline",
-                },
-                {
-                    type: "color",
-                    value: "#FF0000",
-                },
-                {
-                    type: "link",
-                    url: "https://example.com",
-                },
-            ];
+            const components: ComponentData = new Map([
+                [
+                    -1,
+                    [
+                        { type: "root", children: [] },
+                        { type: "paragraph", children: [] },
+                    ],
+                ],
+                [0, [{ type: "emphasis", children: [] }]],
+                [1, [{ type: "underline", children: [] }]],
+                [2, [{ type: "color", value: "#FF0000", children: [] }]],
+                [3, [{ type: "link", url: "https://example.com", children: [] }]],
+            ]);
 
             // escaped string with shuffled order (as if it came from translation)
             const escapedShuffled = `string with <c2>colored text</c2>, <c1>underline</c1>, <c0>emphasis</c0> and <c3>a link</c3>`;
@@ -135,15 +134,10 @@ describe("markdown/convert", () => {
 
             const backconverted = backconvert(malformedTranslation, components);
             expect(backconverted).toEqual(
-                [
-                    // prettier-ignore
-                    "  ",
-                    "*     **first** item  ",
-                    "  ",
-                    "*     second **item**  ",
-                    "  ",
-                    "*     **third** item",
-                ].join("\n")
+                dedent`
+                *   **first** item
+                *   second **item**
+                *   **third** item`
             );
         });
     });

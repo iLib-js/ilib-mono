@@ -18,7 +18,7 @@
 import type { File, ResourceString, TranslationSet } from "loctool";
 import fs from "fs";
 import { backconvert, convert } from "../markdown/convert";
-import type { ComponentData } from "../markdown/ast-transformer/component/mdastMapping";
+import type { ComponentData } from "../markdown/ast-transformer/component/work-in-progress";
 import { xml2js, js2xml, type Element } from "ilib-xml-js";
 
 /**
@@ -98,7 +98,7 @@ export class PendoXliffFile implements File {
      * Null values indicate that no components were found in the source string
      * and there is no need for backconversion.
      */
-    private componentLists?: { [unitKey: string]: ComponentData[] | null };
+    private componentLists?: { [unitKey: string]: ComponentData | null };
 
     constructor(
         sourceFilePath: string,
@@ -253,7 +253,10 @@ export class PendoXliffFile implements File {
     private static toEscapedUnits(translationUnits: TranslationUnit[]) {
         return translationUnits.map((unit) => {
             // escape the source string and extract component list
-            const [escapedSource, componentList] = convert(unit.source);
+            const [escapedSource, componentData] = convert(unit.source);
+
+            // get list of components that are embedded in the escaped string
+            const componentList = [...componentData.entries()].filter(([componentIndex]) => componentIndex >= 0);
 
             if (componentList.length === 0) {
                 // no components found, no need to modify the unit
@@ -263,8 +266,8 @@ export class PendoXliffFile implements File {
             // append description of all components to the unit comment
             // in the format: [c0: ComponentType, c1: ComponentType, ...]
             const componentComments = componentList
-                .map((component, idx) => {
-                    return `c${idx}: ${component.type}`;
+                .map(([componentIndex, nodes]) => {
+                    return `c${componentIndex}: ${nodes.map((node) => node.type).join(">")}`;
                 })
                 .join(", ");
             const commentWithComponents = [unit.comment, `[${componentComments}]`].join(" ");
@@ -273,7 +276,7 @@ export class PendoXliffFile implements File {
             const copy = { ...unit };
             copy.source = escapedSource;
             copy.comment = commentWithComponents;
-            return [copy, componentList] as const;
+            return [copy, componentData] as const;
         });
     }
 

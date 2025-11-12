@@ -29,7 +29,7 @@ import {
     unflattenComponentNodes,
     mapFromComponentAst,
     unmapMdastNode,
-} from "../src/work-in-progress";
+} from "../../../../src/markdown/ast-transformer/component/work-in-progress";
 
 describe("work-in-progress", () => {
     test("mdast to component ast", () => {
@@ -263,17 +263,23 @@ describe("work-in-progress", () => {
 
         const componentData = extractComponentData(enumeratedAst as any);
 
-        const expected = {
-            [ROOT_COMPONENT_INDEX]: [
-                { type: "root", children: [] },
-                { type: "paragraph", children: [] },
+        const expected = new Map([
+            [
+                ROOT_COMPONENT_INDEX,
+                [
+                    { type: "root", children: [] },
+                    { type: "paragraph", children: [] },
+                ],
             ],
-            0: [{ type: "html", value: "<br/>" }],
-            1: [
-                { type: "delete", children: [] },
-                { type: "emphasis", children: [] },
+            [0, [{ type: "html", value: "<br/>" }]],
+            [
+                1,
+                [
+                    { type: "delete", children: [] },
+                    { type: "emphasis", children: [] },
+                ],
             ],
-        };
+        ]);
 
         expect(componentData).toEqual(expected);
     });
@@ -321,17 +327,23 @@ describe("work-in-progress", () => {
             ],
         };
 
-        const componentData = {
-            [ROOT_COMPONENT_INDEX]: [
-                { type: "root", children: [] },
-                { type: "paragraph", children: [] },
+        const componentData = new Map([
+            [
+                ROOT_COMPONENT_INDEX,
+                [
+                    { type: "root", children: [] },
+                    { type: "paragraph", children: [] },
+                ],
             ],
-            0: [{ type: "html", value: "<br/>" }],
-            1: [
-                { type: "delete", children: [] },
-                { type: "emphasis", children: [] },
+            [0, [{ type: "html", value: "<br/>" }]],
+            [
+                1,
+                [
+                    { type: "delete", children: [] },
+                    { type: "emphasis", children: [] },
+                ],
             ],
-        };
+        ]);
 
         const injectedTree = injectComponentData(parsedTree as any /* TODO */, componentData);
 
@@ -367,6 +379,7 @@ describe("work-in-progress", () => {
     test("unflatten component nodes", () => {
         const flattenedTree = {
             type: "component",
+            componentIndex: ROOT_COMPONENT_INDEX,
             originalNodes: [
                 { type: "root", children: [] },
                 { type: "paragraph", children: [] },
@@ -374,12 +387,14 @@ describe("work-in-progress", () => {
             children: [
                 {
                     type: "component",
+                    componentIndex: 0,
                     originalNodes: [{ type: "html", value: "<br/>" }],
                     children: [],
                 },
                 { type: "text", value: " regular " },
                 {
                     type: "component",
+                    componentIndex: 1,
                     originalNodes: [
                         { type: "delete", children: [] },
                         { type: "emphasis", children: [] },
@@ -393,6 +408,7 @@ describe("work-in-progress", () => {
 
         const expected = {
             type: "component",
+            componentIndex: ROOT_COMPONENT_INDEX,
             originalNodes: [{ type: "root", children: [] }],
             children: [
                 {
@@ -401,12 +417,14 @@ describe("work-in-progress", () => {
                     children: [
                         {
                             type: "component",
+                            componentIndex: 0,
                             originalNodes: [{ type: "html", value: "<br/>" }],
                             children: [],
                         },
                         { type: "text", value: " regular " },
                         {
                             type: "component",
+                            componentIndex: 1,
                             originalNodes: [{ type: "delete", children: [] }],
                             children: [
                                 {

@@ -65,13 +65,19 @@ export const isComponentNode = (node: unknown): node is ComponentAst.Component =
     return true;
 };
 
+export const shallowCloneNode = (node: UnistNode): UnistNode => {
+    if ("children" in node && Array.isArray(node.children)) {
+        return { ...node, children: [] } as UnistNode;
+    }
+    return { ...node };
+};
+
 export const mapMdastNode = (node: MdastParent | MdastContent): ComponentAst.Node => {
     // substitute nodes with children
     if ("children" in node) {
-        const nodeCopy = { ...node, children: [] };
         const component: ComponentAst.Component = {
             type: "component",
-            originalNodes: [nodeCopy],
+            originalNodes: [node],
             children: [],
         };
         return component;
@@ -90,7 +96,14 @@ export const mapToComponentAst = (
     tree: UnistParent,
     mapFunction: (node: UnistNode) => ComponentAst.Node
 ): ComponentAst.Component => {
-    return mapTree(tree, mapFunction) as ComponentAst.Component;
+    return mapTree(tree, (node) => {
+        const mappedNode = mapFunction(node);
+        // create clones of the original nodes to avoid unexpected side effects
+        if (mappedNode.type === "component" && mappedNode.originalNodes) {
+            mappedNode.originalNodes = mappedNode.originalNodes.map(shallowCloneNode);
+        }
+        return mappedNode;
+    }) as ComponentAst.Component;
 };
 
 // on second pass, minimize the tree by flattening stacked components
@@ -149,7 +162,7 @@ export const stringifyComponentTree = (node: ComponentAst.Node): string => {
     const childrenString = node.children.map(stringifyComponentTree).join("");
 
     // don't stringify the root component
-    if (node.componentIndex === ROOT_COMPONENT_INDEX) {
+    if (node.componentIndex < 0) {
         return childrenString;
     }
 
@@ -157,10 +170,10 @@ export const stringifyComponentTree = (node: ComponentAst.Node): string => {
 };
 
 // we need to pull the component data out of the ast for later backconversion
-export type ComponentData = Partial<Record<number, UnistNode[]>>;
+export type ComponentData = Map<number, UnistNode[]>;
 
-export const extractComponentData = (tree: ComponentAst.Root) => {
-    const data: ComponentData = {};
+export const extractComponentData = <Tree extends ComponentAst.Component = ComponentAst.Component>(tree: Tree) => {
+    const data: ComponentData = new Map();
     visit(tree, isComponentNode, (node) => {
         if (node.componentIndex === undefined) {
             throw new Error(`Component index is undefined`);
@@ -169,7 +182,7 @@ export const extractComponentData = (tree: ComponentAst.Root) => {
         if (!node.originalNodes) {
             throw new Error("Invalid tree state: missing original nodes array");
         }
-        data[node.componentIndex] = node.originalNodes;
+        data.set(node.componentIndex, node.originalNodes);
         return visit.CONTINUE;
     });
     return data;
@@ -270,7 +283,7 @@ export const injectComponentData = (tree: ComponentAst.Root, componentData: Comp
         if (node.componentIndex === undefined) {
             throw new Error(`Invalid tree state: component index is undefined`);
         }
-        const data = componentData[node.componentIndex];
+        const data = componentData.get(node.componentIndex);
         if (!data) {
             throw new Error(`Missing component data for component index ${node.componentIndex}`);
         }
@@ -282,7 +295,9 @@ export const injectComponentData = (tree: ComponentAst.Root, componentData: Comp
 
 // now unflatten the tree
 
-export const unflattenComponentNodes = (tree: ComponentAst.Component): ComponentAst.Component => {
+export const unflattenComponentNodes = <Tree extends ComponentAst.Component = ComponentAst.Component>(
+    tree: Tree
+): Tree => {
     const clone = cloneTree(tree);
     visit(clone, isComponentNode, (node) => {
         if (!node.originalNodes) {
@@ -310,12 +325,15 @@ export const mapFromComponentAst = (
     tree: ComponentAst.Component,
     mapFunction: (node: ComponentAst.Node) => UnistNode
 ): UnistParent => {
-    return mapTree(
-        tree,
-        // @ts-expect-error mapTree is not generic,
-        // but we know that ComponentAst.Component tree can only contain ComponentAst.Node nodes
-        mapFunction
-    ) as UnistParent;
+    return mapTree(tree, (node) => {
+        return shallowCloneNode(
+            mapFunction(
+                // @ts-expect-error mapTree is not generic,
+                // but we know that ComponentAst.Component tree can only contain ComponentAst.Node nodes
+                node
+            )
+        );
+    }) as UnistParent;
 };
 
 export const unmapMdastNode = (node: ComponentAst.Node): MdastParent | MdastContent => {
