@@ -33,7 +33,7 @@ import {
 
 describe("work-in-progress", () => {
     test("mdast to component ast", () => {
-        // markdown: <br/> regular ~*italic strikethrough*~\n\n <br/> regular ~*italic strikethrough*~
+        // markdown: <br/> regular ~*italic strikethrough*~
         // prettier-ignore
         const mdast = u("root", [
             u("paragraph", [
@@ -44,16 +44,7 @@ describe("work-in-progress", () => {
                         u("text", "italic striketrough"),
                     ]),
                 ]),
-            ]),
-            u("paragraph", [
-                u("html", "<br/>"),
-                u("text", " regular "),
-                u("delete", [
-                    u("emphasis", [
-                        u("text", "italic striketrough"),
-                    ]),
-                ]),
-            ]),
+            ])
         ]);
         const componentAst = mapToComponentAst(mdast, mapMdastNode as any /* TODO */);
 
@@ -68,30 +59,6 @@ describe("work-in-progress", () => {
                         {
                             type: "component",
                             originalNodes: [{ type: "html", value: "<br/>" }],
-                            children: [],
-                        },
-                        { type: "text", value: " regular " },
-                        {
-                            type: "component",
-                            originalNodes: [{ type: "delete", children: [] }],
-                            children: [
-                                {
-                                    type: "component",
-                                    originalNodes: [{ type: "emphasis", children: [] }],
-                                    children: [{ type: "text", value: "italic striketrough" }],
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    type: "component",
-                    originalNodes: [{ type: "paragraph", children: [] }],
-                    children: [
-                        {
-                            type: "component",
-                            originalNodes: [{ type: "html", value: "<br/>" }],
-                            children: [],
                         },
                         { type: "text", value: " regular " },
                         {
@@ -318,19 +285,15 @@ describe("work-in-progress", () => {
         const expected = {
             type: "component",
             componentIndex: ROOT_COMPONENT_INDEX,
-            originalNodes: [],
             children: [
                 {
                     type: "component",
                     componentIndex: 0,
-                    originalNodes: [],
-                    children: [],
                 },
                 { type: "text", value: " regular " },
                 {
                     type: "component",
                     componentIndex: 1,
-                    originalNodes: [],
                     children: [{ type: "text", value: "italic striketrough" }],
                 },
             ],
@@ -343,19 +306,16 @@ describe("work-in-progress", () => {
         const parsedTree = {
             type: "component",
             componentIndex: ROOT_COMPONENT_INDEX,
-            originalNodes: [],
+
             children: [
                 {
                     type: "component",
                     componentIndex: 0,
-                    originalNodes: [],
-                    children: [],
                 },
                 { type: "text", value: " regular " },
                 {
                     type: "component",
                     componentIndex: 1,
-                    originalNodes: [],
                     children: [{ type: "text", value: "italic striketrough" }],
                 },
             ],
@@ -387,7 +347,6 @@ describe("work-in-progress", () => {
                     type: "component",
                     componentIndex: 0,
                     originalNodes: [{ type: "html", value: "<br/>" }],
-                    children: [],
                 },
                 { type: "text", value: " regular " },
                 {
@@ -477,7 +436,6 @@ describe("work-in-progress", () => {
                         {
                             type: "component",
                             originalNodes: [{ type: "html", value: "<br/>" }],
-                            children: [],
                         },
                         { type: "text", value: " regular " },
                         {

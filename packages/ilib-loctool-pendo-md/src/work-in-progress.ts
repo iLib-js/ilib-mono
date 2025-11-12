@@ -15,28 +15,30 @@
  * limitations under the License.
  */
 import { Content as MdastContent, Parent as MdastParent } from "mdast";
-import type { Parent as UnistParent, Literal as UnistLiteral, Node as UnistNode } from "unist";
+import type { Parent as UnistParent, Node as UnistNode } from "unist";
 import mapTree from "unist-util-map";
 import visit from "unist-util-visit";
 
 // on first pass, transform tree by replacing all non-text nodes
 
 export declare namespace ComponentAst {
-    export interface Text extends UnistLiteral<string> {
+    export interface Text {
         type: "text";
+        value: string;
     }
 
-    export interface Component extends UnistParent {
+    export interface Component {
         type: "component";
         componentIndex?: number;
         originalNodes?: UnistNode[];
-        children: Node[];
+        children?: Node[];
     }
 
     export type RootComponentIndex = typeof ROOT_COMPONENT_INDEX;
 
     export interface Root extends Component {
         componentIndex: RootComponentIndex;
+        children: NonNullable<Component["children"]>;
     }
 
     export type Node = Root | Component | Text;
@@ -80,7 +82,7 @@ export const mapMdastNode = (node: MdastParent | MdastContent): ComponentAst.Nod
         return text;
     }
     // escape non-parent nodes
-    const component: ComponentAst.Component = { type: "component", originalNodes: [node], children: [] };
+    const component: ComponentAst.Component = { type: "component", originalNodes: [node] };
     return component;
 };
 
@@ -99,7 +101,7 @@ export const cloneTree = <T extends UnistNode>(tree: T): T => {
 export const flattenComponentNodes = (tree: ComponentAst.Component): ComponentAst.Component => {
     const clone = cloneTree(tree);
     visit(clone, isComponentNode, (node) => {
-        if (node.children.length !== 1) {
+        if (node.children?.length !== 1) {
             return visit.CONTINUE;
         }
         const child = node.children[0];
@@ -141,7 +143,7 @@ export const stringifyComponentTree = (node: ComponentAst.Node): string => {
     if (node.componentIndex === undefined) {
         throw new Error(`Component index is undefined`);
     }
-    if (node.children.length === 0) {
+    if (node.children === undefined || node.children.length === 0) {
         return `<c${node.componentIndex}/>`;
     }
     const childrenString = node.children.map(stringifyComponentTree).join("");
@@ -194,9 +196,9 @@ export const parseComponentString = (string: string) => {
     const tree: ComponentAst.Root = {
         type: "component",
         componentIndex: ROOT_COMPONENT_INDEX,
-        originalNodes: [],
         children: [],
     };
+
     const stack: ComponentAst.Component[] = [tree];
     const currentComponent = () => stack[stack.length - 1];
 
@@ -207,7 +209,12 @@ export const parseComponentString = (string: string) => {
         // extract text span between the current index and the component match index
         const textSpan = string.slice(position, componentTag?.position);
         if (textSpan) {
-            currentComponent().children.push({ type: "text", value: textSpan });
+            let children = currentComponent().children;
+            if (!children) {
+                children = [];
+                currentComponent().children = children;
+            }
+            children.push({ type: "text", value: textSpan });
         }
 
         if (!componentTag) {
@@ -232,10 +239,14 @@ export const parseComponentString = (string: string) => {
         const newComponent: ComponentAst.Component = {
             type: "component",
             componentIndex: componentTag.componentIndex,
-            children: [],
-            originalNodes: [],
         };
-        currentComponent().children.push(newComponent);
+
+        let children = currentComponent().children;
+        if (!children) {
+            children = [];
+            currentComponent().children = children;
+        }
+        children.push(newComponent);
 
         if (!componentTag.isSelfClosing) {
             stack.push(newComponent);
