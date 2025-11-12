@@ -17,13 +17,18 @@
 
 import u from "unist-builder";
 import {
-    mdastToComponentAst,
+    mapToComponentAst,
     flattenComponentNodes,
     enumerateComponents,
-    stringifyComponentAst,
+    stringifyComponentTree,
     extractComponentData,
-    ROOT_COMPONENT_INDEX,
     parseComponentString,
+    mapMdastNode,
+    injectComponentData,
+    ROOT_COMPONENT_INDEX,
+    unflattenComponentNodes,
+    mapFromComponentAst,
+    unmapMdastNode,
 } from "../src/work-in-progress";
 
 describe("work-in-progress", () => {
@@ -50,7 +55,7 @@ describe("work-in-progress", () => {
                 ]),
             ]),
         ]);
-        const componentAst = mdastToComponentAst(mdast);
+        const componentAst = mapToComponentAst(mdast, mapMdastNode as any /* TODO */);
 
         const expected = {
             type: "component",
@@ -108,7 +113,7 @@ describe("work-in-progress", () => {
         expect(componentAst).toEqual(expected);
     });
 
-    test("minimize component nodes", () => {
+    test("flatten component nodes", () => {
         const firstPassAst = {
             type: "component",
             originalNodes: [{ type: "root", children: [] }],
@@ -139,7 +144,7 @@ describe("work-in-progress", () => {
             ],
         };
 
-        const minimizedAst = flattenComponentNodes(firstPassAst as any);
+        const flattenedAst = flattenComponentNodes(firstPassAst as any /* TODO */);
 
         const expected = {
             type: "component",
@@ -164,11 +169,11 @@ describe("work-in-progress", () => {
                 },
             ],
         };
-        expect(minimizedAst).toEqual(expected);
+        expect(flattenedAst).toEqual(expected);
     });
 
     test("enumerate components", () => {
-        const minimizedAst = {
+        const flattenedAst = {
             type: "component",
             originalNodes: [
                 { type: "root", children: [] },
@@ -192,12 +197,12 @@ describe("work-in-progress", () => {
             ],
         };
 
-        const enumeratedAst = enumerateComponents(minimizedAst as any);
+        const enumeratedAst = enumerateComponents(flattenedAst as any /* TODO */);
 
         const expected = {
             type: "component",
             // root component won't actually be displayed in the translatable string
-            componentIndex: -1,
+            componentIndex: ROOT_COMPONENT_INDEX,
             originalNodes: [
                 { type: "root", children: [] },
                 { type: "paragraph", children: [] },
@@ -228,8 +233,7 @@ describe("work-in-progress", () => {
     test("stringify component ast", () => {
         const enumeratedAst = {
             type: "component",
-            // root component won't actually be displayed in the translatable string
-            componentIndex: -1,
+            componentIndex: ROOT_COMPONENT_INDEX,
             originalNodes: [
                 { type: "root", children: [] },
                 { type: "paragraph", children: [] },
@@ -254,7 +258,7 @@ describe("work-in-progress", () => {
             ],
         };
 
-        const stringified = stringifyComponentAst(enumeratedAst as any);
+        const stringified = stringifyComponentTree(enumeratedAst as any);
 
         const expected = "<c0/> regular <c1>italic striketrough</c1>";
 
@@ -265,7 +269,7 @@ describe("work-in-progress", () => {
         const enumeratedAst = {
             type: "component",
             // root component won't actually be displayed in the translatable string
-            componentIndex: -1,
+            componentIndex: ROOT_COMPONENT_INDEX,
             originalNodes: [
                 { type: "root", children: [] },
                 { type: "paragraph", children: [] },
@@ -333,5 +337,175 @@ describe("work-in-progress", () => {
         };
 
         expect(parsed).toEqual(expected);
+    });
+
+    test("inject component data", () => {
+        const parsedTree = {
+            type: "component",
+            componentIndex: ROOT_COMPONENT_INDEX,
+            originalNodes: [],
+            children: [
+                {
+                    type: "component",
+                    componentIndex: 0,
+                    originalNodes: [],
+                    children: [],
+                },
+                { type: "text", value: " regular " },
+                {
+                    type: "component",
+                    componentIndex: 1,
+                    originalNodes: [],
+                    children: [{ type: "text", value: "italic striketrough" }],
+                },
+            ],
+        };
+
+        const componentData = {
+            [ROOT_COMPONENT_INDEX]: [
+                { type: "root", children: [] },
+                { type: "paragraph", children: [] },
+            ],
+            0: [{ type: "html", value: "<br/>" }],
+            1: [
+                { type: "delete", children: [] },
+                { type: "emphasis", children: [] },
+            ],
+        };
+
+        const injectedTree = injectComponentData(parsedTree as any /* TODO */, componentData);
+
+        const expected = {
+            type: "component",
+            componentIndex: ROOT_COMPONENT_INDEX,
+            originalNodes: [
+                { type: "root", children: [] },
+                { type: "paragraph", children: [] },
+            ],
+            children: [
+                {
+                    type: "component",
+                    componentIndex: 0,
+                    originalNodes: [{ type: "html", value: "<br/>" }],
+                    children: [],
+                },
+                { type: "text", value: " regular " },
+                {
+                    type: "component",
+                    componentIndex: 1,
+                    originalNodes: [
+                        { type: "delete", children: [] },
+                        { type: "emphasis", children: [] },
+                    ],
+                    children: [{ type: "text", value: "italic striketrough" }],
+                },
+            ],
+        };
+
+        expect(injectedTree).toEqual(expected);
+    });
+
+    test("unflatten component nodes", () => {
+        const flattenedTree = {
+            type: "component",
+            originalNodes: [
+                { type: "root", children: [] },
+                { type: "paragraph", children: [] },
+            ],
+            children: [
+                {
+                    type: "component",
+                    originalNodes: [{ type: "html", value: "<br/>" }],
+                    children: [],
+                },
+                { type: "text", value: " regular " },
+                {
+                    type: "component",
+                    originalNodes: [
+                        { type: "delete", children: [] },
+                        { type: "emphasis", children: [] },
+                    ],
+                    children: [{ type: "text", value: "italic striketrough" }],
+                },
+            ],
+        };
+
+        const unflattenedTree = unflattenComponentNodes(flattenedTree as any /* TODO */);
+
+        const expected = {
+            type: "component",
+            originalNodes: [{ type: "root", children: [] }],
+            children: [
+                {
+                    type: "component",
+                    originalNodes: [{ type: "paragraph", children: [] }],
+                    children: [
+                        {
+                            type: "component",
+                            originalNodes: [{ type: "html", value: "<br/>" }],
+                            children: [],
+                        },
+                        { type: "text", value: " regular " },
+                        {
+                            type: "component",
+                            originalNodes: [{ type: "delete", children: [] }],
+                            children: [
+                                {
+                                    type: "component",
+                                    originalNodes: [{ type: "emphasis", children: [] }],
+                                    children: [{ type: "text", value: "italic striketrough" }],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        };
+
+        expect(unflattenedTree).toEqual(expected);
+    });
+
+    test("reconstruct unist tree", () => {
+        const unflattenedTree = {
+            type: "component",
+            originalNodes: [{ type: "root", children: [] }],
+            children: [
+                {
+                    type: "component",
+                    originalNodes: [{ type: "paragraph", children: [] }],
+                    children: [
+                        {
+                            type: "component",
+                            originalNodes: [{ type: "html", value: "<br/>" }],
+                            children: [],
+                        },
+                        { type: "text", value: " regular " },
+                        {
+                            type: "component",
+                            originalNodes: [{ type: "delete", children: [] }],
+                            children: [
+                                {
+                                    type: "component",
+                                    originalNodes: [{ type: "emphasis", children: [] }],
+                                    children: [{ type: "text", value: "italic striketrough" }],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        };
+
+        const reconstructedTree = mapFromComponentAst(unflattenedTree as any /* TODO */, unmapMdastNode);
+
+        const expected = u("root", [
+            u("paragraph", [
+                u("html", "<br/>"),
+                u("text", " regular "),
+                u("delete", [u("emphasis", [u("text", "italic striketrough")])]),
+            ]),
+        ]);
+
+        expect(reconstructedTree).toEqual(expected);
     });
 });

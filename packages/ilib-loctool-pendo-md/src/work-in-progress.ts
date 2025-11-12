@@ -14,59 +14,103 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Content as MdastContent, Parent as MdastParent, Root } from "mdast";
+import { Content as MdastContent, Parent as MdastParent } from "mdast";
 import type { Parent as UnistParent, Literal as UnistLiteral, Node as UnistNode } from "unist";
 import mapTree from "unist-util-map";
 import visit from "unist-util-visit";
 
 // on first pass, transform tree by replacing all non-text nodes
 
-export interface Text extends UnistLiteral<string> {
-    type: "text";
+export declare namespace ComponentAst {
+    export interface Text extends UnistLiteral<string> {
+        type: "text";
+    }
+
+    export interface Component extends UnistParent {
+        type: "component";
+        componentIndex?: number;
+        originalNodes?: UnistNode[];
+        children: Node[];
+    }
+
+    export type RootComponentIndex = typeof ROOT_COMPONENT_INDEX;
+
+    export interface Root extends Component {
+        componentIndex: RootComponentIndex;
+    }
+
+    export type Node = Root | Component | Text;
 }
 
-export interface Component extends UnistParent {
-    type: "component";
-    componentIndex?: number;
-    originalNodes: UnistNode[];
-    children: (Text | Component)[];
-}
+export const ROOT_COMPONENT_INDEX = -1 as const;
 
-export const mapMdastNode = (node: MdastParent | MdastContent) => {
+export const isComponentNode = (node: unknown): node is ComponentAst.Component => {
+    if (typeof node !== "object" || node === null) {
+        return false;
+    }
+    if (!("type" in node) || node.type !== "component") {
+        return false;
+    }
+    if ("componentIndex" in node && typeof node.componentIndex !== "number") {
+        return false;
+    }
+    if ("children" in node && !Array.isArray(node.children)) {
+        return false;
+    }
+    if ("originalNodes" in node && !Array.isArray(node.originalNodes)) {
+        return false;
+    }
+    return true;
+};
+
+export const mapMdastNode = (node: MdastParent | MdastContent): ComponentAst.Node => {
     // substitute nodes with children
     if ("children" in node) {
         const nodeCopy = { ...node, children: [] };
-        const component: Component = {
+        const component: ComponentAst.Component = {
             type: "component",
             originalNodes: [nodeCopy],
-            children: node.children.map(mapMdastNode),
+            children: [],
         };
         return component;
     }
     // pass through text literal nodes
     if (node.type === "text") {
-        const text: Text = { type: "text", value: node.value };
+        const text: ComponentAst.Text = { type: "text", value: node.value };
         return text;
     }
     // escape non-parent nodes
-    const component: Component = { type: "component", originalNodes: [node], children: [] };
+    const component: ComponentAst.Component = { type: "component", originalNodes: [node], children: [] };
     return component;
 };
 
-export const mdastToComponentAst = (tree: Root) => {
-    return mapTree(tree, (node) => mapMdastNode(node as any));
+export const mapToComponentAst = (
+    tree: UnistParent,
+    mapFunction: (node: UnistNode) => ComponentAst.Node
+): ComponentAst.Component => {
+    return mapTree(tree, mapFunction) as ComponentAst.Component;
 };
 
 // on second pass, minimize the tree by flattening stacked components
+export const cloneTree = <T extends UnistNode>(tree: T): T => {
+    return mapTree(tree, (node) => node) as T;
+};
 
-export const flattenComponentNodes = (tree: Component) => {
-    const clone = mapTree(tree, (node) => node) as Component;
-    visit(clone, "component", (node: Component) => {
-        if (node.children.length === 1 && node.children[0].type === "component") {
-            const childComponent = node.children[0] as Component;
-            node.originalNodes.push(...childComponent.originalNodes);
-            node.children = childComponent.children;
+export const flattenComponentNodes = (tree: ComponentAst.Component): ComponentAst.Component => {
+    const clone = cloneTree(tree);
+    visit(clone, isComponentNode, (node) => {
+        if (node.children.length !== 1) {
+            return visit.CONTINUE;
         }
+        const child = node.children[0];
+        if (!isComponentNode(child)) {
+            return visit.CONTINUE;
+        }
+        if (!node.originalNodes || !child.originalNodes) {
+            throw new Error("Invalid tree state: missing original nodes array");
+        }
+        node.originalNodes.push(...child.originalNodes);
+        node.children = child.children;
         return visit.CONTINUE;
     });
     return clone;
@@ -74,21 +118,19 @@ export const flattenComponentNodes = (tree: Component) => {
 
 // on third pass, assign component indices to the component nodes
 
-export const ROOT_COMPONENT_INDEX = -1;
-
-export const enumerateComponents = (tree: Component) => {
-    const clone = mapTree(tree, (node) => node) as Component;
-    let componentIndex = ROOT_COMPONENT_INDEX;
-    visit(clone, "component", (node: Component) => {
+export const enumerateComponents = (tree: ComponentAst.Component): ComponentAst.Root => {
+    const clone = cloneTree(tree);
+    let componentIndex: number = ROOT_COMPONENT_INDEX;
+    visit(clone, isComponentNode, (node) => {
         node.componentIndex = componentIndex++;
         return visit.CONTINUE;
     });
-    return clone;
+    return clone as ComponentAst.Root;
 };
 
 // once we have the enumerated AST, we can make a translatable string out of it
 
-export const stringifyComponentAst = (node: Component | Text) => {
+export const stringifyComponentTree = (node: ComponentAst.Node): string => {
     if (node.type === "text") {
         return node.value;
     }
@@ -102,26 +144,29 @@ export const stringifyComponentAst = (node: Component | Text) => {
     if (node.children.length === 0) {
         return `<c${node.componentIndex}/>`;
     }
-    const childrenString = node.children.map(stringifyComponentAst as any).join("");
-    if (node.componentIndex < 0) {
-        return childrenString; // root component won't actually be displayed in the translatable string
+    const childrenString = node.children.map(stringifyComponentTree).join("");
+
+    // don't stringify the root component
+    if (node.componentIndex === ROOT_COMPONENT_INDEX) {
+        return childrenString;
     }
-    return (
-        `<c${node.componentIndex}>` +
-        node.children.map(stringifyComponentAst as any).join("") +
-        `</c${node.componentIndex}>`
-    );
+
+    return `<c${node.componentIndex}>` + childrenString + `</c${node.componentIndex}>`;
 };
 
 // we need to pull the component data out of the ast for later backconversion
+export type ComponentData = Partial<Record<number, UnistNode[]>>;
 
-export const extractComponentData = (node: Component | Text) => {
-    const data: Record<number, UnistNode[]> = {};
-    visit(node, "component", (node: Component) => {
+export const extractComponentData = (tree: ComponentAst.Root) => {
+    const data: ComponentData = {};
+    visit(tree, isComponentNode, (node) => {
         if (node.componentIndex === undefined) {
             throw new Error(`Component index is undefined`);
         }
 
+        if (!node.originalNodes) {
+            throw new Error("Invalid tree state: missing original nodes array");
+        }
         data[node.componentIndex] = node.originalNodes;
         return visit.CONTINUE;
     });
@@ -146,13 +191,13 @@ const findComponentTag = (string: string, startIndex: number) => {
 };
 
 export const parseComponentString = (string: string) => {
-    const tree: Component = {
+    const tree: ComponentAst.Root = {
         type: "component",
         componentIndex: ROOT_COMPONENT_INDEX,
         originalNodes: [],
         children: [],
     };
-    const stack: Component[] = [tree];
+    const stack: ComponentAst.Component[] = [tree];
     const currentComponent = () => stack[stack.length - 1];
 
     let position = 0;
@@ -184,7 +229,7 @@ export const parseComponentString = (string: string) => {
             continue;
         }
 
-        const newComponent: Component = {
+        const newComponent: ComponentAst.Component = {
             type: "component",
             componentIndex: componentTag.componentIndex,
             children: [],
@@ -204,4 +249,82 @@ export const parseComponentString = (string: string) => {
     }
 
     return tree;
+};
+
+// once we have the tree, we need to inject the original nodes extracted from source
+
+export const injectComponentData = (tree: ComponentAst.Root, componentData: ComponentData) => {
+    const clone = cloneTree(tree);
+    visit(clone, isComponentNode, (node) => {
+        if (node.componentIndex === undefined) {
+            throw new Error(`Invalid tree state: component index is undefined`);
+        }
+        const data = componentData[node.componentIndex];
+        if (!data) {
+            throw new Error(`Missing component data for component index ${node.componentIndex}`);
+        }
+        node.originalNodes = data;
+        return visit.CONTINUE;
+    });
+    return clone;
+};
+
+// now unflatten the tree
+
+export const unflattenComponentNodes = (tree: ComponentAst.Component): ComponentAst.Component => {
+    const clone = cloneTree(tree);
+    visit(clone, isComponentNode, (node) => {
+        if (!node.originalNodes) {
+            throw new Error("Invalid tree state: missing original nodes array");
+        }
+
+        while (node.originalNodes.length > 1) {
+            node.children = [
+                {
+                    type: "component",
+                    children: node.children,
+                    originalNodes: [node.originalNodes.pop()!],
+                },
+            ];
+        }
+
+        return visit.CONTINUE;
+    });
+    return clone;
+};
+
+// and finally reconstruct the original tree
+
+export const mapFromComponentAst = (
+    tree: ComponentAst.Component,
+    mapFunction: (node: ComponentAst.Node) => UnistNode
+): UnistParent => {
+    return mapTree(
+        tree,
+        // @ts-expect-error mapTree is not generic,
+        // but we know that ComponentAst.Component tree can only contain ComponentAst.Node nodes
+        mapFunction
+    ) as UnistParent;
+};
+
+export const unmapMdastNode = (node: ComponentAst.Node): MdastParent | MdastContent => {
+    if (node.type === "text") {
+        return { type: "text", value: node.value };
+    }
+
+    if (node.type !== "component") {
+        // @ts-expect-error this should be exhaustive
+        throw new Error(`Unexpected node type: ${node.type}`);
+    }
+
+    if (!node.originalNodes) {
+        throw new Error("Invalid tree state: missing original nodes array");
+    }
+
+    if (node.originalNodes.length !== 1) {
+        throw new Error("Invalid tree state: multiple original nodes");
+    }
+
+    // we don't have a way to preserve the exact type of the original node
+    return node.originalNodes[0] as any;
 };
