@@ -269,7 +269,7 @@ export class PendoXliffFile implements File {
                         return `c${componentIndex}: ${nodes.map((node) => node.type).join(">")}`;
                     })
                     .join(", ");
-                const commentWithComponents = [unit.comment, `[${componentComments}]`].join(" ");
+                const commentWithComponents = [unit.comment, `[${componentComments}]`].filter(Boolean).join(" ");
                 copy.comment = commentWithComponents;
             }
 
