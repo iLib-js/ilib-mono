@@ -19,7 +19,10 @@ import {
     mapToComponentAst,
     mapFromComponentAst,
 } from "../../../../src/markdown/ast-transformer/component/mapUnistToComponentTree";
-import { mapMdastNode, unmapMdastNode } from "../../../../src/markdown/ast-transformer/component/mapMdastNodeToComponent";
+import {
+    mapMdastNode,
+    unmapMdastNode,
+} from "../../../../src/markdown/ast-transformer/component/mapMdastNodeToComponent";
 import u from "unist-builder";
 import type { ComponentAst } from "../../../../src/markdown/ast-transformer/component/ComponentAst";
 import type { Parent as UnistParent } from "unist";
@@ -39,12 +42,7 @@ describe("mapUnistToComponentTree", () => {
         });
 
         it("should map a tree with nested nodes", () => {
-            const unistTree = u("root", [
-                u("paragraph", [
-                    u("text", "hello "),
-                    u("emphasis", [u("text", "world")]),
-                ]),
-            ]);
+            const unistTree = u("root", [u("paragraph", [u("text", "hello "), u("emphasis", [u("text", "world")])])]);
 
             const result = mapToComponentAst(unistTree, mapMdastNode as any);
 
@@ -57,12 +55,7 @@ describe("mapUnistToComponentTree", () => {
         });
 
         it("should map a tree with HTML nodes", () => {
-            const unistTree = u("root", [
-                u("paragraph", [
-                    u("html", "<br/>"),
-                    u("text", "text"),
-                ]),
-            ]);
+            const unistTree = u("root", [u("paragraph", [u("html", "<br/>"), u("text", "text")])]);
 
             const result = mapToComponentAst(unistTree, mapMdastNode as any);
 
@@ -94,16 +87,61 @@ describe("mapUnistToComponentTree", () => {
         });
 
         it("should handle multiple top-level nodes", () => {
-            const unistTree = u("root", [
-                u("paragraph", [u("text", "first")]),
-                u("paragraph", [u("text", "second")]),
-            ]);
+            const unistTree = u("root", [u("paragraph", [u("text", "first")]), u("paragraph", [u("text", "second")])]);
 
             const result = mapToComponentAst(unistTree, mapMdastNode as any);
 
             expect(result.children).toHaveLength(2);
             expect(result.children?.[0].type).toBe("component");
             expect(result.children?.[1].type).toBe("component");
+        });
+
+        it("should map mdast with HTML and nested formatting to component ast", () => {
+            // markdown: <br/> regular ~*italic strikethrough*~
+            // prettier-ignore
+            const mdast = u("root", [
+                u("paragraph", [
+                    u("html", "<br/>"),
+                    u("text", " regular "),
+                    u("delete", [
+                        u("emphasis", [
+                            u("text", "italic striketrough"),
+                        ]),
+                    ]),
+                ])
+            ]);
+            const componentAst = mapToComponentAst(mdast, mapMdastNode as any);
+
+            const expected = {
+                type: "component",
+                originalNodes: [{ type: "root", children: [] }],
+                children: [
+                    {
+                        type: "component",
+                        originalNodes: [{ type: "paragraph", children: [] }],
+                        children: [
+                            {
+                                type: "component",
+                                originalNodes: [{ type: "html", value: "<br/>" }],
+                            },
+                            { type: "text", value: " regular " },
+                            {
+                                type: "component",
+                                originalNodes: [{ type: "delete", children: [] }],
+                                children: [
+                                    {
+                                        type: "component",
+                                        originalNodes: [{ type: "emphasis", children: [] }],
+                                        children: [{ type: "text", value: "italic striketrough" }],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            };
+
+            expect(componentAst).toEqual(expected);
         });
     });
 
@@ -213,6 +251,49 @@ describe("mapUnistToComponentTree", () => {
             expect(result.type).toBe("root");
             expect(result.children).toEqual([]);
         });
+
+        it("should reconstruct unist tree from component ast", () => {
+            const unflattenedTree = {
+                type: "component",
+                originalNodes: [{ type: "root", children: [] }],
+                children: [
+                    {
+                        type: "component",
+                        originalNodes: [{ type: "paragraph", children: [] }],
+                        children: [
+                            {
+                                type: "component",
+                                originalNodes: [{ type: "html", value: "<br/>" }],
+                            },
+                            { type: "text", value: " regular " },
+                            {
+                                type: "component",
+                                originalNodes: [{ type: "delete", children: [] }],
+                                children: [
+                                    {
+                                        type: "component",
+                                        originalNodes: [{ type: "emphasis", children: [] }],
+                                        children: [{ type: "text", value: "italic striketrough" }],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            };
+
+            const reconstructedTree = mapFromComponentAst(unflattenedTree as any, unmapMdastNode);
+
+            const expected = u("root", [
+                u("paragraph", [
+                    u("html", "<br/>"),
+                    u("text", " regular "),
+                    u("delete", [u("emphasis", [u("text", "italic striketrough")])]),
+                ]),
+            ]);
+
+            expect(reconstructedTree).toEqual(expected);
+        });
     });
 
     describe("round-trip mapping", () => {
@@ -226,12 +307,7 @@ describe("mapUnistToComponentTree", () => {
         });
 
         it("should map and unmap a nested tree correctly", () => {
-            const unistTree = u("root", [
-                u("paragraph", [
-                    u("text", "hello "),
-                    u("emphasis", [u("text", "world")]),
-                ]),
-            ]);
+            const unistTree = u("root", [u("paragraph", [u("text", "hello "), u("emphasis", [u("text", "world")])])]);
 
             const componentTree = mapToComponentAst(unistTree, mapMdastNode as any);
             const reconstructedTree = mapFromComponentAst(componentTree, unmapMdastNode);
@@ -240,12 +316,7 @@ describe("mapUnistToComponentTree", () => {
         });
 
         it("should map and unmap a tree with HTML correctly", () => {
-            const unistTree = u("root", [
-                u("paragraph", [
-                    u("html", "<br/>"),
-                    u("text", "text"),
-                ]),
-            ]);
+            const unistTree = u("root", [u("paragraph", [u("html", "<br/>"), u("text", "text")])]);
 
             const componentTree = mapToComponentAst(unistTree, mapMdastNode as any);
             const reconstructedTree = mapFromComponentAst(componentTree, unmapMdastNode);
@@ -254,4 +325,3 @@ describe("mapUnistToComponentTree", () => {
         });
     });
 });
-

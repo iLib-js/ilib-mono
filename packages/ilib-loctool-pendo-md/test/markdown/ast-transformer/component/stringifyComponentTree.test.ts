@@ -147,6 +147,41 @@ describe("stringifyComponentTree", () => {
 
             expect(() => stringifyComponentTree(node)).toThrow("Unexpected node type: unexpected");
         });
+
+        it("should stringify a component tree with HTML and nested formatting", () => {
+            const enumeratedAst = {
+                type: "component",
+                componentIndex: ROOT_COMPONENT_INDEX,
+                originalNodes: [
+                    { type: "root", children: [] },
+                    { type: "paragraph", children: [] },
+                ],
+                children: [
+                    {
+                        type: "component",
+                        componentIndex: 0,
+                        originalNodes: [{ type: "html", value: "<br/>" }],
+                        children: [],
+                    },
+                    { type: "text", value: " regular " },
+                    {
+                        type: "component",
+                        componentIndex: 1,
+                        originalNodes: [
+                            { type: "delete", children: [] },
+                            { type: "emphasis", children: [] },
+                        ],
+                        children: [{ type: "text", value: "italic striketrough" }],
+                    },
+                ],
+            };
+
+            const stringified = stringifyComponentTree(enumeratedAst as any);
+
+            const expected = "<c0/> regular <c1>italic striketrough</c1>";
+
+            expect(stringified).toEqual(expected);
+        });
     });
 
     describe("parseComponentString", () => {
@@ -262,6 +297,30 @@ describe("stringifyComponentTree", () => {
             expect((result.children?.[0] as ComponentAst.Component).componentIndex).toBe(0);
             expect(result.children?.[1]).toEqual({ type: "text", value: " " });
             expect((result.children?.[2] as ComponentAst.Component).componentIndex).toBe(1);
+        });
+
+        it("should parse a component string with self-closing and nested components", () => {
+            const string = "<c0/> regular <c1>italic striketrough</c1>";
+            const parsed = parseComponentString(string);
+
+            const expected = {
+                type: "component",
+                componentIndex: ROOT_COMPONENT_INDEX,
+                children: [
+                    {
+                        type: "component",
+                        componentIndex: 0,
+                    },
+                    { type: "text", value: " regular " },
+                    {
+                        type: "component",
+                        componentIndex: 1,
+                        children: [{ type: "text", value: "italic striketrough" }],
+                    },
+                ],
+            };
+
+            expect(parsed).toEqual(expected);
         });
     });
 

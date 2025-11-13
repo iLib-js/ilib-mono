@@ -20,6 +20,7 @@ import {
     unflattenComponentTree,
 } from "../../../../src/markdown/ast-transformer/component/flattenComponentTree";
 import type { ComponentAst } from "../../../../src/markdown/ast-transformer/component/ComponentAst";
+import { ROOT_COMPONENT_INDEX } from "../../../../src/markdown/ast-transformer/component/ComponentAst";
 import u from "unist-builder";
 
 describe("flattenComponentTree", () => {
@@ -47,7 +48,9 @@ describe("flattenComponentTree", () => {
 
             expect(result.originalNodes).toEqual([u("paragraph", []), u("list", [])]);
             expect((result.children?.[0] as ComponentAst.Component).originalNodes).toEqual([u("listItem", [])]);
-            expect((result.children?.[0] as ComponentAst.Component).children).toEqual([{ type: "text", value: "item 1" }]);
+            expect((result.children?.[0] as ComponentAst.Component).children).toEqual([
+                { type: "text", value: "item 1" },
+            ]);
         });
 
         it("should not flatten components with multiple children", () => {
@@ -187,6 +190,65 @@ describe("flattenComponentTree", () => {
             expect(result.originalNodes).toHaveLength(2);
             expect(result.children).toEqual([{ type: "text", value: "item 1" }]);
         });
+
+        it("should flatten a component tree with nested components", () => {
+            const firstPassAst = {
+                type: "component",
+                originalNodes: [{ type: "root", children: [] }],
+                children: [
+                    {
+                        type: "component",
+                        originalNodes: [{ type: "paragraph", children: [] }],
+                        children: [
+                            {
+                                type: "component",
+                                originalNodes: [{ type: "html", value: "<br/>" }],
+                                children: [],
+                            },
+                            { type: "text", value: " regular " },
+                            {
+                                type: "component",
+                                originalNodes: [{ type: "delete", children: [] }],
+                                children: [
+                                    {
+                                        type: "component",
+                                        originalNodes: [{ type: "emphasis", children: [] }],
+                                        children: [{ type: "text", value: "italic striketrough" }],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            };
+
+            const flattenedAst = flattenComponentTree(firstPassAst as any);
+
+            const expected = {
+                type: "component",
+                originalNodes: [
+                    { type: "root", children: [] },
+                    { type: "paragraph", children: [] },
+                ],
+                children: [
+                    {
+                        type: "component",
+                        originalNodes: [{ type: "html", value: "<br/>" }],
+                        children: [],
+                    },
+                    { type: "text", value: " regular " },
+                    {
+                        type: "component",
+                        originalNodes: [
+                            { type: "delete", children: [] },
+                            { type: "emphasis", children: [] },
+                        ],
+                        children: [{ type: "text", value: "italic striketrough" }],
+                    },
+                ],
+            };
+            expect(flattenedAst).toEqual(expected);
+        });
     });
 
     describe("unflattenComponentTree", () => {
@@ -202,7 +264,9 @@ describe("flattenComponentTree", () => {
             expect(result.originalNodes).toEqual([u("paragraph", [])]);
             expect(result.children?.[0].type).toBe("component");
             expect((result.children?.[0] as ComponentAst.Component).originalNodes).toEqual([u("list", [])]);
-            expect((result.children?.[0] as ComponentAst.Component).children).toEqual([{ type: "text", value: "item 1" }]);
+            expect((result.children?.[0] as ComponentAst.Component).children).toEqual([
+                { type: "text", value: "item 1" },
+            ]);
         });
 
         it("should unflatten a component with multiple original nodes", () => {
@@ -281,6 +345,71 @@ describe("flattenComponentTree", () => {
             // Verify the original tree structure is preserved (even if array is shared)
             expect(tree.originalNodes!.length).toBeGreaterThanOrEqual(originalLength - 1);
         });
+
+        it("should unflatten a component tree with multiple original nodes", () => {
+            const flattenedTree = {
+                type: "component",
+                componentIndex: ROOT_COMPONENT_INDEX,
+                originalNodes: [
+                    { type: "root", children: [] },
+                    { type: "paragraph", children: [] },
+                ],
+                children: [
+                    {
+                        type: "component",
+                        componentIndex: 0,
+                        originalNodes: [{ type: "html", value: "<br/>" }],
+                        children: [],
+                    },
+                    { type: "text", value: " regular " },
+                    {
+                        type: "component",
+                        componentIndex: 1,
+                        originalNodes: [
+                            { type: "delete", children: [] },
+                            { type: "emphasis", children: [] },
+                        ],
+                        children: [{ type: "text", value: "italic striketrough" }],
+                    },
+                ],
+            };
+
+            const unflattenedTree = unflattenComponentTree(flattenedTree as any);
+
+            const expected = {
+                type: "component",
+                componentIndex: ROOT_COMPONENT_INDEX,
+                originalNodes: [{ type: "root", children: [] }],
+                children: [
+                    {
+                        type: "component",
+                        originalNodes: [{ type: "paragraph", children: [] }],
+                        children: [
+                            {
+                                type: "component",
+                                componentIndex: 0,
+                                originalNodes: [{ type: "html", value: "<br/>" }],
+                                children: [],
+                            },
+                            { type: "text", value: " regular " },
+                            {
+                                type: "component",
+                                componentIndex: 1,
+                                originalNodes: [{ type: "delete", children: [] }],
+                                children: [
+                                    {
+                                        type: "component",
+                                        originalNodes: [{ type: "emphasis", children: [] }],
+                                        children: [{ type: "text", value: "italic striketrough" }],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            };
+
+            expect(unflattenedTree).toEqual(expected);
+        });
     });
 });
-
