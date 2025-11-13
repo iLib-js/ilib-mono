@@ -578,10 +578,12 @@ Project.prototype.extract = function(cb) {
 Project.prototype.save = function(cb) {
     logger.trace("Project save called to save new resources to the DB");
 
-    for (var i = 0; i < this.fileTypes.length; i++) {
-        var set = this.fileTypes[i].getNew(this.translations);
-        if (set && set.size()) {
-            this.newres.addSet(set);
+    if (!this.localizeOnly) {
+        for (var i = 0; i < this.fileTypes.length; i++) {
+            var set = this.fileTypes[i].getNew(this.translations);
+            if (set && set.size()) {
+                this.newres.addSet(set);
+            }
         }
     }
 
