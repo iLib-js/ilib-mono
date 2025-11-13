@@ -222,4 +222,171 @@ describe("markdownfiletype", function() {
         mdft.projectClose();
         expect(!fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeTruthy();
     });
+
+    test("should extract extensions from mapping patterns", function() {
+        expect.assertions(3);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.mdx": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        expect(mdft.handles("foo.mdx")).toBeTruthy();
+        var extensions = mdft.getExtensions();
+        expect(extensions.indexOf(".mdx") > -1).toBeTruthy();
+    });
+
+    test("should extract multiple extensions from different mapping patterns", function() {
+        expect.assertions(4);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.mdx": {
+                        "template": "[localeDir]/[filename]"
+                    },
+                    "**/*.mdoc": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        expect(mdft.handles("foo.mdx")).toBeTruthy();
+        expect(mdft.handles("bar.mdoc")).toBeTruthy();
+        var extensions = mdft.getExtensions();
+        expect(extensions.indexOf(".mdoc") > -1).toBeTruthy();
+    });
+
+    test("should normalize extensions to lowercase from mapping patterns", function() {
+        expect.assertions(3);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.MDX": {
+                        "template": "[localeDir]/[filename]"
+                    },
+                    "**/*.Mdoc": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        // Test that extensions are normalized to lowercase in the extensions array
+        var extensions = mdft.getExtensions();
+        expect(extensions.indexOf(".mdx") > -1).toBeTruthy();
+        expect(extensions.indexOf(".mdoc") > -1).toBeTruthy();
+    });
+
+    test("should include extracted extensions in getExtensions()", function() {
+        expect.assertions(3);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.mdx": {
+                        "template": "[localeDir]/[filename]"
+                    },
+                    "**/*.mdoc": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        var extensions = mdft.getExtensions();
+        expect(extensions.indexOf(".mdx") > -1).toBeTruthy();
+        expect(extensions.indexOf(".mdoc") > -1).toBeTruthy();
+    });
+
+    test("should preserve default extensions when extracting from mappings", function() {
+        expect.assertions(7);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.mdx": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        var extensions = mdft.getExtensions();
+        // check that default extensions are still present
+        expect(extensions.indexOf(".md") > -1).toBeTruthy();
+        expect(extensions.indexOf(".markdown") > -1).toBeTruthy();
+        expect(extensions.indexOf(".mdown") > -1).toBeTruthy();
+        expect(extensions.indexOf(".mkd") > -1).toBeTruthy();
+        expect(extensions.indexOf(".rst") > -1).toBeTruthy();
+        expect(extensions.indexOf(".rmd") > -1).toBeTruthy();
+    });
+
+    test("should handle files with extensions extracted from mapping patterns", function() {
+        expect.assertions(3);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.mdx": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        expect(mdft.handles("foo.mdx")).toBeTruthy();
+        expect(mdft.handles("a/b/c/bar.mdx")).toBeTruthy();
+    });
+
+    test("should not handle unconfigured extensions", function() {
+        expect.assertions(2);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.md": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        expect(mdft.handles("foo.mdx")).toBeFalsy();
+    });
 });
