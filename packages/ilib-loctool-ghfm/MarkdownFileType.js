@@ -31,7 +31,27 @@ var MarkdownFileType = function(project) {
 
     this.logger = this.API.getLogger("loctool.lib.MarkdownFileType");
 
+    // default extensions
     this.extensions = [ ".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd" ];
+    
+    // extract extensions from mapping patterns
+    // if user has "**/*.mdx" in mappings, they clearly want to handle .mdx files
+    var mdSettings = this.project.settings && this.project.settings.markdown;
+    if (mdSettings && mdSettings.mappings) {
+        var mappings = mdSettings.mappings;
+        var patterns = Object.keys(mappings);
+        patterns.forEach(function(pattern) {
+            // extract extension from pattern (e.g., "**/*.mdx" -> ".mdx")
+            var match = pattern.match(/(\.\w+)$/);
+            if (match && match.length > 1) {
+                var ext = match[1].toLowerCase();
+                // only add if not already in the array
+                if (this.extensions.indexOf(ext) === -1) {
+                    this.extensions.push(ext);
+                }
+            }
+        }.bind(this));
+    }
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
