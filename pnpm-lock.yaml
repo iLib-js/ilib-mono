@@ -2000,12 +2000,18 @@ importers:
       micromatch:
         specifier: ^4.0.8
         version: 4.0.8
+      unist-util-map:
+        specifier: ^2.0.1
+        version: 2.0.1
       unist-util-remove-position:
         specifier: '3'
         version: 3.0.0
       unist-util-visit:
         specifier: ^2
         version: 2.0.3
+      xml-js:
+        specifier: ^1.6.11
+        version: 1.6.11
     devDependencies:
       '@types/jest':
         specifier: ^29.5.12
@@ -10470,6 +10476,9 @@ packages:
 
   unist-util-map@1.0.5:
     resolution: {integrity: sha512-dFil/AN6vqhnQWNCZk0GF/G3+Q5YwsB+PqjnzvpO2wzdRtUJ1E8PN+XRE/PRr/G3FzKjRTJU0haqE0Ekl+O3Ag==}
+
+  unist-util-map@2.0.1:
+    resolution: {integrity: sha512-VdNvk4BQUUU9Rgr8iUOvclHa/iN9O+6Dt66FKij8l9OVezGG37gGWCPU5KSax1R2degqXFvl3kWTkvzL79e9tQ==}
 
   unist-util-position@3.1.0:
     resolution: {integrity: sha512-w+PkwCbYSFw8vpgWD0v7zRCl1FpY3fjDSQ3/N/wNd9Ffa4gPi8+4keqt99N3XW6F99t/mUzp2xAhNmfKWp95QA==}
@@ -21101,6 +21110,11 @@ snapshots:
 
   unist-util-map@1.0.5:
     dependencies:
+      object-assign: 4.1.1
+
+  unist-util-map@2.0.1:
+    dependencies:
+      '@types/mdast': 3.0.15
       object-assign: 4.1.1
 
   unist-util-position@3.1.0: {}
