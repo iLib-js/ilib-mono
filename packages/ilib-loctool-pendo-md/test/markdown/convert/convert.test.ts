@@ -120,7 +120,7 @@ describe("markdown/convert", () => {
     });
 
     describe("workaround", () => {
-        fit("should handle markdown lists with malformed newlines in translation", () => {
+        it("should handle markdown lists with malformed newlines in translation", () => {
             // prettier-ignore
             const markdown = dedent`
             *   **first** item
