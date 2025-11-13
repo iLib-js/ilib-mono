@@ -18,18 +18,26 @@
 import u from "unist-builder";
 import {
     mapToComponentAst,
-    flattenComponentNodes,
-    enumerateComponents,
-    stringifyComponentTree,
-    extractComponentData,
-    parseComponentString,
-    mapMdastNode,
-    injectComponentData,
-    ROOT_COMPONENT_INDEX,
-    unflattenComponentNodes,
     mapFromComponentAst,
+} from "../../../../src/markdown/ast-transformer/component/mapUnistToComponentTree";
+import { enumerateComponents } from "../../../../src/markdown/ast-transformer/component/ComponentData";
+import {
+    flattenComponentTree,
+    unflattenComponentTree,
+} from "../../../../src/markdown/ast-transformer/component/flattenComponentTree";
+import {
+    extractComponentData,
+    injectComponentData,
+} from "../../../../src/markdown/ast-transformer/component/ComponentData";
+import {
+    stringifyComponentTree,
+    parseComponentString,
+} from "../../../../src/markdown/ast-transformer/component/stringifyComponentTree";
+import {
+    mapMdastNode,
     unmapMdastNode,
-} from "../../../../src/markdown/ast-transformer/component/work-in-progress";
+} from "../../../../src/markdown/ast-transformer/component/mapMdastNodeToComponent";
+import { ROOT_COMPONENT_INDEX } from "../../../../src/markdown/ast-transformer/component/ComponentAst";
 
 describe("work-in-progress", () => {
     test("mdast to component ast", () => {
@@ -111,7 +119,7 @@ describe("work-in-progress", () => {
             ],
         };
 
-        const flattenedAst = flattenComponentNodes(firstPassAst as any /* TODO */);
+        const flattenedAst = flattenComponentTree(firstPassAst as any /* TODO */);
 
         const expected = {
             type: "component",
@@ -404,7 +412,7 @@ describe("work-in-progress", () => {
             ],
         };
 
-        const unflattenedTree = unflattenComponentNodes(flattenedTree as any /* TODO */);
+        const unflattenedTree = unflattenComponentTree(flattenedTree as any /* TODO */);
 
         const expected = {
             type: "component",

@@ -26,20 +26,16 @@ import * as underline from "./micromark-plugin/underline";
 import * as unsupported from "./micromark-plugin/unsupported";
 
 import type { Root } from "mdast";
+import { mapFromComponentAst, mapToComponentAst } from "./ast-transformer/component/mapUnistToComponentTree";
+import { enumerateComponents } from "./ast-transformer/component/ComponentData";
+import { flattenComponentTree, unflattenComponentTree } from "./ast-transformer/component/flattenComponentTree";
 import {
-    enumerateComponents,
     extractComponentData,
-    flattenComponentNodes,
     injectComponentData,
-    mapFromComponentAst,
-    mapMdastNode,
-    mapToComponentAst,
-    parseComponentString,
-    stringifyComponentTree,
-    unflattenComponentNodes,
-    unmapMdastNode,
     type ComponentData,
-} from "./ast-transformer/component/work-in-progress";
+} from "./ast-transformer/component/ComponentData";
+import { parseComponentString, stringifyComponentTree } from "./ast-transformer/component/stringifyComponentTree";
+import { mapMdastNode, unmapMdastNode } from "./ast-transformer/component/mapMdastNodeToComponent";
 
 /**
  * Markdown parse function with injected extensions.
@@ -157,7 +153,7 @@ export const convert = (markdown: string): readonly [string, ComponentData] => {
     // ]]
     //
     // flatten the component tree to consolidate nested components where possible
-    componentTree = flattenComponentNodes(componentTree);
+    componentTree = flattenComponentTree(componentTree);
 
     // [step 4.3]:
     // [component([root, paragraph, color], -1): [
@@ -244,7 +240,7 @@ export const backconvert = (escapedString: string, componentData: ComponentData)
     // ]]
     //
     // unflatten the component tree to restore the original structure
-    componentTree = unflattenComponentNodes(componentTree);
+    componentTree = unflattenComponentTree(componentTree);
 
     // [step 4]:
     // [root: [

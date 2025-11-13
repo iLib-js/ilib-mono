@@ -17,7 +17,7 @@
 
 import dedent from "dedent";
 import { backconvert, convert } from "../../../src/markdown/convert";
-import type { ComponentData } from "../../../src/markdown/ast-transformer/component/work-in-progress";
+import type { ComponentData } from "../../../src/markdown/ast-transformer/component/ComponentData";
 
 describe("markdown/convert", () => {
     describe("convert", () => {
