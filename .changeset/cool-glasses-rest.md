@@ -2,4 +2,4 @@
 "loctool": patch
 ---
 
-New resource saving is skipped when localizeOnly is true
+New resources are no longer saved in memory when localizeOnly is true because the loctool does not produce any extracted or any new strings files in this mode
