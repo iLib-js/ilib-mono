@@ -28,16 +28,22 @@ describe("flattenComponentTree", () => {
         it("should flatten a chain of one-child nested components", () => {
             const tree: ComponentAst.Component = {
                 type: "component",
-                originalNodes: [u("paragraph", [])],
+                originalNodes: [u("root", [])],
                 children: [
                     {
                         type: "component",
-                        originalNodes: [u("list", [])],
+                        originalNodes: [u("paragraph", [])],
                         children: [
                             {
                                 type: "component",
-                                originalNodes: [u("listItem", [])],
-                                children: [{ type: "text", value: "item 1" }],
+                                originalNodes: [u("emphasis", [])],
+                                children: [
+                                    {
+                                        type: "component",
+                                        originalNodes: [u("delete", [])],
+                                        children: [{ type: "text", value: "some text" }],
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -46,31 +52,47 @@ describe("flattenComponentTree", () => {
 
             const result = flattenComponentTree(tree);
 
-            expect(result.originalNodes).toEqual([u("paragraph", []), u("list", [])]);
-            expect((result.children?.[0] as ComponentAst.Component).originalNodes).toEqual([u("listItem", [])]);
-            expect((result.children?.[0] as ComponentAst.Component).children).toEqual([
-                { type: "text", value: "item 1" },
-            ]);
+            const expectedTree = {
+                type: "component",
+                originalNodes: [u("root", []), u("paragraph", []), u("emphasis", []), u("delete", [])],
+                children: [{ type: "text", value: "some text" }],
+            };
+
+            expect(result).toEqual(expectedTree);
         });
 
         it("should not flatten components with multiple children", () => {
             const tree: ComponentAst.Component = {
                 type: "component",
-                originalNodes: [u("paragraph", [])],
+                originalNodes: [u("root", [])],
                 children: [
                     {
                         type: "component",
-                        originalNodes: [u("list", [])],
+                        originalNodes: [u("paragraph", [])],
                         children: [
                             {
                                 type: "component",
-                                originalNodes: [u("listItem", [])],
-                                children: [{ type: "text", value: "item 1" }],
+                                originalNodes: [u("emphasis", [])],
+                                children: [
+                                    {
+                                        type: "component",
+                                        originalNodes: [u("delete", [])],
+                                        children: [{ type: "text", value: "some text" }],
+                                    },
+                                    { type: "text", value: " some text" },
+                                ],
                             },
+                            { type: "text", value: " some text " },
                             {
                                 type: "component",
-                                originalNodes: [u("listItem", [])],
-                                children: [{ type: "text", value: "item 2" }],
+                                originalNodes: [u("emphasis", [])],
+                                children: [
+                                    {
+                                        type: "component",
+                                        originalNodes: [u("delete", [])],
+                                        children: [{ type: "text", value: "some text" }],
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -79,8 +101,31 @@ describe("flattenComponentTree", () => {
 
             const result = flattenComponentTree(tree);
 
-            expect(result.originalNodes).toEqual([u("paragraph", []), u("list", [])]);
-            expect(result.children).toHaveLength(2);
+            const expected = {
+                type: "component",
+                originalNodes: [u("root", []), u("paragraph", [])],
+                children: [
+                    {
+                        type: "component",
+                        originalNodes: [u("emphasis", [])],
+                        children: [
+                            {
+                                type: "component",
+                                originalNodes: [u("delete", [])],
+                                children: [{ type: "text", value: "some text" }],
+                            },
+                            { type: "text", value: " some text" },
+                        ],
+                    },
+                    { type: "text", value: " some text " },
+                    {
+                        type: "component",
+                        originalNodes: [u("emphasis", []), u("delete", [])],
+                        children: [{ type: "text", value: "some text" }],
+                    },
+                ],
+            };
+            expect(result).toEqual(expected);
         });
 
         it("should flatten components with one component child even if that child has text", () => {

@@ -46,7 +46,7 @@ describe("markdown/convert", () => {
                     [0, [{ type: "emphasis", children: [] }]],
                     [1, [{ type: "underline", children: [] }]],
                     [2, [{ type: "color", value: "#FF0000", children: [] }]],
-                    [3, [{ type: "link", url: "https://example.com", children: [] }]],
+                    [3, [{ type: "link", url: "https://example.com", title: null, children: [] }]],
                 ])
             );
         });

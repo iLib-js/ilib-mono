@@ -87,18 +87,18 @@ import { cloneTree } from "./unistUtil";
 export const flattenComponentTree = (tree: ComponentAst.Component): ComponentAst.Component => {
     const clone = cloneTree(tree);
     visit(clone, isComponentNode, (node) => {
-        if (node.children?.length !== 1) {
-            return visit.CONTINUE;
+        let child;
+        while (node.children?.length === 1) {
+            child = node.children[0];
+            if (!isComponentNode(child)) {
+                break;
+            }
+            if (!node.originalNodes || !child.originalNodes) {
+                throw new Error("Invalid tree state: missing original nodes array");
+            }
+            node.originalNodes.push(...child.originalNodes);
+            node.children = child.children;
         }
-        const child = node.children[0];
-        if (!isComponentNode(child)) {
-            return visit.CONTINUE;
-        }
-        if (!node.originalNodes || !child.originalNodes) {
-            throw new Error("Invalid tree state: missing original nodes array");
-        }
-        node.originalNodes.push(...child.originalNodes);
-        node.children = child.children;
         return visit.CONTINUE;
     });
     return clone;
