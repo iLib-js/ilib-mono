@@ -67,8 +67,8 @@ exports[`samples pendo-md should produce an extracted Loctool XLIFF file 1`] = `
         <note>CloseButton</note>
       </trans-unit>
       <trans-unit id="2" resname="8de49842-c1fd-4536-905e-8817673b4c24|md" restype="string" datatype="plaintext">
-        <source>&lt;c0&gt;Callout!&lt;/c0&gt;</source>
-        <note>TextView [c0: strong]</note>
+        <source>Callout!</source>
+        <note>TextView</note>
       </trans-unit>
       <trans-unit id="3" resname="a165c0e2-11de-40b4-9209-55bcdff6d67b|md" restype="string" datatype="plaintext">
         <source>&lt;c0&gt;First paragraph of a multi-paragraph string.&lt;/c0&gt;&lt;c1&gt;Second paragraph of a multi-paragraph string.&lt;/c1&gt;</source>
