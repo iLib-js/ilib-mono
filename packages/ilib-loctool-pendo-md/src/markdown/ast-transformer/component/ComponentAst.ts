@@ -69,6 +69,11 @@ export declare namespace ComponentAst {
  */
 export const ROOT_COMPONENT_INDEX = -1 as const;
 
+/**
+ * Checks if a provided object is a Component AST node.
+ * @param node - The object to check.
+ * @returns Whether the object is a Component AST node.
+ */
 export const isComponentNode = (node: unknown): node is ComponentAst.Component => {
     if (typeof node !== "object" || node === null) {
         return false;

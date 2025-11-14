@@ -30,6 +30,8 @@ export type ComponentData = Map<number, UnistNode[]>;
 
 /**
  * Extracts the original Unist nodes attached to each component in a Component AST.
+ * @param tree - The Component AST tree to extract the original Unist nodes from.
+ * @returns A map of component indices to their original Unist nodes.
  */
 export const extractComponentData = <Tree extends ComponentAst.Component = ComponentAst.Component>(tree: Tree) => {
     const data: ComponentData = new Map();
@@ -49,6 +51,9 @@ export const extractComponentData = <Tree extends ComponentAst.Component = Compo
 
 /**
  * Attaches the provided original Unist nodes to each component in a Component AST respective to their component index.
+ * @param tree - The Component AST tree to attach the original Unist nodes to.
+ * @param componentData - A map of component indices to their original Unist nodes.
+ * @returns The Component AST tree with the original Unist nodes attached to each component.
  */
 export const injectComponentData = (tree: ComponentAst.Root, componentData: ComponentData) => {
     const clone = cloneTree(tree);
@@ -69,6 +74,8 @@ export const injectComponentData = (tree: ComponentAst.Root, componentData: Comp
 /**
  * Assigns a component index to each component in a Component AST.
  * The root component is indexed as -1 (see {@link ROOT_COMPONENT_INDEX}).
+ * @param tree - The Component AST tree to enumerate the components of.
+ * @returns The Component AST tree with the component indices attached to each component.
  */
 export const enumerateComponents = (tree: ComponentAst.Component): ComponentAst.Root => {
     const clone = cloneTree(tree);

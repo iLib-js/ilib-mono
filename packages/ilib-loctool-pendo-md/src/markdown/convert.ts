@@ -79,7 +79,8 @@ const markdownStringify = (ast: Root) =>
  * ```
  * to use it later for backconversion.
  *
- * @returns Tuple of escaped string and the list of components
+ * @param markdown - The Pendo markdown string to convert.
+ * @returns Tuple of escaped string for translation and data about the components.
  */
 export const convert = (markdown: string): readonly [string, ComponentData] => {
     // [step 0]:
@@ -204,6 +205,10 @@ export const convert = (markdown: string): readonly [string, ComponentData] => {
  * ```
  *
  * This is reverse operation to {@link convert} and should produce the original markdown string.
+ *
+ * @param escapedString - The escaped string to backconvert.
+ * @param componentData - The data about the components to backconvert.
+ * @returns The backconverted Pendo markdown string.
  */
 export const backconvert = (escapedString: string, componentData: ComponentData): string => {
     // [step 0]:

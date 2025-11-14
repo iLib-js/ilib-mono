@@ -36,6 +36,9 @@ import { ComponentAst, ROOT_COMPONENT_INDEX } from "./ComponentAst";
  * ```
  *
  * Node that the root component is not rendered in the escaped string to simplify it for translators.
+ *
+ * @param node - The Component AST node to stringify.
+ * @returns The escaped string.
  */
 export const stringifyComponentTree = (node: ComponentAst.Node): string => {
     if (node.type === "text") {
@@ -98,6 +101,9 @@ const findComponentTag = (string: string, startIndex: number) => {
  *     ],
  * }
  * ```
+ *
+ * @param string - The escaped string to parse into a Component AST.
+ * @returns The Component AST.
  */
 export const parseComponentString = (string: string) => {
     const tree: ComponentAst.Root = {

@@ -19,6 +19,9 @@ import structuredClone from "@ungap/structured-clone";
 /**
  * Deep clone a Unist node except for its children.
  * This is useful to avoid unexpected side effects when modifying the tree.
+ *
+ * @param node - The Unist node to clone without its children.
+ * @returns The cloned Unist node.
  */
 export const cloneNodeWithoutChildren = (node: UnistNode): UnistNode => {
     let shallowClone = { ...node };
@@ -30,6 +33,9 @@ export const cloneNodeWithoutChildren = (node: UnistNode): UnistNode => {
 
 /**
  * Deep clone a Unist tree.
+ *
+ * @param tree - The Unist tree to clone.
+ * @returns The cloned Unist tree.
  */
 export const cloneTree = <T extends UnistNode>(tree: T): T => {
     return structuredClone(tree);

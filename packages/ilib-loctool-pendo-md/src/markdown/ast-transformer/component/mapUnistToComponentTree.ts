@@ -21,6 +21,10 @@ import { cloneNodeWithoutChildren } from "./unistUtil";
 
 /**
  * Given an arbitrary Unist tree, maps every node to a Component AST node using the provided map function.
+ *
+ * @param tree - The Unist tree to map to a Component AST tree.
+ * @param mapFunction - The function to map each Unist node to a Component AST node.
+ * @returns The Component AST tree.
  */
 export const mapToComponentAst = (
     tree: UnistParent,
@@ -39,6 +43,10 @@ export const mapToComponentAst = (
 /**
  * Given a Component AST with injected original nodes, reconstructs the original Unist tree
  * by mapping each Component AST node to a Unist node using the provided map function.
+ *
+ * @param tree - The Component AST tree to map from.
+ * @param mapFunction - The function to map each Component AST node to a Unist node.
+ * @returns The Unist tree.
  */
 export const mapFromComponentAst = (
     tree: ComponentAst.Component,

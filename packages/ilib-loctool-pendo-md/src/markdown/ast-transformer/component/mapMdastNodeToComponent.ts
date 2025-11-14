@@ -23,6 +23,9 @@ import { ComponentAst } from "./ComponentAst";
  * This function converts Mdast nodes to Component AST nodes by:
  * - mapping text literal nodes to Component AST text nodes
  * - escaping any other nodes as Components
+ *
+ * @param node - The Mdast node to map to a Component AST node.
+ * @returns The Component AST node.
  */
 export const mapMdastNode = (node: MdastParent | MdastContent): ComponentAst.Node => {
     if (node.type === "text" && !("children" in node)) {
@@ -43,6 +46,9 @@ export const mapMdastNode = (node: MdastParent | MdastContent): ComponentAst.Nod
  * Recreates an Mdast node from a Component AST node.
  *
  * This is the inverse of {@link mapMdastNode}.
+ *
+ * @param node - The Component AST node to unmap to an Mdast node.
+ * @returns The Mdast node.
  */
 export const unmapMdastNode = (node: ComponentAst.Node): MdastParent | MdastContent => {
     if (node.type === "text") {

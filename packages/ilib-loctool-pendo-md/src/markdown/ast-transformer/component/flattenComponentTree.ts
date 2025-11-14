@@ -83,6 +83,9 @@ import { cloneTree } from "./unistUtil";
  * ```
  * <c0><c1>item 1</c1><c2>item 2</c2></c0>
  * ```
+ *
+ * @param tree - The Component AST tree to flatten.
+ * @returns The flattened Component AST tree.
  */
 export const flattenComponentTree = (tree: ComponentAst.Component): ComponentAst.Component => {
     const clone = cloneTree(tree);
@@ -106,8 +109,10 @@ export const flattenComponentTree = (tree: ComponentAst.Component): ComponentAst
 
 /**
  * Unflattens a Component AST i.e. reconstructs nested one-child component chains from a single flattened component.
- *
  * This is the inverse of {@link flattenComponentTree}.
+ *
+ * @param tree - The Component AST tree to unflatten.
+ * @returns The unflattened Component AST tree.
  */
 export const unflattenComponentTree = <Tree extends ComponentAst.Component = ComponentAst.Component>(
     tree: Tree
