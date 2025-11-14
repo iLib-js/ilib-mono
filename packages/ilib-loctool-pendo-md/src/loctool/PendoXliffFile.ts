@@ -18,7 +18,7 @@
 import type { File, ResourceString, TranslationSet } from "loctool";
 import fs from "fs";
 import { backconvert, convert } from "../markdown/convert";
-import type { ComponentList } from "../markdown/ast-transformer/component";
+import type { ComponentData } from "../markdown/ast-transformer/component/ComponentData";
 import { xml2js, js2xml, type Element } from "ilib-xml-js";
 
 /**
@@ -94,17 +94,14 @@ export class PendoXliffFile implements File {
      * Data about markdown syntax escaped in corresponding source strings.
      *
      * This is used to backconvert localized strings to their original markdown syntax.
-     *
-     * Null values indicate that no components were found in the source string
-     * and there is no need for backconversion.
      */
-    private componentLists?: { [unitKey: string]: ComponentList | null };
+    private componentDatas?: { [unitKey: string]: ComponentData };
 
     constructor(
         sourceFilePath: string,
         getLocalizedPath: typeof this.getLocalizedPath,
         getOuputLocale: typeof this.getOuputLocale,
-        createTranslationSet: typeof this.createTranslationSet,
+        createTranslationSet: typeof this.createTranslationSet
     ) {
         this.sourceFilePath = sourceFilePath;
         this.getLocalizedPath = getLocalizedPath;
@@ -146,7 +143,7 @@ export class PendoXliffFile implements File {
         // <file datatype="pendoguide">
         return (xliff.elements?.filter(
             (el) =>
-                el.name === XLIFF.ELEMENT.FILE && el.attributes?.[XLIFF.ATTRIBUTE.DATATYPE] === XLIFF.VALUE.PENDOGUIDE,
+                el.name === XLIFF.ELEMENT.FILE && el.attributes?.[XLIFF.ATTRIBUTE.DATATYPE] === XLIFF.VALUE.PENDOGUIDE
         ) ?? []) as FileElement[];
     }
 
@@ -173,7 +170,7 @@ export class PendoXliffFile implements File {
         // <trans-unit> (aggregate from all groups and direct in body)
         const units =
             [...(groups?.flatMap((group) => group.elements ?? []) ?? []), ...(body.elements ?? [])].filter(
-                (el) => el.name === XLIFF.ELEMENT.TRANS_UNIT,
+                (el) => el.name === XLIFF.ELEMENT.TRANS_UNIT
             ) ?? [];
 
         return units as TransUnitElement[];
@@ -253,27 +250,30 @@ export class PendoXliffFile implements File {
     private static toEscapedUnits(translationUnits: TranslationUnit[]) {
         return translationUnits.map((unit) => {
             // escape the source string and extract component list
-            const [escapedSource, componentList] = convert(unit.source);
-
-            if (componentList.length === 0) {
-                // no components found, no need to modify the unit
-                return [unit, null] as const;
-            }
-
-            // append description of all components to the unit comment
-            // in the format: [c0: ComponentType, c1: ComponentType, ...]
-            const componentComments = componentList
-                .map((component, idx) => {
-                    return `c${idx}: ${component.type}`;
-                })
-                .join(", ");
-            const commentWithComponents = [unit.comment, `[${componentComments}]`].join(" ");
+            const [escapedSource, componentData] = convert(unit.source);
 
             // create a copy of the translation unit with changed source and comment
             const copy = { ...unit };
             copy.source = escapedSource;
-            copy.comment = commentWithComponents;
-            return [copy, componentList] as const;
+
+            // get list of components that are embedded in the escaped string
+            const visibleComponentsList = [...componentData.entries()].filter(
+                ([componentIndex]) => componentIndex >= 0
+            );
+
+            if (visibleComponentsList.length > 0) {
+                // append description of all components to the unit comment
+                // in the format: [c0: ComponentType, c1: ComponentType, ...]
+                const componentComments = visibleComponentsList
+                    .map(([componentIndex, nodes]) => {
+                        return `c${componentIndex}: ${nodes.map((node) => node.type).join(">")}`;
+                    })
+                    .join(", ");
+                const commentWithComponents = [unit.comment, `[${componentComments}]`].filter(Boolean).join(" ");
+                copy.comment = commentWithComponents;
+            }
+
+            return [copy, componentData] as const;
         });
     }
 
@@ -300,8 +300,8 @@ export class PendoXliffFile implements File {
         // save the escaped units for extraction
         // and component lists for backconversion
         this.escapedUnits = escapedUnits.map(([unit]) => unit);
-        this.componentLists = Object.fromEntries(
-            escapedUnits.map(([unit, componentList]) => [unit.key, componentList]),
+        this.componentDatas = Object.fromEntries(
+            escapedUnits.map(([unit, componentData]) => [unit.key, componentData])
         );
     }
 
@@ -356,7 +356,7 @@ export class PendoXliffFile implements File {
      * with applicable translated strings inserted.
      */
     localize(translations: TranslationSet, loctoolLocales: string[]): void {
-        if (!this.xliffDocument || !this.escapedUnits || !this.componentLists) {
+        if (!this.xliffDocument || !this.escapedUnits || !this.componentDatas) {
             throw new Error("Invalid operation: attempt to localize without extracting first.");
         }
 
@@ -364,7 +364,7 @@ export class PendoXliffFile implements File {
             const translationsForLocale = translations
                 .getAll()
                 .filter(
-                    (resource) => resource.getType() === "string" && resource.getTargetLocale() === loctoolLocale,
+                    (resource) => resource.getType() === "string" && resource.getTargetLocale() === loctoolLocale
                 ) as ResourceString[];
 
             // make a deep copy of the source xliff - don't mutate the file that's already loaded
@@ -396,17 +396,16 @@ export class PendoXliffFile implements File {
                     let target = translation.getTarget();
 
                     // make sure that this unit has been processed and there is some data about components for it
-                    if (!(unitData.key in this.componentLists)) {
+                    if (!(unitData.key in this.componentDatas)) {
                         throw new Error("Missing extracted component data for given unit");
                     }
 
                     // get extracted component list based on TU key
-                    const referenceComponentList = this.componentLists[unitData.key];
-                    if (null !== referenceComponentList) {
-                        // use the matching component source string as reference to reinsert the original markdown syntax
-                        // into the localized string
-                        target = backconvert(target, referenceComponentList);
-                    }
+                    const referenceComponentData = this.componentDatas[unitData.key];
+
+                    // use the matching component source string as reference to reinsert the original markdown syntax
+                    // into the localized string
+                    target = backconvert(target, referenceComponentData);
 
                     // update the target string in the xliff element
                     let targetElement = unitElement.elements?.find((el) => el.name === XLIFF.ELEMENT.TARGET);

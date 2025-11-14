@@ -15,8 +15,5 @@
  * limitations under the License.
  */
 
-import { fromHtmlTags, toHtmlTags } from "./color";
-
+export { fromHtmlTags, toHtmlTags } from "./color";
 export { htmlRegex, tagRegex } from "./color";
-
-export default { fromHtmlTags, toHtmlTags };

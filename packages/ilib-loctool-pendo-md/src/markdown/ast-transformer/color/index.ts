@@ -26,5 +26,4 @@ declare module "mdast" {
     }
 }
 
-export { Color };
-export default { fromColorNodes, toColorNodes };
+export { Color, fromColorNodes, toColorNodes };

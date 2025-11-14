@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import unsupportedSyntax from "../../../../src/markdown/micromark-plugin/unsupported/syntax";
+import * as unsupported from "../../../../src/markdown/micromark-plugin/unsupported";
 
 import fromMarkdown from "mdast-util-from-markdown";
 import unistUtilRemovePosition from "unist-util-remove-position";
@@ -25,7 +25,7 @@ import type { Root } from "mdast";
 import type { Node } from "unist";
 
 const getAstUsingUnsupportedSyntaxPlugin = (markdown: string) =>
-    unistUtilRemovePosition(fromMarkdown(markdown, { extensions: [unsupportedSyntax] }), true) as Root;
+    unistUtilRemovePosition(fromMarkdown(markdown, { extensions: [unsupported.syntax] }), true) as Root;
 
 const hasNode = (ast: Node, nodeType: string) => {
     let found = false;

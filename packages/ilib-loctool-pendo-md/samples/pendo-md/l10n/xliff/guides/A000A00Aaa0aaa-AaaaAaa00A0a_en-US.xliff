@@ -34,9 +34,9 @@ Second paragraph of a multi-paragraph string.]]></source>
                     <source><![CDATA[First paragraph of a multi-paragraph string with list.
 
 This is a list:
-* first item
-* second item
-* third item]]></source>
+* **first** item
+* second **item**
+* **third** item]]></source>
                     <target></target>
                     <note>TextView</note>
                 </trans-unit>
