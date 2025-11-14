@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 import type { Node as UnistNode } from "unist";
-import mapTree from "unist-util-map";
-
+import structuredClone from "@ungap/structured-clone";
 /**
- * Clone a Unist node omitting the references to its children.
+ * Deep clone a Unist node except for its children.
  * This is useful to avoid unexpected side effects when modifying the tree.
  */
-export const shallowCloneNode = (node: UnistNode): UnistNode => {
-    if ("children" in node && Array.isArray(node.children)) {
-        return { ...node, children: [] } as UnistNode;
+export const cloneNodeWithoutChildren = (node: UnistNode): UnistNode => {
+    let shallowClone = { ...node };
+    if ("children" in shallowClone && Array.isArray(shallowClone.children)) {
+        shallowClone.children = [];
     }
-    return { ...node };
+    return structuredClone(shallowClone);
 };
 
 /**
- * Recursively clone a Unist tree.
+ * Deep clone a Unist tree.
  */
 export const cloneTree = <T extends UnistNode>(tree: T): T => {
-    return mapTree(tree, (node) => node) as T;
+    return structuredClone(tree);
 };

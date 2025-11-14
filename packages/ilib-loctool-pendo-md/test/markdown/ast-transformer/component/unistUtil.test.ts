@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { shallowCloneNode, cloneTree } from "../../../../src/markdown/ast-transformer/component/unistUtil";
+import { cloneNodeWithoutChildren, cloneTree } from "../../../../src/markdown/ast-transformer/component/unistUtil";
 import u from "unist-builder";
 
 describe("unistUtil", () => {
@@ -23,7 +23,7 @@ describe("unistUtil", () => {
         it("should clone a text node", () => {
             const node = u("text", "hello");
 
-            const result = shallowCloneNode(node);
+            const result = cloneNodeWithoutChildren(node);
 
             expect(result).toEqual(node);
             expect(result).not.toBe(node);
@@ -32,7 +32,7 @@ describe("unistUtil", () => {
         it("should shallow clone a node with children, omitting children", () => {
             const node = u("paragraph", [u("text", "hello")]);
 
-            const result = shallowCloneNode(node);
+            const result = cloneNodeWithoutChildren(node);
 
             expect(result.type).toBe("paragraph");
             expect((result as any).children).toEqual([]);
@@ -42,7 +42,7 @@ describe("unistUtil", () => {
         it("should preserve node properties", () => {
             const node = u("html", "<br/>");
 
-            const result = shallowCloneNode(node);
+            const result = cloneNodeWithoutChildren(node);
 
             expect(result).toEqual(node);
             expect(result).not.toBe(node);
@@ -55,7 +55,7 @@ describe("unistUtil", () => {
                 data: { custom: true },
             } as any;
 
-            const result = shallowCloneNode(node);
+            const result = cloneNodeWithoutChildren(node);
 
             expect(result.type).toBe("custom");
             expect((result as any).value).toBe("test");
@@ -66,11 +66,26 @@ describe("unistUtil", () => {
         it("should handle a root node", () => {
             const node = u("root", []);
 
-            const result = shallowCloneNode(node);
+            const result = cloneNodeWithoutChildren(node);
 
             expect(result.type).toBe("root");
             expect((result as any).children).toEqual([]);
             expect(result).not.toBe(node);
+        });
+
+        it("should deep clone node properties", () => {
+            const node = {
+                type: "custom",
+                data: { elements: ["a", "b", "c"] },
+            } as any;
+
+            const result = cloneNodeWithoutChildren(node);
+            // mutate the clone
+            (result.data?.elements as string[]).push("d");
+            expect(result.data?.elements).toEqual(["a", "b", "c", "d"]);
+
+            // verify the original is not mutated
+            expect(node.data?.elements).toEqual(["a", "b", "c"]);
         });
     });
 
@@ -85,12 +100,7 @@ describe("unistUtil", () => {
         });
 
         it("should deep clone a nested tree", () => {
-            const tree = u("root", [
-                u("paragraph", [
-                    u("text", "hello "),
-                    u("emphasis", [u("text", "world")]),
-                ]),
-            ]);
+            const tree = u("root", [u("paragraph", [u("text", "hello "), u("emphasis", [u("text", "world")])])]);
 
             const result = cloneTree(tree);
 
@@ -100,10 +110,7 @@ describe("unistUtil", () => {
         });
 
         it("should clone a tree with multiple children", () => {
-            const tree = u("root", [
-                u("paragraph", [u("text", "first")]),
-                u("paragraph", [u("text", "second")]),
-            ]);
+            const tree = u("root", [u("paragraph", [u("text", "first")]), u("paragraph", [u("text", "second")])]);
 
             const result = cloneTree(tree);
 
@@ -123,12 +130,7 @@ describe("unistUtil", () => {
         });
 
         it("should clone a tree with HTML nodes", () => {
-            const tree = u("root", [
-                u("paragraph", [
-                    u("html", "<br/>"),
-                    u("text", "text"),
-                ]),
-            ]);
+            const tree = u("root", [u("paragraph", [u("html", "<br/>"), u("text", "text")])]);
 
             const result = cloneTree(tree);
 
@@ -169,6 +171,31 @@ describe("unistUtil", () => {
             expect(result).not.toBe(tree);
             expect((result.children?.[0] as any).children[0].data).toEqual({ custom: true });
         });
+
+        it("should deep clone node properties", () => {
+            const tree = {
+                type: "root",
+                children: [
+                    {
+                        type: "paragraph",
+                        children: [
+                            {
+                                type: "text",
+                                value: "hello",
+                                data: { elements: ["a", "b", "c"] },
+                            },
+                        ],
+                    },
+                ],
+            } as any;
+
+            const result = cloneTree(tree);
+            // mutate the clone
+            (result.children?.[0] as any).children[0].data?.elements.push("d");
+            expect((result.children?.[0] as any).children[0].data?.elements).toEqual(["a", "b", "c", "d"]);
+
+            // verify the original is not mutated
+            expect(tree.children?.[0].children[0].data?.elements).toEqual(["a", "b", "c"]);
+        });
     });
 });
-

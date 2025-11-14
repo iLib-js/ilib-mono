@@ -228,12 +228,15 @@ describe("flattenComponentTree", () => {
                 ],
             };
 
+            const originalLength = tree.originalNodes!.length;
+
             const result = flattenComponentTree(tree);
 
             expect(result).not.toBe(tree);
             // Verify the result has the expected flattened structure
             expect(result.originalNodes).toHaveLength(2);
-            expect(result.children).toEqual([{ type: "text", value: "item 1" }]);
+            // Verify the original tree is not mutated
+            expect(tree.originalNodes).toHaveLength(originalLength);
         });
 
         it("should flatten a component tree with nested components", () => {
@@ -387,8 +390,8 @@ describe("flattenComponentTree", () => {
             expect(result).not.toBe(tree);
             // The original tree should remain unchanged (originalNodes array might be shared, so check the result instead)
             expect(result.originalNodes).toHaveLength(1);
-            // Verify the original tree structure is preserved (even if array is shared)
-            expect(tree.originalNodes!.length).toBeGreaterThanOrEqual(originalLength - 1);
+            // Verify the original tree is not mutated
+            expect(tree.originalNodes).toHaveLength(originalLength);
         });
 
         it("should unflatten a component tree with multiple original nodes", () => {

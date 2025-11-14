@@ -17,7 +17,7 @@
 import type { Parent as UnistParent, Node as UnistNode } from "unist";
 import mapTree from "unist-util-map";
 import { ComponentAst } from "./ComponentAst";
-import { shallowCloneNode } from "./unistUtil";
+import { cloneNodeWithoutChildren } from "./unistUtil";
 
 /**
  * Given an arbitrary Unist tree, maps every node to a Component AST node using the provided map function.
@@ -30,7 +30,7 @@ export const mapToComponentAst = (
         const mappedNode = mapFunction(node);
         // create clones of the original nodes to avoid unexpected side effects
         if (mappedNode.type === "component" && mappedNode.originalNodes) {
-            mappedNode.originalNodes = mappedNode.originalNodes.map(shallowCloneNode);
+            mappedNode.originalNodes = mappedNode.originalNodes.map(cloneNodeWithoutChildren);
         }
         return mappedNode;
     }) as ComponentAst.Component;
@@ -45,7 +45,7 @@ export const mapFromComponentAst = (
     mapFunction: (node: ComponentAst.Node) => UnistNode
 ): UnistParent => {
     return mapTree(tree, (node) => {
-        return shallowCloneNode(
+        return cloneNodeWithoutChildren(
             mapFunction(
                 // @ts-expect-error mapTree is not generic,
                 // but we know that ComponentAst.Component tree can only contain ComponentAst.Node nodes
