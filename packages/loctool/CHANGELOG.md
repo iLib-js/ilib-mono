@@ -1,5 +1,11 @@
 # loctool
 
+## 2.31.4
+
+### Patch Changes
+
+- 83b5732: New resources are no longer saved in memory when localizeOnly is true because the loctool does not produce any extracted or any new strings files in this mode
+
 ## 2.31.3
 
 ### Patch Changes
