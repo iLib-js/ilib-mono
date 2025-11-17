@@ -42,7 +42,7 @@ describe("ResourceKebabCase", () => {
         {},
         () => {},
     ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
-        const rule = new ResourceKebabCase({except: Array.isArray(invalidExcept) ? invalidExcept : undefined});
+        const rule = new ResourceKebabCase({ param: {except: Array.isArray(invalidExcept) ? invalidExcept : undefined} });
 
         const resource = createTestResourceString({source: "kebab-case-exception", target: "some-kebab-case-target"});
         const result = rule.matchString({
@@ -95,7 +95,7 @@ describe("ResourceKebabCase", () => {
 
     test("returns `undefined` if source string is an exception", () => {
         const options = {except: ["kebab-case-exception"]}
-        const rule = new ResourceKebabCase(options);
+        const rule = new ResourceKebabCase({ param: options });
         const resource = createTestResourceString({source: "kebab-case-exception", target: "some-target"});
 
         const result = rule.matchString({
@@ -187,7 +187,7 @@ describe("ResourceKebabCase", () => {
     test("returns error if source is in kebab case and target is different", () => {
         const rule = new ResourceKebabCase({});
         const resource = createTestResourceString({
-            source: "kebab-case-example", 
+            source: "kebab-case-example",
             target: "different-target",
             location: new Location({
                 line: 37,
@@ -287,7 +287,7 @@ describe('ResourceKebabCase.isKebabCase', () => {
  * @param {string} param0.source The source string
  * @param {string} param0.target The target string
  * @param {Location} [param0.location] The location of the resource
- * 
+ *
  * @returns {ResourceString} The test resource string
  */
 function createTestResourceString({source, target, location}) {

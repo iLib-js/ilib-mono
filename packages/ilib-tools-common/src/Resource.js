@@ -18,10 +18,90 @@
  */
 
 const validStates = {
-    "new":true,
-    "translated":true,
-    "accepted":true
+    // XLIFF 2.0 standard states
+    // https://docs.oasis-open.org/xliff/xliff-core/v2.0/xliff-core-v2.0.html
+    "initial": true,
+    "translated": true,
+    "reviewed": true,
+    "final": true,
+
+    // XLIFF 1.2 standard states
+    // from https://docs.oasis-open.org/xliff/v1.2/os/xliff-core.html
+    "new": true,
+    "needs-translation": true,
+    "needs-adaptation": true,
+    "needs-l10n": true,
+    "needs-review-translation": true,
+    "needs-review-adaptation": true,
+    "needs-review-l10n": true,
+    "signed-off": true,
+
+    // Additional common states used in practice
+    "needs-review": true,
+    "fuzzy": true,
+    "accepted": true,
+    "rejected": true,
+    "approved": true,
+    "needs-approval": true
+};
+
+/**
+ * Array of all valid state names that can be used with Resource objects.
+ * This array is sorted alphabetically and includes states from:
+ * - XLIFF 2.0 standard states
+ * - XLIFF 1.2 standard states
+ * - Additional common states used in practice
+ *
+ * Custom states with "x-" prefix are also valid but not included in this array.
+ *
+ * @example
+ * // Check if a state is valid
+ * if (VALID_STATES.includes(state)) {
+ *     console.log('Valid state');
+ * }
+ *
+ * @type {string[]}
+ * @since 1.19.0
+ */
+export const VALID_STATES = Object.keys(validStates).sort();
+
+/**
+ * Check if a state is valid according to XLIFF 1.2 or 2.0 specification
+ * or if the state is used with ilib projects.
+ *
+ * @param {string} state the state to validate
+ * @returns {boolean} true if the state is valid, false otherwise
+ * @since 1.19.0
+ */
+function isValidState(state) {
+    // Must be a string
+    if (typeof state !== 'string') {
+        return false;
+    }
+
+    // Empty string is invalid
+    if (state.length === 0) {
+        return false;
+    }
+
+    // Check predefined states first
+    if (validStates[state]) {
+        return true;
+    }
+
+    // Custom states must start with "x-" and have content after the hyphen
+    if (state.startsWith('x-')) {
+        // Must have non-whitespace content after "x-"
+        const contentAfterX = state.substring(2);
+        if (contentAfterX.trim().length > 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
+
+export { isValidState };
 
 const translationImportant = [
     "context",
@@ -302,9 +382,13 @@ class Resource {
      * "translated", or "accepted".
      *
      * @param {string} state the state of this resource
+     * @throws {Error} if the state is invalid
      */
     setState(state) {
-        this.state = validStates[state] ? state : this.state;
+        if (!isValidState(state)) {
+            throw new Error(`Attempt to set an invalid state on a resource: "${state}". Valid states are: ${VALID_STATES.join(', ')}, or custom states starting with "x-"`);
+        }
+        this.state = state;
         this.dirty = true;
     }
 

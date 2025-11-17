@@ -19,6 +19,7 @@
  */
 
 import { Rule, Result } from 'ilib-lint-common';
+import { VALID_STATES, isValidState } from 'ilib-tools-common';
 
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
 
@@ -63,16 +64,33 @@ class ResourceStateChecker extends Rule {
         this.sourceLocale = (options && options.sourceLocale) || "en-US";
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-state-checker.md";
 
-        if (options) {
-            if (typeof(options.param) === "string") {
+        const param = this.getParam();
+        if (param) {
+            if (typeof(param) === "string") {
                 // enforce the given string as the only state allowed
-                this.states = [ options.param ];
-            } else if (Array.isArray(options.param)) {
-                this.states = options.param;
+                this.states = [ param ];
+            } else if (Array.isArray(param)) {
+                this.states = param;
             }
         }
         if (!this.states) {
             this.states = [ "translated" ];
+        }
+
+        // Validate all states to ensure they are valid
+        this.validateStates();
+    }
+
+    /**
+     * Validate that all configured states are valid.
+     * Throws an error if any invalid states are found.
+     * @private
+     */
+    validateStates() {
+        for (const state of this.states) {
+            if (!isValidState(state)) {
+                throw new Error(`Invalid state "${state}" in resource-state-checker configuration. Valid states are: ${VALID_STATES.join(", ")} or custom states with "x-" prefix.`);
+            }
         }
     }
 

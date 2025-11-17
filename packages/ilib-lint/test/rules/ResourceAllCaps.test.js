@@ -93,7 +93,7 @@ describe("ResourceAllCaps", () => {
     });
 
     test("returns `undefined` if source string is an exception", () => {
-        const options = {exceptions: ["ALL CAPS EXCEPTION"]}
+        const options = {param: {exceptions: ["ALL CAPS EXCEPTION"]}}
         const rule = new ResourceAllCaps(options);
         const resource = createTestResourceString({source: "ALL CAPS EXCEPTION", target: "some target"});
 
@@ -1540,4 +1540,4 @@ function createTestResourceString({source, target, targetLocale = "en-US"}) {
         targetLocale,
         pathName: "tests/for/allCaps.xliff"
     });
-} 
+}

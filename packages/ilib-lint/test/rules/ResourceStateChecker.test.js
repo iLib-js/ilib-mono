@@ -29,13 +29,10 @@ const sourceFile = new SourceFile("a/b/c.xliff", {});
 const fixer = new ResourceFixer();
 
 describe("testResourceStateChecker", () => {
-    test("ResourceStateCheckerMatchNoError", () => {
+    test("should not report error when resource has correct state", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: "translated"
-        });
+        const rule = new ResourceStateChecker({ param: "translated" });
         expect(rule).toBeTruthy();
 
         const actual = rule.match({
@@ -57,13 +54,10 @@ describe("testResourceStateChecker", () => {
         expect(!actual).toBeTruthy();
     });
 
-    test("ResourceStateCheckerMatchArrayNoError", () => {
+    test("should not report error when resource has one of multiple allowed states", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: [ "translated", "needs-review" ]
-        });
+        const rule = new ResourceStateChecker({ param: [ "translated", "needs-review" ] });
         expect(rule).toBeTruthy();
 
         const actual = rule.match({
@@ -85,13 +79,10 @@ describe("testResourceStateChecker", () => {
         expect(!actual).toBeTruthy();
     });
 
-    test("ResourceStateCheckerMatchError", () => {
+    test("should report error when resource has wrong state", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: "translated"
-        });
+        const rule = new ResourceStateChecker({ param: "translated" });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -131,13 +122,10 @@ describe("testResourceStateChecker", () => {
         expect(actual).toStrictEqual(expected);
     });
 
-    test("ResourceStateCheckerMatchArrayError", () => {
+    test("should report error when resource has wrong state with multiple allowed states", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have one of these states:
-            param: [ "translated", "needs-review" ]
-        });
+        const rule = new ResourceStateChecker({ param: [ "translated", "needs-review" ] });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -177,7 +165,7 @@ describe("testResourceStateChecker", () => {
         expect(actual).toEqual(expected);
     });
 
-    test("ResourceStateCheckerMatchDefaultNoError", () => {
+    test("should not report error when resource has default translated state", () => {
         expect.assertions(2);
 
         // @ts-ignore
@@ -203,7 +191,7 @@ describe("testResourceStateChecker", () => {
         expect(!actual).toBeTruthy();
     });
 
-    test("ResourceStateCheckerMatchDefaultError", () => {
+    test("should report error when resource has wrong state with default configuration", () => {
         expect.assertions(2);
 
         const rule = new ResourceStateChecker();
@@ -246,13 +234,10 @@ describe("testResourceStateChecker", () => {
         expect(actual).toStrictEqual(expected);
     });
 
-    test("ResourceStateCheckerNoState", () => {
+    test("should report error when resource has no state", () => {
         expect.assertions(2);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: [ "translated" ]
-        });
+        const rule = new ResourceStateChecker({ param: [ "translated" ] });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -291,13 +276,10 @@ describe("testResourceStateChecker", () => {
         expect(actual).toStrictEqual(expected);
     });
 
-    test("ResourceStateChecker apply fix to correct the state", () => {
+    test("should apply fix to correct the state", () => {
         expect.assertions(4);
 
-        const rule = new ResourceStateChecker({
-            // all resources should have this state:
-            param: "translated"
-        });
+        const rule = new ResourceStateChecker({ param: "translated" });
         expect(rule).toBeTruthy();
 
         const resource = new ResourceString({
@@ -348,5 +330,193 @@ describe("testResourceStateChecker", () => {
         const fixedResource = ir.getRepresentation()[0];
         expect(fixedResource).toBeTruthy();
         expect(fixedResource.getState()).toBe("translated");
+    });
+
+    test("should not report error when resource has signed-off state", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceStateChecker({ param: "signed-off" });
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            file: "a/b/c.xliff",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: '{count, plural, one {This is singular} other {This is plural}}',
+                    targetLocale: "de-DE",
+                    target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+                    pathName: "a/b/c.xliff",
+                    state: "signed-off"
+                })],
+                sourceFile
+            })
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("should report error when resource has wrong state for signed-off configuration", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceStateChecker({ param: "signed-off" });
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "plural.test",
+            sourceLocale: "en-US",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            targetLocale: "de-DE",
+            target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+            pathName: "a/b/c.xliff",
+            state: "translated"
+        });
+        const actual = rule.match({
+            file: "a/b/c.xliff",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [resource],
+                sourceFile
+            })
+        });
+        const fix = ResourceFixer.createFix({
+            resource,
+            commands: [
+                ResourceFixer.createMetadataCommand("state", "signed-off")
+            ]
+        });
+        const expected = new Result({
+            severity: "error",
+            description: "Resources must have the following state: signed-off",
+            id: "plural.test",
+            highlight: 'Resource found with disallowed state: <e0>translated</e0>',
+            rule,
+            pathName: "a/b/c.xliff",
+            locale: "de-DE",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            fix
+        });
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("should not report error when resource has custom x-prefixed state", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceStateChecker({ param: "x-custom-state" });
+        expect(rule).toBeTruthy();
+
+        const actual = rule.match({
+            file: "a/b/c.xliff",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [new ResourceString({
+                    key: "plural.test",
+                    sourceLocale: "en-US",
+                    source: '{count, plural, one {This is singular} other {This is plural}}',
+                    targetLocale: "de-DE",
+                    target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+                    pathName: "a/b/c.xliff",
+                    state: "x-custom-state"
+                })],
+                sourceFile
+            })
+        });
+        expect(!actual).toBeTruthy();
+    });
+
+    test("should report error when resource has wrong state for custom x-prefixed configuration", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceStateChecker({ param: "x-custom-state" });
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "plural.test",
+            sourceLocale: "en-US",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            targetLocale: "de-DE",
+            target: "{count, plural, one {Dies ist einzigartig} other {Dies ist mehrerartig}}",
+            pathName: "a/b/c.xliff",
+            state: "translated"
+        });
+        const actual = rule.match({
+            file: "a/b/c.xliff",
+            ir: new IntermediateRepresentation({
+                type: "resource",
+                ir: [resource],
+                sourceFile
+            })
+        });
+        const fix = ResourceFixer.createFix({
+            resource,
+            commands: [
+                ResourceFixer.createMetadataCommand("state", "x-custom-state")
+            ]
+        });
+        const expected = new Result({
+            severity: "error",
+            description: "Resources must have the following state: x-custom-state",
+            id: "plural.test",
+            highlight: 'Resource found with disallowed state: <e0>translated</e0>',
+            rule,
+            pathName: "a/b/c.xliff",
+            locale: "de-DE",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            fix
+        });
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("should not accept invalid state with typo in constructor", () => {
+        expect.assertions(1);
+
+        // should throw when the state has a typo
+        expect(() => {
+            new ResourceStateChecker({ param: "translted" });
+        }).toThrow('Invalid state "translted" in resource-state-checker configuration. Valid states are: accepted, approved, final, fuzzy, initial, needs-adaptation, needs-approval, needs-l10n, needs-review, needs-review-adaptation, needs-review-l10n, needs-review-translation, needs-translation, new, rejected, reviewed, signed-off, translated or custom states with "x-" prefix.');
+    });
+
+    test("should not accept invalid state with double x prefix in constructor", () => {
+        expect.assertions(1);
+
+        // should throw when the state has a double x prefix
+        expect(() => {
+            new ResourceStateChecker({ param: "xx-state" });
+        }).toThrow('Invalid state "xx-state" in resource-state-checker configuration. Valid states are: accepted, approved, final, fuzzy, initial, needs-adaptation, needs-approval, needs-l10n, needs-review, needs-review-adaptation, needs-review-l10n, needs-review-translation, needs-translation, new, rejected, reviewed, signed-off, translated or custom states with "x-" prefix.');
+    });
+
+    test("should not accept unrecognized state in constructor", () => {
+        expect.assertions(1);
+
+        // should throw when the state is not recognized
+        expect(() => {
+            new ResourceStateChecker({ param: "mystate" });
+        }).toThrow('Invalid state "mystate" in resource-state-checker configuration. Valid states are: accepted, approved, final, fuzzy, initial, needs-adaptation, needs-approval, needs-l10n, needs-review, needs-review-adaptation, needs-review-l10n, needs-review-translation, needs-translation, new, rejected, reviewed, signed-off, translated or custom states with "x-" prefix.');
+    });
+
+    test("should accept Mojito accepted state", () => {
+        const checker = new ResourceStateChecker({ param: "accepted" });
+        expect(checker.states).toEqual(["accepted"]);
+    });
+
+    test("should accept Mojito rejected state", () => {
+        const checker = new ResourceStateChecker({ param: "rejected" });
+        expect(checker.states).toEqual(["rejected"]);
+    });
+
+    test("should accept Mojito approved state", () => {
+        const checker = new ResourceStateChecker({ param: "approved" });
+        expect(checker.states).toEqual(["approved"]);
+    });
+
+    test("should accept Mojito needs-approval state", () => {
+        const checker = new ResourceStateChecker({ param: "needs-approval" });
+        expect(checker.states).toEqual(["needs-approval"]);
+    });
+
+    test("should accept array of Mojito states", () => {
+        const checker = new ResourceStateChecker({ param: ["accepted", "rejected", "approved"] });
+        expect(checker.states).toEqual(["accepted", "rejected", "approved"]);
     });
 });
