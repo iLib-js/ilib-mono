@@ -148,8 +148,7 @@ By default, this plugin handles files with the following extensions:
 - `.mkd`
 - `.rst`
 - `.rmd`
-
-Additional file extensions are automatically extracted from your mapping patterns. If you include a pattern like `"**/*.mdx"` in your mappings, the plugin will automatically recognize `.mdx` files. Extensions are extracted from the mapping patterns and normalized to lowercase.
+- `.mdx`
 
 ## Mappings
 
