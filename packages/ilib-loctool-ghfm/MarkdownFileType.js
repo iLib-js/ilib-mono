@@ -33,7 +33,7 @@ var MarkdownFileType = function(project) {
 
     // default extensions
     this.extensions = [ ".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd", ".mdx" ];
-    
+
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
     this.pseudo = this.API.newTranslationSet(project.getSourceLocale());
