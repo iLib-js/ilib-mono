@@ -7,6 +7,14 @@
         ".": {
             "import": "./src/index.js",
             "require": "./lib/index.js"
+        },
+        "./node": {
+            "import": "./src/index-node.js",
+            "require": "./lib/index-node.js"
+        },
+        "./browser": {
+            "import": "./src/index-browser.js",
+            "require": "./lib/index-browser.js"
         }
     },
     "description": "Loader to load text files in a cross-platform manner",

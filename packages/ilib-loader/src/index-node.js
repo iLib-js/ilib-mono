@@ -1,7 +1,7 @@
 /*
- * karma.conf.js - configure the karma testing environment
+ * index-node.js - Node.js specific entry point for ilib-loader
  *
- * Copyright © 2023, 2025 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const { createKarmaConfig } = require("ilib-internal");
 
-module.exports = function (config) {
-    config.set(createKarmaConfig({
-        // list of files to exclude
-        exclude: [
-            "./test/env-browser.test.js"
-        ],
-    }));
-};
+import { Loader, registerLoader, LoaderFactory } from './LoaderFactory.js';
+import NodeLoader from './NodeLoader.js';
+
+registerLoader(NodeLoader);
+
+export { Loader, registerLoader };
+export default LoaderFactory; 

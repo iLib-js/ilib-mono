@@ -1,7 +1,7 @@
 /*
- * testSuiteWeb.js - test suite for this directory
+ * index-browser.js - Browser specific entry point for ilib-loader
  *
- * Copyright © 2022, JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,10 @@
  * limitations under the License.
  */
 
-import { testDataCache } from './testDataCache.js';
-import { testGetLocaleData } from './testGetLocaleData.js';
-import { testLocaleData } from './testLocaleData.js';
-import { testLocaleDataWeb } from './testLocaleDataWeb.js';
+import { Loader, registerLoader, LoaderFactory } from './LoaderFactory.js';
+import WebpackLoader from './WebpackLoader.js';
 
-export const tests = [
-    testDataCache,
-    testGetLocaleData,
-    testLocaleData,
-    testLocaleDataWeb
-];
+registerLoader(WebpackLoader);
+
+export { Loader, registerLoader };
+export default LoaderFactory; 
