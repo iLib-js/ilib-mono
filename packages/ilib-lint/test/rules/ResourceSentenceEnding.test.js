@@ -73,15 +73,14 @@ describe("ResourceSentenceEnding rule", function() {
                 source: "This is amazing!",
                 target: "これは素晴らしいです！",
                 expectedResult: undefined,
-                description: "Japanese exclamation mark is converted to fullwidth"
+                description: "Japanese exclamation mark checking is disabled by default"
             },
             {
                 targetLocale: "ja-JP",
                 source: "This is amazing!",
-                target: "これは素晴らしいです!",
-                expectedResult: "Sentence ending should be \"！\" (U+FF01) for ja-JP locale instead of \"!\" (U+0021)",
-                highlight: "これは素晴らしいです<e0>! (U+0021)</e0>",
-                description: "Japanese exclamation mark triggers warning if not fullwidth"
+                target: "これは素晴らしいです。",
+                expectedResult: undefined,
+                description: "Japanese exclamation mark checking is disabled by default"
             },
             {
                 targetLocale: "ja-JP",
@@ -618,10 +617,9 @@ describe("ResourceSentenceEnding rule", function() {
             {
                 targetLocale: "ja-JP",
                 source: "She said, \"Hello!\"",
-                target: "彼女は「こんにちは!」と言いました。",
-                expectedResult: "Sentence ending should be \"！\" (U+FF01) for ja-JP locale instead of \"!\" (U+0021)",
-                highlight: "彼女は「こんにちは<e0>! (U+0021)</e0>」と言いました。",
-                description: "Japanese exclamation mark in quotes triggers warning if not fullwidth exclamation mark"
+                target: "彼女は「こんにちは。」と言いました。",
+                expectedResult: undefined,
+                description: "Japanese exclamation mark checking is disabled by default, even in quotes"
             },
             {
                 targetLocale: "zh-CN",
@@ -3376,7 +3374,7 @@ describe("ResourceSentenceEnding rule", function() {
 
                 expect(rule.getExpectedPunctuation(localeObj, "period")).toBe("。");
                 expect(rule.getExpectedPunctuation(localeObj, "question")).toBe("？");
-                expect(rule.getExpectedPunctuation(localeObj, "exclamation")).toBe("！");
+                expect(rule.getExpectedPunctuation(localeObj, "exclamation")).toBe(null);
                 expect(rule.getExpectedPunctuation(localeObj, "ellipsis")).toBe("…");
                 expect(rule.getExpectedPunctuation(localeObj, "colon")).toBe("：");
             });
@@ -4330,8 +4328,8 @@ describe("ResourceSentenceEnding rule", function() {
                 expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
             });
 
-            test("should detect incorrect punctuation when target has spaces after wrong exclamation mark", () => {
-                expect.assertions(2);
+            test("should not detect incorrect punctuation when target has spaces after wrong exclamation mark (exclamation checking disabled for Japanese)", () => {
+                expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding();
                 const resource = new ResourceString({
@@ -4339,7 +4337,7 @@ describe("ResourceSentenceEnding rule", function() {
                     sourceLocale: "en-US",
                     targetLocale: "ja-JP",
                     source: "That's amazing!",
-                    target: "すごい!   " // spaces after English exclamation mark instead of Japanese
+                    target: "すごい。   " // spaces after the kuten mark
                 });
 
                 const result = rule.matchString({
@@ -4349,8 +4347,7 @@ describe("ResourceSentenceEnding rule", function() {
                     file: "test.xliff"
                 });
 
-                expect(result).toBeDefined();
-                expect(result?.description).toContain('Sentence ending should be "！" (U+FF01) for ja-JP locale instead of "!" (U+0021)');
+                expect(result).toBeUndefined(); // Exclamation checking is disabled for Japanese by default
             });
         });
 
