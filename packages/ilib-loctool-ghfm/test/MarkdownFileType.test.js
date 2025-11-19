@@ -246,7 +246,7 @@ describe("markdownfiletype", function() {
     });
 
     test("should include .mdx in default extensions", function() {
-        expect.assertions(8);
+        expect.assertions(2);
         var p3 = new CustomProject({
             sourceLocale: "en-US",
             plugins: ["../."]
@@ -264,13 +264,7 @@ describe("markdownfiletype", function() {
         expect(mdft).toBeTruthy();
         var extensions = mdft.getExtensions();
         // check that default extensions are present, including .mdx
-        expect(extensions.indexOf(".md") > -1).toBeTruthy();
-        expect(extensions.indexOf(".markdown") > -1).toBeTruthy();
-        expect(extensions.indexOf(".mdown") > -1).toBeTruthy();
-        expect(extensions.indexOf(".mkd") > -1).toBeTruthy();
-        expect(extensions.indexOf(".rst") > -1).toBeTruthy();
-        expect(extensions.indexOf(".rmd") > -1).toBeTruthy();
-        expect(extensions.indexOf(".mdx") > -1).toBeTruthy();
+        expect(extensions).toStrictEqual([".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd", ".mdx"]);
     });
 
     test("should handle .mdx files with mapping patterns", function() {

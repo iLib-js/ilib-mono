@@ -67,8 +67,8 @@ language.</source>
       <trans-unit id="5" resname="r583853559.Description" restype="string" datatype="x-yaml">
         <source>This is an example MDX file with some content to localize</source>
       </trans-unit>
-      <trans-unit id="6" resname="r852824590" restype="string" datatype="markdown">
-        <source>This is an example of an MDX file that contains both markdown and XML components.</source>
+      <trans-unit id="6" resname="r2265377" restype="string" datatype="markdown">
+        <source>This is an example of an MDX file that contains both &lt;c0&gt;markdown&lt;/c0&gt; and &lt;c1&gt;XML&lt;/c1&gt; components.</source>
       </trans-unit>
       <trans-unit id="8" resname="r348436399" restype="string" datatype="markdown">
         <source>Features</source>

@@ -2,6 +2,5 @@
 "ilib-loctool-ghfm": minor
 ---
 
-Now supports filename extensions gleaned from the mappings - if the config includes mappings
-like `**/*.mdx`, then the file name extensions in that mapping are added automatically
-to the list of valid extensions that this plugin handles
+- Added .mdx to the list of extensions that the github-flavored markdown plugin
+  supports
