@@ -1,5 +1,28 @@
 # ilib-lint
 
+## 2.21.0
+
+### Minor Changes
+
+- 54b7c40: Disabled checking of exclamation point in Japanese
+
+  - it is not used very much in Japanese in translations of
+    English sentences that end in an exclamation point, so
+    we don't need to check it
+
+### Patch Changes
+
+- 2155187: - Fixed a bug where the parameter to the resource-state-checker
+  rule was not being used properly, making it impossible to check
+  for any state other than the default "translated".
+  - Fixed tests and the rule manager to pass the parameters from
+    the config file properly so that all rules can access parameters
+    of any type, including string.
+- Updated dependencies [7658dff]
+- Updated dependencies [92e0b3a]
+  - ilib-lint-common@3.7.0
+  - ilib-tools-common@1.20.0
+
 ## 2.20.0
 
 ### Minor Changes
