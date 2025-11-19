@@ -339,9 +339,7 @@ class ResourceSentenceEnding extends ResourceRule {
         if (!language) return null;
         // Custom config
         if (this.customPunctuationMap[language] && type in this.customPunctuationMap[language]) {
-            const value = this.customPunctuationMap[language][type];
-            // Return null if explicitly set to null (disabled), otherwise return the value
-            return value === null ? null : value;
+            return this.customPunctuationMap[language][type];
         }
         // For English ellipsis, only accept the default (Unicode ellipsis) in the target
         if (language === 'en' && type === 'ellipsis') {
@@ -351,9 +349,7 @@ class ResourceSentenceEnding extends ResourceRule {
         const localeDefaults = this.getLocaleDefaults(language);
         // Check if the type exists in localeDefaults (even if it's null)
         if (type in localeDefaults) {
-            const value = localeDefaults[type];
-            // Return null if explicitly set to null (disabled), otherwise return the value or default
-            return value === null ? null : (value || this.getDefaultPunctuation(type));
+            return localeDefaults[type];
         }
         // Type not in localeDefaults, use default
         return this.getDefaultPunctuation(type);

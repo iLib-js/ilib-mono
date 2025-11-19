@@ -18,10 +18,11 @@ Replace English punctuation with the appropriate full-width characters:
 |---------|----------|---------|
 | `.` | `。` | `。` |
 | `?` | `？` | `？` |
-| `!` | `。` | `！` |
+| `!` |  | `！` |
 | `:` | `：` | `：` |
 
-**Note:** For Japanese, exclamation mark (`!`) checking is **disabled by default** because exclamation marks are rarely used in Japanese. The rule will not check or correct exclamation marks in Japanese translations unless you explicitly configure it. For Chinese, exclamation marks are checked normally.
+**Note:** For Japanese, exclamation mark (`!`) checking is **disabled by default** because exclamation marks are rarely used in Japanese.
+The corresponding sentence ending often a kuten `。`, but not necessarily.
 
 **Before:**
 ```xml
@@ -258,13 +259,13 @@ This configuration:
 
 The following punctuation types can be customized:
 
-| Type | Description | Default | Notes |
-|------|-------------|---------|-------|
-| `period` | Sentence-ending period | `.` | |
-| `question` | Question mark | `?` | |
-| `exclamation` | Exclamation mark | `!` | Can be set to `null` to disable checking. For Japanese, this is `null` by default. |
-| `ellipsis` | Ellipsis (three dots) | `…` | |
-| `colon` | Colon | `:` | |
+| Type | Description | Default |
+|------|-------------|---------|
+| `period` | Sentence-ending period | `.` |
+| `question` | Question mark | `?` |
+| `exclamation` | Exclamation mark | `!` |
+| `ellipsis` | Ellipsis (three dots) | `…` |
+| `colon` | Colon | `:` |
 
 ### Configuration Behavior
 
