@@ -1,5 +1,5 @@
 ---
-"ilib-lint": patch
+"ilib-lint": minor
 ---
 
 Disabled checking of exclamation point in Japanese
