@@ -32,7 +32,7 @@
  * Examples:
  * - English period (.) should become Japanese maru (。) in Japanese
  * - English question mark (?) should become Japanese question mark (？) in Japanese
- * - English exclamation mark (!) should become Japanese exclamation mark (！) in Japanese
+ * - English exclamation mark (!) checking is disabled by default for Japanese (exclamation: null)
  * - English ellipsis (...) should become Japanese ellipsis (…) in Japanese
  * - English colon (:) should become Japanese colon (：) in Japanese
  */
@@ -71,7 +71,8 @@ const defaults = {
  * Punctuation map for each language, with default punctuation for each punctuation type
  */
 const punctuationMap = {
-    'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
+    // exclamation is disabled for Japanese because it's rarely used in Japanese
+    'ja': { 'period': '。', 'question': '？', 'exclamation': null, 'ellipsis': '…', 'colon': '：' },
     'zh': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
     'el': { 'period': '.', 'question': ';', 'exclamation': '!', 'ellipsis': '...', 'colon': ':' },
     'ar': { 'period': '.', 'question': '؟', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
@@ -89,10 +90,10 @@ const punctuationMap = {
 
 /**
  * @ignore
- * @typedef {{period?: string, question?: string, exclamation?: string, ellipsis?: string, colon?: string, exceptions?: string[]}} LocaleOptions
+ * @typedef {{period?: string, question?: string, exclamation?: string | null, ellipsis?: string, colon?: string, exceptions?: string[]}} LocaleOptions
  * @property {string} [period] - Custom period punctuation for this locale
  * @property {string} [question] - Custom question mark punctuation for this locale
- * @property {string} [exclamation] - Custom exclamation mark punctuation for this locale
+ * @property {string | null} [exclamation] - Custom exclamation mark punctuation for this locale, or null to disable checking for exclamation marks
  * @property {string} [ellipsis] - Custom ellipsis punctuation for this locale
  * @property {string} [colon] - Custom colon punctuation for this locale
  * @property {string[]} [exceptions] - Array of source strings to skip checking for this locale.
@@ -137,7 +138,7 @@ class ResourceSentenceEnding extends ResourceRule {
      *   'ja-JP': {
      *     period: '。',
      *     question: '？',
-     *     exclamation: '！',
+     *     exclamation: null,
      *     ellipsis: '…',
      *     colon: '：'
      *   }
@@ -337,7 +338,7 @@ class ResourceSentenceEnding extends ResourceRule {
         const language = localeObj.getLanguage();
         if (!language) return null;
         // Custom config
-        if (this.customPunctuationMap[language] && this.customPunctuationMap[language][type]) {
+        if (this.customPunctuationMap[language] && type in this.customPunctuationMap[language]) {
             return this.customPunctuationMap[language][type];
         }
         // For English ellipsis, only accept the default (Unicode ellipsis) in the target
@@ -346,8 +347,12 @@ class ResourceSentenceEnding extends ResourceRule {
         }
         // Get locale-specific defaults for this language
         const localeDefaults = this.getLocaleDefaults(language);
-        const result = localeDefaults[type] || this.getDefaultPunctuation(type);
-        return result;
+        // Check if the type exists in localeDefaults (even if it's null)
+        if (type in localeDefaults) {
+            return localeDefaults[type];
+        }
+        // Type not in localeDefaults, use default
+        return this.getDefaultPunctuation(type);
     }
 
     /**
