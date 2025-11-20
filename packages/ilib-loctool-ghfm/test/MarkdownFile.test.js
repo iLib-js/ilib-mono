@@ -1211,6 +1211,248 @@ describe("markdown", function() {
         expect(r.getKey()).toBe("r177384086");
     });
 
+    test("Parse iframe with handlebars syntax in attributes", function() {
+        expect.assertions(7);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Test that handlebars syntax in attributes (like MDX template files) doesn't cause hanging
+        // This was the original bug - the regex would hang on complex attributes with {{handlebars}}
+        mf.parse(
+            '<iframe height="560" scrolling="no" title="Box Content Uploader" src="//codepen.io/box-platform/embed/QvqGwr/?height=560&theme-id=27216&default-tab=result&embed-version=2&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" style={{width: "100%"}}>\n' +
+            'This is a string that should be extracted.\n' +
+            '</iframe>\n'
+        );
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
+        // Should extract the title attribute
+        r = set.getBySource("Box Content Uploader");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Box Content Uploader");
+        // Should extract the content text
+        r = set.getBySource("This is a string that should be extracted.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a string that should be extracted.");
+    });
+
+    test("Parse flow HTML with handlebars syntax in attributes", function() {
+        expect.assertions(5);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Test flow HTML with handlebars syntax - opening and closing tags on same line with no content
+        // This tests that flow HTML (not simple tags) with handlebars is parsed correctly
+        mf.parse('<span title="Testing all day long" class={{width: 80%}}></span>');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+        // Should extract the title attribute
+        r = set.getBySource("Testing all day long");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Testing all day long");
+    });
+
+    test("MarkdownFile parses properly with span tag with attributes", function() {
+        expect.assertions(8);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Test that handlebars syntax in span attributes (like MDX template files) doesn't cause hanging
+        // The handlebars syntax in class={{width: 80%}} should be parsed without catastrophic backtracking
+        // Expected: This should produce 2 strings:
+        // 1. The text with component markers: "You can also include <c0>interactive</c0> components like buttons and forms in your markdown content."
+        // 2. The title attribute value: "Testing all day long"
+        mf.parse(
+            'You can also include <span title="Testing all day long" class="width: 80%">interactive</span> components like buttons and forms in your markdown content.'
+        );
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
+        // Should extract the title attribute
+        r = set.getBySource("Testing all day long");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Testing all day long");
+        // Should extract the text content with component markers
+        // The text should be: "You can also include <c0>interactive</c0> components like buttons and forms in your markdown content."
+        var r = set.getBySource("You can also include <c0>interactive</c0> components like buttons and forms in your markdown content.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("You can also include <c0>interactive</c0> components like buttons and forms in your markdown content.");
+        expect(r.getKey()).toBe("r369661720");
+    });
+
+    test("Parse span with handlebars syntax in attributes", function() {
+        expect.assertions(8);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Test that handlebars syntax in span attributes (like MDX template files) doesn't cause hanging
+        // The handlebars syntax in class={{width: 80%}} should be parsed without catastrophic backtracking
+        // Expected: This should produce 2 strings:
+        // 1. The text with component markers: "You can also include <c0>interactive</c0> components like buttons and forms in your markdown content."
+        // 2. The title attribute value: "Testing all day long"
+        mf.parse(
+            'You can also include <span title="Testing all day long" class={{width: 80%}}>interactive</span> components like buttons and forms in your markdown content.'
+        );
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(2);
+        // Should extract the title attribute
+        r = set.getBySource("Testing all day long");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Testing all day long");
+        // Should extract the text content with component markers
+        // The text should be: "You can also include <c0>interactive</c0> components like buttons and forms in your markdown content."
+        var r = set.getBySource("You can also include <c0>interactive</c0> components like buttons and forms in your markdown content.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("You can also include <c0>interactive</c0> components like buttons and forms in your markdown content.");
+        expect(r.getKey()).toBe("r369661720");
+    });
+
+    test("Localize span with handlebars syntax in attributes", function() {
+        expect.assertions(2);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Test localization of content with handlebars syntax in span attributes
+        mf.parse(
+            'You can also include <span title="Testing all day long" class={{width: 80%}}>interactive</span> components like buttons and forms in your markdown content.'
+        );
+        var translations = new TranslationSet();
+        // Add translation for the title attribute
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r398984170",
+            source: "Testing all day long",
+            sourceLocale: "en-US",
+            target: "Tester toute la journée",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        // Add translation for the text content with component markers
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r369661720",
+            source: "You can also include <c0>interactive</c0> components like buttons and forms in your markdown content.",
+            sourceLocale: "en-US",
+            target: "Vous pouvez également inclure <c0>interactif</c0> composants comme des boutons et des formulaires dans votre contenu markdown.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        var actual = mf.localizeText(translations, "fr-FR");
+        var expected = 'Vous pouvez également inclure <span title="Tester toute la journée" class="{{width: 80%}}">interactif</span> composants comme des boutons et des formulaires dans votre contenu markdown.\n';
+        expect(actual).toBe(expected);
+    });
+
+    test("Localize iframe with handlebars syntax in attributes", function() {
+        expect.assertions(2);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Test localization of iframe with handlebars syntax in attributes (original bug case)
+        mf.parse(
+            '<iframe height="560" scrolling="no" title="Box Content Uploader" src="//codepen.io/box-platform/embed/QvqGwr/?height=560&theme-id=27216&default-tab=result&embed-version=2&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" style={{width: "100%"}}>\n' +
+            'This is a string that should be extracted.\n' +
+            '</iframe>\n'
+        );
+        var translations = new TranslationSet();
+        // Add translation for the title attribute
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r952196706",
+            source: "Box Content Uploader",
+            sourceLocale: "en-US",
+            target: "Téléchargeur de contenu Box",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        // Add translation for the content text
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r134469253",
+            source: "This is a string that should be extracted.",
+            sourceLocale: "en-US",
+            target: "Ceci est une chaîne qui devrait être extraite.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        var actual = mf.localizeText(translations, "fr-FR");
+        var expected = '<iframe height="560" scrolling="no" title="Téléchargeur de contenu Box" src="//codepen.io/box-platform/embed/QvqGwr/?height=560&theme-id=27216&default-tab=result&embed-version=2&editable=true" frameBorder="no" allowTransparency allowFullScreen style="{{width:">\n' +
+            'Ceci est une chaîne qui devrait être extraite.\n' +
+            '</iframe>\n';
+        expect(actual).toBe(expected);
+    });
+
+    test("Localize element with multiple handlebars attributes", function() {
+        expect.assertions(3);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Test localization with multiple handlebars attributes in the same tag
+        mf.parse(
+            'Click the <button title="Submit Form" class={{btnClass}} style={{width: "100%"}}>Submit</button> button to continue.'
+        );
+        var set = mf.getTranslationSet();
+        var translations = new TranslationSet();
+        // Add translation for the title attribute
+        var titleRes = set.getBySource("Submit Form");
+        expect(titleRes).toBeTruthy();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r584853485",
+            source: "Submit Form",
+            sourceLocale: "en-US",
+            target: "Soumettre le formulaire",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        // Add translations for the text content parts
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r394706066",
+            source: "Click the",
+            sourceLocale: "en-US",
+            target: "Cliquez sur le",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r158436830",
+            source: "Submit",
+            sourceLocale: "en-US",
+            target: "Soumettre",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r376085696",
+            source: "button to continue.",
+            sourceLocale: "en-US",
+            target: "bouton pour continuer.",
+            targetLocale: "fr-FR",
+            datatype: "markdown"
+        }));
+        var actual = mf.localizeText(translations, "fr-FR");
+        var expected = 'Cliquez sur le <button title="Soumettre le formulaire" class="{{btnClass}}" style="{{width: &quot;100%&quot;}}">Soumettre</button> bouton pour continuer.\n';
+        expect(actual).toBe(expected);
+    });
+
     test("MarkdownFileParseWithIndentedHTMLTags", function() {
         expect.assertions(21);
         var mf = new MarkdownFile({
@@ -1244,7 +1486,7 @@ Follow these steps:
 
 
 1. Third point:
-   
+
    <Message>
 
    Test test test
@@ -1567,7 +1809,7 @@ code code code
 
 \`\`\`cs
 var metadataValues = new Dictionary<string, object>()
-{ 
+{
   cards: [{
     "type": "skill_card",
     "skill_card_type": "keyword",
@@ -1587,7 +1829,7 @@ var metadataValues = new Dictionary<string, object>()
       { "text": "DD-26-YT" },
       { "text": "DN86 BOX" }
     }
-  }] 
+  }]
 };
 Dictionary<string, object> metadata = await client.MetadataManager
     .CreateFileMetadataAsync(fileId: "12345", metadataValues, "global", "asdf");

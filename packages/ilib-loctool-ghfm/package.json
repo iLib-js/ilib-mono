@@ -66,6 +66,7 @@
         "rehype-raw": "^5.1.0",
         "remark-footnotes": "^2.0.0",
         "remark-frontmatter": "^2.0.0",
+        "remark-hbs": "^0.4.1",
         "remark-highlight.js": "^6.0.0",
         "remark-parse": "^8.0.3",
         "remark-stringify": "^8.1.1",
