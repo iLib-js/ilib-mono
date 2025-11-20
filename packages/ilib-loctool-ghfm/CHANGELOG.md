@@ -1,5 +1,12 @@
 # ilib-loctool-ghfm
 
+## 1.12.0
+
+### Minor Changes
+
+- 7ef4feb: - Added .mdx to the list of extensions that the github-flavored markdown plugin
+  supports
+
 ## 1.11.7
 
 ### Patch Changes
