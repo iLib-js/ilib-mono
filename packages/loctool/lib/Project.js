@@ -526,7 +526,7 @@ Project.prototype.extract = function(cb) {
     this.db.getBy({
         project: this.options.id
     }, function(err, resources) {
-        if (!this.localizeOnly || this.pseudo) {
+        if (!this.localizeOnly || this.settings.nopseudo) {
             logger.trace("Getting all resources. Length: " + resources.length);
             logger.trace("Getting all resources. tu length: " + this.db.ts.resources.length);
             this.translations.addAll(resources);
