@@ -19,7 +19,8 @@
 
 var XliffFactory = require("../lib/XliffFactory.js");
 var Xliff = require("../lib/Xliff.js");
-var webOSXliff = require("../lib/webOSXliff.js");
+//var webOSXliff = require("../lib/webOSXliff.js");
+var webOSXliff = require("ilib-xliff-webos").webOSXliff;
 
 describe("XliffFactory", function() {
     test("XliffFactory_default", function() {

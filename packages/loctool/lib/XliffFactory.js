@@ -20,7 +20,8 @@
 
 var log4js = require("log4js");
 var Xliff = require("./Xliff.js");
-var webOSXliff = require("./webOSXliff.js");
+//var webOSXliff = require("./webOSXliff.js");
+var webOSXliff = require("ilib-xliff-webos").webOSXliff;
 
 var logger = log4js.getLogger("loctool.lib.XliffFactory");
 var xliffClasses = {
