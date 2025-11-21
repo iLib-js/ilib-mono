@@ -1,5 +1,11 @@
 # loctool
 
+## 2.31.6
+
+### Patch Changes
+
+- 16cffab: Add condition to add all DB resources to translations only when localizeOnly is false or pseudo is enabled
+
 ## 2.31.5
 
 ### Patch Changes
