@@ -472,7 +472,9 @@ describe("testAccumulator", () => {
         expect(ma).toBeTruthy();
 
         ma.addText("foo");
-        expect(!ma.pop()).toBeTruthy(); // should have no effect
+        expect(() => {
+            ma.pop();
+        }).toThrow('Unbalanced component error');
 
         expect(ma.root.children).toBeTruthy();
         expect(ma.root.children.length).toBe(1);
@@ -1319,7 +1321,7 @@ describe("testAccumulator", () => {
     });
 
     test("MessageAccumulatorMinimizeOuterComponentSelfClosing", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         let source = new MessageAccumulator();
         expect(source).toBeTruthy();
@@ -1335,14 +1337,16 @@ describe("testAccumulator", () => {
         source.addText("kick");
         source.pop();
         source.addText(" towards the goal.");
-        source.pop();
+        expect(() => {
+            source.pop();
+        }).toThrow('Unbalanced component error');
 
         expect(source.getString()).toBe("<c0/>You give <c1>the ball</c1> a big <c2>kick</c2> towards the goal.");
         expect(source.getMinimalString()).toBe("You give <c0>the ball</c0> a big <c1>kick</c1> towards the goal.");
     });
 
     test("MessageAccumulatorMinimizeOuterComponentSelfClosingWithKeepProperty", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         let source = new MessageAccumulator();
         expect(source).toBeTruthy();
@@ -1358,7 +1362,9 @@ describe("testAccumulator", () => {
         source.addText("kick");
         source.pop();
         source.addText(" towards the goal.");
-        source.pop();
+        expect(() => {
+            source.pop();
+        }).toThrow('Unbalanced component error');
 
         expect(source.getString()).toBe("<c0/>You give <c1>the ball</c1> a big <c2>kick</c2> towards the goal.");
         expect(source.getMinimalString()).toBe("<c0/>You give <c1>the ball</c1> a big <c2>kick</c2> towards the goal.");

@@ -224,12 +224,12 @@ export default class MessageAccumulator {
      * @returns {Object|undefined} the extra information associated with the
      * context that is being popped, or undefined if we are already at the
      * root and there is nothing to pop
+     * @throws {Error} if attempting to pop when already at the root level
      */
     pop() {
         if (!this.currentLevel.parent) {
             // oh oh, unbalanced?
-            console.log('Unbalanced component error...'); // eslint-disable-line no-console
-            return;
+            throw new Error('Unbalanced component error');
         }
         var extra = this.currentLevel.extra;
         this.currentLevel.closed = true;

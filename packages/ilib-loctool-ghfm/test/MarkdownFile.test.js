@@ -1087,6 +1087,22 @@ describe("markdown", function() {
         expect(r.getKey()).toBe("r699762575");
     });
 
+    test("MarkdownFileParseUnbalancedClosingTagMismatched", function() {
+        expect.assertions(2);
+        var mf = new MarkdownFile({
+            project: p,
+            type: mdft,
+            pathName: "test.md"
+        });
+        expect(mf).toBeTruthy();
+        // This has a closing </strong> tag but the opening tag was <em>, not <strong>
+        // When we try to close </strong>, we pop <em> which doesn't match
+        // Since there are no more tags on the stack, we throw an error about unbalanced tags
+        expect(function() {
+            mf.parse('This is <em>some text</strong> with an unbalanced closing tag.\n');
+        }).toThrow(/Syntax error in markdown file test\.md.*Unbalanced HTML tags/);
+    });
+
     test("MarkdownFileParseWithFlowStyleHTMLTags", function() {
         expect.assertions(6);
         var mf = new MarkdownFile({
