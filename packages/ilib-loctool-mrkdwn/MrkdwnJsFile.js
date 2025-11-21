@@ -263,7 +263,15 @@ MrkdwnJsFile.prototype._walk = function(key, node) {
                 node.children.forEach(function(child) {
                     this._walk(key, child);
                 }.bind(this));
-                this.message.pop();
+                try {
+                    this.message.pop();
+                } catch (e) {
+                    var line = (node.position && node.position.start && node.position.start.line) || "?";
+                    var column = (node.position && node.position.start && node.position.start.column) || "?";
+                    throw new Error("Syntax error in mrkdwn file " + this.pathName + " line " +
+                        line + " column " + column + ". Unbalanced markdown: attempting to close '" +
+                        node.type + "' but there is no matching opening.");
+                }
             }
             break;
 
@@ -278,7 +286,15 @@ MrkdwnJsFile.prototype._walk = function(key, node) {
             node.label && node.label.forEach(function(child) {
                 this._walk(key, child);
             }.bind(this));
-            this.message.pop();
+            try {
+                this.message.pop();
+            } catch (e) {
+                var line = (node.position && node.position.start && node.position.start.line) || "?";
+                var column = (node.position && node.position.start && node.position.start.column) || "?";
+                throw new Error("Syntax error in mrkdwn file " + this.pathName + " line " +
+                    line + " column " + column + ". Unbalanced markdown: attempting to close '" +
+                    node.type + "' but there is no matching opening.");
+            }
             break;
 
         case NodeType.PreText:

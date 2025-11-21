@@ -612,7 +612,15 @@ MarkdownFile.prototype._walk = function(node) {
                 node.children.forEach(function(child) {
                     this._walk(child);
                 }.bind(this));
-                this.message.pop();
+                try {
+                    this.message.pop();
+                } catch (e) {
+                    var line = (node.position && node.position.start && node.position.start.line) || "?";
+                    var column = (node.position && node.position.start && node.position.start.column) || "?";
+                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                        line + " column " + column + ". Unbalanced markdown: attempting to close '" +
+                        node.type + "' but there is no matching opening.");
+                }
 
                 node.localizable = node.children.every(function(child) {
                     return child.localizable;
@@ -696,7 +704,15 @@ MarkdownFile.prototype._walk = function(node) {
                     this._walk(child);
                 }.bind(this));
             }
-            this.message.pop();
+            try {
+                this.message.pop();
+            } catch (e) {
+                var line = (node.position && node.position.start && node.position.start.line) || "?";
+                var column = (node.position && node.position.start && node.position.start.column) || "?";
+                throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                    line + " column " + column + ". Unbalanced markdown: attempting to close '" +
+                    node.type + "' but there is no matching opening.");
+            }
             break;
 
         case 'inlineCode':
@@ -777,15 +793,26 @@ MarkdownFile.prototype._walk = function(node) {
                         // closing tag
                         if (this.message.getTextLength()) {
                             if (this.API.utils.nonBreakingTags[tagName] && this.message.getCurrentLevel() > 0) {
-                                var tag = this.message.pop();
-                                while (tag.name !== tagName && this.message.getCurrentLevel() > 0) {
-                                    tag = this.message.pop();
+                                try {
+                                    var tag = this.message.pop();
+                                    while (tag.name !== tagName && this.message.getCurrentLevel() > 0) {
+                                        tag = this.message.pop();
+                                    }
+                                    if (tag.name !== tagName) {
+                                        throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                                            node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
+                                    }
+                                    node.localizable = true;
+                                } catch (e) {
+                                    if (e.message && e.message.indexOf('Unbalanced component error') !== -1) {
+                                        var line = (node.position && node.position.start && node.position.start.line) || "?";
+                                        var column = (node.position && node.position.start && node.position.start.column) || "?";
+                                        throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                                            line + " column " + column + ". Unbalanced HTML tags: attempting to close tag '" +
+                                            tagName + "' but there are no matching opening tags. This usually indicates mismatched or missing opening/closing tags in the source file.");
+                                    }
+                                    throw e;
                                 }
-                                if (tag.name !== tagName) {
-                                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                                        node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
-                                }
-                                node.localizable = true;
                             } else {
                                 this._emitText();
                             }
@@ -1167,13 +1194,24 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     } else {
                         // closing tag
                         if (node.localizable && this.API.utils.nonBreakingTags[tagName] && message.getCurrentLevel() > 0) {
-                            var tag = message.pop();
-                            while (tag.name !== tagName && message.getCurrentLevel() > 0) {
-                                tag = message.pop();
-                            }
-                            if (tag.name !== tagName) {
-                                throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                                    node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
+                            try {
+                                var tag = message.pop();
+                                while (tag.name !== tagName && message.getCurrentLevel() > 0) {
+                                    tag = message.pop();
+                                }
+                                if (tag.name !== tagName) {
+                                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                                        node.position.start.line + " column " + node.position.start.column + ". Unbalanced HTML tags.");
+                                }
+                            } catch (e) {
+                                if (e.message && e.message.indexOf('Unbalanced component error') !== -1) {
+                                    var line = (node.position && node.position.start && node.position.start.line) || "?";
+                                    var column = (node.position && node.position.start && node.position.start.column) || "?";
+                                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                                        line + " column " + column + ". Unbalanced HTML tags: attempting to close tag '" +
+                                        tagName + "' but there are no matching opening tags. This usually indicates mismatched or missing opening/closing tags in the source file.");
+                                }
+                                throw e;
                             }
                         }
                     }
