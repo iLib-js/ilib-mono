@@ -34,24 +34,24 @@ not touch, this plugin converts them into xml-like components.</source>
       <trans-unit id="16" resname="r327998478" restype="string" datatype="markdown">
         <source>Becomes the string:</source>
       </trans-unit>
-      <trans-unit id="17" resname="r708014411" restype="string" datatype="markdown">
+      <trans-unit id="18" resname="r708014411" restype="string" datatype="markdown">
         <source>for the translators.</source>
       </trans-unit>
-      <trans-unit id="18" resname="r156483976" restype="string" datatype="markdown">
+      <trans-unit id="19" resname="r156483976" restype="string" datatype="markdown">
         <source>In this way, translators only have to deal with xml-like syntax
 (which they are probably already familiar with) instead of the
 various methods of marking up text using markdown.</source>
       </trans-unit>
-      <trans-unit id="19" resname="r664047074" restype="string" datatype="markdown">
+      <trans-unit id="20" resname="r664047074" restype="string" datatype="markdown">
         <source>Each component is numbered so that the translators can switch
 them around as appropriate for the grammar of their target
 language.</source>
       </trans-unit>
-      <trans-unit id="20" resname="r138585290" restype="string" datatype="markdown">
+      <trans-unit id="21" resname="r138585290" restype="string" datatype="markdown">
         <source>&lt;c0&gt;footnote1&lt;/c0&gt;: This is a footnote
 &lt;c1&gt;footnote2&lt;/c1&gt;: &lt;c2&gt;http://www.sample.com/url/that/is/not/localized&lt;/c2&gt;</source>
       </trans-unit>
-      <trans-unit id="21" resname="r906565896" restype="string" datatype="markdown">
+      <trans-unit id="22" resname="r906565896" restype="string" datatype="markdown">
         <source>http://www.sample.com/url/that/will/be/localized</source>
       </trans-unit>
     </body>
@@ -79,8 +79,11 @@ language.</source>
       <trans-unit id="13" resname="r221594028" restype="string" datatype="markdown">
         <source>Here is some &lt;c0&gt;bold text&lt;/c0&gt; and &lt;c1&gt;italic text&lt;/c1&gt; for translation.</source>
       </trans-unit>
-      <trans-unit id="15" resname="r1025826350" restype="string" datatype="markdown">
-        <source>You can also include interactive components like buttons and forms in your markdown content.</source>
+      <trans-unit id="15" resname="r398984170" restype="string" datatype="markdown">
+        <source>Testing all day long</source>
+      </trans-unit>
+      <trans-unit id="17" resname="r369661720" restype="string" datatype="markdown">
+        <source>You can also include &lt;c0&gt;interactive&lt;/c0&gt; components like buttons and forms in your markdown content.</source>
       </trans-unit>
     </body>
   </file>

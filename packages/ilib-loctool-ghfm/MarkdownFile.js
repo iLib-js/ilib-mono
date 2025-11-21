@@ -30,6 +30,7 @@ var highlight = require('remark-highlight.js');
 var raw = require('rehype-raw');
 var stringify = require('remark-stringify');
 var frontmatter = require('remark-frontmatter');
+var hbs = require('remark-hbs');
 var footnotes = require('remark-footnotes');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
@@ -40,12 +41,37 @@ var rehype = require("rehype-parse");
 isAlnum._init();
 isIdeo._init();
 
+/**
+ * Preprocess function to normalize handlebars syntax in HTML attributes
+ * Converts unquoted handlebars like class={{width: 80%}} to quoted form class="{{width: 80%}}"
+ * so remark-parse recognizes it as valid HTML
+ * @param {string} str the string to preprocess
+ * @returns {string} the preprocessed string
+ * @private
+ */
+function preprocessHandlebarsHTML(str) {
+    // Match HTML tags and normalize handlebars in attributes
+    // Pattern: <tag ... attr={{...}} ...>
+    // We need to quote the handlebars expression so it's valid HTML
+    return str.replace(/<(\w+)([^>]*?)>/g, function(match, tagName, attrs) {
+        // Replace unquoted {{...}} in attributes with quoted {{...}}
+        // This makes it valid HTML that remark-parse can recognize
+        var normalizedAttrs = attrs.replace(/(\w+)=\{\{([^}]+)\}\}/g, function(attrMatch, attrName, hbsContent) {
+            // Escape quotes in handlebars content and convert attr={{...}} to attr="{{...}}"
+            var escapedContent = hbsContent.replace(/"/g, '&quot;');
+            return attrName + '="{{' + escapedContent + '}}"';
+        });
+        return '<' + tagName + normalizedAttrs + '>';
+    });
+}
+
 var mdparser = unified().
     use(markdown, {
         commonmark: true,
         gfm: true
     }).
     use(frontmatter, ['yaml']).
+    use(hbs).
     use(footnotes).
     use(highlight).
     use(raw);
@@ -60,6 +86,7 @@ var mdstringify = unified().
         listItemIndent: 1
     }).
     use(footnotes).
+    use(hbs).
     use(frontmatter, ['yaml'])();
 
 var htmlparser = unified().
@@ -401,7 +428,11 @@ MarkdownFile.prototype._localizeAttributes = function(tagName, tag, locale, tran
     return ret;
 }
 
-var reTagName = /^<(\/?)\s*(\w+)(\s+((\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?)*)*(\/?)>$/;
+// Simple regex to extract tag name and whether it's a closing tag
+// This is used in _walk and _localizeNode to get basic tag information
+// We use a simple pattern that stops at first > or space to avoid backtracking
+// For full tag validation, we now use htmlparser.parse() instead
+var reTagName = /^<(\/?)\s*(\w+)/;
 var reSelfClosingTag = /<\s*(\w+)\/>$/;
 var reL10NComment = /<!--\s*[iI]18[Nn]\s*(.*)\s*-->/;
 
@@ -464,15 +495,25 @@ MarkdownFile.prototype._walkHtml = function(astNode) {
                 break;
             }
 
-            reTagName.lastIndex = 0;
-            match = reTagName.exec(trimmed);
+            // Parse with htmlparser to check if this is a simple opening tag or flow HTML
+            // This avoids the catastrophic backtracking issue with the regex
+            root = htmlparser.parse(astNode.value);
 
-            if (!match) {
-                // this is flow HTML that needs to be parsed into multiple nodes
-                root = htmlparser.parse(astNode.value);
+            if (root && root.type === "root" && root.children && root.children.length > 0) {
+                var htmlElement = root.children[0];
+                if (htmlElement.type === "element" && htmlElement.tagName === "html" && htmlElement.children) {
+                    // Find body element
+                    var body = htmlElement.children.find(function(child) {
+                        return child.type === "element" && child.tagName === "body";
+                    });
 
-                if (root) {
-                    if (root.type === "root") {
+                    // Check if this is just a simple opening tag (body has one element with no children)
+                    var isSimpleOpeningTag = body && body.children && body.children.length === 1 &&
+                        body.children[0].type === "element" &&
+                        (!body.children[0].children || body.children[0].children.length === 0);
+
+                    if (!isSimpleOpeningTag) {
+                        // this is flow HTML that needs to be parsed into multiple nodes
                         nodes = [];
                         var match = astNode.value.match(/^\s+/);
                         if (match) {
@@ -481,24 +522,11 @@ MarkdownFile.prototype._walkHtml = function(astNode) {
                                value: match[0]
                            }));
                         }
-                        var children = root.children;
-                        if (children.length > 0) {
-                            for (i = 0; i < children.length; i++) {
-                                var child = children[i];
-                                if (child.type === "element" &&
-                                    child.tagName === "html") {
-                                    var html = child.children;
-                                    for (i = 0; i < html.length; i++) {
-                                        var child = html[i];
-                                        if (child && child.children) {
-                                            child.children.forEach(function(element) {
-                                                nodes = nodes.concat(this._walkHtml(element));
-                                            }.bind(this));
-                                        }
-                                    }
-                                } else {
-                                    nodes = nodes.concat(this._walkHtml(child));
-                                }
+                        // Process the body children from the parsed HTML
+                        if (body && body.children) {
+                            for (i = 0; i < body.children.length; i++) {
+                                var child = body.children[i];
+                                nodes = nodes.concat(this._walkHtml(child));
                             }
                         }
                         var match = astNode.value.match(/\s+$/);
@@ -510,10 +538,36 @@ MarkdownFile.prototype._walkHtml = function(astNode) {
                         }
                         return nodes;
                     }
+                    // If it's a simple opening tag, just break (same as before when regex matched)
                 } else {
-                    throw new Error("Syntax error in markdown file " + this.pathName + " line " +
-                        node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
+                    // Not a standard HTML structure, treat as flow HTML
+                    nodes = [];
+                    var match = astNode.value.match(/^\s+/);
+                    if (match) {
+                       nodes.push(new Node({
+                           type: "text",
+                           value: match[0]
+                       }));
+                    }
+                    // Process the body children from the parsed HTML
+                    if (body && body.children) {
+                        for (i = 0; i < body.children.length; i++) {
+                            var child = body.children[i];
+                            nodes = nodes.concat(this._walkHtml(child));
+                        }
+                    }
+                    var match = astNode.value.match(/\s+$/);
+                    if (match) {
+                       nodes.push(new Node({
+                           type: "text",
+                           value: match[0]
+                       }));
+                    }
+                    return nodes;
                 }
+            } else {
+                throw new Error("Syntax error in markdown file " + this.pathName + " line " +
+                    node.position.start.line + " column " + node.position.start.column + ". Bad HTML tag.");
             }
             break;
 
@@ -749,12 +803,45 @@ MarkdownFile.prototype._walk = function(node) {
                     this._emitText();
                 }
             } else {
-                reTagName.lastIndex = 0;
-                match = reTagName.exec(trimmed);
+                // Use htmlparser to check if this is a simple tag (opening or closing) or flow HTML
+                // This avoids the catastrophic backtracking issue with the complex regex
+                root = htmlparser.parse(trimmed);
 
-                if (match) {
-                    tagName = match[2];
-                    if (match[1] !== '/') {
+                var isSimpleTag = false;
+                var extractedTagName = null;
+                var isClosingTag = false;
+
+                // Check if it's a closing tag by looking at the original string first
+                isClosingTag = trimmed.trim().startsWith('</');
+
+                if (root && root.type === "root" && root.children && root.children.length > 0) {
+                    var htmlElement = root.children[0];
+                    if (htmlElement.type === "element" && htmlElement.tagName === "html" && htmlElement.children) {
+                        var body = htmlElement.children.find(function(child) {
+                            return child.type === "element" && child.tagName === "body";
+                        });
+
+                        // Check if this is just a simple tag (body has one element with no children)
+                        // For closing tags, htmlparser might not create a body element, so we extract from the string
+                        if (isClosingTag) {
+                            // Extract tag name from closing tag string
+                            var closingMatch = trimmed.match(/^<\/\s*(\w+)/);
+                            if (closingMatch) {
+                                isSimpleTag = true;
+                                extractedTagName = closingMatch[1];
+                            }
+                        } else if (body && body.children && body.children.length === 1 &&
+                            body.children[0].type === "element" &&
+                            (!body.children[0].children || body.children[0].children.length === 0)) {
+                            isSimpleTag = true;
+                            extractedTagName = body.children[0].tagName;
+                        }
+                    }
+                }
+
+                if (isSimpleTag) {
+                    tagName = extractedTagName;
+                    if (!isClosingTag) {
                         // opening tag
                         if (this.message.getTextLength()) {
                             if (this.API.utils.nonBreakingTags[tagName]) {
@@ -795,6 +882,37 @@ MarkdownFile.prototype._walk = function(node) {
                     // This is flow HTML that is not yet parsed, so parse and
                     // convert the value into an array of mdast nodes and then
                     // remove the value
+                    // First, extract attributes from the flow HTML before converting to nodes
+                    root = htmlparser.parse(node.value);
+                    if (root && root.type === "root" && root.children && root.children.length > 0) {
+                        var htmlElement = root.children[0];
+                        if (htmlElement.type === "element" && htmlElement.tagName === "html" && htmlElement.children) {
+                            var body = htmlElement.children.find(function(child) {
+                                return child.type === "element" && child.tagName === "body";
+                            });
+                            // Extract attributes from flow HTML elements (like title attributes)
+                            if (body && body.children) {
+                                for (var j = 0; j < body.children.length; j++) {
+                                    var flowChild = body.children[j];
+                                    if (flowChild.type === "element" && flowChild.properties) {
+                                        var tagName = flowChild.tagName;
+                                        for (var attrName in flowChild.properties) {
+                                            var attrValue = flowChild.properties[attrName];
+                                            // Handle both string and array values (className can be an array)
+                                            var valueStr = Array.isArray(attrValue) ? attrValue.join(" ") : attrValue;
+                                            // Check if this is a localizable attribute (title is always localizable)
+                                            if (valueStr && typeof valueStr === "string" && valueStr.trim() &&
+                                                (attrName === "title" ||
+                                                (this.API.utils.localizableAttributes[tagName] &&
+                                                 this.API.utils.localizableAttributes[tagName][attrName]))) {
+                                                this._addTransUnit(valueStr);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     node.children = this._walkHtml(node);
                     node.value = undefined;
 
@@ -857,6 +975,10 @@ MarkdownFile.prototype.parse = function(data) {
         replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3").
         replace(/(^|\n)\s+```/g, "$1```").
         replace(/\n```/g, "\n\n```");
+
+    // Preprocess handlebars syntax in HTML attributes so remark-parse recognizes them as valid HTML
+    // This converts unquoted handlebars like class={{width: 80%}} to quoted form
+    data = preprocessHandlebarsHTML(data);
 
     this.ast = mdparser.parse(data);
 
@@ -1149,6 +1271,7 @@ MarkdownFile.prototype._localizeNode = function(node, message, locale, translati
                     message.pop();
                 }
             } else {
+                // Use simple regex to extract tag name - full validation done via htmlparser in _walkHtml
                 reTagName.lastIndex = 0;
                 match = reTagName.exec(trimmed);
 
