@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-var webOSXliff = require("../lib/webOSXliff.js");
+var webOSXliff = require("ilib-xliff-webos").webOSXliff;
+var TranslationUnit = require("ilib-xliff-webos").TranslationUnit;
 var ResourceString = require("../lib/ResourceString.js");
 var XliffMerge = require("../lib/XliffMerge.js");
 var XliffSplit = require("../lib/XliffSplit.js");
@@ -61,25 +62,7 @@ describe("webOSxliff", function() {
             path: "foo/bar/x.xliff"
         });
         expect(x).toBeTruthy();
-        expect(x.getPath()).toBe("foo/bar/x.xliff");
-    });
-    test("webOSXliffSetPath", function() {
-        expect.assertions(3);
-        var x = new webOSXliff({
-            path: "foo/bar/x.xliff"
-        });
-        expect(x).toBeTruthy();
-        expect(x.getPath()).toBe("foo/bar/x.xliff");
-        x.setPath("asdf/asdf/y.xliff");
-        expect(x.getPath()).toBe("asdf/asdf/y.xliff");
-    });
-    test("webOSXliffSetPathInitiallyEmpty", function() {
-        expect.assertions(3);
-        var x = new webOSXliff();
-        expect(x).toBeTruthy();
-        expect(!x.getPath()).toBeTruthy();
-        x.setPath("asdf/asdf/y.xliff");
-        expect(x.getPath()).toBe("asdf/asdf/y.xliff");
+        expect(x.path).toBe("foo/bar/x.xliff");
     });
     test("webOSXliffAddResource", function() {
         expect.assertions(11);
