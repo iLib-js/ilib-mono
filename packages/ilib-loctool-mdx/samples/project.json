@@ -1,0 +1,33 @@
+{
+    "name": "sample-md",
+    "id": "sample-md",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "plugins": [
+        "ilib-loctool-ghfm"
+    ],
+    "excludes": [
+        "xliffs",
+        "locale"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "ko-KR",
+            "nl-NL"
+        ],
+        "markdown": {
+            "mappings": {
+                "**/en-US/*.md": {
+                    "template": "locale/[locale]/[filename]",
+                    "frontmatter": ["Title", "Description"]
+                },
+                "**/en-US/*.mdx": {
+                    "template": "locale/[locale]/[filename]",
+                    "frontmatter": ["Title", "Description"]
+                }
+            }
+        }
+    }
+}
