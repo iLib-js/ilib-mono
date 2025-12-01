@@ -25,4 +25,40 @@ not touch, this plugin converts them into xml-like components.</source>
       </trans-unit>
     </body>
   </file>
+  <file original="md/en-US/example.mdx" source-language="en-US" target-language="ko-KR" product-name="sample-md">
+    <body>
+      <trans-unit id="1" resname="Title" restype="string" datatype="x-yaml">
+        <source>Example MDX File</source>
+        <target>MDX 파일 예제</target>
+      </trans-unit>
+      <trans-unit id="2" resname="Description" restype="string" datatype="x-yaml">
+        <source>This is an example MDX file with some content to localize</source>
+        <target>이것은 현지화할 콘텐츠가 있는 MDX 파일 예제입니다</target>
+      </trans-unit>
+      <trans-unit id="3" resname="r123456789" restype="string" datatype="markdown">
+        <source>Example MDX File</source>
+        <target>MDX 파일 예제</target>
+      </trans-unit>
+      <trans-unit id="4" resname="r987654321" restype="string" datatype="markdown">
+        <source>This is an example of an MDX file that contains both markdown and XML components.</source>
+        <target>이것은 마크다운과 XML 구성 요소를 모두 포함하는 MDX 파일의 예입니다.</target>
+      </trans-unit>
+      <trans-unit id="5" resname="r111222333" restype="string" datatype="markdown">
+        <source>Features</source>
+        <target>기능</target>
+      </trans-unit>
+      <trans-unit id="6" resname="r444555666" restype="string" datatype="markdown">
+        <source>MDX allows you to use JSX components directly in your markdown files.</source>
+        <target>MDX를 사용하면 마크다운 파일에서 JSX 구성 요소를 직접 사용할 수 있습니다.</target>
+      </trans-unit>
+      <trans-unit id="7" resname="r777888999" restype="string" datatype="markdown">
+        <source>Here is some &lt;c0&gt;bold text&lt;/c0&gt; and &lt;c1&gt;italic text&lt;/c1&gt; for translation.</source>
+        <target>번역을 위한 &lt;c0&gt;굵은 텍스트&lt;/c0&gt;와 &lt;c1&gt;기울임꼴 텍스트&lt;/c1&gt;가 있습니다.</target>
+      </trans-unit>
+      <trans-unit id="8" resname="r000111222" restype="string" datatype="markdown">
+        <source>You can also include interactive components like buttons and forms in your markdown content.</source>
+        <target>마크다운 콘텐츠에 버튼 및 양식과 같은 대화형 구성 요소를 포함할 수도 있습니다.</target>
+      </trans-unit>
+    </body>
+  </file>
 </xliff>
