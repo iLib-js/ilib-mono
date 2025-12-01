@@ -1,5 +1,11 @@
 # loctool
 
+## 2.31.7
+
+### Patch Changes
+
+- 60f27e7: Fix a bug where resources were not added to the translation set when `nopseudo` was set to false.
+
 ## 2.31.6
 
 ### Patch Changes
