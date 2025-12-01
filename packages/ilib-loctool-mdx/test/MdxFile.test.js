@@ -493,7 +493,6 @@ describe("mdx", function() {
     });
 
     test("MdxFileParseSkipHeader", function() {
-debugger;
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
@@ -767,7 +766,6 @@ debugger;
     });
 
     test("MdxFileParseTurnOnURLOnlyLinks", function() {
-debugger;
         expect.assertions(12);
         var mf = new MdxFile({
             project: p,
