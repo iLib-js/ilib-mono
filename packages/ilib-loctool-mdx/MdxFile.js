@@ -33,8 +33,10 @@ var u = require('unist-builder');
 isAlnum._init();
 isIdeo._init();
 
+var htmlTags;
+
 // Lazy initialization for ESM-only remark plugins
-// All latest versions of remark plugins are ESM-only, so we need to use dynamic import()
+// Latest versions of remark plugins are ESM-only, so we need to use dynamic import()
 // The parser will be initialized via MdxFileType.init() which is called
 // by the loctool's Project.init() method
 var remark = null;
@@ -43,9 +45,10 @@ var remarkParse = null;
 var mdxPlugin = null;
 var frontmatter = null;
 var footnotes = null;
-var stringify = null;
+var mdstringify = null; // Will be initialized in initMdxParser() after ESM modules are loaded
 
-// Initialize all ESM remark plugins using Promise.all() to avoid nested promises
+
+// Initialize all ESM remark plugins
 // This is called from MdxFileType.init() during project initialization
 function initMdxParser(callback) {
     if (mdparser) {
@@ -53,43 +56,59 @@ function initMdxParser(callback) {
         if (callback) callback();
         return;
     }
+    var htmlTagsJsonFile = path.join(path.dirname(require.resolve("html-tags")), "html-tags.json");
+    htmlTags = JSON.parse(fs.readFileSync(htmlTagsJsonFile, "utf8"));
     
-    // Load all ESM modules in parallel using Promise.all()
-    Promise.all([
-        import("remark"),
-        import("remark-parse"),
-        import("remark-mdx"),
-        import("remark-frontmatter"),
-        import("remark-footnotes"),
-        import("remark-stringify")
-    ]).then(function(modules) {
-        remark = modules[0].remark || modules[0].default || modules[0];
-        remarkParse = modules[1].default || modules[1];
-        mdxPlugin = modules[2].default || modules[2];
-        frontmatter = modules[3].default || modules[3];
-        footnotes = modules[4].default || modules[4];
-        stringify = modules[5].default || modules[5];
+    // Load all ESM modules sequentially to avoid Jest/VM module linking issues
+    // Some packages have internal dependencies that need to be linked in order
+    import("remark").then(function(module) {
+        remark = module.remark || module.default || module;
+        return import("remark-parse");
+    }).then(function(module) {
+        remarkParse = module.default || module;
+        return import("remark-mdx");
+    }).then(function(module) {
+        mdxPlugin = module.default || module;
+        return import("remark-frontmatter");
+    }).then(function(module) {
+        frontmatter = module.default || module;
+        return import("remark-gfm");
+    }).then(function(module) {
+        // remark-gfm includes footnotes support
+        footnotes = module.default || module;
+        return import("remark-stringify");
+    }).then(function(module) {
+        var stringifyModule = module.default || module;
         
         // remark-mdx extends remark-parse, so we need both
         // Put frontmatter AFTER mdxPlugin to avoid interfering with MDX expression parsing
         // Frontmatter processes the AST after parsing, so it should still work
-        // Use unified() for consistency with other markdown files
-        mdparser = unified().
+        // Use remark() instead of unified() to get the base parser functionality
+        // remark() includes remark-parse by default, which handles HTML tags as self-closing
+        // remark-mdx extends remark-parse but replaces HTML parsing with JSX parsing
+        // We need to ensure HTML is parsed before JSX. The issue is that remark-mdx
+        // treats all <tags> as JSX, requiring strict XML closing. Unfortunately, there's
+        // no built-in way to configure this, so we may need to accept that HTML tags
+        // in MDX need to be properly closed or self-closed (<br/> or <br></br>)
+        mdparser = remark().
             use(remarkParse).
             use(frontmatter, ['yaml']).
             use(mdxPlugin).
             use(footnotes);
         
         // Initialize the stringify processor as well
-        mdstringify = unified().
-            use(stringify, {
+        // Use remark() instead of unified() to get the base compiler functionality
+        // Include mdxPlugin to handle MDX-specific node types (mdxFlowExpression, mdxJsxTextElement, etc.)
+        mdstringify = remark().
+            use(stringifyModule, {
                 commonmark: true,
                 gfm: true,
                 rule: '-',
                 ruleSpaces: false,
                 bullet: '*',
-                listItemIndent: 1
+                listItemIndent: "one"
             }).
+            use(mdxPlugin).
             use(footnotes).
             use(frontmatter, ['yaml'])();
         
@@ -105,7 +124,10 @@ function initMdxParser(callback) {
 
 // The init function will be exported at the end of the file
 
-var mdstringify = null; // Will be initialized in initMdxParser() after ESM modules are loaded
+
+isHtmlTag = function(tag) {
+    return htmlTags && htmlTags.includes(tag);
+}
 
 function escapeQuotes(str) {
     var ret = "";
@@ -372,27 +394,14 @@ var reAttrNameAndValue = /\s(\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?/g;
 /**
  * @private
  */
-MdxFile.prototype._findAttributes = function(tagName, tag) {
+MdxFile.prototype._findAttributes = function(node) {
     var match, name;
 
-    // If this is a multiline HTML tag, the parser does not split it for us.
-    // It comes as one big ole HTML tag with the open, body, and close all as
-    // one. As such, we should only search the initial open tag for translatable
-    // attributes.
-    if (tag.indexOf('\n') > -1) {
-        reWholeTag.lastIndex = 0;
-        var match = reWholeTag.exec(tag);
-        if (match) {
-            tag = match[0];
-        }
-    }
 
-    reAttrNameAndValue.lastIndex = 0;
-    while ((match = reAttrNameAndValue.exec(tag)) !== null) {
-        var name = match[1],
-            value = (match[4] && match[4].trim()) || (match[6] && match[6].trim()) || "";
-        if (value && name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
-            this._addTransUnit(value);
+    for (var i = 0; i < node.attributes.length; i++) {
+        var name = node.attributes[i].name;
+        if (name === "title" || (this.API.utils.localizableAttributes[node.name] && this.API.utils.localizableAttributes[node.name][name])) {
+            this._addTransUnit(node.attributes[i].value);
         }
     }
 }
@@ -467,7 +476,6 @@ MdxFile.prototype._walk = function(node) {
             node.localizable = true;
             break;
 
-        case 'mdxJsxTextElement':
         case 'delete':
         case 'link':
         case 'emphasis':
@@ -632,6 +640,56 @@ MdxFile.prototype._walk = function(node) {
             // no children to walk, just the value which is code
             break;
 
+        case 'mdxJsxTextElement':
+            var trimmed = node.name;
+            if (trimmed.startsWith("script") || trimmed.startsWith("style")) {
+                // don't parse style or script tags. Just skip them.
+                // They are, however, breaking tags, so emit any text
+                // we have accumulated so far.
+                this._emitText();
+                break;
+            }
+            if (!isHtmlTag(trimmed)) {
+                // this is a JSX component
+                this.message.push({
+                    name: tagName,
+                    node: node
+                });
+                node.localizable = true;
+                if (node.children && node.children.length) {
+                    node.children.forEach(function(child) {
+                        this._walk(child);
+                    }.bind(this));
+                }
+                this.message.pop();
+            } else {
+                if (this.message.getTextLength()) {
+                    if (this.API.utils.nonBreakingTags[trimmed]) {
+                        this.message.push({
+                            name: trimmed,
+                            node: node
+                        });
+                        node.localizable = true;
+                    } else {
+                        // it's a breaking tag, so emit any text
+                        // we have accumulated so far and then search the children
+                        this._emitText();
+                    }
+                }
+                if (node.children && node.children.length) {
+                    node.children.forEach(function(child) {
+                        this._walk(child);
+                    }.bind(this));
+                }
+
+                if (node.localizable) {
+                    // only need to pop if we're parsing a non-breaking tag
+                    this.message.pop();
+                }
+                this._findAttributes(node);
+            }
+            break;
+
         case 'yaml':
             // parse the front matter using the YamlFile plugin
             if (this.mapping && this.mapping.frontmatter) {
@@ -687,7 +745,12 @@ MdxFile.prototype.parse = function(data) {
         replace(/(^|\n)\s+```/g, "$1```").
         replace(/\n```/g, "\n\n```");
 
-    this.ast = mdparser.parse(data);
+    try {
+        this.ast = mdparser.parse(data);
+    } catch (e) {
+        this.logger.error("Failed to parse file " + this.pathName + "\nException: " + e);
+        throw e;
+    }
 
     // Debug: log AST structure to help diagnose parsing issues
     if (this.logger.isTraceEnabled()) {
@@ -1009,19 +1072,19 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
     }
 };
 
-function flattenHtml(node) {
+function flattenJSX(node) {
     var ret = [];
 
-    if (node.type === "html") {
+    if (node.type === "mdxJsxTextElement") {
         var children = node.children;
         node.children = undefined;
         ret.push(node);
         if (children && children.length) {
             for (var i = 0; i < children.length; i++) {
-                ret = ret.concat(flattenHtml(children[i]));
+                ret = ret.concat(flattenJSX(children[i]));
             }
             ret.push({
-                type: "html",
+                type: "mdxJsxTextElement",
                 value: '</' + node.name + '>'
             });
         }
@@ -1036,9 +1099,9 @@ function mapToAst(node) {
 
     for (var i = 0; i < node.children.length; i++) {
         var child = mapToAst(node.children[i]);
-        if (child.type === "html") {
-            // flatten any HTML
-            children = children.concat(flattenHtml(child));
+        if (child.type === "mdxJsxTextElement") {
+            // flatten any HTML/JSX
+            children = children.concat(flattenJSX(child));
         } else {
             children.push(child);
         }
@@ -1087,20 +1150,20 @@ MdxFile.prototype._getTranslationNodes = function(locale, translations, ma) {
         if (this.project.settings.identify) {
             var tmp = [];
             tmp.push(new Node({
-                type: "html",
+                type: "mdxJsxTextElement",
                 use: "start",
                 name: "span",
-                extra: u("html", {
+                extra: u("mdxJsxTextElement", {
                     value: '<span x-locid="' + key + '">',
                     name: "span"
                 })
             }));
             tmp = tmp.concat(nodes);
             tmp.push(new Node({
-                type: "html",
+                type: "mdxJsxTextElement",
                 use: "end",
                 name: "span",
-                extra: u("html", {
+                extra: u("mdxJsxTextElement", {
                     value: '</span>',
                     name: "span"
                 })
