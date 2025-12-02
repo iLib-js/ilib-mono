@@ -22,6 +22,7 @@ var path = require("path");
 
 var POIntermediateFile = require("./POIntermediateFile.js");
 var XliffIntermediateFile = require("./XliffIntermediateFile.js");
+var webOSXliffIntermediateFile = require("./webOSXliffIntermediateFile.js");
 
 /**
  * Factory function to create an intermediate file of the requested type from the given path.
@@ -52,7 +53,9 @@ var getIntermediateFile = function(options) {
         }
     }
     if (type === "xliff") {
-        return new XliffIntermediateFile(options);
+        return (options.style === "webOS"
+            ? new webOSXliffIntermediateFile(options)
+            : new XliffIntermediateFile(options));
     } else if (type === "po") {
         return new POIntermediateFile(options);
     } else {
