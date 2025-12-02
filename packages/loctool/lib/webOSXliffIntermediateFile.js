@@ -71,10 +71,7 @@ webOSXliffIntermediateFile.prototype.read = function() {
  * @override
  */
 webOSXliffIntermediateFile.prototype.write = function(set) {
-    var newSet = new TranslationSet();
-    newSet.addAll(set.getAll.map(convertResourceToCommon));
-    fs.writeFileSync(this.path, this.xliff.serialize(true), "utf-8");
-    /*this.xliff.addSet(set);
+    /*this.xliff.addSet(set);*/
     fs.writeFileSync(this.path, this.xliff.serialize(true), "utf-8");*/
 };
 
