@@ -270,8 +270,6 @@ MdxFile.prototype.makeKey = function(source) {
     return this.API.utils.hashKey(MdxFile.cleanString(source));
 };
 
-var reWholeTag = /<("(\\"|[^"])*"|'(\\'|[^'])*'|[^>])*>/g;
-
 MdxFile.prototype._addTransUnit = function(text, comment) {
     if (text) {
         var source = this.API.utils.escapeInvalidChars(text);
@@ -389,8 +387,6 @@ MdxFile.prototype._emitText = function(escape) {
     this.message = new MessageAccumulator();
 };
 
-var reAttrNameAndValue = /\s(\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?/g;
-
 /**
  * @private
  */
@@ -469,7 +465,7 @@ MdxFile.prototype._findAttributes = function(node) {
  * Localize JSX attributes in a node during the localization phase.
  */
 MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) {
-    if (!node.attributes || !node.attributes.length) {
+    if (node.use == "end" || !node.attributes || !node.attributes.length) {
         return;
     }
 
@@ -519,52 +515,6 @@ MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) 
             }
         }
     }
-}
-
-/**
- * @private
- */
-MdxFile.prototype._localizeAttributes = function(tagName, tag, locale, translations) {
-    var match, name;
-    var ret = "<" + tagName;
-    var rest = "";
-    var attributes = {};
-
-    // If this is a multiline HTML tag, the parser does not split it for us.
-    // It comes as one big ole HTML tag with the open, body, and close all as
-    // one. As such, we should only search the initial open tag for translatable
-    // attributes.
-    if (tag.indexOf('\n') > -1) {
-        reWholeTag.lastIndex = 0;
-        var match = reWholeTag.exec(tag);
-        if (match) {
-            rest = tag.substring(match.index + match[0].length);
-            tag = match[0];
-        }
-    }
-
-    reAttrNameAndValue.lastIndex = 0;
-    while ((match = reAttrNameAndValue.exec(tag)) !== null) {
-        var name = match[1],
-            value = (match[4] && match[4].trim()) || (match[6] && match[6].trim()) || "";
-        if (value) {
-            if (name === "title" || (this.API.utils.localizableAttributes[tagName] && this.API.utils.localizableAttributes[tagName][name])) {
-                var translation = this._localizeString(value, locale, translations);
-                attributes[name] = translation || value;
-            } else {
-                attributes[name] = value;
-            }
-        } else {
-            attributes[name] = "true";
-        }
-    }
-
-    for (var attr in attributes) {
-        ret += " " + attr + ((attributes[attr] !== "true") ? '="' + attributes[attr] + '"' : "");
-    }
-    ret += '>' + rest;
-
-    return ret;
 }
 
 var reTagName = /^<(\/?)\s*(\w+)(\s+((\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?)*)*(\/?)>$/;
@@ -742,6 +692,12 @@ MdxFile.prototype._walk = function(node) {
 
         case 'mdxTextExpression':
             // inline JavaScript expressions like {variable} or {1 + 1}
+            // Comments like {/* comment */} should be ignored (not extracted)
+            var trimmed = node.value ? node.value.trim() : '';
+            if (trimmed.substring(0, 2) === '/*') {
+                // This is a comment, skip it (don't extract it)
+                break;
+            }
             // treat like inline code - non-breaking, self-closing node
             node.localizable = true;
             this._addComment("c" + this.message.componentIndex + " will be replaced with the inline expression {" + (node.value || '') + "}.");
@@ -1297,20 +1253,26 @@ MdxFile.prototype._getTranslationNodes = function(locale, translations, ma) {
                 type: "mdxJsxTextElement",
                 use: "start",
                 name: "span",
-                extra: u("mdxJsxTextElement", {
-                    value: '<span x-locid="' + key + '">',
-                    name: "span"
-                })
+                attributes: [
+                    u("mdxJsxAttribute", {
+                        name: "x-locid",
+                        value: key
+                    })
+                ],
+                children: []
             }));
             tmp = tmp.concat(nodes);
             tmp.push(new Node({
                 type: "mdxJsxTextElement",
                 use: "end",
                 name: "span",
-                extra: u("mdxJsxTextElement", {
-                    value: '</span>',
-                    name: "span"
-                })
+                attributes: [
+                    u("mdxJsxAttribute", {
+                        name: "x-locid",
+                        value: key
+                    })
+                ],
+                children: []
             }));
             nodes = tmp;
         }
@@ -1345,6 +1307,11 @@ MdxFile.prototype.localizeText = function(translations, locale) {
     this.logger.debug("Localizing strings for locale " + locale);
 
     // copy the ast for this locale so that we don't modify the original
+    if (!this.ast) {
+        this.logger.warn("Cannot localize file " + this.pathName + ": AST is not set. File may not have been parsed successfully.");
+        // Return empty string if AST is not set (file wasn't parsed successfully)
+        return "";
+    }
     var ast = unistFilter(this.ast, function(node) {
         return true;
     });
