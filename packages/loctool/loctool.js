@@ -612,6 +612,7 @@ function processNextProject() {
                         });
                     });
                 });
+
             });
         });
     }
@@ -825,6 +826,11 @@ try {
     exitValue = 2;
 }
 logger.info("Done");
-log4js.shutdown(function() {
-    process.exit(exitValue);
+// This is a hack to ensure the event loop has a chance to process any pending promises
+// before loctool calls process.exit() which kills the event loop
+setImmediate(function() {
+    log4js.shutdown(function() {
+        process.exit(exitValue);
+    });
 });
+
