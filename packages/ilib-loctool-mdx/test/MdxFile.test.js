@@ -915,6 +915,91 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r472274968");
     });
 
+    test("MdxFileParseFootnotesWithUrl", function() {
+        expect.assertions(6);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Footnote with URL should not be extracted unless localizeLinks is enabled
+        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
+                '[^1]: http://www.example.com/test\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing <c0/> system.");
+        expect(r.getKey()).toBe("r1010312382");
+        // URL-only footnote should not be extracted when localizeLinks is false
+        var r2 = set.getBySource("http://www.example.com/test");
+        expect(r2).toBeFalsy();
+    });
+
+    test("MdxFileParseFootnotesWithUrlLocalized", function() {
+        expect.assertions(7);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // Footnote with URL should be extracted when localizeLinks is enabled
+        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
+                '{/* i18n-enable localize-links */}\n' +
+                '[^1]: http://www.example.com/test\n' +
+                '{/* i18n-disable localize-links */}\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the emergency parsing <c0/> system.");
+        expect(r.getKey()).toBe("r1010312382");
+        // URL-only footnote should be extracted when localizeLinks is true
+        var r2 = set.getBySource("http://www.example.com/test");
+        expect(r2).toBeTruthy();
+        expect(r2.getSource()).toBe("http://www.example.com/test");
+    });
+
+    test("MdxFileLocalizeTextWithFootnotesUrl", function() {
+        expect.assertions(4);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
+            '{/* i18n-enable localize-links */}\n' +
+            '[^1]: http://www.example.com/test\n' +
+            '{/* i18n-disable localize-links */}\n');
+        var set = mf.getTranslationSet();
+        var urlResource = set.getBySource("http://www.example.com/test");
+        expect(urlResource).toBeTruthy();
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r1010312382",
+            source: "This is a test of the emergency parsing <c0/> system.",
+            sourceLocale: "en-US",
+            target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: urlResource.getKey(),
+            source: "http://www.example.com/test",
+            sourceLocale: "en-US",
+            target: "http://www.example.fr/test",
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        var result = mf.localizeText(translations, "fr-FR");
+        expect(result).toContain("Ceci est un test du système d'analyse syntaxique [^1] de l'urgence.");
+        // The URL in the footnote definition should be localized
+        // It might be rendered as a link or plain text depending on the parser
+        expect(result).toMatch(/\[\^1\]:\s*(http:\/\/www\.example\.fr\/test|\[http:\/\/www\.example\.com\/test\]\(http:\/\/www\.example\.fr\/test\))/);
+    });
+
     test("MdxFileParseNonBreakingInlineCode", function() {
         expect.assertions(6);
         var mf = new MdxFile({

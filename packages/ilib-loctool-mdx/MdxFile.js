@@ -61,7 +61,13 @@ function initMdxParser(callback) {
     
     // Load all ESM modules sequentially to avoid Jest/VM module linking issues
     // Some packages have internal dependencies that need to be linked in order
-    import("remark").then(function(module) {
+    // CRITICAL: process.exit() cuts off the event loop before import() promises resolve.
+    // We must ensure the callback is called BEFORE loctool proceeds to process.exit().
+    // Since import() is async, we start the promise chain immediately. The event loop
+    // MUST process it before loctool calls process.exit(). Since loctool uses callbacks,
+    // it should yield to the event loop, allowing the promises to resolve.
+    // The promise is stored on global/module to prevent garbage collection.
+    var importPromise = import("remark").then(function(module) {
         remark = module.remark || module.default || module;
         return import("remark-parse");
     }).then(function(module) {
@@ -114,12 +120,29 @@ function initMdxParser(callback) {
         
         if (callback) callback();
     }).catch(function(err) {
+        console.error("Failed to initialize ilib-loctool-mdx plugin: " + err.message);
+        if (err.stack) {
+            console.error(err.stack);
+        }
         if (callback) {
             callback(err);
         } else {
             throw err;
         }
     });
+    
+    // Ensure the promise is tracked and doesn't get garbage collected
+    // Store it on a global or module-level variable to keep it alive
+    // This is critical when called from CommonJS contexts where the promise
+    // might be garbage collected before it resolves
+    if (typeof global !== 'undefined') {
+        global._mdxParserInitPromise = importPromise;
+    }
+    
+    // Also store it on the module to ensure it persists
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports._initPromise = importPromise;
+    }
 }
 
 // The init function will be exported at the end of the file
@@ -614,13 +637,47 @@ MdxFile.prototype._walk = function(node) {
             // definitions are breaking nodes
             this._emitText();
             if (node.children && node.children.length) {
-                node.children.forEach(function(child) {
-                    this._walk(child);
-                }.bind(this));
+                // Check if the footnote definition contains only a URL
+                var allText = '';
+                for (var i = 0; i < node.children.length; i++) {
+                    if (node.children[i].type === 'text') {
+                        allText += node.children[i].value;
+                    } else if (node.children[i].type === 'link' && node.children[i].url) {
+                        allText += node.children[i].url;
+                    }
+                }
+                allText = allText.trim();
+                
+                // Check if the entire content is just a URL
+                reUrl.lastIndex = 0;
+                var isUrlOnly = reUrl.test(allText);
+                
+                if (isUrlOnly) {
+                    if (this.localizeLinks) {
+                        // URL-only footnote and links are being localized
+                        // Extract the URL directly
+                        this._addTransUnit(allText);
+                        node.localizable = true;
+                    } else {
+                        // URL-only footnote and links are not being localized
+                        // Don't mark children as localizable
+                        node.localizable = false;
+                    }
+                    if (node.children) {
+                        node.children.forEach(function(child) {
+                            child.localizable = false;
+                        });
+                    }
+                } else {
+                    // Walk children normally
+                    node.children.forEach(function(child) {
+                        this._walk(child);
+                    }.bind(this));
 
-                node.localizable = node.children.every(function(child) {
-                    return child.localizable;
-                });
+                    node.localizable = node.children.every(function(child) {
+                        return child.localizable;
+                    });
+                }
             }
             break;
 
@@ -1145,6 +1202,39 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
                     message.push(node);
                 } else {
                     message.pop();
+                }
+                // If the footnote definition contains only a URL and it was extracted,
+                // we need to localize it in the children
+                if (node.children && node.children.length) {
+                    var allText = '';
+                    for (var i = 0; i < node.children.length; i++) {
+                        if (node.children[i].type === 'text') {
+                            allText += node.children[i].value;
+                        } else if (node.children[i].type === 'link' && node.children[i].url) {
+                            allText += node.children[i].url;
+                        }
+                    }
+                    allText = allText.trim();
+                    
+                    // Check if the entire content is just a URL
+                    reUrl.lastIndex = 0;
+                    var isUrlOnly = reUrl.test(allText);
+                    
+                    if (isUrlOnly) {
+                        // Localize the URL in the text node or link node
+                        for (var i = 0; i < node.children.length; i++) {
+                            if (node.children[i].type === 'text') {
+                                var localized = this._localizeString(node.children[i].value, locale, translations, true);
+                                node.children[i].value = localized;
+                                break;
+                            } else if (node.children[i].type === 'link' && node.children[i].url) {
+                                // Localize the URL in the link node
+                                var localized = this._localizeString(node.children[i].url, locale, translations, true);
+                                node.children[i].url = localized;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             break;
