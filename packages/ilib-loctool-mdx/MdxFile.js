@@ -1381,12 +1381,6 @@ MdxFile.prototype.localizeText = function(translations, locale) {
 
     var str = mdstringify.stringify((!this.fullyTranslated || this.translationStatus[locale]) ? ast : this.ast);
 
-    // make sure the thematic breaks don't have blank lines after them and they
-    // don't erroneously escape the backslash chars
-    str = str.
-        replace(/---\n\n/g, "---\n").
-        replace(/\n\n---/g, "\n---");
-
     // Restore original content in script and style tags
     // Replace escaped content with original content in order
     var scriptIndex = 0;

@@ -3472,7 +3472,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var expected =
             '---\n' +
             'test: This is a test\n' +
-            '---\n' +
+            '---\n\n' +
             'Ceci est un essai\n\n' +
             'Ceci est aussi un essai\n\n' +
             'Ceci est un essai\n';
@@ -3542,7 +3542,8 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '  aussi une description de la question en face\n' +
             '  avec texte étendu\n' +
             'Title: Ceci est aussi un essai de la question en face\n' +
-            '---\n' +
+            '\n' +
+            '---\n\n' +
             'Ceci est un essai\n\n' +
             'Ceci est aussi un essai\n';
         var actual = mf.localizeText(translations, "fr-FR");
@@ -3594,7 +3595,8 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '  another front matter description\n' +
             '  with extended text\n' +
             'Title: Ceci est aussi un essai de la question en face\n' +
-            '---\n' +
+            '\n' +
+            '---\n\n' +
             'Ceci est un essai\n\n' +
             'This is also a test\n';
         var actual = mf.localizeText(translations, "fr-FR");
@@ -3677,7 +3679,8 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '  avec texte étendu\n' +
             'Foobar: foo asdf asdf asdf\n' +
             'Title: Ceci est aussi un essai de la question en face\n' +
-            '---\n' +
+            '\n' +
+            '---\n\n' +
             'Ceci est un essai\n\n' +
             'Ceci est aussi un essai\n';
         var actual = mf.localizeText(translations, "fr-FR");
@@ -3757,7 +3760,8 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '  avec texte étendu\n' +
             'Foobar: fdsa fdsa fdsa\n' +
             'Title: Ceci est aussi un essai de la question en face\n' +
-            '---\n' +
+            '\n' +
+            '---\n\n' +
             'Ceci est un essai\n\n' +
             'Ceci est aussi un essai\n';
         var actual = mf.localizeText(translations, "fr-FR");
@@ -4053,7 +4057,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '---\n' +
             'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
             'status: this front matter should remain unlocalized\n' +
-            '---\n' +
+            '---\n\n' +
             '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
             '\n' +
             'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
@@ -4068,7 +4072,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '---\n' +
             'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
             'status: this front matter should remain unlocalized\n' +
-            '---\n' +
+            '---\n\n' +
             '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
             '\n' +
             'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
@@ -4153,7 +4157,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '---\n' +
             'frontmatter: true\n' +
             'other: "asdf"\n' +
-            '---\n' +
+            '---\n\n' +
             '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
             '\n' +
             'This is some text. This is more text. Pretty, pretty text.\n' +
@@ -4170,7 +4174,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             '---\n' +
             'frontmatter: true\n' +
             'other: "asdf"\n' +
-            '---\n' +
+            '---\n\n' +
             '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
             '\n' +
             'This is some text. This is more text. Pretty, pretty text.\n' +
@@ -4274,7 +4278,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             'frontmatter: true\n' +
             'other: "asdf"\n' +
             'fullyTranslated: true\n' +
-            '---\n' +
+            '---\n\n' +
             '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
             '\n' +
             'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
@@ -4290,7 +4294,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             'frontmatter: true\n' +
             'other: "asdf"\n' +
             'fullyTranslated: true\n' +
-            '---\n' +
+            '---\n\n' +
             '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
             '\n' +
             'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
@@ -4390,7 +4394,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var expected =
             '---\n' +
             'fullyTranslated: true\n' +
-            '---\n' +
+            '---\n\n' +
             '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
             '\n' +
             'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
@@ -4404,7 +4408,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var expected =
             '---\n' +
             'fullyTranslated: true\n' +
-            '---\n' +
+            '---\n\n' +
             '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
             '\n' +
             'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
@@ -5266,7 +5270,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var expected =
             '---\n' +
             'fullyTranslated: true\n' +
-            '---\n' +
+            '---\n\n' +
             '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
             '\n' +
             'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
@@ -5389,7 +5393,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var expected =
             '---\n' +
             'fullyTranslated: true\n' +
-            '---\n' +
+            '---\n\n' +
             '* `a:` `b`, `c`, oder `d`.\n';
         diff(content, expected);
         expect(content).toBe(expected);
