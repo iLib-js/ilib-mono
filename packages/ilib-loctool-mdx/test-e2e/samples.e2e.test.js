@@ -24,12 +24,12 @@ describe("samples", () => {
     describe("markdown", () => {
         /** @type {FSSnapshot} */
         let fsSnapshot;
-        const projectPath = path.resolve(__dirname, "..", "samples", "markdown");
-        const xliffPath = path.resolve(projectPath, "sample-md-extracted.xliff");
+        const projectPath = path.resolve(__dirname, "..", "samples", "mdx");
+        const xliffPath = path.resolve(projectPath, "sample-mdx-extracted.xliff");
 
         beforeAll(async () => {
             fsSnapshot = FSSnapshot.create(
-                ["sample-md-extracted.xliff", "sample-md-new-ko-KR.xliff", "sample-md-new-nl-NL.xliff", "locale"].map(
+                ["sample-mdx-extracted.xliff", "sample-mdx-new-ko-KR.xliff", "sample-mdx-new-nl-NL.xliff", "locale"].map(
                     (p) => path.resolve(projectPath, p)
                 )
             );

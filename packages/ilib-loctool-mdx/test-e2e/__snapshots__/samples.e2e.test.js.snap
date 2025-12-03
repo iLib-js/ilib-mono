@@ -3,83 +3,88 @@
 exports[`samples markdown should produce an extracted XLIFF file 1`] = `
 "<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.2">
-  <file original="md/en-US/README.md" source-language="en-US" product-name="sample-md">
+  <file original="en-US/README.md" source-language="en-US" product-name="sample-mdx">
     <body>
-      <trans-unit id="3" resname="r926895493.Title" restype="string" datatype="x-yaml">
-        <source>Readme for the Github-Flavored Markdown Sample</source>
+      <trans-unit id="3" resname="r696870087.Title" restype="string" datatype="x-yaml">
+        <source>Readme for the MDX Sample</source>
       </trans-unit>
-      <trans-unit id="4" resname="r911920644" restype="string" datatype="markdown">
-        <source>ilib-loctool-ghfm</source>
+      <trans-unit id="4" resname="r317325714" restype="string" datatype="mdx">
+        <source>ilib-loctool-mdx</source>
       </trans-unit>
-      <trans-unit id="7" resname="r73969288" restype="string" datatype="markdown">
-        <source>Ilib loctool plugin to parse and localize Github-flavored markdown</source>
+      <trans-unit id="7" resname="r452200524" restype="string" datatype="mdx">
+        <source>Ilib loctool plugin to parse and localize MDX-style markdown</source>
       </trans-unit>
-      <trans-unit id="9" resname="r926895493.Description" restype="string" datatype="x-yaml">
+      <trans-unit id="9" resname="r696870087.Description" restype="string" datatype="x-yaml">
         <source>this is a sample of frontmatter that can be extracted and localized</source>
       </trans-unit>
-      <trans-unit id="10" resname="r319626336" restype="string" datatype="markdown">
+      <trans-unit id="10" resname="r249438435" restype="string" datatype="mdx">
         <source>Markdown is broken into paragraphs and phrases using the
-&lt;c0&gt;remark&lt;/c0&gt; family of parsers.
-Here is a &lt;c1&gt;link&lt;/c1&gt; that is not localized.
-Here is a &lt;c2&gt;footnote&lt;/c2&gt; that is localized.
-Here is a &lt;c3&gt;link&lt;/c3&gt; that is is localized as well.</source>
+&lt;c0&gt;remark&lt;/c0&gt; family of parsers.</source>
       </trans-unit>
-      <trans-unit id="12" resname="r185975191" restype="string" datatype="markdown">
+      <trans-unit id="12" resname="r1037643183" restype="string" datatype="mdx">
+        <source>Here is a link&lt;c0/&gt; that is not localized.
+Here is a footnote&lt;c1/&gt; that is localized.
+Here is a &lt;c2&gt;link reference&lt;/c2&gt; that is is localized as well.
+Here is an &lt;c3&gt;immediate link&lt;/c3&gt; that is not localized.</source>
+      </trans-unit>
+      <trans-unit id="14" resname="r185975191" restype="string" datatype="mdx">
         <source>Escapes</source>
       </trans-unit>
-      <trans-unit id="14" resname="r342091031" restype="string" datatype="markdown">
+      <trans-unit id="16" resname="r342091031" restype="string" datatype="mdx">
         <source>Whenever there is syntax in the markdown that translators should
 not touch, this plugin converts them into xml-like components.</source>
       </trans-unit>
-      <trans-unit id="16" resname="r327998478" restype="string" datatype="markdown">
+      <trans-unit id="17" resname="r327998478" restype="string" datatype="mdx">
         <source>Becomes the string:</source>
       </trans-unit>
-      <trans-unit id="17" resname="r708014411" restype="string" datatype="markdown">
+      <trans-unit id="18" resname="r708014411" restype="string" datatype="mdx">
         <source>for the translators.</source>
       </trans-unit>
-      <trans-unit id="18" resname="r156483976" restype="string" datatype="markdown">
+      <trans-unit id="19" resname="r156483976" restype="string" datatype="mdx">
         <source>In this way, translators only have to deal with xml-like syntax
 (which they are probably already familiar with) instead of the
 various methods of marking up text using markdown.</source>
       </trans-unit>
-      <trans-unit id="19" resname="r664047074" restype="string" datatype="markdown">
+      <trans-unit id="20" resname="r664047074" restype="string" datatype="mdx">
         <source>Each component is numbered so that the translators can switch
 them around as appropriate for the grammar of their target
 language.</source>
       </trans-unit>
-      <trans-unit id="20" resname="r138585290" restype="string" datatype="markdown">
-        <source>&lt;c0&gt;footnote1&lt;/c0&gt;: This is a footnote
-&lt;c1&gt;footnote2&lt;/c1&gt;: &lt;c2&gt;http://www.sample.com/url/that/is/not/localized&lt;/c2&gt;</source>
+      <trans-unit id="21" resname="r564479404" restype="string" datatype="mdx">
+        <source>This is a footnote</source>
       </trans-unit>
-      <trans-unit id="21" resname="r906565896" restype="string" datatype="markdown">
+      <trans-unit id="22" resname="r342213087" restype="string" datatype="mdx">
+        <source>http://www.sample.com/url/that/is/not/localized</source>
+      </trans-unit>
+      <trans-unit id="23" resname="r906565896" restype="string" datatype="mdx">
         <source>http://www.sample.com/url/that/will/be/localized</source>
       </trans-unit>
     </body>
   </file>
-  <file original="md/en-US/example.mdx" source-language="en-US" product-name="sample-md">
+  <file original="en-US/example.mdx" source-language="en-US" product-name="sample-mdx">
     <body>
-      <trans-unit id="1" resname="r583853559.Title" restype="string" datatype="x-yaml">
+      <trans-unit id="1" resname="r496301270.Title" restype="string" datatype="x-yaml">
         <source>Example MDX File</source>
       </trans-unit>
-      <trans-unit id="2" resname="r1023125524" restype="string" datatype="markdown">
+      <trans-unit id="2" resname="r1023125524" restype="string" datatype="mdx">
         <source>Example MDX File</source>
       </trans-unit>
-      <trans-unit id="5" resname="r583853559.Description" restype="string" datatype="x-yaml">
+      <trans-unit id="5" resname="r496301270.Description" restype="string" datatype="x-yaml">
         <source>This is an example MDX file with some content to localize</source>
       </trans-unit>
-      <trans-unit id="6" resname="r2265377" restype="string" datatype="markdown">
+      <trans-unit id="6" resname="r2265377" restype="string" datatype="mdx">
         <source>This is an example of an MDX file that contains both &lt;c0&gt;markdown&lt;/c0&gt; and &lt;c1&gt;XML&lt;/c1&gt; components.</source>
       </trans-unit>
-      <trans-unit id="8" resname="r348436399" restype="string" datatype="markdown">
+      <trans-unit id="8" resname="r348436399" restype="string" datatype="mdx">
         <source>Features</source>
       </trans-unit>
-      <trans-unit id="11" resname="r220017246" restype="string" datatype="markdown">
+      <trans-unit id="11" resname="r220017246" restype="string" datatype="mdx">
         <source>MDX allows you to use JSX components directly in your markdown files.</source>
       </trans-unit>
-      <trans-unit id="13" resname="r221594028" restype="string" datatype="markdown">
-        <source>Here is some &lt;c0&gt;bold text&lt;/c0&gt; and &lt;c1&gt;italic text&lt;/c1&gt; for translation.</source>
+      <trans-unit id="13" resname="r40413860" restype="string" datatype="mdx">
+        <source>Here is some &lt;c0&gt;bold text&lt;/c0&gt; and &lt;c1&gt;underscore text&lt;/c1&gt; for translation.</source>
       </trans-unit>
-      <trans-unit id="15" resname="r1025826350" restype="string" datatype="markdown">
+      <trans-unit id="15" resname="r1025826350" restype="string" datatype="mdx">
         <source>You can also include interactive components like buttons and forms in your markdown content.</source>
       </trans-unit>
     </body>

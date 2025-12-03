@@ -1,11 +1,11 @@
 {
-    "name": "sample-md",
-    "id": "sample-md",
+    "name": "sample-mdx",
+    "id": "sample-mdx",
     "projectType": "custom",
     "sourceLocale": "en-US",
     "pseudoLocale": "zxx-XX",
     "plugins": [
-        "ilib-loctool-ghfm"
+        "ilib-loctool-mdx"
     ],
     "excludes": [
         "xliffs",
@@ -13,11 +13,11 @@
     ],
     "settings": {
         "xliffsDir": "./xliffs",
-        "locales":[
+        "locales": [
             "ko-KR",
             "nl-NL"
         ],
-        "markdown": {
+        "mdx": {
             "mappings": {
                 "**/en-US/*.md": {
                     "template": "locale/[locale]/[filename]",
