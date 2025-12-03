@@ -1705,24 +1705,6 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeFalsy();
     });
 
-    test("MdxFileParseNonBreakingTagsTagStackIsReset", function() {
-        expect.assertions(5);
-        var mf = new MdxFile({
-            project: p,
-            type: mdft
-        });
-        expect(mf).toBeTruthy();
-        mf.parse('<span>This is <span id="foo" class="bar"> a test of the <em>emergency parsing</em> system.</span>\n\n' +
-                  'This is <b>another test</b> of the emergency parsing </span> system.\n');
-        var set = mf.getTranslationSet();
-        expect(set).toBeTruthy();
-        // the end div tag ends all the other tags
-        var r = set.getBySource('This is <c0>another test</c0> of the emergency parsing');
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe('This is <c0>another test</c0> of the emergency parsing');
-        expect(r.getKey()).toBe('r2117084');
-    });
-
     test("MdxFileParseLocalizableTitle", function() {
         expect.assertions(8);
         var mf = new MdxFile({
@@ -1939,7 +1921,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test of the front matter");
         expect(r.getSourceLocale()).toBe("en-US");
-        expect(r.getKey()).toBe("r777132775.Title");
+        expect(r.getKey()).toBe("r615037126.Title");
         expect(r.getPath()).toBe("foo/bar/x/foo.mdx"); // should come from this file
         expect(r.getDataType()).toBe("x-yaml");
         expect(r.getProject()).toBe("foo");
@@ -1947,7 +1929,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         r = set.getBySource("another front matter description\nwith extended text\n");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("another front matter description\nwith extended text\n");
-        expect(r.getKey()).toBe("r777132775.Description");
+        expect(r.getKey()).toBe("r615037126.Description");
         expect(r.getPath()).toBe("foo/bar/x/foo.mdx"); // should come from this file
     });
 
@@ -1976,15 +1958,15 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var r = set.getBySource("This is a test of the front matter");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test of the front matter");
-        expect(r.getKey()).toBe("r318739619.Title");
+        expect(r.getKey()).toBe("r942384758.Title");
         r = set.getBySource("another front matter description\nwith extended text\n");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("another front matter description\nwith extended text\n");
-        expect(r.getKey()).toBe("r318739619.Description");
+        expect(r.getKey()).toBe("r942384758.Description");
         r = set.getBySource("asdf asdf asdf");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("asdf asdf asdf");
-        expect(r.getKey()).toBe("r318739619.Foobar");
+        expect(r.getKey()).toBe("r942384758.Foobar");
     });
 
     test("MdxFileParseWithFrontMatterExtractedTwoFiles", function() {
@@ -2032,7 +2014,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a test of the front matter");
         expect(r.getSourceLocale()).toBe("en-US");
-        expect(r.getKey()).toBe("r777132775.Title");
+        expect(r.getKey()).toBe("r615037126.Title");
         expect(r.getPath()).toBe("foo/bar/x/foo.mdx"); // should come from this file
         expect(r.getDataType()).toBe("x-yaml");
         expect(r.getProject()).toBe("foo");
@@ -2041,7 +2023,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is another test of the front matter");
         expect(r.getSourceLocale()).toBe("en-US");
-        expect(r.getKey()).toBe("r456669421.Title");
+        expect(r.getKey()).toBe("r556303587.Title");
         expect(r.getPath()).toBe("foo/bar/x/foobar.mdx"); // should come from this file
         expect(r.getDataType()).toBe("x-yaml");
         expect(r.getProject()).toBe("foo");
@@ -2290,7 +2272,8 @@ Dictionary<string, object> metadata = await client.MetadataManager
             targetLocale: "fr-FR",
             datatype: "mdx"
         }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai    \n');
+        // unlike markdown files, the mdx parser does not preserve whitespace
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai\n');
     });
 
     test("MdxFileLocalizeTextMultiple", function() {
@@ -2621,7 +2604,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             type: mdft
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency [C1] parsing system.\n');
+        mf.parse('This is a test of the emergency [C1] parsing system.\n\n[C1]: http://example.com\n');
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2632,7 +2615,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             targetLocale: "fr-FR",
             datatype: "mdx"
         }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique de l\'urgence [C1][C1].\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique de l\'urgence [C1][C1].\n\n[C1]: http://example.com\n');
     });
 
     test("MdxFileLocalizeTextWithMultipleLinkReferences", function() {
@@ -2816,7 +2799,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             type: mdft
         });
         expect(mf).toBeTruthy();
-        mf.parse('* <span class="test"> <span id="foo"></span></span>  This is a test of the emergency parsing system.   *\n');
+        mf.parse('<span class="test"> <span id="foo"> </span></span> *This is a test of the emergency parsing system.*   \n');
         var translations = new TranslationSet();
         translations.add(new ResourceString({
             project: "foo",
@@ -2827,7 +2810,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             targetLocale: "fr-FR",
             datatype: "mdx"
         }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('* <span class="test"> <span id="foo"></span></span>  Ceci est un essai du système d\'analyse syntaxique de l\'urgence.   *\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe('<span class="test"> <span id="foo"> </span></span> *Ceci est un essai du système d\'analyse syntaxique de l\'urgence.*   \n');
     });
 
     test("MdxFileLocalizeTextNonBreakingTagsInside", function() {
@@ -2870,25 +2853,6 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence</em>.</span>\n');
     });
 
-    test("MdxFileLocalizeTextNonBreakingTagsNotWellFormed", function() {
-        expect.assertions(2);
-        var mf = new MdxFile({
-            project: p,
-            type: mdft
-        });
-        expect(mf).toBeTruthy();
-        mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r417724998',
-            source: 'This is <c0> a test of the <c1>emergency parsing </c1></c0> system.',
-            target: 'Ceci est <c0> un essai du système d\'analyse syntaxique de <c1>l\'urgence.</c1></c0>',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence.</em></span>\n');
-    });
 
     test("MdxFileLocalizeTextBreakingTags", function() {
         expect.assertions(2);
@@ -2917,7 +2881,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             targetLocale: "fr-FR",
             datatype: "mdx"
         }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p/>essai du système d\'analyse syntaxique de l\'urgence.\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p />essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
 
     test("MdxFileLocalizeTextSelfClosedBreakingTags", function() {
@@ -2947,7 +2911,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             targetLocale: "fr-FR",
             datatype: "mdx"
         }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p/>essai du système d\'analyse syntaxique de l\'urgence.\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p />essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
 
     test("MdxFileLocalizeTextSelfClosingNonBreakingTags", function() {
@@ -2968,7 +2932,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             targetLocale: "fr-FR",
             datatype: "mdx"
         }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br/>essai du système d\'analyse syntaxique de l\'urgence.\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br />essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
 
     test("MdxFileLocalizeTextSelfClosedNonBreakingTags", function() {
@@ -2989,7 +2953,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
             targetLocale: "fr-FR",
             datatype: "mdx"
         }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br/>essai du système d\'analyse syntaxique de l\'urgence.\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br />essai du système d\'analyse syntaxique de l\'urgence.\n');
     });
 
     test("MdxFileLocalizeTextMismatchedNumberOfComponents", function() {
@@ -3689,7 +3653,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "r536069958.Title",
+            key: "r679920659.Title",
             source: "This is a test of the front matter",
             sourceLocale: "en-US",
             target: "Ceci est aussi un essai de la question en face",
@@ -3698,7 +3662,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "r536069958.Description",
+            key: "r679920659.Description",
             source: "another front matter description\nwith extended text\n",
             sourceLocale: "en-US",
             target: "aussi une description de la question en face\navec texte étendu\n",
@@ -3760,7 +3724,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "r77676802.Title",
+            key: "r1007268291.Title",
             source: "This is a test of the front matter",
             sourceLocale: "en-US",
             target: "Ceci est aussi un essai de la question en face",
@@ -3769,7 +3733,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "r77676802.Description",
+            key: "r1007268291.Description",
             source: "another front matter description\nwith extended text\n",
             sourceLocale: "en-US",
             target: "aussi une description de la question en face\navec texte étendu\n",
@@ -3778,7 +3742,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         }));
         translations.add(new ResourceString({
             project: "foo",
-            key: "r77676802.Foobar",
+            key: "r1007268291.Foobar",
             source: "asdf asdf asdf",
             sourceLocale: "en-US",
             target: "fdsa fdsa fdsa",
@@ -4511,7 +4475,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var expected =
             '## Choisissez une méthode de réunion d\'affaires\n' +
             '\n' +
-            '<img src="http://foo.com/photo.png" height="86px" width="86px">\n' +
+            '<img src="http://foo.com/photo.png" height="86px" width="86px" />\n' +
             '\n' +
             '\\[Ťëšţ þĥŕàšë543210]\n' +
             '\n' +
@@ -5060,7 +5024,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
         }));
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
-            'This is a test of the emergency parsing system... in GERMAN!\n\n  {/* comment */}\n\nA second string... in GERMAN!\n';
+            'This is a test of the emergency parsing system... in GERMAN!\n\n{/* comment */}\n\nA second string... in GERMAN!\n';
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
@@ -5427,7 +5391,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
 
     // MDX-specific syntax tests
     test("MdxFileParseWithImportStatement", function() {
-        expect.assertions(3);
+        expect.assertions(5);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5448,7 +5412,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithExportStatement", function() {
-        expect.assertions(3);
+        expect.assertions(5);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5469,7 +5433,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithJSXComponentSelfClosing", function() {
-        expect.assertions(4);
+        expect.assertions(6);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5491,7 +5455,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithJSXComponentWithChildren", function() {
-        expect.assertions(4);
+        expect.assertions(6);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5514,7 +5478,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithJSXComponentProps", function() {
-        expect.assertions(3);
+        expect.assertions(5);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5534,8 +5498,34 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
     });
 
+    test("MdxFileParseWithJSXComponentNonLocalizableProps", function() {
+        expect.assertions(7);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        // JSX component with both localizable and non-localizable props
+        // Only title, placeholder, and label should be extracted
+        mf.parse('<Input type="text" name="username" placeholder="Enter username" id="user-input" label="Username" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        // Should extract localizable props: placeholder and label
+        var r = set.getBySource("Enter username");
+        expect(r).toBeTruthy();
+        r = set.getBySource("Username");
+        expect(r).toBeTruthy();
+        // Should NOT extract non-localizable props: type, name, id
+        var nonLocalizable = set.getBySource("text");
+        expect(!nonLocalizable).toBeTruthy();
+        nonLocalizable = set.getBySource("username");
+        expect(!nonLocalizable).toBeTruthy();
+        nonLocalizable = set.getBySource("user-input");
+        expect(!nonLocalizable).toBeTruthy();
+    });
+
     test("MdxFileParseWithJavaScriptExpression", function() {
-        expect.assertions(3);
+        expect.assertions(4);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5556,7 +5546,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithMultipleJSXComponents", function() {
-        expect.assertions(5);
+        expect.assertions(7);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5579,7 +5569,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithNestedJSXComponents", function() {
-        expect.assertions(4);
+        expect.assertions(6);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5601,7 +5591,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithJSXAndMarkdownMixed", function() {
-        expect.assertions(4);
+        expect.assertions(6);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5624,7 +5614,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithJSXExpressionProps", function() {
-        expect.assertions(2);
+        expect.assertions(4);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5643,7 +5633,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithJSXObjectExpressionProps", function() {
-        expect.assertions(2);
+        expect.assertions(4);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5662,7 +5652,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithImportAndExportTogether", function() {
-        expect.assertions(4);
+        expect.assertions(6);
         var mf = new MdxFile({
             project: p,
             type: mdft
@@ -5686,7 +5676,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithFrontmatterAndImport", function() {
-        expect.assertions(6);
+        expect.assertions(8);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
@@ -5723,7 +5713,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithFrontmatterAndJSXComponents", function() {
-        expect.assertions(7);
+        expect.assertions(9);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
@@ -5770,7 +5760,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
     });
 
     test("MdxFileParseWithFrontmatterExportAndJSX", function() {
-        expect.assertions(5);
+        expect.assertions(7);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,

@@ -397,11 +397,126 @@ var reAttrNameAndValue = /\s(\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?/g;
 MdxFile.prototype._findAttributes = function(node) {
     var match, name;
 
+    if (!node.attributes || !node.attributes.length) {
+        return;
+    }
+
+    var isJSXComponent = !isHtmlTag(node.name);
 
     for (var i = 0; i < node.attributes.length; i++) {
-        var name = node.attributes[i].name;
-        if (name === "title" || (this.API.utils.localizableAttributes[node.name] && this.API.utils.localizableAttributes[node.name][name])) {
-            this._addTransUnit(node.attributes[i].value);
+        var attr = node.attributes[i];
+        if (!attr) continue;
+        
+        var name = attr.name;
+        if (!name) continue;
+        
+        var value = attr.value;
+        
+        // In MDX/remark-mdx, attribute values can be:
+        // - A string for string literals: "Click me" -> value is "Click me"
+        // - An object for expressions: {variable} -> value is { type: 'mdxJsxExpressionAttribute', ... }
+        // - An object with a value property: { type: 'mdxJsxAttributeValueLiteral', value: "Click me" }
+        var stringValue = null;
+        
+        if (value === null || value === undefined) {
+            // No value (boolean attribute like "disabled")
+            continue;
+        } else if (typeof value === 'string') {
+            // Direct string value
+            stringValue = value;
+        } else if (typeof value === 'object') {
+            // Check if it's a literal value object
+            if (value.type === 'mdxJsxAttributeValueLiteral' && value.value !== undefined) {
+                stringValue = value.value;
+            } else if (value.value !== undefined && typeof value.value === 'string') {
+                // Fallback: try value.value if it exists and is a string
+                stringValue = value.value;
+            } else {
+                // It's likely an expression (like {variable}), skip it - expressions are not localizable
+                continue;
+            }
+        } else {
+            // Unexpected type, skip
+            continue;
+        }
+        
+        // For JSX components, only extract specific localizable attributes: title, placeholder, label
+        // For HTML tags, use the configured localizableAttributes
+        if (isJSXComponent) {
+            // Only extract title, placeholder, and label attributes for JSX components
+            if ((name === "title" || name === "placeholder" || name === "label") && 
+                stringValue && typeof stringValue === 'string') {
+                var trimmed = stringValue.trim();
+                if (trimmed.length > 0) {
+                    this._addTransUnit(trimmed);
+                }
+            }
+        } else {
+            // HTML tags: use configured localizable attributes
+            if (name === "title" || (this.API.utils.localizableAttributes[node.name] && this.API.utils.localizableAttributes[node.name][name])) {
+                if (stringValue && typeof stringValue === 'string') {
+                    this._addTransUnit(stringValue);
+                } else if (value && typeof value === 'string') {
+                    this._addTransUnit(value);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * @private
+ * Localize JSX attributes in a node during the localization phase.
+ */
+MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) {
+    if (!node.attributes || !node.attributes.length) {
+        return;
+    }
+
+    var isJSXComponent = !isHtmlTag(node.name);
+
+    for (var i = 0; i < node.attributes.length; i++) {
+        var attr = node.attributes[i];
+        var name = attr.name;
+        var value = attr.value;
+        
+        // In MDX, string attribute values might be stored as:
+        // - A string directly: "Click me"
+        // - A literal object with a value property: { type: 'mdxJsxAttributeValueLiteral', value: "Click me" }
+        var stringValue = value;
+        var isLiteralObject = false;
+        if (value && typeof value === 'object' && value.value !== undefined) {
+            stringValue = value.value;
+            isLiteralObject = true;
+        }
+        
+        // For JSX components, only localize specific attributes: title, placeholder, label
+        // For HTML tags, use the configured localizableAttributes
+        if (isJSXComponent) {
+            // Only localize title, placeholder, and label attributes for JSX components
+            if ((name === "title" || name === "placeholder" || name === "label") &&
+                stringValue && typeof stringValue === 'string' && stringValue.trim()) {
+                var translated = this._localizeString(stringValue, locale, translations);
+                if (isLiteralObject) {
+                    attr.value.value = translated;
+                } else {
+                    attr.value = translated;
+                }
+            }
+        } else {
+            // HTML tags: use configured localizable attributes
+            if (name === "title" || (this.API.utils.localizableAttributes[node.name] && this.API.utils.localizableAttributes[node.name][name])) {
+                if (stringValue && typeof stringValue === 'string') {
+                    var translated = this._localizeString(stringValue, locale, translations);
+                    if (isLiteralObject) {
+                        attr.value.value = translated;
+                    } else {
+                        attr.value = translated;
+                    }
+                } else if (value && typeof value === 'string') {
+                    attr.value = this._localizeString(value, locale, translations);
+                }
+            }
         }
     }
 }
@@ -641,29 +756,46 @@ MdxFile.prototype._walk = function(node) {
             break;
 
         case 'mdxJsxTextElement':
+        case 'mdxJsxFlowElement':
+            // Handle both inline and block-level JSX/HTML elements
+            var isFlowElement = (node.type === 'mdxJsxFlowElement');
             var trimmed = node.name;
-            if (trimmed.startsWith("script") || trimmed.startsWith("style")) {
-                // don't parse style or script tags. Just skip them.
-                // They are, however, breaking tags, so emit any text
-                // we have accumulated so far.
+            
+            // Block-level JSX elements are always breaking nodes
+            if (isFlowElement) {
                 this._emitText();
-                break;
             }
+            
             if (!isHtmlTag(trimmed)) {
                 // this is a JSX component
-                this.message.push({
-                    name: tagName,
-                    node: node
-                });
-                node.localizable = true;
+                if (!isFlowElement) {
+                    // Inline JSX components participate in text flow
+                    this.message.push({
+                        name: tagName,
+                        node: node
+                    });
+                    node.localizable = true;
+                }
+                // Extract JSX component props
+                // Check for attributes in multiple possible locations
+                if (node.attributes && node.attributes.length > 0) {
+                    this._findAttributes(node);
+                } else if (node.data && node.data.attributes) {
+                    // Some MDX parsers might store attributes in node.data
+                    node.attributes = node.data.attributes;
+                    this._findAttributes(node);
+                }
                 if (node.children && node.children.length) {
                     node.children.forEach(function(child) {
                         this._walk(child);
                     }.bind(this));
                 }
-                this.message.pop();
+                if (!isFlowElement) {
+                    this.message.pop();
+                }
             } else {
-                if (this.message.getTextLength()) {
+                // HTML tag
+                if (!isFlowElement && this.message.getTextLength()) {
                     if (this.API.utils.nonBreakingTags[trimmed]) {
                         this.message.push({
                             name: trimmed,
@@ -682,7 +814,7 @@ MdxFile.prototype._walk = function(node) {
                     }.bind(this));
                 }
 
-                if (node.localizable) {
+                if (!isFlowElement && node.localizable) {
                     // only need to pop if we're parsing a non-breaking tag
                     this.message.pop();
                 }
@@ -744,6 +876,21 @@ MdxFile.prototype.parse = function(data) {
         replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3").
         replace(/(^|\n)\s+```/g, "$1```").
         replace(/\n```/g, "\n\n```");
+
+    // Pre-process script and style tags to prevent parsing errors
+    // remark-mdx tries to parse {} as JSX expressions, which causes errors
+    // when script/style tags contain JavaScript/CSS with curly braces.
+    // We escape curly braces and angle brackets to prevent JSX/HTML parsing.
+    // Store original content separately for script and style tags
+    this._scriptRestore = [];
+    
+    // Replace script and style tags: escape curly braces and angle brackets to prevent parsing
+    data = data.replace(/<script[^>]*>([\s\S]*?)<\/script>|<style[^>]*>([\s\S]*?)<\/style>/gi, function(match, content) {
+        // Escape curly braces (JSX expressions) and angle brackets (HTML tags) to prevent parsing
+        var escapedContent = "{/* " + match + " */}";
+        this._scriptRestore.push(match);
+        return escapedContent;
+    }.bind(this));
 
     try {
         this.ast = mdparser.parse(data);
@@ -1023,6 +1170,28 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             break;
 
         case 'mdxJsxTextElement':
+        case 'mdxJsxFlowElement':
+            // Handle both inline and block-level JSX/HTML elements
+            // Both types handle attributes the same way during localization
+            var trimmed = node.name;
+            // Localize attributes for both HTML tags and JSX components
+            if (trimmed && node.attributes) {
+                this._localizeJsxAttributes(node, locale, translations);
+            }
+            // Only inline elements (mdxJsxTextElement) participate in message push/pop
+            // Block-level elements (mdxJsxFlowElement) are breaking nodes and don't affect inline text flow
+            if (node.localizable) {
+                if (node.use === "start") {
+                    message.push(node);
+                } else if (node.use === "end") {
+                    message.pop();
+                } else {
+                    message.push(node);
+                    message.pop();
+                }
+            }
+            break;
+
         case 'footnoteDefinition':
             if (node.localizable) {
                 if (node.use === "start") {
@@ -1072,39 +1241,14 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
     }
 };
 
-function flattenJSX(node) {
-    var ret = [];
-
-    if (node.type === "mdxJsxTextElement") {
-        var children = node.children;
-        node.children = undefined;
-        ret.push(node);
-        if (children && children.length) {
-            for (var i = 0; i < children.length; i++) {
-                ret = ret.concat(flattenJSX(children[i]));
-            }
-            ret.push({
-                type: "mdxJsxTextElement",
-                value: '</' + node.name + '>'
-            });
-        }
-    } else {
-        ret.push(node);
-    }
-    return ret;
-}
-
 function mapToAst(node) {
     var children = [];
 
     for (var i = 0; i < node.children.length; i++) {
         var child = mapToAst(node.children[i]);
-        if (child.type === "mdxJsxTextElement") {
-            // flatten any HTML/JSX
-            children = children.concat(flattenJSX(child));
-        } else {
-            children.push(child);
-        }
+        // Don't flatten JSX elements - keep them as proper tree structure
+        // The stringifier will handle them correctly
+        children.push(child);
     }
     if (node.extra) {
         if (children.length) {
@@ -1275,6 +1419,18 @@ MdxFile.prototype.localizeText = function(translations, locale) {
     str = str.
         replace(/---\n\n/g, "---\n").
         replace(/\n\n---/g, "\n---");
+
+    // Restore original content in script and style tags
+    // Replace escaped content with original content in order
+    var scriptIndex = 0;
+    str = str.replace(/\{\/\* (<script[^>]*>([\s\S]*?)<\/script>|<style[^>]*>([\s\S]*?)<\/style>) \*\/\}/gi, function(match, content) {
+        if (scriptIndex < this._scriptRestore.length) {
+            var original = this._scriptRestore[scriptIndex];
+            scriptIndex++;
+            return original;
+        }
+        return match;
+    }.bind(this));
 
     return str;
 };
