@@ -824,15 +824,6 @@ MdxFile.prototype.parse = function(data) {
             "before calling parse(). This should happen automatically during project initialization.");
     }
 
-    // massage the broken headers and code blocks a bit first so that the parser
-    // works as expected
-    data = data.
-        replace(/\[block:/g, "```\n[block:").
-        replace(/\[\/block\]/g, "[/block]\n```").
-        replace(/(^|\n)(#+)([^#\s])/g, "\n$2 $3").
-        replace(/(^|\n)\s+```/g, "$1```").
-        replace(/\n```/g, "\n\n```");
-
     // Pre-process script and style tags to prevent parsing errors
     // remark-mdx tries to parse {} as JSX expressions, which causes errors
     // when script/style tags contain JavaScript/CSS with curly braces.

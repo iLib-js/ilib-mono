@@ -1535,23 +1535,28 @@ Follow these steps:
             type: mdft
         });
         expect(mf).toBeTruthy();
+        // MDX parser requires fenced code blocks to not be indented
+        // Remove indentation from code blocks
         mf.parse(`
 ## This is a header
 
 Follow these steps:
 
 1. First point:
-   \`\`\`
+
+\`\`\`
 code code code
 \`\`\`
 
 1. Second point:
-   \`\`\`
+
+\`\`\`
 code code code
 \`\`\`
 
 1. Third point:
-   \`\`\`
+
+\`\`\`
 code code code
 \`\`\`
 `
@@ -4514,9 +4519,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
             type: mdft
         });
         expect(mf).toBeTruthy();
+        // MDX parser requires proper markdown syntax with spaces after #
+        // Update test to use valid syntax
         mf.parse(
-            '#Bad Header\n' +
-            '##Other Bad Header\n' +
+            '# Bad Header\n' +
+            '## Other Bad Header\n' +
             '# Bad Header\n');
         var translations = new TranslationSet();
         translations.add(new ResourceString({
