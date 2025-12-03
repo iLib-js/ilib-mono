@@ -3,8 +3,8 @@ const { jestConfig } = require("ilib-internal");
 const config = {
     ...jestConfig,
     displayName: {
-        name: "ilib-loctool-ghfm",
-        color: "green",
+        name: "ilib-loctool-mdx",
+        color: "orange",
     },
     // ESM configuration to handle dynamic imports of remark plugins
     // Don't transform ESM packages - let them be loaded as-is by Node.js
