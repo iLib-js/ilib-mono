@@ -820,6 +820,10 @@ MdxFile.prototype._walk = function(node) {
                         // we have accumulated so far and then search the children
                         this._emitText();
                     }
+                } else {
+                    // it's a breaking tag, so emit any text
+                    // we have accumulated so far
+                    this._emitText();
                 }
                 if (node.children && node.children.length) {
                     node.children.forEach(function(child) {
