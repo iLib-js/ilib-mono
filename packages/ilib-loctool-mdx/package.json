@@ -44,6 +44,7 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "scripts": {
+        "build": "",
         "coverage": "pnpm test -- --coverage",
         "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
@@ -56,6 +57,7 @@
         "node": ">=12 <23"
     },
     "dependencies": {
+        "acorn": "^8.15.0",
         "acorn-jsx": "^5.3.2",
         "he": "^1.2.0",
         "html-tags": "^5.1.0",
