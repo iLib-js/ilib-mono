@@ -5896,4 +5896,61 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var exportRes = set.getBySource("export const components = { Button, Alert };");
         expect(!exportRes).toBeTruthy();
     });
+
+    test("MdxFileParseWithTable", function() {
+        expect.assertions(21);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        var source =
+            "    ### Groups\n\n" +
+            "    <table>\n" +
+            "      <thead>\n" +
+            "        <tr>\n" +
+            "          <th>Tool</th>\n" +
+            "        </tr>\n" +
+            "      </thead>\n" +
+            "      <tbody>\n" +
+            "        <tr>\n" +
+            "          <td>`box_groups_list_by_user_tool`</td>\n" +
+            "          <td>List all groups that a specific user belongs to</td>\n" +
+            "          <td>\n" +
+            "            - `ctx (Context)`: Request context.<br/>\n" +
+            "            - `user_id (str)`: ID of the user.\n" +
+            "          </td>\n" +
+            "          <td>List of groups in JSON format</td>\n" +
+            "        </tr>\n" +
+            "      </tbody>\n" +
+            "    </table>\n";
+        mf.parse(source);
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(6);
+        var r = set.getBySource("Groups");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Groups");
+        expect(r.getKey()).toBe("r1024152427");
+        r = set.getBySource("Tool");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Tool");
+        expect(r.getKey()).toBe("r68642941");
+        r = set.getBySource("List all groups that a specific user belongs to");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("List all groups that a specific user belongs to");
+        expect(r.getKey()).toBe("r48722519");
+        r = set.getBySource("<c0/>: Request context.<c1/>");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("<c0/>: Request context.<c1/>");
+        expect(r.getKey()).toBe("r775330507");
+        r = set.getBySource("<c1/>: ID of the user.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("<c1/>: ID of the user.");
+        expect(r.getKey()).toBe("r447216969");
+        r = set.getBySource("List of groups in JSON format");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("List of groups in JSON format");
+        expect(r.getKey()).toBe("r1030020999");
+    });
 });
