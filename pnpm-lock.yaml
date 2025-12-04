@@ -1447,7 +1447,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+        version: 4.0.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -16722,9 +16722,9 @@ snapshots:
       hooker: 0.2.3
       jshint: 2.13.6
 
-  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
-      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2)
     transitivePeerDependencies:
       - flow-remove-types
       - supports-color
@@ -19842,10 +19842,10 @@ snapshots:
       socks: 1.1.9
     optional: true
 
-  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
       ejs: 3.1.10
-      tap: 15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+      tap: 15.2.3(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2)
     transitivePeerDependencies:
       - flow-remove-types
       - supports-color
@@ -21492,7 +21492,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tap@15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+  tap@15.2.3(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
       chokidar: 3.6.0
       coveralls: 3.1.1
@@ -21517,8 +21517,8 @@ snapshots:
       tcompare: 5.0.7
       which: 2.0.2
     optionalDependencies:
-      ts-node: 8.10.2(typescript@3.9.10)
-      typescript: 3.9.10
+      ts-node: 8.10.2(typescript@5.9.2)
+      typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
 
@@ -21714,6 +21714,16 @@ snapshots:
       source-map-support: 0.5.21
       typescript: 3.9.10
       yn: 3.1.1
+
+  ts-node@8.10.2(typescript@5.9.2):
+    dependencies:
+      arg: 4.1.3
+      diff: 4.0.2
+      make-error: 1.3.6
+      source-map-support: 0.5.21
+      typescript: 5.9.2
+      yn: 3.1.1
+    optional: true
 
   tsame@2.0.1: {}
 
