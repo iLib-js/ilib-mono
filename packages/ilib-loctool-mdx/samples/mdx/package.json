@@ -8,6 +8,7 @@
         "loctool": "workspace:^"
     },
     "scripts": {
-        "run:sample": "loctool localize ."
+        "clean": "rm -rf *.xliff locales",
+        "run:sample": "pnpm clean ; loctool localize ."
     }
 }

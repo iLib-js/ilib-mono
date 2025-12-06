@@ -135,14 +135,7 @@ function initMdxParser(callback) {
     // Store it on a global or module-level variable to keep it alive
     // This is critical when called from CommonJS contexts where the promise
     // might be garbage collected before it resolves
-    if (typeof global !== 'undefined') {
-        global._mdxParserInitPromise = importPromise;
-    }
-    
-    // Also store it on the module to ensure it persists
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports._initPromise = importPromise;
-    }
+    process._mdxParserInitPromise = importPromise;
 }
 
 // The init function will be exported at the end of the file

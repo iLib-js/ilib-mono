@@ -825,12 +825,11 @@ try {
     }
     exitValue = 2;
 }
-logger.info("Done");
-// This is a hack to ensure the event loop has a chance to process any pending promises
-// before loctool calls process.exit() which kills the event loop
-setImmediate(function() {
-    log4js.shutdown(function() {
-        process.exit(exitValue);
-    });
+// Wait for all async operations to complete before exiting
+process.on('beforeExit', function(code) {
+    if (!process._loctoolDone) {
+        process._loctoolDone = true;
+        logger.info("Done");
+        process.exitCode = exitValue;
+    }
 });
-
