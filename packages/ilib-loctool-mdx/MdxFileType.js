@@ -65,12 +65,10 @@ var MdxFileType = function(project) {
  * Initialize the file type. This is called by the loctool's Project.init()
  * method to allow file types to perform async initialization (e.g., loading
  * ESM-only packages like remark-mdx).
- * 
+ *
  * @param {Function} cb callback function to call when initialization is complete
  */
 MdxFileType.prototype.init = function(cb) {
-    var MdxFile = require("./MdxFile.js");
-    
     // Initialize the remark-mdx parser (ESM-only package)
     MdxFile.initMdxParser(function(err) {
         if (err) {

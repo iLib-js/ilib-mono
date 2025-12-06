@@ -138,7 +138,7 @@ describe("mdx", function() {
         var initCount = 0;
         var totalInits = 3;
         var hasError = false;
-        
+
         function checkDone(err) {
             if (err && !hasError) {
                 hasError = true;
@@ -152,7 +152,7 @@ describe("mdx", function() {
                 }
             }
         }
-        
+
         // Start all initializations
         mdft.init(checkDone);
         mdft2.init(checkDone);
@@ -1361,7 +1361,7 @@ Follow these steps:
 
 
 1. Third point:
-   
+
    <Message>
 
    Test test test
@@ -1689,7 +1689,7 @@ code code code
 
 \`\`\`cs
 var metadataValues = new Dictionary<string, object>()
-{ 
+{
   cards: [{
     "type": "skill_card",
     "skill_card_type": "keyword",
@@ -1709,7 +1709,7 @@ var metadataValues = new Dictionary<string, object>()
       { "text": "DD-26-YT" },
       { "text": "DN86 BOX" }
     }
-  }] 
+  }]
 };
 Dictionary<string, object> metadata = await client.MetadataManager
     .CreateFileMetadataAsync(fileId: "12345", metadataValues, "global", "asdf");

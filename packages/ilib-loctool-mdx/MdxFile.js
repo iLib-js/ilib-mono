@@ -58,7 +58,7 @@ function initMdxParser(callback) {
     }
     var htmlTagsJsonFile = path.join(path.dirname(require.resolve("html-tags")), "html-tags.json");
     htmlTags = JSON.parse(fs.readFileSync(htmlTagsJsonFile, "utf8"));
-    
+
     // Load all ESM modules sequentially to avoid Jest/VM module linking issues
     // Some packages have internal dependencies that need to be linked in order
     // CRITICAL: process.exit() cuts off the event loop before import() promises resolve.
@@ -85,7 +85,7 @@ function initMdxParser(callback) {
         return import("remark-stringify");
     }).then(function(module) {
         var stringifyModule = module.default || module;
-        
+
         // remark-mdx extends remark-parse, so we need both
         // Put frontmatter AFTER mdxPlugin to avoid interfering with MDX expression parsing
         // Frontmatter processes the AST after parsing, so it should still work
@@ -101,7 +101,7 @@ function initMdxParser(callback) {
             use(frontmatter, ['yaml']).
             use(mdxPlugin).
             use(footnotes);
-        
+
         // Initialize the stringify processor as well
         // Use remark() instead of unified() to get the base compiler functionality
         // Include mdxPlugin to handle MDX-specific node types (mdxFlowExpression, mdxJsxTextElement, etc.)
@@ -117,7 +117,7 @@ function initMdxParser(callback) {
             use(mdxPlugin).
             use(footnotes).
             use(frontmatter, ['yaml'])();
-        
+
         if (callback) callback();
     }).catch(function(err) {
         console.error("Failed to initialize ilib-loctool-mdx plugin: " + err.message);
@@ -130,7 +130,7 @@ function initMdxParser(callback) {
             throw err;
         }
     });
-    
+
     // Ensure the promise is tracked and doesn't get garbage collected
     // Store it on a global or module-level variable to keep it alive
     // This is critical when called from CommonJS contexts where the promise
@@ -418,18 +418,18 @@ MdxFile.prototype._findAttributes = function(node) {
     for (var i = 0; i < node.attributes.length; i++) {
         var attr = node.attributes[i];
         if (!attr) continue;
-        
+
         var name = attr.name;
         if (!name) continue;
-        
+
         var value = attr.value;
-        
+
         // In MDX/remark-mdx, attribute values can be:
         // - A string for string literals: "Click me" -> value is "Click me"
         // - An object for expressions: {variable} -> value is { type: 'mdxJsxExpressionAttribute', ... }
         // - An object with a value property: { type: 'mdxJsxAttributeValueLiteral', value: "Click me" }
         var stringValue = null;
-        
+
         if (value === null || value === undefined) {
             // No value (boolean attribute like "disabled")
             continue;
@@ -451,12 +451,12 @@ MdxFile.prototype._findAttributes = function(node) {
             // Unexpected type, skip
             continue;
         }
-        
+
         // For JSX components, only extract specific localizable attributes: title, placeholder, label
         // For HTML tags, use the configured localizableAttributes
         if (isJSXComponent) {
             // Only extract title, placeholder, and label attributes for JSX components
-            if ((name === "title" || name === "placeholder" || name === "label") && 
+            if ((name === "title" || name === "placeholder" || name === "label") &&
                 stringValue && typeof stringValue === 'string') {
                 var trimmed = stringValue.trim();
                 if (trimmed.length > 0) {
@@ -491,7 +491,7 @@ MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) 
         var attr = node.attributes[i];
         var name = attr.name;
         var value = attr.value;
-        
+
         // In MDX, string attribute values might be stored as:
         // - A string directly: "Click me"
         // - A literal object with a value property: { type: 'mdxJsxAttributeValueLiteral', value: "Click me" }
@@ -501,7 +501,7 @@ MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) 
             stringValue = value.value;
             isLiteralObject = true;
         }
-        
+
         // For JSX components, only localize specific attributes: title, placeholder, label
         // For HTML tags, use the configured localizableAttributes
         if (isJSXComponent) {
@@ -640,11 +640,11 @@ MdxFile.prototype._walk = function(node) {
                     }
                 }
                 allText = allText.trim();
-                
+
                 // Check if the entire content is just a URL
                 reUrl.lastIndex = 0;
                 var isUrlOnly = reUrl.test(allText);
-                
+
                 if (isUrlOnly) {
                     if (this.localizeLinks) {
                         // URL-only footnote and links are being localized
@@ -766,12 +766,12 @@ MdxFile.prototype._walk = function(node) {
             // Handle both inline and block-level JSX/HTML elements
             var isFlowElement = (node.type === 'mdxJsxFlowElement');
             var trimmed = node.name;
-            
+
             // Block-level JSX elements are always breaking nodes
             if (isFlowElement) {
                 this._emitText();
             }
-            
+
             if (!isHtmlTag(trimmed)) {
                 // this is a JSX component
                 if (!isFlowElement) {
@@ -884,7 +884,7 @@ MdxFile.prototype.parse = function(data) {
     // We escape curly braces and angle brackets to prevent JSX/HTML parsing.
     // Store original content separately for script and style tags
     this._scriptRestore = [];
-    
+
     // Replace script and style tags: escape curly braces and angle brackets to prevent parsing
     data = data.replace(/<script[^>]*>([\s\S]*?)<\/script>|<style[^>]*>([\s\S]*?)<\/style>/gi, function(match, content) {
         // Escape curly braces (JSX expressions) and angle brackets (HTML tags) to prevent parsing
@@ -905,13 +905,13 @@ MdxFile.prototype.parse = function(data) {
         this.logger.trace("AST root type: " + (this.ast && this.ast.type));
         if (this.ast && this.ast.children) {
             this.ast.children.forEach(function(child, i) {
-                this.logger.trace("AST child " + i + ": type=" + child.type + 
+                this.logger.trace("AST child " + i + ": type=" + child.type +
                     (child.value ? ", value=" + JSON.stringify(child.value.substring(0, 50)) : "") +
                     (child.children ? ", children=" + child.children.length : ""));
                 // Log children of children for deeper inspection
                 if (child.children && child.type !== 'yaml') {
                     child.children.forEach(function(grandchild, j) {
-                        this.logger.trace("  Child " + i + "." + j + ": type=" + grandchild.type + 
+                        this.logger.trace("  Child " + i + "." + j + ": type=" + grandchild.type +
                             (grandchild.value ? ", value=" + JSON.stringify(grandchild.value.substring(0, 50)) : ""));
                     }.bind(this));
                 }
@@ -1212,11 +1212,11 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
                         }
                     }
                     allText = allText.trim();
-                    
+
                     // Check if the entire content is just a URL
                     reUrl.lastIndex = 0;
                     var isUrlOnly = reUrl.test(allText);
-                    
+
                     if (isUrlOnly) {
                         // Localize the URL in the text node or link node
                         for (var i = 0; i < node.children.length; i++) {
