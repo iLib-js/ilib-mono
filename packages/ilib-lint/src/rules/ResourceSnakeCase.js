@@ -44,7 +44,9 @@ class ResourceSnakeCase extends ResourceRule {
             "^\\s*[a-zA-Z0-9]*(_[a-zA-Z0-9]+)+\\s*$",
             "^\\s*[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*_\\s*$"
         ];
-        this.exceptions = Array.isArray(options?.except) ? options.except : [];
+
+        const param = this.getParam() || {};
+        this.exceptions = Array.isArray(param?.except) ? param.except : [];
     }
 
     /**

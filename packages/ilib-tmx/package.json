@@ -48,6 +48,9 @@
         "type": "git",
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
+    "engines": {
+        "node": ">=12 <23"
+    },
     "scripts": {
         "build": "pnpm build:prod",
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
@@ -70,6 +73,7 @@
         "grunt-contrib-clean": "^2.0.1",
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-uglify": "^5.2.2",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.2",
         "jsdoc-to-markdown": "^8.0.1",

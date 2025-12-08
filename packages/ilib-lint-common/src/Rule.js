@@ -35,6 +35,7 @@ class Rule {
      * being linted
      * @param {Function} [options.getLogger] a callback function provided by
      * the linter to retrieve the log4js logger
+     * @param {*} [options.param] the parameter value from the configuration file
      * @constructor
      */
     constructor(options) {
@@ -43,6 +44,7 @@ class Rule {
         }
         this.getLogger = options?.getLogger;
         this.sourceLocale = options?.sourceLocale || "en-US";
+        this.param = options?.param;
     }
 
     /** a callback function provided by
@@ -185,6 +187,12 @@ class Rule {
      */
     sourceLocale;
 
+    /** Parameter value from the configuration file.
+     * @readonly
+     * @type {*}
+     */
+    param;
+
     /**
      * Get the source locale for this rule.
      *
@@ -192,6 +200,15 @@ class Rule {
      */
     getSourceLocale() {
         return this.sourceLocale;
+    }
+
+    /**
+     * Get the parameter value from the configuration file.
+     *
+     * @returns {*} the parameter value from the configuration file
+     */
+    getParam() {
+        return this.param;
     }
 
     /**

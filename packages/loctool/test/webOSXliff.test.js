@@ -394,6 +394,115 @@ describe("webOSxliff", function() {
         expect(reslist[1].getKey()).toBe("huzzah");
         expect(reslist[1].getPath()).toBe("foo/bar/j.js");
     });
+
+    test("webOSXliffDeserializeTest", function() {
+        expect.assertions(24);
+
+        var x = new webOSXliff();
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR">\n' +
+                '  <file id="f1" original="foo/bar/asdf.java" >\n' +
+                '    <group id="g1" name="javascript">\n' +
+                '      <unit id="1">\n' +
+                '        <segment>\n' +
+                '          <source>Closed Caption Settings</source>\n' +
+                '          <target>자막 설정</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '      <unit id="2">\n' +
+                '        <segment>\n' +
+                '          <source>Low</source>\n' +
+                '          <target>낮음</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>');
+
+        var reslist = x.getResources();
+
+        expect(reslist).toBeTruthy();
+
+        expect(reslist[0].getSource()).toBe("Closed Caption Settings");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getTarget()).toBe("자막 설정");
+        expect(reslist[0].getTargetLocale()).toBe("ko-KR");
+        expect(reslist[0].getKey()).toBe("Closed Caption Settings");
+        expect(reslist[0].getPath()).toBe("foo/bar/asdf.java");
+        expect(reslist[0].getProject()).toBe("foo/bar/asdf.java");
+        expect(reslist[0].resType).toBe("string");
+        expect(reslist[0].datatype).toBe("javascript");
+        expect(!reslist[0].getComment()).toBeTruthy();
+        expect(reslist[0].getId()).toBe("1");
+
+        expect(reslist[1].getSource()).toBe("Low");
+        expect(reslist[1].getSourceLocale()).toBe("en-KR");
+        expect(reslist[1].getTarget()).toBe("낮음");
+        expect(reslist[1].getTargetLocale()).toBe("ko-KR");
+        expect(reslist[1].getKey()).toBe("Low");
+        expect(reslist[1].getPath()).toBe("foo/bar/asdf.java");
+        expect(reslist[1].getProject()).toBe("foo/bar/asdf.java");
+        expect(reslist[1].resType).toBe("string");
+        expect(reslist[1].datatype).toBe("javascript");
+        expect(!reslist[1].getComment()).toBeTruthy();
+        expect(reslist[1].getId()).toBe("2");
+    });
+
+    test("webOSXliffDeserializeRealFile", function() {
+        expect.assertions(37);
+
+        var x = new webOSXliff();
+        expect(x).toBeTruthy();
+
+        var fs = require("fs");
+        var str = fs.readFileSync("test/testfiles/xliff_webOS/ko-KR.xliff", "utf-8");
+        x.deserialize(str);
+
+        var reslist = x.getResources();
+        expect(reslist).toBeTruthy();
+        expect(reslist.length).toBe(7);
+
+        expect(reslist[0].getSource()).toBe("Closed Caption Settings");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getTarget()).toBe("자막 설정");
+        expect(reslist[0].getTargetLocale()).toBe("ko-KR");
+        expect(reslist[0].getKey()).toBe("Closed Caption Settings");
+        expect(reslist[0].getPath()).toBe("settings");
+        expect(reslist[0].getProject()).toBe("settings");
+        expect(reslist[0].resType).toBe("string");
+        expect(reslist[0].datatype).toBe("javascript");
+        expect(!reslist[0].getComment()).toBeTruthy();
+        expect(reslist[0].getId()).toBe("settings_1");
+
+        expect(reslist[3].getSource()).toBe("Low");
+        expect(reslist[3].getSourceLocale()).toBe("en-KR");
+        expect(reslist[3].getTarget()).toBe("낮음");
+        expect(reslist[3].getTargetLocale()).toBe("ko-KR");
+        expect(reslist[3].getKey()).toBe("pictureControlLow_Male");
+        expect(reslist[3].getPath()).toBe("settings");
+        expect(reslist[3].getProject()).toBe("settings");
+        expect(reslist[3].resType).toBe("string");
+        expect(reslist[3].datatype).toBe("javascript");
+        expect(!reslist[3].getComment()).toBeTruthy();
+        expect(reslist[3].getId()).toBe("settings_1524");
+
+        expect(reslist[6].getSource()).toBe("SEARCH");
+        expect(reslist[6].getSourceLocale()).toBe("en-KR");
+        expect(reslist[6].getTarget()).toBe("검색");
+        expect(reslist[6].getTargetLocale()).toBe("ko-KR");
+        expect(reslist[6].getKey()).toBe("SEARCH");
+        expect(reslist[6].getPath()).toBe("settings");
+        expect(reslist[6].getProject()).toBe("settings");
+        expect(reslist[6].resType).toBe("string");
+        expect(reslist[6].datatype).toBe("x-qml");
+        expect(reslist[6].getComment()).toBeTruthy();
+        expect(reslist[6].getComment()).toBe("copy strings from voice app");
+        expect(reslist[6].getId()).toBe("settings_22");
+    });
+
     test("webOSXliffDeserialize", function() {
         expect.assertions(8);
         var x = new webOSXliff();
@@ -1009,13 +1118,13 @@ describe("webOSxliff", function() {
         '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
         '  <file original="app1" l:project="app1">\n' +
         '    <group id="group_1" name="cpp">\n' +
-        '      <unit id="app1_1" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_1" name="String 1a" type="res:string" l:datatype="cpp">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1a</source>\n' +
         '          <target>app1:String 1a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app1_2" type="res:string" l:datatype="cpp">\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1b</source>\n' +
         '          <target>app1:String 1b</target>\n' +
@@ -1023,7 +1132,7 @@ describe("webOSxliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '    <group id="group_2" name="x-json">\n' +
-        '      <unit id="app1_3" type="res:string" l:datatype="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json">\n' +
         '        <segment>\n' +
         '          <source>app1:String 1c</source>\n' +
         '          <target>app1:String 1c</target>\n' +
@@ -1033,13 +1142,13 @@ describe("webOSxliff", function() {
         '  </file>\n' +
         '  <file original="app2" l:project="app2">\n' +
         '    <group id="group_3" name="javascript">\n' +
-        '      <unit id="app2_1" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_1" name="String 2a" type="res:string" l:datatype="javascript">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2a</source>\n' +
         '          <target>app2: String 2a</target>\n' +
         '        </segment>\n' +
         '      </unit>\n' +
-        '      <unit id="app2_2" type="res:string" l:datatype="javascript">\n' +
+        '      <unit id="app2_2" name="String 2b" type="res:string" l:datatype="javascript">\n' +
         '        <segment>\n' +
         '          <source>app2: String 2b</source>\n' +
         '          <target>app2: String 2b</target>\n' +

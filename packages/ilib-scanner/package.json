@@ -45,7 +45,7 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib-locale": "workspace:^",

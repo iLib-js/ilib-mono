@@ -18,7 +18,7 @@
         "LICENSE"
     ],
     "engines": {
-        "node": ">=14.0.0"
+        "node": ">=12 <23"
     },
     "scripts": {
         "coverage": "pnpm test -- --coverage",
@@ -30,11 +30,12 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
-        "intl-messageformat": "^10.7.6",
-        "ilib-common": "workspace:^",
-        "@babel/types": "^7.24.0",
         "@babel/generator": "^7.24.0",
+        "@babel/types": "^7.24.0",
         "docdash": "^2.0.2",
+        "ilib-common": "workspace:^",
+        "ilib-internal": "workspace:^",
+        "intl-messageformat": "^10.7.6",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.2",
         "jsdoc-to-markdown": "^8.0.1",

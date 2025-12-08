@@ -59,10 +59,11 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "engines": {
-        "node": ">=16.0"
+        "node": ">=12 <23"
     },
     "devDependencies": {
         "docdash": "^2.0.2",
+        "ilib-internal": "workspace:^",
         "ilib-mock": "file:test/ilib-mock/ilib-mock-1.0.0.tgz",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.2",

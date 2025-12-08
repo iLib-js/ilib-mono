@@ -22,6 +22,10 @@
                 "**/en-US/*.md": {
                     "template": "locale/[locale]/[filename]",
                     "frontmatter": ["Title", "Description"]
+                },
+                "**/en-US/*.mdx": {
+                    "template": "locale/[locale]/[filename]",
+                    "frontmatter": ["Title", "Description"]
                 }
             }
         }

@@ -57,9 +57,6 @@ class Tokenizer {
     private data: string;
     private index: number = 0;
 
-    private commentsToIgnore: Set<string> = new Set();
-    private datatype?: string;
-
     /**
      * Create a new PO file tokenizer with the given data to tokenize.
      * @constructor

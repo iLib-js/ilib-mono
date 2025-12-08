@@ -46,6 +46,7 @@ import ResourceXML from '../rules/ResourceXML.js';
 import ResourceCamelCase from '../rules/ResourceCamelCase.js';
 import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
 import ResourceKebabCase from '../rules/ResourceKebabCase.js';
+import ResourceAllCaps from '../rules/ResourceAllCaps.js';
 import ResourceGNUPrintfMatch from '../rules/ResourceGNUPrintfMatch.js';
 import ResourceReturnChar from '../rules/ResourceReturnChar.js';
 import StringFixer from './string/StringFixer.js';
@@ -165,7 +166,7 @@ export const regexRules = [
         name: "resource-apostrophe",
         description: "Ensure that the target uses proper Unicode apostrophes instead of ASCII straight quotes.",
         note: "The word \"{matchString}\" contains an ASCII straight quote used as an apostrophe. Use the Unicode apostrophe character instead.",
-        regexps: [ 
+        regexps: [
             "(\\p{L}+('\\p{L}+)+)"         // word boundary + word chars + quote + word chars + word boundary (e.g., it's, don't, d'l'homme)
         ],
         link: "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-apostrophe.md",
@@ -542,6 +543,7 @@ class BuiltinPlugin extends Plugin {
             ResourceCamelCase,
             ResourceSnakeCase,
             ResourceKebabCase,
+            ResourceAllCaps,
             ResourceGNUPrintfMatch,
             ResourceReturnChar,
             FileEncodingRule,

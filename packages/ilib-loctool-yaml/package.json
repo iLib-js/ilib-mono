@@ -47,7 +47,7 @@
         "clean": "git clean -f -d *"
     },
     "engines": {
-        "node": ">=10.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib": "^14.18.0",
@@ -55,6 +55,7 @@
         "yaml": "2.0.0"
     },
     "devDependencies": {
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples lint should generate the modified file (am-ET) 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="am-ET" version="2.0">
+  <file id="sample-rs-edge-whitespace_f1" original="sample-rs-edge-whitespace">
+    <group id="sample-rs-edge-whitespace_g1" name="javascript">
+      <unit id="sample-rs-edge-whitespace_g1_1">
+        <segment>
+          <source>{%1} hour(s)</source>
+          <target>{%1} ሰዓት(ታት)</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_2">
+        <segment>
+          <source>{%1} min(s)</source>
+          <target>{%1} ደቂቃ(ዎች)</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_3">
+        <segment>
+          <source>Loading...</source>
+          <target>በመጫን ላይ...</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_4">
+        <segment>
+          <source>You can use your Magic Remote to determine the room’s acoustics and optimize your TV’s sound quality based on the results.</source>
+          <target>MAGIC REMOTE በመጠቀም የክፍሉን የድምጽ ማስተጋባት አና በውጤቶቹ መሰረት የቲቪዎን የድምጽ ጥራት ማሰተካከል እና መቆጣጠር ይችላሉ፡፡</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>"
+`;
+
+exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="zh-Hans-CN" version="2.0">
+  <file id="sample-rs-edge-whitespace_f1" original="sample-rs-edge-whitespace">
+    <group id="sample-rs-edge-whitespace_g1" name="javascript">
+      <unit id="sample-rs-edge-whitespace_g1_1">
+        <segment>
+          <source>Select your remote's cursor speed and appearance.</source>
+          <target>选择您遥控器的光标速度和外观。</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_2">
+        <segment>
+          <source>IP (Manual)</source>
+          <target>IP（手动）</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_3">
+        <segment>
+          <source>press OK button to go to next menu</source>
+          <target>按“确定”按钮以前往下一个菜单</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_4">
+        <segment>
+          <source>If the image isn't clear, select another pattern until the picture improves.</source>
+          <target>如果图像不清晰，请选择另一模式，直至图片更加清晰。</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_5">
+        <segment>
+          <source>Optimize image quality for fast-moving images (sports and action).</source>
+          <target>优化迅速移动图像（运动图像和动作图像）的图像质量。</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_6">
+        <notes>
+          <note>Voice help</note>
+        </notes>
+        <segment>
+          <source>Use the voice recognition with “Hi”</source>
+          <target>通过说出“Hi”使用语音识别功能</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_7">
+        <segment>
+          <source>"Hi, I need help!"</source>
+          <target>“Hi，我需要帮助！”</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>"
+`;

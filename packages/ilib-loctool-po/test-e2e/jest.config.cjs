@@ -1,7 +1,7 @@
-const { jestConfig: baseConfig } = require("@ilib-mono/e2e-test");
+const { jestE2eConfig } = require("ilib-internal");
 
 const config = {
-    ...baseConfig,
+    ...jestE2eConfig,
     displayName: {
         name: "ilib-loctool-po e2e",
         color: "yellow",

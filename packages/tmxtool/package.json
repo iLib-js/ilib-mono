@@ -50,7 +50,7 @@
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "engines": {
-        "node": ">= 14.0.0"
+        "node": ">=12 <23"
     },
     "scripts": {
         "coverage": "pnpm test -- --coverage",
@@ -63,6 +63,7 @@
     },
     "devDependencies": {
         "docdash": "^2.0.2",
+        "ilib-internal": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.2",

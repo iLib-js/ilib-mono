@@ -1,7 +1,7 @@
 /*
  * XliffSplit.test.js - test the split of Xliff object.
  *
- * Copyright © 2020, 2023-2024 JEDLSoft
+ * Copyright © 2020, 2023-2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,42 +153,6 @@ describe("xliffsplit", function() {
 
         expect(actual).toBe(expected);
     });
-    test("XliffSplitdistritueSerialize3_xliffStyle", function() {
-        expect.assertions(2);
-        var settings = {};
-        settings.xliffVersion = 2;
-        settings.infiles = [
-            "test/testfiles/xliff_webOS/merge-en-US-style.xliff",
-        ];
-        settings.xliffStyle = "webOS"
-        var superset = XliffSplit(settings);
-        var result = XliffSplit.distribute(superset, settings);
-        expect(result).toBeTruthy();
-
-        var actual = result["app2"].serialize();
-        var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
-        '  <file id="app2_f1" original="app2">\n' +
-        '    <group id="app2_g1" name="javascript">\n' +
-        '      <unit id="app2_g1_1">\n' +
-        '        <segment>\n' +
-        '          <source>app2: String 2a</source>\n' +
-        '          <target>app2: String 2a</target>\n' +
-        '        </segment>\n' +
-        '      </unit>\n' +
-        '      <unit id="app2_g1_2">\n' +
-        '        <segment>\n' +
-        '          <source>app2: String 2b</source>\n' +
-        '          <target>app2: String 2b</target>\n' +
-        '        </segment>\n' +
-        '      </unit>\n' +
-        '    </group>\n' +
-        '  </file>\n' +
-        '</xliff>';
-
-        expect(actual).toBe(expected);
-    });
     test("XliffSplitWrite", function() {
         expect.assertions(3);
         rmrf("test/testfiles/xliff20/splitTest/app1/en-US.xliff");
@@ -208,4 +172,3 @@ describe("xliffsplit", function() {
         expect(fs.existsSync("./test/testfiles/xliff20/splitTest/app2/en-US.xliff")).toBeTruthy();
     });
 });
-

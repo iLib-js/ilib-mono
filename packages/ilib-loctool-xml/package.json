@@ -48,12 +48,13 @@
         "test": "pnpm test:jest",
         "test:jest": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test:jest --watch",
+        "test:all": "npm-run-all --npm-path pnpm test test:e2e",
         "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
         "clean": "git clean -f -d test"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib": "^14.18.0",
@@ -61,7 +62,7 @@
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "@ilib-mono/e2e-test": "workspace:^",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

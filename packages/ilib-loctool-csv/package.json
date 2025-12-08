@@ -49,13 +49,14 @@
         "clean": "git clean -f -d *"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib": "^14.18.0",
         "micromatch": "^4.0.5"
     },
     "devDependencies": {
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

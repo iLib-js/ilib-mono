@@ -48,7 +48,7 @@
         "clean": "git clean -f -d *"
     },
     "engines": {
-        "node": ">=10.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "he": "^1.2.0",
@@ -58,6 +58,7 @@
         "message-accumulator": "workspace:^"
     },
     "devDependencies": {
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }

@@ -1,0 +1,32 @@
+name: Test Web All
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    test-web-all:
+        name: Test Web All
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [20]
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: pnpm
+            - name: Install Chrome
+              uses: browser-actions/setup-chrome@v1
+            - name: Install Firefox
+              uses: browser-actions/setup-firefox@v1
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            - name: Run tests
+              run: pnpm ci:test:web:all

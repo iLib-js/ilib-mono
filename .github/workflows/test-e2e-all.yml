@@ -1,4 +1,4 @@
-name: E2E Test All
+name: Test E2E All
 
 on:
     push:
@@ -6,12 +6,12 @@ on:
             - main
 
 jobs:
-    test-all:
-        name: Test All
+    test-e2e-all:
+        name: Test E2E All
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node-version: [20]
+                node-version: [22]
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -24,7 +24,9 @@ jobs:
                   cache: pnpm
             - name: Install Chrome
               uses: browser-actions/setup-chrome@v1
+            - name: Install Firefox
+              uses: browser-actions/setup-firefox@v1
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run tests
-              run: pnpm test:e2e:ci
+              run: pnpm ci:test:e2e:all

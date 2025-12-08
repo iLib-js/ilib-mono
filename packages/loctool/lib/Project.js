@@ -259,7 +259,27 @@ Project.prototype.init = function(cb) {
                     extensionMap[extension] = [];
                 }
                 extensionMap[extension].push(type);
-            })
+            });
+
+            // Check if the file type has a mappings property, and if so,
+            // give a warning if the user is using a mapping pattern that
+            // has an extension that is not listed in the extensions
+            // supported by the file type.
+            var settings = this.settings && this.settings[type.name()];
+            if (settings && settings.mappings) {
+                var mappings = settings.mappings;
+                var patterns = Object.keys(mappings);
+                patterns.forEach(function(pattern) {
+                    // extract extension from pattern (e.g., "**/*.mdx" -> ".mdx")
+                    var match = pattern.match(/(\.\w+)$/);
+                    if (match && match.length > 1) {
+                        var ext = match[1].toLowerCase();
+                        if (!extensionMap[ext]) {
+                            logger.warn("File type " + type.name() + " is configured to handle mapping pattern " + pattern + ", but the extension " + ext + " is not listed in the extensions supported by the file type.");
+                        }
+                    }
+                }.bind(this));
+            }
         });
         this.extensionMap = extensionMap;
 
@@ -526,9 +546,11 @@ Project.prototype.extract = function(cb) {
     this.db.getBy({
         project: this.options.id
     }, function(err, resources) {
-        logger.trace("Getting all resources. Length: " + resources.length);
-        logger.trace("Getting all resources. tu length: " + this.db.ts.resources.length);
-        this.translations.addAll(resources);
+        if (!this.localizeOnly || !this.settings.nopseudo) {
+            logger.trace("Getting all resources. Length: " + resources.length);
+            logger.trace("Getting all resources. tu length: " + this.db.ts.resources.length);
+            this.translations.addAll(resources);
+        }
         var pathName;
 
         while (!this.paths.isEmpty()) {
@@ -578,10 +600,12 @@ Project.prototype.extract = function(cb) {
 Project.prototype.save = function(cb) {
     logger.trace("Project save called to save new resources to the DB");
 
-    for (var i = 0; i < this.fileTypes.length; i++) {
-        var set = this.fileTypes[i].getNew(this.translations);
-        if (set && set.size()) {
-            this.newres.addSet(set);
+    if (!this.localizeOnly) {
+        for (var i = 0; i < this.fileTypes.length; i++) {
+            var set = this.fileTypes[i].getNew(this.translations);
+            if (set && set.size()) {
+                this.newres.addSet(set);
+            }
         }
     }
 

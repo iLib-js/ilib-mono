@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="zh-Hans-CN" version="2.0">
+ <file id="sample-rs-edge-whitespace_f1" original="sample-rs-edge-whitespace">
+  <group id="sample-rs-edge-whitespace_g1" name="javascript">
+   <unit id="sample-rs-edge-whitespace_g1_1">
+    <segment>
+     <source>Select your remote's cursor speed and appearance.</source>
+     <target>选择您遥控器的光标速度和外观。  </target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_13">
+    <segment>
+     <source>IP (Manual)</source>
+     <target>IP（手动）</target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_21">
+    <segment>
+     <source>press OK button to go to next menu</source>
+     <target>  按“确定”按钮以前往下一个菜单 </target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_30">
+    <segment>
+     <source>If the image isn't clear, select another pattern until the picture improves.</source>
+     <target>  如果图像不清晰，请选择另一模式，直至图片更加清晰。</target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_73">
+    <segment>
+     <source>Optimize image quality for fast-moving images (sports and action).</source>
+     <target>优化迅速移动图像（运动图像和动作图像）的图像质量。</target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_202">
+    <notes>
+     <note>Voice help</note>
+    </notes>
+    <segment>
+     <source>Use the voice recognition with “Hi”</source>
+     <target>通过说出“Hi”使用语音识别功能</target>
+    </segment>
+   </unit>
+   <unit id="sample-rs-edge-whitespace_g1_369">
+    <segment>
+     <source>"Hi, I need help!"</source>
+     <target>“Hi，我需要帮助！”</target>
+    </segment>
+   </unit>
+  </group>
+ </file>
+</xliff>

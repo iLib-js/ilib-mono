@@ -31,11 +31,15 @@
     ],
     "author": "JEDLSoft",
     "license": "Apache-2.0",
+    "engines": {
+        "node": ">=12 <23"
+    },
     "dependencies": {
         "ilib-lint-common": "workspace:^",
         "ilib-tools-common": "workspace:^"
     },
     "devDependencies": {
+        "ilib-internal": "workspace:^",
         "jest": "^29.0.0"
     }
 }

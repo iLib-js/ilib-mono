@@ -1,5 +1,41 @@
 # loctool
 
+## 2.31.7
+
+### Patch Changes
+
+- 60f27e7: Fix a bug where resources were not added to the translation set when `nopseudo` was set to false.
+
+## 2.31.6
+
+### Patch Changes
+
+- 16cffab: Add condition to add all DB resources to translations only when localizeOnly is false or pseudo is enabled
+
+## 2.31.5
+
+### Patch Changes
+
+- 3377289: - Add a warning if the mappings for a file type use a
+  file name extension that does not exist in that file
+  type's list of supported extensions. Previously, users would be
+  confused that they put a mapping in, but none of the files they
+  mapped would get read by the loctool and there would be no
+  explanation of why.
+
+## 2.31.4
+
+### Patch Changes
+
+- 83b5732: New resources are no longer saved in memory when localizeOnly is true because the loctool does not produce any extracted or any new strings files in this mode
+
+## 2.31.3
+
+### Patch Changes
+
+- 7af420b: Clean up the xliff files for the loctool test by separating the test files for the XLIFF 2.0 format and the webOS XLIFF format, and deleting unnecessary files.
+- 6978961: Normalize and deduplicate translationsDir paths
+
 ## 2.31.2
 
 ### Patch Changes

@@ -17,16 +17,22 @@
  * limitations under the License.
  */
 
-/**
+/*
  * ResourceSentenceEnding - Checks that sentence-ending punctuation is appropriate for the target locale
  *
  * This rule checks if the source string ends with certain punctuation marks and ensures
  * the target uses the locale-appropriate equivalent.
  *
+ * Features:
+ * - Configurable minimum length threshold to skip short strings (abbreviations)
+ * - Automatic skipping of strings with no spaces (non-sentences)
+ * - Custom punctuation mappings per locale
+ * - Exception lists to skip specific source strings
+ *
  * Examples:
  * - English period (.) should become Japanese maru (。) in Japanese
  * - English question mark (?) should become Japanese question mark (？) in Japanese
- * - English exclamation mark (!) should become Japanese exclamation mark (！) in Japanese
+ * - English exclamation mark (!) checking is disabled by default for Japanese (exclamation: null)
  * - English ellipsis (...) should become Japanese ellipsis (…) in Japanese
  * - English colon (:) should become Japanese colon (：) in Japanese
  */
@@ -34,14 +40,23 @@
 import { Result } from 'ilib-lint-common';
 import ResourceRule from './ResourceRule.js';
 import Locale from 'ilib-locale';
-import LocaleInfo from 'ilib-localeinfo';
 import ResourceFixer from '../plugins/resource/ResourceFixer.js';
-import { isPunct, isSpace } from 'ilib-ctype';
+import { isSpace, isAlpha, isAlnum } from 'ilib-ctype';
 
-/** @ignore @typedef {import("ilib-tools-common").Resource} Resource */
-/** @ignore @typedef {import("ilib-lint-common").Fix} Fix */
+/**
+ * @ignore
+ * @typedef {import("ilib-tools-common").Resource} Resource
+ */
+/**
+ * @ignore
+ * @typedef {import("ilib-lint-common").Fix} Fix
+ */
+/**
+ * @ignore
+ * @typedef {import("../plugins/resource/ResourceFix.js").default} ResourceFix
+ */
 
-/** @ignore
+/*
  * Default punctuation for each punctuation type
  */
 const defaults = {
@@ -52,11 +67,12 @@ const defaults = {
     'colon': ':'
 };
 
-/** @ignore
+/*
  * Punctuation map for each language, with default punctuation for each punctuation type
  */
 const punctuationMap = {
-    'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
+    // exclamation is disabled for Japanese because it's rarely used in Japanese
+    'ja': { 'period': '。', 'question': '？', 'exclamation': null, 'ellipsis': '…', 'colon': '：' },
     'zh': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
     'el': { 'period': '.', 'question': ';', 'exclamation': '!', 'ellipsis': '...', 'colon': ':' },
     'ar': { 'period': '.', 'question': '؟', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
@@ -73,40 +89,134 @@ const punctuationMap = {
 };
 
 /**
+ * @ignore
+ * @typedef {{period?: string, question?: string, exclamation?: string | null, ellipsis?: string, colon?: string, exceptions?: string[]}} LocaleOptions
+ * @property {string} [period] - Custom period punctuation for this locale
+ * @property {string} [question] - Custom question mark punctuation for this locale
+ * @property {string | null} [exclamation] - Custom exclamation mark punctuation for this locale, or null to disable checking for exclamation marks
+ * @property {string} [ellipsis] - Custom ellipsis punctuation for this locale
+ * @property {string} [colon] - Custom colon punctuation for this locale
+ * @property {string[]} [exceptions] - Array of source strings to skip checking for this locale.
+ *   Useful for handling special cases like abbreviations that should not be checked for sentence-ending punctuation.
+ */
+
+/**
+ * @ignore
+ * @typedef {{minimumLength?: number}} ResourceSentenceEndingFixedOptions
+ * @property {number} [minimumLength=10] - Minimum length of source string before the rule is applied.
+ *   Strings shorter than this length will be skipped (useful for avoiding false positives on abbreviations).
+ */
+
+/**
+ * @ignore
+ * @typedef {ResourceSentenceEndingFixedOptions | Record<string, LocaleOptions>} ResourceSentenceEndingOptions
+ */
+
+/**
  * @class ResourceSentenceEnding
  * @extends ResourceRule
  */
 class ResourceSentenceEnding extends ResourceRule {
-    constructor(options) {
+    /**
+     * Constructs a new ResourceSentenceEnding rule instance.
+     *
+     * @param {ResourceSentenceEndingOptions} [options] - Configuration options for the rule
+     *
+     * @example
+     * // Basic usage with default settings
+     * const rule = new ResourceSentenceEnding();
+     *
+     * @example
+     * // Custom minimum length
+     * const rule = new ResourceSentenceEnding({
+     *   minimumLength: 15
+     * });
+     *
+     * @example
+     * // Custom punctuation mappings for Japanese
+     * const rule = new ResourceSentenceEnding({
+     *   'ja-JP': {
+     *     period: '。',
+     *     question: '？',
+     *     exclamation: null,
+     *     ellipsis: '…',
+     *     colon: '：'
+     *   }
+     * });
+     *
+     * @example
+     * // Exception list for German
+     * const rule = new ResourceSentenceEnding({
+     *   'de-DE': {
+     *     exceptions: [
+     *       'See the Dr.',
+     *       'Visit the Prof.',
+     *       'Check with Mr.'
+     *     ]
+     *   }
+     * });
+     *
+     * @example
+     * // Combined configuration
+     * const rule = new ResourceSentenceEnding({
+     *   minimumLength: 8,
+     *   'ja-JP': {
+     *     period: '。',
+     *     exceptions: ['Loading...', 'Please wait...']
+     *   },
+     *   'de-DE': {
+     *     exceptions: ['See the Dr.', 'Visit the Prof.']
+     *   }
+     * });
+     */
+    constructor(options = {}) {
         super(options);
         this.name = "resource-sentence-ending";
         this.description = "Checks that sentence-ending punctuation is appropriate for the locale of the target string and matches the punctuation in the source string";
         this.link = "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-sentence-ending.md";
 
+        // Get the parameter from the options
+        const param = this.getParam() || {};
+
+        // Initialize minimum length configuration
+        this.minimumLength = Math.max(0, param?.minimumLength ?? 10);
+
         // Initialize custom punctuation mappings from configuration
         this.customPunctuationMap = {};
-        if (options && typeof options === 'object' && !Array.isArray(options)) {
-                    // options is an object with locale codes as keys and punctuation mappings as values
-        // Merge the default punctuation with the custom punctuation so that the custom
-        // punctuation overrides the default and we don't have to specify all punctuation types.
-        // Custom maps are stored by language, not locale, so that they apply to all locales of
-        // that language.
-        for (const locale in options) {
-            const localeObj = new Locale(locale);
+        // Initialize exception lists from configuration
+        this.exceptionsMap = {};
 
-            // only process config for valid locales
-            if (localeObj.isValid()) {
-                const language = localeObj.getLanguage();
-                // locale must have a language code
-                if (!language) continue;
-                // Apply locale-specific defaults for any locale that usesthis language
-                const localeDefaults = this.getLocaleDefaults(language);
-                this.customPunctuationMap[language] = {
-                    ...localeDefaults,
-                    ...options[locale]
-                };
+        if (param && typeof param === 'object' && !Array.isArray(param)) {
+            // param is an object with locale codes as keys and punctuation mappings as values
+            // Merge the default punctuation with the custom punctuation so that the custom
+            // punctuation overrides the default and we don't have to specify all punctuation types.
+            // Custom maps are stored by language, not locale, so that they apply to all locales of
+            // that language.
+            for (const locale in param) {
+                const localeObj = new Locale(locale);
+
+                // only process config for valid locales
+                if (localeObj.isValid()) {
+                    const language = localeObj.getLanguage();
+                    // locale must have a language code
+                    if (!language) continue;
+
+                    // Separate punctuation mappings from exceptions
+                    const { exceptions, ...punctuationMappings } = param[locale];
+
+                    // Apply locale-specific defaults for any locale that usesthis language
+                    const localeDefaults = this.getLocaleDefaults(language);
+                    this.customPunctuationMap[language] = {
+                        ...localeDefaults,
+                        ...punctuationMappings
+                    };
+
+                    // Store exceptions separately
+                    if (exceptions && Array.isArray(exceptions)) {
+                        this.exceptionsMap[language] = exceptions;
+                    }
+                }
             }
-        }
         }
 
         // Build the set of sentence-ending punctuation characters dynamically
@@ -228,7 +338,7 @@ class ResourceSentenceEnding extends ResourceRule {
         const language = localeObj.getLanguage();
         if (!language) return null;
         // Custom config
-        if (this.customPunctuationMap[language] && this.customPunctuationMap[language][type]) {
+        if (this.customPunctuationMap[language] && type in this.customPunctuationMap[language]) {
             return this.customPunctuationMap[language][type];
         }
         // For English ellipsis, only accept the default (Unicode ellipsis) in the target
@@ -237,8 +347,12 @@ class ResourceSentenceEnding extends ResourceRule {
         }
         // Get locale-specific defaults for this language
         const localeDefaults = this.getLocaleDefaults(language);
-        const result = localeDefaults[type] || this.getDefaultPunctuation(type);
-        return result;
+        // Check if the type exists in localeDefaults (even if it's null)
+        if (type in localeDefaults) {
+            return localeDefaults[type];
+        }
+        // Type not in localeDefaults, use default
+        return this.getDefaultPunctuation(type);
     }
 
     /**
@@ -251,11 +365,12 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
-     * Get a regex that matches all expected punctuation for a given locale
+     * Get a regex that matches all expected punctuation for a given locale, excluding colons
+     * This is used by getLastSentenceFromContent to avoid splitting on colons in the middle of sentences
      * @param {Locale} localeObj locale of the punctuation
-     * @returns {string} regex string that matches all expected punctuation for the locale
+     * @returns {string} regex string that matches all expected punctuation for the locale except colons
      */
-    getExpectedPunctuationRegex(localeObj) {
+    getExpectedPunctuationRegexWithoutColons(localeObj) {
         const language = localeObj.getLanguage();
         let config;
         if (language) {
@@ -266,7 +381,10 @@ class ResourceSentenceEnding extends ResourceRule {
         } else {
             config = defaults;
         }
-        return Object.values(config).join('').replace(/\./g, '\\.').replace(/\?/g, '\\?');
+        // Exclude colons from the punctuation regex
+        const punctuationWithoutColons = { ...config };
+        delete punctuationWithoutColons.colon;
+        return Object.values(punctuationWithoutColons).join('').replace(/\./g, '\\.').replace(/\?/g, '\\?');
     }
 
     /**
@@ -381,11 +499,13 @@ class ResourceSentenceEnding extends ResourceRule {
     getLastSentenceFromContent(content, targetLocaleObj) {
         if (!content) return content;
         // Only treat .!?。？！ as sentence-ending punctuation, not ¿ or ¡
-        const allSentenceEnding = this.getExpectedPunctuationRegex(targetLocaleObj);
+        // Exclude colons from sentence-ending punctuation for this function because
+        // colons in the middle of a sentence should not split the sentence
+        const sentenceEndingWithoutColons = this.getExpectedPunctuationRegexWithoutColons(targetLocaleObj);
         // Fix: Use a regex that finds the last sentence, properly handling trailing whitespace
         // First, trim trailing whitespace to avoid matching spaces instead of sentences
         const trimmedContent = content.trim();
-        const sentenceEndingRegex = new RegExp(`[^${allSentenceEnding}]+\\p{P}?\\w*$`, 'gu');
+        const sentenceEndingRegex = new RegExp(`[^${sentenceEndingWithoutColons}]+\\p{P}?\\w*$`, 'gu');
         const match = sentenceEndingRegex.exec(trimmedContent);
         if (match !== null && match.length > 0) {
             let lastSentence = match[0].trim();
@@ -434,26 +554,106 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
-     * Check if Spanish target has the correct inverted punctuation at the beginning of the last sentence
+     * Format punctuation for error messages - replace empty strings with "no punctuation"
+     * @param {string} punctuation - The punctuation string to format
+     * @returns {string} - The formatted punctuation string
+     */
+    static formatPunctuationForMessage(punctuation) {
+        return punctuation === '' ? 'no punctuation' : `"${punctuation}"`;
+    }
+
+    /**
+     * Check if Spanish target has the correct inverted punctuation in the last sentence
      * @param {string} lastSentence - The last sentence of the target string (already stripped of quotes)
      * @param {string} sourceEndingType - The type of ending punctuation in source
-     * @returns {boolean} - True if Spanish target has correct inverted punctuation at start of last sentence
+     * @param {Locale} targetLocaleObj - The target locale object for custom punctuation configuration
+     * @returns {{correct: boolean, position: number}} - position is where inverted punctuation should be
      */
-    hasCorrectSpanishInvertedPunctuation(lastSentence, sourceEndingType) {
-        if (!lastSentence || typeof lastSentence !== 'string') return false;
+    hasCorrectSpanishInvertedPunctuation(lastSentence, sourceEndingType, targetLocaleObj) {
+        if (!lastSentence || typeof lastSentence !== 'string') return { correct: false, position: 0 };
         // Only check for questions and exclamations
         if (sourceEndingType !== 'question' && sourceEndingType !== 'exclamation') {
-            return true; // Not applicable for other punctuation types
+            return { correct: true, position: 0 }; // Not applicable for other punctuation types
         }
         // Strip any leading quote characters before checking for inverted punctuation
         const quoteChars = ResourceSentenceEnding.allQuoteChars;
         let strippedSentence = lastSentence;
+        let strippedOffset = 0;
         while (strippedSentence.length > 0 && (quoteChars.includes(strippedSentence.charAt(0)) || isSpace(strippedSentence.charAt(0)))) {
             strippedSentence = strippedSentence.slice(1);
+            strippedOffset++;
         }
-        // Check for inverted punctuation at the beginning of the stripped last sentence
+
         const expectedInverted = sourceEndingType === 'question' ? '¿' : '¡';
-        return strippedSentence.startsWith(expectedInverted);
+
+        // Search backwards from the end of the sentence
+        // If we find the correct inverted punctuation first, it's correct
+        // If we find sentence-ending punctuation first, it's incorrect
+        for (let i = strippedSentence.length - 1; i >= 0; i--) {
+            const char = strippedSentence.charAt(i);
+
+            // If we find the correct inverted punctuation, it's correct
+            if (char === expectedInverted) {
+                return { correct: true, position: strippedOffset };
+            }
+
+            // If we find sentence-ending punctuation (excluding the final one),
+            // we've reached the start of this sentence without finding inverted punctuation
+            // Use locale-specific punctuation configuration
+            const sentenceEndingChars = this.getExpectedPunctuationRegexWithoutColons(targetLocaleObj);
+            const sentenceEndingRegex = new RegExp(`[${sentenceEndingChars}]`, 'u');
+            if (sentenceEndingRegex.test(char)) {
+                // Skip the final punctuation at the end
+                if (i === strippedSentence.length - 1) {
+                    continue;
+                }
+
+                // Special handling for dots: check if it's part of a letter-dot-letter pattern
+                // (like email addresses, URLs, abbreviations, etc.)
+                if (char === '.') {
+                    // Check if this dot is part of a letter-dot-letter pattern
+                    const beforeDot = i > 0 ? strippedSentence.charAt(i - 1) : '';
+                    const afterDot = i < strippedSentence.length - 1 ? strippedSentence.charAt(i + 1) : '';
+
+                    // If it's letter-dot-letter, it's not sentence-ending punctuation
+                    // But exclude cases where the dot is part of an ellipsis (...)
+                    if (isAlpha(beforeDot) && isAlpha(afterDot)) {
+                        // Check if this is part of an ellipsis (three consecutive dots)
+                        const beforeBeforeDot = i > 1 ? strippedSentence.charAt(i - 2) : '';
+                        const afterAfterDot = i < strippedSentence.length - 2 ? strippedSentence.charAt(i + 2) : '';
+
+                        // If it's part of an ellipsis (...), treat it as sentence-ending punctuation
+                        if (beforeBeforeDot === '.' || afterAfterDot === '.') {
+                            // This is part of an ellipsis, so treat as sentence-ending punctuation
+                        } else {
+                            // This is a letter-dot-letter pattern, skip it
+                            continue;
+                        }
+                    }
+                }
+
+                // Special handling for question marks: check if it's part of a URL query parameter
+                // (like ?param=value in URLs)
+                if (char === '?') {
+                    // Check if this question mark is part of a URL query parameter
+                    const afterQuestion = i < strippedSentence.length - 1 ? strippedSentence.charAt(i + 1) : '';
+                    const beforeQuestion = i > 0 ? strippedSentence.charAt(i - 1) : '';
+
+                    // If it's followed by alphanumeric characters (like ?param=value),
+                    // it's likely part of a URL query parameter, not sentence-ending punctuation
+                    if (isAlnum(afterQuestion)) {
+                        // This is likely a URL query parameter, skip it
+                        continue;
+                    }
+                }
+
+                // Found sentence-ending punctuation before inverted punctuation
+                return { correct: false, position: strippedOffset };
+            }
+        }
+
+        // If we reach the start without finding either, it's incorrect
+        return { correct: false, position: strippedOffset };
     }
 
     /**
@@ -490,7 +690,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {string} target - The target string
      * @param {string} incorrectPunctuation - The incorrect punctuation
      * @param {string} correctPunctuation - The correct punctuation
-     * @returns {Fix|undefined} - The fix object or undefined if no fix can be created
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix can be created
      */
     createPunctuationFix(resource, target, incorrectPunctuation, correctPunctuation, index, category, targetLocaleObj) {
         // Get the last sentence to find the position
@@ -547,7 +747,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {string} character - The character to insert
      * @param {number} [index] - Index for array/plural resources
      * @param {string} [category] - Category for plural resources
-     * @returns {Fix|undefined} - The fix object or undefined if no fix can be created
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix can be created
      */
     createInsertCharacterFix(resource, target, position, character, index, category) {
         return ResourceFixer.createFix({
@@ -576,7 +776,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {number} [index] - Index for array/plural resources
      * @param {string} [category] - Category for plural resources
      * @param {Locale} [targetLocaleObj] - The target locale object (unused, kept for compatibility)
-     * @returns {Fix|undefined} - The fix object or undefined if no fix can be created
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix can be created
      */
     createFixForSpanishInvertedPunctuation(resource, target, lastSentence, correctPunctuation, index, category, targetLocaleObj) {
         const lastSentenceStart = target.lastIndexOf(lastSentence);
@@ -592,7 +792,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {string} nonBreakingSpace - The non-breaking space character to insert
      * @param {number} [index] - Index for array/plural resources
      * @param {string} [category] - Category for plural resources
-     * @returns {Fix|undefined} - The fix object or undefined if no fix can be created
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix can be created
      */
     createFixForFrenchNonBreakingSpace(resource, target, position, nonBreakingSpace, index, category) {
         return ResourceFixer.createFix({
@@ -618,7 +818,7 @@ class ResourceSentenceEnding extends ResourceRule {
      * @param {string} currentSpace - The current space character (or empty string if none)
      * @param {number} [index] - Index for array/plural resources
      * @param {string} [category] - Category for plural resources
-     * @returns {Fix|undefined} - The fix object or undefined if no fix is needed
+     * @returns {ResourceFix|undefined} - The fix object or undefined if no fix is needed
      */
     createFrenchSpacingFix(resource, target, spacePosition, needsNonBreakingSpace, currentSpace, index, category) {
         const regularSpace = ' ';
@@ -733,6 +933,29 @@ class ResourceSentenceEnding extends ResourceRule {
         const sourceLanguage = sourceLocaleObj.getLanguage();
         if (!sourceLanguage) return undefined;
 
+        // Exception 1: Check minimum length
+        if (source.length < this.minimumLength) {
+            return undefined;
+        }
+
+        // Exception 2: Check if source has no spaces AND doesn't end with sentence-ending punctuation (not a sentence)
+        if (!source.includes(' ')) {
+            const trimmed = source.trim();
+            const lastChar = trimmed.charAt(trimmed.length - 1);
+            const sentenceEndingChars = ['.', '?', '!', '。', '？', '！', '…', ':'];
+            if (!sentenceEndingChars.includes(lastChar)) {
+                return undefined; // Not a sentence
+            }
+        }
+
+        // Exception 3: Check if source is in exception list
+        const exceptions = this.exceptionsMap[targetLanguage];
+        if (exceptions) {
+            if (exceptions.some(exception => exception.toLowerCase().trim() === source.toLowerCase().trim())) {
+                return undefined;
+            }
+        }
+
         const optionalPunctuationLanguages = ['th', 'lo', 'my', 'km', 'vi', 'id', 'ms', 'tl', 'jv', 'su'];
         const isOptionalPunctuationLanguage = optionalPunctuationLanguages.includes(targetLanguage);
 
@@ -779,7 +1002,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 rule: this,
                 severity: "warning",
                 id: resource.getKey(),
-                description: `Sentence ending should be "" for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`,
+                description: `Sentence ending should be no punctuation for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`,
                 source,
                 highlight,
                 pathName: file,
@@ -819,7 +1042,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 rule: this,
                 severity: "warning",
                 id: resource.getKey(),
-                description: `Sentence ending should be "${insertString}" (${unicodeCode}) for ${targetLocale} locale instead of ""`,
+                description: `Sentence ending should be "${insertString}" (${unicodeCode}) for ${targetLocale} locale instead of ${ResourceSentenceEnding.formatPunctuationForMessage('')}`,
                 source,
                 highlight,
                 pathName: file,
@@ -836,7 +1059,25 @@ class ResourceSentenceEnding extends ResourceRule {
 
             // For Spanish, check for inverted punctuation at the beginning
             if (targetLanguage === 'es' && (sourceEnding.type === 'question' || sourceEnding.type === 'exclamation')) {
-                if (!this.hasCorrectSpanishInvertedPunctuation(lastSentence, sourceEnding.type)) {
+                // For Spanish inverted punctuation, we need to check the appropriate part of the target:
+                // - If source ends with quote, check the quoted content (lastSentence already contains this)
+                // - If source doesn't end with quote, check the full target string
+                // - However, if lastSentence is the result of getLastSentenceFromContent (which extracts
+                //   only the part after the last sentence-ending punctuation), we should check the full target
+                //   because inverted punctuation should be at the beginning of the entire sentence
+                // For Spanish inverted punctuation, we need to check the appropriate part of the target:
+                // - If source ends with quote, check the quoted content (lastSentence already contains this)
+                // - If source doesn't end with quote, check the lastSentence (which contains the relevant part)
+                //   because inverted punctuation should be at the beginning of the sentence being checked
+                // - Special case: if lastSentence is very short (like "com?" from email addresses or "bar?" from URLs),
+                //   use the full target string instead
+                let stringToCheck = lastSentence;
+                if (lastSentence.length < 10 && !lastSentence.startsWith('¿') && !lastSentence.startsWith('¡')) {
+                    // This might be a fragment from an email address, URL, or similar, use the full target
+                    stringToCheck = target;
+                }
+                const invertedPunctuationResult = this.hasCorrectSpanishInvertedPunctuation(stringToCheck, sourceEnding.type, targetLocaleObj);
+                if (!invertedPunctuationResult.correct) {
                     // Spanish target is missing inverted punctuation at the beginning
                     const quoteChars = ResourceSentenceEnding.allQuoteChars;
                     let quotedContentStart = -1;
@@ -852,7 +1093,18 @@ class ResourceSentenceEnding extends ResourceRule {
                         const afterQuote = target.substring(quotedContentStart);
                         highlight = `${beforeQuote}<e0/>${afterQuote}`;
                     } else {
-                        highlight = `<e0/>${target}`;
+                        // For multi-sentence strings, find where the last sentence starts
+                        const lastSentenceStart = target.lastIndexOf(lastSentence);
+                        if (lastSentenceStart !== -1 && stringToCheck === lastSentence) {
+                            // Use the position from hasCorrectSpanishInvertedPunctuation for more precise highlighting
+                            const highlightPosition = lastSentenceStart + invertedPunctuationResult.position;
+                            const beforeHighlight = target.substring(0, highlightPosition);
+                            const afterHighlight = target.substring(highlightPosition);
+                            highlight = `${beforeHighlight}<e0/>${afterHighlight}`;
+                        } else {
+                            // If we're using the full target string (due to URL/email special case), highlight at the beginning
+                            highlight = `<e0/>${target}`;
+                        }
                     }
 
                     // Add prefix for array/plural resources
@@ -952,7 +1204,7 @@ class ResourceSentenceEnding extends ResourceRule {
             const expectedUnicode = ResourceSentenceEnding.getUnicodeCodes(expectedPunctuation);
             const positionInfo = this.findIncorrectPunctuationPosition(target, lastSentence, targetEnding.original);
 
-            description = `Sentence ending should be "${expectedPunctuation}" (${expectedUnicode}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
+            description = `Sentence ending should be ${ResourceSentenceEnding.formatPunctuationForMessage(expectedPunctuation)} (${expectedUnicode}) for ${targetLocale} locale instead of ${ResourceSentenceEnding.formatPunctuationForMessage(targetEnding.original)} (${unicodeCode})`;
 
             if (positionInfo) {
                 const beforePunctuation = target.substring(0, positionInfo.position);
@@ -968,7 +1220,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         const expectedUnicodeWithSpace = ResourceSentenceEnding.getUnicodeCodes(expectedWithSpace);
 
                         highlight = `${beforePunctuation}<e0/>`;
-                        description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of ""`;
+                        description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of no punctuation`;
                         fix = this.createPunctuationFix(resource, target, '', expectedWithSpace, index, category, targetLocaleObj);
                     } else {
                         // Target has some punctuation - check for spacing issues

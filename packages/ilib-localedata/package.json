@@ -49,16 +49,19 @@
         "type": "git",
         "url": "https://github.com/iLib-js/ilib-mono.git"
     },
+    "engines": {
+        "node": ">=12 <23"
+    },
     "scripts": {
         "build": "pnpm build:prod",
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
         "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
-        "build:test": "webpack-cli --config webpack-test.config.js",
+        "build:test:browser": "webpack-cli --config webpack-test.config.js",
         "build:pkg": "mkdir -p lib && echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "test": "pnpm test:cli",
         "test:cli": "LANG=en_US.UTF8 pnpm build:dev && bash test/testSuite.sh",
-        "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
-        "test:web": "LANG=en_US.UTF8 pnpm build:test && open-cli ./test/testSuite.html && open-cli ./test/testSuite.html -- firefox",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:browser",
+        "test:browser": "LANG=en_US.UTF8 pnpm build:test && open-cli ./test/testSuite.html && open-cli ./test/testSuite.html -- firefox",
         "debug": "pnpm build:dev && node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test ; rm -rf lib",
         "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilib-localedata.md && pnpm doc:html",

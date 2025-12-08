@@ -95,7 +95,7 @@ describe("ResourceSnakeCase", () => {
 
     test("returns `undefined` if source string is an exception", () => {
         const options = {except: ["snake_case_exception"]}
-        const rule = new ResourceSnakeCase(options);
+        const rule = new ResourceSnakeCase({ param: options });
         const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
 
         const result = rule.matchString({
@@ -280,7 +280,7 @@ describe('ResourceSnakeCase.isSnakeCase', () => {
  * @param {string} param0.source The source string
  * @param {string} param0.target The target string
  * @param {Location} [param0.location] The location of the resource
- * 
+ *
  * @returns {ResourceString} The test resource string
  */
 function createTestResourceString({source, target, location}) {

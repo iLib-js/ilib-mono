@@ -45,19 +45,20 @@
         "coverage": "pnpm test -- --coverage",
         "test": "node node_modules/jest/bin/jest.js",
         "test:watch": "node node_modules/jest/bin/jest.js --watch",
+        "test:all": "npm-run-all --npm-path pnpm test test:e2e",
         "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs",
         "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i",
         "clean": "git clean -f -d *"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib": "^14.18.0",
         "ilib-loctool-javascript-resource": "workspace:^"
     },
     "devDependencies": {
-        "@ilib-mono/e2e-test": "workspace:^",
+        "ilib-internal": "workspace:^",
         "ilib-loctool-json": "workspace:^",
         "jest": "^29.7.0",
         "loctool": "workspace:^",

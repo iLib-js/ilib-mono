@@ -56,6 +56,9 @@
         "type": "git",
         "url": "git@github.com:iLib-js/ilib-mono.git"
     },
+    "engines": {
+        "node": ">=12 <23"
+    },
     "scripts": {
         "build": "pnpm build:prod",
         "build:assemble": "ilib-assemble -m . --resources ./locale --localefile ./locales.json assembled src",
@@ -66,8 +69,8 @@
         "build:test:web-suite": "webpack-cli --config test/webpack-testSuite.config.cjs",
         "test": "pnpm test:cli",
         "test:cli": "pnpm bash test/testSuite.sh",
-        "test:web": "open-cli ./test/testSuite.html && open-cli ./test/testSuite.html -- firefox",
-        "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
+        "test:browser": "open-cli ./test/testSuite.html && open-cli ./test/testSuite.html -- firefox",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:browser",
         "debug": "node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test && rm -rf lib assembled *.tgz assembled locales.json",
         "doc": "mkdir -p docs && jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibAddress.md && pnpm doc:html",
