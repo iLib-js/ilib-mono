@@ -33,7 +33,7 @@ describe("samples", () => {
         let fsSnapshot;
         beforeAll(async () => {
             fsSnapshot = FSSnapshot.create([
-                "webos-result.html",
+                "webos-result.json",
                 "xliffs/am-ET.xliff.modified",
                 "xliffs/zh-Hans-CN.xliff.modified",
                 "xliffs/en-US.xliff.modified"
@@ -44,8 +44,8 @@ describe("samples", () => {
                 const lint = new LintRunner(projectPath, lintPath);
                 await lint.run(
                     "-c", path.join(projectPath, "ilib-lint-config.json"),
-                    "-f", "html-formatter",
-                    "-o", "webos-result.html",
+                    "-f", "webos-json-formatter",
+                    "-o", "webos-result.json",
                     "--fix",
                     "--write"
                 );
