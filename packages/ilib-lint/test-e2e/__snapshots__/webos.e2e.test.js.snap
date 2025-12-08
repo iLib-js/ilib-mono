@@ -34,6 +34,31 @@ exports[`samples lint should generate the modified file (am-ET) 1`] = `
 </xliff>"
 `;
 
+exports[`samples lint should generate the modified file (en-US) 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">
+  <file id="sample_f1" original="sample">
+    <group id="sample_g1" name="javascript">
+      <unit id="sample_g1_1">
+        <notes>
+          <note>[sample_General]sample_general_1</note>
+        </notes>
+        <segment>
+          <source>AV</source>
+          <target>AV</target>
+        </segment>
+      </unit>
+      <unit id="sample_g1_2">
+        <segment>
+          <source>Version</source>
+          <target>Version</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>"
+`;
+
 exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `
 "<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="zh-Hans-CN" version="2.0">

@@ -23,12 +23,13 @@ import { xml2js } from 'xml-js';
 * Extracts the XLIFF version from the provided data.
 *
 * @param {String} data The XML data as a string.
-* @returns {Object} the xliff version and style.
+* @returns {Object} the xliff version, style and sourceLocale.
 */
 export function getXliffInfo(data) {
     const defaultInfo = {
         version: "1.2",
-        style: "standard"
+        style: "standard",
+        sourceLocale: "en-US"
     };
     if (!data) return defaultInfo;
 
@@ -36,10 +37,12 @@ export function getXliffInfo(data) {
         const parsedData = xml2js(data);
         const xmlVersion = parsedData?.elements?.[0]?.attributes?.version;
         const projectAttr = parsedData?.elements?.[0]?.elements?.[0]?.attributes?.['l:project'];
+        const sourceLocale = parsedData?.elements?.[0]?.attributes?.srcLang;
 
         return {
             version: xmlVersion || defaultInfo.version,
-            style: (!projectAttr && xmlVersion === "2.0") ? "webOS" : "standard"
+            style: (!projectAttr && xmlVersion === "2.0") ? "webOS" : "standard",
+            sourceLocale: sourceLocale || defaultInfo.sourceLocale
         };
     } catch (e) {
         return defaultInfo;
