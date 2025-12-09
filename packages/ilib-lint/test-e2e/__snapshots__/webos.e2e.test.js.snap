@@ -86,15 +86,9 @@ exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `
       </unit>
       <unit id="sample-rs-edge-whitespace_g1_8">
         <mda:metadata>
-          <_position>1718</_position>
           <mda:metaGroup category="device-type">
-            <_position>1741</_position>
-            <mda:meta type="Monitor">
-              <_position>1790</_position>快速
-            </mda:meta>
-            <mda:meta type="Projector">
-              <_position>1839</_position>快速
-            </mda:meta>
+            <mda:meta type="Monitor">快速</mda:meta>
+            <mda:meta type="Projector">快速</mda:meta>
           </mda:metaGroup>
         </mda:metadata>
         <notes>
