@@ -6,6 +6,6 @@
     "license": "Apache-2.0",
     "dependencies": {
         "ilib-lint": "workspace:^",
-        "ilib-lint-webos": "^1.0.3"
+        "ilib-lint-webos": "^1.3.0"
     }
 }
