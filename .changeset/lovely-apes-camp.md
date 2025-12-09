@@ -2,4 +2,4 @@
 "ilib-tools-common": patch
 ---
 
-Fixed a bug where the metadata property was not being passed in the ResourceXliff.
+Fix an issue where the metadata property was missing from ResourceXliff.
