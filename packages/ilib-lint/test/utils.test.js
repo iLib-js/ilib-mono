@@ -1,5 +1,5 @@
 /*
- * utils.test.js - test the utils
+ * util.test.js - test the utils
  *
  * Copyright ©  2025 JEDLSoft
  *
@@ -38,7 +38,7 @@ describe("getXliffInfo", () => {
     test("should parse XLIFF 1.2 correctly", () => {
         const xml12 = `
         <xliff version="1.2">
-            <file ource-language="en-US" target-language="nl-NL" product-name="webapp">
+            <file source-language="en-US" target-language="nl-NL" product-name="webapp">
                 <body></body>
             </file>
         </xliff>`;
