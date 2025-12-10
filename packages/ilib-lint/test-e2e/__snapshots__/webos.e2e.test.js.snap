@@ -36,7 +36,7 @@ exports[`samples lint should generate the modified file (am-ET) 1`] = `
 
 exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `
 "<?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="zh-Hans-CN" version="2.0">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="zh-Hans-CN" version="2.0">
   <file id="sample-rs-edge-whitespace_f1" original="sample-rs-edge-whitespace">
     <group id="sample-rs-edge-whitespace_g1" name="javascript">
       <unit id="sample-rs-edge-whitespace_g1_1">
@@ -82,6 +82,21 @@ exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `
         <segment>
           <source>"Hi, I need help!"</source>
           <target>“Hi，我需要帮助！”</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_8">
+        <mda:metadata>
+          <mda:metaGroup category="device-type">
+            <mda:meta type="Monitor">快速</mda:meta>
+            <mda:meta type="Projector">快速</mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <notes>
+          <note>copied strings by 9253</note>
+        </notes>
+        <segment>
+          <source>Fast</source>
+          <target>快</target>
         </segment>
       </unit>
     </group>

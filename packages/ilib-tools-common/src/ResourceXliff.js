@@ -135,7 +135,8 @@ class ResourceXliff {
                     datatype: res.datatype,
                     flavor: res.getFlavor ? res.getFlavor() : undefined,
                     translate: !res.getDNT(),
-                    location: res.getLocation()
+                    location: res.getLocation(),
+                    metadata: res.metadata
                 });
                 units.push(tu);
                 break;
@@ -260,7 +261,8 @@ class ResourceXliff {
                 state: tu.state,
                 flavor: tu.flavor,
                 location: new Location(tu.location),
-                resfile: tu.resfile
+                resfile: tu.resfile,
+                metadata: tu.metadata
             });
 
             if (tu.target) {
