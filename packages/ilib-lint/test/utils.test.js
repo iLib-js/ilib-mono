@@ -1,5 +1,5 @@
 /*
- * util.test.js - test the utils
+ * util.test.js - test the utils functions
  *
  * Copyright ©  2025 JEDLSoft
  *
