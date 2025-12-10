@@ -35,15 +35,30 @@ export function getXliffInfo(data) {
 
     try {
         const parsedData = xml2js(data);
-        const xmlVersion = parsedData?.elements?.[0]?.attributes?.version;
-        const projectAttr = parsedData?.elements?.[0]?.elements?.[0]?.attributes?.['l:project'];
-        const sourceLocale = parsedData?.elements?.[0]?.attributes?.srcLang;
+        const root = parsedData?.elements?.find(el => el.name === "xliff");
+        if (!root) return defaultInfo;
+
+        const xmlVersion = root.attributes?.version || defaultInfo.version;
+
+        // XLIFF 1.2: <file source-language="">
+        const fileElem = root.elements?.find(el => el.name === "file");
+        const sourceLanguage12 = fileElem?.attributes?.["source-language"];
+
+        // XLIFF 2.0: <xliff srcLang="">
+        const sourceLanguage20 = root.attributes?.srcLang;
+
+        const sourceLocale = xmlVersion === "1.2" ? sourceLanguage12 : sourceLanguage20;
+
+        // style
+        const projectAttr = fileElem?.attributes?.["l:project"] || root.attributes?.["l:project"];
+        const style = xmlVersion === "2.0" && !projectAttr ? "webOS" : "standard";
 
         return {
-            version: xmlVersion || defaultInfo.version,
-            style: (!projectAttr && xmlVersion === "2.0") ? "webOS" : "standard",
+            version: xmlVersion,
+            style,
             sourceLocale: sourceLocale || defaultInfo.sourceLocale
         };
+
     } catch (e) {
         return defaultInfo;
     }
