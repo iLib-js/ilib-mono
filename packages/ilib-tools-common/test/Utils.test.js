@@ -19,7 +19,9 @@
 
 import fs from 'fs';
 import semver from 'semver';
+import Locale from 'ilib-locale';
 import {
+    formatLocaleParams,
     formatPath,
     parsePath,
     getLocaleFromPath,
@@ -105,6 +107,127 @@ describe("testUtils", () => {
         expect(!cleanString(345)).toBeTruthy();
         expect(!cleanString(true)).toBeTruthy();
         expect(!cleanString({'obj': 'foo'})).toBeTruthy();
+    });
+
+    test("FormatLocaleParamsLocale", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[locale]', "de-DE")).toBe("de-DE");
+    });
+
+    test("FormatLocaleParamsLanguage", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[language]', "de-DE")).toBe("de");
+    });
+
+    test("FormatLocaleParamsScript", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[script]', "zh-Hans-CN")).toBe("Hans");
+    });
+
+    test("FormatLocaleParamsScriptNotThere", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[script]', "de-DE")).toBe("");
+    });
+
+    test("FormatLocaleParamsRegion", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[region]', "de-DE")).toBe("DE");
+    });
+
+    test("FormatLocaleParamsRegionNotThere", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[region]', "de")).toBe("");
+    });
+
+    test("FormatLocaleParamsLocaleDir", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[localeDir]', "zh-Hans-CN")).toBe("zh/Hans/CN");
+    });
+
+    test("FormatLocaleParamsLocaleUnder", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[localeUnder]', "zh-Hans-CN")).toBe("zh_Hans_CN");
+    });
+
+    test("FormatLocaleParamsLocaleLower", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[localeLower]', "zh-Hans-CN")).toBe("zh-hans-cn");
+    });
+
+    test("FormatLocaleParamsMultiple", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('strings_[language]_[region].json', "de-DE")).toBe("strings_de_DE.json");
+    });
+
+    test("FormatLocaleParamsPreservesUnknownKeywords", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[dir]/[locale]/strings.json', "de-DE")).toBe("[dir]/de-DE/strings.json");
+    });
+
+    test("FormatLocaleParamsEmptyTemplate", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('', "de-DE")).toBe("");
+    });
+
+    test("FormatLocaleParamsUndefinedTemplate", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams(undefined, "de-DE")).toBe("");
+    });
+
+    test("FormatLocaleParamsPreservesDoubleSlashes", () => {
+        expect.assertions(1);
+
+        // This is the critical test - double slashes in comments should be preserved
+        expect(formatLocaleParams('// This is a comment for [locale]\nexport default ', "de-DE")).toBe("// This is a comment for de-DE\nexport default ");
+    });
+
+    test("FormatLocaleParamsWithHeader", () => {
+        expect.assertions(1);
+
+        const header = "// This is a generated file. DO NOT MODIFY BY HAND\nexport default ";
+        expect(formatLocaleParams(header, "de-DE")).toBe("// This is a generated file. DO NOT MODIFY BY HAND\nexport default ");
+    });
+
+    test("FormatLocaleParamsWithLocaleObject", () => {
+        expect.assertions(1);
+
+        // Test that Locale objects are accepted as well as strings
+        const l = new Locale("fr-CA");
+        expect(formatLocaleParams('strings_[locale].json', l)).toBe("strings_fr-CA.json");
+    });
+
+    test("FormatLocaleParamsLanguageMissing", () => {
+        expect.assertions(1);
+
+        // "DE" is a region only, no language
+        expect(formatLocaleParams('[language]/strings.json', "DE")).toBe("/strings.json");
+    });
+
+    test("FormatLocaleParamsRegionMissing", () => {
+        expect.assertions(1);
+
+        // "de" is a language only, no region
+        expect(formatLocaleParams('[region]/strings.json', "de")).toBe("/strings.json");
+    });
+
+    test("FormatLocaleParamsScriptMissing", () => {
+        expect.assertions(1);
+
+        // "zh-CN" has no script
+        expect(formatLocaleParams('[script]/strings.json', "zh-CN")).toBe("/strings.json");
     });
 
     test("GetLocalizedPathLocaleDir", () => {
