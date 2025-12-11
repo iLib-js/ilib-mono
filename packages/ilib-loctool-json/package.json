@@ -62,6 +62,7 @@
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",
+        "ilib-loctool-json-resource": "file:test/ilib-loctool-json-resource",
         "jest": "^29.7.0",
         "loctool": "workspace:^"
     }
