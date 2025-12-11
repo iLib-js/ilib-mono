@@ -24,7 +24,7 @@ var MdxFile = require("./MdxFile.js");
 var YamlFileType = require('ilib-loctool-yaml');
 
 var MdxFileType = function(project) {
-    this.type = "md";
+    this.type = "mdx";
     this.datatype = "mdx";
     this.project = project;
     this.API = project.getAPI();

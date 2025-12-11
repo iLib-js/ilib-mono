@@ -54,7 +54,7 @@
         "test:e2e": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
     },
     "engines": {
-        "node": ">=12 <23"
+        "node": ">=16 <23"
     },
     "dependencies": {
         "acorn": "^8.15.0",
