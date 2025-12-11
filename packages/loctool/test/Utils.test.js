@@ -327,6 +327,94 @@ describe("utils", function() {
         })).toBe("x/y/x-config.es.json");
     });
 
+    // formatLocaleParams tests
+    test("formatLocaleParams with locale", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('strings_[locale].json', "de-DE")).toBe("strings_de-DE.json");
+    });
+
+    test("formatLocaleParams with localeUnder", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('strings_[localeUnder].json', "zh-Hans-CN")).toBe("strings_zh_Hans_CN.json");
+    });
+
+    test("formatLocaleParams with localeLower", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('strings_[localeLower].json', "zh-Hans-CN")).toBe("strings_zh-hans-cn.json");
+    });
+
+    test("formatLocaleParams with localeDir", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[localeDir]/strings.json', "zh-Hans-CN")).toBe("zh/Hans/CN/strings.json");
+    });
+
+    test("formatLocaleParams with language", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[language]/strings.json', "de-DE")).toBe("de/strings.json");
+    });
+
+    test("formatLocaleParams with script", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[script]/strings.json', "zh-Hans-CN")).toBe("Hans/strings.json");
+    });
+
+    test("formatLocaleParams with region", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[region]/strings.json', "de-DE")).toBe("DE/strings.json");
+    });
+
+    test("formatLocaleParams with multiple substitutions", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('const strings_[localeUnder] = ', "de-DE")).toBe("const strings_de_DE = ");
+    });
+
+    test("formatLocaleParams preserves double slashes in comments", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('// This is a generated file\nexport default ', "en-US")).toBe("// This is a generated file\nexport default ");
+    });
+
+    test("formatLocaleParams with header containing line comment and locale substitution", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('// Generated for [locale]\nexport default ', "de-DE")).toBe("// Generated for de-DE\nexport default ");
+    });
+
+    test("formatLocaleParams with empty template", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('', "de-DE")).toBe("");
+    });
+
+    test("formatLocaleParams with undefined template", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams(undefined, "de-DE")).toBe("");
+    });
+
+    test("formatLocaleParams with Locale object", function() {
+        expect.assertions(1);
+        var Locale = require("ilib/lib/Locale.js");
+        var l = new Locale("fr-CA");
+        expect(utils.formatLocaleParams('strings_[locale].json', l)).toBe("strings_fr-CA.json");
+    });
+
+    test("formatLocaleParams preserves unknown keywords", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[dir]/[locale]/strings.json', "de-DE")).toBe("[dir]/de-DE/strings.json");
+    });
+
+    test("formatLocaleParams with language missing", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[language]/strings.json', "DE")).toBe("/strings.json");
+    });
+
+    test("formatLocaleParams with region missing", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[region]/strings.json', "de")).toBe("/strings.json");
+    });
+
+    test("formatLocaleParams with script missing", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[script]/strings.json', "zh-CN")).toBe("/strings.json");
+    });
+
     test("GetLocaleFromPathDir", function() {
         expect.assertions(1);
         expect(utils.getLocaleFromPath('[dir]/strings.json', "x/y/strings.json")).toBe("");
