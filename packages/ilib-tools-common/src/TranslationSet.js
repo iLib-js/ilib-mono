@@ -18,6 +18,7 @@
  */
 
 import log4js from "@log4js-node/log4js-api";
+import { JSUtils } from "ilib-common";
 
 const logger = log4js.getLogger("tools-common.TranslationSet");
 
@@ -124,13 +125,22 @@ class TranslationSet {
      * resource is added a translation instead.
      *
      * @param {Resource} resource a resource to add to this set
-     */
-    add(resource) {
+    *  @param {String|undefined} xliffName a name of the xliff instance.
+    */
+    add(resource, xliffName) {
         if (!resource) return;
 
         let existing;
-        const key = resource.getKey(), hashKey = resource.hashKey();
-        const cleanKey = resource.cleanHashKey();
+        const key = resource.getKey();
+        let hashKey = resource.hashKey();
+        let cleanKey = resource.cleanHashKey();
+        const isWebOS = xliffName === 'webOSXliff';
+
+        if (isWebOS) {
+            const sourceHash = String(JSUtils.hashCode(resource.getSource()));
+            hashKey  = `${hashKey}_${sourceHash}`;
+            cleanKey = `${cleanKey}_${sourceHash}`;
+        }
         logger.trace("Add a resource. Hash: " + hashKey + " clean: " + cleanKey + " resource:" + JSON.stringify(resource));
 
         existing = this.byHashKey[hashKey];

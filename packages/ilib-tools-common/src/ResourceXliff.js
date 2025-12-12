@@ -349,6 +349,8 @@ class ResourceXliff {
      */
     parse(xml) {
         const tuList = this.xliff.deserialize(xml, this.path);
+        const xliffName = this.xliff.constructor.name;
+
         let res;
 
         if (tuList) {
@@ -358,7 +360,7 @@ class ResourceXliff {
                 switch (tu.resType) {
                 default:
                     res = this.convertTransUnit(tu);
-                    this.ts.add(res);
+                    this.ts.add(res, xliffName);
                     break;
 
                 case "array":
@@ -371,7 +373,7 @@ class ResourceXliff {
                         }
                     } else {
                         res = this.convertTransUnit(tu);
-                        this.ts.add(res);
+                        this.ts.add(res, xliffName);
                     }
                     break;
 
@@ -385,7 +387,7 @@ class ResourceXliff {
                         }
                     } else {
                         res = this.convertTransUnit(tu);
-                        this.ts.add(res);
+                        this.ts.add(res, xliffName);
                     }
                     break;
                 }
@@ -402,13 +404,14 @@ class ResourceXliff {
 
     addResource(res) {
         if (!res) return;
+        const xliffName = this.xliff.constructor.name;
 
         if (res.getTargetLocale() === this.sourceLocale || res.getTargetLocale() === "en") {
             // don't add this one... cannot translate TO the source locale!
             return;
         }
 
-        this.ts.add(res);
+        this.ts.add(res,xliffName);
     }
 
     getText() {

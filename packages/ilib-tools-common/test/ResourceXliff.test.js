@@ -349,6 +349,52 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getMetadata()).toEqual(metaDataInfo);
     }),
 
+    test("ResourceXliffOptionwebOSXliffParseSamekey", () => {
+        const xf = new webOSXliff();
+        const x = new ResourceXliff({
+            path: "foo/bar/de-DE.xliff",
+            xliff: xf
+        });
+
+        expect(x).toBeTruthy();
+        x.parse(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '      <unit id="webapp_g1_2" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf222</source>\n' +
+                '          <target>baby baby222</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>'
+            );
+
+        const reslist = x.getResources();
+
+        expect(reslist).toBeTruthy();
+        expect(reslist.length).toBe(2);
+
+        expect(reslist[0].getSource()).toBe("Asdf asdf");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getTarget()).toBeTruthy();
+        expect(reslist[0].getTargetLocale()).toBe("de-DE");
+        expect(reslist[0].getKey()).toBe("foobar");
+        expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].resType).toBe("string");
+        expect(reslist[0].getId()).toBe("webapp_g1_1");
+        expect(reslist[0].getResFile()).toBe("foo/bar/de-DE.xliff");
+    });
+
     test("ResourceXliffOptionwebOSXliffAddResource", () => {
         const xf = new webOSXliff();
         expect(xf).toBeTruthy();
@@ -390,6 +436,61 @@ describe("testResourceXliff", () => {
                 '        </segment>\n' +
                 '      </unit>\n' +
                 '      <unit id="webapp_g1_2" name="foobar2">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf2</source>\n' +
+                '          <target>baby baby2</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    }),
+
+    test("ResourceXliffOptionwebOSXliffAddResourceSameKey", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+        debugger;
+        let res = new ResourceString({
+            source: "Asdf asdf",
+            target: "baby baby",
+            sourceLocale: "en-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp"
+        });
+        x.addResource(res);
+
+        res = new ResourceString({
+            source: "Asdf asdf2",
+            target: "baby baby2",
+            sourceLocale: "en-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp"
+        });
+        x.addResource(res);
+        expect(x.size()).toBe(2);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '      <unit id="webapp_g1_2" name="foobar">\n' +
                 '        <segment>\n' +
                 '          <source>Asdf asdf2</source>\n' +
                 '          <target>baby baby2</target>\n' +
