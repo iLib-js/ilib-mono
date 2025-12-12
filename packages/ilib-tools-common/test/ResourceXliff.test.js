@@ -456,7 +456,7 @@ describe("testResourceXliff", () => {
         const x = new ResourceXliff({
             xliff: xf
         });
-        debugger;
+
         let res = new ResourceString({
             source: "Asdf asdf",
             target: "baby baby",
