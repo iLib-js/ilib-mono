@@ -612,6 +612,7 @@ function processNextProject() {
                         });
                     });
                 });
+
             });
         });
     }
@@ -824,7 +825,6 @@ try {
     }
     exitValue = 2;
 }
+
+process.exitCode = exitValue;
 logger.info("Done");
-log4js.shutdown(function() {
-    process.exit(exitValue);
-});
