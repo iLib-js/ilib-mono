@@ -1,5 +1,5 @@
 /*
- * Xliff.js - convert an Xliff file into a set of resources and vice versa
+ * ResourceXliff.js - convert an ResourceXliff file into a set of resources and vice versa
  *
  * Copyright © 2022-2023, 2025 JEDLSoft
  *
@@ -411,7 +411,7 @@ class ResourceXliff {
             return;
         }
 
-        this.ts.add(res,xliffName);
+        this.ts.add(res, xliffName);
     }
 
     getText() {
