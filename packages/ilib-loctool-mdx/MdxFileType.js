@@ -70,7 +70,6 @@ var MdxFileType = function(project) {
  */
 MdxFileType.prototype.init = function(cb) {
     // Initialize the remark-mdx parser (ESM-only package)
-    // Initialize the remark-mdx parser (ESM-only package)
     MdxFile.initMdxParser().then(function () {
         cb();
     }).catch(function (err) {
