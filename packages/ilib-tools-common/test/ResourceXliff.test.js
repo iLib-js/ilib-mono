@@ -388,11 +388,23 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getSourceLocale()).toBe("en-KR");
         expect(reslist[0].getTarget()).toBeTruthy();
         expect(reslist[0].getTargetLocale()).toBe("de-DE");
+        expect(reslist[0].getTarget()).toBe("baby baby");
         expect(reslist[0].getKey()).toBe("foobar");
         expect(reslist[0].getProject()).toBe("webapp");
         expect(reslist[0].resType).toBe("string");
         expect(reslist[0].getId()).toBe("webapp_g1_1");
         expect(reslist[0].getResFile()).toBe("foo/bar/de-DE.xliff");
+
+        expect(reslist[1].getSource()).toBe("Asdf asdf222");
+        expect(reslist[1].getSourceLocale()).toBe("en-KR");
+        expect(reslist[1].getTarget()).toBeTruthy();
+        expect(reslist[1].getTarget()).toBe("baby baby222");
+        expect(reslist[1].getTargetLocale()).toBe("de-DE");
+        expect(reslist[1].getKey()).toBe("foobar");
+        expect(reslist[1].getProject()).toBe("webapp");
+        expect(reslist[1].resType).toBe("string");
+        expect(reslist[1].getId()).toBe("webapp_g1_2");
+        expect(reslist[1].getResFile()).toBe("foo/bar/de-DE.xliff");
     });
 
     test("ResourceXliffOptionwebOSXliffAddResource", () => {
