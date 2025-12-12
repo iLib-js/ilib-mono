@@ -1,5 +1,16 @@
 # loctool
 
+## 2.31.8
+
+### Patch Changes
+
+- 831c004: Fixed a bug where the loctool would exit immediately
+  and not allow a plugin to run if that plugin had an
+  async init method. Now it gives the async code a
+  chance to run before exiting.
+- Updated dependencies [ca616ec]
+  - ilib-tools-common@1.20.1
+
 ## 2.31.7
 
 ### Patch Changes
