@@ -70,13 +70,12 @@ var MdxFileType = function(project) {
  */
 MdxFileType.prototype.init = function(cb) {
     // Initialize the remark-mdx parser (ESM-only package)
-    MdxFile.initMdxParser(function(err) {
-        if (err) {
-            this.logger.error("Failed to initialize remark-mdx parser: " + err.message);
-            this.logger.error(err);
-            // Continue anyway - the error will be caught when parse() is called
-        }
+    // Initialize the remark-mdx parser (ESM-only package)
+    MdxFile.initMdxParser().then(function () {
         cb();
+    }).catch(function (err) {
+        this.logger.error("Failed to initialize remark-mdx parser: " + err.message);
+        this.logger.error(err);
     }.bind(this));
 };
 

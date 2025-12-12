@@ -134,30 +134,11 @@ afterEach(function() {
 
 describe("mdx", function() {
     // Initialize the file types before running tests (required for remark-mdx ESM module)
-    beforeAll(function(done) {
-        var initCount = 0;
-        var totalInits = 3;
-        var hasError = false;
-
-        function checkDone(err) {
-            if (err && !hasError) {
-                hasError = true;
-                done(err);
-                return;
-            }
-            if (!hasError) {
-                initCount++;
-                if (initCount === totalInits) {
-                    done();
-                }
-            }
-        }
-
-        // Start all initializations
-        mdft.init(checkDone);
-        mdft2.init(checkDone);
-        mdft3.init(checkDone);
-    }, 30000); // 30 second timeout for loading ESM module
+    beforeAll(async () => {
+        await Promise.all(
+            [mdft.init, mdft2.init, mdft3.init].map((initFn) => new Promise((resolve) => initFn(resolve)))
+        );
+    });
 
     test("MdxFileConstructor", function() {
         expect.assertions(1);
@@ -1930,19 +1911,19 @@ Dictionary<string, object> metadata = await client.MetadataManager
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '<script type="javascript">\n' +
+            '<script type="javascript">{`\n' +
             'if (window) {\n' +
             '  $(".foo").class("asdf");\n' +
             '}\n' +
-            '</script>\n' +
-            '<style>\n' +
+            '`}</script>\n' +
+            '<style>{`\n' +
             '  .activity_title{\n' +
             '    font-size: 18px;\n' +
             '    font-weight: 300;\n' +
             '    color: #777;\n' +
             '    line-height: 40px;\n' +
             '  }\n' +
-            '</style>\n' +
+            '`}</style>\n' +
             '<span class="foo">foo</span>\n');
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -2439,12 +2420,12 @@ Dictionary<string, object> metadata = await client.MetadataManager
             type: mdft
         });
         expect(mf).toBeTruthy();
-        mf.parse('<script>\n' +
+        mf.parse('<script>{`\n' +
                 '// comment text\n' +
                 'if (locales.contains[thisLocale]) {\n' +
                 '    document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
                 '}\n' +
-                '</script>\n' +
+                '`}</script>\n' +
                 '\n' +
                 'This is a test\n');
         var translations = new TranslationSet();
@@ -2457,11 +2438,14 @@ Dictionary<string, object> metadata = await client.MetadataManager
             targetLocale: "fr-FR",
             datatype: "mdx"
         }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('<script>\n' +
-            '// comment text\n' +
-            'if (locales.contains[thisLocale]) {\n' +
-            '    document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
-            '}\n' +
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            '<script>\n' +
+            '  {`\n' +
+            '    // comment text\n' +
+            '    if (locales.contains[thisLocale]) {\n' +
+            '      document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
+            '    }\n' +
+            '    `}\n' +
             '</script>\n' +
             '\n' +
             'Ceci est un essai\n');

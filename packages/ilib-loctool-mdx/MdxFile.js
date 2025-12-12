@@ -24,7 +24,6 @@ var Node = require("ilib-tree-node");
 var Locale = require("ilib/lib/Locale.js");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
-var unified = require("unified");
 var he = require("he");
 var unistFilter = require('unist-util-filter');
 var u = require('unist-builder');
@@ -33,164 +32,64 @@ var u = require('unist-builder');
 isAlnum._init();
 isIdeo._init();
 
-var htmlTags;
-
-// Lazy initialization for ESM-only remark plugins
-// Latest versions of remark plugins are ESM-only, so we need to use dynamic import()
-// The parser will be initialized via MdxFileType.init() which is called
-// by the loctool's Project.init() method
-var remark = null;
+// Will be initialized in initMdxParser() after ESM modules are loaded
+var htmlTags = null;
 var mdparser = null;
-var remarkParse = null;
-var mdxPlugin = null;
-var frontmatter = null;
-var footnotes = null;
-var mdstringify = null; // Will be initialized in initMdxParser() after ESM modules are loaded
-
+var mdstringify = null;
 
 // Initialize all ESM remark plugins
 // This is called from MdxFileType.init() during project initialization
-function initMdxParser(callback) {
-    if (mdparser) {
-        // Already initialized, call callback immediately
-        if (callback) callback();
+async function initMdxParser() {
+    if (mdparser !== null && mdstringify !== null && htmlTags !== null) {
         return;
     }
-    var htmlTagsJsonFile = path.join(path.dirname(require.resolve("html-tags")), "html-tags.json");
-    htmlTags = JSON.parse(fs.readFileSync(htmlTagsJsonFile, "utf8"));
 
-    // Load all ESM modules sequentially to avoid Jest/VM module linking issues
-    // Some packages have internal dependencies that need to be linked in order
-    // CRITICAL: process.exit() cuts off the event loop before import() promises resolve.
-    // We must ensure the callback is called BEFORE loctool proceeds to process.exit().
-    // Since import() is async, we start the promise chain immediately. The event loop
-    // MUST process it before loctool calls process.exit(). Since loctool uses callbacks,
-    // it should yield to the event loop, allowing the promises to resolve.
-    // The promise is stored on global/module to prevent garbage collection.
-    var importPromise = import("remark").then(function(module) {
-        remark = module.remark || module.default || module;
-        return import("remark-parse");
-    }).then(function(module) {
-        remarkParse = module.default || module;
-        return import("remark-mdx");
-    }).then(function(module) {
-        mdxPlugin = module.default || module;
-        return import("remark-frontmatter");
-    }).then(function(module) {
-        frontmatter = module.default || module;
-        return import("remark-gfm");
-    }).then(function(module) {
-        // remark-gfm includes footnotes support
-        footnotes = module.default || module;
-        return import("remark-stringify");
-    }).then(function(module) {
-        var stringifyModule = module.default || module;
+    htmlTags = (await import("html-tags")).default;
+    const remark = (await import("remark")).remark;
+    const remarkParse = (await import("remark-parse")).default;
+    const remarkMdx = (await import("remark-mdx")).default;
+    const remarkFrontmatter = (await import("remark-frontmatter")).default;
+    const remarkGfm = (await import("remark-gfm")).default;
+    const remarkStringify = (await import("remark-stringify")).default;
+    // remark-mdx extends remark-parse, so we need both
+    // Put frontmatter AFTER mdxPlugin to avoid interfering with MDX expression parsing
+    // Frontmatter processes the AST after parsing, so it should still work
+    // Use remark() instead of unified() to get the base parser functionality
+    // remark() includes remark-parse by default, which handles HTML tags as self-closing
+    // remark-mdx extends remark-parse but replaces HTML parsing with JSX parsing
+    // We need to ensure HTML is parsed before JSX. The issue is that remark-mdx
+    // treats all <tags> as JSX, requiring strict XML closing. Unfortunately, there's
+    // no built-in way to configure this, so we may need to accept that HTML tags
+    // in MDX need to be properly closed or self-closed (<br/> or <br></br>)
+    mdparser = remark().
+        use(remarkParse).
+        use(remarkFrontmatter, ['yaml']).
+        use(remarkMdx).
+        use(remarkGfm);
 
-        // remark-mdx extends remark-parse, so we need both
-        // Put frontmatter AFTER mdxPlugin to avoid interfering with MDX expression parsing
-        // Frontmatter processes the AST after parsing, so it should still work
-        // Use remark() instead of unified() to get the base parser functionality
-        // remark() includes remark-parse by default, which handles HTML tags as self-closing
-        // remark-mdx extends remark-parse but replaces HTML parsing with JSX parsing
-        // We need to ensure HTML is parsed before JSX. The issue is that remark-mdx
-        // treats all <tags> as JSX, requiring strict XML closing. Unfortunately, there's
-        // no built-in way to configure this, so we may need to accept that HTML tags
-        // in MDX need to be properly closed or self-closed (<br/> or <br></br>)
-        mdparser = remark().
-            use(remarkParse).
-            use(frontmatter, ['yaml']).
-            use(mdxPlugin).
-            use(footnotes);
-
-        // Initialize the stringify processor as well
-        // Use remark() instead of unified() to get the base compiler functionality
-        // Include mdxPlugin to handle MDX-specific node types (mdxFlowExpression, mdxJsxTextElement, etc.)
-        mdstringify = remark().
-            use(stringifyModule, {
-                commonmark: true,
-                gfm: true,
-                rule: '-',
-                ruleSpaces: false,
-                bullet: '*',
-                listItemIndent: "one"
-            }).
-            use(mdxPlugin).
-            use(footnotes).
-            use(frontmatter, ['yaml'])();
-
-        if (callback) callback();
-    }).catch(function(err) {
-        console.error("Failed to initialize ilib-loctool-mdx plugin: " + err.message);
-        if (err.stack) {
-            console.error(err.stack);
-        }
-        if (callback) {
-            callback(err);
-        } else {
-            throw err;
-        }
-    });
-
-    // Ensure the promise is tracked and doesn't get garbage collected
-    // Store it on a global or module-level variable to keep it alive
-    // This is critical when called from CommonJS contexts where the promise
-    // might be garbage collected before it resolves
-    process._mdxParserInitPromise = importPromise;
+    // Initialize the stringify processor as well
+    // Use remark() instead of unified() to get the base compiler functionality
+    // Include mdxPlugin to handle MDX-specific node types (mdxFlowExpression, mdxJsxTextElement, etc.)
+    mdstringify = remark().
+        use(remarkStringify, {
+            commonmark: true,
+            gfm: true,
+            rule: '-',
+            ruleSpaces: false,
+            bullet: '*',
+            listItemIndent: "one"
+        }).
+        use(remarkMdx).
+        use(remarkGfm).
+        use(remarkFrontmatter, ['yaml'])();
 }
 
 // The init function will be exported at the end of the file
 
 
 isHtmlTag = function(tag) {
-    return htmlTags && htmlTags.includes(tag);
+    return htmlTags.includes(tag);
 }
-
-function escapeQuotes(str) {
-    var ret = "";
-    if (str.length < 1) {
-        return '';
-    }
-    var inQuote = false;
-
-    for (var i = 0; i < str.length; i++) {
-        switch (str[i]) {
-        case '"':
-            if (inQuote) {
-                if (i+1 < str.length-1 && str[i+1] !== '\n') {
-                    ret += '\\';
-                }
-            } else {
-                inQuote = true;
-            }
-            ret += '"';
-            break;
-        case '\n':
-            inQuote = false;
-            ret += '\n';
-            break;
-        case '\\':
-            if (i+1 < str.length-1) {
-                i++;
-                if (str[i] === '[') {
-                    ret += str[i];
-                } else {
-                    ret += '\\';
-                    if (str[i] !== '\\') {
-                        ret += str[i];
-                    }
-                }
-            } else {
-                ret += '\\';
-            }
-            break;
-        default:
-            ret += str[i];
-            break;
-        }
-    }
-
-    return ret;
-};
 
 /**
  * Create a new Mdx file with the given path name and within
@@ -533,8 +432,6 @@ MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) 
     }
 }
 
-var reTagName = /^<(\/?)\s*(\w+)(\s+((\w+)(\s*=\s*('((\\'|[^'])*)'|"((\\"|[^"])*)"))?)*)*(\/?)>$/;
-var reSelfClosingTag = /<\s*(\w+)\/>$/;
 var reL10NComment = /\/\*\s*[iI]18[Nn]\s*(.*)\s*\*\//;
 
 var reDirectiveComment = /i18n-(en|dis)able\s+(\S*)/;
@@ -877,21 +774,6 @@ MdxFile.prototype.parse = function(data) {
         throw new Error("remark-mdx parser not initialized. The parser must be initialized via MdxFileType.init() " +
             "before calling parse(). This should happen automatically during project initialization.");
     }
-
-    // Pre-process script and style tags to prevent parsing errors
-    // remark-mdx tries to parse {} as JSX expressions, which causes errors
-    // when script/style tags contain JavaScript/CSS with curly braces.
-    // We escape curly braces and angle brackets to prevent JSX/HTML parsing.
-    // Store original content separately for script and style tags
-    this._scriptRestore = [];
-
-    // Replace script and style tags: escape curly braces and angle brackets to prevent parsing
-    data = data.replace(/<script[^>]*>([\s\S]*?)<\/script>|<style[^>]*>([\s\S]*?)<\/style>/gi, function(match, content) {
-        // Escape curly braces (JSX expressions) and angle brackets (HTML tags) to prevent parsing
-        var escapedContent = "{/* " + match + " */}";
-        this._scriptRestore.push(match);
-        return escapedContent;
-    }.bind(this));
 
     try {
         this.ast = mdparser.parse(data);
@@ -1458,18 +1340,6 @@ MdxFile.prototype.localizeText = function(translations, locale) {
     ast = mapToAst(Node.fromArray(nodeArray));
 
     var str = mdstringify.stringify((!this.fullyTranslated || this.translationStatus[locale]) ? ast : this.ast);
-
-    // Restore original content in script and style tags
-    // Replace escaped content with original content in order
-    var scriptIndex = 0;
-    str = str.replace(/\{\/\* (<script[^>]*>([\s\S]*?)<\/script>|<style[^>]*>([\s\S]*?)<\/style>) \*\/\}/gi, function(match, content) {
-        if (scriptIndex < this._scriptRestore.length) {
-            var original = this._scriptRestore[scriptIndex];
-            scriptIndex++;
-            return original;
-        }
-        return match;
-    }.bind(this));
 
     return str;
 };

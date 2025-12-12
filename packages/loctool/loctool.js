@@ -826,15 +826,5 @@ try {
     exitValue = 2;
 }
 
-setImmediate(function() {
-    logger.info("Processing project");
-});
-
-// Wait for all async operations to complete before exiting
-process.on('beforeExit', function(code) {
-    if (!process._loctoolDone) {
-        process._loctoolDone = true;
-        logger.info("Done");
-        process.exitCode = exitValue;
-    }
-});
+process.exitCode = exitValue;
+logger.info("Done");
