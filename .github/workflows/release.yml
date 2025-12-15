@@ -16,27 +16,21 @@ jobs:
     release:
         name: Release
         runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [22]
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v4
+              uses: actions/checkout@v6
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@v6
               with:
-                  node-version: ${{ matrix.node-version }}
+                  node-version: 22.x
                   cache: pnpm
-                  # Fix for ENEEDAUTH error when trying to publish with OIDC in changeset action
-                  # per https://github.com/changesets/changesets/issues/1152#issuecomment-3593077008
-                  registry-url: https://registry.npmjs.org
+                  registry-url: "https://registry.npmjs.org/"
             # Ensure npm 11.5.1 or later is installed so we can publish to npm with OIDC
             # per https://docs.npmjs.com/trusted-publishers#github-actions-configuration
-            # (`changeset publish` calls `pnpm publish` which calls `npm publish` under the hood)
-            - name: Update npm
+            - name: Force update npm
               run: npm install -g npm@latest
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Create Release Pull Request or Publish to npm
