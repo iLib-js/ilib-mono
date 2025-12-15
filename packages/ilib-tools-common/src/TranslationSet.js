@@ -141,6 +141,7 @@ class TranslationSet {
             hashKey  = `${hashKey}_${sourceHash}`;
             cleanKey = `${cleanKey}_${sourceHash}`;
         }
+
         logger.trace("Add a resource. Hash: " + hashKey + " clean: " + cleanKey + " resource:" + JSON.stringify(resource));
 
         existing = this.byHashKey[hashKey];
