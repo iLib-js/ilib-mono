@@ -38,7 +38,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "scripts": {
         "coverage": "pnpm test -- --coverage",

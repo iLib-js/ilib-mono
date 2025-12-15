@@ -51,5 +51,9 @@
         "ilib-tools-common": "workspace:^",
         "jsonpath": "^1.1.1",
         "regenerator-runtime": "^0.14.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
     }
 }

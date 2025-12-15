@@ -42,5 +42,9 @@
         "ilib-locale": "workspace:^",
         "ilib-loctool-po": "workspace:^",
         "ilib-tools-common": "workspace:^"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
     }
 }

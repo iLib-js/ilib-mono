@@ -41,5 +41,9 @@
     "devDependencies": {
         "ilib-internal": "workspace:^",
         "jest": "^29.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
     }
 }
