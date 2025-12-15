@@ -2642,6 +2642,9 @@ importers:
       '@log4js-node/log4js-api':
         specifier: ^1.0.2
         version: 1.0.2
+      ilib-common:
+        specifier: workspace:^
+        version: link:../ilib-common
       ilib-ctype:
         specifier: workspace:^
         version: link:../ilib-ctype
