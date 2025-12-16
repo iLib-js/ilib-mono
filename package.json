@@ -40,6 +40,6 @@
     "@changesets/cli": "^2.29.8",
     "jest-junit": "^16.0.0",
     "semver": "^7.6.3",
-    "turbo": "^2.2.3"
+    "turbo": "^2.6.3"
   }
 }
