@@ -15,6 +15,7 @@ permissions:
 jobs:
     release:
         name: Release
+        environment: Release-testing
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
