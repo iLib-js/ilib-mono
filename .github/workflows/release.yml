@@ -19,6 +19,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v6
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
             - name: Use Node.js 22.x
               uses: actions/setup-node@v6
               with:
@@ -29,8 +31,6 @@ jobs:
             # per https://docs.npmjs.com/trusted-publishers#github-actions-configuration
             - name: Force update npm
               run: npm install -g npm@latest
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Create Release Pull Request or Publish to npm
