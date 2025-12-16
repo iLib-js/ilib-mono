@@ -55,7 +55,7 @@
         "node": ">=12 <23"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "clean": "ant clean",
         "build": "pnpm generate",
         "generate": "node generate/genPluralCategories.js",

@@ -50,7 +50,7 @@
     },
     "scripts": {
         "build": "tsc --project tsconfig.build.json",
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "types": "tsc",
         "test": "node node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test --watch",

@@ -30,28 +30,30 @@ Below is a list of aspect that need to be accounted for when migrating existing 
     -   **Sample Projects**: if any sample projects exist for a given package, they should be wrapped in dedicated E2E tests to verify that they are configured correctly and produce expected output; refer to related packages for examples on how to set them up (e.g. [`ilib-loctool-json`](../packages/ilib-loctool-json/test-e2e/samples.e2e.test.js))
     -   **Coverage**: The package should be configured to report code coverage in PR comments. To enable this:
         1. Create a `jest.config.cjs` file that extends the root configuration:
-           ```javascript
-           const baseConfig = require("../../jest.config.js");
-           
-           const config = {
-             ...baseConfig,
-             displayName: {
-               name: "package-name",
-               color: "blue", // Choose your color from chalk's palette
-             },
-             // Package-specific Jest configuration (if needed)
-           };
-           
-           module.exports = config;
-           ```
+
+            ```javascript
+            const baseConfig = require("../../jest.config.js");
+
+            const config = {
+                ...baseConfig,
+                displayName: {
+                    name: "package-name",
+                    color: "blue", // Choose your color from chalk's palette
+                },
+                // Package-specific Jest configuration (if needed)
+            };
+
+            module.exports = config;
+            ```
+
         2. Add a `coverage` script to `package.json`:
-           ```json
-           {
-             "scripts": {
-               "coverage": "pnpm test -- --coverage"
-             }
-           }
-           ```
+            ```json
+            {
+                "scripts": {
+                    "coverage": "pnpm test --coverage"
+                }
+            }
+            ```
     -   **Doc**: The package can define a `doc` script to generate HTML documentation; it should produce artifacts in `docs` directory; this is not called automatically at any point - remember to run it manually in a PR and commit the generated files
     -   **Publish**: Package should NOT define any custom `version` or `publish` scripts as it will be handled by the monorepo (using changesets and pnpm release, see [release CI workflow](../.github/workflows/release.yml)); while pnpm should call `prepublish` script implicitly, it's recommended that all things needed for publishing should be handled in the `build` script
 -   **Package**
@@ -119,39 +121,39 @@ This checklist below can be pasted into PR description to track the progress of 
 ```markdown
 Package migration checklist:
 
-- [ ] Migrate repo as subtree
-- [ ] Remove old ci config
-- [ ] Remove conditional-install, readd dependencies directly
-- [ ] Link workspace packages
-- [ ] Validate package entrypoints
-- [ ] Ensure all scripts use `pnpm`
-- [ ] Ensure `build` is present (if applicable) and runs everything needed for publishing
-- [ ] Ensure `test` script is present and runs all unit tests
-- [ ] Ensure test scripts don't run `build`
-- [ ] Replace binstub calls in scripts
-- [ ] Run tests for all affected packages and keep fixing until it works
-- [ ] Migrate sample projects and create E2E tests for them
-- [ ] Update `jest` (and related) to latest and rerun tests
-- [ ] Ensure scripts generate files to expected directories
-- [ ] Remove IDE-specific configs
-- [ ] Remove package-specific .gitignore, readd untracked files to root `.gitignore`
-- [ ] Remove unnecessary entries from `files` in `package.json`
-- [ ] Verify nothing's missing from package bundles
-- [ ] Extract changelogs and update to monorepo format, verify changelog autoformatting
-- [ ] Update URLs in package.json to point to the monorepo
-- [ ] Update links in documentation and source code to point to the monorepo
-- [ ] Update copyright year
-- [ ] Check license file and headers
-- [ ] Create patchbump changeset for migrated packages
-- [ ] Regenerate lockfile
-- [ ] Regenerate docs
-- [ ] Configure code coverage reporting
-  - [ ] Add `jest.config.cjs` extending root config
-  - [ ] Add `coverage` script to package.json
+-   [ ] Migrate repo as subtree
+-   [ ] Remove old ci config
+-   [ ] Remove conditional-install, readd dependencies directly
+-   [ ] Link workspace packages
+-   [ ] Validate package entrypoints
+-   [ ] Ensure all scripts use `pnpm`
+-   [ ] Ensure `build` is present (if applicable) and runs everything needed for publishing
+-   [ ] Ensure `test` script is present and runs all unit tests
+-   [ ] Ensure test scripts don't run `build`
+-   [ ] Replace binstub calls in scripts
+-   [ ] Run tests for all affected packages and keep fixing until it works
+-   [ ] Migrate sample projects and create E2E tests for them
+-   [ ] Update `jest` (and related) to latest and rerun tests
+-   [ ] Ensure scripts generate files to expected directories
+-   [ ] Remove IDE-specific configs
+-   [ ] Remove package-specific .gitignore, readd untracked files to root `.gitignore`
+-   [ ] Remove unnecessary entries from `files` in `package.json`
+-   [ ] Verify nothing's missing from package bundles
+-   [ ] Extract changelogs and update to monorepo format, verify changelog autoformatting
+-   [ ] Update URLs in package.json to point to the monorepo
+-   [ ] Update links in documentation and source code to point to the monorepo
+-   [ ] Update copyright year
+-   [ ] Check license file and headers
+-   [ ] Create patchbump changeset for migrated packages
+-   [ ] Regenerate lockfile
+-   [ ] Regenerate docs
+-   [ ] Configure code coverage reporting
+    -   [ ] Add `jest.config.cjs` extending root config
+    -   [ ] Add `coverage` script to package.json
 
 After merge:
 
-- [ ] Sync old tags
-- [ ] Push deprecation notice
-- [ ] Archive old repo
+-   [ ] Sync old tags
+-   [ ] Push deprecation notice
+-   [ ] Archive old repo
 ```

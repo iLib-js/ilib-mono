@@ -44,7 +44,7 @@
         "url": "https://github.com/iLib-js/ilib-mono"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "test": "pnpm test:jest",
         "test:jest": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test:jest --watch",
