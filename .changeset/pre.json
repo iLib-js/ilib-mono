@@ -90,5 +90,7 @@
     "message-accumulator": "3.0.2",
     "tmxtool": "1.0.4"
   },
-  "changesets": []
+  "changesets": [
+    "true-jokes-love"
+  ]
 }

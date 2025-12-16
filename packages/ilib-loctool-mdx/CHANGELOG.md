@@ -1,5 +1,11 @@
 # ilib-loctool-mdx
 
+## 1.0.1-alpha.0
+
+### Patch Changes
+
+- 352a574: No-op bump to test OIDC publishing
+
 ## 1.0.0
 
 ### Major Changes
