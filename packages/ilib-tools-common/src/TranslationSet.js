@@ -1,7 +1,7 @@
 /*
  * TranslationSet.js - a collection of resource strings
  *
- * Copyright © 2016-2017, 2019-2020 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2020, 2025 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  */
 
 import log4js from "@log4js-node/log4js-api";
+import { JSUtils } from "ilib-common";
 
 const logger = log4js.getLogger("tools-common.TranslationSet");
 
@@ -124,13 +125,23 @@ class TranslationSet {
      * resource is added a translation instead.
      *
      * @param {Resource} resource a resource to add to this set
-     */
-    add(resource) {
+    *  @param {String|undefined} xliffName a name of the xliff instance.
+    */
+    add(resource, xliffName) {
         if (!resource) return;
 
         let existing;
-        const key = resource.getKey(), hashKey = resource.hashKey();
-        const cleanKey = resource.cleanHashKey();
+        const key = resource.getKey();
+        let hashKey = resource.hashKey();
+        let cleanKey = resource.cleanHashKey();
+        const isWebOS = xliffName === 'webOSXliff';
+
+        if (isWebOS) {
+            const sourceHash = String(JSUtils.hashCode(resource.getSource()));
+            hashKey  = `${hashKey}_${sourceHash}`;
+            cleanKey = `${cleanKey}_${sourceHash}`;
+        }
+
         logger.trace("Add a resource. Hash: " + hashKey + " clean: " + cleanKey + " resource:" + JSON.stringify(resource));
 
         existing = this.byHashKey[hashKey];
