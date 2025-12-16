@@ -37,14 +37,9 @@
     "run:samples:affected": "pnpm -F '{packages/*/samples/*}[origin/main]' run:sample"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.9",
+    "@changesets/cli": "^2.29.8",
     "jest-junit": "^16.0.0",
     "semver": "^7.6.3",
     "turbo": "^2.2.3"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan@6.0.4.patch"
-    }
   }
 }
