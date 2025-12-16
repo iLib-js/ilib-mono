@@ -4,7 +4,7 @@ name: Release
 on:
     push:
         branches:
-            - fixPublishing3
+            - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -15,7 +15,6 @@ permissions:
 jobs:
     release:
         name: Release
-        environment: Release-testing
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
