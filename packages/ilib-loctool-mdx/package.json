@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-mdx",
-    "version": "1.0.1-alpha.0",
+    "version": "1.0.1-alpha.1",
     "main": "./MdxFileType.js",
     "description": "A loctool plugin that knows how to process mdx (markdown + jsx) files",
     "license": "Apache-2.0",
