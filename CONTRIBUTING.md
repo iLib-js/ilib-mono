@@ -9,18 +9,18 @@ The project status and structure are described in the [README.md](./README.md) f
 
 ## Table of Contents
 
-- [Getting Started](#getting-started)
-- [Environment](#environment)
-- [Coding Guidelines](#coding-guidelines)
-- [Adding a New Package](#adding-a-new-package)
-- [Running Scripts](#running-scripts)
-- [Debugging Pluggable CLI Applications](#debugging-pluggable-cli-applications)
-- [Code Coverage](#code-coverage)
-- [Documentation](#documentation)
-- [Versioning](#versioning)
-- [Publishing](#publishing)
-- [Reporting Issues](#reporting-issues)
-- [License](#license)
+-   [Getting Started](#getting-started)
+-   [Environment](#environment)
+-   [Coding Guidelines](#coding-guidelines)
+-   [Adding a New Package](#adding-a-new-package)
+-   [Running Scripts](#running-scripts)
+-   [Debugging Pluggable CLI Applications](#debugging-pluggable-cli-applications)
+-   [Code Coverage](#code-coverage)
+-   [Documentation](#documentation)
+-   [Versioning](#versioning)
+-   [Publishing](#publishing)
+-   [Reporting Issues](#reporting-issues)
+-   [License](#license)
 
 ## Getting Started
 
@@ -42,17 +42,17 @@ Before contributing, please set up the project on your local machine by followin
 
 Every pull request should include the following:
 
-- Documentation in the code (following the JSDoc/TSDoc standard).
-- Tests.
-- A changelog entry.
+-   Documentation in the code (following the JSDoc/TSDoc standard).
+-   Tests.
+-   A changelog entry.
 
 ## Environment
 
 This project uses the following tools:
 
-- Node.js for running JavaScript code.
-- `pnpm` as the package manager for managing dependencies and supporting workspaces.
-- Turborepo for monorepo task management (caching, parallelization).
+-   Node.js for running JavaScript code.
+-   `pnpm` as the package manager for managing dependencies and supporting workspaces.
+-   Turborepo for monorepo task management (caching, parallelization).
 
 Common commands are aliased in the root [`package.json`](./package.json) scripts.
 
@@ -75,22 +75,22 @@ To manually create a new package, follow these steps:
 2. In the new directory, create a `package.json` file.
 3. Add the following scripts to the new package's `package.json` file to integrate with monorepo tasks (defined in `turbo.json` in the monorepo root directory):
 
-   - `build`
-   - `test`
-   - `doc`
+    - `build`
+    - `test`
+    - `doc`
 
-   These scripts are optional.
+    These scripts are optional.
 
 4. If the new package depends on another package in the monorepo, define this dependency using the workspace protocol in the `dependencies` section of your `packages/<packageName>/package.json`, like this:
-   ```json
-   {
-     "dependencies": {
-       "ilib-common": "workspace:^"
-     }
-   }
-   ```
-   When you run `pnpm publish`, `pnpm` will automatically replace this protocol with the appropriate semver version.
-   You can learn more about `pnpm` workspaces [here](https://pnpm.io/workspaces).
+    ```json
+    {
+        "dependencies": {
+            "ilib-common": "workspace:^"
+        }
+    }
+    ```
+    When you run `pnpm publish`, `pnpm` will automatically replace this protocol with the appropriate semver version.
+    You can learn more about `pnpm` workspaces [here](https://pnpm.io/workspaces).
 
 ## Running Scripts
 
@@ -129,8 +129,8 @@ TBD
 
 There are several ways to run tests:
 
-- For affected package(s) only.
-- For all packages in the monorepo.
+-   For affected package(s) only.
+-   For all packages in the monorepo.
 
 #### 1. Run tests for affected package(s)
 
@@ -170,24 +170,24 @@ pnpm test
 2. Run tests for a single file by passing the file path as an argument to the `pnpm test` command, like this:
 
 ```bash
-pnpm --filter loctool test -- "ResourceConvert.test.js"
+pnpm --filter loctool test "ResourceConvert.test.js"
 ```
 
 Or `cd` into the package directory and run:
 
 ```bash
 # cd packages/package-name
-pnpm test -- "ResourceConvert.test.js"
+pnpm test "ResourceConvert.test.js"
 ```
 
 ## Debugging Pluggable CLI Applications
 
 This monorepo publishes some CLI applications that support plugins; it also publishes those plugins. For example:
 
-- [`loctool`](./packages/loctool)
-  - [`ilib-loctool-json`](./packages/ilib-loctool-json)
-- [`ilib-lint`](./packages/ilib-lint)
-  - [`ilib-lint-react`](./packages/ilib-lint-react)
+-   [`loctool`](./packages/loctool)
+    -   [`ilib-loctool-json`](./packages/ilib-loctool-json)
+-   [`ilib-lint`](./packages/ilib-lint)
+    -   [`ilib-lint-react`](./packages/ilib-lint-react)
 
 To debug these CLI applications with plugins directly within the monorepo, you can use the environment variable [`NODE_PATH`](https://nodejs.org/api/modules.html#loading-from-the-global-folders).
 
@@ -264,12 +264,12 @@ Each package that wants to participate in code coverage reporting needs to:
 const baseConfig = require("../../jest.config.js");
 
 const config = {
-  ...baseConfig,
-  displayName: {
-    name: "package-name",
-    color: "blue", // Choose your color from chalk's palette
-  },
-  // Package-specific Jest configuration (if needed)
+    ...baseConfig,
+    displayName: {
+        name: "package-name",
+        color: "blue", // Choose your color from chalk's palette
+    },
+    // Package-specific Jest configuration (if needed)
 };
 
 module.exports = config;
@@ -278,10 +278,11 @@ module.exports = config;
 The `color` property uses [chalk's color palette](https://github.com/chalk/chalk#colors).
 
 2. Have a `coverage` script in its `package.json`:
+
 ```json
 "scripts": {
   // ...
-  "coverage": "pnpm test -- --coverage"
+  "coverage": "pnpm test --coverage"
 }
 ```
 

@@ -49,13 +49,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
         "node": ">=12 <23"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "clean": "ant clean",
         "build": "pnpm generate",
         "generate": "node generate/genPluralCategories.js",
