@@ -8,14 +8,14 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-permissions:
-    id-token: write # Required for OIDC
-    contents: write
-
 jobs:
     release:
         name: Release
         environment: Release
+        permissions:
+            id-token: write
+            contents: write
+            pull-requests: write
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
