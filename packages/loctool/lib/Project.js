@@ -774,8 +774,11 @@ Project.prototype.close = function(cb) {
                 sourceLocale: this.sourceLocale
             }).filter(function(res) {
                 // no source means nothing to translate, so don't need those resources
-                return res.source || res.sourceArray || res.sourceStrings;
-            }));
+                // also exclude resources with a target locale - those are translations, not extracted source strings
+                var targetLocale = res.getTargetLocale();
+                return (res.source || res.sourceArray || res.sourceStrings) &&
+                    (!targetLocale || targetLocale === this.sourceLocale);
+            }.bind(this)));
 
             if (this.fileTypes[i].modern && this.fileTypes[i].modern.size() > 0) {
                 var modernPath = path.join(dir, base + "-modern.xliff");
