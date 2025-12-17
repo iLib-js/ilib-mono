@@ -1908,6 +1908,21 @@ importers:
         specifier: workspace:^
         version: link:../../../loctool
 
+  packages/ilib-loctool-json/samples/json-resources:
+    dependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
+      ilib-loctool-json:
+        specifier: file:../..
+        version: file:packages/ilib-loctool-json
+      ilib-loctool-json-resource:
+        specifier: file:../../test/ilib-loctool-json-resource
+        version: file:packages/ilib-loctool-json/test/ilib-loctool-json-resource
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
   packages/ilib-loctool-jst:
     dependencies:
       he:
@@ -7533,6 +7548,10 @@ packages:
 
   ilib-loctool-json-resource@file:packages/ilib-loctool-json/test/ilib-loctool-json-resource:
     resolution: {directory: packages/ilib-loctool-json/test/ilib-loctool-json-resource, type: directory}
+
+  ilib-loctool-json@file:packages/ilib-loctool-json:
+    resolution: {directory: packages/ilib-loctool-json, type: directory}
+    engines: {node: '>=12 <23'}
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     resolution: {integrity: sha512-G/20MuXksGohqBfMoHLeuME4u3JwqW8qmAzDoUUCVmalQQYg7dARztde6cxx7VrOoilo4kwS4bt0L+yGs5u0PA==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
@@ -17290,6 +17309,12 @@ snapshots:
   ilib-loctool-json-resource@file:packages/ilib-loctool-json/test/ilib-loctool-json-resource:
     dependencies:
       ilib: 14.21.1
+
+  ilib-loctool-json@file:packages/ilib-loctool-json:
+    dependencies:
+      ilib: 14.21.2
+      json5: 2.2.3
+      micromatch: 4.0.8
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     dependencies:

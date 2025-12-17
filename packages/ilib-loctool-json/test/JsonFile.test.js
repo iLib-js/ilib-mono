@@ -2917,7 +2917,10 @@ describe("resourceFileTypes delegation", () => {
         var projectConfig = {
             name: "resfiletype-test",
             id: "resfiletype-test",
-            sourceLocale: "en-US"
+            sourceLocale: "en-US",
+            resourceDirs: {
+                "json": "resources"
+            }
         };
 
         // Configure resourceFileTypes like a real project.json would
@@ -3011,7 +3014,9 @@ describe("resourceFileTypes delegation", () => {
         // Now write out the resource files
         resFileType.write();
 
-        var outputPath = path.join(base, "testfiles/resources/fr/FR/strings.json");
+        // When delegating to resourceFileType, the resource file type determines the output path
+        // based on its own configuration (resourceDirs + locale), not the JSON mapping template
+        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
         outputPaths.push(outputPath);
 
         expect(fs.existsSync(outputPath)).toBe(true);
@@ -3099,13 +3104,13 @@ describe("resourceFileTypes delegation", () => {
         // Now write out the resource files
         resFileType.write();
 
-        // fr-FR file should exist
-        var frPath = path.join(base, "testfiles/resources/fr/FR/strings.json");
+        // fr-FR file should exist (resource file type determines path)
+        var frPath = path.join(base, "testfiles/resources/fr-FR.json");
         outputPaths.push(frPath);
         expect(fs.existsSync(frPath)).toBe(true);
 
         // en-US file should NOT exist (source locale skipped)
-        var enPath = path.join(base, "testfiles/resources/en/US/strings.json");
+        var enPath = path.join(base, "testfiles/resources/en-US.json");
         outputPaths.push(enPath);
         expect(fs.existsSync(enPath)).toBe(false);
     });
@@ -3153,8 +3158,9 @@ describe("resourceFileTypes delegation", () => {
 
         resFileType.write();
 
-        var frPath = path.join(base, "testfiles/resources/fr/FR/strings.json");
-        var dePath = path.join(base, "testfiles/resources/de/DE/strings.json");
+        // Resource file type determines paths based on its configuration
+        var frPath = path.join(base, "testfiles/resources/fr-FR.json");
+        var dePath = path.join(base, "testfiles/resources/de-DE.json");
         outputPaths.push(frPath);
         outputPaths.push(dePath);
 
@@ -3214,7 +3220,8 @@ describe("resourceFileTypes delegation", () => {
 
         resFileType.write();
 
-        var outputPath = path.join(base, "testfiles/resources/fr/FR/messages.json");
+        // Resource file type determines path based on its configuration
+        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
         outputPaths.push(outputPath);
 
         expect(fs.existsSync(outputPath)).toBe(true);
@@ -3260,7 +3267,8 @@ describe("resourceFileTypes delegation", () => {
 
         resFileType.write();
 
-        var outputPath = path.join(base, "testfiles/resources/fr/FR/arrays.json");
+        // Resource file type determines path based on its configuration
+        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
         outputPaths.push(outputPath);
 
         expect(fs.existsSync(outputPath)).toBe(true);
@@ -3302,7 +3310,8 @@ describe("resourceFileTypes delegation", () => {
 
         resFileType.write();
 
-        var outputPath = path.join(base, "testfiles/resources/fr/FR/messages.json");
+        // Resource file type determines path based on its configuration
+        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
         outputPaths.push(outputPath);
 
         expect(fs.existsSync(outputPath)).toBe(true);
@@ -3339,7 +3348,8 @@ describe("resourceFileTypes delegation", () => {
 
         resFileType.write();
 
-        var outputPath = path.join(base, "testfiles/resources/fr/FR/arrays.json");
+        // Resource file type determines path based on its configuration
+        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
         outputPaths.push(outputPath);
 
         expect(fs.existsSync(outputPath)).toBe(true);

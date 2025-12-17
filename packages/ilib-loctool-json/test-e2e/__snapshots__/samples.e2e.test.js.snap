@@ -47,3 +47,32 @@ exports[`samples json should produce an extracted XLIFF file 1`] = `
   </file>
 </xliff>"
 `;
+
+exports[`samples json-resources should produce an extracted XLIFF file with only source tags 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/strings1.json" source-language="en-US" product-name="sample-json-resources">
+    <body>
+      <trans-unit id="2" resname="greeting" restype="string" datatype="json">
+        <source>Hello</source>
+      </trans-unit>
+      <trans-unit id="4" resname="farewell" restype="string" datatype="json">
+        <source>Goodbye</source>
+      </trans-unit>
+      <trans-unit id="5" resname="untranslated" restype="string" datatype="json">
+        <source>This has no translation</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="src/strings2.json" source-language="en-US" product-name="sample-json-resources">
+    <body>
+      <trans-unit id="1" resname="thank_you" restype="string" datatype="json">
+        <source>Thank you</source>
+      </trans-unit>
+      <trans-unit id="3" resname="welcome" restype="string" datatype="json">
+        <source>Welcome</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

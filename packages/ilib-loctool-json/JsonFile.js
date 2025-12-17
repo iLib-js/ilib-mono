@@ -965,9 +965,9 @@ JsonFile.prototype.localize = function (translations, locales) {
                 var l = new Locale(locales[i]);
                 if (!l.getVariant()) {
                     var locale = locales[i];
-                    var pathName = this.getLocalizedPath(locale);
-                    this.logger.debug("Delegating output to resourceFileType for " + pathName);
-                    var resFile = resFileType.getResourceFile(locale, pathName);
+                    // Don't pass pathName - let the resource file type use its own template
+                    this.logger.debug("Delegating output to resourceFileType for locale " + locale);
+                    var resFile = resFileType.getResourceFile(locale);
 
                     // For each extracted resource, look up its translation and add to the resource file
                     for (var j = 0; j < resources.length; j++) {
