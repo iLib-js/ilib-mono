@@ -1916,9 +1916,6 @@ importers:
       ilib-loctool-json:
         specifier: file:../..
         version: file:packages/ilib-loctool-json
-      ilib-loctool-json-resource:
-        specifier: file:../../test/ilib-loctool-json-resource
-        version: file:packages/ilib-loctool-json/test/ilib-loctool-json-resource
       loctool:
         specifier: workspace:^
         version: link:../../../loctool
