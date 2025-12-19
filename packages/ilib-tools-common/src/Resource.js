@@ -214,6 +214,7 @@ class Resource {
             this.location = props.location; // optional location of the transunits in the xml file
             this.resfile = props.resfile; // optional resource file path
             this.metadata = props.metadata || undefined;
+            this.sourceHash = props.sourceHash || undefined;
         }
 
         this.instances = [];

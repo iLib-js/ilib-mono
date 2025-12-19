@@ -26,6 +26,7 @@ import ResourcePlural from './ResourcePlural.js';
 import TranslationSet from './TranslationSet.js';
 import Location from './Location.js';
 import { isEmpty } from './utils.js';
+import { JSUtils } from "ilib-common";
 
 const logger = log4js.getLogger("tools-common.ResourceXliff");
 
@@ -262,7 +263,8 @@ class ResourceXliff {
                 flavor: tu.flavor,
                 location: new Location(tu.location),
                 resfile: tu.resfile,
-                metadata: tu.metadata
+                metadata: tu.metadata,
+                sourceHash: tu.sourceHash
             });
 
             if (tu.target) {
@@ -349,18 +351,23 @@ class ResourceXliff {
      */
     parse(xml) {
         const tuList = this.xliff.deserialize(xml, this.path);
-        const xliffName = this.xliff.constructor.name;
-
+        const xliffName = this.xliff.getName();
+        const isWebOS = xliffName === 'webOSXliff';
         let res;
+
 
         if (tuList) {
             for (var j = 0; j < tuList.length; j++) {
                 const tu = tuList[j];
 
+                if (isWebOS) {
+                    tu.sourceHash = JSUtils.hashCode(tu.source);
+                }
+
                 switch (tu.resType) {
                 default:
                     res = this.convertTransUnit(tu);
-                    this.ts.add(res, xliffName);
+                    this.ts.add(res);
                     break;
 
                 case "array":
@@ -373,7 +380,7 @@ class ResourceXliff {
                         }
                     } else {
                         res = this.convertTransUnit(tu);
-                        this.ts.add(res, xliffName);
+                        this.ts.add(res);
                     }
                     break;
 
@@ -387,7 +394,7 @@ class ResourceXliff {
                         }
                     } else {
                         res = this.convertTransUnit(tu);
-                        this.ts.add(res, xliffName);
+                        this.ts.add(res);
                     }
                     break;
                 }
@@ -404,14 +411,13 @@ class ResourceXliff {
 
     addResource(res) {
         if (!res) return;
-        const xliffName = this.xliff.constructor.name;
 
         if (res.getTargetLocale() === this.sourceLocale || res.getTargetLocale() === "en") {
             // don't add this one... cannot translate TO the source locale!
             return;
         }
 
-        this.ts.add(res, xliffName);
+        this.ts.add(res);
     }
 
     getText() {

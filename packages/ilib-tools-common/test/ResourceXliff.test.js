@@ -22,6 +22,7 @@ import fs from "fs";
 import { ResourceArray, ResourcePlural, ResourceString, ResourceXliff } from "../src/index.js";
 import { Xliff, TranslationUnit } from "ilib-xliff";
 import { webOSXliff, TranslationUnit as WebOSTU  } from "ilib-xliff-webos";
+import { JSUtils } from "ilib-common";
 
 function diff(a, b) {
     const min = Math.min(a.length, b.length);
@@ -475,7 +476,8 @@ describe("testResourceXliff", () => {
             sourceLocale: "en-KR",
             key: "foobar",
             pathName: "src/index.js",
-            project: "webapp"
+            project: "webapp",
+            sourceHash: JSUtils.hashCode("Asdf asdf")
         });
         x.addResource(res);
 
@@ -485,7 +487,8 @@ describe("testResourceXliff", () => {
             sourceLocale: "en-KR",
             key: "foobar",
             pathName: "src/index.js",
-            project: "webapp"
+            project: "webapp",
+            sourceHash: JSUtils.hashCode("Asdf asdf2")
         });
         x.addResource(res);
         expect(x.size()).toBe(2);

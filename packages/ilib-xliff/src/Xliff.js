@@ -1030,6 +1030,15 @@ class Xliff {
     }
 
     /**
+     * Return the name of this xliff file.
+     *
+     * @returns {String} the name of this xliff
+     */
+    getName() {
+        return this.constructor.name;
+    }
+
+    /**
      * Clear the current xliff file of all translation units and start from scratch. All
      * the settings from the constructor are still kept. Only the translation units are
      * removed.
