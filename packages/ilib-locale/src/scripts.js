@@ -1,7 +1,7 @@
 /*
  * scripts.js - List out the ISO 15924 script codes
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// This file is auto-generated from ucd-full ScriptInfo.json
+// Do not edit manually. Run "pnpm run generate:scripts" to regenerate.
 
 export const iso15924 = {
     "scripts": [
@@ -33,6 +36,7 @@ export const iso15924 = {
         "Bass",
         "Batk",
         "Beng",
+        "Berf",
         "Bhks",
         "Blis",
         "Bopo",
@@ -45,6 +49,7 @@ export const iso15924 = {
         "Cari",
         "Cham",
         "Cher",
+        "Chis",
         "Chrs",
         "Cirt",
         "Copt",
@@ -63,6 +68,7 @@ export const iso15924 = {
         "Elba",
         "Elym",
         "Ethi",
+        "Gara",
         "Geok",
         "Geor",
         "Glag",
@@ -72,6 +78,7 @@ export const iso15924 = {
         "Gran",
         "Grek",
         "Gujr",
+        "Gukh",
         "Guru",
         "Hanb",
         "Hang",
@@ -85,6 +92,7 @@ export const iso15924 = {
         "Hluw",
         "Hmng",
         "Hmnp",
+        "Hntl",
         "Hrkt",
         "Hung",
         "Inds",
@@ -95,6 +103,7 @@ export const iso15924 = {
         "Jurc",
         "Kali",
         "Kana",
+        "Kawi",
         "Khar",
         "Khmr",
         "Khoj",
@@ -103,6 +112,7 @@ export const iso15924 = {
         "Knda",
         "Kore",
         "Kpel",
+        "Krai",
         "Kthi",
         "Lana",
         "Laoo",
@@ -136,6 +146,7 @@ export const iso15924 = {
         "Mtei",
         "Mult",
         "Mymr",
+        "Nagm",
         "Nand",
         "Narb",
         "Nbat",
@@ -146,23 +157,29 @@ export const iso15924 = {
         "Nshu",
         "Ogam",
         "Olck",
+        "Onao",
         "Orkh",
         "Orya",
         "Osge",
         "Osma",
+        "Ougr",
         "Palm",
         "Pauc",
+        "Pcun",
+        "Pelm",
         "Perm",
         "Phag",
         "Phli",
         "Phlp",
         "Phlv",
         "Phnx",
-        "Plrd",
         "Piqd",
+        "Plrd",
         "Prti",
+        "Psin",
         "Qaaa",
         "Qabx",
+        "Ranj",
         "Rjng",
         "Rohg",
         "Roro",
@@ -171,11 +188,13 @@ export const iso15924 = {
         "Sara",
         "Sarb",
         "Saur",
+        "Seal",
         "Sgnw",
         "Shaw",
         "Shrd",
         "Shui",
         "Sidd",
+        "Sidt",
         "Sind",
         "Sinh",
         "Sogd",
@@ -183,6 +202,7 @@ export const iso15924 = {
         "Sora",
         "Soyo",
         "Sund",
+        "Sunu",
         "Sylo",
         "Syrc",
         "Syre",
@@ -195,6 +215,7 @@ export const iso15924 = {
         "Taml",
         "Tang",
         "Tavt",
+        "Tayo",
         "Telu",
         "Teng",
         "Tfng",
@@ -203,10 +224,15 @@ export const iso15924 = {
         "Thai",
         "Tibt",
         "Tirh",
+        "Tnsa",
+        "Todr",
+        "Tols",
         "Toto",
+        "Tutg",
         "Ugar",
         "Vaii",
         "Visp",
+        "Vith",
         "Wara",
         "Wcho",
         "Wole",
