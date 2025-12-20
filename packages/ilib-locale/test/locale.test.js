@@ -945,4 +945,30 @@ describe("testLocale", () => {
         expect(loc !== null).toBeTruthy();
         expect(loc.isValid()).toBeTruthy();
     });
+
+    test("LocaleParsePrivateUseSubtag", () => {
+        expect.assertions(5);
+        // BCP-47 private use subtag "x-pseudo" should become the variant
+        let loc = new Locale("en-x-pseudo");
+
+        expect(loc !== null).toBeTruthy();
+
+        expect(loc.getLanguage()).toBe("en");
+        expect(typeof(loc.getRegion()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(loc.getVariant()).toBe("x-pseudo");
+    });
+
+    test("LocaleParsePrivateUseSubtagLonger", () => {
+        expect.assertions(5);
+        // BCP-47 private use subtag "x-sort-phonebook" should become the variant
+        let loc = new Locale("en-x-sort-phonebook");
+
+        expect(loc !== null).toBeTruthy();
+
+        expect(loc.getLanguage()).toBe("en");
+        expect(typeof(loc.getRegion()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(loc.getVariant()).toBe("x-sort-phonebook");
+    });
 });

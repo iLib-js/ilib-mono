@@ -93,6 +93,27 @@ codes in the ISO standard that governs that part:
   standard or a 3 digit code from the [UN M49](https://en.wikipedia.org/wiki/UN_M49)
   standard or the [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric) numeric-3 standard.
 
+## Private Use Subtags
+
+BCP-47 defines a "private use" subtag mechanism that allows for custom locale
+extensions. These subtags start with the singleton `x` followed by one or more
+custom subtags. The parser recognizes this pattern and preserves the entire
+private use subtag (including the `x-` prefix) as the variant.
+
+```javascript
+var l = new Locale("en-x-pseudo");
+console.log("Language: " + l.getLanguage()); // outputs "en"
+console.log("Variant: " + l.getVariant()); // outputs "x-pseudo"
+
+var l2 = new Locale("en-US-x-sort-phonebook");
+console.log("Language: " + l2.getLanguage()); // outputs "en"
+console.log("Region: " + l2.getRegion()); // outputs "US"
+console.log("Variant: " + l2.getVariant()); // outputs "x-sort-phonebook"
+```
+
+This is useful for specifying custom locale variations such as pseudo-localization
+(`x-pseudo`), custom sorting orders, or other application-specific locale extensions.
+
 # License
 
 Copyright © 2021-2025, JEDLSoft

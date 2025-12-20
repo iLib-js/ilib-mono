@@ -114,7 +114,16 @@ class Locale {
             if (typeof(spec) === 'string') {
                 const parts = spec.split(/[-_]/g);
                 for (let i = 0; i < parts.length; i++ ) {
-                    if (Locale._isLanguageCode(parts[i])) {
+                    // Check for BCP-47 private use subtag singleton "x"
+                    // Everything from "x" onwards becomes the variant
+                    if (parts[i] === 'x' && i < parts.length - 1) {
+                        /**
+                         * @private
+                         * @type {string|undefined}
+                         */
+                        this.variant = parts.slice(i).join('-');
+                        break;
+                    } else if (Locale._isLanguageCode(parts[i])) {
                         /**
                          * @private
                          * @type {string|undefined}
