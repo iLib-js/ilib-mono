@@ -93,12 +93,43 @@ codes in the ISO standard that governs that part:
   standard or a 3 digit code from the [UN M49](https://en.wikipedia.org/wiki/UN_M49)
   standard or the [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric) numeric-3 standard.
 
-## Private Use Subtags
+## Extension Subtags
 
-BCP-47 defines a "private use" subtag mechanism that allows for custom locale
-extensions. These subtags start with the singleton `x` followed by one or more
-custom subtags. The parser recognizes this pattern and preserves the entire
-private use subtag (including the `x-` prefix) as the variant.
+BCP-47 defines extension subtags that allow for additional locale information
+beyond the basic language, script, region, and variant. Extensions are introduced
+by a single-letter singleton followed by one or more subtags.
+
+### Unicode Locale Extensions (`u`)
+
+The `u` extension is used for Unicode locale extensions such as collation order,
+numbering system, and calendar type:
+
+```javascript
+var l = new Locale("de-DE-u-co-phonebk");
+console.log("Language: " + l.getLanguage()); // outputs "de"
+console.log("Region: " + l.getRegion()); // outputs "DE"
+console.log("Variant: " + l.getVariant()); // outputs "u-co-phonebk"
+
+var l2 = new Locale("zh-Hans-CN-u-nu-hanidec");
+console.log("Language: " + l2.getLanguage()); // outputs "zh"
+console.log("Script: " + l2.getScript()); // outputs "Hans"
+console.log("Region: " + l2.getRegion()); // outputs "CN"
+console.log("Variant: " + l2.getVariant()); // outputs "u-nu-hanidec"
+```
+
+### Transformed Content Extensions (`t`)
+
+The `t` extension indicates transformed content, such as transliterated text:
+
+```javascript
+var l = new Locale("en-t-ja");
+console.log("Language: " + l.getLanguage()); // outputs "en"
+console.log("Variant: " + l.getVariant()); // outputs "t-ja"
+```
+
+### Private Use Subtags (`x`)
+
+The `x` singleton introduces private use subtags for custom locale extensions:
 
 ```javascript
 var l = new Locale("en-x-pseudo");
@@ -113,6 +144,27 @@ console.log("Variant: " + l2.getVariant()); // outputs "x-sort-phonebook"
 
 This is useful for specifying custom locale variations such as pseudo-localization
 (`x-pseudo`), custom sorting orders, or other application-specific locale extensions.
+
+## Multiple Variants
+
+BCP-47 allows multiple variant subtags in a locale specifier. The parser preserves
+all variants, concatenating them with hyphens:
+
+```javascript
+var l = new Locale("sl-IT-nedis-rozaj");
+console.log("Language: " + l.getLanguage()); // outputs "sl"
+console.log("Region: " + l.getRegion()); // outputs "IT"
+console.log("Variant: " + l.getVariant()); // outputs "nedis-rozaj"
+```
+
+Variants can also be combined with extension subtags:
+
+```javascript
+var l = new Locale("ca-ES-valencia-u-co-trad");
+console.log("Language: " + l.getLanguage()); // outputs "ca"
+console.log("Region: " + l.getRegion()); // outputs "ES"
+console.log("Variant: " + l.getVariant()); // outputs "valencia-u-co-trad"
+```
 
 # License
 

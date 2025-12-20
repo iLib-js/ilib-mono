@@ -971,4 +971,74 @@ describe("testLocale", () => {
         expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
         expect(loc.getVariant()).toBe("x-sort-phonebook");
     });
+
+    test("LocaleParseUnicodeExtensionSubtag", () => {
+        expect.assertions(5);
+        // BCP-47 Unicode extension "u-co-phonebk" for phonebook collation
+        let loc = new Locale("de-DE-u-co-phonebk");
+
+        expect(loc !== null).toBeTruthy();
+
+        expect(loc.getLanguage()).toBe("de");
+        expect(loc.getRegion()).toBe("DE");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        // The "u" extension should be preserved as the variant
+        expect(loc.getVariant()).toBe("u-co-phonebk");
+    });
+
+    test("LocaleParseUnicodeExtensionSubtagWithScript", () => {
+        expect.assertions(5);
+        // BCP-47 Unicode extension with script included
+        let loc = new Locale("zh-Hans-CN-u-nu-hanidec");
+
+        expect(loc !== null).toBeTruthy();
+
+        expect(loc.getLanguage()).toBe("zh");
+        expect(loc.getScript()).toBe("Hans");
+        expect(loc.getRegion()).toBe("CN");
+        // The "u" extension for numbering system should be preserved
+        expect(loc.getVariant()).toBe("u-nu-hanidec");
+    });
+
+    test("LocaleParseTransformedExtensionSubtag", () => {
+        expect.assertions(5);
+        // BCP-47 "t" extension for transformed content
+        let loc = new Locale("en-t-ja");
+
+        expect(loc !== null).toBeTruthy();
+
+        expect(loc.getLanguage()).toBe("en");
+        expect(typeof(loc.getRegion()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        // The "t" extension should be preserved as the variant
+        expect(loc.getVariant()).toBe("t-ja");
+    });
+
+    test("LocaleParseMultipleVariants", () => {
+        expect.assertions(5);
+        // BCP-47 allows multiple variant subtags
+        let loc = new Locale("sl-IT-nedis-rozaj");
+
+        expect(loc !== null).toBeTruthy();
+
+        expect(loc.getLanguage()).toBe("sl");
+        expect(loc.getRegion()).toBe("IT");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        // Both variants should be preserved
+        expect(loc.getVariant()).toBe("nedis-rozaj");
+    });
+
+    test("LocaleParseVariantWithExtension", () => {
+        expect.assertions(5);
+        // Combination of variant and extension
+        let loc = new Locale("ca-ES-valencia-u-co-trad");
+
+        expect(loc !== null).toBeTruthy();
+
+        expect(loc.getLanguage()).toBe("ca");
+        expect(loc.getRegion()).toBe("ES");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        // Both the variant "valencia" and the extension should be preserved
+        expect(loc.getVariant()).toBe("valencia-u-co-trad");
+    });
 });
