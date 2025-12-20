@@ -77,4 +77,30 @@ describe("samples", () => {
             expectFileToMatchSnapshot(xliffPath);
         });
     });
+
+    describe("json-resources", () => {
+        /** @type {FSSnapshot} */
+        let fsSnapshot;
+        const projectPath = path.resolve(__dirname, "..", "samples", "json-resources");
+        const xliffPath = path.resolve(projectPath, "sample-json-resources-extracted.xliff");
+
+        beforeAll(async () => {
+            fsSnapshot = FSSnapshot.create(
+                [
+                    "sample-json-resources-extracted.xliff",
+                    "resources",
+                ].map((p) => path.resolve(projectPath, p))
+            );
+            const loctool = new LoctoolRunner(projectPath);
+            await loctool.run("localize");
+        });
+
+        afterAll(() => {
+            fsSnapshot.restore();
+        });
+
+        it("should produce an extracted XLIFF file with only source tags", () => {
+            expectFileToMatchSnapshot(xliffPath);
+        });
+    });
 });
