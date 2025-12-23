@@ -233,6 +233,27 @@ ResourceString.cleanHashKey = function(project, locale, reskey, datatype, flavor
 };
 
 /**
+ * Calculate a resource hash key without trimming edge whitespace.
+ *
+ * This variant normalizes internal whitespace (multiple spaces, tabs, newlines)
+ * into a single space, but preserves leading and trailing whitespace in reskey.
+ *
+ * @param {String} project the project of the string
+ * @param {String} locale the locale of the string
+ * @param {String} reskey the key of the string
+ * @param {String} datatype the datatype of the string
+ * @param {String} flavor the flavor of the string
+ * @static
+ * @return {String} a hash key
+ */
+ResourceString.cleanHashKeyNoTrim = function(project, locale, reskey, datatype, flavor) {
+    var cleaned = reskey && reskey.replace(/\s+/g, " ") || "";
+    var key = ["rs", project, locale, cleaned, datatype, flavor].join("_");
+    logger.trace("cleanHashKeyNoTrim -> " + key);
+    return key;
+};
+
+/**
  * Return the a hash key that uniquely identifies this resource.
  *
  *  @return {String} a unique hash key for this resource
@@ -264,6 +285,16 @@ ResourceString.prototype.cleanHashKey = function() {
 };
 
 /**
+ * Return a hash key that uniquely identifies this resource, with cleaned but without trimming
+ *
+ *  @return {String} a unique hash key for this resource, with cleaned but without trimming
+ */
+ResourceString.prototype.cleanHashKeyNoTrim = function() {
+    var locale = this.targetLocale || this.getSourceLocale();
+    return ResourceString.cleanHashKeyNoTrim(this.project, locale, this.reskey, this.datatype, this.flavor);
+};
+
+/**
  * Return the a hash key that uniquely identifies the translation of
  * this resource to the given locale, but cleaned
  *
@@ -272,6 +303,17 @@ ResourceString.prototype.cleanHashKey = function() {
  */
 ResourceString.prototype.cleanHashKeyForTranslation = function(locale) {
     return ResourceString.cleanHashKey(this.project, locale, this.reskey, this.datatype, this.flavor);
+};
+
+/**
+ * Return the a hash key that uniquely identifies the translation of
+ * this resource to the given locale, with cleaned but without trimming
+ *
+ * @param {String} locale a locale spec of the desired translation
+ * @return {String} a unique hash key for this resource's string
+ */
+ResourceString.prototype.cleanHashKeyNoTrimForTranslation = function(locale) {
+    return ResourceString.cleanHashKeyNoTrim(this.project, locale, this.reskey, this.datatype, this.flavor);
 };
 
 /**
@@ -293,3 +335,4 @@ ResourceString.prototype.isInstance = function(resource) {
 };
 
 module.exports = ResourceString;
+
