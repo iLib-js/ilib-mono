@@ -1016,7 +1016,6 @@ describe("resourcestring", function() {
 
         expect(rs.cleanHashKey()).toBe("crs_custom-app_foobar_de-DE_This is a test_x-qml_");
     });
-
     test("ContextResourceStringSourceOnlyHashKey", function() {
         expect.assertions(2);
 
@@ -1287,5 +1286,55 @@ describe("resourcestring", function() {
 
         expect(rs.hashKey()).toBe("scrs_qmlqpp_foobar_en-US_This is a test_x-qml__r654479252");
     });
+    test("ResourceStringHashKeyWithSpaces", function() {
+        expect.assertions(2);
 
+        var rs = new ResourceString({
+            project: "iosapp",
+            key: "Good     Morning ",
+            source: "Good     Morning ",
+            sourceLocale: "en-US",
+            target: "Guten Morgen.",
+            targetLocale: "de-DE",
+            pathName: "a/b/c.java",
+            datatype: "html"
+        });
+        expect(rs).toBeTruthy();
+
+        expect(rs.hashKey()).toBe("rs_iosapp_de-DE_Good     Morning _html_");
+    });
+    test("ResourceStringCleanHashKey", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            project: "iosapp",
+            key: "Good     Morning ",
+            source: "Good     Morning ",
+            sourceLocale: "en-US",
+            target: "Guten Morgen.",
+            targetLocale: "de-DE",
+            pathName: "a/b/c.java",
+            datatype: "html"
+        });
+        expect(rs).toBeTruthy();
+
+        expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_Good Morning_html_");
+    });
+    test("ResourceStringCleanHashKeyNoTrim", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            project: "iosapp",
+            key: "Good     Morning ",
+            source: "Good     Morning ",
+            sourceLocale: "en-US",
+            target: "Guten Morgen.",
+            targetLocale: "de-DE",
+            pathName: "a/b/c.java",
+            datatype: "html"
+        });
+        expect(rs).toBeTruthy();
+
+        expect(rs.cleanHashKeyNoTrim()).toBe("rs_iosapp_de-DE_Good Morning _html_");
+    });
 });
