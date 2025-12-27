@@ -362,11 +362,11 @@ class ParsedDataCache {
      */
     async _loadSpecificLocaleFromJsFiles(locale, roots, basename) {
         const localeSpec = locale === null ? 'root' : locale.getSpec();
-        
+
         for (const root of roots) {
             // Try to load the specific locale file
             const extensions = ['.mjs', '.js', '.cjs'];
-            
+
             for (const ext of extensions) {
                 try {
                     const jsPath = `${root}/${localeSpec}${ext}`;
@@ -390,7 +390,7 @@ class ParsedDataCache {
      */
     async _loadSpecificLocaleFromJsonFiles(locale, roots, basename) {
         const localeSpec = locale === null ? 'root' : locale.getSpec();
-        
+
         for (const root of roots) {
             // Try to load the specific locale file
             try {
@@ -414,12 +414,12 @@ class ParsedDataCache {
      */
     _loadSpecificLocaleFromJsFilesSync(locale, roots, basename) {
         const localeSpec = locale === null ? 'root' : locale.getSpec();
-        
+
         for (const root of roots) {
             // Try to load the specific locale file
             const moduleType = this._getModuleTypeSync(root);
             const extensions = (moduleType === 'module') ? ['.cjs'] : ['.js', '.cjs'];
-            
+
             for (const ext of extensions) {
                 try {
                     const jsPath = `${root}/${localeSpec}${ext}`;
@@ -443,7 +443,7 @@ class ParsedDataCache {
      */
     _loadSpecificLocaleFromJsonFilesSync(locale, roots, basename) {
         const localeSpec = locale === null ? 'root' : locale.getSpec();
-        
+
         for (const root of roots) {
             // Try to load the specific locale file
             try {

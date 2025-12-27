@@ -101,7 +101,7 @@ class MergedDataCache {
                     break; // Found data, move to next root
                 }
             }
-            
+
             if (dataLoaded) {
                 break; // Found data, move to next root
             }
@@ -215,7 +215,7 @@ class MergedDataCache {
                     break; // Found data, move to next root
                 }
             }
-            
+
             if (dataLoaded) {
                 break; // Found data, move to next root
             }
@@ -299,9 +299,25 @@ class MergedDataCache {
             return false;
         }
 
-        // Create cache key and check if data exists
-        const mergedCacheKey = this._createMergedCacheKey(loc, roots, basename);
-        return this.dataCache.getFileData(mergedCacheKey) !== undefined;
+        // If basename is specified, check for exact match
+        if (basename) {
+            const mergedCacheKey = this._createMergedCacheKey(loc, roots, basename);
+            return this.dataCache.getFileData(mergedCacheKey) !== undefined;
+        }
+
+        // If no basename specified, check if ANY data exists for this locale
+        // by searching for cache keys that match the locale and roots
+        const localeSpec = loc.getSpec();
+        const rootsHash = roots.join('|');
+        const keyPrefix = `merged:${localeSpec}:`;
+        const keySuffix = `:${rootsHash}:`;
+
+        for (const key of this.dataCache.fileData.keys()) {
+            if (key.startsWith(keyPrefix) && key.includes(keySuffix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -379,6 +395,9 @@ class MergedDataCache {
      * This method defers to ParsedDataCache for data interpretation and storage.
      * No merging is performed - that will happen later when loadMergedData is called.
      *
+     * After storing parsed data, this method invalidates any merged cache entries
+     * for the affected basenames, since the new parsed data may change the merged results.
+     *
      * @param {Object} data - The locale data in the above format
      * @param {string} root - The root from which this data was loaded
      */
@@ -387,8 +406,51 @@ class MergedDataCache {
             return;
         }
 
+        // Collect all basenames being stored
+        const basenames = new Set();
+        for (const [localeSpec, localeData] of Object.entries(data)) {
+            if (localeData && typeof localeData === 'object') {
+                for (const basename of Object.keys(localeData)) {
+                    basenames.add(basename);
+                }
+            }
+        }
+
+        // First, store the parsed data at the lower level
         this.parsedDataCache.storeData(data, root);
-        return;
+
+        // Then, invalidate merged cache entries for these basenames at the current level
+        this._invalidateMergedCacheForBasenames(basenames);
+    }
+
+    /**
+     * Invalidate merged cache entries for the given basenames.
+     * This is called after new parsed data is stored to ensure
+     * that subsequent loadMergedData calls will re-merge with the new data.
+     *
+     * @private
+     * @param {Set<string>} basenames - Set of basenames to invalidate
+     */
+    _invalidateMergedCacheForBasenames(basenames) {
+        if (!basenames || basenames.size === 0) {
+            return;
+        }
+
+        const keysToDelete = [];
+        for (const key of this.dataCache.fileData.keys()) {
+            if (key.startsWith('merged:')) {
+                // Key format: merged:${localeSpec}:${basename}:${rootsHash}:${optionsHash}
+                const parts = key.split(':');
+                const basename = parts[2];
+                if (basenames.has(basename)) {
+                    keysToDelete.push(key);
+                }
+            }
+        }
+
+        for (const key of keysToDelete) {
+            this.dataCache.fileData.delete(key);
+        }
     }
 
     /**
@@ -434,9 +496,10 @@ class MergedDataCache {
 
         // Build list of files to merge based on merge preferences
         if (this.crossRoots) {
-            // Merge across all roots
+            // Merge across all roots - process roots in reverse order so earlier roots win
+            // (earlier roots are processed last, so they overwrite later roots during merge)
             for (const sublocale of subLocales) {
-                for (const root of roots) {
+                for (const root of [...roots].reverse()) {
                     const localeObj = sublocale === 'root' ? null : new Locale(sublocale);
                     const data = this.parsedDataCache.getCachedData(root, basename, localeObj);
                     if (data !== undefined) {

@@ -65,7 +65,7 @@ describe("LocaleDataWeb", () => {
         LocaleData.clearGlobalRoots();
         LocaleData.addGlobalRoot("./test/files3");
 
-        expect(!LocaleData.checkCache("de-DE", "info")).toBe(true);
+        expect(!locData.checkCache("de-DE", "info")).toBe(true);
 
         // we request sync loading but the loader does
         // not support it and the data is not already
@@ -94,7 +94,7 @@ describe("LocaleDataWeb", () => {
         LocaleData.addGlobalRoot("./test/files3");
 
         await LocaleData.ensureLocale("de-DE");
-        expect(LocaleData.checkCache("de-DE", "info")).toBe(true);
+        expect(locData.checkCache("de-DE", "info")).toBe(true);
 
         // we request sync loading but the loader does
         // not support it. But, the data is already

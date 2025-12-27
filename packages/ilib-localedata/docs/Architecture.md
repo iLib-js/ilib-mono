@@ -115,7 +115,7 @@ The system implements intelligent fallback strategies:
 ## Architecture Layers
 
 ### Layer 1: Loader
-**File**: `ilib-loader` package  
+**File**: `ilib-loader` package
 **Responsibility**: Platform-specific file loading operations
 
 The Loader is the lowest level abstraction that handles the actual file system operations. Different platforms (Node.js, browser, etc.) implement different loaders, but all must support:
@@ -129,7 +129,7 @@ The Loader is the lowest level abstraction that handles the actual file system o
 - `supportsSync()` - Check if sync operations are supported
 
 ### Layer 2: FileCache
-**File**: `src/FileCache.js`  
+**File**: `src/FileCache.js`
 **Responsibility**: Promise caching and raw file data storage
 
 FileCache sits above the Loader and implements the critical promise caching mechanism. It ensures that:
@@ -146,7 +146,7 @@ FileCache sits above the Loader and implements the critical promise caching mech
 The FileCache implements a sophisticated promise caching mechanism that prevents race conditions by ensuring multiple requests for the same file wait on the same promise. When a file is requested, the cache first checks if a promise for that file already exists. If found, it returns the existing promise, allowing multiple callers to wait on the same file load operation. If no promise exists, it creates a new one, caches it, and returns it to the caller.
 
 ### Layer 3: ParsedDataCache
-**File**: `src/ParsedDataCache.js`  
+**File**: `src/ParsedDataCache.js`
 **Responsibility**: Data parsing, caching, and file discovery
 
 ParsedDataCache handles all file-related operations and implements intelligent caching. It:
@@ -173,7 +173,7 @@ The system follows a hierarchical approach to locate locale data files:
 5. **Data Extraction**: Loads and parses the found file, extracting the relevant locale data
 
 ### Layer 4: MergedDataCache
-**File**: `src/MergedDataCache.js`  
+**File**: `src/MergedDataCache.js`
 **Responsibility**: Data merging and final result caching
 
 MergedDataCache operates purely on already-parsed data from ParsedDataCache. It:
@@ -193,7 +193,7 @@ MergedDataCache operates purely on already-parsed data from ParsedDataCache. It:
 The MergedDataCache implements CSS-like cascading where more specific locale data overrides less specific data. The system follows a predefined order: root locale data serves as the base, followed by language-specific data, then region-specific data, and finally the most specific locale combination. The cache supports configurable merge strategies, allowing users to choose between returning only the most specific data available or merging all data in the fallback chain order.
 
 ### Layer 5: LocaleData
-**File**: `src/LocaleData.js`  
+**File**: `src/LocaleData.js`
 **Responsibility**: External API and user interface
 
 LocaleData provides the public API for the package. It:

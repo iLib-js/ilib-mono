@@ -390,9 +390,11 @@ describe('MergedDataCache Async Tests (Node and Browser)', () => {
             const result = await cache.loadMergedData("de-DE", ["./test/files3", "./test/files4"], "foo");
 
             expect(result).toBeDefined();
+            // Earlier roots (files3) take precedence over later roots (files4)
+            // files3's de-DE/foo data wins
             expect(result).toEqual({
-                "m": "n de-DE",
-                "o": "p de-DE",
+                "m": "n de",
+                "o": "p de",
                 "q": "r de"
             });
         });

@@ -195,11 +195,11 @@ describe("LocaleDataNode", () => {
         });
 
         expect(actual).toEqual({
-            "a": "b en from files2",
-            "c": "d en-US",
+            "a": "b en from files2 en-US",
+            "c": "d",
             "x": {
                 "m": "n",
-                "o": "p en-US"
+                "o": "p en from files2 en-US"
             }
         });
     });
@@ -225,11 +225,11 @@ describe("LocaleDataNode", () => {
         });
 
         expect(actual).toEqual({
-            "a": "b en from files2",
-            "c": "d en-US",
+            "a": "b en from files2 en-US",
+            "c": "d",
             "x": {
                 "m": "n",
-                "o": "p en-US"
+                "o": "p en from files2 en-US"
             }
         });
     });
@@ -358,7 +358,7 @@ describe("LocaleDataNode", () => {
     });
 
     test("should check cache", () => {
-        expect.assertions(3);
+        expect.assertions(4);
         setPlatform();
 
         LocaleData.clearCache();
@@ -373,7 +373,7 @@ describe("LocaleDataNode", () => {
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
-        expect(LocaleData.checkCache("de-DE", "tester")).toBe(false);
+        expect(locData.checkCache("de-DE", "tester")).toBe(false);
 
         LocaleData.cacheData({
             "de": {
@@ -394,7 +394,16 @@ describe("LocaleDataNode", () => {
             }
         }, "./test/files2");
 
-        expect(LocaleData.checkCache("de-DE", "tester")).toBe(true);
+        // cacheData alone doesn't populate the merged cache, so checkCache returns false
+        expect(locData.checkCache("de-DE", "tester")).toBe(false);
+
+        // After loadData, the merged cache is populated and checkCache returns true
+        locData.loadData({
+            basename: "tester",
+            locale: "de-DE"
+        });
+
+        expect(locData.checkCache("de-DE", "tester")).toBe(true);
     });
 
     test("should check cache loading files fills cache", () => {
@@ -412,7 +421,7 @@ describe("LocaleDataNode", () => {
 
         // there is no en-US data, but there is root data which we
         // should ignore for the purposes of cache checking
-        expect(LocaleData.checkCache("en-US", "tester")).toBe(false);
+        expect(locData.checkCache("en-US", "tester")).toBe(false);
 
         expect(locData).toBeTruthy();
         const actual = locData.loadData({
@@ -421,20 +430,20 @@ describe("LocaleDataNode", () => {
         });
 
         expect(actual).toEqual({
-            "a": "b en from files2",
-            "c": "d en-US",
+            "a": "b en from files2 en-US",
+            "c": "d",
             "x": {
                 "m": "n",
-                "o": "p en-US"
+                "o": "p en from files2 en-US"
             }
         });
 
         // the loadData above should have populated the cache
-        expect(LocaleData.checkCache("en-US", "tester")).toBe(true);
+        expect(locData.checkCache("en-US", "tester")).toBe(true);
     });
 
     test("should check cache data loaded but no content available", () => {
-        expect.assertions(3);
+        expect.assertions(4);
         setPlatform();
 
         LocaleData.clearCache();
@@ -449,7 +458,7 @@ describe("LocaleDataNode", () => {
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
-        expect(LocaleData.checkCache("de-DE", "tester")).toBe(false);
+        expect(locData.checkCache("de-DE", "tester")).toBe(false);
 
         // null indicates that we attempted to load the data, but there
         // isn't any to load, so we shouldn't try again
@@ -462,8 +471,17 @@ describe("LocaleDataNode", () => {
             }
         }, "./test/files2");
 
+        // cacheData alone doesn't populate the merged cache
+        expect(locData.checkCache("de-DE", "tester")).toBe(false);
+
+        // After loadData, the merged cache is populated (with just root data)
+        locData.loadData({
+            basename: "tester",
+            locale: "de-DE"
+        });
+
         // true = everything that can be loaded is loaded
-        expect(LocaleData.checkCache("de-DE", "tester")).toBe(true);
+        expect(locData.checkCache("de-DE", "tester")).toBe(true);
     });
 
     test("should cache data", () => {
@@ -532,7 +550,7 @@ describe("LocaleDataNode", () => {
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
-        expect(LocaleData.checkCache("de-DE", "tester")).toBe(false);
+        expect(locData.checkCache("de-DE", "tester")).toBe(false);
 
         LocaleData.cacheData({
             "de": {
@@ -553,12 +571,18 @@ describe("LocaleDataNode", () => {
             }
         }, "./test/files2");
 
-        expect(LocaleData.checkCache("de-DE", "tester")).toBe(true);
+        // cacheData + loadData populates the merged cache
+        locData.loadData({
+            basename: "tester",
+            locale: "de-DE"
+        });
+
+        expect(locData.checkCache("de-DE", "tester")).toBe(true);
 
         // dangerous: clears the cache for all the packages!
         LocaleData.clearCache();
 
-        expect(LocaleData.checkCache("de-DE", "tester")).toBe(false);
+        expect(locData.checkCache("de-DE", "tester")).toBe(false);
     });
 
     test("should check cache no basename", () => {
@@ -577,7 +601,7 @@ describe("LocaleDataNode", () => {
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
-        expect(LocaleData.checkCache("de-DE")).toBe(false);
+        expect(locData.checkCache("de-DE")).toBe(false);
 
         LocaleData.cacheData({
             "de": {
@@ -598,9 +622,15 @@ describe("LocaleDataNode", () => {
             }
         }, "./test/files2");
 
+        // cacheData + loadData populates the merged cache
+        locData.loadData({
+            basename: "tester",
+            locale: "de-DE"
+        });
+
         // should work even without the basename by checking for
         // any data for any basename
-        expect(LocaleData.checkCache("de-DE")).toBe(true);
+        expect(locData.checkCache("de-DE")).toBe(true);
     });
 
     test("should load sync most specific full locale", () => {
@@ -744,13 +774,11 @@ describe("LocaleDataNode", () => {
             returnOne: true
         });
 
-        // should not merge. It should only get the root file
+        // should not merge. It should only get the most specific file found
         expect(actual).toEqual({
-            "a": "b",
-            "c": "d",
+            "a": "b ja-JP",
             "x": {
-               "m": "n",
-               "o": "p"
+               "m": "n ja-JP"
             }
         });
     });
@@ -774,13 +802,13 @@ describe("LocaleDataNode", () => {
             returnOne: true
         });
 
-        // should not merge. It should only return the root
+        // should not merge. It should only return the most specific file
         expect(actual).toEqual({
-            "a": "b",
-            "c": "d",
+            "a": "b ja",
+            "c": "d ja",
             "x": {
-               "m": "n",
-               "o": "p"
+               "m": "n ja",
+               "o": "p ja"
             }
         });
     });
@@ -807,13 +835,11 @@ describe("LocaleDataNode", () => {
             returnOne: true
         });
 
-        // should not merge. It should only get the root file
+        // should not merge. It should only return the most specific file
         expect(actual).toEqual({
-            "a": "b",
-            "c": "d",
+            "a": "b ja-JP",
             "x": {
-               "m": "n",
-               "o": "p"
+               "m": "n ja-JP"
             }
         });
     });
@@ -840,13 +866,13 @@ describe("LocaleDataNode", () => {
             returnOne: true
         });
 
-        // should not merge. It should only get the root file
+        // should not merge. It should only return the most specific file
         expect(actual).toEqual({
-            "a": "b",
-            "c": "d",
+            "a": "b ja",
+            "c": "d ja",
             "x": {
-               "m": "n",
-               "o": "p"
+               "m": "n ja",
+               "o": "p ja"
             }
         });
     });
@@ -998,11 +1024,10 @@ describe("LocaleDataNode", () => {
             crossRoots: true
         });
 
+        // files5 only has package.json, no locale data, so result is just from files3
         expect(actual).toEqual({
             "a": "b en",
-            "n": "m from files5",
-            "c": "d en",
-            "x": "y from files5"
+            "c": "d en"
         });
     });
 

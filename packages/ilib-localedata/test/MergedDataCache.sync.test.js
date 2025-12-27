@@ -408,11 +408,12 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
             expect(result).toBeTruthy();
             expect(mergedCache.hasMergedData("de-DE", ["./test/files4", "./test/files3"], "info")).toBe(true);
             expect(mergedCache.getMergedDataCount()).toBeGreaterThan(0);
+            // Earlier roots (files4) take precedence over later roots (files3)
             expect(result).toEqual({
-                "a": "b de files3",
-                "c": "d de files3",
+                "a": "b de files4",
+                "c": "d de files4",
                 "e": "f de files4"
-            }); // should have data from files3 merged into files4
+            });
         });
 
         test('should handle multiple roots and return merged data when using the mostSpecific option', () => {

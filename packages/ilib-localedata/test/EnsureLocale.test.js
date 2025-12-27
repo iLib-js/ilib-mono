@@ -62,6 +62,10 @@ describe('LocaleData.ensureLocale', () => {
         // Add a test root with some locale data
         LocaleData.addGlobalRoot("./test/files");
 
+        const locData = new LocaleData({
+            path: "./test/files"
+        });
+
         // Call ensureLocale for a locale that exists
         const result = await LocaleData.ensureLocale("en-US");
 
@@ -70,7 +74,7 @@ describe('LocaleData.ensureLocale', () => {
 
         // Verify that if it returns true, the data is actually in cache
         if (result === true) {
-            const cacheResult = LocaleData.checkCache("en-US", "test");
+            const cacheResult = locData.checkCache("en-US", "test");
             expect(cacheResult).toBe(true);
         }
     });
@@ -114,6 +118,10 @@ describe('LocaleData.ensureLocale', () => {
         // Add a test root
         LocaleData.addGlobalRoot("./test/files");
 
+        const locData = new LocaleData({
+            path: "./test/files"
+        });
+
         // First call - should trigger loading
         const promise1 = LocaleData.ensureLocale("nl-NL");
 
@@ -127,7 +135,7 @@ describe('LocaleData.ensureLocale', () => {
 
         // If either returns true, verify data is actually available
         if (result1 === true || result2 === true) {
-            const cacheResult = LocaleData.checkCache("nl-NL", "test");
+            const cacheResult = locData.checkCache("nl-NL", "test");
             expect(cacheResult).toBe(true);
         }
     });

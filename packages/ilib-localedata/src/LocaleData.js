@@ -420,13 +420,13 @@ class LocaleData {
             loc = new Locale("und", loc.getRegion(), loc.getVariant(), loc.getScript());
         }
 
-        if (sync && !this.loader.supportsSync() && !LocaleData.checkCache(loc.getSpec(), basename)) {
+        if (sync && !this.loader.supportsSync() && !this.checkCache(loc.getSpec(), basename)) {
             const lm = new LocaleMatcher({
                 locale: loc.getSpec(),
                 sync: true
             });
             loc = new Locale(lm.getLikelyLocale());
-            if (!LocaleData.checkCache(loc.getSpec(), basename)) {
+            if (!this.checkCache(loc.getSpec(), basename)) {
                 throw "Synchronous load was requested with a loader that does not support synchronous operation" +
                     " and the requested locale data was not already available in the cache.";
             }
@@ -697,9 +697,12 @@ class LocaleData {
      * <li>`loadData` already attempted to load it, whether or not that attempt
      * succeeded
      * <li>The entire locale was already loaded using `ensureLocale`
-     * <li>All the data was already provided statically from the application
-     * using a call to `cacheData`.
      * </ul>
+     *
+     * Note: calling `cacheData` alone does not cause this method to return true.
+     * The `cacheData` method pre-populates data at lower levels of the cache, but
+     * `loadData` must still be called to merge the data. After `loadData` completes,
+     * this method will return true.
      *
      * @param {string} locale full locale of the data to check
      * @param {string|undefined} basename the basename of the data to check. If
@@ -707,25 +710,16 @@ class LocaleData {
      * the given locale
      * @returns {boolean} true if the data is available, false otherwise
      */
-    static checkCache(locale, basename) {
+    checkCache(locale, basename) {
         if (typeof(locale) !== 'string' || (basename && typeof(basename) !== 'string')) {
             return false;
         }
 
-        // Get the list of roots to search
-        const roots = LocaleData.getGlobalRoots();
-        if (roots.length === 0) {
-            roots.push("./locale");
-        }
+        // Get the list of roots to search (includes this.path)
+        const roots = this.getRoots();
 
-        // Get shared MergedDataCache instance for this operation
-        const mergedDataCache = getSharedMergedDataCache();
-        if (!mergedDataCache) {
-            return false;
-        }
-
-        // Check if data exists for the specific basename
-        return mergedDataCache.hasMergedData(locale, roots, basename);
+        // Check if merged data exists in the cache
+        return this.mergedDataCache.hasMergedData(locale, roots, basename);
     }
 
     /**
