@@ -1,12 +1,12 @@
 {
-    "zh": {
+    "zh-Hans-CN": {
         "info": {
-            "a": "b zh",
-            "c": "d zh"
+            "a": "b zh-Hans-CN",
+            "c": "d zh-Hans-CN"
         },
         "foo": {
-            "m": "n zh",
-            "o": "p zh"
+            "m": "n zh-Hans-CN",
+            "o": "p zh-Hans-CN"
         }
     }
 }

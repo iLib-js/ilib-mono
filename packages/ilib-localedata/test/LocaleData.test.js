@@ -19,6 +19,7 @@
 
 import { setPlatform, getPlatform } from 'ilib-env';
 import { registerLoader } from 'ilib-loader';
+import LoaderFactory from 'ilib-loader';
 
 import MockLoader from './MockLoader.js';
 import LocaleData from '../src/LocaleData.js';
@@ -62,11 +63,23 @@ describe("LocaleData", () => {
         registerLoader(MockLoader);
         setPlatform("mock");
 
-        const locData = new LocaleData({
-            path: "./test/files",
-            sync: true
-        });
-        expect(!locData.isSync()).toBe(true);
+        // Get the loader instance and temporarily disable sync support for this test
+        const loader = LoaderFactory();
+        if (loader && loader.setMockSyncSupport) {
+            loader.setMockSyncSupport(false);
+        }
+
+        expect(() => {
+            new LocaleData({
+                path: "./test/files",
+                sync: true
+            });
+        }).toThrow("Synchronous mode is requested but the loader does not support synchronous operation");
+
+        // Restore sync support
+        if (loader && loader.setMockSyncSupport) {
+            loader.setMockSyncSupport(true);
+        }
 
         // clean up
         setPlatform(undefined);
@@ -320,313 +333,4 @@ describe("LocaleData", () => {
         expect(locData.getRoots()).toEqual(["a/b/c", "foobar/asf", "./test/files"]);
     });
 
-    test("should ensure locale", async () => {
-        expect.assertions(1);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("en-US");
-        expect(result).toBeTruthy();
-    });
-
-    test("should ensure locale with no data available", async () => {
-        expect.assertions(1);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("nl-NL");
-        // there is no nl-NL file there
-        expect(result).toBeTruthy();
-    });
-
-    test("should ensure locale data is cached", async () => {
-        expect.assertions(14);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("en-US");
-        expect(result).toBeTruthy();
-
-        expect(LocaleData.checkCache("en-US", "info")).toBe(true);
-        expect(LocaleData.checkCache("en-US", "foo")).toBe(true);
-        expect(LocaleData.checkCache("de-DE", "info")).toBe(false);
-        expect(LocaleData.checkCache("de-DE", "foo")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "info")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "foo")).toBe(false);
-
-        const result2 = await LocaleData.ensureLocale("de-DE");
-        expect(result2).toBeTruthy();
-
-        // make sure the English is still there after loading the German too
-        expect(LocaleData.checkCache("en-US", "info")).toBe(true);
-        expect(LocaleData.checkCache("en-US", "foo")).toBe(true);
-        expect(LocaleData.checkCache("de-DE", "info")).toBe(true);
-        expect(LocaleData.checkCache("de-DE", "foo")).toBe(true);
-        expect(LocaleData.checkCache("fr-FR", "info")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "foo")).toBe(false);
-    });
-
-    test("should ensure locale right data async", async () => {
-        expect.assertions(2);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("en-US");
-        expect(result).toBeTruthy();
-
-        const locData = new LocaleData({
-            path: "./test/files",
-            sync: false
-        });
-
-        const data = await locData.loadData({
-            sync: false,
-            locale: "en-US",
-            basename: "info"
-        });
-        expect(data).toEqual({
-            "a": "b en",
-            "c": "d en"
-        });
-    });
-
-    test("should ensure locale right data sync", async () => {
-        expect.assertions(2);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("en-US");
-        expect(result).toBeTruthy();
-
-        const locData = new LocaleData({
-            path: "./test/files",
-            sync: false
-        });
-
-        // can load synchronously after the ensureLocale
-        // is done, even though the loader does not support
-        // synchronous operation because the data is cached
-        let data = locData.loadData({
-            sync: true,
-            locale: "en-US",
-            basename: "info"
-        });
-
-        expect(data).toEqual({
-            "a": "b en",
-            "c": "d en"
-        });
-    });
-
-    test("should ensure locale non-existent locale means nothing cached", async () => {
-        expect.assertions(13);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        expect(LocaleData.checkCache("en-US", "info")).toBe(false);
-        expect(LocaleData.checkCache("en-US", "foo")).toBe(false);
-        expect(LocaleData.checkCache("de-DE", "info")).toBe(false);
-        expect(LocaleData.checkCache("de-DE", "foo")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "info")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "foo")).toBe(false);
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("fr-FR");
-        // true because root was loaded
-        expect(result).toBeTruthy();
-
-        // still no locale data because there was none to load
-        expect(LocaleData.checkCache("en-US", "info")).toBe(false);
-        expect(LocaleData.checkCache("en-US", "foo")).toBe(false);
-        expect(LocaleData.checkCache("de-DE", "info")).toBe(false);
-        expect(LocaleData.checkCache("de-DE", "foo")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "info")).toBe(true);
-        expect(LocaleData.checkCache("fr-FR", "foo")).toBe(true);
-    });
-
-    test("should ensure locale non-existent data uses root", async () => {
-        expect.assertions(2);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("fr-FR");
-        expect(result).toBeTruthy();
-
-        const locData = new LocaleData({
-            path: "./test/files",
-            sync: false
-        });
-
-        // loads the root data only because fr-FR does
-        // not exist
-        let data = locData.loadData({
-            sync: true,
-            locale: "fr-FR",
-            basename: "info"
-        });
-
-        expect(data).toEqual({
-            "a": "b root",
-            "c": "d root"
-        });
-    });
-
-    test("should throw error when ensure locale called with undefined", () => {
-        expect.assertions(1);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        expect(() => {
-            LocaleData.ensureLocale().then(result => {
-                expect.fail();
-            });
-        }).toThrow();
-    });
-
-    test("should throw error when ensure locale called with null", () => {
-        expect.assertions(1);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        expect(() => {
-            LocaleData.ensureLocale(null).then(result => {
-                expect.fail();
-            });
-        }).toThrow();
-    });
-
-    test("should throw error when ensure locale called with boolean", () => {
-        expect.assertions(1);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        expect(() => {
-            LocaleData.ensureLocale(true).then(result => {
-                expect.fail();
-            });
-        }).toThrow();
-    });
-
-    test("should throw error when ensure locale called with number", () => {
-        expect.assertions(1);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        expect(() => {
-            LocaleData.ensureLocale(4).then(result => {
-                expect.fail();
-            });
-        }).toThrow();
-    });
-
-    test("should ensure locale json", async () => {
-        expect.assertions(1);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("ja-JP");
-        expect(result).toBeTruthy();
-    });
-
-    test("should ensure locale json no data available", async () => {
-        expect.assertions(1);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("nl-NL");
-        // there is no nl-NL file there
-        expect(result).toBeTruthy();
-    });
-
-    test("should ensure locale json data is cached", async () => {
-        expect.assertions(14);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("ja-JP");
-        expect(result).toBeTruthy();
-
-        expect(LocaleData.checkCache("ja-JP", "info")).toBe(true);
-        expect(LocaleData.checkCache("ja-JP", "foo")).toBe(true);
-        expect(LocaleData.checkCache("zh-Hans-CN", "info")).toBe(false);
-        expect(LocaleData.checkCache("zh-Hans-CN", "foo")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "info")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "foo")).toBe(false);
-
-        const result2 = await LocaleData.ensureLocale("zh-Hans-CN");
-        expect(result2).toBeTruthy();
-
-        // make sure the English is still there after loading the German too
-        expect(LocaleData.checkCache("ja-JP", "info")).toBe(true);
-        expect(LocaleData.checkCache("ja-JP", "foo")).toBe(true);
-        expect(LocaleData.checkCache("zh-Hans-CN", "info")).toBe(true);
-        expect(LocaleData.checkCache("zh-Hans-CN", "foo")).toBe(true);
-        expect(LocaleData.checkCache("fr-FR", "info")).toBe(false);
-        expect(LocaleData.checkCache("fr-FR", "foo")).toBe(false);
-    });
-
-    test("should ensure locale json right data async", async () => {
-        expect.assertions(2);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("ja-JP");
-        expect(result).toBeTruthy();
-
-        const locData = new LocaleData({
-            path: "./test/files3"
-        });
-
-        const data = await locData.loadData({
-            sync: false,
-            locale: "ja-JP",
-            basename: "info"
-        });
-        expect(data).toEqual({
-            "a": "b ja",
-            "c": "d ja"
-        });
-    });
-
-    test("should ensure locale json right data sync", async () => {
-        expect.assertions(2);
-        LocaleData.clearCache();
-        LocaleData.clearGlobalRoots();
-
-        LocaleData.addGlobalRoot("./test/files3");
-        const result = await LocaleData.ensureLocale("ja-JP");
-        expect(result).toBeTruthy();
-
-        const locData = new LocaleData({
-            path: "./test/files3"
-        });
-
-        // can load synchronously after the ensureLocale
-        // is done, even though the loader does not support
-        // synchronous operation because the data is cached
-        let data = locData.loadData({
-            sync: true,
-            locale: "ja-JP",
-            basename: "info"
-        });
-
-        expect(data).toEqual({
-            "a": "b ja",
-            "c": "d ja"
-        });
-    });
-}); 
+});

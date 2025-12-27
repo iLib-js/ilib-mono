@@ -122,6 +122,9 @@ class NodeLoader extends Loader {
     loadFile(pathName, options) {
         if (!pathName) return undefined;
         let { sync } = options || {};
+        if (typeof(sync) === "boolean" && sync && !this.sync) {
+            throw new Error("This loader does not support synchronous loading of data.");
+        }
         sync = typeof(sync) === "boolean" ? sync : this.sync;
         const isJs = pathName.endsWith(".js") || pathName.endsWith(".mjs") || pathName.endsWith(".cjs");
         const fullPath = isJs && pathName[0] !== "/" ? path.join(process.cwd(), pathName) : pathName;
@@ -129,6 +132,9 @@ class NodeLoader extends Loader {
         if (sync) {
             try {
                 this.logger.trace(`loadFile: loading file ${pathName} synchronously.`);
+                if (!fs.existsSync(fullPath)) {
+                    return undefined;
+                }
                 if (isJs) {
                     if (pathName.endsWith(".mjs")) {
                         // cannot load ESM modules synchronously
