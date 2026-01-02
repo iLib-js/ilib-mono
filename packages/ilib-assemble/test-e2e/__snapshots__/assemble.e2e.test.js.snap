@@ -1,0 +1,224 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ilib-assemble E2E tests Custom --assemble flag assembles locale data using custom assemble.mjs: de-DE.js 1`] = `
+"export default function getLocaleData() {
+    return     {};
+};"
+`;
+
+exports[`ilib-assemble E2E tests Custom --assemble flag assembles locale data using custom assemble.mjs: en-US.js 1`] = `
+"export default function getLocaleData() {
+    return     {};
+};"
+`;
+
+exports[`ilib-assemble E2E tests Custom --assemble flag assembles locale data using custom assemble.mjs: ja-JP.js 1`] = `
+"export default function getLocaleData() {
+    return     {};
+};"
+`;
+
+exports[`ilib-assemble E2E tests Resources assembly (--resources flag) assembles resource files into locale data: de-DE.js 1`] = `
+"export default function getLocaleData() {
+    return     {
+        "root": {
+            "strings": {
+                "greeting": "Hello",
+                "farewell": "Goodbye",
+                "welcome": "Welcome to our application"
+            }
+        },
+        "de": {
+            "strings": {
+                "greeting": "Hallo",
+                "farewell": "Auf Wiedersehen",
+                "welcome": "Willkommen in unserer Anwendung"
+            }
+        },
+        "de-DE": {
+            "strings": {
+                "greeting": "Guten Tag",
+                "farewell": "Tschüss",
+                "welcome": "Willkommen in unserer App"
+            }
+        }
+    };
+};"
+`;
+
+exports[`ilib-assemble E2E tests Resources assembly (--resources flag) assembles resource files into locale data: en-US.js 1`] = `
+"export default function getLocaleData() {
+    return     {
+        "root": {
+            "strings": {
+                "greeting": "Hello",
+                "farewell": "Goodbye",
+                "welcome": "Welcome to our application"
+            }
+        },
+        "en": {
+            "strings": {
+                "greeting": "Hello",
+                "farewell": "Goodbye",
+                "welcome": "Welcome to our application"
+            }
+        },
+        "en-US": {
+            "strings": {
+                "greeting": "Hey there",
+                "farewell": "See ya",
+                "welcome": "Welcome to our app"
+            }
+        }
+    };
+};"
+`;
+
+exports[`ilib-assemble E2E tests Resources assembly (--resources flag) assembles resource files into locale data: fr-FR.js 1`] = `
+"export default function getLocaleData() {
+    return     {
+        "root": {
+            "strings": {
+                "greeting": "Hello",
+                "farewell": "Goodbye",
+                "welcome": "Welcome to our application"
+            }
+        },
+        "fr": {
+            "strings": {
+                "greeting": "Bonjour",
+                "farewell": "Au revoir",
+                "welcome": "Bienvenue dans notre application"
+            }
+        },
+        "fr-FR": {
+            "strings": {
+                "greeting": "Bonjour",
+                "farewell": "Au revoir",
+                "welcome": "Bienvenue dans notre appli"
+            }
+        }
+    };
+};"
+`;
+
+exports[`ilib-assemble E2E tests Standard ilib module assembly (ilib-istring) assembles locale data from ilib-istring: de-DE.js 1`] = `
+"export default function getLocaleData() {
+    return     {
+        "root": {
+            "plurals": {
+                "one": {
+                    "and": [
+                        {
+                            "eq": [
+                                "i",
+                                1
+                            ]
+                        },
+                        {
+                            "eq": [
+                                "v",
+                                0
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "de": {
+            "plurals": {
+                "one": {
+                    "and": [
+                        {
+                            "eq": [
+                                "i",
+                                1
+                            ]
+                        },
+                        {
+                            "eq": [
+                                "v",
+                                0
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    };
+};"
+`;
+
+exports[`ilib-assemble E2E tests Standard ilib module assembly (ilib-istring) assembles locale data from ilib-istring: en-US.js 1`] = `
+"export default function getLocaleData() {
+    return     {
+        "root": {
+            "plurals": {
+                "one": {
+                    "and": [
+                        {
+                            "eq": [
+                                "i",
+                                1
+                            ]
+                        },
+                        {
+                            "eq": [
+                                "v",
+                                0
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "en": {
+            "plurals": {
+                "one": {
+                    "and": [
+                        {
+                            "eq": [
+                                "i",
+                                1
+                            ]
+                        },
+                        {
+                            "eq": [
+                                "v",
+                                0
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    };
+};"
+`;
+
+exports[`ilib-assemble E2E tests Standard ilib module assembly (ilib-istring) assembles locale data from ilib-istring: ja-JP.js 1`] = `
+"export default function getLocaleData() {
+    return     {
+        "root": {
+            "plurals": {
+                "one": {
+                    "and": [
+                        {
+                            "eq": [
+                                "i",
+                                1
+                            ]
+                        },
+                        {
+                            "eq": [
+                                "v",
+                                0
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    };
+};"
+`;
