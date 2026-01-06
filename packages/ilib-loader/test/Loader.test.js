@@ -50,6 +50,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setSyncMode();
         const content = loader.loadFile("foobar.json", {sync: true});
         expect(content).toBe("foobar.json");
     });
@@ -60,6 +61,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setSyncMode();
         const content = loader.loadFile(undefined, {sync: true});
         expect(!content).toBeTruthy();
     });
@@ -70,6 +72,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setSyncMode();
         const content = loader.loadFile("", {sync: true});
         expect(!content).toBeTruthy();
     });
@@ -80,6 +83,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setSyncMode();
         const content = loader.loadFile("unknown.json", {sync: true});
         expect(!content).toBeTruthy();
     });
@@ -90,6 +94,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setAsyncMode();
         const promise = loader.loadFile("foobar.json", {sync: false});
         return promise.then((content) => {
             expect(content).toBe("foobar.json");
@@ -102,7 +107,8 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
-        const promise = loader.loadFile("foobar.json");
+        loader.setAsyncMode();
+        const promise = loader.loadFile("foobar.json", );
         return promise.then((content) => {
             expect(content).toBe("foobar.json");
         });
@@ -114,6 +120,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setSyncMode();
         const content = loader.loadFiles([
             "foobar.json",
             "asdf.json",
@@ -132,6 +139,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setAsyncMode();
         const promise = loader.loadFiles([
             "foobar.json",
             "asdf.json",
@@ -152,6 +160,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setSyncMode();
         const content = loader.loadFiles([
             "foobar.json",
             undefined,
@@ -170,6 +179,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setSyncMode();
         const content = loader.loadFiles([
             "foobar.json",
             "",
@@ -188,6 +198,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setAsyncMode();
         const promise = loader.loadFiles([
             "foobar.json",
             undefined,
@@ -208,6 +219,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setAsyncMode();
         const promise = loader.loadFiles([
             "foobar.json",
             "",
@@ -228,6 +240,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setSyncMode();
         const content = loader.loadFiles([
             "foobar.json",
             "unknown.json",
@@ -246,6 +259,7 @@ describe("testLoader", () => {
         const loader = LoaderFactory();
         expect(loader.getName()).toBe("Mock Loader");
 
+        loader.setAsyncMode();
         const promise = loader.loadFiles([
             "foobar.json",
             "unknown.json",
@@ -267,6 +281,7 @@ describe("testLoader", () => {
         expect(loader.getName()).toBe("Mock Loader");
         loader.setSyncMode();
 
+        loader.setSyncMode();
         const content = loader.loadFiles([
             "foobar.json",
             "asdf.json",
@@ -286,6 +301,7 @@ describe("testLoader", () => {
         expect(loader.getName()).toBe("Mock Loader");
         loader.setAsyncMode();
 
+        loader.setAsyncMode();
         const promise = loader.loadFiles([
             "foobar.json",
             "asdf.json",

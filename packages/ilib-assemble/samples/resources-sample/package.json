@@ -1,0 +1,15 @@
+{
+    "name": "resources-sample",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "devDependencies": {
+        "ilib-assemble": "workspace:^"
+    },
+    "scripts": {
+        "assemble": "ilib-assemble -l en-US,de-DE,fr-FR -r ./resources ./locale ./src",
+        "start": "node src/index.js",
+        "clean": "rm -rf locale node_modules"
+    }
+}
+

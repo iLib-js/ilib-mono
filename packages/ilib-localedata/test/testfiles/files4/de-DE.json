@@ -1,0 +1,34 @@
+{
+    "root": {
+        "info": {
+            "a": "b root",
+            "c": "d root"
+        },
+        "foo": {
+            "m": "n root",
+            "o": "p root"
+        }
+    },
+    "de": {
+        "foo": {
+            "m": "n de",
+            "o": "p de",
+            "q": "r de"
+        }
+    },
+    "de-DE": {
+        "info": {
+            "a": "b de files4",
+            "c": "d de files4",
+            "e": "f de files4"
+        },
+        "foo": {
+            "m": "n de-DE",
+            "o": "p de-DE"
+        },
+        "bar": {
+            "h": "i de",
+            "j": "k de"
+        }
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "name": "custom-assemble-sample",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "devDependencies": {
+        "ilib-assemble": "workspace:^",
+        "ilib-common": "workspace:^",
+        "json5": "^2.2.3"
+    },
+    "scripts": {
+        "assemble": "ilib-assemble -l en-US,de-DE,ja-JP -a ./assemble.mjs ./locale",
+        "start": "node index.js",
+        "clean": "rm -rf locale node_modules"
+    }
+}
+
