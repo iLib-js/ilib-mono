@@ -166,6 +166,44 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
 
+  packages/ilib-assemble/samples/custom-assemble-sample:
+    devDependencies:
+      ilib-assemble:
+        specifier: workspace:^
+        version: link:../..
+      ilib-common:
+        specifier: workspace:^
+        version: link:../../../ilib-common
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
+
+  packages/ilib-assemble/samples/istring-sample:
+    dependencies:
+      ilib-istring:
+        specifier: workspace:^
+        version: link:../../../ilib-istring
+    devDependencies:
+      ilib-assemble:
+        specifier: workspace:^
+        version: link:../..
+
+  packages/ilib-assemble/samples/legacy-ilib-sample:
+    dependencies:
+      ilib:
+        specifier: ^14.21.0
+        version: 14.21.1
+    devDependencies:
+      ilib-assemble:
+        specifier: workspace:^
+        version: link:../..
+
+  packages/ilib-assemble/samples/resources-sample:
+    devDependencies:
+      ilib-assemble:
+        specifier: workspace:^
+        version: link:../..
+
   packages/ilib-casemapper:
     dependencies:
       ilib-env:
@@ -1421,6 +1459,9 @@ importers:
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
+      ilib-assemble:
+        specifier: workspace:^
+        version: link:../ilib-assemble
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)

@@ -23,7 +23,7 @@ import Locale from 'ilib-locale';
 describe('Massive Concurrent Locale Loading', () => {
     beforeAll(() => {
         // Add the test root with 50+ locale files
-        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.addGlobalRoot("./test/testfiles/files3");
     });
 
     afterAll(() => {
@@ -95,7 +95,7 @@ describe('Massive Concurrent Locale Loading', () => {
             // Test that we can load data for each locale individually
             // Use a single LocaleData instance for all tests
             const locData = new LocaleData({
-                path: "./test/files3"
+                path: "./test/testfiles/files3"
             });
 
             for (const locale of testLocalesToVerify) {

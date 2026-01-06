@@ -470,8 +470,12 @@ class LocaleData {
      * @returns {Array.<string>} the list of roots, in order
      */
     getRoots() {
-        // this.path always goes at the end
-        return LocaleData.getGlobalRoots().concat([this.path]);
+        // this.path always goes at the end, but avoid duplicates
+        const globalRoots = LocaleData.getGlobalRoots();
+        if (globalRoots.includes(this.path)) {
+            return globalRoots;
+        }
+        return globalRoots.concat([this.path]);
     }
 
     /**

@@ -47,7 +47,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect(fileCache.size()).toBe(0);
 
             // load from the same file multiple times
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             const result1 = await fileCache.loadFile(filePath);
             const result2 = await fileCache.loadFile(filePath);
 
@@ -60,7 +60,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should store null for failed loads', async () => {
             expect.assertions(2);
 
-            const filePath = 'test/files/nonexistent/file.json';
+            const filePath = 'test/testfiles/files/nonexistent/file.json';
             const result = await fileCache.loadFile(filePath);
             expect(result).toBeUndefined();
             expect(fileCache.attemptCount()).toBe(1);
@@ -72,7 +72,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
 
             expect(fileCache.size()).toBe(0);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
 
             // Start multiple concurrent requests
             const promise1 = fileCache.loadFile(filePath);
@@ -93,7 +93,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should handle rapid successive calls correctly', async () => {
             expect.assertions(4);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             const promises = [];
 
             // Make 10 rapid successive calls
@@ -130,7 +130,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect.assertions(2);
 
             // Use a path that will cause the loader to fail
-            const filePath = 'test/files/nonexistent.json';
+            const filePath = 'test/testfiles/files/nonexistent.json';
             const result = await fileCache.loadFile(filePath);
 
             expect(result).toBeUndefined();
@@ -167,7 +167,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should allow reloading a file after removal', async () => {
             expect.assertions(5);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
 
             // Load file first time
             const result1 = await fileCache.loadFile(filePath);
@@ -189,8 +189,8 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should allow reloading files after clearing cache', async () => {
             expect.assertions(6);
 
-            const filePath1 = 'test/files/fr/localeinfo.json';
-            const filePath2 = 'test/files/FR/localeinfo.json';
+            const filePath1 = 'test/testfiles/files/fr/localeinfo.json';
+            const filePath2 = 'test/testfiles/files/FR/localeinfo.json';
 
             // Load files
             const result1 = await fileCache.loadFile(filePath1);
@@ -214,7 +214,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should prevent race conditions when multiple callers request the same file simultaneously', async () => {
             expect.assertions(7);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
 
             // Simulate multiple callers requesting the same file at the same time
             const promises = [
@@ -243,7 +243,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should handle rapid successive calls correctly', async () => {
             expect.assertions(3);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             const numCalls = 100;
             const promises = [];
 
@@ -280,33 +280,33 @@ describe('FileCache Async Tests (Node and Browser)', () => {
 
             expect(fileCache.size()).toBe(0);
 
-            const filePath = 'test/files3/en-US.js';
+            const filePath = 'test/testfiles/files3/en-US.js';
             const result = await fileCache.loadFile(filePath);
 
             expect(typeof result).toBe('object');
             expect(fileCache.size()).toBe(1);
-            expect(result).toHaveProperty('default');
+            expect(result.default).toBeDefined();
         });
 
         test('should handle ESM modules with default export function', async () => {
             expect.assertions(4);
 
-            const filePath = 'test/files3/en-US.js';
+            const filePath = 'test/testfiles/files3/en-US.js';
             const result = await fileCache.loadFile(filePath);
 
             expect(typeof result).toBe('object');
-            expect(result).toHaveProperty('default');
+            expect(result.default).toBeDefined();
             expect(typeof result.default).toBe('function');
 
             // Call the function to get the actual data
             const data = result.default();
-            expect(data).toHaveProperty('en');
+            expect(data.en).toBeDefined();
         });
 
         test('should cache ESM module results correctly', async () => {
             expect.assertions(4);
 
-            const filePath = 'test/files3/en-US.js';
+            const filePath = 'test/testfiles/files3/en-US.js';
 
             // First call - should load from file
             const result1 = await fileCache.loadFile(filePath);
@@ -322,8 +322,8 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should handle ESM modules with different locales', async () => {
             expect.assertions(4);
 
-            const enUSPath = 'test/files3/en-US.js';
-            const enGBPath = 'test/files3/en-GB.js';
+            const enUSPath = 'test/testfiles/files3/en-US.js';
+            const enGBPath = 'test/testfiles/files3/en-GB.js';
 
             const enUSResult = await fileCache.loadFile(enUSPath);
             const enGBResult = await fileCache.loadFile(enGBPath);
@@ -341,33 +341,33 @@ describe('FileCache Async Tests (Node and Browser)', () => {
 
             expect(fileCache.size()).toBe(0);
 
-            const filePath = 'test/files7/en-US.js';
+            const filePath = 'test/testfiles/files7/en-US.js';
             const result = await fileCache.loadFile(filePath);
 
             expect(typeof result).toBe('object');
             expect(fileCache.size()).toBe(1);
-            expect(result).toHaveProperty('default');
+            expect(result.default).toBeDefined();
         });
 
         test('should handle CommonJS files with default export function', async () => {
             expect.assertions(4);
 
-            const filePath = 'test/files7/en-US.js';
+            const filePath = 'test/testfiles/files7/en-US.js';
             const result = await fileCache.loadFile(filePath);
 
             expect(typeof result).toBe('object');
-            expect(result).toHaveProperty('default');
+            expect(result.default).toBeDefined();
             expect(typeof result.default).toBe('function');
 
             // Call the function to get the actual data
             const data = result.default();
-            expect(data).toHaveProperty('en');
+            expect(data.en).toBeDefined();
         });
 
         test('should cache CommonJS file results correctly', async () => {
             expect.assertions(4);
 
-            const filePath = 'test/files7/en-US.js';
+            const filePath = 'test/testfiles/files7/en-US.js';
 
             // First call - should load from file
             const result1 = await fileCache.loadFile(filePath);
@@ -383,8 +383,8 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should handle CommonJS files with different locales', async () => {
             expect.assertions(4);
 
-            const enUSPath = 'test/files7/en-US.js';
-            const enGBPath = 'test/files7/en-GB.js';
+            const enUSPath = 'test/testfiles/files7/en-US.js';
+            const enGBPath = 'test/testfiles/files7/en-GB.js';
 
             const enUSResult = await fileCache.loadFile(enUSPath);
             const enGBResult = await fileCache.loadFile(enGBPath);
@@ -398,12 +398,12 @@ describe('FileCache Async Tests (Node and Browser)', () => {
         test('should verify CommonJS files have proper module structure', async () => {
             expect.assertions(3);
 
-            const filePath = 'test/files7/en-US.js';
+            const filePath = 'test/testfiles/files7/en-US.js';
             const result = await fileCache.loadFile(filePath);
 
             // Verify it's an object with the expected structure
             expect(typeof result).toBe('object');
-            expect(result).toHaveProperty('default');
+            expect(result.default).toBeDefined();
             expect(typeof result.default).toBe('function');
         });
 
@@ -451,7 +451,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect(nonExistentResult).toBeUndefined();
 
             // Test with invalid file path that might cause errors
-            const invalidPathResult = await fileCache.loadFile('test/files/../invalid/../../path.json');
+            const invalidPathResult = await fileCache.loadFile('test/testfiles/files/../invalid/../../path.json');
             expect(invalidPathResult).toBeUndefined();
         });
     });

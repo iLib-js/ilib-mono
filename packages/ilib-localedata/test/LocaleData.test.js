@@ -34,7 +34,7 @@ describe("LocaleData", () => {
     test("should create LocaleData instance with constructor", () => {
         expect.assertions(1);
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             name: "test"
         });
         expect(locData).toBeTruthy();
@@ -52,7 +52,7 @@ describe("LocaleData", () => {
     test("should create LocaleData instance without sync", () => {
         expect.assertions(1);
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             name: "test"
         });
         expect(!locData.isSync()).toBe(true);
@@ -69,12 +69,15 @@ describe("LocaleData", () => {
             loader.setMockSyncSupport(false);
         }
 
-        expect(() => {
+        try {
             new LocaleData({
-                path: "./test/files",
+                path: "./test/testfiles/files",
                 sync: true
             });
-        }).toThrow("Synchronous mode is requested but the loader does not support synchronous operation");
+            fail("Expected LocaleData constructor to throw");
+        } catch (e) {
+            expect(e.message).toBe("Synchronous mode is requested but the loader does not support synchronous operation");
+        }
 
         // Restore sync support
         if (loader && loader.setMockSyncSupport) {
@@ -100,13 +103,13 @@ describe("LocaleData", () => {
         setPlatform();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData).toBeTruthy();
 
         // should have the path of caller in it only
-        expect(locData.getRoots()).toEqual(["./test/files"]);
+        expect(locData.getRoots()).toEqual(["./test/testfiles/files"]);
     });
 
     test("should add global root", () => {
@@ -140,14 +143,14 @@ describe("LocaleData", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData).toBeTruthy();
 
         LocaleData.addGlobalRoot("foobar/asf");
 
-        expect(locData.getRoots()).toEqual(["foobar/asf", "./test/files"]);
+        expect(locData.getRoots()).toEqual(["foobar/asf", "./test/testfiles/files"]);
     });
 
     test("should add multiple global roots", () => {
@@ -316,7 +319,7 @@ describe("LocaleData", () => {
         setPlatform();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData).toBeTruthy();
@@ -325,12 +328,12 @@ describe("LocaleData", () => {
         LocaleData.addGlobalRoot("foobar/asf");
         LocaleData.addGlobalRoot("a/b/c");
 
-        expect(locData.getRoots()).toEqual(["a/b/c", "foobar/asf", "./test/files"]);
+        expect(locData.getRoots()).toEqual(["a/b/c", "foobar/asf", "./test/testfiles/files"]);
 
         // can't remove this because it's not a global root
-        LocaleData.removeGlobalRoot("./test/files");
+        LocaleData.removeGlobalRoot("./test/testfiles/files");
 
-        expect(locData.getRoots()).toEqual(["a/b/c", "foobar/asf", "./test/files"]);
+        expect(locData.getRoots()).toEqual(["a/b/c", "foobar/asf", "./test/testfiles/files"]);
     });
 
 });

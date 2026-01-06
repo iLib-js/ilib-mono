@@ -299,7 +299,8 @@ class MockLoader extends Loader {
                         "foo": { "m": "n en", "o": "p en" }
                     }
                 });
-            } else if (pathName.includes("invalid.json")) {
+            } else if (pathName.includes("zz-ZZ.json")) {
+                // zz-ZZ.json contains intentionally malformed JSON for testing error handling
                 returnValue = "invalid json content";
             } else {
                 // For other .json files, return undefined instead of trying to read actual files

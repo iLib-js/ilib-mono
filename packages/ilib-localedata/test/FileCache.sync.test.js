@@ -56,7 +56,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             loader.setAsyncMode();
             const fileCache = new FileCache(loader);
 
-            expect(() => fileCache.loadFileSync('test/files/fr/localeinfo.json')).toThrow();
+            expect(() => fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json')).toThrow();
         });
     });
 
@@ -67,7 +67,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(fileCache.size()).toBe(0);
             expect(fileCache.attemptCount()).toBe(0);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             const result = fileCache.loadFileSync(filePath);
 
             expect(typeof result).toBe('string');
@@ -86,7 +86,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should store null for failed loads', () => {
             expect.assertions(2);
 
-            const filePath = 'test/files/nonexistent/file.json';
+            const filePath = 'test/testfiles/files/nonexistent/file.json';
             const result = fileCache.loadFileSync(filePath);
             expect(result).toBeUndefined();
             expect(fileCache.getCachedData(filePath)).toBeNull();
@@ -95,7 +95,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should return cached result for previously loaded files', () => {
             expect.assertions(4);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
 
             // First call - should load from file
             const result1 = fileCache.loadFileSync(filePath);
@@ -112,7 +112,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(2);
 
             // Use a file path that exists but returns no data
-            const filePath = 'test/files/empty.json';
+            const filePath = 'test/testfiles/files/empty.json';
             const result = fileCache.loadFileSync(filePath);
 
             expect(result).toBeUndefined();
@@ -122,7 +122,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('the right data is cached after a successful load', () => {
             expect.assertions(2);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             const result = fileCache.loadFileSync(filePath);
             expect(result).toBeDefined();
 
@@ -132,7 +132,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should return the same data from the cache asynchronously after loading synchronously', async () => {
             expect.assertions(2);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             const result = fileCache.loadFileSync(filePath);
             expect(result).toBeDefined();
 
@@ -145,7 +145,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should return the same data from the cache synchronously after loading asynchronously', async () => {
             expect.assertions(2);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             const result = await fileCache.loadFile(filePath);
             expect(result).toBeDefined();
 
@@ -158,7 +158,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should remove a file from the cache', () => {
             expect.assertions(3);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             fileCache.loadFile(filePath);
             expect(fileCache.size()).toBe(1);
 
@@ -183,8 +183,8 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should clear all cached file promises', () => {
             expect.assertions(3);
 
-            fileCache.loadFile('test/files/fr/localeinfo.json');
-            fileCache.loadFile('test/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
 
             fileCache.clearCache();
@@ -204,20 +204,20 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(3);
 
             expect(fileCache.size()).toBe(0);
-            fileCache.loadFile('test/files/fr/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
             expect(fileCache.size()).toBe(1);
-            fileCache.loadFile('test/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
         });
 
         test('should update count when files are removed', () => {
             expect.assertions(4);
 
-            fileCache.loadFile('test/files/fr/localeinfo.json');
-            fileCache.loadFile('test/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
 
-            fileCache.removeFileFromCache('test/files/fr/localeinfo.json');
+            fileCache.removeFileFromCache('test/testfiles/files/fr/localeinfo.json');
             expect(fileCache.size()).toBe(1);
 
             fileCache.clearCache();
@@ -236,10 +236,10 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should track successful loading attempts', () => {
             expect.assertions(2);
 
-            fileCache.loadFileSync('test/files/fr/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(1);
 
-            fileCache.loadFileSync('test/files/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/FR/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(2);
         });
 
@@ -256,7 +256,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should not increase count for duplicate attempts', () => {
             expect.assertions(3);
 
-            const filePath = 'test/files/fr/localeinfo.json';
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
             fileCache.loadFileSync(filePath);
             expect(fileCache.attemptCount()).toBe(1);
 
@@ -265,7 +265,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(fileCache.attemptCount()).toBe(1);
 
             // Different file should increase count
-            fileCache.loadFileSync('test/files/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/FR/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(2);
         });
     });
@@ -306,7 +306,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(fileCache.size()).toBe(0);
             expect(fileCache.attemptCount()).toBe(0);
 
-            const filePath = 'test/files7/en-US.js';
+            const filePath = 'test/testfiles/files7/en-US.js';
             const result = fileCache.loadFileSync(filePath);
 
             expect(typeof result).toBe('function');
@@ -316,7 +316,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should handle CommonJS files that return data functions', () => {
             expect.assertions(3);
 
-            const filePath = 'test/files7/en-US.js';
+            const filePath = 'test/testfiles/files7/en-US.js';
             const result = fileCache.loadFileSync(filePath);
 
             expect(typeof result).toBe('function');
@@ -330,7 +330,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should verify CommonJS files return functions with proper structure', () => {
             expect.assertions(4);
 
-            const filePath = 'test/files7/en-US.js';
+            const filePath = 'test/testfiles/files7/en-US.js';
             const result = fileCache.loadFileSync(filePath);
 
             // Verify it's a function
@@ -348,7 +348,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
         test('should cache CommonJS file results correctly', () => {
             expect.assertions(4);
 
-            const filePath = 'test/files7/en-US.js';
+            const filePath = 'test/testfiles/files7/en-US.js';
 
             // First call - should load from file
             const result1 = fileCache.loadFileSync(filePath);
@@ -405,7 +405,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(nonExistentResult).toBeUndefined();
 
             // Test with invalid file path that might cause errors
-            const invalidPathResult = fileCache.loadFileSync('test/files/../invalid/../../path.json');
+            const invalidPathResult = fileCache.loadFileSync('test/testfiles/files/../invalid/../../path.json');
             expect(invalidPathResult).toBeUndefined();
         });
     });

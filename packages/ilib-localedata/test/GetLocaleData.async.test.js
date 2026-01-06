@@ -1,5 +1,5 @@
 /*
- * GetLocaleData.test.js - test the locale data factory method
+ * GetLocaleData.async.test.js - test the locale data factory method (async tests)
  *
  * Copyright © 2022, 2025 JEDLSoft
  *
@@ -17,16 +17,13 @@
  * limitations under the License.
  */
 
-import { getPlatform, setPlatform, clearCache } from "ilib-env";
-
-import MockLoader from './MockLoader.js';
 import getLocaleData, { clearLocaleData } from '../src/index.js';
 
-describe("GetLocaleData", () => {
+describe("GetLocaleData Async Tests (Node and Browser)", () => {
     test("should get locale data", () => {
         expect.assertions(1);
         const locData = getLocaleData({
-            path: "./test/files"
+            path: "./test/testfiles/files"
         });
         expect(locData).toBeTruthy();
     });
@@ -73,27 +70,10 @@ describe("GetLocaleData", () => {
         clearLocaleData();
 
         const locData = getLocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
         });
 
         expect(!locData.isSync()).toBe(true);
-    });
-
-    test("should get locale data with sync", () => {
-        expect.assertions(2);
-
-        setPlatform("nodejs");
-        clearLocaleData();
-
-        const locData = getLocaleData({
-            path: "./test/files",
-            sync: true
-        });
-
-        expect(locData).toBeTruthy();
-        expect(locData.isSync()).toBe(true);
-
-        setPlatform(undefined);
     });
 
     test("should return singleton locale data", () => {
@@ -101,14 +81,14 @@ describe("GetLocaleData", () => {
         clearLocaleData();
 
         const locData1 = getLocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData1).toBeTruthy();
 
         // same params means same instance
         const locData2 = getLocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData2).toBeTruthy();
@@ -121,20 +101,21 @@ describe("GetLocaleData", () => {
         clearLocaleData();
 
         const locData1 = getLocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData1).toBeTruthy();
 
         // different params means different instance
         const locData2 = getLocaleData({
-            path: "./test/files2",
+            path: "./test/testfiles/files2",
             sync: false
         });
         expect(locData2).toBeTruthy();
 
-        expect(locData1.getPath()).toBe("./test/files");
-        expect(locData2.getPath()).toBe("./test/files2");
+        expect(locData1.getPath()).toBe("./test/testfiles/files");
+        expect(locData2.getPath()).toBe("./test/testfiles/files2");
         expect(locData1).not.toBe(locData2);
     });
 });
+

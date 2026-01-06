@@ -2,19 +2,80 @@
 
 exports[`ilib-assemble E2E tests Custom --assemble flag assembles locale data using custom assemble.mjs: de-DE.js 1`] = `
 "export default function getLocaleData() {
-    return     {};
+    return     {
+        "root": {
+            "mydata": {
+                "greeting": "Hello",
+                "farewell": "Goodbye",
+                "defaultLanguage": "en"
+            }
+        },
+        "de": {
+            "mydata": {
+                "greeting": "Hallo",
+                "farewell": "Auf Wiedersehen"
+            }
+        },
+        "de-DE": {
+            "mydata": {
+                "greeting": "Guten Tag",
+                "farewell": "Tschüss"
+            }
+        }
+    };
 };"
 `;
 
 exports[`ilib-assemble E2E tests Custom --assemble flag assembles locale data using custom assemble.mjs: en-US.js 1`] = `
 "export default function getLocaleData() {
-    return     {};
+    return     {
+        "root": {
+            "mydata": {
+                "greeting": "Hello",
+                "farewell": "Goodbye",
+                "defaultLanguage": "en"
+            }
+        },
+        "en": {
+            "mydata": {
+                "greeting": "Hello",
+                "farewell": "Goodbye"
+            }
+        },
+        "en-US": {
+            "mydata": {
+                "greeting": "Hey there",
+                "farewell": "See ya"
+            }
+        }
+    };
 };"
 `;
 
 exports[`ilib-assemble E2E tests Custom --assemble flag assembles locale data using custom assemble.mjs: ja-JP.js 1`] = `
 "export default function getLocaleData() {
-    return     {};
+    return     {
+        "root": {
+            "mydata": {
+                "greeting": "Hello",
+                "farewell": "Goodbye",
+                "defaultLanguage": "en"
+            }
+        },
+        "ja": {
+            "mydata": {
+                "greeting": "こんにちは",
+                "farewell": "さようなら"
+            }
+        },
+        "ja-JP": {
+            "mydata": {
+                "greeting": "こんにちは",
+                "farewell": "さようなら",
+                "region": "日本"
+            }
+        }
+    };
 };"
 `;
 

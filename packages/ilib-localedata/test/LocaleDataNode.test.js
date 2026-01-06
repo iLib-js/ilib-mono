@@ -30,7 +30,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
 
@@ -55,7 +55,7 @@ describe("LocaleDataNode", () => {
         setPlatform();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
 
@@ -80,7 +80,7 @@ describe("LocaleDataNode", () => {
         setPlatform();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
 
@@ -105,7 +105,7 @@ describe("LocaleDataNode", () => {
         setPlatform();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
 
@@ -130,7 +130,7 @@ describe("LocaleDataNode", () => {
         setPlatform();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
 
@@ -155,7 +155,7 @@ describe("LocaleDataNode", () => {
         setPlatform();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData).toBeTruthy();
@@ -183,10 +183,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         const actual = locData.loadData({
@@ -212,12 +212,12 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData).toBeTruthy();
 
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         const actual = await locData.loadData({
             basename: "tester",
@@ -242,10 +242,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         const actual = locData.loadData({
@@ -271,12 +271,12 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
         expect(locData).toBeTruthy();
 
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         const actual = await locData.loadData({
             basename: "tester",
@@ -301,11 +301,11 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
         expect(locData).toBeTruthy();
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         let actual = locData.loadData({
             basename: "tester",
@@ -339,7 +339,7 @@ describe("LocaleDataNode", () => {
                     }
                 }
             }
-        }, "./test/files2");
+        }, "./test/testfiles/files2");
 
         // make sure it used the cache
         actual = locData.loadData({
@@ -365,11 +365,11 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
         expect(locData).toBeTruthy();
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
@@ -392,7 +392,7 @@ describe("LocaleDataNode", () => {
                     }
                 }
             }
-        }, "./test/files2");
+        }, "./test/testfiles/files2");
 
         // cacheData alone doesn't populate the merged cache, so checkCache returns false
         expect(locData.checkCache("de-DE", "tester")).toBe(false);
@@ -414,10 +414,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         // there is no en-US data, but there is root data which we
         // should ignore for the purposes of cache checking
@@ -450,11 +450,11 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
         expect(locData).toBeTruthy();
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
@@ -469,7 +469,7 @@ describe("LocaleDataNode", () => {
             "de-DE": {
                 "tester": null
             }
-        }, "./test/files2");
+        }, "./test/testfiles/files2");
 
         // cacheData alone doesn't populate the merged cache
         expect(locData.checkCache("de-DE", "tester")).toBe(false);
@@ -491,10 +491,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearCache();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         let actual = locData.loadData({
@@ -512,10 +512,10 @@ describe("LocaleDataNode", () => {
         });
 
         const locData2 = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
 
@@ -542,11 +542,11 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
         expect(locData).toBeTruthy();
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
@@ -569,7 +569,7 @@ describe("LocaleDataNode", () => {
                     }
                 }
             }
-        }, "./test/files2");
+        }, "./test/testfiles/files2");
 
         // cacheData + loadData populates the merged cache
         locData.loadData({
@@ -593,11 +593,11 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
         expect(locData).toBeTruthy();
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         // there is no de-DE data, but there is root data which we
         // should ignore for the purposes of cache checking
@@ -620,7 +620,7 @@ describe("LocaleDataNode", () => {
                     }
                 }
             }
-        }, "./test/files2");
+        }, "./test/testfiles/files2");
 
         // cacheData + loadData populates the merged cache
         locData.loadData({
@@ -641,7 +641,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
 
@@ -670,7 +670,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
 
@@ -701,7 +701,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
 
@@ -731,7 +731,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
 
@@ -763,7 +763,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
 
@@ -791,7 +791,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
 
@@ -821,7 +821,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
 
@@ -852,7 +852,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
 
@@ -887,7 +887,7 @@ describe("LocaleDataNode", () => {
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
-        LocaleData.addGlobalRoot("./test/filesasfdasfd");
+        LocaleData.addGlobalRoot("./test/testfiles/filesasfdasfd");
         const result = await LocaleData.ensureLocale("ja-JP");
         expect(!result).toBe(true);
     });
@@ -900,10 +900,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         const actual = locData.loadData({
@@ -929,10 +929,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         const actual = locData.loadData({
@@ -957,10 +957,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: true
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         const actual = locData.loadData({
@@ -983,10 +983,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         const actual = await locData.loadData({
@@ -1012,10 +1012,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files3",
+            path: "./test/testfiles/files3",
             sync: false
         });
-        LocaleData.addGlobalRoot("./test/files5");
+        LocaleData.addGlobalRoot("./test/testfiles/files5");
 
         expect(locData).toBeTruthy();
         const actual = await locData.loadData({
@@ -1039,10 +1039,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         const actual = await locData.loadData({
@@ -1067,10 +1067,10 @@ describe("LocaleDataNode", () => {
         LocaleData.clearGlobalRoots();
 
         const locData = new LocaleData({
-            path: "./test/files",
+            path: "./test/testfiles/files",
             sync: false
         });
-        LocaleData.addGlobalRoot("./test/files2");
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
 
         expect(locData).toBeTruthy();
         const actual = await locData.loadData({

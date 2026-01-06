@@ -693,7 +693,7 @@ describe("DataCache", () => {
             cache.storeData('./test', 'dates', 'en-US', { e: 'f' });
 
             const basenames = cache.getBasenamesForLocale('./test', 'en-US');
-            expect(basenames).toHaveLength(3);
+            expect(basenames.length).toBe(3);
             expect(basenames.sort()).toEqual(['dates', 'info', 'numbers']);
         });
 
