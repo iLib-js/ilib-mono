@@ -20,7 +20,7 @@
 var fs = require("fs");
 var path = require("path");
 var Buffer = require("buffer").Buffer;
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var log4js = require("log4js");
 
 var IosLayoutResourceString = require("./IosLayoutResourceString.js");

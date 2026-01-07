@@ -21,7 +21,7 @@ var utils = require("./utils.js");
 
 var OpenCC = require("opencc-js");
 var Pseudo = require("./Pseudo.js");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 /**
  * @class A resource bundle-like class to hold the simplified

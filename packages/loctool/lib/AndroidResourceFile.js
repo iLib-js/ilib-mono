@@ -21,7 +21,7 @@ var fs = require("fs");
 var path = require("path");
 var xmljs = require('xml-js');
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var log4js = require("log4js");
 
 var ContextResourceString = require("../lib/ContextResourceString.js");

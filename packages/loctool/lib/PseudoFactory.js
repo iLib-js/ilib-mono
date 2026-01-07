@@ -23,7 +23,7 @@ var log4js = require("log4js");
 var WordBasedPseudo = require("./WordBasedPseudo.js");
 var PseudoHant = require("./PseudoHant.js");
 var RegularPseudo = require("./RegularPseudo.js");
-var Locale = require("ilib/lib/Locale");
+var Locale = require("ilib-locale");
 var ilib = require("ilib");
 var logger = log4js.getLogger("loctool.lib.PseudoFactory");
 

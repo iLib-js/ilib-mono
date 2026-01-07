@@ -26,7 +26,7 @@ var fs = require("fs");
 var path = require("path");
 var jsyaml = require("js-yaml");
 
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var ContextResourceString = require("./ContextResourceString.js");
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js")
