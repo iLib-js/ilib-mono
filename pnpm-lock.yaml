@@ -1785,6 +1785,9 @@ importers:
       ilib:
         specifier: ^14.18.0
         version: 14.20.0
+      ilib-locale:
+        specifier: ^1.3.0
+        version: 1.3.0
     devDependencies:
       ilib-internal:
         specifier: workspace:^
@@ -1864,6 +1867,9 @@ importers:
       ilib:
         specifier: ^14.19.0
         version: 14.20.0
+      ilib-locale:
+        specifier: ^1.3.0
+        version: 1.3.0
       json5:
         specifier: ^2.2.3
         version: 2.2.3
@@ -7501,9 +7507,6 @@ packages:
   ilib-env@1.4.0:
     resolution: {integrity: sha512-zDpTmrGMvg9P40TtelR3k+eIFPd1VZA9TmB/5dXKEona6TQBObe6/D9zgmoLf17mI0kBg8ho+q1T42EJGvB5mg==}
 
-  ilib-env@1.4.1:
-    resolution: {integrity: sha512-lhXj5AaOT6AAft3eSFTqncNSYhqMdXAq9RpAeCral1tJpZDmzxhxpnKcFghgbjk9NkFFBRxFxTIAkgSq9NfEfQ==}
-
   ilib-env@1.4.2:
     resolution: {integrity: sha512-H/nFk+qnC6hfgD6bgaSF+mohZUWqtfjQmStBCU3c832vv00Vtco6GrOSGaXwdr3QgnhzxL8zhLOUTtSTJ2gHxA==}
 
@@ -7536,9 +7539,6 @@ packages:
 
   ilib-loader@1.3.5:
     resolution: {integrity: sha512-EeEb652VmB6aAO5nvth3bIHyAapgukxn/7Zyf0mCEhGNCLMv3b6IqbXCRZVrztrgzu/fTLdQKQtq4pO+6ImOCg==}
-
-  ilib-locale@1.2.4:
-    resolution: {integrity: sha512-3ZIOw45MAmL+uQ1CTt7A/eVOd5wEYlmTWPnQC/GFmGaIxbGvgSD9AuIX1HiFltYQXIBlQWl0yTFf/1yPtfW3ng==}
 
   ilib-locale@1.3.0:
     resolution: {integrity: sha512-UYDTg1TPGJ/Iczml+94Z6ygWRP1BJnwKh4JZm9HFjrh/ZlRT/okj6w0JTxvRBW8Uq6qYbk7tks2awYh5PTpSFg==}
@@ -17176,7 +17176,7 @@ snapshots:
   i18nlint-plugin-test-old@file:packages/ilib-lint/test/i18nlint-plugin-test-old:
     dependencies:
       i18nlint-common: 2.2.1
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-tools-common: 1.16.0
       json5: 2.2.3
 
@@ -17202,7 +17202,7 @@ snapshots:
   ilib-common@1.1.3:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-env: 1.4.1
+      ilib-env: 1.4.2
       ilib-locale: 1.3.0
 
   ilib-common@1.1.6:
@@ -17217,8 +17217,6 @@ snapshots:
 
   ilib-env@1.4.0: {}
 
-  ilib-env@1.4.1: {}
-
   ilib-env@1.4.2: {}
 
   ilib-es6@14.21.0:
@@ -17229,7 +17227,7 @@ snapshots:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.6
-      ilib-env: 1.4.1
+      ilib-env: 1.4.2
       ilib-locale: 1.3.0
       ilib-localedata: 1.5.0
 
@@ -17247,7 +17245,7 @@ snapshots:
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
     dependencies:
       i18nlint-common: 2.2.1
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-tools-common: 1.16.0
       json5: 2.2.3
 
@@ -17279,10 +17277,6 @@ snapshots:
       ilib-env: 1.4.2
       promise.allsettled: 1.0.7
 
-  ilib-locale@1.2.4:
-    dependencies:
-      ilib-env: 1.4.1
-
   ilib-locale@1.3.0:
     dependencies:
       ilib-env: 1.4.2
@@ -17291,7 +17285,7 @@ snapshots:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.6
-      ilib-env: 1.4.1
+      ilib-env: 1.4.2
       ilib-loader: 1.3.2
       ilib-locale: 1.3.0
       ilib-localematcher: 1.3.1
@@ -17312,7 +17306,7 @@ snapshots:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.3
       ilib-env: 1.4.0
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-localedata: 1.5.0
       ilib-localematcher: 1.3.1
       json5: 2.2.3
@@ -17329,6 +17323,7 @@ snapshots:
   ilib-loctool-json@file:packages/ilib-loctool-json:
     dependencies:
       ilib: 14.21.2
+      ilib-locale: 1.3.0
       json5: 2.2.3
       micromatch: 4.0.8
 
@@ -17347,14 +17342,14 @@ snapshots:
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     dependencies:
       ilib-common: 1.1.3
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
 
   ilib-resbundle@1.0.2:
     dependencies:
       ilib-common: 1.1.3
       ilib-ctype: 1.2.2
       ilib-istring: 1.1.0
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-localedata: 1.5.0
       ilib-localeinfo: 1.1.0
 

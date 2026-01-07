@@ -20,7 +20,7 @@
 var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var mm = require("micromatch");
 var JsonFile = require("./JsonFile.js");
 
