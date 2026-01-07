@@ -22,7 +22,7 @@ var path = require("path");
 var log4js = require("log4js");
 var htmlParser = require("html-parser");
 var jsstl = require("js-stl");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var he = require("he");
 var MessageAccumulator = require("message-accumulator");
 

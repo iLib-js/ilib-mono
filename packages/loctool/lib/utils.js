@@ -20,10 +20,10 @@
 var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
-var LocaleMatcher = require("ilib/lib/LocaleMatcher.js");
+var LocaleMatcher = require("ilib-localematcher");
 
 //load the data for these
 isAlnum._init();

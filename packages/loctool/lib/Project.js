@@ -22,7 +22,7 @@ var path = require("path");
 var Queue = require("js-stl").Queue;
 var ilib = require("ilib");
 var JSUtils = require("ilib/lib/JSUtils.js");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 var LocalRepository = require("./LocalRepository.js");
 var TranslationSet = require("./TranslationSet.js");
