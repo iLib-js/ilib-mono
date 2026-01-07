@@ -2,7 +2,7 @@
 /*
  * generate-regions.js - Generate the a2toa3regmap.js file from ISO 3166-1 data
  *
- * Copyright © 2022, 2025 JEDLSoft
+ * Copyright © 2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ sortedKeys.forEach(key => {
 const output = `/*
  * a2toa3regmap.js - Map ISO 3166 alpha2 codes to alpha3 codes
  *
- * Copyright © 2022, 2025 JEDLSoft
+ * Copyright © 2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

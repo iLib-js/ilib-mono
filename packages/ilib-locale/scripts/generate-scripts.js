@@ -2,7 +2,7 @@
 /*
  * generate-scripts.js - Generate the scripts.js file from the UCD data
  *
- * Copyright © 2022, 2025 JEDLSoft
+ * Copyright © 2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ const scriptCodes = scriptInfo.iso15924
 const output = `/*
  * scripts.js - List out the ISO 15924 script codes
  *
- * Copyright © 2022, 2025 JEDLSoft
+ * Copyright © 2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
