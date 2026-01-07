@@ -54,11 +54,12 @@
         "node": ">=12 <23"
     },
     "dependencies": {
-        "ilib": "^14.18.0"
+        "ilib": "^14.18.0",
+        "ilib-locale": "^1.3.0"
     },
     "devDependencies": {
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
-        "loctool": "workspace:^",
-        "ilib-internal": "workspace:^"
+        "loctool": "workspace:^"
     }
 }

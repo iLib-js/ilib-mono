@@ -19,7 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 /**
  * @class Represents an Android resource file.

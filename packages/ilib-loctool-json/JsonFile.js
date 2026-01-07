@@ -21,7 +21,7 @@ var fs = require("fs");
 var path = require("path");
 var JSON5 = require("json5");
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 /**
  * Create a new Json file with the given path name and within
