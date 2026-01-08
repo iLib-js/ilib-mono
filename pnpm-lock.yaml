@@ -2096,18 +2096,21 @@ importers:
         specifier: ^14.21.1
         version: 14.21.2
       ilib-loctool-ghfm:
-        specifier: ^1.11.7
-        version: 1.12.0
+        specifier: workspace:^
+        version: link:../ilib-loctool-ghfm
       ilib-loctool-json:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: workspace:^
+        version: link:../ilib-loctool-json
     devDependencies:
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^29.0.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
-        specifier: ^2.31.3
-        version: 2.31.8(typescript@5.9.2)
+        specifier: workspace:^
+        version: link:../loctool
 
   packages/ilib-loctool-pendo-md:
     dependencies:
@@ -7493,9 +7496,6 @@ packages:
   ilib-ctype@1.2.2:
     resolution: {integrity: sha512-g5fh+9plC8fE5hugQnKcYM4DmD56aRj5bTyPTtqNeT2JFtxVQmLfuPNAS87QhUeioeOlHbkO6474OD0wW8t3Aw==}
 
-  ilib-ctype@1.3.0:
-    resolution: {integrity: sha512-NiEnz7/aSwCws1PDuYQi4m4AITrhGOeFqd6Tfvnc85wLyRZUVuOlVs5RFCA5rDSN0wdlzW25BT/NBG5kzV+Ggw==}
-
   ilib-env@1.4.0:
     resolution: {integrity: sha512-zDpTmrGMvg9P40TtelR3k+eIFPd1VZA9TmB/5dXKEona6TQBObe6/D9zgmoLf17mI0kBg8ho+q1T42EJGvB5mg==}
 
@@ -7547,14 +7547,6 @@ packages:
   ilib-localematcher@1.3.1:
     resolution: {integrity: sha512-sDqSdYfAouyGH9OPKPuXk2Lyb4+HU3Gz05bLTJ5fn3FRn/IzG5sUQjSrhfmQAsklQ6WLlJE3nL5wbpV0fpX8Lw==}
 
-  ilib-loctool-ghfm@1.12.0:
-    resolution: {integrity: sha512-ZhYVBXrchuoyxEKQxiLNoVOjJw5iBDmGkJfnyH7WQweiyE/FNSLAoNGpXkpDInhaGKlXzLXsEwUX+waDa15k7Q==}
-    engines: {node: '>=12 <23'}
-
-  ilib-loctool-json@2.0.1:
-    resolution: {integrity: sha512-fjAySfKswHI4ooG2lByqRKppV64D9P+UWZYxcpvGECB9eR26GATo69hIBp812W7JuNnY6SU/FFXLHDS/DgW7fA==}
-    engines: {node: '>=10.0'}
-
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     resolution: {integrity: sha512-G/20MuXksGohqBfMoHLeuME4u3JwqW8qmAzDoUUCVmalQQYg7dARztde6cxx7VrOoilo4kwS4bt0L+yGs5u0PA==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
     version: 1.0.0
@@ -7567,16 +7559,9 @@ packages:
     resolution: {integrity: sha512-qP6wJwUn6YFhdKSP0MQMXsTkwaBSDxgv1cwGfLzrs1mT/nmz/blHGP7JT55+XAakbdd6SO4aZeOCF0lB4bhCxg==, tarball: file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz}
     version: 1.0.0
 
-  ilib-loctool-yaml@1.5.2:
-    resolution: {integrity: sha512-zNVqrTlE6oFqSoGHqmmkIR/UKJ8jb7Jo4CqR47mmcztrsr5hoHIex4hyBobsKimThzjYoBuXEGJD/4yWgMqWoQ==}
-    engines: {node: '>=10.0'}
-
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     resolution: {integrity: sha512-jKrfpzwShklRzKlRCJ9Pzt2p6V3AM7YfvtuapWZNwc/jYOfBd/2WuprkWmm++zgdzh8wfveeBSn1CElCHCbv0w==, tarball: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz}
     version: 1.0.0
-
-  ilib-po@1.1.3:
-    resolution: {integrity: sha512-gYrM1zK2hvBuEGrP0N30A5wQWBtUzfzCCwOeDoqcmwiyitzxdR38MDhLrqkXdmLQ7cbT3T1CiCbv4MSwntxLzQ==}
 
   ilib-resbundle@1.0.2:
     resolution: {integrity: sha512-RrULaRUWx3forFJZQXnaXoPIjtxAfqo+laYpZnrPgfz8WbQ+JyoYs5EiC9F45PUoLCTa/nzOUpKeGBis1fldTA==}
@@ -7585,21 +7570,11 @@ packages:
     resolution: {integrity: sha512-0vKj3NDD7gXYTIwwZYcLNu0JSdeMN2uOde8g2AwsA6X3uXCPZmVaU26KoFMq+YBONRvYrIxtAK6fKgEK3gB4iA==}
     engines: {node: '>=10.0.0'}
 
-  ilib-tools-common@1.20.1:
-    resolution: {integrity: sha512-cY8D+fVg1PckYH/2Eg8R9h096+p3P+VL1cSJEnQgaY1oxBvT6YemgPsXQ/h/3sX8lP96ph2Vs4Kg3vSaMuPxow==}
-    engines: {node: '>=12 <23'}
-
-  ilib-tree-node@2.0.1:
-    resolution: {integrity: sha512-K+aNZfbThYR7LyvRtR4nVzfUxxUNKd3YbH6hQpsw8IGgCiFU27WkWJCB+s9A565f/xHT/sFbKqRKT/K3EBTPzA==}
-
   ilib-xliff-webos@1.0.5:
     resolution: {integrity: sha512-kBo2qwp+QC1XeO5V7mwKYn14kQ915Xt91hGDxyqnsmdEDTVSsqHXWQM2vd/wZ+eLLo9PFem4r1Rt0dAr/PlMeA==}
 
   ilib-xliff@1.4.0:
     resolution: {integrity: sha512-/t1ZvrY4dI/iSs3pVAsUbfEJU/TGyYs5h34OqDkh1QnB7oer+YBR1Y1qcwCKK0DG7HHMvrUGxlW5x8PbYFpf3g==}
-
-  ilib-xliff@1.4.1:
-    resolution: {integrity: sha512-A3yl3ITOdwFf1IKXrLgSWhMxUeXubLMAK3tm2mnw/O6W1JvQ1CWu66MV20HJlEJh3S0FoXdKUJe2Ga0aQNcEjg==}
 
   ilib-xml-js@1.7.0:
     resolution: {integrity: sha512-u2Uitc6238fQzIpwHx7qTt0GDii6ncBKtbLX6lvg67+x2iyQ4tz3nycyXg+c8wdaaVgqVGeBNs48uYGEKVJzkA==}
@@ -8589,11 +8564,6 @@ packages:
     resolution: {integrity: sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  loctool@2.31.8:
-    resolution: {integrity: sha512-0eqzkdK8Aujhc/YfFl5UrEKvctFwvf+RcNuN5ta/BLkVknpVAdI1QEhUHGdM06ClxdDVAt9IXDh1hL8vOpdaFQ==}
-    engines: {node: '>=12 <23'}
-    hasBin: true
-
   lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
 
@@ -8859,9 +8829,6 @@ packages:
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
-
-  message-accumulator@3.0.2:
-    resolution: {integrity: sha512-JOoBZEq1J1msT2GaDhHZYrQW51MJuXrjEdOjQAweQBKEOq3E64Uc+/41z3wmtzHUD0MnhiZxoLP0G43g4DUsLQ==}
 
   micromark-core-commonmark@2.0.3:
     resolution: {integrity: sha512-RDBrHEMSxVFLg6xvnXmb1Ayr2WzLAWjeSATAoxwKYJV94TeNavgoIdA0a9ytzDSVzBy2YKFK+emCPOEibLeCrg==}
@@ -17232,10 +17199,6 @@ snapshots:
     dependencies:
       ilib-common: 1.1.6
 
-  ilib-ctype@1.3.0:
-    dependencies:
-      ilib-common: 1.1.6
-
   ilib-env@1.4.0: {}
 
   ilib-env@1.4.1: {}
@@ -17337,31 +17300,6 @@ snapshots:
       ilib-common: 1.1.3
       ilib-locale: 1.2.4
 
-  ilib-loctool-ghfm@1.12.0:
-    dependencies:
-      he: 1.2.0
-      ilib: 14.21.2
-      ilib-loctool-yaml: 1.5.2
-      ilib-tree-node: 2.0.1
-      message-accumulator: 3.0.2
-      micromatch: 4.0.8
-      rehype-parse: 7.0.1
-      rehype-raw: 5.1.0
-      remark-footnotes: 2.0.0
-      remark-frontmatter: 2.0.0
-      remark-highlight.js: 6.0.0
-      remark-parse: 8.0.3
-      remark-stringify: 8.1.1
-      unified: 9.2.2
-      unist-builder: 2.0.3
-      unist-util-filter: 2.0.3
-
-  ilib-loctool-json@2.0.1:
-    dependencies:
-      ilib: 14.21.2
-      json5: 2.2.3
-      micromatch: 4.0.8
-
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     dependencies:
       ilib: 14.21.2
@@ -17374,22 +17312,10 @@ snapshots:
     dependencies:
       ilib: 14.21.2
 
-  ilib-loctool-yaml@1.5.2:
-    dependencies:
-      ilib: 14.21.2
-      micromatch: 4.0.8
-      yaml: 2.0.0
-
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     dependencies:
       ilib-common: 1.1.3
       ilib-locale: 1.2.4
-
-  ilib-po@1.1.3:
-    dependencies:
-      ilib-ctype: 1.2.2
-      ilib-locale: 1.2.4
-      ilib-tools-common: 1.20.1
 
   ilib-resbundle@1.0.2:
     dependencies:
@@ -17410,32 +17336,12 @@ snapshots:
       intl-messageformat: 10.7.11
       micromatch: 4.0.8
 
-  ilib-tools-common@1.20.1:
-    dependencies:
-      '@log4js-node/log4js-api': 1.0.2
-      ilib-ctype: 1.3.0
-      ilib-istring: 1.1.1
-      ilib-locale: 1.2.4
-      ilib-xliff: 1.4.1
-      ilib-xliff-webos: 1.0.5
-      intl-messageformat: 10.7.11
-      micromatch: 4.0.8
-
-  ilib-tree-node@2.0.1: {}
-
   ilib-xliff-webos@1.0.5:
     dependencies:
       ilib-common: 1.1.6
       ilib-xml-js: 1.7.0
 
   ilib-xliff@1.4.0:
-    dependencies:
-      ilib-common: 1.1.6
-      ilib-locale: 1.2.4
-      ilib-xml-js: 1.7.0
-      json5: 2.2.3
-
-  ilib-xliff@1.4.1:
     dependencies:
       ilib-common: 1.1.6
       ilib-locale: 1.2.4
@@ -19071,39 +18977,6 @@ snapshots:
     dependencies:
       p-locate: 6.0.0
 
-  loctool@2.31.8(typescript@5.9.2):
-    dependencies:
-      '@formatjs/intl': 2.10.11(typescript@5.9.2)
-      build-gradle-reader: 1.0.0
-      cldr-segmentation: 2.2.1
-      he: 1.2.0
-      html-parser: 0.11.0
-      ilib: 14.21.2
-      ilib-po: 1.1.3
-      ilib-tools-common: 1.20.1
-      ilib-tree-node: 2.0.1
-      js-stl: 0.0.6
-      js-yaml: 4.1.1
-      log4js: 6.9.1
-      message-accumulator: 3.0.2
-      micromatch: 4.0.8
-      opencc-js: 1.0.5
-      readline-sync: 1.4.10
-      rehype-raw: 5.1.0
-      remark-frontmatter: 2.0.0
-      remark-highlight.js: 6.0.0
-      remark-parse: 8.0.3
-      remark-rehype: 8.1.0
-      remark-stringify: 8.1.1
-      unified: 9.2.2
-      unist-builder: 2.0.3
-      unist-util-filter: 2.0.3
-      util.promisify: 1.1.2
-      xml-js: 1.6.11
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
   lodash.camelcase@4.3.0: {}
 
   lodash.debounce@4.0.8: {}
@@ -19556,10 +19429,6 @@ snapshots:
   merge-stream@2.0.0: {}
 
   merge2@1.4.1: {}
-
-  message-accumulator@3.0.2:
-    dependencies:
-      ilib-tree-node: 2.0.1
 
   micromark-core-commonmark@2.0.3:
     dependencies:

@@ -38,7 +38,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-loctool-openapi.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "scripts": {
         "dist": "npm pack",
@@ -56,6 +56,7 @@
         "ilib-loctool-json": "workspace:^"
     },
     "devDependencies": {
+        "ilib-internal": "workspace:^",
         "loctool": "workspace:^",
         "jest": "^29.0.0"
     }
