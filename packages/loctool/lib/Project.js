@@ -451,7 +451,7 @@ Project.prototype.isResourcePath = function(type, pathName) {
 Project.prototype.isSourceLocale = function(locale) {
     var l = new Locale(locale);
     var s = new Locale(this.sourceLocale);
-    return (l.getLanguage() === s.getLanguage() && l.getRegion() === s.getRegion() && l.getScript() === s.getScript());
+    return (l.getLanguage() === s.getLanguage() && l.getRegion() === s.getRegion() && l.getScript() === s.getScript() && l.getVariant() === s.getVariant());
 };
 
 /**
