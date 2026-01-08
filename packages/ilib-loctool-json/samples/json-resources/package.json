@@ -1,0 +1,13 @@
+{
+    "name": "sample-json-resources",
+    "version": "1.0.0",
+    "description": "Sample project testing JSON with resource file delegation",
+    "dependencies": {
+        "ilib-loctool-json": "file:../..",
+        "ilib-loctool-javascript-resource": "workspace:^",
+        "loctool": "workspace:^"
+    },
+    "scripts": {
+        "run:sample": "loctool localize ."
+    }
+}

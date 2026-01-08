@@ -21,7 +21,7 @@ var fs = require("fs");
 var path = require("path");
 var JSON5 = require("json5");
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 /**
  * Create a new Json file with the given path name and within
@@ -948,19 +948,70 @@ JsonFile.prototype.localizeText = function (translations, locale) {
  * @param {Array.<String>} locales array of locales to translate to
  */
 JsonFile.prototype.localize = function (translations, locales) {
-    // don't localize if there is no text
-    for (var i = 0; i < locales.length; i++) {
-        if (!this.project.isSourceLocale(locales[i])) {
-            // skip variants for now until we can handle them properly
-            var l = new Locale(locales[i]);
-            if (!l.getVariant()) {
-                var pathName = this.getLocalizedPath(locales[i]);
-                this.logger.debug("Writing file " + pathName);
-                var p = path.join(this.project.target, pathName);
-                var d = path.dirname(p);
-                this.API.utils.makeDirs(d);
+    // Check if there's a resource file type configured for json output
+    var resFileType;
+    if (typeof this.project.getResourceFileType === "function" &&
+        this.project.resourceFileMap) {
+        resFileType = this.project.getResourceFileType("json");
+    }
 
-                fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
+    if (resFileType) {
+        // Delegate to the resource file type plugin
+        var resources = this.set.getAll();
+
+        for (var i = 0; i < locales.length; i++) {
+            if (!this.project.isSourceLocale(locales[i])) {
+                var locale = locales[i];
+                // Don't pass pathName - let the resource file type use its own template
+                this.logger.debug("Delegating output to resourceFileType for locale " + locale);
+                var resFile = resFileType.getResourceFile(locale);
+
+                // For each extracted resource, look up its translation and add to the resource file
+                for (var j = 0; j < resources.length; j++) {
+                    var res = resources[j];
+                    var hashKey = res.hashKeyForTranslation(locale);
+                    var translated = translations.getClean(hashKey);
+
+                    if (translated) {
+                        resFile.addResource(translated);
+                    } else {
+                        // No translation found - create a resource with the source as target
+                        var newRes = res.clone();
+                        newRes.setTargetLocale(locale);
+
+                        // Handle different resource types appropriately
+                        switch (res.getType()) {
+                            case "plural":
+                                newRes.setTargetPlurals(res.getSourcePlurals());
+                                break;
+                            case "array":
+                                newRes.setTargetArray(res.getSourceArray());
+                                break;
+                            default:
+                                newRes.setTarget(res.getSource());
+                                break;
+                        }
+
+                        resFile.addResource(newRes);
+                    }
+                }
+            }
+        }
+    } else {
+        // Original behavior - write JSON directly
+        for (var i = 0; i < locales.length; i++) {
+            if (!this.project.isSourceLocale(locales[i])) {
+                // skip variants for now until we can handle them properly
+                var l = new Locale(locales[i]);
+                if (!l.getVariant()) {
+                    var pathName = this.getLocalizedPath(locales[i]);
+                    this.logger.debug("Writing file " + pathName);
+                    var p = path.join(this.project.target, pathName);
+                    var d = path.dirname(p);
+                    this.API.utils.makeDirs(d);
+
+                    fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
+                }
             }
         }
     }

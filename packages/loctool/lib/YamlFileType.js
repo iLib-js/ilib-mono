@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var log4js = require("log4js");
 
 var utils = require("./utils.js");

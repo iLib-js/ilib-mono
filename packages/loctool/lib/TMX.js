@@ -24,7 +24,7 @@ var log4js = require("log4js");
 var xmljs = require("xml-js");
 var ilib = require("ilib");
 var JSUtils = require("ilib/lib/JSUtils");
-var Locale = require("ilib/lib/Locale");
+var Locale = require("ilib-locale");
 var cldrSegmentation = require("cldr-segmentation");
 
 var utils = require("./utils.js");

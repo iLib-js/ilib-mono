@@ -32,6 +32,5 @@
   },
   "plugins": [
     "ilib-loctool-json"
-  ],
-  "fileTypes": ["Xliff"]
+  ]
 }

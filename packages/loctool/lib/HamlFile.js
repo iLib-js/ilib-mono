@@ -26,7 +26,7 @@ var log4js = require("log4js");
 var jsstl = require("js-stl");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 var ResourceString = require("./ResourceString.js");
 var TranslationSet = require("./TranslationSet.js");

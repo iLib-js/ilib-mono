@@ -21,7 +21,7 @@ var fs = require("fs");
 var path = require("path");
 var jsyaml = require("js-yaml");
 
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var ContextResourceString = require("./ContextResourceString.js");
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js")
@@ -77,7 +77,10 @@ YamlResourceFile.prototype._parseResources = function(prefix, obj, set) {
                 flavor: this.flavor,
                 index: this.resourceIndex++
             };
-            if (this.project.isSourceLocale(this.locale)) {
+            // Check if this is a source locale OR a flavored version of the source locale
+            var l = new Locale(this.locale);
+            var baseLocale = new Locale(l.getLanguage(), l.getRegion(), undefined, l.getScript()).getSpec();
+            if (this.project.isSourceLocale(this.locale) || (this.flavor && this.project.isSourceLocale(baseLocale))) {
                 params.source = resource;
                 params.sourceLocale = this.getLocale();
             } else {

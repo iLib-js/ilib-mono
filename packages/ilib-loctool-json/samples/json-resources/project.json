@@ -1,0 +1,45 @@
+{
+    "name": "Sample JSON with Resource Files",
+    "id": "sample-json-resources",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "resourceDirs": {
+        "json": "resources",
+        "javascript": "resources"
+    },
+    "resourceFileTypes": {
+        "json": "ilib-loctool-javascript-resource"
+    },
+    "plugins": [
+        "ilib-loctool-json",
+        "ilib-loctool-javascript-resource"
+    ],
+    "excludes": [
+        ".*",
+        "xliffs",
+        "resources",
+        "node_modules"
+    ],
+    "settings": {
+        "xliffsDir": "xliffs",
+        "locales": [
+            "de-DE",
+            "ko-KR"
+        ],
+        "json": {
+            "mappings": {
+                "**/src/*.json": {
+                    "method": "copy",
+                    "template": "resources/[basename].[locale].json"
+                }
+            }
+        },
+        "javascript": {
+            "template": "resources/[locale].js",
+            "header": "// This is a header\n",
+            "footer": ";\n"
+        }
+    }
+}
+

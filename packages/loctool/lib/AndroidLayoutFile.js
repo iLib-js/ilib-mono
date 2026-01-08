@@ -22,7 +22,7 @@ var log4js = require("log4js");
 var path = require("path");
 var xmljs = require("xml-js");
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale");
+var Locale = require("ilib-locale");
 
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
