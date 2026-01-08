@@ -961,42 +961,38 @@ JsonFile.prototype.localize = function (translations, locales) {
 
         for (var i = 0; i < locales.length; i++) {
             if (!this.project.isSourceLocale(locales[i])) {
-                // skip variants for now until we can handle them properly
-                var l = new Locale(locales[i]);
-                if (!l.getVariant()) {
-                    var locale = locales[i];
-                    // Don't pass pathName - let the resource file type use its own template
-                    this.logger.debug("Delegating output to resourceFileType for locale " + locale);
-                    var resFile = resFileType.getResourceFile(locale);
+                var locale = locales[i];
+                // Don't pass pathName - let the resource file type use its own template
+                this.logger.debug("Delegating output to resourceFileType for locale " + locale);
+                var resFile = resFileType.getResourceFile(locale);
 
-                    // For each extracted resource, look up its translation and add to the resource file
-                    for (var j = 0; j < resources.length; j++) {
-                        var res = resources[j];
-                        var hashKey = res.hashKeyForTranslation(locale);
-                        var translated = translations.getClean(hashKey);
+                // For each extracted resource, look up its translation and add to the resource file
+                for (var j = 0; j < resources.length; j++) {
+                    var res = resources[j];
+                    var hashKey = res.hashKeyForTranslation(locale);
+                    var translated = translations.getClean(hashKey);
 
-                        if (translated) {
-                            resFile.addResource(translated);
-                        } else {
-                            // No translation found - create a resource with the source as target
-                            var newRes = res.clone();
-                            newRes.setTargetLocale(locale);
+                    if (translated) {
+                        resFile.addResource(translated);
+                    } else {
+                        // No translation found - create a resource with the source as target
+                        var newRes = res.clone();
+                        newRes.setTargetLocale(locale);
 
-                            // Handle different resource types appropriately
-                            switch (res.getType()) {
-                                case "plural":
-                                    newRes.setTargetPlurals(res.getSourcePlurals());
-                                    break;
-                                case "array":
-                                    newRes.setTargetArray(res.getSourceArray());
-                                    break;
-                                default:
-                                    newRes.setTarget(res.getSource());
-                                    break;
-                            }
-
-                            resFile.addResource(newRes);
+                        // Handle different resource types appropriately
+                        switch (res.getType()) {
+                            case "plural":
+                                newRes.setTargetPlurals(res.getSourcePlurals());
+                                break;
+                            case "array":
+                                newRes.setTargetArray(res.getSourceArray());
+                                break;
+                            default:
+                                newRes.setTarget(res.getSource());
+                                break;
                         }
+
+                        resFile.addResource(newRes);
                     }
                 }
             }
