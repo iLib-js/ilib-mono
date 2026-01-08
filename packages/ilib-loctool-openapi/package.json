@@ -42,8 +42,8 @@
     },
     "scripts": {
         "dist": "npm pack",
-        "test": "jest",
-        "test:watch": "jest --watch",
+        "test": "node node_modules/jest/bin/jest.js",
+        "test:watch": "node node_modules/jest/bin/jest.js --watch",
         "debug": "node --inspect-brk node_modules/.bin/jest -i",
         "clean": "git clean -f -d test",
         "prepare": "conditional-install"
