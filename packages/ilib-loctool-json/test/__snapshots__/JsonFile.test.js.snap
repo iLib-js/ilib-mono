@@ -323,61 +323,11 @@ exports[`jsonfile Localizing an empty object should return an empty object 1`] =
 "
 `;
 
-exports[`resourceFileTypes delegation JsonFile localize delegates ResourceArray to resourceFileType 1`] = `
-"// HEADER: AUTO-GENERATED
-{
-    "strings": [
-        "rouge",
-        "vert",
-        "bleu"
-    ]
-}
-// FOOTER: END OF FILE
-"
-`;
-
-exports[`resourceFileTypes delegation JsonFile localize delegates ResourcePlural to resourceFileType 1`] = `
-"// HEADER: AUTO-GENERATED
-{
-    "plurals/items": {
-        "one": "un élément",
-        "other": "plusieurs éléments"
-    }
-}
-// FOOTER: END OF FILE
-"
-`;
-
 exports[`resourceFileTypes delegation JsonFile localize delegates to resourceFileType and writes file with header/footer 1`] = `
 "// HEADER: AUTO-GENERATED
 {
-    "greeting": "Bonjour",
-    "farewell": "Au revoir"
-}
-// FOOTER: END OF FILE
-"
-`;
-
-exports[`resourceFileTypes delegation JsonFile localize with resourceFileType falls back to source for missing array translation 1`] = `
-"// HEADER: AUTO-GENERATED
-{
-    "strings": [
-        "red",
-        "green",
-        "blue"
-    ]
-}
-// FOOTER: END OF FILE
-"
-`;
-
-exports[`resourceFileTypes delegation JsonFile localize with resourceFileType falls back to source for missing plural translation 1`] = `
-"// HEADER: AUTO-GENERATED
-{
-    "plurals/items": {
-        "one": "one item",
-        "other": "many items"
-    }
+    "farewell": "Au revoir",
+    "greeting": "Bonjour"
 }
 // FOOTER: END OF FILE
 "

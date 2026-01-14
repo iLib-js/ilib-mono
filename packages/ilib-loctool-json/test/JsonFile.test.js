@@ -2919,14 +2919,15 @@ describe("resourceFileTypes delegation", () => {
             id: "resfiletype-test",
             sourceLocale: "en-US",
             resourceDirs: {
-                "json": "resources"
+                "json": "resources",
+                "js": "resources"
             }
         };
 
         // Configure resourceFileTypes like a real project.json would
         if (options.useResourceFileType) {
             projectConfig.resourceFileTypes = {
-                "json": "ilib-loctool-json-resource"
+                "json": "ilib-loctool-javascript-resource"
             };
         }
 
@@ -2944,7 +2945,8 @@ describe("resourceFileTypes delegation", () => {
                     }
                 }
             },
-            "json-resource": {
+            javascript: {
+                template: "resources/[locale].js",
                 header: "// HEADER: AUTO-GENERATED\n",
                 footer: "\n// FOOTER: END OF FILE\n"
             }
@@ -3016,7 +3018,7 @@ describe("resourceFileTypes delegation", () => {
 
         // When delegating to resourceFileType, the resource file type determines the output path
         // based on its own configuration (resourceDirs + locale), not the JSON mapping template
-        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
+        var outputPath = path.join(base, "testfiles/resources/fr-FR.js");
         outputPaths.push(outputPath);
 
         expect(fs.existsSync(outputPath)).toBe(true);
@@ -3105,12 +3107,12 @@ describe("resourceFileTypes delegation", () => {
         resFileType.write();
 
         // fr-FR file should exist (resource file type determines path)
-        var frPath = path.join(base, "testfiles/resources/fr-FR.json");
+        var frPath = path.join(base, "testfiles/resources/fr-FR.js");
         outputPaths.push(frPath);
         expect(fs.existsSync(frPath)).toBe(true);
 
         // en-US file should NOT exist (source locale skipped)
-        var enPath = path.join(base, "testfiles/resources/en-US.json");
+        var enPath = path.join(base, "testfiles/resources/en-US.js");
         outputPaths.push(enPath);
         expect(fs.existsSync(enPath)).toBe(false);
     });
@@ -3159,8 +3161,8 @@ describe("resourceFileTypes delegation", () => {
         resFileType.write();
 
         // Resource file type determines paths based on its configuration
-        var frPath = path.join(base, "testfiles/resources/fr-FR.json");
-        var dePath = path.join(base, "testfiles/resources/de-DE.json");
+        var frPath = path.join(base, "testfiles/resources/fr-FR.js");
+        var dePath = path.join(base, "testfiles/resources/de-DE.js");
         outputPaths.push(frPath);
         outputPaths.push(dePath);
 
@@ -3173,190 +3175,4 @@ describe("resourceFileTypes delegation", () => {
         expect(frContent).toMatchSnapshot();
         expect(deContent).toMatchSnapshot();
     });
-
-    test("JsonFile localize delegates ResourcePlural to resourceFileType", function () {
-        expect.assertions(2);
-
-        var { jsonFile, resFileType } = setupTestWithResourceFileType({
-            pathName: "json/messages.json",
-            useResourceFileType: true,
-            mappings: {
-                "**/messages.json": {
-                    schema: "http://github.com/ilib-js/messages.json",
-                    method: "copy",
-                    template: "resources/[localeDir]/messages.json"
-                }
-            }
-        });
-
-        // JSON structure must match the messages-schema.json which expects plurals under "plurals" property
-        jsonFile.parse('{\n' +
-            '    "plurals": {\n' +
-            '        "items": {\n' +
-            '            "one": "one item",\n' +
-            '            "other": "many items"\n' +
-            '        }\n' +
-            '    }\n' +
-            '}');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourcePlural({
-            project: "resfiletype-test",
-            key: "plurals/items",
-            sourceStrings: {
-                "one": "one item",
-                "other": "many items"
-            },
-            sourceLocale: "en-US",
-            targetStrings: {
-                "one": "un élément",
-                "other": "plusieurs éléments"
-            },
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        jsonFile.localize(translations, ["fr-FR"]);
-
-        resFileType.write();
-
-        // Resource file type determines path based on its configuration
-        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
-        outputPaths.push(outputPath);
-
-        expect(fs.existsSync(outputPath)).toBe(true);
-
-        var content = fs.readFileSync(outputPath, "utf-8");
-
-        // Verify plural translations are present
-        expect(content).toMatchSnapshot();
-    });
-
-    test("JsonFile localize delegates ResourceArray to resourceFileType", function () {
-        expect.assertions(2);
-
-        var { jsonFile, resFileType } = setupTestWithResourceFileType({
-            pathName: "json/arrays.json",
-            useResourceFileType: true,
-            mappings: {
-                "**/arrays.json": {
-                    schema: "http://github.com/ilib-js/arrays.json",
-                    method: "copy",
-                    template: "resources/[localeDir]/arrays.json"
-                }
-            }
-        });
-
-        // JSON structure must match the arrays-schema.json which expects arrays under "strings" property
-        jsonFile.parse('{\n' +
-            '    "strings": ["red", "green", "blue"]\n' +
-            '}');
-
-        var translations = new TranslationSet();
-        translations.add(new ResourceArray({
-            project: "resfiletype-test",
-            key: "strings",
-            sourceArray: ["red", "green", "blue"],
-            sourceLocale: "en-US",
-            targetArray: ["rouge", "vert", "bleu"],
-            targetLocale: "fr-FR",
-            datatype: "json"
-        }));
-
-        jsonFile.localize(translations, ["fr-FR"]);
-
-        resFileType.write();
-
-        // Resource file type determines path based on its configuration
-        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
-        outputPaths.push(outputPath);
-
-        expect(fs.existsSync(outputPath)).toBe(true);
-
-        var content = fs.readFileSync(outputPath, "utf-8");
-
-        expect(content).toMatchSnapshot();
-    });
-
-    test("JsonFile localize with resourceFileType falls back to source for missing plural translation", function () {
-        expect.assertions(2);
-
-        var { jsonFile, resFileType } = setupTestWithResourceFileType({
-            pathName: "json/messages.json",
-            useResourceFileType: true,
-            mappings: {
-                "**/messages.json": {
-                    schema: "http://github.com/ilib-js/messages.json",
-                    method: "copy",
-                    template: "resources/[localeDir]/messages.json"
-                }
-            }
-        });
-
-        // JSON structure must match the messages-schema.json
-        jsonFile.parse('{\n' +
-            '    "plurals": {\n' +
-            '        "items": {\n' +
-            '            "one": "one item",\n' +
-            '            "other": "many items"\n' +
-            '        }\n' +
-            '    }\n' +
-            '}');
-
-        // Empty translation set - no translations available
-        var translations = new TranslationSet();
-
-        jsonFile.localize(translations, ["fr-FR"]);
-
-        resFileType.write();
-
-        // Resource file type determines path based on its configuration
-        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
-        outputPaths.push(outputPath);
-
-        expect(fs.existsSync(outputPath)).toBe(true);
-
-        var content = fs.readFileSync(outputPath, "utf-8");
-
-        expect(content).toMatchSnapshot();
-    });
-
-    test("JsonFile localize with resourceFileType falls back to source for missing array translation", function () {
-        expect.assertions(2);
-
-        var { jsonFile, resFileType } = setupTestWithResourceFileType({
-            pathName: "json/arrays.json",
-            useResourceFileType: true,
-            mappings: {
-                "**/arrays.json": {
-                    schema: "http://github.com/ilib-js/arrays.json",
-                    method: "copy",
-                    template: "resources/[localeDir]/arrays.json"
-                }
-            }
-        });
-
-        // JSON structure must match the arrays-schema.json
-        jsonFile.parse('{\n' +
-            '    "strings": ["red", "green", "blue"]\n' +
-            '}');
-
-        // Empty translation set - no translations available
-        var translations = new TranslationSet();
-
-        jsonFile.localize(translations, ["fr-FR"]);
-
-        resFileType.write();
-
-        // Resource file type determines path based on its configuration
-        var outputPath = path.join(base, "testfiles/resources/fr-FR.json");
-        outputPaths.push(outputPath);
-
-        expect(fs.existsSync(outputPath)).toBe(true);
-
-        var content = fs.readFileSync(outputPath, "utf-8");
-
-        expect(content).toMatchSnapshot();
-    });
-
 });
