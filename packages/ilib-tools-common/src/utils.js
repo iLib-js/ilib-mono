@@ -193,20 +193,25 @@ export function formatLocaleParams(template, locale) {
  * @param {string} parameters.sourcepath the path to the source file, relative to the
  *     root of the project
  * @param {string} parameters.locale the locale for the output file path
+ * @param {string} parameters.resourceDir optional resource directory to substitute
+ *     for [resourceDir] in the template
  * @returns {string} the formatted file path
  */
 export function formatPath(template, parameters) {
     const pathname = parameters.sourcepath || "";
     const locale = parameters.locale || "en";
+    const resourceDir = parameters.resourceDir || ".";
 
     // First, handle locale-related substitutions without path normalization
     let output = formatLocaleParams(template, locale);
 
     // Now handle path-specific keywords
     let base;
+    let lastDot;
 
     output = output.replace(/\[dir\]/g, path.dirname(pathname));
     output = output.replace(/\[filename\]/g, path.basename(pathname));
+    output = output.replace(/\[resourceDir\]/g, resourceDir);
 
     if (output.includes('[extension]')) {
         base = path.basename(pathname);
@@ -215,7 +220,8 @@ export function formatPath(template, parameters) {
 
     if (output.includes('[basename]')) {
         base = path.basename(pathname);
-        output = output.replace(/\[basename\]/g, base.substring(0, base.lastIndexOf('.')));
+        lastDot = base.lastIndexOf('.');
+        output = output.replace(/\[basename\]/g, lastDot > -1 ? base.substring(0, lastDot) : base);
     }
 
     return path.normalize(output);

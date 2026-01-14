@@ -24,6 +24,7 @@ var Locale = require("ilib-locale");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
 var LocaleMatcher = require("ilib-localematcher");
+var toolsCommon = require("ilib-tools-common");
 
 //load the data for these
 isAlnum._init();
@@ -2023,52 +2024,18 @@ module.exports.formatLocaleParams = function (template, locale) {
  * @returns {string} the formatted and normalized file path
  */
 module.exports.formatPath = function (template, parameters, project, filetype) {
-    var pathname = parameters.sourcepath || "";
-    var locale = parameters.locale || "en";
-    var output = "";
-    var base;
-    var lastDot;
-    var pj = project;
-    var resDir = parameters.resourceDir || ((typeof project !== 'undefined' && typeof filetype !== 'undefined') ? pj.project.getResourceDirs(filetype.type)[0] : ".");
-
-    for (var i = 0; i < template.length; i++) {
-        if (template[i] !== '[') {
-            output += template[i];
-        } else {
-            var start = ++i;
-            while (i < template.length && template[i] !== ']') {
-                i++;
-            }
-            var keyword = template.substring(start, i);
-            switch (keyword) {
-                case 'dir':
-                    output += path.dirname(pathname);
-                    break;
-                case 'resourceDir':
-                    output += resDir;
-                    break;
-                case 'filename':
-                    output += path.basename(pathname);
-                    break;
-                case 'extension':
-                    base = path.basename(pathname);
-                    lastDot = base.lastIndexOf('.');
-                    output += lastDot > -1 ? base.substring(lastDot + 1) : "";
-                    break;
-                case 'basename':
-                    base = path.basename(pathname);
-                    lastDot = base.lastIndexOf('.');
-                    output += lastDot > -1 ? base.substring(0, lastDot) : base;
-                    break;
-                default:
-                    // For locale-related keywords and unknown keywords,
-                    output += module.exports.formatLocaleParams('[' + keyword + ']', locale);
-                    break;
-            }
-        }
+    // Calculate the resourceDir from project and filetype if not provided in parameters
+    var resourceDir = parameters.resourceDir;
+    if (!resourceDir && typeof project !== 'undefined' && typeof filetype !== 'undefined') {
+        resourceDir = project.project.getResourceDirs(filetype.type)[0];
     }
 
-    return path.normalize(output);
+    // Delegate to ilib-tools-common formatPath with the calculated resourceDir
+    return toolsCommon.formatPath(template, {
+        sourcepath: parameters.sourcepath,
+        locale: parameters.locale,
+        resourceDir: resourceDir
+    });
 };
 
 var matchExprs = {

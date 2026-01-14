@@ -374,6 +374,57 @@ describe("testUtils", () => {
         })).toBe("x/y/strings_zh-hans-cn.json");
     });
 
+    test("GetLocalizedPathResourceDir", () => {
+        expect.assertions(1);
+
+        expect(formatPath('[resourceDir]/[locale]/strings.json', {
+            sourcepath: "x/y/strings.json",
+            locale: "de-DE",
+            resourceDir: "resources"
+        })).toBe("resources/de-DE/strings.json");
+    });
+
+    test("GetLocalizedPathResourceDirWithLocaleDir", () => {
+        expect.assertions(1);
+
+        expect(formatPath('[resourceDir]/[localeDir]/[filename]', {
+            sourcepath: "src/strings.json",
+            locale: "zh-Hans-CN",
+            resourceDir: "i18n"
+        })).toBe("i18n/zh/Hans/CN/strings.json");
+    });
+
+    test("GetLocalizedPathResourceDirNotProvided", () => {
+        expect.assertions(1);
+
+        // When resourceDir is not provided, it defaults to "."
+        expect(formatPath('[resourceDir]/[locale]/strings.json', {
+            sourcepath: "x/y/strings.json",
+            locale: "de-DE"
+        })).toBe("de-DE/strings.json");
+    });
+
+    test("GetLocalizedPathResourceDirMultiple", () => {
+        expect.assertions(1);
+
+        // Multiple occurrences of [resourceDir] should all be replaced
+        expect(formatPath('[resourceDir]/[locale]/[resourceDir]/strings.json', {
+            sourcepath: "x/y/strings.json",
+            locale: "de-DE",
+            resourceDir: "res"
+        })).toBe("res/de-DE/res/strings.json");
+    });
+
+    test("GetLocalizedPathBasenameNoExtension", () => {
+        expect.assertions(1);
+
+        // Files without extensions should return the full filename for [basename]
+        expect(formatPath('[dir]/[basename]_[locale]', {
+            sourcepath: "x/y/Makefile",
+            locale: "de-DE"
+        })).toBe("x/y/Makefile_de-DE");
+    });
+
     test("ParsePath", () => {
         expect.assertions(1);
 
