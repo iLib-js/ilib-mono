@@ -1,7 +1,7 @@
 /*
  * utils.js - various utilities
  *
- * Copyright © 2016-2020, 2022-2024 HealthTap, Inc.
+ * Copyright © 2016-2020, 2022-2024, 2026 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1918,53 +1918,12 @@ module.exports.nodeMajorVersion = function() {
  * @returns {string} the formatted string with locale parameters substituted
  */
 module.exports.formatLocaleParams = function (template, locale) {
-    if (!template) return "";
-
+    // Normalize locale to a string for ilib-tools-common
+    // (loctool accepts any object with a getSpec() method via duck-typing)
     var localeStr = (typeof locale === "object" && typeof locale.getSpec === "function") ?
-        locale.getSpec() : (locale || "en");
-    var l = new Locale(localeStr);
-    var output = "";
+        locale.getSpec() : locale;
 
-    for (var i = 0; i < template.length; i++) {
-        if (template[i] !== '[') {
-            output += template[i];
-        } else {
-            var start = ++i;
-            while (i < template.length && template[i] !== ']') {
-                i++;
-            }
-            var keyword = template.substring(start, i);
-            switch (keyword) {
-                case 'locale':
-                    output += localeStr;
-                    break;
-                case 'language':
-                    output += l.getLanguage() || "";
-                    break;
-                case 'script':
-                    output += l.getScript() || "";
-                    break;
-                case 'region':
-                    output += l.getRegion() || "";
-                    break;
-                case 'localeDir':
-                    output += l.getSpec().replace(/-/g, '/');
-                    break;
-                case 'localeUnder':
-                    output += l.getSpec().replace(/-/g, '_');
-                    break;
-                case 'localeLower':
-                    output += l.getSpec().toLowerCase();
-                    break;
-                default:
-                    // Unknown keyword - preserve it as-is
-                    output += '[' + keyword + ']';
-                    break;
-            }
-        }
-    }
-
-    return output;
+    return toolsCommon.formatLocaleParams(template, localeStr);
 };
 
 /**
