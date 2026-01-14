@@ -2062,15 +2062,11 @@ module.exports.formatPath = function (template, parameters, project, filetype) {
                     break;
                 default:
                     // For locale-related keywords and unknown keywords,
-                    // preserve them for formatLocaleParams to handle
-                    output += '[' + keyword + ']';
+                    output += module.exports.formatLocaleParams('[' + keyword + ']', locale);
                     break;
             }
         }
     }
-
-    // Now handle locale substitutions
-    output = module.exports.formatLocaleParams(output, locale);
 
     return path.normalize(output);
 };

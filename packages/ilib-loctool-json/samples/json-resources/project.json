@@ -22,7 +22,7 @@
         "node_modules"
     ],
     "settings": {
-        "xliffsDir": "xliffs",
+        "xliffsDir": "translations",
         "locales": [
             "de-DE",
             "ko-KR"

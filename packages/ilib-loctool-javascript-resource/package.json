@@ -55,7 +55,7 @@
     },
     "dependencies": {
         "ilib": "^14.18.0",
-        "ilib-locale": "^1.3.0"
+        "ilib-locale": "workspace:^"
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",
