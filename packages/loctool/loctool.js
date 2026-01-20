@@ -33,6 +33,7 @@ var XliffFactory = require("./lib/XliffFactory.js");
 var XliffMerge = require("./lib/XliffMerge.js");
 var XliffSplit = require("./lib/XliffSplit.js");
 var XliffSelect = require("./lib/XliffSelect.js");
+var XliffPrune = require("./lib/XliffPrune.js");
 var fileConvert = require("./lib/convert.js");
 
 // var Git = require("simple-git");
@@ -183,6 +184,39 @@ var commandOptionHelp = {
         "--projectId <projectName>\n" +
         "  Specify the project name to use when selecting translation units. This is used in the output file\n" +
         "  if the project name is not already set in the input files.\n" +
+        "--extendedAttr <name>=<value>\n" +
+        "  Add an extended attribute to the output file. This can be used to add arbitrary metadata to\n" +
+        "  each translation unit in the output file. You may specify this option multiple times to add\n" +
+        "  multiple extended attributes.",
+    prune:
+        "prune criteria outfile filename ...\n" +
+        "  Select and prune translation units from the input files using the given criteria and write the remaining\n" +
+        "  units to the output file. All files must be xliff files.\n\n" +
+        "criteria\n" +
+        "  The selection criteria. The syntax is as follows:\n" +
+        "    [field]=[regexp]\n" +
+        "      Select any translation units where the given field name matches the regular expression.\n" +
+        "      Fields can be one of: project, context, sourceLocale, targetLocale, key, pathName, state,\n" +
+        "        comment, dnt, datatype, resType, flavor, source, or target\n" +
+        "      Additionally, the field name may be one of the following:\n" +
+        "         source.[category]  (eg. 'source.one')\n" +
+        "           Only select plural resources where the value of the given plural category matches the\n" +
+        "           regular expression\n" +
+        "         target.[category]\n" +
+        "           Only select plural resources where the value of the given plural category matches the\n" +
+        "           regular expression\n" +
+        "         source.[arrayindex]   (eg. 'source.3')\n" +
+        "         target.[arrayindex]\n" +
+        "           Only select array resources where the value at the given array index matches the\n" +
+        "           regular expression.\n" +
+        "      When matching against the source or target fields, a regular expression will match all types\n" +
+        "      of resources and will search the string, category strings, or array values as appropriate.\n" +
+        "  Selection criteria can be combined with a comma. All criteria must match, making the selection a\n" +
+        "  conjunction. eg. loctool prune 'random,maxsource:100,project=myproject' outfile.xliff infile.xliff\n" +
+        "outfile\n" +
+        "  the path to the file where the remaining translation units are written to\n" +
+        "filename\n" +
+        "  You may list as many input files to select from as you like" +
         "--extendedAttr <name>=<value>\n" +
         "  Add an extended attribute to the output file. This can be used to add arbitrary metadata to\n" +
         "  each translation unit in the output file. You may specify this option multiple times to add\n" +
@@ -571,6 +605,22 @@ case "select":
         }
     });
     break;
+
+case "prune":
+    if (options.length < 5) {
+        console.log("Error: must specify selection criteria, an output file, and at least one input file.");
+        usage();
+    }
+    settings.criteria = options[3];
+    settings.outfile = options[4]
+    settings.infiles = options.slice(5);
+    settings.infiles.forEach(function (file) {
+        if (!fs.existsSync(file)) {
+            console.log("Error: could not access file " + file);
+            usage();
+        }
+    });
+    break;
 }
 
 logger.info("loctool - extract strings from source code and localize them.\n");
@@ -813,6 +863,11 @@ try {
     case "select":
         var selected = XliffSelect(settings);
         XliffSelect.write(selected);
+        break;
+
+    case "prune":
+        var selected = XliffPrune(settings);
+        XliffPrune.write(selected);
         break;
     }
 } catch (e) {
