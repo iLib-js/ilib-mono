@@ -1041,4 +1041,506 @@ describe("testLocale", () => {
         // Both the variant "valencia" and the extension should be preserved
         expect(loc.getVariant()).toBe("valencia-u-co-trad");
     });
+
+    test("LocaleGetSpecPrivateUseSubtag", () => {
+        expect.assertions(2);
+        let loc = new Locale("en-x-pseudo");
+
+        expect(loc !== null).toBeTruthy();
+        expect(loc.getSpec()).toBe("en-x-pseudo");
+    });
+
+    test("LocaleGetSpecPrivateUseSubtagLonger", () => {
+        expect.assertions(2);
+        let loc = new Locale("en-x-sort-phonebook");
+
+        expect(loc !== null).toBeTruthy();
+        expect(loc.getSpec()).toBe("en-x-sort-phonebook");
+    });
+
+    test("LocaleGetSpecPrivateUseWithRegion", () => {
+        expect.assertions(2);
+        let loc = new Locale("en-US-x-military");
+
+        expect(loc !== null).toBeTruthy();
+        expect(loc.getSpec()).toBe("en-US-x-military");
+    });
+
+    test("LocaleGetSpecUnicodeExtension", () => {
+        expect.assertions(2);
+        let loc = new Locale("de-DE-u-co-phonebk");
+
+        expect(loc !== null).toBeTruthy();
+        expect(loc.getSpec()).toBe("de-DE-u-co-phonebk");
+    });
+
+    test("LocaleGetSpecUnicodeExtensionWithScript", () => {
+        expect.assertions(2);
+        let loc = new Locale("zh-Hans-CN-u-nu-hanidec");
+
+        expect(loc !== null).toBeTruthy();
+        expect(loc.getSpec()).toBe("zh-Hans-CN-u-nu-hanidec");
+    });
+
+    test("LocaleGetSpecTransformedExtension", () => {
+        expect.assertions(2);
+        let loc = new Locale("en-t-ja");
+
+        expect(loc !== null).toBeTruthy();
+        expect(loc.getSpec()).toBe("en-t-ja");
+    });
+
+    test("LocaleGetSpecMultipleVariants", () => {
+        expect.assertions(2);
+        let loc = new Locale("sl-IT-nedis-rozaj");
+
+        expect(loc !== null).toBeTruthy();
+        expect(loc.getSpec()).toBe("sl-IT-nedis-rozaj");
+    });
+
+    test("LocaleGetSpecVariantWithExtension", () => {
+        expect.assertions(2);
+        let loc = new Locale("ca-ES-valencia-u-co-trad");
+
+        expect(loc !== null).toBeTruthy();
+        expect(loc.getSpec()).toBe("ca-ES-valencia-u-co-trad");
+    });
+});
+
+describe("testPosixLocale", () => {
+    // Tests for Locale.isPosixLocale()
+
+    test("IsPosixLocaleSimple", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("en_US")).toBe(true);
+    });
+
+    test("IsPosixLocaleWithCodeset", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("en_US.UTF-8")).toBe(true);
+    });
+
+    test("IsPosixLocaleWithModifier", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("de_DE@euro")).toBe(true);
+    });
+
+    test("IsPosixLocaleWithCodesetAndModifier", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("sr_RS.UTF-8@latin")).toBe(true);
+    });
+
+    test("IsPosixLocaleLanguageOnly", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("en")).toBe(true);
+    });
+
+    test("IsPosixLocaleThreeLetterLanguage", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("deu_DE")).toBe(true);
+    });
+
+    test("IsPosixLocaleSpecialCaseC", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("C")).toBe(true);
+    });
+
+    test("IsPosixLocaleSpecialCasePOSIX", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("POSIX")).toBe(true);
+    });
+
+    test("IsPosixLocaleSpecialCaseCWithCodeset", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("C.UTF-8")).toBe(true);
+    });
+
+    test("IsPosixLocaleFalseUndefined", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale(undefined)).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseNull", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale(null)).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseEmpty", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("")).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseBCP47", () => {
+        expect.assertions(1);
+        // BCP-47 uses dashes, not underscores, and no codeset
+        expect(Locale.isPosixLocale("en-US")).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseBCP47WithScript", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("zh-Hans-CN")).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseInvalidLanguage", () => {
+        expect.assertions(1);
+        // Language should be lowercase
+        expect(Locale.isPosixLocale("EN_US")).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseInvalidTerritory", () => {
+        expect.assertions(1);
+        // Territory should be uppercase
+        expect(Locale.isPosixLocale("en_us")).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseTooLongLanguage", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("engl_US")).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseTooShortLanguage", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("e_US")).toBe(false);
+    });
+
+    test("IsPosixLocaleFalseMalformed", () => {
+        expect.assertions(1);
+        expect(Locale.isPosixLocale("en__US")).toBe(false);
+    });
+
+    test("IsPosixLocaleNumericTerritory", () => {
+        expect.assertions(1);
+        // M.49 3-digit region codes should be valid
+        expect(Locale.isPosixLocale("en_001")).toBe(true);
+    });
+
+    // Tests for Locale.fromPosix()
+
+    test("FromPosixSimple", () => {
+        expect.assertions(5);
+        let loc = Locale.fromPosix("en_US");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("en");
+        expect(loc.getRegion()).toBe("US");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy();
+    });
+
+    test("FromPosixLanguageOnly", () => {
+        expect.assertions(5);
+        let loc = Locale.fromPosix("de");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("de");
+        expect(typeof(loc.getRegion()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy();
+    });
+
+    test("FromPosixThreeLetterLanguage", () => {
+        expect.assertions(5);
+        let loc = Locale.fromPosix("deu_DE");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("deu");
+        expect(loc.getRegion()).toBe("DE");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy();
+    });
+
+    test("FromPosixWithCodeset", () => {
+        expect.assertions(5);
+        // Codeset should be preserved as x-encoding- private use subtag
+        let loc = Locale.fromPosix("en_US.UTF-8");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("en");
+        expect(loc.getRegion()).toBe("US");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(loc.getVariant()).toBe("x-encoding-utf8");
+    });
+
+    test("FromPosixWithModifierAsVariant", () => {
+        expect.assertions(5);
+        // Modifier that doesn't map to a script becomes a variant
+        let loc = Locale.fromPosix("de_DE@euro");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("de");
+        expect(loc.getRegion()).toBe("DE");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(loc.getVariant()).toBe("euro");
+    });
+
+    test("FromPosixWithModifierAsScriptLatin", () => {
+        expect.assertions(5);
+        // @latin should map to script "Latn"
+        let loc = Locale.fromPosix("sr_RS@latin");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("sr");
+        expect(loc.getRegion()).toBe("RS");
+        expect(loc.getScript()).toBe("Latn");
+        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy();
+    });
+
+    test("FromPosixWithModifierAsScriptCyrillic", () => {
+        expect.assertions(5);
+        // @cyrillic should map to script "Cyrl"
+        let loc = Locale.fromPosix("sr_RS@cyrillic");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("sr");
+        expect(loc.getRegion()).toBe("RS");
+        expect(loc.getScript()).toBe("Cyrl");
+        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy();
+    });
+
+    test("FromPosixWithCodesetAndModifier", () => {
+        expect.assertions(5);
+        let loc = Locale.fromPosix("sr_RS.UTF-8@latin");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("sr");
+        expect(loc.getRegion()).toBe("RS");
+        expect(loc.getScript()).toBe("Latn");
+        expect(loc.getVariant()).toBe("x-encoding-utf8");
+    });
+
+    test("FromPosixSpecialCaseC", () => {
+        expect.assertions(5);
+        // "C" locale should map to en-US
+        let loc = Locale.fromPosix("C");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("en");
+        expect(loc.getRegion()).toBe("US");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy();
+    });
+
+    test("FromPosixSpecialCasePOSIX", () => {
+        expect.assertions(5);
+        // "POSIX" locale should map to en-US
+        let loc = Locale.fromPosix("POSIX");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("en");
+        expect(loc.getRegion()).toBe("US");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy();
+    });
+
+    test("FromPosixSpecialCaseCWithCodeset", () => {
+        expect.assertions(5);
+        // "C.UTF-8" should map to en-US with encoding preserved
+        let loc = Locale.fromPosix("C.UTF-8");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("en");
+        expect(loc.getRegion()).toBe("US");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(loc.getVariant()).toBe("x-encoding-utf8");
+    });
+
+    test("FromPosixInvalidReturnsUndefined", () => {
+        expect.assertions(1);
+        let loc = Locale.fromPosix("not-a-valid-posix-locale");
+
+        expect(loc).toBeUndefined();
+    });
+
+    test("FromPosixBCP47ReturnsUndefined", () => {
+        expect.assertions(1);
+        // BCP-47 format should not be accepted
+        let loc = Locale.fromPosix("en-US");
+
+        expect(loc).toBeUndefined();
+    });
+
+    test("FromPosixEmptyReturnsUndefined", () => {
+        expect.assertions(1);
+        let loc = Locale.fromPosix("");
+
+        expect(loc).toBeUndefined();
+    });
+
+    test("FromPosixUndefinedReturnsUndefined", () => {
+        expect.assertions(1);
+        let loc = Locale.fromPosix(undefined);
+
+        expect(loc).toBeUndefined();
+    });
+
+    test("FromPosixNullReturnsUndefined", () => {
+        expect.assertions(1);
+        let loc = Locale.fromPosix(null);
+
+        expect(loc).toBeUndefined();
+    });
+
+    test("FromPosixNumericTerritory", () => {
+        expect.assertions(5);
+        // M.49 3-digit region codes
+        let loc = Locale.fromPosix("en_001");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("en");
+        expect(loc.getRegion()).toBe("001");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy();
+    });
+
+    test("FromPosixChineseSimplified", () => {
+        expect.assertions(5);
+        let loc = Locale.fromPosix("zh_CN.GB18030");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("zh");
+        expect(loc.getRegion()).toBe("CN");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(loc.getVariant()).toBe("x-encoding-gb18030");
+    });
+
+    test("FromPosixCodesetWithHyphens", () => {
+        expect.assertions(5);
+        // Codeset with hyphens should be normalized (hyphens removed, lowercase)
+        let loc = Locale.fromPosix("de_DE.ISO-8859-1");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("de");
+        expect(loc.getRegion()).toBe("DE");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        expect(loc.getVariant()).toBe("x-encoding-iso88591");
+    });
+
+    test("FromPosixCodesetWithModifierVariant", () => {
+        expect.assertions(5);
+        // Both codeset and modifier (as variant) should be preserved
+        let loc = Locale.fromPosix("de_DE.UTF-8@euro");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getLanguage()).toBe("de");
+        expect(loc.getRegion()).toBe("DE");
+        expect(typeof(loc.getScript()) === "undefined").toBeTruthy();
+        // Variant should include both the modifier and the encoding
+        expect(loc.getVariant()).toBe("euro-x-encoding-utf8");
+    });
+
+    test("FromPosixGetSpec", () => {
+        expect.assertions(2);
+        let loc = Locale.fromPosix("en_US.UTF-8");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getSpec()).toBe("en-US-x-encoding-utf8");
+    });
+
+    test("FromPosixWithScriptGetSpec", () => {
+        expect.assertions(2);
+        let loc = Locale.fromPosix("sr_RS@latin");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getSpec()).toBe("sr-Latn-RS");
+    });
+
+    test("FromPosixWithVariantGetSpec", () => {
+        expect.assertions(2);
+        let loc = Locale.fromPosix("de_DE@euro");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getSpec()).toBe("de-DE-euro");
+    });
+
+    // Tests for various script name recognition from generated scriptNameToCode mapping
+
+    test("FromPosixScriptBraille", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("fr_FR@braille");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Brai");
+        expect(loc.getSpec()).toBe("fr-Brai-FR");
+    });
+
+    test("FromPosixScriptKhmer", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("km_KH@khmer");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Khmr");
+        expect(loc.getSpec()).toBe("km-Khmr-KH");
+    });
+
+    test("FromPosixScriptMyanmar", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("my_MM@myanmar");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Mymr");
+        expect(loc.getSpec()).toBe("my-Mymr-MM");
+    });
+
+    test("FromPosixScriptMandaic", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("ar_IQ@mandaic");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Mand");
+        expect(loc.getSpec()).toBe("ar-Mand-IQ");
+    });
+
+    test("FromPosixScriptHanunoo", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("tl_PH@hanunoo");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Hano");
+        expect(loc.getSpec()).toBe("tl-Hano-PH");
+    });
+
+    test("FromPosixScriptTaiAhom", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("aho_IN@taiahom");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Ahom");
+        expect(loc.getSpec()).toBe("aho-Ahom-IN");
+    });
+
+    test("FromPosixScriptOldPersian", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("fa_IR@oldpersian");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Xpeo");
+        expect(loc.getSpec()).toBe("fa-Xpeo-IR");
+    });
+
+    test("FromPosixScriptVithkuqi", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("sq_AL@vithkuqi");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Vith");
+        expect(loc.getSpec()).toBe("sq-Vith-AL");
+    });
+
+    test("FromPosixScriptSantali", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("sat_IN@santali");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Olck");
+        expect(loc.getSpec()).toBe("sat-Olck-IN");
+    });
+
+    test("FromPosixScriptGeorgian", () => {
+        expect.assertions(3);
+        let loc = Locale.fromPosix("ka_GE@georgian");
+
+        expect(loc !== undefined).toBeTruthy();
+        expect(loc.getScript()).toBe("Geor");
+        expect(loc.getSpec()).toBe("ka-Geor-GE");
+    });
 });

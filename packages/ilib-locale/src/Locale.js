@@ -22,7 +22,7 @@ import { a2toa3regmap } from "./a2toa3regmap.js";
 import { a1toa3langmap } from "./a1toa3langmap.js";
 
 // the list below is originally from https://unicode.org/iso15924/iso15924-codes.html
-import { iso15924 } from "./scripts.js";
+import { iso15924, scriptNameToCode } from "./scripts.js";
 
 import * as ilibEnv from "ilib-env";
 
@@ -469,5 +469,144 @@ Locale.languageAlpha1ToAlpha3 = function(alpha1) {
     return Locale.a1toa3langmap[alpha1] || alpha1;
 };
 
+/**
+ * Parse a POSIX locale specifier and return its components.
+ *
+ * @private
+ * @param {string} spec the POSIX locale specifier to parse
+ * @return {Object|null} an object with language, territory, codeset, and modifier
+ *     properties, or null if the spec is not a valid POSIX locale
+ */
+Locale._parsePosixLocale = function(spec) {
+    // Return null for undefined, null, or empty strings
+    if (!spec || typeof spec !== 'string' || spec.length === 0) {
+        return null;
+    }
+
+    // Handle special cases "C" and "POSIX" - map to en_US
+    if (spec === "C" || spec === "POSIX") {
+        return { language: "en", territory: "US", codeset: undefined, modifier: undefined };
+    }
+
+    // Handle "C.codeset" format - map to en_US with codeset
+    const cCodesetMatch = spec.match(/^C\.([A-Za-z0-9-]+)$/);
+    if (cCodesetMatch) {
+        return { language: "en", territory: "US", codeset: cCodesetMatch[1], modifier: undefined };
+    }
+
+    // Parse the full format: language[_territory][.codeset][@modifier]
+    // - language: 2-3 lowercase letters (ISO 639)
+    // - territory: 2 uppercase letters or 3 digits (ISO 3166 / M.49)
+    // - codeset: alphanumeric characters and hyphens (e.g., UTF-8, ISO-8859-1)
+    // - modifier: alphanumeric characters (e.g., euro, latin)
+    const posixRegex = /^([a-z]{2,3})(?:_([A-Z]{2}|[0-9]{3}))?(?:\.([A-Za-z0-9-]+))?(?:@([A-Za-z0-9]+))?$/;
+    const match = spec.match(posixRegex);
+
+    if (!match) {
+        return null;
+    }
+
+    return {
+        language: match[1],
+        territory: match[2],
+        codeset: match[3],
+        modifier: match[4]
+    };
+};
+
+/**
+ * Check whether the given string conforms to the syntax of a POSIX locale specifier.
+ *
+ * POSIX locales follow the format: `language[_territory][.codeset][@modifier]`
+ *
+ * This method performs a syntactic check only - it does not validate whether
+ * the language or territory codes are valid ISO codes.
+ *
+ * Valid examples:
+ * - `en_US`
+ * - `en_US.UTF-8`
+ * - `de_DE@euro`
+ * - `zh_CN.GB18030`
+ * - `sr_RS.UTF-8@latin`
+ * - `C`
+ * - `POSIX`
+ *
+ * @static
+ * @param {string} spec the string to check
+ * @return {boolean} true if the string conforms to POSIX locale syntax, false otherwise
+ */
+Locale.isPosixLocale = function(spec) {
+    return Locale._parsePosixLocale(spec) !== null;
+};
+
+/**
+ * Factory method to create a Locale instance from a POSIX locale specifier.
+ *
+ * POSIX locales follow the format: `language[_territory][.codeset][@modifier]`
+ *
+ * Examples of POSIX locale specifiers:
+ * - `en_US` - English, United States
+ * - `en_US.UTF-8` - English, United States, UTF-8 encoding
+ * - `de_DE@euro` - German, Germany, euro variant
+ * - `zh_CN.GB18030` - Chinese, China, GB18030 encoding
+ * - `sr_RS@latin` - Serbian, Serbia, Latin script
+ * - `C` or `POSIX` - The standard C/POSIX locale
+ *
+ * The codeset (e.g., UTF-8, ISO-8859-1) is preserved using the BCP-47 private
+ * use extension `x-encoding-`. For example, `en_US.UTF-8` becomes
+ * `en-US-x-encoding-utf8`. The codeset is normalized to lowercase with dots
+ * and hyphens removed.
+ *
+ * The modifier may be mapped to a BCP-47 script or variant as appropriate.
+ * For example, `@latin` may become script "Latn", while `@euro` may become
+ * a variant.
+ *
+ * If the input string does not conform to POSIX locale syntax, this method
+ * returns `undefined`. Use {@link Locale.isPosixLocale} to check whether a
+ * string is a valid POSIX locale specifier before calling this method if
+ * you need to distinguish between invalid input and other error conditions.
+ *
+ * @static
+ * @param {string} posixLocale the POSIX locale specifier to parse
+ * @return {Locale|undefined} a new Locale instance representing the given POSIX locale,
+ *     or `undefined` if the input does not conform to POSIX locale syntax
+ */
+Locale.fromPosix = function(posixLocale) {
+    // Parse the POSIX locale - returns null if invalid
+    const parsed = Locale._parsePosixLocale(posixLocale);
+    if (!parsed) {
+        return undefined;
+    }
+
+    const { language, territory, codeset, modifier } = parsed;
+
+    let script;
+    let variant;
+
+    // Check if modifier maps to a script (using generated scriptNameToCode mapping)
+    if (modifier) {
+        const lowerModifier = modifier.toLowerCase();
+        if (scriptNameToCode[lowerModifier]) {
+            script = scriptNameToCode[lowerModifier];
+        } else {
+            // Modifier becomes a variant
+            variant = modifier;
+        }
+    }
+
+    // Normalize codeset and add as x-encoding- variant
+    if (codeset) {
+        const normalizedCodeset = codeset.toLowerCase().replace(/[-.]/g, '');
+        const encodingVariant = "x-encoding-" + normalizedCodeset;
+        if (variant) {
+            variant = variant + "-" + encodingVariant;
+        } else {
+            variant = encodingVariant;
+        }
+    }
+
+    // Create and return the Locale instance
+    return new Locale(language, territory, variant, script);
+};
 
 export default Locale;

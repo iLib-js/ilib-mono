@@ -34,9 +34,122 @@ const scriptCodes = scriptInfo.iso15924
     .map(script => script.code)
     .sort();
 
+// Build script name to code mapping for POSIX locale modifiers
+const scriptNameToCode = {};
+
+/**
+ * Convert accented characters to their ASCII base equivalents.
+ * Uses Unicode NFD normalization to decompose characters, then removes combining marks.
+ * @param {string} str - The string to convert
+ * @returns {string} - The string with accented characters replaced by ASCII equivalents
+ */
+function toAscii(str) {
+    // NFD decomposes characters like "é" into "e" + combining acute accent
+    // Then we remove the combining marks (Unicode category Mn - Mark, Nonspacing)
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/**
+ * Check if a string contains only valid POSIX locale modifier characters.
+ * POSIX modifiers only allow alphanumeric characters (no underscores or hyphens).
+ * @param {string} str - The string to check
+ * @returns {boolean} - True if the string is valid for a POSIX modifier
+ */
+function isValidPosixModifier(str) {
+    return /^[a-z0-9]+$/.test(str);
+}
+
+/**
+ * Normalize a script name for use as a POSIX locale modifier key.
+ * - Convert accented characters to ASCII
+ * - Lowercase
+ * - Remove spaces (POSIX modifiers can't contain spaces or underscores)
+ * - Filter out names that contain invalid POSIX modifier characters
+ * @param {string} name - The script name to normalize
+ * @returns {string[]} - Array containing the normalized name, or empty if invalid
+ */
+function normalizeScriptName(name) {
+    const trimmed = name.trim();
+    const ascii = toAscii(trimmed);
+    const lower = ascii.toLowerCase();
+    const noSpaces = lower.replace(/\s+/g, '');
+
+    // Filter out entries that contain invalid POSIX modifier characters
+    // (e.g., parentheses, hyphens, IPA symbols, superscript numbers, special quotes)
+    if (!isValidPosixModifier(noSpaces)) {
+        return [];
+    }
+
+    return [noSpaces];
+}
+
+/**
+ * Check if a parenthetical should be excluded (variants, aliases for combinations)
+ * @param {string} paren - The content inside parentheses
+ * @returns {boolean} - True if this entry should be excluded
+ */
+function shouldExcludeParenthetical(paren) {
+    const lower = paren.toLowerCase();
+    return lower.includes('variant') || lower.includes('alias for');
+}
+
+/**
+ * Extract script names from an englishName field
+ * @param {string} englishName - The englishName from UCD
+ * @param {string} code - The script code
+ */
+function extractScriptNames(englishName, code) {
+    // Check for parenthetical content
+    const parenMatch = englishName.match(/^(.+?)\s*\((.+)\)$/);
+
+    if (parenMatch) {
+        const mainPart = parenMatch[1];
+        const parenContent = parenMatch[2];
+
+        // Skip entries with "variant" or "alias for" in parentheses
+        if (shouldExcludeParenthetical(parenContent)) {
+            return;
+        }
+
+        // Add main part
+        for (const normalized of normalizeScriptName(mainPart)) {
+            scriptNameToCode[normalized] = code;
+        }
+
+        // Parse parenthetical content - may contain comma-separated aliases
+        const aliases = parenContent.split(/,\s*/);
+        for (const alias of aliases) {
+            // Skip if alias contains excluded words
+            if (!shouldExcludeParenthetical(alias)) {
+                for (const normalized of normalizeScriptName(alias)) {
+                    scriptNameToCode[normalized] = code;
+                }
+            }
+        }
+    } else {
+        // No parentheses - check for comma-separated names
+        const parts = englishName.split(/,\s*/);
+        for (const part of parts) {
+            for (const normalized of normalizeScriptName(part)) {
+                scriptNameToCode[normalized] = code;
+            }
+        }
+    }
+}
+
+// Process each script entry
+for (const script of scriptInfo.iso15924) {
+    if (script.englishName) {
+        extractScriptNames(script.englishName, script.code);
+    }
+}
+
+// Sort the mapping keys for consistent output
+const sortedKeys = Object.keys(scriptNameToCode).sort();
+
 // Generate the output file content
 const output = `/*
- * scripts.js - List out the ISO 15924 script codes
+ * scripts.js - List out the ISO 15924 script codes and name mappings
  *
  * Copyright © 2022, 2025-2026 JEDLSoft
  *
@@ -61,11 +174,20 @@ export const iso15924 = {
     "scripts": [
 ${scriptCodes.map(code => `        "${code}"`).join(',\n')}
     ]
-}`;
+};
+
+/**
+ * Mapping from lowercase script names (as used in POSIX locale modifiers)
+ * to ISO 15924 script codes.
+ */
+export const scriptNameToCode = {
+${sortedKeys.map(key => `    "${key}": "${scriptNameToCode[key]}"`).join(',\n')}
+};
+`;
 
 // Write the output file
 const outputPath = join(__dirname, '../src/scripts.js');
 writeFileSync(outputPath, output, 'utf8');
 
-console.log(`Generated ${outputPath} with ${scriptCodes.length} script codes.`);
+console.log(`Generated ${outputPath} with ${scriptCodes.length} script codes and ${sortedKeys.length} name mappings.`);
 
