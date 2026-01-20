@@ -10,3 +10,4 @@ Add support for POSIX locale specifiers:
 - Script modifiers (e.g., `@latin`, `@cyrillic`) mapped to ISO 15924 codes
 - Non-script modifiers preserved as BCP-47 variants
 - Extended `generate-scripts.js` to produce `scriptNameToCode` mapping (258 script names)
+- Added TypeScript declarations (`Locale.d.ts`)
