@@ -28,14 +28,15 @@ describe("samples", () => {
         const projectPath = path.resolve(__dirname, "..", "samples", "lint-webOS");
         const modifiedxliffPath = path.resolve(projectPath, "xliffs/am-ET.xliff.modified");
         const modifiedxliffPath2 = path.resolve(projectPath, "xliffs/zh-Hans-CN.xliff.modified");
-        const modifiedxliffPath4 = path.resolve(projectPath, "xliffs/cs-CZ.xliff.modified");
+        const modifiedxliffPath3 = path.resolve(projectPath, "xliffs/cs-CZ.xliff.modified");
 
         let fsSnapshot;
         beforeAll(async () => {
             fsSnapshot = FSSnapshot.create([
-                "webos-result.html",
+                "webos-result.json",
                 "xliffs/am-ET.xliff.modified",
-                "xliffs/zh-Hans-CN.xliff.modified"
+                "xliffs/zh-Hans-CN.xliff.modified",
+                "xliffs/cz-CZ.xliff.modified"
             ].map(f => path.resolve(path.join(projectPath, f))));
 
             try {
@@ -43,8 +44,8 @@ describe("samples", () => {
                 const lint = new LintRunner(projectPath, lintPath);
                 await lint.run(
                     "-c", path.join(projectPath, "ilib-lint-config.json"),
-                    "-f", "html-formatter",
-                    "-o", "webos-result.html",
+                    "-f", "webos-json-formatter",
+                    "-o", "webos-result.json",
                     "--fix",
                     "--write"
                 );
@@ -54,6 +55,7 @@ describe("samples", () => {
         }, 10000);
         
         afterAll(() => {
+            console.log("!")
             fsSnapshot.restore();
         });
 
@@ -64,7 +66,7 @@ describe("samples", () => {
             expectFileToMatchSnapshot(modifiedxliffPath2);
         });
         test("should generate the modified file (cs-CZ)", () => {
-            expectFileToMatchSnapshot(modifiedxliffPath4);
+            expectFileToMatchSnapshot(modifiedxliffPath3);
         });
     });
 });

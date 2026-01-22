@@ -173,6 +173,7 @@ class Resource {
      * @param {string} [props.comment] the comment (translator's note) of this resource
      * @param {boolean} [props.dnt] Do not translate this resource when this is set to true. Default: false
      * @param {string} [props.datatype] the type of file that this resource came from
+     * @param {string} [props.sourceHash] the hash value of a source string
      * @param {string} [props.flavor] the "flavor" of this string, if any. (Android)
      * @param {Location} [props.location] the location in the file given in pathName where this this resource
      * is located
@@ -207,14 +208,13 @@ class Resource {
             this.origin = props.origin || "source";
             this.dnt = props.dnt;
             this.datatype = props.datatype;
-            this.sourceHash = props.sourceHash;
+            this.sourceHash = props.sourceHash || undefined;
             this.localize = typeof(props.localize) === "boolean" ? props.localize : true; // some files have resources we do not want to localize/translate
             this.flavor = props.flavor;
             this.index = props.index;
             this.location = props.location; // optional location of the transunits in the xml file
             this.resfile = props.resfile; // optional resource file path
             this.metadata = props.metadata || undefined;
-            this.sourceHash = props.sourceHash || undefined;
         }
 
         this.instances = [];
@@ -364,6 +364,24 @@ class Resource {
      */
     getState() {
         return this.state;
+    }
+
+    /**
+    * Sets the hash value for the source of this resource.
+    *
+    * @param {string} hashValue - The hash value to set for this resource.
+    */
+    setSourceHash(hashValue) {
+        this.sourceHash = hashValue;
+    }
+
+    /**
+    * Returns the hash value for the source of this resource.
+    *
+    * @returns {string} The hash value of this resource.
+    */
+    getSourceHash() {
+        return this.sourceHash;
     }
 
     /**

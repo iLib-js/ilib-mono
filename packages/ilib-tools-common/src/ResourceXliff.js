@@ -351,18 +351,11 @@ class ResourceXliff {
      */
     parse(xml) {
         const tuList = this.xliff.deserialize(xml, this.path);
-        const xliffName = this.xliff.getName();
-        const isWebOS = xliffName === 'webOSXliff';
         let res;
-
 
         if (tuList) {
             for (var j = 0; j < tuList.length; j++) {
                 const tu = tuList[j];
-
-                if (isWebOS) {
-                    tu.sourceHash = JSUtils.hashCode(tu.source);
-                }
 
                 switch (tu.resType) {
                 default:

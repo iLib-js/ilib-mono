@@ -129,14 +129,8 @@ class TranslationSet {
         if (!resource) return;
 
         let existing;
-        const key = resource.getKey();
-        let hashKey = resource.hashKey();
-        let cleanKey = resource.cleanHashKey();
-
-        if (resource.sourceHash) {
-            hashKey  = `${hashKey}_${resource.sourceHash}`;
-            cleanKey = `${cleanKey}_${resource.sourceHash}`;
-        }
+        const key = resource.getKey(), hashKey = resource.hashKey();
+        const cleanKey = resource.cleanHashKey();
 
         logger.trace("Add a resource. Hash: " + hashKey + " clean: " + cleanKey + " resource:" + JSON.stringify(resource));
 

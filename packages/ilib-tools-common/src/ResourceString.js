@@ -1,7 +1,7 @@
 /*
  * ResourceString.js - represents an string in a resource file
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,11 +126,12 @@ class ResourceString extends Resource {
      * @param {String} datatype the datatype of the string
      * @param {String} flavor the flavor of the string
      * @param {String} context the context of the string
+     * @param {String} sourceHash the sourceHash of the string
      * @static
      * @return {String} a hash key
      */
-    static hashKey(project, locale, reskey, datatype, flavor, context) {
-        const key = ["rs", project, locale, reskey, datatype, flavor, context].join("_");
+    static hashKey(project, locale, reskey, datatype, flavor, context, sourceHash) {
+        const key = ["rs", project, locale, reskey, datatype, flavor, context, sourceHash].join("_");
         logger.trace("Hashkey is " + key);
         return key;
     }
@@ -145,10 +146,11 @@ class ResourceString extends Resource {
      * @param {String} datatype the datatype of the string
      * @param {String} flavor the flavor of the string
      * @param {String} context the context of the string
+     * @param {String} sourceHash the sourceHash of the string
      * @static
      * @return {String} a hash key
      */
-    static cleanHashKey(project, locale, reskey, datatype, flavor, context) {
+    static cleanHashKey(project, locale, reskey, datatype, flavor, context, sourceHash) {
         const cleaned = reskey && reskey.replace(/\s+/g, " ").trim() || "";
         const key = ["rs", project, locale, cleaned, datatype, flavor, context].join("_");
         logger.trace("CleanHashkey is " + key);
@@ -162,7 +164,7 @@ class ResourceString extends Resource {
      */
     hashKey() {
         const locale = this.targetLocale || this.getSourceLocale();
-        return ResourceString.hashKey(this.project, locale, this.reskey, this.datatype, this.flavor, this.context);
+        return ResourceString.hashKey(this.project, locale, this.reskey, this.datatype, this.flavor, this.context, this.sourceHash);
     }
 
     /**
@@ -173,7 +175,7 @@ class ResourceString extends Resource {
      * @return {String} a unique hash key for this resource
      */
     hashKeyForTranslation(locale) {
-        return ResourceString.hashKey(this.project, locale, this.reskey, this.datatype, this.flavor, this.context);
+        return ResourceString.hashKey(this.project, locale, this.reskey, this.datatype, this.flavor, this.context, this.sourceHash);
     }
 
     /**
@@ -183,7 +185,7 @@ class ResourceString extends Resource {
      */
     cleanHashKey() {
         const locale = this.targetLocale || this.getSourceLocale();
-        return ResourceString.cleanHashKey(this.project, locale, this.reskey, this.datatype, this.flavor, this.context);
+        return ResourceString.cleanHashKey(this.project, locale, this.reskey, this.datatype, this.flavor, this.context, this.sourceHash);
     }
 
     /**
@@ -194,7 +196,7 @@ class ResourceString extends Resource {
      * @return {String} a unique hash key for this resource's string
      */
     cleanHashKeyForTranslation(locale) {
-        return ResourceString.cleanHashKey(this.project, locale, this.reskey, this.datatype, this.flavor, this.context);
+        return ResourceString.cleanHashKey(this.project, locale, this.reskey, this.datatype, this.flavor, this.context, this.sourceHash);
     }
 
     /**
