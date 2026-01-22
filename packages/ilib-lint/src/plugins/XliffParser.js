@@ -80,7 +80,8 @@ class XliffParser extends Parser {
 
         const xliff = new ResourceXliff({
             path: sourceFile.getPath(),
-            xliff: xliffObj
+            xliff: xliffObj,
+            sourceLocale: xliffObj.sourceLocale
         });
 
         xliff.parse(data);

@@ -1,5 +1,11 @@
 # ilib-lint
 
+## 2.21.1
+
+### Patch Changes
+
+- 3a0702e: Update the XliffParser and XliffSerializer processes to correctly pass the sourceLocale value. Otherwise, the webOSXliff is passed as en-US, which causes an issue.
+
 ## 2.21.0
 
 ### Minor Changes

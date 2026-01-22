@@ -1,0 +1,89 @@
+{
+    "name": "ilib-loctool-mdx",
+    "version": "1.0.0",
+    "main": "./MdxFileType.js",
+    "description": "A loctool plugin that knows how to process mdx (markdown + jsx) files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "markdown",
+        "jsx",
+        "mdx"
+    ],
+    "email": "ehoogerbeets@gmail.com",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "ehoogerbeets@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "MdxFile.js",
+        "MdxFileType.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
+    },
+    "scripts": {
+        "build": "",
+        "coverage": "pnpm test --coverage",
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+        "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
+        "clean": "git clean -f -d * ; rm -rf test/testfiles/fr-FR test/testfiles/de-DE",
+        "test:all": "npm-run-all --npm-path pnpm test test:e2e",
+        "test:e2e": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
+    },
+    "engines": {
+        "node": ">=16 <23"
+    },
+    "dependencies": {
+        "acorn": "^8.15.0",
+        "acorn-jsx": "^5.3.2",
+        "he": "^1.2.0",
+        "html-tags": "^5.1.0",
+        "ilib": "^14.21.2",
+        "ilib-loctool-yaml": "workspace:^",
+        "ilib-tree-node": "workspace:^",
+        "message-accumulator": "workspace:^",
+        "micromark": "~2.11.0",
+        "micromark-core-commonmark": "^2.0.3",
+        "micromark-extension-gfm-footnote": "^2.1.0",
+        "micromark-extension-mdxjs": "^3.0.0",
+        "micromark-extension-mdxjs-esm": "^3.0.0",
+        "micromatch": "^4.0.8",
+        "remark": "^15.0.1",
+        "remark-footnotes": "^2.0.0",
+        "remark-frontmatter": "^5.0.0",
+        "remark-gfm": "^4.0.1",
+        "remark-mdx": "^3.1.1",
+        "remark-parse": "^11.0.0",
+        "remark-stringify": "^11.0.0",
+        "unist-builder": "^2.0.3",
+        "unist-util-filter": "^2.0.3"
+    },
+    "devDependencies": {
+        "ilib-internal": "workspace:^",
+        "jest": "^29.7.0",
+        "loctool": "workspace:^"
+    }
+}

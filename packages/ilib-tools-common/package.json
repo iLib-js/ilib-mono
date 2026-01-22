@@ -1,6 +1,6 @@
 {
     "name": "ilib-tools-common",
-    "version": "1.20.0",
+    "version": "1.20.1",
     "main": "./lib/index.js",
     "module": "./src/index.js",
     "exports": {
@@ -47,7 +47,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
         "node": ">=12 <23"
@@ -58,7 +58,7 @@
         "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:data": "node --experimental-vm-modules ./scripts/genPluralCategories.mjs",
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
         "test:watch": "pnpm test:jest --watch",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i --testEnvironment node",

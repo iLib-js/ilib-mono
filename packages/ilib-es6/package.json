@@ -45,13 +45,13 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
         "node": ">=12 <23"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "test": "pnpm test:cli",
         "test:cli": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --watch",

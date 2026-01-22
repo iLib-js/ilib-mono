@@ -1,0 +1,33 @@
+{
+    "name": "sample-mdx",
+    "id": "sample-mdx",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "plugins": [
+        "ilib-loctool-mdx"
+    ],
+    "excludes": [
+        "xliffs",
+        "locale"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales": [
+            "ko-KR",
+            "nl-NL"
+        ],
+        "mdx": {
+            "mappings": {
+                "**/en-US/*.md": {
+                    "template": "locale/[locale]/[filename]",
+                    "frontmatter": ["Title", "Description"]
+                },
+                "**/en-US/*.mdx": {
+                    "template": "locale/[locale]/[filename]",
+                    "frontmatter": ["Title", "Description"]
+                }
+            }
+        }
+    }
+}

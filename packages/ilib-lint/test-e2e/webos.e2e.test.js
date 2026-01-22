@@ -29,6 +29,7 @@ describe("samples", () => {
         const modifiedxliffPath = path.resolve(projectPath, "xliffs/am-ET.xliff.modified");
         const modifiedxliffPath2 = path.resolve(projectPath, "xliffs/zh-Hans-CN.xliff.modified");
         const modifiedxliffPath4 = path.resolve(projectPath, "xliffs/cs-CZ.xliff.modified");
+        const modifiedxliffPath3 = path.resolve(projectPath, "xliffs/en-US.xliff.modified");
 
         let fsSnapshot;
         beforeAll(async () => {
@@ -37,6 +38,7 @@ describe("samples", () => {
                 "xliffs/am-ET.xliff.modified",
                 "xliffs/zh-Hans-CN.xliff.modified",
                 "xliffs/cz-CZ.xliff.modified"
+                "xliffs/en-US.xliff.modified"
             ].map(f => path.resolve(path.join(projectPath, f))));
 
             try {
@@ -66,6 +68,8 @@ describe("samples", () => {
         });
         test("should generate the modified file (cs-CZ)", () => {
             expectFileToMatchSnapshot(modifiedxliffPath4);
+        test("should generate the modified file (en-US)", () => {
+            expectFileToMatchSnapshot(modifiedxliffPath3);
         });
     });
 });

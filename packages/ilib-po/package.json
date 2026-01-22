@@ -43,14 +43,14 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
         "node": ">=12 <23"
     },
     "scripts": {
         "build": "tsc --project tsconfig.build.json",
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "types": "tsc",
         "test": "node node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test --watch",

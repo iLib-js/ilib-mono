@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">
+  <file id="sample_f1" original="sample">
+    <group id="sample_g1" name="javascript">
+      <unit id="sample_g1_1">
+        <notes>
+          <note>[sample_General]sample_general_1</note>
+        </notes>
+        <segment>
+          <source>AV</source>
+          <target>AV </target>
+        </segment>
+      </unit>
+      <unit id="sample_g1_2">
+        <segment>
+          <source>Version</source>
+          <target>  Version </target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

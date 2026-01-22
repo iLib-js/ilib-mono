@@ -1,6 +1,6 @@
 {
     "name": "loctool",
-    "version": "2.31.7",
+    "version": "2.31.8",
     "main": "./loctool.js",
     "bin": "./loctool.js",
     "description": "A string resource extractor for multiple files types and project types",
@@ -49,13 +49,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
         "node": ">=12 <23"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "clean": "ant clean",
         "build": "pnpm generate",
         "generate": "node generate/genPluralCategories.js",
