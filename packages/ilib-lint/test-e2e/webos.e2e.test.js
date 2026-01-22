@@ -28,7 +28,7 @@ describe("samples", () => {
         const projectPath = path.resolve(__dirname, "..", "samples", "lint-webOS");
         const modifiedxliffPath = path.resolve(projectPath, "xliffs/am-ET.xliff.modified");
         const modifiedxliffPath2 = path.resolve(projectPath, "xliffs/zh-Hans-CN.xliff.modified");
-        const modifiedxliffPath3 = path.resolve(projectPath, "xliffs/cs-CZ.xliff.modified");
+        const modifiedxliffPath4 = path.resolve(projectPath, "xliffs/cs-CZ.xliff.modified");
 
         let fsSnapshot;
         beforeAll(async () => {
@@ -65,7 +65,7 @@ describe("samples", () => {
             expectFileToMatchSnapshot(modifiedxliffPath2);
         });
         test("should generate the modified file (cs-CZ)", () => {
-            expectFileToMatchSnapshot(modifiedxliffPath3);
+            expectFileToMatchSnapshot(modifiedxliffPath4);
         });
     });
 });
