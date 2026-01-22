@@ -67,8 +67,8 @@ exports[`samples lint should generate the modified file (cs-CZ) 1`] = `
 `;
 
 exports[`samples lint should generate the modified file (en-US) 1`] = `
-"<?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">
   <file id="sample_f1" original="sample">
     <group id="sample_g1" name="javascript">
       <unit id="sample_g1_1">
@@ -88,7 +88,9 @@ exports[`samples lint should generate the modified file (en-US) 1`] = `
       </unit>
     </group>
   </file>
-</xliff>"
+</xliff>
+
+"
 `;
 
 exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `

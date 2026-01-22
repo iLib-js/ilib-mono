@@ -1,7 +1,7 @@
 /*
  * webos.e2e.test.js - E2E tests for ilib-lint webOS sample
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ describe("samples", () => {
         const projectPath = path.resolve(__dirname, "..", "samples", "lint-webOS");
         const modifiedxliffPath = path.resolve(projectPath, "xliffs/am-ET.xliff.modified");
         const modifiedxliffPath2 = path.resolve(projectPath, "xliffs/zh-Hans-CN.xliff.modified");
-        const modifiedxliffPath4 = path.resolve(projectPath, "xliffs/cs-CZ.xliff.modified");
         const modifiedxliffPath3 = path.resolve(projectPath, "xliffs/en-US.xliff.modified");
+        const modifiedxliffPath4 = path.resolve(projectPath, "xliffs/cs-CZ.xliff.modified");
 
         let fsSnapshot;
         beforeAll(async () => {
@@ -37,7 +37,7 @@ describe("samples", () => {
                 "webos-result.json",
                 "xliffs/am-ET.xliff.modified",
                 "xliffs/zh-Hans-CN.xliff.modified",
-                "xliffs/cz-CZ.xliff.modified"
+                "xliffs/cz-CZ.xliff.modified",
                 "xliffs/en-US.xliff.modified"
             ].map(f => path.resolve(path.join(projectPath, f))));
 
@@ -66,10 +66,11 @@ describe("samples", () => {
         test("should generate the modified file (zh-Hans-CN)", () => {
             expectFileToMatchSnapshot(modifiedxliffPath2);
         });
-        test("should generate the modified file (cs-CZ)", () => {
-            expectFileToMatchSnapshot(modifiedxliffPath4);
         test("should generate the modified file (en-US)", () => {
             expectFileToMatchSnapshot(modifiedxliffPath3);
+        });
+        test("should generate the modified file (cs-CZ)", () => {
+            expectFileToMatchSnapshot(modifiedxliffPath4);
         });
     });
 });
