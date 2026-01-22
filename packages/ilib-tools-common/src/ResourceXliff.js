@@ -26,7 +26,6 @@ import ResourcePlural from './ResourcePlural.js';
 import TranslationSet from './TranslationSet.js';
 import Location from './Location.js';
 import { isEmpty } from './utils.js';
-import { JSUtils } from "ilib-common";
 
 const logger = log4js.getLogger("tools-common.ResourceXliff");
 
