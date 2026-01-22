@@ -55,7 +55,6 @@ describe("samples", () => {
         }, 10000);
         
         afterAll(() => {
-            console.log("!")
             fsSnapshot.restore();
         });
 

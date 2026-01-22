@@ -1,7 +1,7 @@
 /*
  * TranslationSet.js - a collection of resource strings
  *
- * Copyright © 2016-2017, 2019-2020, 2025 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2020 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,14 +124,13 @@ class TranslationSet {
      * resource is added a translation instead.
      *
      * @param {Resource} resource a resource to add to this set
-    */
+     */
     add(resource) {
         if (!resource) return;
 
         let existing;
         const key = resource.getKey(), hashKey = resource.hashKey();
         const cleanKey = resource.cleanHashKey();
-
         logger.trace("Add a resource. Hash: " + hashKey + " clean: " + cleanKey + " resource:" + JSON.stringify(resource));
 
         existing = this.byHashKey[hashKey];
