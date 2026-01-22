@@ -1230,3 +1230,579 @@ describe("xliff select extra unit information", function() {
         expect(actual).toMatchSnapshot();
     });
 });
+
+// heree
+describe("xliff exclude translation units in xliff v1", function() {
+    test("Exclude everything", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: ""
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        expect(target.getTranslationUnits().length).toBe(0);
+    });
+
+    test("Exclude with max unitss", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: "maxunits:2"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="foo/bar/j.java" source-language="en-US" target-language="nl-NL" product-name="webapp">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="3" resname="ohhuzzah" restype="string" datatype="plaintext">\n' +
+        '        <source>baby baby</source>\n' +
+        '        <target>de bebe bebe</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="4" resname="asdfasdf" restype="string">\n' +
+        '        <source>asdfasdf</source>\n' +
+        '        <target>Hallo mijnheer</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with max source words", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: "maxsource:8"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        expect(target.getTranslationUnits().length).toBe(0);
+    });
+
+    test("Exclude with max target words", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: "maxtarget:15"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        expect(target.getTranslationUnits().length).toBe(0);
+    });
+
+    test("Exclude with field criteria", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=by"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="foo/bar/j.java" source-language="en-US" target-language="nl-NL" product-name="webapp">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="1" resname="foobar" restype="string" datatype="plaintext">\n' +
+        '        <source>Asdf asdf</source>\n' +
+        '        <target>Het asdf</target>\n' +
+        '        <note>foobar is where it\'s at!</note>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="4" resname="asdfasdf" restype="string">\n' +
+        '        <source>asdfasdf</source>\n' +
+        '        <target>Hallo mijnheer</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with regex field criteria", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=^baby baby$"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="foo/bar/j.java" source-language="en-US" target-language="nl-NL" product-name="webapp">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="1" resname="foobar" restype="string" datatype="plaintext">\n' +
+        '        <source>Asdf asdf</source>\n' +
+        '        <target>Het asdf</target>\n' +
+        '        <note>foobar is where it\'s at!</note>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="4" resname="asdfasdf" restype="string">\n' +
+        '        <source>asdfasdf</source>\n' +
+        '        <target>Hallo mijnheer</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with regex field criteria multiple results", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=^Asdf"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="foo/bar/j.java" source-language="en-US" target-language="nl-NL" product-name="webapp">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="2" resname="huzzah" restype="string" datatype="plaintext">\n' +
+        '        <source>baby baby</source>\n' +
+        '        <target>bebe bebe</target>\n' +
+        '        <note>come &amp; enjoy it with us</note>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="3" resname="ohhuzzah" restype="string" datatype="plaintext">\n' +
+        '        <source>baby baby</source>\n' +
+        '        <target>de bebe bebe</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="4" resname="asdfasdf" restype="string">\n' +
+        '        <source>asdfasdf</source>\n' +
+        '        <target>Hallo mijnheer</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with multiple criteria", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=^Asdf,datatype=plaintext"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="foo/bar/j.java" source-language="en-US" target-language="nl-NL" product-name="webapp">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="2" resname="huzzah" restype="string" datatype="plaintext">\n' +
+        '        <source>baby baby</source>\n' +
+        '        <target>bebe bebe</target>\n' +
+        '        <note>come &amp; enjoy it with us</note>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="3" resname="ohhuzzah" restype="string" datatype="plaintext">\n' +
+        '        <source>baby baby</source>\n' +
+        '        <target>de bebe bebe</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="4" resname="asdfasdf" restype="string">\n' +
+        '        <source>asdfasdf</source>\n' +
+        '        <target>Hallo mijnheer</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude while avoiding duplicated file names", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliffs/nl-NL.xliff",
+                "test/testfiles/xliffs/nl-NL.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=asdf"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="foo/bar/j.java" source-language="en-US" target-language="nl-NL" product-name="webapp">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="2" resname="huzzah" restype="string" datatype="plaintext">\n' +
+        '        <source>baby baby</source>\n' +
+        '        <target>bebe bebe</target>\n' +
+        '        <note>come &amp; enjoy it with us</note>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="3" resname="ohhuzzah" restype="string" datatype="plaintext">\n' +
+        '        <source>baby baby</source>\n' +
+        '        <target>de bebe bebe</target>\n' +
+        '        <note>come &amp; enjoy it with them</note>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+});
+
+describe("xliff exclude translation units in xliff v2", function() {
+    test("Exclude everything", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: ""
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        expect(target.getTranslationUnits().length).toBe(0);
+    });
+
+    test("Exclude with max unitss", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "maxunits:2"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with max source words", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "maxsource:8"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        expect(target.getTranslationUnits().length).toBe(0);
+    });
+
+    test("Exclude with max target words", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "maxtarget:8"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        expect(target.getTranslationUnits().length).toBe(0);
+    });
+
+    test("Exclude with field criteria", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=1a"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with regex field criteria", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=^app1:.*a$"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with regex field criteria multiple results", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=^app2"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_1" name="String 1a" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1a</source>\n' +
+        '          <target>app1:String 1a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with multiple criteria", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=1,datatype=x-json"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_1" name="String 1a" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1a</source>\n' +
+        '          <target>app1:String 1a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude while avoiding duplicated file names", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app1/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=1a"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with multiple input files", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            notEqual: true,
+            criteria: "source=1a"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+});
+
