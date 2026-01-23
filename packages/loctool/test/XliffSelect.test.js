@@ -1,7 +1,7 @@
 /*
- * XliffSelect.test.js - test the merge of Xliff object.
+ * XliffSelect.test.js - test the select of Xliff object.
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024,2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1231,7 +1231,6 @@ describe("xliff select extra unit information", function() {
     });
 });
 
-// heree
 describe("xliff exclude translation units in xliff v1", function() {
     test("Exclude everything", function() {
         expect.assertions(2);
