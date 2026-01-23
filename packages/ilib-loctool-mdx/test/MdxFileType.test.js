@@ -103,11 +103,11 @@ describe("mdxfiletype", function() {
         expect(mdft).toBeTruthy();
         expect(mdft.handles("foo.mdx")).toBeTruthy();
     });
-    test("MdxFileTypeHandles plain markdown", function() {
+    test("MdxFileTypeDoesNotHandle plain markdown", function() {
         expect.assertions(2);
         var mdft = new MdxFileType(p);
         expect(mdft).toBeTruthy();
-        expect(mdft.handles("foo.md")).toBeTruthy();
+        expect(mdft.handles("foo.md")).toBeFalsy();
     });
     test("MdxFileTypeHandlesTrueWithDir", function() {
         expect.assertions(2);
@@ -246,8 +246,8 @@ describe("mdxfiletype", function() {
         var mdft = new MdxFileType(p3);
         expect(mdft).toBeTruthy();
         var extensions = mdft.getExtensions();
-        // check that default extensions are present, including .mdx
-        expect(extensions).toStrictEqual([".mdx", ".md"]);
+        // check that default extensions are present - only .mdx, not .md
+        expect(extensions).toStrictEqual([".mdx"]);
     });
 
     test("should handle .mdx files with mapping patterns", function() {
