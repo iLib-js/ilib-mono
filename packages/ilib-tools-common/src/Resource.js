@@ -369,7 +369,7 @@ class Resource {
     /**
     * Sets the hash value for the source of this resource.
     *
-    * @param {string} hashValue - The hash value to set for this resource.
+    * @param {string} hashValue the hash value to set for this resource.
     */
     setSourceHash(hashValue) {
         this.sourceHash = hashValue;
@@ -378,7 +378,7 @@ class Resource {
     /**
     * Returns the hash value for the source of this resource.
     *
-    * @returns {string} The hash value of this resource.
+    * @returns {String|undefined} the hash value of this resource.
     */
     getSourceHash() {
         return this.sourceHash;
@@ -388,7 +388,7 @@ class Resource {
      * Set the project of this resource. This is a string that gives the
      * id of the project for this resource.
      *
-     * @param {string} project the project name to set for this resource
+     * @param {String} project the project name to set for this resource
      */
     setProject(project) {
         this.project = project;

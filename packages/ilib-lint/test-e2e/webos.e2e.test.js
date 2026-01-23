@@ -37,8 +37,8 @@ describe("samples", () => {
                 "webos-result.json",
                 "xliffs/am-ET.xliff.modified",
                 "xliffs/zh-Hans-CN.xliff.modified",
-                "xliffs/cz-CZ.xliff.modified",
-                "xliffs/en-US.xliff.modified"
+                "xliffs/en-US.xliff.modified",
+                "xliffs/cz-CZ.xliff.modified"
             ].map(f => path.resolve(path.join(projectPath, f))));
 
             try {
