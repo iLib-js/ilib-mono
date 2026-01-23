@@ -2,7 +2,7 @@
 /*
  * loctool.js - tool to extract resources from source code
  *
- * Copyright © 2016-2017, 2019-2025, HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2026, HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,13 +56,13 @@ var commandOptionHelp = {
         "  the name of the project to initialize",
     localize:
         "localize [root-dir-name]\n" +
-        "  Extract strings and generate localized resource files. This is the default command.\n\n" +
+        "  Extract strings and generate localized resource files. This is the default command.\n\n" + 
         "root-dir-name\n" +
         "  the root directory to start looking for a localization project config file.\n" +
         "  Default root dir name is '.'\n" +
         "--convertPlurals\n" +
-        "  Convert plural resources into ICU-style string resources during extraction and back again\n" +
-        "  during localization. This is intended for use with translation management systems that cannot\n" +
+        "  Convert plural resources into ICU-style string resources during extraction and back again\n" + 
+        "  during localization. This is intended for use with translation management systems that cannot\n" + 
         "  handle plurals properly.\n" +
         "--exclude\n" +
         "  exclude a comma-separated list of directories while searching for project.json config files \n" +
@@ -566,10 +566,6 @@ case "select":
         console.log("Error: must specify selection criteria, an output file, and at least one input file.");
         usage();
     }
-    console.log("---------------------");
-    console.log("", options);
-        console.log(" 3) ", options[3]);
-    console.log("---------------------");
     settings.criteria = options[3];
     settings.outfile = options[4];
     settings.infiles = options.slice(5);
