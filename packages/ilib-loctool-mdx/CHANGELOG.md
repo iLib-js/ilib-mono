@@ -1,5 +1,13 @@
 # ilib-loctool-mdx
 
+## 1.1.0
+
+### Minor Changes
+
+- ff7399a: - Removed the ability to parse and process md files
+  - That should be done by the ghfm plugin instead
+  - This plugin should focus on mdx files only
+
 ## 1.0.0
 
 ### Major Changes
