@@ -125,6 +125,9 @@ function deletePatterns(data) {
 function assembleLocaleRootData() {
     let readData;
     let allData = "";
+    let rootJsonFiles = ["scripts", "scriptToRange", "ctype", "ctype_c", "ctype_l", "ctype_m", "ctype_n", "ctype_p", "ctype_s", "ctype_z" ];
+    dependentData.push(... rootJsonFiles);
+
     dependentData.forEach(function(data){
         let dataPath = path.join(ilibPath, "js/data/locale", data + ".json" );
         readData = readFile(dataPath);
