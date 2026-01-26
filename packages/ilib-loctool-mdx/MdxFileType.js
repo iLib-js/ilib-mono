@@ -32,7 +32,7 @@ var MdxFileType = function(project) {
     this.logger = this.API.getLogger("loctool.lib.MdxFileType");
 
     // default extensions
-    this.extensions = [ ".mdx", ".md" ];
+    this.extensions = [ ".mdx" ];
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());
