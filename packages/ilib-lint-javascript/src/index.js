@@ -1,7 +1,7 @@
 /*
  * index.js - main entry point for the javascript plugin
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 import { Plugin } from 'ilib-lint-common';
 
 import ILibPluralSyntaxChecker from './ILibPluralSyntaxChecker.js';
+import ILibPluralCategoriesChecker from './ILibPluralCategoriesChecker.js';
 
 class JavascriptPlugin extends Plugin {
     constructor(options) {
@@ -33,7 +34,8 @@ class JavascriptPlugin extends Plugin {
     /** @override */
     getRules() {
         return [
-            ILibPluralSyntaxChecker
+            ILibPluralSyntaxChecker,
+            ILibPluralCategoriesChecker
         ];
     }
 
@@ -42,6 +44,7 @@ class JavascriptPlugin extends Plugin {
         return {
             "ilib": {
                 "resource-ilib-plural-syntax-checker": true,
+                "resource-ilib-plural-categories-checker": true,
                 // named parameters have the same syntax as react, so just use the generic rule
                 "resource-named-params": true
             }
