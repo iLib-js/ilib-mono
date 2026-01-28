@@ -149,8 +149,11 @@ var commandOptionHelp = {
         "  to the output file. All files must be xliff files.\n\n" +
         "criteria\n" +
         "  The selection criteria. The syntax is as follows:\n" +
-        "    [field]=[regexp]\n" +
-        "      Select any translation units where the given field name matches the regular expression.\n" +
+        "    [field]=[regexp]     or\n" +
+        "    [field]!=[regexp]\n" +
+        "      Select any translation units where the given field name matches the regular expression,\n" +
+        "      or if the operator is \"!=\", select translation units where the given field does not\n" +
+        "      match the regular expression.\n" + 
         "      Fields can be one of: project, context, sourceLocale, targetLocale, key, pathName, state,\n" +
         "        comment, dnt, datatype, resType, flavor, source, or target\n" +
         "      Additionally, the field name may be one of the following:\n" +
@@ -188,7 +191,7 @@ var commandOptionHelp = {
         "  each translation unit in the output file. You may specify this option multiple times to add\n" +
         "  multiple extended attributes.\n" +
         "--exclude\n" +
-        "  Exclude translation units where the specified field matches the given value.\n" +
+        "  Exclude all translation units that match the selection criteria.\n" +
         "  This can be used to filter out translation units that should not be included in the output.\n",
 };
 
