@@ -1,0 +1,38 @@
+// Copyright © 2022, 2025-2026 JEDLSoft
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// This file is auto-generated from ucd-full ScriptInfo.json
+// Do not edit manually. Run "pnpm run generate:scripts" to regenerate.
+
+/// ISO 15924 script codes (from unicode.org/iso15924).
+const List<String> iso15924Scripts = [
+  "Adlm", "Afak", "Aghb", "Ahom", "Arab", "Aran", "Armi", "Armn", "Avst",
+  "Bali", "Bamu", "Bass", "Batk", "Beng", "Berf", "Bhks", "Blis", "Bopo",
+  "Brah", "Brai", "Bugi", "Buhd", "Cakm", "Cans", "Cari", "Cham", "Cher",
+  "Chis", "Chrs", "Cirt", "Copt", "Cpmn", "Cprt", "Cyrl", "Cyrs", "Deva",
+  "Diak", "Dogr", "Dsrt", "Dupl", "Egyd", "Egyh", "Egyp", "Elba", "Elym",
+  "Ethi", "Gara", "Geok", "Geor", "Glag", "Gong", "Gonm", "Goth", "Gran",
+  "Grek", "Gujr", "Gukh", "Guru", "Hanb", "Hang", "Hani", "Hano", "Hans",
+  "Hant", "Hatr", "Hebr", "Hira", "Hluw", "Hmng", "Hmnp", "Hntl", "Hrkt",
+  "Hung", "Inds", "Ital", "Jamo", "Java", "Jpan", "Jurc", "Kali", "Kana",
+  "Kawi", "Khar", "Khmr", "Khoj", "Kitl", "Kits", "Knda", "Kore", "Kpel",
+  "Krai", "Kthi", "Lana", "Laoo", "Latf", "Latg", "Latn", "Leke", "Lepc",
+  "Limb", "Lina", "Linb", "Lisu", "Loma", "Lyci", "Lydi", "Mahj", "Maka",
+  "Mand", "Mani", "Marc", "Maya", "Medf", "Mend", "Merc", "Mero", "Mlym",
+  "Modi", "Mong", "Moon", "Mroo", "Mtei", "Mult", "Mymr", "Nagm", "Nand",
+  "Narb", "Nbat", "Newa", "Nkdb", "Nkgb", "Nkoo", "Nshu", "Ogam", "Olck",
+  "Onao", "Orkh", "Orya", "Osge", "Osma", "Ougr", "Palm", "Pauc", "Pcun",
+  "Pelm", "Perm", "Phag", "Phli", "Phlp", "Phlv", "Phnx", "Piqd", "Plrd",
+  "Prti", "Psin", "Qaaa", "Qabx", "Ranj", "Rjng", "Rohg", "Roro", "Runr",
+  "Samr", "Sara", "Sarb", "Saur", "Seal", "Sgnw", "Shaw", "Shrd", "Shui",
+  "Sidd", "Sidt", "Sind", "Sinh", "Sogd", "Sogo", "Sora", "Soyo", "Sund",
+  "Sunu", "Sylo", "Syrc", "Syre", "Syrj", "Syrn", "Tagb", "Takr", "Tale",
+  "Talu", "Taml", "Tang", "Tavt", "Tayo", "Telu", "Teng", "Tfng", "Tglg",
+  "Thaa", "Thai", "Tibt", "Tirh", "Tnsa", "Todr", "Tols", "Toto", "Tutg",
+  "Ugar", "Vaii", "Visp", "Vith", "Wara", "Wcho", "Wole", "Xpeo", "Xsux",
+  "Yezi", "Yiii", "Zanb", "Zinh", "Zmth", "Zsye", "Zsym", "Zxxx", "Zyyy", "Zzzz",
+];
