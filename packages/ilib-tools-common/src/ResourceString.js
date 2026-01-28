@@ -152,7 +152,7 @@ class ResourceString extends Resource {
      */
     static cleanHashKey(project, locale, reskey, datatype, flavor, context, sourceHash) {
         const cleaned = reskey && reskey.replace(/\s+/g, " ").trim() || "";
-        const key = ["rs", project, locale, cleaned, datatype, flavor, context].join("_");
+        const key = ["rs", project, locale, cleaned, datatype, flavor, context, sourceHash].join("_");
         logger.trace("CleanHashkey is " + key);
         return key;
     }

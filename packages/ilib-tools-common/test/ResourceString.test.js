@@ -603,7 +603,7 @@ describe("testResourceString", () => {
     });
 
     test("ResourceStringHashKey", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rs = new ResourceString({
             project: "iosapp",
@@ -618,10 +618,11 @@ describe("testResourceString", () => {
         expect(rs).toBeTruthy();
 
         expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html___");
+        expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_This is a test_html___");
     });
 
     test("ResourceStringHashKeyWithFlavor", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rs = new ResourceString({
             project: "iosapp",
@@ -637,10 +638,11 @@ describe("testResourceString", () => {
         expect(rs).toBeTruthy();
 
         expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate__");
+        expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate__");
     });
 
     test("ResourceStringHashKeyWithFlavorAndContext", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rs = new ResourceString({
             project: "iosapp",
@@ -657,6 +659,7 @@ describe("testResourceString", () => {
         expect(rs).toBeTruthy();
 
         expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context_");
+        expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context_");
     });
 
     test("ResourceStringSourceOnlyHashKey", () => {

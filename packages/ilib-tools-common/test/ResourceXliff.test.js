@@ -394,6 +394,7 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getProject()).toBe("webapp");
         expect(reslist[0].resType).toBe("string");
         expect(reslist[0].getId()).toBe("webapp_g1_1");
+        expect(reslist[0].getSourceHash()).toBe(1482422553);
         expect(reslist[0].getResFile()).toBe("foo/bar/de-DE.xliff");
 
         expect(reslist[1].getSource()).toBe("Asdf asdf222");
@@ -405,6 +406,7 @@ describe("testResourceXliff", () => {
         expect(reslist[1].getProject()).toBe("webapp");
         expect(reslist[1].resType).toBe("string");
         expect(reslist[1].getId()).toBe("webapp_g1_2");
+        expect(reslist[1].getSourceHash()).toBe(1630766648);
         expect(reslist[1].getResFile()).toBe("foo/bar/de-DE.xliff");
     });
 
@@ -654,7 +656,7 @@ describe("testResourceXliff", () => {
     });
 
     test("ResourceXliffAddMultipleResourcesAddInstance", () => {
-        expect.assertions(17);
+        expect.assertions(18);
 
         const x = new ResourceXliff();
         expect(x).toBeTruthy();
@@ -694,6 +696,7 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getKey()).toBe("foobar");
         expect(reslist[0].getPath()).toBe("foo/bar/asdf.java");
         expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].getSourceHash()).toBe(undefined);
         expect(!reslist[0].getComment()).toBeTruthy();
 
         const inst = reslist[0].getInstances();
