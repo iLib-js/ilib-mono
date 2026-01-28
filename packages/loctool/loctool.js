@@ -187,7 +187,7 @@ var commandOptionHelp = {
         "  Add an extended attribute to the output file. This can be used to add arbitrary metadata to\n" +
         "  each translation unit in the output file. You may specify this option multiple times to add\n" +
         "  multiple extended attributes.\n" +
-        "--notEqual\n" +
+        "--exclude\n" +
         "  Exclude translation units where the specified field matches the given value.\n" +
         "  This can be used to filter out translation units that should not be included in the output.\n",
 };
@@ -489,8 +489,8 @@ for (var i = 0; i < argv.length; i++) {
                 }
             });
         }
-    } else if (val === "--notEqual") {
-        settings.notEqual = true;
+    } else if (val === "--exclude") {
+        settings.exclude = true;
     } else {
         options.push(val);
     }

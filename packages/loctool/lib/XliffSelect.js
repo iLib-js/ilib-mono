@@ -65,9 +65,9 @@ function tuHash(unit) {
 var XliffSelect = function XliffSelect(settings) {
     if (!settings) return;
 
-    // In notEqual mode, only one input file is allowed
-    if (settings.notEqual && Array.isArray(settings.infiles) && settings.infiles.length !== 1) {
-        logger.warn("NotEqual mode only supports a single input file. Only the first file will be used.");
+    // In exclude mode, only one input file is allowed
+    if (settings.exclude && Array.isArray(settings.infiles) && settings.infiles.length !== 1) {
+        logger.warn("exclude mode only supports a single input file. Only the first file will be used.");
         settings.infiles = [settings.infiles[0]]; // Use only the first file
     }
 
@@ -84,7 +84,6 @@ var XliffSelect = function XliffSelect(settings) {
 
     var unitCache = {};
 
-    // Read input files (notEqual: 1 file, select: multiple files)
     var inputFiles = Array.isArray(settings.infiles) ? settings.infiles : [settings.infiles];
     inputFiles.forEach(function (file) {
         if (fileNameCache.has(file)) return;
@@ -104,8 +103,7 @@ var XliffSelect = function XliffSelect(settings) {
                 if (typeof(settings.extendedAttr) === "object") {
                     Object.assign(unit.extended, settings.extendedAttr);
                 }
-                // Only add original-file attribute if in default mode
-                if (!settings.notEqual) {
+                if (!settings.exclude) {
                     unit.extended["original-file"] = file;
                 }
                 var hash = tuHash(unit);
@@ -124,8 +122,7 @@ var XliffSelect = function XliffSelect(settings) {
 
     if (units.length > 0) {
         if (!settings.criteria) {
-            if (settings.notEqual) {
-                // If --notEqual is active and no criteria, exclude all units
+            if (settings.exclude) {
                 units = [];
             }
         } else {
@@ -192,15 +189,31 @@ var XliffSelect = function XliffSelect(settings) {
                     var fieldNames = Object.keys(criteria.fields);
                     for (var i = 0; i < fieldNames.length; i++) {
                         var field = fieldNames[i];
-                        var re = criteria.fields[fieldNames[i]];
+                        var re = criteria.fields[field];
                         re.lastIndex = 0;
-                        if (unit[field] && unit[field].match(re) === null)  {
+                        if (!unit[field] || unit[field].match(re) === null) {
                             match = false;
                         }
                     }
                 }
 
-                return settings.notEqual ? !match : match;
+                if (criteria.notFields) {
+                    var notFieldNames = Object.keys(criteria.notFields);
+                    for (var j = 0; j < notFieldNames.length; j++) {
+                        var nfield = notFieldNames[j];
+                        var nre = criteria.notFields[nfield];
+                        nre.lastIndex = 0;
+                        if (unit[nfield] && unit[nfield].match(nre) !== null) {
+                            match = false;
+                        }
+                    }
+                }
+
+                if (settings.exclude) {
+                    return !match;
+                } else {
+                    return match;
+                }
             });
         }
     }
@@ -287,6 +300,10 @@ XliffSelect.parseCriteria = function (criteria) {
                 if (!value) {
                     throw new Error("Incorrect syntax for criteria: " + part);
                 }
+                var op = part.substring(equals-1, equals+1) === '!=' ? '!=' : '=';
+                if (op === '!=') {
+                    field = field.substring(0, field.length-1);
+                }
                 var regex = new RegExp(value);
                 var dot = field.indexOf(".");
                 if (dot > -1) {
@@ -306,8 +323,15 @@ XliffSelect.parseCriteria = function (criteria) {
                 if (!knownFields[field]) {
                     throw new Error("Unknown field name in criteria: " + part);
                 }
-                if (!criteriaObj.fields) criteriaObj.fields = {};
-                criteriaObj.fields[field] = regex;
+                if (op === "!=") {
+                    if (!criteriaObj.notFields) criteriaObj.notFields = {};
+                    criteriaObj.notFields[field] = regex;
+                } else if (op === "=") {
+                    if (!criteriaObj.fields) criteriaObj.fields = {};
+                    criteriaObj.fields[field] = regex;
+                } else {
+                    throw new Error("Unknown operator in criteria: " + part);
+                }
             } else {
                 throw new Error("Incorrect syntax for criteria: " + part);
             }

@@ -1239,7 +1239,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: ""
         };
         var target = XliffSelect(settings);
@@ -1254,7 +1254,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "maxunits:2"
         };
         var target = XliffSelect(settings);
@@ -1288,7 +1288,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "maxsource:8"
         };
         var target = XliffSelect(settings);
@@ -1303,7 +1303,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "maxtarget:15"
         };
         var target = XliffSelect(settings);
@@ -1318,7 +1318,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=by"
         };
         var target = XliffSelect(settings);
@@ -1352,7 +1352,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=^baby baby$"
         };
         var target = XliffSelect(settings);
@@ -1386,7 +1386,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=^Asdf"
         };
         var target = XliffSelect(settings);
@@ -1425,7 +1425,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=^Asdf,datatype=plaintext"
         };
         var target = XliffSelect(settings);
@@ -1465,7 +1465,7 @@ describe("xliff exclude translation units in xliff v1", function() {
                 "test/testfiles/xliffs/nl-NL.xliff",
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=asdf"
         };
         var target = XliffSelect(settings);
@@ -1502,7 +1502,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: ""
         };
         var target = XliffSelect(settings);
@@ -1517,7 +1517,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "maxunits:2"
         };
         var target = XliffSelect(settings);
@@ -1547,7 +1547,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "maxsource:8"
         };
         var target = XliffSelect(settings);
@@ -1562,7 +1562,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "maxtarget:8"
         };
         var target = XliffSelect(settings);
@@ -1577,7 +1577,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);
@@ -1615,7 +1615,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=^app1:.*a$"
         };
         var target = XliffSelect(settings);
@@ -1653,7 +1653,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=^app2"
         };
         var target = XliffSelect(settings);
@@ -1697,7 +1697,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=1,datatype=x-json"
         };
         var target = XliffSelect(settings);
@@ -1734,7 +1734,7 @@ describe("xliff exclude translation units in xliff v2", function() {
                 "test/testfiles/xliff20/app1/en-US.xliff",
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);
@@ -1773,7 +1773,7 @@ describe("xliff exclude translation units in xliff v2", function() {
                 "test/testfiles/xliff20/app1/en-US.xliff",
                 "test/testfiles/xliff20/app2/en-US.xliff"
             ],
-            notEqual: true,
+            exclude: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);
@@ -1805,3 +1805,299 @@ describe("xliff exclude translation units in xliff v2", function() {
     });
 });
 
+describe("xliff select with notEqual operator", function() {
+    test("simple criteria with notEqual operator", function() {
+        expect.assertions(1);
+
+        var actual = XliffSelect.parseCriteria("state!=Accepted");
+        var expected = {
+            notFields: {
+                state: /Accepted/
+            }
+        };
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("regex criteria with notEqual operator", function() {
+        expect.assertions(1);
+
+        var actual = XliffSelect.parseCriteria("state!=^app.*$");
+        var expected = {
+            notFields: {
+                state: /^app.*$/
+            }
+        };
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("Select with simple field criteria v1 with notEqual operator", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source!=(1a|2a)"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_2" resname="String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1b</source>\n' +
+        '        <target>app1:String 1b</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_3" resname="String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app2_2" resname="String 2b" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <source>app2: String 2b</source>\n' +
+        '        <target>app2: String 2b</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with regex field criteria v1 with notEqual operator", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source!=^app.*a$"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_2" resname="String 1b" restype="string" datatype="cpp" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1b</source>\n' +
+        '        <target>app1:String 1b</target>\n' +
+        '      </trans-unit>\n' +
+        '      <trans-unit id="app1_3" resname="String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app2_2" resname="String 2b" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <source>app2: String 2b</source>\n' +
+        '        <target>app2: String 2b</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with multiple criteria v1 with notEqual operator", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source!=^app.*a$,datatype!=^cpp$"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="1.0">\n' +
+        '  <file original="app1" source-language="en-KR" target-language="en-US" product-name="app1">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app1_3" resname="String 1c" restype="string" datatype="x-json" x-original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <source>app1:String 1c</source>\n' +
+        '        <target>app1:String 1c</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '  <file original="app2" source-language="en-KR" target-language="en-US" product-name="app2">\n' +
+        '    <body>\n' +
+        '      <trans-unit id="app2_2" resname="String 2b" restype="string" datatype="javascript" x-original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <source>app2: String 2b</source>\n' +
+        '        <target>app2: String 2b</target>\n' +
+        '      </trans-unit>\n' +
+        '    </body>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with simple field criteria v2 with notEqual operator", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source!=(1a|2a)"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '  <file original="app2" l:project="app2">\n' +
+        '    <group id="group_3" name="javascript">\n' +
+        '      <unit id="app2_2" name="String 2b" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2b</source>\n' +
+        '          <target>app2: String 2b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with regex field criteria v2 with notEqual operator", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source!=^app.*a$"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="cpp">\n' +
+        '      <unit id="app1_2" name="String 1b" type="res:string" l:datatype="cpp" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1b</source>\n' +
+        '          <target>app1:String 1b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="group_2" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '  <file original="app2" l:project="app2">\n' +
+        '    <group id="group_3" name="javascript">\n' +
+        '      <unit id="app2_2" name="String 2b" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2b</source>\n' +
+        '          <target>app2: String 2b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with multiple criteria v2 with notEqual operator", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 2,
+            infiles: [
+                "test/testfiles/xliff20/app1/en-US.xliff",
+                "test/testfiles/xliff20/app2/en-US.xliff"
+            ],
+            criteria: "source!=^app.*a$,datatype!=^cpp$"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="x-json">\n' +
+        '      <unit id="app1_3" name="String 1c" type="res:string" l:datatype="x-json" l:original-file="test/testfiles/xliff20/app1/en-US.xliff">\n' +
+        '        <segment>\n' +
+        '          <source>app1:String 1c</source>\n' +
+        '          <target>app1:String 1c</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '  <file original="app2" l:project="app2">\n' +
+        '    <group id="group_2" name="javascript">\n' +
+        '      <unit id="app2_2" name="String 2b" type="res:string" l:datatype="javascript" l:original-file="test/testfiles/xliff20/app2/en-US.xliff">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2b</source>\n' +
+        '          <target>app2: String 2b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+});
