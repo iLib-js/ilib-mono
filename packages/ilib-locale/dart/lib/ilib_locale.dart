@@ -5,4 +5,4 @@
 library ilib_locale;
 
 export 'src/locale.dart';
-export 'src/env.dart' show getLocale;
+export 'package:ilib_env/ilib_env.dart' show getLocale;

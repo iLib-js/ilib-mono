@@ -7,7 +7,7 @@
 
 import 'a1toa3langmap.dart' as lang;
 import 'a2toa3regmap.dart' as reg;
-import 'env.dart';
+import 'package:ilib_env/ilib_env.dart' show getLocale;
 import 'scripts.dart';
 
 /// BCP-47 locale specifier: language, region, script, variant.

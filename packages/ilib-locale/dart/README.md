@@ -53,7 +53,7 @@ Converted from the JavaScript sources under `../src/`:
 | `a1toa3langmap.js`    | `lib/src/a1toa3langmap.dart`|
 | `a2toa3regmap.js`     | `lib/src/a2toa3regmap.dart` |
 | `scripts.js`          | `lib/src/scripts.dart`      |
-| `ilib-env` getLocale  | `lib/src/env.dart` (+ stub/io) |
+| `ilib-env` getLocale  | `package:ilib_env` (re-exported from barrel) |
 
 ## Tests
 

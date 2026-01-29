@@ -5,6 +5,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:ilib_env/ilib_env.dart' show clearCache, getLocale, getPlatform;
 import 'package:ilib_locale/ilib_locale.dart';
 import 'package:test/test.dart';
 
@@ -16,52 +17,72 @@ void main() {
     });
 
     test('LocaleConstructorBrowser', () {
-      // Platform-specific: would need navigator.language / ilib-env in browser.
-    }, skip: 'Platform-specific: browser');
+      clearCache();
+      final loc = Locale();
+      expect(loc, isNotNull);
+      final spec = getLocale();
+      expect(loc.getSpec(), equals(spec));
+      final parts = spec.split('-');
+      expect(loc.getLanguage(), equals(parts[0]));
+      if (parts.length >= 2) {
+        expect(loc.getRegion(), equals(parts[1]));
+      }
+    }, skip: getPlatform() != 'browser' ? 'Platform-specific: browser' : null);
 
     test('LocaleConstructorBrowserCLocale', () {
-      // Platform-specific: browser, C → en-US.
-    }, skip: 'Platform-specific: browser');
+      // Cannot mock navigator.language to C in Dart test.
+    }, skip: getPlatform() != 'browser' ? 'Platform-specific: browser' : 'Cannot mock navigator.language to C in Dart');
 
     test('LocaleConstructorBrowserLanguageOnly', () {
-      // Platform-specific: browser.
-    }, skip: 'Platform-specific: browser');
+      clearCache();
+      final loc = Locale();
+      expect(loc, isNotNull);
+      expect(loc.getSpec(), equals(getLocale()));
+    }, skip: getPlatform() != 'browser' ? 'Platform-specific: browser' : null);
 
     test('LocaleConstructorBrowserNoLocale', () {
-      // Platform-specific: browser.
-    }, skip: 'Platform-specific: browser');
+      // Cannot mock navigator.language to undefined in Dart test.
+    }, skip: getPlatform() != 'browser' ? 'Platform-specific: browser' : 'Cannot mock no locale in Dart');
 
     test('LocaleConstructorNode', () {
-      // Platform-specific: would use LANG from env; VM uses Platform.localeName.
+      clearCache();
       final loc = Locale();
       expect(loc, isNotNull);
       expect(loc.getLanguage(), isNotNull);
       expect(loc.getSpec(), isNotEmpty);
+      if (getPlatform() == 'node' || getPlatform() == 'dart') {
+        // With run-dart-test-with-env.js we get LANG=kl_GL.UTF-8
+        final spec = getLocale();
+        if (spec.startsWith('kl')) {
+          expect(loc.getLanguage(), equals('kl'));
+          expect(loc.getRegion(), equals('GL'));
+        }
+      }
     });
 
     test('LocaleConstructorNodeNonEnglish', () {
-      // Platform-specific: LANG=ko_KR.
-    }, skip: 'Platform-specific: node');
+      // Requires LANG=ko_KR; run with env separately.
+    }, skip: getPlatform() != 'node' ? 'Platform-specific: node' : 'Requires LANG=ko_KR; run separately');
 
     test('LocaleConstructorNodeLocaleWithCharset', () {
-      // Platform-specific: LANG=de_DE.UTF8.
-    }, skip: 'Platform-specific: node');
+      // Requires LANG=de_DE.UTF8; run with env separately.
+    }, skip: getPlatform() != 'node' ? 'Platform-specific: node' : 'Requires LANG=de_DE.UTF8; run separately');
 
     test('LocaleConstructorNodeCLocale', () {
-      // Platform-specific: LANG=C.
-    }, skip: 'Platform-specific: node');
+      // Requires LANG=C; run with env separately.
+    }, skip: getPlatform() != 'node' ? 'Platform-specific: node' : 'Requires LANG=C; run separately');
 
     test('LocaleConstructorNodeCLocaleWithCharset', () {
-      // Platform-specific: LANG=C.UTF8.
-    }, skip: 'Platform-specific: node');
+      // Requires LANG=C.UTF8; run with env separately.
+    }, skip: getPlatform() != 'node' ? 'Platform-specific: node' : 'Requires LANG=C.UTF8; run separately');
 
     test('LocaleConstructorNodeLangOnly', () {
-      // Platform-specific: LANG=es.
-    }, skip: 'Platform-specific: node');
+      // Requires LANG=es; run with env separately.
+    }, skip: getPlatform() != 'node' ? 'Platform-specific: node' : 'Requires LANG=es; run separately');
 
     test('LocaleConstructorNodeNoPlatformSetting', () {
-      // Platform-specific: no LANG.
-    }, skip: 'Platform-specific: node');
+      // Requires unset LANG; run separately.
+    }, skip: getPlatform() != 'node' ? 'Platform-specific: node' : 'Requires unset LANG; run separately');
 
     test('LocaleCopyConstructor', () {
       final loc2 = Locale('de', 'DE');
