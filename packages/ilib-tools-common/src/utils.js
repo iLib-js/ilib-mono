@@ -1,7 +1,7 @@
 /*
  * utils.js - utility functions to support the other code
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,88 @@ export function isEmpty(obj) {
 };
 
 /**
+ * Format a string template with locale-related parameters.
+ *
+ * This function substitutes locale-related placeholders in a template string
+ * without treating the string as a file path (no path normalization).
+ * This is useful for formatting headers, footers, or other strings that
+ * contain locale placeholders but should not be treated as file paths.
+ *
+ * This function recognizes and replaces the following strings in
+ * templates:
+ * - [locale] the full BCP-47 locale specification for the target locale
+ *   eg. "zh-Hans-CN" -> "zh-Hans-CN"
+ * - [language] the language portion of the full locale
+ *   eg. "zh-Hans-CN" -> "zh"
+ * - [script] the script portion of the full locale
+ *   eg. "zh-Hans-CN" -> "Hans"
+ * - [region] the region portion of the full locale
+ *   eg. "zh-Hans-CN" -> "CN"
+ * - [localeDir] the full locale where each portion of the locale
+ *   is a directory in this order: [langage], [script], [region].
+ *   eg, "zh-Hans-CN" -> "zh/Hans/CN", but "en" -> "en".
+ * - [localeUnder] the full BCP-47 locale specification, but using
+ *   underscores to separate the locale parts instead of dashes.
+ *   eg. "zh-Hans-CN" -> "zh_Hans_CN"
+ * - [localeLower] the full BCP-47 locale specification, but makes
+ *   all locale parts lowercased.
+ *   eg. "zh-Hans-CN" -> "zh-hans-cn"
+ *
+ * Unknown keywords are preserved in the output unchanged.
+ *
+ * @param {string} template the template string to format
+ * @param {string|Object} locale the locale specifier, either as a string
+ *   or as a Locale object
+ * @returns {string} the formatted string with locale placeholders replaced
+ */
+export function formatLocaleParams(template, locale) {
+    if (!template) return "";
+    const l = typeof locale === 'string' ? new Locale(locale || "en") : locale;
+    const localeSpec = l.getSpec();
+    let output = "";
+
+    for (let i = 0; i < template.length; i++) {
+        if (template[i] !== '[') {
+            output += template[i];
+        } else {
+            let start = ++i;
+            while (i < template.length && template[i] !== ']') {
+                i++;
+            }
+            const keyword = template.substring(start, i);
+            switch (keyword) {
+                case 'locale':
+                    output += localeSpec;
+                    break;
+                case 'language':
+                    output += l.getLanguage() || "";
+                    break;
+                case 'script':
+                    output += l.getScript() || "";
+                    break;
+                case 'region':
+                    output += l.getRegion() || "";
+                    break;
+                case 'localeDir':
+                    output += localeSpec.replace(/-/g, '/');
+                    break;
+                case 'localeUnder':
+                    output += localeSpec.replace(/-/g, '_');
+                    break;
+                case 'localeLower':
+                    output += localeSpec.toLowerCase();
+                    break;
+                default:
+                    // unknown keyword, preserve it unchanged
+                    output += '[' + keyword + ']';
+                    break;
+            }
+        }
+    }
+    return output;
+}
+
+/**
  * Format a file path using a path template and parameters.
  *
  * This function is used to generate an output file path for a given
@@ -106,70 +188,40 @@ export function isEmpty(obj) {
  *   all locale parts lowercased.
  *   eg. "zh-Hans-CN" -> "zh-hans-cn"
  *
- * The parameters may include the following:
- * - sourcepath - the path to the source file, relative to the root of
- *   the project
- * - locale - the locale for the output file path
- *
- * @param {string} template the string to escape
- * @param {Object} parameters the parameters to format into the template
+ * @param {string} template the path template string
+ * @param {Object} parameters an object containing:
+ * @param {string} parameters.sourcepath the path to the source file, relative to the
+ *     root of the project
+ * @param {string} parameters.locale the locale for the output file path
+ * @param {string} parameters.resourceDir optional resource directory to substitute
+ *     for [resourceDir] in the template
  * @returns {string} the formatted file path
  */
 export function formatPath(template, parameters) {
     const pathname = parameters.sourcepath || "";
     const locale = parameters.locale || "en";
-    const l = new Locale(locale);
-    let output = "";
-    let base;
+    const resourceDir = parameters.resourceDir || ".";
 
-    for (let i = 0; i < template.length; i++) {
-        if ( template[i] !== '[' ) {
-            output += template[i];
-        } else {
-            let start = ++i;
-            while (i < template.length && template[i] !== ']') {
-                i++;
-            }
-            const keyword = template.substring(start, i);
-            switch (keyword) {
-                case 'dir':
-                    output += path.dirname(pathname);
-                    break;
-                case 'filename':
-                    output += path.basename(pathname);
-                    break;
-                case 'extension':
-                    base = path.basename(pathname);
-                    output += base.indexOf('.') > -1 ? base.substring(base.lastIndexOf('.')+1) : "";
-                    break;
-                case 'basename':
-                    base = path.basename(pathname);
-                    output += base.substring(0, base.lastIndexOf('.'));
-                    break;
-                default:
-                case 'locale':
-                    output += locale;
-                    break;
-                case 'language':
-                    output += l.getLanguage() || "";
-                    break;
-                case 'script':
-                    output += l.getScript() || "";
-                    break;
-                case 'region':
-                    output += l.getRegion() || "";
-                    break;
-                case 'localeDir':
-                    output += l.getSpec().replace(/-/g, '/');
-                    break;
-                case 'localeUnder':
-                    output += l.getSpec().replace(/-/g, '_');
-                    break;
-                case 'localeLower':
-                    output += l.getSpec().toLowerCase();
-                    break;
-            }
-        }
+    // First, handle locale-related substitutions without path normalization
+    let output = formatLocaleParams(template, locale);
+
+    // Now handle path-specific keywords
+    let base;
+    let lastDot;
+
+    output = output.replace(/\[dir\]/g, path.dirname(pathname));
+    output = output.replace(/\[filename\]/g, path.basename(pathname));
+    output = output.replace(/\[resourceDir\]/g, resourceDir);
+
+    if (output.includes('[extension]')) {
+        base = path.basename(pathname);
+        output = output.replace(/\[extension\]/g, base.indexOf('.') > -1 ? base.substring(base.lastIndexOf('.')+1) : "");
+    }
+
+    if (output.includes('[basename]')) {
+        base = path.basename(pathname);
+        lastDot = base.lastIndexOf('.');
+        output = output.replace(/\[basename\]/g, lastDot > -1 ? base.substring(0, lastDot) : base);
     }
 
     return path.normalize(output);

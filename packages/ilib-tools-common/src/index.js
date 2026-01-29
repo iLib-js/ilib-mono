@@ -31,6 +31,7 @@ import {convertPluralResToICU, convertICUToPluralRes} from './ResourceConvert.js
 import escaperFactory from './EscaperFactory.js';
 
 import {
+    formatLocaleParams,
     formatPath,
     parsePath,
     getLocaleFromPath,
@@ -58,6 +59,7 @@ export {
     TranslationUnit,
     TranslationVariant,
     ResourceXliff,
+    formatLocaleParams,
     formatPath,
     parsePath,
     getLocaleFromPath,
