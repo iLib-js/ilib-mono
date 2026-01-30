@@ -1,7 +1,7 @@
 {
   "name": "ilib-loctool-json JSON Sample",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Sample localization project for ilib-loctool-json",
   "devDependencies": {
     "ilib-loctool-json": "workspace:^",

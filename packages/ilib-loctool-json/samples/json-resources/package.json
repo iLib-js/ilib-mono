@@ -1,6 +1,7 @@
 {
     "name": "sample-json-resources",
-    "version": "1.0.0",
+    "version": "0.0.0",
+    "private": true,
     "description": "Sample project testing JSON with resource file delegation",
     "dependencies": {
         "ilib-loctool-json": "workspace:^",
