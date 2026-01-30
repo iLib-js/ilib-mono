@@ -58,13 +58,19 @@ export type Comments = {
 };
 
 /**
- * Escape quotes in a string.
+ * Escape quotes and backslashes in a string.
+ * IMPORTANT: The order of escaping matters.
+ * We must escape backslashes first so we don't double-escape the
+ * backslashes introduced when escaping quotes.
  * @param str the string to escape
  * @returns the escaped string
  */
-export function escapeQuotes(str: string): string {
-  if (!str) return "";
-  return str ? str.replace(/"/g, '\\"') : str;
+export function escapeQuotesAndBackslashes(str: string): string {
+  if (!str) {
+    return "";
+  }
+
+  return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
 /**
