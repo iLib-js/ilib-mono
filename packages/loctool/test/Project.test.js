@@ -1892,7 +1892,6 @@ describe("project", function() {
 
     test("isSourceLocale returns false when locale has a variant but source does not", function() {
         expect.assertions(1);
-debugger;
         var project = ProjectFactory.newProject({
             rootDir: "./test/testfiles",
             projectType: "custom",

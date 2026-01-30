@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFile.test.js - test the JavaScript file handler object.
  *
- * Copyright © 2019-2020, 2023, 2025 Box, Inc.
+ * Copyright © 2019-2020, 2023, 2025-2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

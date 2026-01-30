@@ -1,7 +1,7 @@
 /*
  * IosStringsFile.js - represents an iOS strings resource file
  *
- * Copyright © 2016-2017, 2020, 2024 HealthTap, Inc.
+ * Copyright © 2016-2017, 2020, 2024, 2026 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
