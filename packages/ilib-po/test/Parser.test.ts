@@ -705,10 +705,31 @@ describe("parser", () => {
     );
     expect(r).toBeTruthy();
 
-    expect(r.getSource()).toBe('string "quoted" 1');
-    expect(r.getKey()).toBe('string "quoted" 1');
-    expect(r.getType()).toBe("string");
-  });
+        expect(r.getSource()).toBe('string "quoted" 1');
+        expect(r.getKey()).toBe('string "quoted" 1');
+        expect(r.getType()).toBe('string');
+    });
+
+    test("parses escaped backslashes", () => {
+        const parser = new Parser({
+            pathName: "./testfiles/po/messages.po",
+            sourceLocale: "en-US",
+            targetLocale: "es-ES",
+            projectName: "foo",
+            datatype: "po"
+        });
+        
+        // This is the PO-escaped content of a msgid string (C-style escapes).
+        // Note: the trailing quote character in the English text is escaped as `\"`.
+        const source = 'Name cannot contain \\"/\\", \\"\\\\\\", or characters outside the basic multilingual plane.\\"'
+        const parsed = 'Name cannot contain "/", "\\", or characters outside the basic multilingual plane."'
+
+        const set = parser.parse(`msgid "${source}"\n`);
+        const resource = set.get(ResourceString.hashKey("foo", "en-US", parsed, "po"));
+
+        expect(resource.getSource()).toBe(parsed);
+        expect(resource.getKey()).toBe(parsed);
+    });
 
   test("ParserParseEmptyTranslation", () => {
     expect.assertions(12);

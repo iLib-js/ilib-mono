@@ -19,7 +19,7 @@
 
 import { isSpace, isAlpha, isAlnum } from "ilib-ctype";
 
-import { unescapeQuotes } from "./utils";
+import { unescapeQuotesAndBackslashes } from './utils';
 
 /**
  * Defines the types of tokens that the tokenizer can return.
@@ -125,65 +125,60 @@ class Tokenizer {
         }
       }
 
-      return {
-        type: TokenType.STRING,
-        value: unescapeQuotes(value),
-      };
-    } else if (isSpace(this.data[this.index])) {
-      if (
-        this.data[this.index] === "\n" &&
-        this.index < this.data.length &&
-        this.data[this.index + 1] === "\n"
-      ) {
-        this.index += 2;
-        return {
-          type: TokenType.BLANKLINE,
-        };
-      }
-      while (this.index < this.data.length && isSpace(this.data[this.index])) {
-        this.index++;
-      }
-      return {
-        type: TokenType.SPACE,
-      };
-    } else if (isAlpha(this.data[this.index])) {
-      start = this.index;
-      while (
-        this.index < this.data.length &&
-        (isAlnum(this.data[this.index]) ||
-          this.data[this.index] === "_" ||
-          this.data[this.index] === "[" ||
-          this.data[this.index] === "]")
-      ) {
-        this.index++;
-      }
-      value = this.data.substring(start, this.index);
-      if (value.length > 6 && value.startsWith("msgstr[")) {
-        category = Number.parseInt(value.substring(7));
-        return {
-          type: TokenType.PLURAL,
-          category,
-        };
-      }
-      switch (value) {
-        case "msgid":
-          return {
-            type: TokenType.MSGID,
-          };
-        case "msgid_plural":
-          return {
-            type: TokenType.MSGIDPLURAL,
-          };
-        case "msgstr":
-          return {
-            type: TokenType.MSGSTR,
-          };
-        case "msgctxt":
-          return {
-            type: TokenType.MSGCTXT,
-          };
-      }
-    }
+            return {
+                type: TokenType.STRING,
+                value: unescapeQuotesAndBackslashes(value)
+            };
+        } else if (isSpace(this.data[this.index])) {
+            if (this.data[this.index] === '\n' && this.index < this.data.length && this.data[this.index+1] === '\n') {
+                this.index += 2;
+                return {
+                    type: TokenType.BLANKLINE
+                };
+            }
+            while (this.index < this.data.length && isSpace(this.data[this.index])) {
+                this.index++;
+            }
+            return {
+                type: TokenType.SPACE
+            };
+        } else if (isAlpha(this.data[this.index])) {
+            start = this.index;
+            while (this.index < this.data.length &&
+                    (isAlnum(this.data[this.index]) ||
+                     this.data[this.index] === '_' ||
+                     this.data[this.index] === '[' ||
+                     this.data[this.index] === ']')
+                  ) {
+                this.index++;
+            }
+            value = this.data.substring(start, this.index);
+            if (value.length > 6 && value.startsWith("msgstr[")) {
+                category = Number.parseInt(value.substring(7));
+                return {
+                    type: TokenType.PLURAL,
+                    category
+                };
+            }
+            switch (value) {
+                case 'msgid':
+                    return {
+                        type: TokenType.MSGID
+                    };
+                case 'msgid_plural':
+                    return {
+                        type: TokenType.MSGIDPLURAL
+                    };
+                case 'msgstr':
+                    return {
+                        type: TokenType.MSGSTR
+                    };
+                case 'msgctxt':
+                    return {
+                        type: TokenType.MSGCTXT
+                    };
+            }
+        }
 
     return {
       type: TokenType.UNKNOWN,

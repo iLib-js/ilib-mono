@@ -74,13 +74,19 @@ export function escapeQuotesAndBackslashes(str: string): string {
 }
 
 /**
- * Unescape quotes in a string.
+ * Unescape quotes and backslashes in a string.
+ * IMPORTANT: The order of unescaping matters.
+ * We must unescape escaped quotes (\\") BEFORE unescaping backslashes (\\\\),
+ * otherwise we could accidentally remove backslashes that are part of an
+ * escaped quote sequence.
  * @param str the string to unescape
  * @returns the unescaped string
  */
-export function unescapeQuotes(str: string): string {
-  if (!str) return "";
-  return str ? str.replace(/\\"/g, '"') : str;
+export function unescapeQuotesAndBackslashes(str: string): string {
+    if (!str) {
+        return "";
+    }
+    return str.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
 }
 
 export type MakeKeyProps =
