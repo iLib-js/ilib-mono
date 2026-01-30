@@ -713,27 +713,29 @@ describe("generator", () => {
     });
 
     const translations = new TranslationSet();
-    
+
     translations.add(
       new ResourceString({
         project: "foo",
         key: 'Name cannot contain "/", "\\", or characters outside the basic multilingual plane.',
-        source: 'Name cannot contain "/", "\\", or characters outside the basic multilingual plane.' ,
+        source:
+          'Name cannot contain "/", "\\", or characters outside the basic multilingual plane.',
         sourceLocale: "en-US",
-        target: 'El nombre no puede contener "/", "\\", o caracteres fuera del plano multilingüe básico.',
+        target:
+          'El nombre no puede contener "/", "\\", o caracteres fuera del plano multilingüe básico.',
         targetLocale: "es-ES",
         datatype: "po",
       }),
     );
 
     const actual = generator.generate(translations);
-    
+
     expect(actual).toContain(
       'msgid "Name cannot contain \\"/\\", \\"\\\\\\", or characters outside the basic multilingual plane."',
     );
     expect(actual).toContain(
       'msgstr "El nombre no puede contener \\"/\\", \\"\\\\\\", o caracteres fuera del plano multilingüe básico."',
-    );    
+    );
   });
 
   test("Generator generate text with context", () => {

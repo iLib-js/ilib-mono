@@ -20,8 +20,15 @@
 import { TranslationSet } from "ilib-tools-common";
 import Locale from "ilib-locale";
 
-import {Comments, CommentType, escapeQuotesAndBackslashes, makeKey, Plural, PluralCategory} from "./utils";
-import {pluralForms, PluralForm} from "./pluralforms";
+import {
+  Comments,
+  CommentType,
+  escapeQuotesAndBackslashes,
+  makeKey,
+  Plural,
+  PluralCategory,
+} from "./utils";
+import { pluralForms, PluralForm } from "./pluralforms";
 
 /** Options for the generator constructor */
 export interface GeneratorOptions {
@@ -142,93 +149,115 @@ class Generator {
               };
       }
 
-            if (c[CommentType.TRANSLATOR]?.length) {
-                c[CommentType.TRANSLATOR].flatMap(str => str.split('\n')).forEach(str => {
-                    output += `# ${str}\n`;
-                });
-            }
-            if (c[CommentType.EXTRACTED]?.length) {
-                c[CommentType.EXTRACTED].flatMap(str => str.split('\n')).forEach(str => {
-                    output += `#. ${str}\n`;
-                });
-            }
-            if (c[CommentType.PATHS]?.length) {
-                c[CommentType.PATHS].flatMap(str => str.split('\n')).forEach(str => {
-                    output += `#: ${str}\n`;
-                });
-            } else if (r.getPath()) {
-                output += `#: ${r.getPath()}\n`;
-            }
-            if (c[CommentType.FLAGS]?.length) {
-                c[CommentType.FLAGS].flatMap(str => str.split('\n')).forEach(str => {
-                    output += `#, ${str}\n`;
-                });
-            }
-            if (c[CommentType.PREVIOUS]?.length) {
-                c[CommentType.PREVIOUS].flatMap(str => str.split('\n')).forEach(str => {
-                    output += `#| ${str}\n`;
-                });
-            }
-            if (r.getDataType() && this.datatype !== r.getDataType()) {
-                output += `#d ${r.getDataType()}\n`;
-            }
-            if (r.getProject() && this.projectName !== r.getProject()) {
-                output += `#p ${r.getProject()}\n`;
-            }
-            if (type === "string" && r.getSource() !== key) {
-                output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
-            } else if (type === "plural") {
-                const generatedKey = makeKey("plural", r.getSource(), this.contextInKey && r.getContext());
-                if (key !== generatedKey) {
-                    output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
-                }
-            }
-            if (r.getContext()) {
-                output += `msgctxt "${escapeQuotesAndBackslashes(r.getContext())}"\n`;
-            }
-            if (type === "string") {
-                output += `msgid "${escapeQuotesAndBackslashes(r.getSource())}"\n`;
-                let translatedText = r.getTarget() ?? "";
+      if (c[CommentType.TRANSLATOR]?.length) {
+        c[CommentType.TRANSLATOR]
+          .flatMap((str) => str.split("\n"))
+          .forEach((str) => {
+            output += `# ${str}\n`;
+          });
+      }
+      if (c[CommentType.EXTRACTED]?.length) {
+        c[CommentType.EXTRACTED]
+          .flatMap((str) => str.split("\n"))
+          .forEach((str) => {
+            output += `#. ${str}\n`;
+          });
+      }
+      if (c[CommentType.PATHS]?.length) {
+        c[CommentType.PATHS]
+          .flatMap((str) => str.split("\n"))
+          .forEach((str) => {
+            output += `#: ${str}\n`;
+          });
+      } else if (r.getPath()) {
+        output += `#: ${r.getPath()}\n`;
+      }
+      if (c[CommentType.FLAGS]?.length) {
+        c[CommentType.FLAGS]
+          .flatMap((str) => str.split("\n"))
+          .forEach((str) => {
+            output += `#, ${str}\n`;
+          });
+      }
+      if (c[CommentType.PREVIOUS]?.length) {
+        c[CommentType.PREVIOUS]
+          .flatMap((str) => str.split("\n"))
+          .forEach((str) => {
+            output += `#| ${str}\n`;
+          });
+      }
+      if (r.getDataType() && this.datatype !== r.getDataType()) {
+        output += `#d ${r.getDataType()}\n`;
+      }
+      if (r.getProject() && this.projectName !== r.getProject()) {
+        output += `#p ${r.getProject()}\n`;
+      }
+      if (type === "string" && r.getSource() !== key) {
+        output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
+      } else if (type === "plural") {
+        const generatedKey = makeKey(
+          "plural",
+          r.getSource(),
+          this.contextInKey && r.getContext(),
+        );
+        if (key !== generatedKey) {
+          output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
+        }
+      }
+      if (r.getContext()) {
+        output += `msgctxt "${escapeQuotesAndBackslashes(r.getContext())}"\n`;
+      }
+      if (type === "string") {
+        output += `msgid "${escapeQuotesAndBackslashes(r.getSource())}"\n`;
+        let translatedText = r.getTarget() ?? "";
 
         if (translatedText === r.getSource()) {
           // put nothing if there is no difference in the translation
           translatedText = "";
         }
 
-                output += `msgstr "${escapeQuotesAndBackslashes(translatedText)}"\n`;
-            } else if (type === "array") {
-                const sourceArray = r.getSource();
-                let translatedArray = r.getTarget() || [];
+        output += `msgstr "${escapeQuotesAndBackslashes(translatedText)}"\n`;
+      } else if (type === "array") {
+        const sourceArray = r.getSource();
+        let translatedArray = r.getTarget() || [];
 
-                sourceArray.forEach((source: string, index: number) => {
-                    if (index > 0) {
-                        output += "\n";
-                    }
-                    const translation = translatedArray[index] !== source ? translatedArray[index] : "";
-                    output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
-                    output += `## ${index}\n`;
-                    output += `msgid "${escapeQuotesAndBackslashes(source)}"\n`;
-                    output += `msgstr "${escapeQuotesAndBackslashes(translation)}"\n`;
-                });
-            } else {
-                // plural string
-                const sourcePlurals = r.getSource();
-                output += `msgid "${escapeQuotesAndBackslashes(sourcePlurals.one)}"\n`;
-                let translatedPlurals = r.getTarget() || {};
+        sourceArray.forEach((source: string, index: number) => {
+          if (index > 0) {
+            output += "\n";
+          }
+          const translation =
+            translatedArray[index] !== source ? translatedArray[index] : "";
+          output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
+          output += `## ${index}\n`;
+          output += `msgid "${escapeQuotesAndBackslashes(source)}"\n`;
+          output += `msgstr "${escapeQuotesAndBackslashes(translation)}"\n`;
+        });
+      } else {
+        // plural string
+        const sourcePlurals = r.getSource();
+        output += `msgid "${escapeQuotesAndBackslashes(sourcePlurals.one)}"\n`;
+        let translatedPlurals = r.getTarget() || {};
 
-                output += `msgid_plural "${escapeQuotesAndBackslashes(sourcePlurals.other)}"\n`;
-                if (translatedPlurals) {
-                    const translated = this.backfillTranslations(translatedPlurals, this.targetLocale);
+        output += `msgid_plural "${escapeQuotesAndBackslashes(sourcePlurals.other)}"\n`;
+        if (translatedPlurals) {
+          const translated = this.backfillTranslations(
+            translatedPlurals,
+            this.targetLocale,
+          );
 
-                    this.plurals.categories.forEach((category, index) => {
-                        const translation = this.getTranslationOrEmptyString(translated, sourcePlurals, category);
-                        output += `msgstr[${index}] "${escapeQuotesAndBackslashes(translation)}"\n`;
-                    });
-                }
-            }
+          this.plurals.categories.forEach((category, index) => {
+            const translation = this.getTranslationOrEmptyString(
+              translated,
+              sourcePlurals,
+              category,
+            );
+            output += `msgstr[${index}] "${escapeQuotesAndBackslashes(translation)}"\n`;
+          });
         }
-        return output;
+      }
     }
+    return output;
+  }
 
   /**
    * @private

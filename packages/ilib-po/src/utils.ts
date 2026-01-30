@@ -83,10 +83,10 @@ export function escapeQuotesAndBackslashes(str: string): string {
  * @returns the unescaped string
  */
 export function unescapeQuotesAndBackslashes(str: string): string {
-    if (!str) {
-        return "";
-    }
-    return str.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+  if (!str) {
+    return "";
+  }
+  return str.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
 }
 
 export type MakeKeyProps =
