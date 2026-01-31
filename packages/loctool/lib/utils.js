@@ -1,7 +1,7 @@
 /*
  * utils.js - various utilities
  *
- * Copyright © 2016-2020, 2022-2024 HealthTap, Inc.
+ * Copyright © 2016-2020, 2022-2024, 2026 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@
 var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
-var LocaleMatcher = require("ilib/lib/LocaleMatcher.js");
+var LocaleMatcher = require("ilib-localematcher");
+var toolsCommon = require("ilib-tools-common");
 
 //load the data for these
 isAlnum._init();
@@ -1883,14 +1884,61 @@ module.exports.nodeMajorVersion = function() {
 
 
 /**
+ * Format a string by substituting locale-related parameters.
+ *
+ * This function replaces locale placeholder strings in square brackets
+ * with values derived from the given locale. Unlike formatPath, this
+ * function does not treat the string as a file path and does not
+ * normalize it, making it suitable for formatting arbitrary strings
+ * like headers and footers that may contain characters like "//" that
+ * would be incorrectly modified by path normalization.
+ *
+ * This function recognizes and replaces the following strings in
+ * templates:
+ * - [locale] the full BCP-47 locale specification for the target locale
+ *   eg. "zh-Hans-CN" -> "zh-Hans-CN"
+ * - [language] the language portion of the full locale
+ *   eg. "zh-Hans-CN" -> "zh"
+ * - [script] the script portion of the full locale
+ *   eg. "zh-Hans-CN" -> "Hans"
+ * - [region] the region portion of the full locale
+ *   eg. "zh-Hans-CN" -> "CN"
+ * - [localeDir] the full locale where each portion of the locale
+ *   is a directory in this order: [language], [script], [region].
+ *   eg, "zh-Hans-CN" -> "zh/Hans/CN", but "en" -> "en".
+ * - [localeUnder] the full BCP-47 locale specification, but using
+ *   underscores to separate the locale parts instead of dashes.
+ *   eg. "zh-Hans-CN" -> "zh_Hans_CN"
+ * - [localeLower] the full BCP-47 locale specification, but makes
+ *   all locale parts lowercased.
+ *   eg. "zh-Hans-CN" -> "zh-hans-cn"
+ *
+ * @param {string} template the string to format
+ * @param {string|Locale} locale the locale to use for substitutions
+ * @returns {string} the formatted string with locale parameters substituted
+ */
+module.exports.formatLocaleParams = function (template, locale) {
+    // Normalize locale to a string for ilib-tools-common
+    // (loctool accepts any object with a getSpec() method via duck-typing)
+    var localeStr = (typeof locale === "object" && typeof locale.getSpec === "function") ?
+        locale.getSpec() : locale;
+
+    return toolsCommon.formatLocaleParams(template, localeStr);
+};
+
+/**
  * Format a file path using a path template and parameters.
  *
  * This function is used to generate an output file path for a given
- * source file path and a locale specifier.
- * The template replaces strings in square brackets with special values,
- * and keeps any characters intact that are not in square brackets.
- * This function recognizes and replaces the following strings in
- * templates:
+ * source file path and a locale specifier. The template replaces
+ * strings in square brackets with special values, and keeps any
+ * characters intact that are not in square brackets.
+ *
+ * This function handles path-related substitutions and delegates
+ * locale-related substitutions to formatLocaleParams. The result
+ * is normalized as a file path.
+ *
+ * Path-related substitutions:
  * - [dir] the original directory where the source file
  *   came from. This is given as a directory that is relative
  *   to the root of the project. eg. "foo/bar/strings.json" -> "foo/bar"
@@ -1901,7 +1949,9 @@ module.exports.nodeMajorVersion = function() {
  * - [basename] the basename of the source file without any extension
  *   eg. "foo/bar/strings.json" -> "strings"
  * - [extension] the extension part of the file name of the source file.
- *   etc. "foo/bar/strings.json" -> "json"
+ *   eg. "foo/bar/strings.json" -> "json"
+ *
+ * Locale-related substitutions (handled by formatLocaleParams):
  * - [locale] the full BCP-47 locale specification for the target locale
  *   eg. "zh-Hans-CN" -> "zh-Hans-CN"
  * - [language] the language portion of the full locale
@@ -1911,7 +1961,7 @@ module.exports.nodeMajorVersion = function() {
  * - [region] the region portion of the full locale
  *   eg. "zh-Hans-CN" -> "CN"
  * - [localeDir] the full locale where each portion of the locale
- *   is a directory in this order: [langage], [script], [region].
+ *   is a directory in this order: [language], [script], [region].
  *   eg, "zh-Hans-CN" -> "zh/Hans/CN", but "en" -> "en".
  * - [localeUnder] the full BCP-47 locale specification, but using
  *   underscores to separate the locale parts instead of dashes.
@@ -1920,85 +1970,31 @@ module.exports.nodeMajorVersion = function() {
  *   all locale parts lowercased.
  *   eg. "zh-Hans-CN" -> "zh-hans-cn"
  *
- * The parameters may include the following:
- * - sourcepath - the path to the source file, relative to the root of
- *   the project
- * - locale - the locale for the output file path
- *
- * @param {string} template the string to escape
- * @param {Object} parameters the parameters to format into the template
- * @param {Object} project the current project. It is optional
- * if you want to use the [resourceDir] replacement.
- * @param {Object} filetype the resource file type for this project. It is optional
- * if you want to use the [resourceDir] replacement.
- * @returns {string} the formatted file path
+ * @param {string} template the path template string
+ * @param {Object} parameters an object containing:
+ * @param {string} parameters.sourcepath the path to the source file, relative to the
+ *     root of the project
+ * @param {string} parameters.locale the locale for the output file path
+ * @param {string} parameters.resourceDir optional resource directory override
+ * @param {Object} project the current project. Optional, required only
+ *   for [resourceDir] replacement when resourceDir is not in parameters.
+ * @param {Object} filetype the resource file type for this project. Optional,
+ *   required only for [resourceDir] replacement when resourceDir is not in parameters.
+ * @returns {string} the formatted and normalized file path
  */
 module.exports.formatPath = function (template, parameters, project, filetype) {
-    var pathname = parameters.sourcepath || "";
-    var locale = parameters.locale || "en";
-    var output = "";
-    var l = new Locale(locale);
-    var base;
-    var lastDot;
-    var pj = project;
-    var resDir = parameters.resourceDir || ((typeof project !== 'undefined' && typeof filetype !=='undefined') ? pj.project.getResourceDirs(filetype.type)[0] : ".");
-
-    for (var i = 0; i < template.length; i++) {
-        if ( template[i] !== '[' ) {
-            output += template[i];
-        } else {
-            var start = ++i;
-            while (i < template.length && template[i] !== ']') {
-                i++;
-            }
-            var keyword = template.substring(start, i);
-            switch (keyword) {
-                case 'dir':
-                    output += path.dirname(pathname);
-                    break;
-                case 'resourceDir':
-                    output += resDir;
-                    break;
-                case 'filename':
-                    output += path.basename(pathname);
-                    break;
-                case 'extension':
-                    base = path.basename(pathname);
-                    lastDot = base.lastIndexOf('.');
-                    output += lastDot > -1 ? base.substring(lastDot+1) : "";
-                    break;
-                case 'basename':
-                    base = path.basename(pathname);
-                    lastDot = base.lastIndexOf('.');
-                    output += lastDot > -1 ? base.substring(0, lastDot) : base;
-                    break;
-                default:
-                case 'locale':
-                    output += locale;
-                    break;
-                case 'language':
-                    output += l.getLanguage() || "";
-                    break;
-                case 'script':
-                    output += l.getScript() || "";
-                    break;
-                case 'region':
-                    output += l.getRegion() || "";
-                    break;
-                case 'localeDir':
-                    output += l.getSpec().replace(/-/g, '/');
-                    break;
-                case 'localeUnder':
-                    output += l.getSpec().replace(/-/g, '_');
-                    break;
-                case 'localeLower':
-                    output += l.getSpec().toLowerCase();
-                    break;
-            }
-        }
+    // Calculate the resourceDir from project and filetype if not provided in parameters
+    var resourceDir = parameters.resourceDir;
+    if (!resourceDir && typeof project !== 'undefined' && typeof filetype !== 'undefined') {
+        resourceDir = project.project.getResourceDirs(filetype.type)[0];
     }
 
-    return path.normalize(output);
+    // Delegate to ilib-tools-common formatPath with the calculated resourceDir
+    return toolsCommon.formatPath(template, {
+        sourcepath: parameters.sourcepath,
+        locale: parameters.locale,
+        resourceDir: resourceDir
+    });
 };
 
 var matchExprs = {

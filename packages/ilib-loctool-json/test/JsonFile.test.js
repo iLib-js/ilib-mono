@@ -1,7 +1,7 @@
 /*
  * JsonFile.test.js - test the json file handler object.
  *
- * Copyright © 2021-2024 Box, Inc.
+ * Copyright © 2021-2024, 2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1287,14 +1287,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "string 1": "C\'est la chaîne numéro 1",\n' +
-            '    "string 2": "this is string two"\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeTextWithSchema", function () {
@@ -1388,34 +1382,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "plurals": {\n' +
-            '        "bar": {\n' +
-            '            "one": "singulaire",\n' +
-            '            "many": "plupart",\n' +
-            '            "other": "autres"\n' +
-            '        }\n' +
-            '    },\n' +
-            '    "strings": {\n' +
-            '        "a": "la b",\n' +
-            '        "c": "la d"\n' +
-            '    },\n' +
-            '    "arrays": {\n' +
-            '        "asdf": [\n' +
-            '            "chaîne 1",\n' +
-            '            "chaîne 2",\n' +
-            '            "chaîne 3"\n' +
-            '        ]\n' +
-            '    },\n' +
-            '    "others": {\n' +
-            '        "first": "abc",\n' +
-            '        "second": "bcd"\n' +
-            '    }\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeTextMethodSparse", function () {
@@ -1446,13 +1414,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "string 1": "C\'est la chaîne numéro 1"\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeTextWithSchemaSparseComplex", function () {
@@ -1516,22 +1479,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "plurals": {\n' +
-            '        "bar": {\n' +
-            '            "one": "singulaire",\n' +
-            '            "many": "plupart",\n' +
-            '            "other": "autres"\n' +
-            '        }\n' +
-            '    },\n' +
-            '    "strings": {\n' +
-            '        "a": "la b"\n' +
-            '    }\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeArrayOfStrings", function () {
@@ -1572,17 +1521,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "strings": [\n' +
-            '        "chaîne 1",\n' +
-            '        "chaîne 2",\n' +
-            '        "chaîne 3"\n' +
-            '    ]\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeArrayOfNumbers", function () {
@@ -1626,18 +1566,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "numbers": [\n' +
-            '        29,\n' +
-            '        12,\n' +
-            '        -17.3,\n' +
-            '        0\n' +
-            '    ]\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeArrayOfBooleans", function () {
@@ -1675,16 +1605,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "booleans": [\n' +
-            '        false,\n' +
-            '        true\n' +
-            '    ]\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeArrayOfObjects", function () {
@@ -1741,22 +1663,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "objects": [\n' +
-            '        {\n' +
-            '            "name": "Premier objet",\n' +
-            '            "randomProp": "Non-translatable"\n' +
-            '        },\n' +
-            '        {\n' +
-            '            "name": "Deuxième objet",\n' +
-            '            "description": "Propriété String"\n' +
-            '        }\n' +
-            '    ]\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeArrayOfObjectsWithBooleansOnly", function () {
@@ -1783,20 +1691,8 @@ describe("jsonfile", function () {
         var translations = new TranslationSet('en-US');
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "objects": [\n' +
-            '        {\n' +
-            '            "nullable": false\n' +
-            '        },\n' +
-            '        {\n' +
-            '            "nullable": true\n' +
-            '        }\n' +
-            '    ]\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("Localizing an empty object should return an empty object", function () {
@@ -1817,9 +1713,7 @@ describe("jsonfile", function () {
 
         const actual = jsonFile.localizeText(translations, "xx-YY");
 
-        const expected = "{}\n";
-
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("Localize an array of objects that includes an empty object", function () {
@@ -1876,23 +1770,8 @@ describe("jsonfile", function () {
         }));
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "objects": [\n' +
-            '        {},\n' +
-            '        {\n' +
-            '            "name": "Premier objet",\n' +
-            '            "randomProp": "Non-translatable"\n' +
-            '        },\n' +
-            '        {\n' +
-            '            "name": "Deuxième objet",\n' +
-            '            "description": "Propriété String"\n' +
-            '        }\n' +
-            '    ]\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeTextUsePseudoForMissing", function () {
@@ -1934,34 +1813,8 @@ describe("jsonfile", function () {
         var translations = new TranslationSet();
 
         var actual = jf.localizeText(translations, "fr-FR");
-        var expected =
-            '{\n' +
-            '    "plurals": {\n' +
-            '        "bar": {\n' +
-            '            "one": "[šíñğüľàŕ3210]",\n' +
-            '            "many": "[màñÿ10]",\n' +
-            '            "other": "[þľüŕàľ210]"\n' +
-            '        }\n' +
-            '    },\n' +
-            '    "strings": {\n' +
-            '        "a": "[b0]",\n' +
-            '        "c": "[ð0]"\n' +
-            '    },\n' +
-            '    "arrays": {\n' +
-            '        "asdf": [\n' +
-            '            "[šţŕíñğ 13210]",\n' +
-            '            "[šţŕíñğ 23210]",\n' +
-            '            "[šţŕíñğ 33210]"\n' +
-            '        ]\n' +
-            '    },\n' +
-            '    "others": {\n' +
-            '        "first": "abc",\n' +
-            '        "second": "bcd"\n' +
-            '    }\n' +
-            '}\n';
 
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     /*
@@ -2227,70 +2080,11 @@ describe("jsonfile", function () {
         expect(fs.existsSync(path.join(base, "testfiles/resources/fr/FR/messages.json"))).toBeTruthy();
         expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/messages.json"))).toBeTruthy();
 
-        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/messages.json"), "utf-8");
+        var frContent = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/messages.json"), "utf-8");
+        var deContent = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/messages.json"), "utf-8");
 
-        var expected =
-            '{\n' +
-            '    "plurals": {\n' +
-            '        "foo": "asdf",\n' +     // this line is not localized
-            '        "bar": {\n' +
-            '            "one": "singulaire",\n' +
-            '            "many": "plupart",\n' +
-            '            "other": "autres"\n' +
-            '        }\n' +
-            '    },\n' +
-            '    "arrays": {\n' +
-            '        "asdf": [\n' +
-            '            "chaîne 1",\n' +
-            '            "chaîne 2",\n' +
-            '            "chaîne 3"\n' +
-            '        ],\n' +
-            '        "asdfasdf": [\n' +
-            '            "1",\n' +
-            '            "2",\n' +
-            '            "3"\n' +
-            '        ]\n' +
-            '    },\n' +
-            '    "strings": {\n' +
-            '        "a": "la b",\n' +
-            '        "c": "la d"\n' +
-            '    }\n' +
-            '}\n';
-
-        diff(content, expected);
-        expect(content).toBe(expected);
-
-        content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/messages.json"), "utf-8");
-
-        var expected =
-            '{\n' +
-            '    "plurals": {\n' +
-            '        "foo": "asdf",\n' +     // this line is not localized
-            '        "bar": {\n' +
-            '            "one": "einslige",\n' +
-            '            "many": "mehrere",\n' +
-            '            "other": "andere"\n' +
-            '        }\n' +
-            '    },\n' +
-            '    "arrays": {\n' +
-            '        "asdf": [\n' +
-            '            "Zeichenfolge 1",\n' +
-            '            "Zeichenfolge 2",\n' +
-            '            "Zeichenfolge 3"\n' +
-            '        ],\n' +
-            '        "asdfasdf": [\n' +
-            '            "1",\n' +
-            '            "2",\n' +
-            '            "3"\n' +
-            '        ]\n' +
-            '    },\n' +
-            '    "strings": {\n' +
-            '        "a": "Die b",\n' +
-            '        "c": "Der d"\n' +
-            '    }\n' +
-            '}\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
+        expect(frContent).toMatchSnapshot();
+        expect(deContent).toMatchSnapshot();
     });
 
     test("JsonFileLocalizeNoTranslations", function () {
@@ -2414,42 +2208,11 @@ describe("jsonfile", function () {
         expect(fs.existsSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"))).toBeTruthy();
 
         // should only contain the things that were actually translated
-        var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"), "utf-8");
+        var frContent = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/sparse2.json"), "utf-8");
+        var deContent = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"), "utf-8");
 
-        var expected =
-            '{\n' +
-            '    "plurals": {\n' +
-            '        "bar": {\n' +
-            '            "one": "singulaire",\n' +
-            '            "many": "plupart",\n' +
-            '            "other": "autres"\n' +
-            '        }\n' +
-            '    },\n' +
-            '    "strings": {\n' +
-            '        "a": "la b"\n' +
-            '    }\n' +
-            '}\n';
-
-        diff(content, expected);
-        expect(content).toBe(expected);
-
-        content = fs.readFileSync(path.join(base, "testfiles/resources/de/DE/sparse2.json"), "utf-8");
-
-        var expected =
-            '{\n' +
-            '    "plurals": {\n' +
-            '        "bar": {\n' +
-            '            "one": "einslige",\n' +
-            '            "many": "mehrere",\n' +
-            '            "other": "andere"\n' +
-            '        }\n' +
-            '    },\n' +
-            '    "strings": {\n' +
-            '        "a": "Die b"\n' +
-            '    }\n' +
-            '}\n';
-        diff(content, expected);
-        expect(content).toBe(expected);
+        expect(frContent).toMatchSnapshot();
+        expect(deContent).toMatchSnapshot();
     });
 
     test("Nested empty values should be preserved in default method", function () {
@@ -2757,15 +2520,7 @@ describe("jsonfile", function () {
 
         var content = fs.readFileSync(path.join(base, "testfiles/resources/fr/FR/str.json"), "utf-8");
 
-        // default method is copy so this should be the whole file
-        var expected =
-            '{\n' +
-            '    "string 1": "C\'est la chaîne numéro 1",\n' +
-            '    "string 2": "this is string two"\n' +
-            '}\n';
-
-        diff(content, expected);
-        expect(content).toBe(expected);
+        expect(content).toMatchSnapshot();
     });
 
     test("JsonFileGetLocalizedTextGeneratedString", function () {
@@ -2793,13 +2548,7 @@ describe("jsonfile", function () {
 
         var actual = jf.localizeText(undefined, "fr-FR");
 
-        var expected =
-            '{\n' +
-            '    "string 1": "C\'est la chaîne numéro 1"\n' +
-            '}\n';
-
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileGetLocalizedTextGeneratedPlural", function () {
@@ -2835,13 +2584,7 @@ describe("jsonfile", function () {
 
         var actual = jf.localizeText(undefined, "fr-FR");
 
-        var expected =
-            '{\n' +
-            '    "string 1": "one#Ceci est la chaîne \'one\'|few#Ceci est la chaîne \'few\'|#Ceci est la chaîne \'other\'"\n' +
-            '}\n';
-
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileGetLocalizedTextGeneratedArray", function () {
@@ -2877,17 +2620,7 @@ describe("jsonfile", function () {
 
         var actual = jf.localizeText(undefined, "fr-FR");
 
-        var expected =
-            '{\n' +
-            '    "string 1": [\n' +
-            '        "C\'est la chaîne numéro 1",\n' +
-            '        "C\'est la chaîne numéro 2",\n' +
-            '        "C\'est la chaîne numéro 3"\n' +
-            '    ]\n' +
-            '}\n';
-
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileGetLocalizedTextGeneratedAll", function () {
@@ -2949,19 +2682,7 @@ describe("jsonfile", function () {
 
         var actual = jf.localizeText(undefined, "fr-FR");
 
-        var expected =
-            '{\n' +
-            '    "string 1": "C\'est la chaîne numéro 1",\n' +
-            '    "string 2": "one#Ceci est la chaîne \'one\'|few#Ceci est la chaîne \'few\'|#Ceci est la chaîne \'other\'",\n' +
-            '    "string 3": [\n' +
-            '        "C\'est la chaîne numéro 1",\n' +
-            '        "C\'est la chaîne numéro 2",\n' +
-            '        "C\'est la chaîne numéro 3"\n' +
-            '    ]\n' +
-            '}\n';
-
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
     test("JsonFileGetLocalizedTextGeneratedEscapeDoubleQuotes", function () {
@@ -3023,20 +2744,7 @@ describe("jsonfile", function () {
 
         var actual = jf.localizeText(undefined, "fr-FR");
 
-        // need to escape the double quotes for json syntax
-        var expected =
-            '{\n' +
-            '    "string 1": "C\'est la \\\"chaîne\\\" numéro 1",\n' +
-            '    "string 2": "one#Ceci est la chaîne \\\"one\\\"|few#Ceci est la chaîne \\\"few\\\"|#Ceci est la chaîne \\\"other\\\"",\n' +
-            '    "string 3": [\n' +
-            '        "C\'est la chaîne numéro \\\"1\\\"",\n' +
-            '        "C\'est la chaîne numéro \\\"2\\\"",\n' +
-            '        "C\'est la chaîne numéro \\\"3\\\""\n' +
-            '    ]\n' +
-            '}\n';
-
-        diff(actual, expected);
-        expect(actual).toBe(expected);
+        expect(actual).toMatchSnapshot();
     });
 
 });
@@ -3188,5 +2896,283 @@ describe("schema 'localizable'", () => {
         const content = fs.readFileSync(path.join(base, "testfiles/resources/mi/MI/localizable.json"), "utf-8");
 
         expect(content).toMatchSnapshot();
+    });
+});
+
+describe("resourceFileTypes delegation", () => {
+    var base = path.dirname(module.id);
+    var outputPaths = [];
+
+    afterEach(() => {
+        // Clean up any output files
+        outputPaths.forEach(function(p) {
+            if (fs.existsSync(p)) {
+                fs.unlinkSync(p);
+            }
+        });
+        outputPaths = [];
+    });
+
+    function setupTestWithResourceFileType(options) {
+        var projectConfig = {
+            name: "resfiletype-test",
+            id: "resfiletype-test",
+            sourceLocale: "en-US",
+            resourceDirs: {
+                "json": "resources",
+                "js": "resources"
+            }
+        };
+
+        // Configure resourceFileTypes like a real project.json would
+        if (options.useResourceFileType) {
+            projectConfig.resourceFileTypes = {
+                "json": "ilib-loctool-javascript-resource"
+            };
+        }
+
+        var projectSettings = {
+            locales: ["fr-FR", "de-DE"],
+            targetDir: ".",
+            nopseudo: true,
+            json: {
+                schemas: ["./schemas"],
+                mappings: options.mappings || {
+                    "**/strings.json": {
+                        schema: "strings-schema",
+                        method: "copy",
+                        template: "resources/[localeDir]/strings.json"
+                    }
+                }
+            },
+            javascript: {
+                template: "resources/[locale].js",
+                header: "// HEADER: AUTO-GENERATED\n",
+                footer: "\n// FOOTER: END OF FILE\n"
+            }
+        };
+
+        var project = new CustomProject(projectConfig, "./test/testfiles", projectSettings);
+
+        // Call defineFileTypes to let loctool load plugins from resourceFileTypes config
+        // This is normally called by project.init()
+        project.defineFileTypes();
+
+        var jsonFileType = new JsonFileType(project);
+        var jsonFile = new JsonFile({
+            project: project,
+            type: jsonFileType,
+            pathName: options.pathName || "json/strings.json"
+        });
+
+        // Get the resource file type that loctool loaded
+        var resFileType = project.getResourceFileType("json");
+
+        return { project, jsonFileType, jsonFile, resFileType };
+    }
+
+    test("JsonFile localize delegates to resourceFileType and writes file with header/footer", function () {
+        expect.assertions(2);
+
+        var { jsonFile, resFileType } = setupTestWithResourceFileType({
+            pathName: "json/strings.json",
+            useResourceFileType: true,
+            mappings: {
+                "**/strings.json": {
+                    schema: "strings-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/strings.json"
+                }
+            }
+        });
+
+        jsonFile.parse('{\n' +
+            '    "greeting": "Hello",\n' +
+            '    "farewell": "Goodbye"\n' +
+            '}');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "resfiletype-test",
+            key: "greeting",
+            source: "Hello",
+            sourceLocale: "en-US",
+            target: "Bonjour",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "resfiletype-test",
+            key: "farewell",
+            source: "Goodbye",
+            sourceLocale: "en-US",
+            target: "Au revoir",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        jsonFile.localize(translations, ["fr-FR"]);
+
+        // Now write out the resource files
+        resFileType.write();
+
+        // When delegating to resourceFileType, the resource file type determines the output path
+        // based on its own configuration (resourceDirs + locale), not the JSON mapping template
+        var outputPath = path.join(base, "testfiles/resources/fr-FR.js");
+        outputPaths.push(outputPath);
+
+        expect(fs.existsSync(outputPath)).toBe(true);
+
+        var content = fs.readFileSync(outputPath, "utf-8");
+
+        expect(content).toMatchSnapshot();
+    });
+
+    test("JsonFile localize writes directly when no resourceFileType configured", function () {
+        expect.assertions(2);
+
+        var { jsonFile } = setupTestWithResourceFileType({
+            pathName: "json/strings.json",
+            useResourceFileType: false,
+            mappings: {
+                "**/strings.json": {
+                    schema: "strings-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/strings.json"
+                }
+            }
+        });
+
+        jsonFile.parse('{\n' +
+            '    "greeting": "Hello"\n' +
+            '}');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "resfiletype-test",
+            key: "greeting",
+            source: "Hello",
+            sourceLocale: "en-US",
+            target: "Bonjour",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        jsonFile.localize(translations, ["fr-FR"]);
+
+        var outputPath = path.join(base, "testfiles/resources/fr/FR/strings.json");
+        outputPaths.push(outputPath);
+
+        expect(fs.existsSync(outputPath)).toBe(true);
+
+        var content = fs.readFileSync(outputPath, "utf-8");
+
+        expect(content).toMatchSnapshot();
+    });
+
+    test("JsonFile localize skips source locale when using resourceFileType", function () {
+        expect.assertions(2);
+
+        var { jsonFile, resFileType } = setupTestWithResourceFileType({
+            pathName: "json/strings.json",
+            useResourceFileType: true,
+            mappings: {
+                "**/strings.json": {
+                    schema: "strings-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/strings.json"
+                }
+            }
+        });
+
+        jsonFile.parse('{\n' +
+            '    "greeting": "Hello"\n' +
+            '}');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "resfiletype-test",
+            key: "greeting",
+            source: "Hello",
+            sourceLocale: "en-US",
+            target: "Bonjour",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+
+        // Include the source locale - it should be skipped
+        jsonFile.localize(translations, ["en-US", "fr-FR"]);
+
+        // Now write out the resource files
+        resFileType.write();
+
+        // fr-FR file should exist (resource file type determines path)
+        var frPath = path.join(base, "testfiles/resources/fr-FR.js");
+        outputPaths.push(frPath);
+        expect(fs.existsSync(frPath)).toBe(true);
+
+        // en-US file should NOT exist (source locale skipped)
+        var enPath = path.join(base, "testfiles/resources/en-US.js");
+        outputPaths.push(enPath);
+        expect(fs.existsSync(enPath)).toBe(false);
+    });
+
+    test("JsonFile localize with resourceFileType handles multiple locales", function () {
+        expect.assertions(4);
+
+        var { jsonFile, resFileType } = setupTestWithResourceFileType({
+            pathName: "json/strings.json",
+            useResourceFileType: true,
+            mappings: {
+                "**/strings.json": {
+                    schema: "strings-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/strings.json"
+                }
+            }
+        });
+
+        jsonFile.parse('{\n' +
+            '    "greeting": "Hello"\n' +
+            '}');
+
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "resfiletype-test",
+            key: "greeting",
+            source: "Hello",
+            sourceLocale: "en-US",
+            target: "Bonjour",
+            targetLocale: "fr-FR",
+            datatype: "json"
+        }));
+        translations.add(new ResourceString({
+            project: "resfiletype-test",
+            key: "greeting",
+            source: "Hello",
+            sourceLocale: "en-US",
+            target: "Hallo",
+            targetLocale: "de-DE",
+            datatype: "json"
+        }));
+
+        jsonFile.localize(translations, ["fr-FR", "de-DE"]);
+
+        resFileType.write();
+
+        // Resource file type determines paths based on its configuration
+        var frPath = path.join(base, "testfiles/resources/fr-FR.js");
+        var dePath = path.join(base, "testfiles/resources/de-DE.js");
+        outputPaths.push(frPath);
+        outputPaths.push(dePath);
+
+        expect(fs.existsSync(frPath)).toBe(true);
+        expect(fs.existsSync(dePath)).toBe(true);
+
+        var frContent = fs.readFileSync(frPath, "utf-8");
+        var deContent = fs.readFileSync(dePath, "utf-8");
+
+        expect(frContent).toMatchSnapshot();
+        expect(deContent).toMatchSnapshot();
     });
 });

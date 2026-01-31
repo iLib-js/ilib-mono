@@ -12,7 +12,7 @@
     "xliffs"
   ],
   "settings": {
-    "xliffsDir": "xliffs",
+    "xliffsDir": "translations",
     "locales":[
       "ko-KR",
       "de-DE"
@@ -32,6 +32,5 @@
   },
   "plugins": [
     "ilib-loctool-json"
-  ],
-  "fileTypes": ["Xliff"]
+  ]
 }

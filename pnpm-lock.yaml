@@ -1451,7 +1451,7 @@ importers:
         version: 3.2.0
       grunt-contrib-nodeunit:
         specifier: ^4.0.0
-        version: 4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+        version: 4.0.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2)
       grunt-contrib-uglify:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1785,6 +1785,9 @@ importers:
       ilib:
         specifier: ^14.18.0
         version: 14.20.0
+      ilib-locale:
+        specifier: workspace:^
+        version: link:../ilib-locale
     devDependencies:
       ilib-internal:
         specifier: workspace:^
@@ -1864,6 +1867,9 @@ importers:
       ilib:
         specifier: ^14.19.0
         version: 14.20.0
+      ilib-locale:
+        specifier: ^1.3.0
+        version: 1.3.0
       json5:
         specifier: ^2.2.3
         version: 2.2.3
@@ -1874,12 +1880,18 @@ importers:
       ilib-internal:
         specifier: workspace:^
         version: link:../ilib-internal
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../ilib-loctool-javascript-resource
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       loctool:
         specifier: workspace:^
         version: link:../loctool
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
 
   packages/ilib-loctool-json/samples/js-json:
     devDependencies:
@@ -1898,6 +1910,18 @@ importers:
 
   packages/ilib-loctool-json/samples/json:
     devDependencies:
+      ilib-loctool-json:
+        specifier: workspace:^
+        version: link:../..
+      loctool:
+        specifier: workspace:^
+        version: link:../../../loctool
+
+  packages/ilib-loctool-json/samples/json-resources:
+    dependencies:
+      ilib-loctool-javascript-resource:
+        specifier: workspace:^
+        version: link:../../../ilib-loctool-javascript-resource
       ilib-loctool-json:
         specifier: workspace:^
         version: link:../..
@@ -3094,6 +3118,12 @@ importers:
       ilib:
         specifier: ^14.18.0
         version: 14.20.0
+      ilib-locale:
+        specifier: workspace:^
+        version: link:../ilib-locale
+      ilib-localematcher:
+        specifier: ^1.3.1
+        version: 1.3.1
       ilib-po:
         specifier: workspace:^
         version: link:../ilib-po
@@ -7480,8 +7510,8 @@ packages:
   ilib-env@1.4.0:
     resolution: {integrity: sha512-zDpTmrGMvg9P40TtelR3k+eIFPd1VZA9TmB/5dXKEona6TQBObe6/D9zgmoLf17mI0kBg8ho+q1T42EJGvB5mg==}
 
-  ilib-env@1.4.1:
-    resolution: {integrity: sha512-lhXj5AaOT6AAft3eSFTqncNSYhqMdXAq9RpAeCral1tJpZDmzxhxpnKcFghgbjk9NkFFBRxFxTIAkgSq9NfEfQ==}
+  ilib-env@1.4.2:
+    resolution: {integrity: sha512-H/nFk+qnC6hfgD6bgaSF+mohZUWqtfjQmStBCU3c832vv00Vtco6GrOSGaXwdr3QgnhzxL8zhLOUTtSTJ2gHxA==}
 
   ilib-es6@14.21.0:
     resolution: {integrity: sha512-0RNWnaZ5ojMuK/we1UP1Z2olbm45VETB6oVTlTWkCZTvlgDpuqTdtNymbvgSn6s7UP/qRBP5uHBZ7RrBrWgxug==}
@@ -7513,8 +7543,9 @@ packages:
   ilib-loader@1.3.5:
     resolution: {integrity: sha512-EeEb652VmB6aAO5nvth3bIHyAapgukxn/7Zyf0mCEhGNCLMv3b6IqbXCRZVrztrgzu/fTLdQKQtq4pO+6ImOCg==}
 
-  ilib-locale@1.2.4:
-    resolution: {integrity: sha512-3ZIOw45MAmL+uQ1CTt7A/eVOd5wEYlmTWPnQC/GFmGaIxbGvgSD9AuIX1HiFltYQXIBlQWl0yTFf/1yPtfW3ng==}
+  ilib-locale@1.3.0:
+    resolution: {integrity: sha512-UYDTg1TPGJ/Iczml+94Z6ygWRP1BJnwKh4JZm9HFjrh/ZlRT/okj6w0JTxvRBW8Uq6qYbk7tks2awYh5PTpSFg==}
+    engines: {node: '>=12 <23'}
 
   ilib-localedata@1.5.0:
     resolution: {integrity: sha512-BTGuXsGPmK4ephkRu0vholbmpb55ZnUG7TfQSLOfxbHuuhBsQu68bvfzV4O03UEkuKvt3iJlheuIuv3e3cnhUg==}
@@ -7529,7 +7560,7 @@ packages:
     resolution: {integrity: sha512-sDqSdYfAouyGH9OPKPuXk2Lyb4+HU3Gz05bLTJ5fn3FRn/IzG5sUQjSrhfmQAsklQ6WLlJE3nL5wbpV0fpX8Lw==}
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
-    resolution: {integrity: sha512-G/20MuXksGohqBfMoHLeuME4u3JwqW8qmAzDoUUCVmalQQYg7dARztde6cxx7VrOoilo4kwS4bt0L+yGs5u0PA==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
+    resolution: {integrity: sha512-nZdR3YHuNUMleBjsl7tWr1LHMSBnXxAJN1uUIDrgaiI8klP8E58ePalsjFC1t9E5gHp653HeTwldS6p/KmQ9TQ==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
     version: 1.0.0
 
   ilib-loctool-mock-resource@file:packages/loctool/test/ilib-loctool-mock-resource/ilib-loctool-mock-resource-1.0.0.tgz:
@@ -16739,9 +16770,9 @@ snapshots:
       hooker: 0.2.3
       jshint: 2.13.6
 
-  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+  grunt-contrib-nodeunit@4.0.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
-      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+      nodeunit-x: 0.15.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2)
     transitivePeerDependencies:
       - flow-remove-types
       - supports-color
@@ -17141,7 +17172,7 @@ snapshots:
   i18nlint-plugin-test-old@file:packages/ilib-lint/test/i18nlint-plugin-test-old:
     dependencies:
       i18nlint-common: 2.2.1
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-tools-common: 1.16.0
       json5: 2.2.3
 
@@ -17167,14 +17198,14 @@ snapshots:
   ilib-common@1.1.3:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-env: 1.4.1
-      ilib-locale: 1.2.4
+      ilib-env: 1.4.2
+      ilib-locale: 1.3.0
 
   ilib-common@1.1.6:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-env: 1.4.1
-      ilib-locale: 1.2.4
+      ilib-env: 1.4.2
+      ilib-locale: 1.3.0
 
   ilib-ctype@1.2.2:
     dependencies:
@@ -17182,7 +17213,7 @@ snapshots:
 
   ilib-env@1.4.0: {}
 
-  ilib-env@1.4.1: {}
+  ilib-env@1.4.2: {}
 
   ilib-es6@14.21.0:
     dependencies:
@@ -17191,17 +17222,17 @@ snapshots:
   ilib-istring@1.1.0:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
-      ilib-env: 1.4.1
-      ilib-locale: 1.2.4
+      ilib-common: 1.1.6
+      ilib-env: 1.4.2
+      ilib-locale: 1.3.0
       ilib-localedata: 1.5.0
 
   ilib-istring@1.1.1:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.6
-      ilib-env: 1.4.1
-      ilib-locale: 1.2.4
+      ilib-env: 1.4.2
+      ilib-locale: 1.3.0
       ilib-localedata: 1.5.2
       regenerator-runtime: 0.14.1
 
@@ -17210,7 +17241,7 @@ snapshots:
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
     dependencies:
       i18nlint-common: 2.2.1
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-tools-common: 1.16.0
       json5: 2.2.3
 
@@ -17232,27 +17263,27 @@ snapshots:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.6
-      ilib-env: 1.4.1
+      ilib-env: 1.4.2
       promise.allsettled: 1.0.7
 
   ilib-loader@1.3.5:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.6
-      ilib-env: 1.4.1
+      ilib-env: 1.4.2
       promise.allsettled: 1.0.7
 
-  ilib-locale@1.2.4:
+  ilib-locale@1.3.0:
     dependencies:
-      ilib-env: 1.4.1
+      ilib-env: 1.4.2
 
   ilib-localedata@1.5.0:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-common: 1.1.3
-      ilib-env: 1.4.1
+      ilib-common: 1.1.6
+      ilib-env: 1.4.2
       ilib-loader: 1.3.2
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-localematcher: 1.3.1
       json5: 2.2.3
 
@@ -17260,9 +17291,9 @@ snapshots:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.6
-      ilib-env: 1.4.1
+      ilib-env: 1.4.2
       ilib-loader: 1.3.5
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-localematcher: 1.3.1
       json5: 2.2.3
 
@@ -17271,15 +17302,15 @@ snapshots:
       '@log4js-node/log4js-api': 1.0.2
       ilib-common: 1.1.3
       ilib-env: 1.4.0
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-localedata: 1.5.0
       ilib-localematcher: 1.3.1
       json5: 2.2.3
 
   ilib-localematcher@1.3.1:
     dependencies:
-      ilib-common: 1.1.3
-      ilib-locale: 1.2.4
+      ilib-common: 1.1.6
+      ilib-locale: 1.3.0
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     dependencies:
@@ -17296,14 +17327,14 @@ snapshots:
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     dependencies:
       ilib-common: 1.1.3
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
 
   ilib-resbundle@1.0.2:
     dependencies:
       ilib-common: 1.1.3
       ilib-ctype: 1.2.2
       ilib-istring: 1.1.0
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-localedata: 1.5.0
       ilib-localeinfo: 1.1.0
 
@@ -17312,7 +17343,7 @@ snapshots:
       '@log4js-node/log4js-api': 1.0.2
       ilib-ctype: 1.2.2
       ilib-istring: 1.1.1
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-xliff: 1.4.0
       intl-messageformat: 10.7.11
       micromatch: 4.0.8
@@ -17325,7 +17356,7 @@ snapshots:
   ilib-xliff@1.4.0:
     dependencies:
       ilib-common: 1.1.6
-      ilib-locale: 1.2.4
+      ilib-locale: 1.3.0
       ilib-xml-js: 1.7.0
       json5: 2.2.3
 
@@ -19864,10 +19895,10 @@ snapshots:
       socks: 1.1.9
     optional: true
 
-  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+  nodeunit-x@0.15.0(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
       ejs: 3.1.10
-      tap: 15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10)
+      tap: 15.2.3(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2)
     transitivePeerDependencies:
       - flow-remove-types
       - supports-color
@@ -21513,7 +21544,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tap@15.2.3(ts-node@8.10.2(typescript@3.9.10))(typescript@3.9.10):
+  tap@15.2.3(ts-node@8.10.2(typescript@5.9.2))(typescript@5.9.2):
     dependencies:
       chokidar: 3.6.0
       coveralls: 3.1.1
@@ -21538,8 +21569,8 @@ snapshots:
       tcompare: 5.0.7
       which: 2.0.2
     optionalDependencies:
-      ts-node: 8.10.2(typescript@3.9.10)
-      typescript: 3.9.10
+      ts-node: 8.10.2(typescript@5.9.2)
+      typescript: 5.9.2
     transitivePeerDependencies:
       - supports-color
 
@@ -21731,6 +21762,16 @@ snapshots:
       source-map-support: 0.5.21
       typescript: 3.9.10
       yn: 3.1.1
+
+  ts-node@8.10.2(typescript@5.9.2):
+    dependencies:
+      arg: 4.1.3
+      diff: 4.0.2
+      make-error: 1.3.6
+      source-map-support: 0.5.21
+      typescript: 5.9.2
+      yn: 3.1.1
+    optional: true
 
   tsame@2.0.1: {}
 
