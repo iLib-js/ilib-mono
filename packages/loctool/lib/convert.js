@@ -68,7 +68,7 @@ function convert(settings) {
                     return typeof(type.write) === 'function';
                 });
                 file = type.newFile(settings.outfile, {
-                    locale: settings.targetLocale
+                    targetLocale: settings.targetLocale
                 });
             }
         }

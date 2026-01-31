@@ -184,7 +184,7 @@ YamlResourceFileType.prototype.write = function(translations, locales) {
                         this.logger.trace("No translation for " + res.reskey + " to " + locale);
                     } else {
                         this.checkAllPluralCases(res, r, locale);
-                        file = resFileType.getResourceFile(locale, res.getFlavor());
+                        file = resFileType.getResourceFile({ locale: locale, flavor: res.getFlavor() });
                         file.addResource(translated);
                     }
                     this.logger.trace("Added " + r.reskey + " to " + (file ? file.pathName : "an unknown file"));
@@ -202,7 +202,7 @@ YamlResourceFileType.prototype.write = function(translations, locales) {
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.getTargetLocale());
+            file = resFileType.getResourceFile({ locale: res.getTargetLocale() });
             file.addResource(res);
             this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }
@@ -251,7 +251,10 @@ YamlResourceFileType.prototype.newFile = function(pathName) {
  * @return {YamlResourceFile} the yaml resource file that serves the
  * given project and locale.
  */
-YamlResourceFileType.prototype.getResourceFile = function(locale, flavor) {
+YamlResourceFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var locale = opts.locale || (opts.resource && opts.resource.getTargetLocale()) || this.project.sourceLocale;
+    var flavor = opts.flavor || (opts.resource && opts.resource.getFlavor && opts.resource.getFlavor());
     var key = (locale || this.project.sourceLocale) + (flavor ? '-' + flavor : '');
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
@@ -288,6 +291,7 @@ YamlResourceFileType.prototype.generatePseudo = function(locale, pb) {
             this.pseudo.add(res);
         }
     }.bind(this));
+    return this.pseudo;
 };
 
 YamlResourceFileType.prototype.getDataType = function() {

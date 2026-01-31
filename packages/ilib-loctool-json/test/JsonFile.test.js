@@ -2532,7 +2532,7 @@ describe("jsonfile", function () {
             project: p,
             pathName: "x/y/str.json",
             type: t,
-            locale: "fr-FR"
+            targetLocale: "fr-FR"
         });
         expect(jf).toBeTruthy();
 
@@ -2560,7 +2560,7 @@ describe("jsonfile", function () {
             project: p,
             pathName: "x/y/str.json",
             type: t,
-            locale: "fr-FR"
+            targetLocale: "fr-FR"
         });
         expect(jf).toBeTruthy();
 
@@ -2596,7 +2596,7 @@ describe("jsonfile", function () {
             project: p,
             pathName: "x/y/str.json",
             type: t,
-            locale: "fr-FR"
+            targetLocale: "fr-FR"
         });
         expect(jf).toBeTruthy();
 
@@ -2632,7 +2632,7 @@ describe("jsonfile", function () {
             project: p,
             pathName: "x/y/str.json",
             type: t,
-            locale: "fr-FR"
+            targetLocale: "fr-FR"
         });
         expect(jf).toBeTruthy();
 
@@ -2694,7 +2694,7 @@ describe("jsonfile", function () {
             project: p,
             pathName: "x/y/str.json",
             type: t,
-            locale: "fr-FR"
+            targetLocale: "fr-FR"
         });
         expect(jf).toBeTruthy();
 

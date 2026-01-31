@@ -51,7 +51,7 @@ var YamlFile = function(props) {
     if (props) {
         this.project = props.project;
         this.pathName = props.pathName;
-        this.locale = props.locale;
+        this.locale = props.targetLocale || props.locale;
         this.type = props.type;
         this.flavor = props.flavor;
     }

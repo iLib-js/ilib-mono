@@ -822,7 +822,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./asdf.yml",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
         expect(yml).toBeTruthy();
 
@@ -862,7 +862,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./zh.yml",
-            locale: "zh-Hans-CN"
+            targetLocale: "zh-Hans-CN"
         });
         expect(yml).toBeTruthy();
 
@@ -901,7 +901,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./zh.yml",
-            locale: "zh-Hans-CN"
+            targetLocale: "zh-Hans-CN"
         });
         expect(yml).toBeTruthy();
 
@@ -942,7 +942,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./zh.yml",
-            locale: "zh-Hans-CN"
+            targetLocale: "zh-Hans-CN"
         });
         expect(yml).toBeTruthy();
 
@@ -986,7 +986,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./asdf.yml",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
         expect(yml).toBeTruthy();
 
@@ -1010,7 +1010,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./test.yml",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(yml).toBeTruthy();
 
@@ -1033,7 +1033,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./test2.yml",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(yml).toBeTruthy();
 
@@ -1058,7 +1058,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./test2.yml",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(yml).toBeTruthy();
 
@@ -1082,7 +1082,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./test2.yml",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(yml).toBeTruthy();
 
@@ -1705,7 +1705,7 @@ describe("yamlfile", function() {
             project: p,
             type: yft,
             pathName: "./asdf.yml",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
         expect(yml).toBeTruthy();
 

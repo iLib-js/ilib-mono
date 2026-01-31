@@ -104,7 +104,10 @@ ObjectiveCProject.prototype.init = function(cb) {
         }
         procStatus.stderr && logger.info(procStatus.stderr.toString("utf-8"));
 
-        file = this.resourceFileType.newFile("./en-US.xliff");
+        file = this.resourceFileType.newFile("./en-US.xliff", {
+            sourceLocale: this.sourceLocale,
+            targetLocale: "en-US"
+        });
         this.files.enqueue(file);
         file.extract();
         this.resourceFileType.addSet(file.getTranslationSet());

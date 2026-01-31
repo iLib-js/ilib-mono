@@ -43,7 +43,7 @@ var XliffFile = function(props) {
         this.project = props.project;
         this.pathName = props.pathName;
         this.type = props.type;
-        this.locale = props.locale;
+        this.locale = props.targetLocale || props.locale;
         this.context = props.context || undefined;
     }
 

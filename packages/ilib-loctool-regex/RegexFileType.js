@@ -250,7 +250,7 @@ RegexFileType.prototype.write = function(translations, locales) {
                     var mapping = this.getMapping(res.getPath());
                     var resFileType = this.project.getResourceFileType(mapping.resourceFileType);
                     if (resFileType) {
-                        file = resFileType.getResourceFile(locale, this.getLocalizedPath(mapping, res.getPath(), locale));
+                        file = resFileType.getResourceFile({ locale: locale, pathName: this.getLocalizedPath(mapping, res.getPath(), locale) });
                         file.addResource(r);
                         this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                     } else {
@@ -269,10 +269,12 @@ RegexFileType.prototype.write = function(translations, locales) {
         res = resources[i];
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
             var mapping = this.getMapping(res.getPath());
-            this.project.getResourceFileType(mapping.resourceFileType);
-            file = resFileType.getResourceFile(res.getTargetLocale(), this.getLocalizedPath(mapping, res.getPath(), locale));
-            file.addResource(res);
-            this.logger.trace("Added " + res.reskey + " to " + file.pathName);
+            var resFileType = this.project.getResourceFileType(mapping.resourceFileType);
+            if (resFileType) {
+                file = resFileType.getResourceFile({ locale: res.getTargetLocale(), pathName: this.getLocalizedPath(mapping, res.getPath(), res.getTargetLocale()) });
+                file.addResource(res);
+                this.logger.trace("Added " + res.reskey + " to " + file.pathName);
+            }
         }
     }
 };

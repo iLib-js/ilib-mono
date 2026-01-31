@@ -72,7 +72,7 @@ describe("javascriptresourcefiletype", function() {
         var htf = new JavaScriptResourceFileType(p);
         expect(htf).toBeTruthy();
 
-        var jsrf = htf.getResourceFile("fr-FR");
+        var jsrf = htf.getResourceFile({ locale: "fr-FR" });
 
         expect(jsrf.getLocale().toString()).toBe("fr-FR");
     });
@@ -83,10 +83,10 @@ describe("javascriptresourcefiletype", function() {
         var htf = new JavaScriptResourceFileType(p);
         expect(htf).toBeTruthy();
 
-        var jsrf1 = htf.getResourceFile("fr-FR");
+        var jsrf1 = htf.getResourceFile({ locale: "fr-FR" });
         expect(jsrf1.getLocale().toString()).toBe("fr-FR");
 
-        var jsrf2 = htf.getResourceFile("fr-FR");
+        var jsrf2 = htf.getResourceFile({ locale: "fr-FR" });
         expect(jsrf2.getLocale().toString()).toBe("fr-FR");
 
         expect(jsrf1).toStrictEqual(jsrf2);
@@ -98,10 +98,10 @@ describe("javascriptresourcefiletype", function() {
         var htf = new JavaScriptResourceFileType(p);
         expect(htf).toBeTruthy();
 
-        var jsrf1 = htf.getResourceFile("fr-FR", "fr/FR/foo.json");
+        var jsrf1 = htf.getResourceFile({ locale: "fr-FR", pathName: "fr/FR/foo.json" });
         expect(jsrf1.getLocale().toString()).toBe("fr-FR");
 
-        var jsrf2 = htf.getResourceFile("fr-FR", "sublibrary/fr/FR/foo.json");
+        var jsrf2 = htf.getResourceFile({ locale: "fr-FR", pathName: "sublibrary/fr/FR/foo.json" });
         expect(jsrf2.getLocale().toString()).toBe("fr-FR");
 
         expect(jsrf1).not.toBe(jsrf2);

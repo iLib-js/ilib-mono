@@ -46,7 +46,7 @@ var IosStringsFile = function(props) {
         this.project = props.project;
         this.pathName = props.pathName;
         this.type = props.type;
-        this.locale = this.iosLocale = props.locale;
+        this.locale = this.iosLocale = props.targetLocale || props.locale;
         this.context = props.context || undefined;
         this.flavor = props.flavor;
     }

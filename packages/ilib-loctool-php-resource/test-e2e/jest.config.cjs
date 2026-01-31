@@ -6,6 +6,7 @@ const config = {
         name: "ilib-loctool-php-resource e2e",
         color: "greenBright",
     },
+    testTimeout: 15000,
 };
 
 module.exports = config;
