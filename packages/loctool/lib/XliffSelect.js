@@ -2,7 +2,7 @@
  * XliffSelect.js - select translation units and write them to an output
  * file
  *
- * Copyright © 2024 Box, Inc.
+ * Copyright © 2024,2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ var fs = require('fs');
 var log4js = require("log4js");
 var ISet = require("ilib/lib/ISet.js");
 
-var TranslationSet = require("./TranslationSet.js");
-var Xliff = require("./Xliff.js");
+var XliffFactory = require("./XliffFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.XliffSelect");
 
@@ -66,12 +65,18 @@ function tuHash(unit) {
 var XliffSelect = function XliffSelect(settings) {
     if (!settings) return;
 
+    // In exclude mode, only one input file is allowed
+    if (settings.exclude && Array.isArray(settings.infiles) && settings.infiles.length !== 1) {
+        logger.warn("exclude mode only supports a single input file. Only the first file will be used.");
+        settings.infiles = [settings.infiles[0]]; // Use only the first file
+    }
+
     // Remember which files we have already read, so we don't have
     // to read them again.
     var fileNameCache = new ISet();
     var projectName = settings.id;
 
-    var target = new Xliff({
+    var target = new XliffFactory({
         path: settings.outfile,
         version: settings.xliffVersion,
         style: settings.xliffStyle
@@ -79,12 +84,13 @@ var XliffSelect = function XliffSelect(settings) {
 
     var unitCache = {};
 
-    settings.infiles.forEach(function (file) {
+    var inputFiles = Array.isArray(settings.infiles) ? settings.infiles : [settings.infiles];
+    inputFiles.forEach(function (file) {
         if (fileNameCache.has(file)) return;
         if (fs.existsSync(file)) {
             logger.info("Selecting from " + file + " ...");
             var data = fs.readFileSync(file, "utf-8");
-            var xliff = new Xliff({
+            var xliff = new XliffFactory({
                 version: settings.xliffVersion,
                 style: settings.xliffStyle
             });
@@ -97,7 +103,9 @@ var XliffSelect = function XliffSelect(settings) {
                 if (typeof(settings.extendedAttr) === "object") {
                     Object.assign(unit.extended, settings.extendedAttr);
                 }
-                unit.extended["original-file"] = file;
+                if (!settings.exclude) {
+                    unit.extended["original-file"] = file;
+                }
                 var hash = tuHash(unit);
                 unitCache[hash] = unit;
             });
@@ -112,79 +120,102 @@ var XliffSelect = function XliffSelect(settings) {
     // now that they are merged, select from them according to
     // the selection criteria
 
-    if (units.length > 0 && settings.criteria) {
-        var criteria = XliffSelect.parseCriteria(settings.criteria);
-        var totalunits = 0;
-        var sourcewords = 0;
-        var targetwords = 0;
-        
-        if (criteria.random) {
-            // Mix up the units first and then perform the normal criteria below.
-            // This works by first assigning a random number to each unit, then
-            // sorting by that random number, and finally just dropping that
-            // number so that we are left with an array of randomly sorted units
-            // where more filter criteria can be applied below.
-            var random = units.map(function(unit) {
-                return {
-                    index: Math.random(),
-                    unit: unit
-                };
-            });
-            units = random.sort(function(left, right) {
-                return left.index - right.index;
-            }).map(function(element) {
-                return element.unit;
-            });
-        }
+    if (units.length > 0) {
+        if (!settings.criteria) {
+            if (settings.exclude) {
+                units = [];
+            }
+        } else {
+            var criteria = XliffSelect.parseCriteria(settings.criteria);
+            var totalunits = 0;
+            var sourcewords = 0;
+            var targetwords = 0;
 
-        units = units.filter(function(unit) {
-            if (criteria.maxunits) {
-                if (totalunits >= criteria.maxunits) {
-                    return false;
+            if (criteria.random) {
+                // Mix up the units first and then perform the normal criteria below.
+                // This works by first assigning a random number to each unit, then
+                // sorting by that random number, and finally just dropping that
+                // number so that we are left with an array of randomly sorted units
+                // where more filter criteria can be applied below.
+                var random = units.map(function(unit) {
+                    return {
+                        index: Math.random(),
+                        unit: unit
+                    };
+                });
+                units = random.sort(function(left, right) {
+                    return left.index - right.index;
+                }).map(function(element) {
+                    return element.unit;
+                });
+            }
+
+            units = units.filter(function(unit) {
+                var match = true;
+                if (criteria.maxunits) {
+                    if (totalunits >= criteria.maxunits) {
+                        match = false;
+                    }
+                    totalunits++;
                 }
-                totalunits++;
-            }
 
-            if (criteria.maxsource) {
-                var count = wordCount(unit.source);
-                if (sourcewords + count >= criteria.maxsource) {
-                    return false;
+                if (criteria.maxsource) {
+                    var count = wordCount(unit.source);
+                    if (sourcewords + count >= criteria.maxsource) {
+                        match = false;
+                    }
+                    sourcewords += count;
                 }
-                sourcewords += count;
-            }
 
-            if (criteria.maxtarget) {
-                var count = wordCount(unit.target);
-                if (targetwords + count >= criteria.maxtarget) {
-                    return false;
+                if (criteria.maxtarget) {
+                    var count = wordCount(unit.target);
+                    if (targetwords + count >= criteria.maxtarget) {
+                        match = false;
+                    }
+                    targetwords += count;
                 }
-                targetwords += count;
-            }
 
-            if (criteria.category && (!unit.quantity || unit.quantity !== criteria.category)) {
-                // units that are part of a plural have a quantity field
-                return false;
-            }
+                if (criteria.category && (!unit.quantity || unit.quantity !== criteria.category)) {
+                    // units that are part of a plural have a quantity field
+                    match = false;
+                }
 
-            if (criteria.index && (!unit.ordinal || unit.ordinal !== criteria.index)) {
-                // units that are part of an array have an ordinal field
-                return false;
-            }
+                if (criteria.index && (!unit.ordinal || unit.ordinal !== criteria.index)) {
+                    // units that are part of an array have an ordinal field
+                    match = false;
+                }
 
-            if (criteria.fields) {
-                var fieldNames = Object.keys(criteria.fields);
-                for (var i = 0; i < fieldNames.length; i++) {
-                    var field = fieldNames[i];
-                    var re = criteria.fields[fieldNames[i]];
-                    re.lastIndex = 0;
-                    if (unit[field].match(re) === null) {
-                        return false;
+                if (criteria.fields) {
+                    var fieldNames = Object.keys(criteria.fields);
+                    for (var i = 0; i < fieldNames.length; i++) {
+                        var field = fieldNames[i];
+                        var re = criteria.fields[field];
+                        re.lastIndex = 0;
+                        if (!unit[field] || unit[field].match(re) === null) {
+                            match = false;
+                        }
                     }
                 }
-            }
 
-            return true;
-        });
+                if (criteria.notFields) {
+                    var notFieldNames = Object.keys(criteria.notFields);
+                    for (var j = 0; j < notFieldNames.length; j++) {
+                        var nfield = notFieldNames[j];
+                        var nre = criteria.notFields[nfield];
+                        nre.lastIndex = 0;
+                        if (unit[nfield] && unit[nfield].match(nre) !== null) {
+                            match = false;
+                        }
+                    }
+                }
+
+                if (settings.exclude) {
+                    return !match;
+                } else {
+                    return match;
+                }
+            });
+        }
     }
 
     if (units.length > 0) {
@@ -269,6 +300,10 @@ XliffSelect.parseCriteria = function (criteria) {
                 if (!value) {
                     throw new Error("Incorrect syntax for criteria: " + part);
                 }
+                var op = part.substring(equals-1, equals+1) === '!=' ? '!=' : '=';
+                if (op === '!=') {
+                    field = field.substring(0, field.length-1);
+                }
                 var regex = new RegExp(value);
                 var dot = field.indexOf(".");
                 if (dot > -1) {
@@ -288,8 +323,15 @@ XliffSelect.parseCriteria = function (criteria) {
                 if (!knownFields[field]) {
                     throw new Error("Unknown field name in criteria: " + part);
                 }
-                if (!criteriaObj.fields) criteriaObj.fields = {};
-                criteriaObj.fields[field] = regex;
+                if (op === "!=") {
+                    if (!criteriaObj.notFields) criteriaObj.notFields = {};
+                    criteriaObj.notFields[field] = regex;
+                } else if (op === "=") {
+                    if (!criteriaObj.fields) criteriaObj.fields = {};
+                    criteriaObj.fields[field] = regex;
+                } else {
+                    throw new Error("Unknown operator in criteria: " + part);
+                }
             } else {
                 throw new Error("Incorrect syntax for criteria: " + part);
             }

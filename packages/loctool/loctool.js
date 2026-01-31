@@ -2,7 +2,7 @@
 /*
  * loctool.js - tool to extract resources from source code
  *
- * Copyright © 2016-2017, 2019-2025, HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2026, HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,8 +149,11 @@ var commandOptionHelp = {
         "  to the output file. All files must be xliff files.\n\n" +
         "criteria\n" +
         "  The selection criteria. The syntax is as follows:\n" +
-        "    [field]=[regexp]\n" +
-        "      Select any translation units where the given field name matches the regular expression.\n" +
+        "    [field]=[regexp]     or\n" +
+        "    [field]!=[regexp]\n" +
+        "      Select any translation units where the given field name matches the regular expression,\n" +
+        "      or if the operator is \"!=\", select translation units where the given field does not\n" +
+        "      match the regular expression.\n" + 
         "      Fields can be one of: project, context, sourceLocale, targetLocale, key, pathName, state,\n" +
         "        comment, dnt, datatype, resType, flavor, source, or target\n" +
         "      Additionally, the field name may be one of the following:\n" +
@@ -186,7 +189,10 @@ var commandOptionHelp = {
         "--extendedAttr <name>=<value>\n" +
         "  Add an extended attribute to the output file. This can be used to add arbitrary metadata to\n" +
         "  each translation unit in the output file. You may specify this option multiple times to add\n" +
-        "  multiple extended attributes.",
+        "  multiple extended attributes.\n" +
+        "--exclude\n" +
+        "  Exclude all translation units that match the selection criteria.\n" +
+        "  This can be used to filter out translation units that should not be included in the output.\n",
 };
 
 function usage() {
@@ -486,6 +492,8 @@ for (var i = 0; i < argv.length; i++) {
                 }
             });
         }
+    } else if (val === "--exclude") {
+        settings.exclude = true;
     } else {
         options.push(val);
     }
@@ -562,7 +570,7 @@ case "select":
         usage();
     }
     settings.criteria = options[3];
-    settings.outfile = options[4]
+    settings.outfile = options[4];
     settings.infiles = options.slice(5);
     settings.infiles.forEach(function (file) {
         if (!fs.existsSync(file)) {
