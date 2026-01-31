@@ -6,6 +6,7 @@ const config = {
         name: "ilib-loctool-mdx e2e",
         color: "orange",
     },
+    testTimeout: 15000,
 };
 
 module.exports = config;

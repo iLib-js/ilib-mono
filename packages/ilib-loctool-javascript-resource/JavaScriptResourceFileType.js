@@ -94,7 +94,7 @@ JavaScriptResourceFileType.prototype.newFile = function(pathName, options) {
         project: this.project,
         pathName: pathName,
         type: this,
-        locale: options.locale
+        targetLocale: options.targetLocale
     });
 
     var locale = file.getLocale() || this.project.sourceLocale;
@@ -107,15 +107,17 @@ JavaScriptResourceFileType.prototype.newFile = function(pathName, options) {
  * Find or create the resource file object for the given project, context,
  * and locale.
  *
- * @param {String} locale the name of the locale in which the resource
- * file will reside
- * @param {String} pathName the optional path to the resource file if the
- * caller has already calculated what it should be
+ * @param {Object} [options] options identifying the resource file; either options.locale or options.resource is required
+ * @param {string} [options.locale] the name of the locale in which the resource file will reside
+ * @param {string} [options.pathName] optional path to the resource file if the caller has already calculated what it should be
+ * @param {Resource} [options.resource] when provided, locale/pathName can be derived from the resource
  * @return {JavaScriptResourceFile} the Android resource file that serves the
  * given project, context, and locale.
  */
-JavaScriptResourceFileType.prototype.getResourceFile = function(locale, pathName) {
-    var loc = locale || this.project.sourceLocale;
+JavaScriptResourceFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var loc = opts.locale || (opts.resource && opts.resource.getTargetLocale && opts.resource.getTargetLocale()) || this.project.sourceLocale;
+    var pathName = opts.pathName || (opts.resource && opts.resource.getPath && opts.resource.getPath());
     var key = [loc, pathName].join("_");
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
@@ -123,7 +125,7 @@ JavaScriptResourceFileType.prototype.getResourceFile = function(locale, pathName
     if (!resfile) {
         resfile = this.resourceFiles[key] = new JavaScriptResourceFile({
             project: this.project,
-            locale: loc,
+            targetLocale: loc,
             pathName: pathName,
             type: this
         });
@@ -163,6 +165,7 @@ JavaScriptResourceFileType.prototype.generatePseudo = function(locale, pb) {
             }
         }
     }.bind(this));
+    return this.pseudo;
 };
 
 JavaScriptResourceFileType.prototype.getDataType = function() {

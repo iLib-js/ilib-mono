@@ -142,7 +142,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("fr-FR");
+        var yrf = yrft.getResourceFile({ locale: "fr-FR" });
 
         expect(yrf.getLocale()).toBe("fr-FR");
     });
@@ -153,7 +153,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("fr-FR");
+        var yrf = yrft.getResourceFile({ locale: "fr-FR" });
 
         expect(yrf.getLocale()).toBe("fr-FR");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/fr.yml");
@@ -165,7 +165,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("zh-Hans-CN");
+        var yrf = yrft.getResourceFile({ locale: "zh-Hans-CN" });
 
         expect(yrf.getLocale()).toBe("zh-Hans-CN");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/zh.yml");
@@ -177,7 +177,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("zh-Hant-HK");
+        var yrf = yrft.getResourceFile({ locale: "zh-Hant-HK" });
 
         expect(yrf.getLocale()).toBe("zh-Hant-HK");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/zh-Hant.yml");
@@ -189,7 +189,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("es-US");
+        var yrf = yrft.getResourceFile({ locale: "es-US" });
 
         expect(yrf.getLocale()).toBe("es-US");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/es.yml");
@@ -201,7 +201,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("es-ES");
+        var yrf = yrft.getResourceFile({ locale: "es-ES" });
 
         expect(yrf.getLocale()).toBe("es-ES");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/es-ES.yml");
@@ -213,7 +213,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("en-US");
+        var yrf = yrft.getResourceFile({ locale: "en-US" });
 
         expect(yrf.getLocale()).toBe("en-US");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/en-US.yml");
@@ -225,7 +225,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("en-GB");
+        var yrf = yrft.getResourceFile({ locale: "en-GB" });
 
         expect(yrf.getLocale()).toBe("en-GB");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/en.yml");
@@ -237,7 +237,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("ja-JP");
+        var yrf = yrft.getResourceFile({ locale: "ja-JP" });
 
         expect(yrf.getLocale()).toBe("ja-JP");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/ja.yml"); // should default to just the language tag
@@ -249,10 +249,10 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p);
         expect(yrft).toBeTruthy();
 
-        var yrf1 = yrft.getResourceFile("fr-FR");
+        var yrf1 = yrft.getResourceFile({ locale: "fr-FR" });
         expect(yrf1.getLocale()).toBe("fr-FR");
 
-        var yrf2 = yrft.getResourceFile("fr-FR");
+        var yrf2 = yrft.getResourceFile({ locale: "fr-FR" });
         expect(yrf2.getLocale()).toBe("fr-FR");
 
         expect(yrf1).toStrictEqual(yrf2);
@@ -264,7 +264,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p2);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("fr-FR", "CHOCOLATE");
+        var yrf = yrft.getResourceFile({ locale: "fr-FR", flavor: "CHOCOLATE" });
 
         expect(yrf.getLocale()).toBe("fr-FR");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/fr-FR-CHOCOLATE.yml");
@@ -276,7 +276,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p2);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("en-US", "CHOCOLATE");
+        var yrf = yrft.getResourceFile({ locale: "en-US", flavor: "CHOCOLATE" });
 
         expect(yrf.getLocale()).toBe("en-US");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/en-US-CHOCOLATE.yml");
@@ -288,7 +288,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p2);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("en-HK", "CHOCOLATE");
+        var yrf = yrft.getResourceFile({ locale: "en-HK", flavor: "CHOCOLATE" });
 
         expect(yrf.getLocale()).toBe("en-HK");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/en-HK-CHOCOLATE.yml");
@@ -300,7 +300,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p2);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("zh-Hant-HK", "CHOCOLATE");
+        var yrf = yrft.getResourceFile({ locale: "zh-Hant-HK", flavor: "CHOCOLATE" });
 
         expect(yrf.getLocale()).toBe("zh-Hant-HK");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/zh-Hant-HK-CHOCOLATE.yml");
@@ -312,7 +312,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p2);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("zh-Hans-CN", "CHOCOLATE");
+        var yrf = yrft.getResourceFile({ locale: "zh-Hans-CN", flavor: "CHOCOLATE" });
 
         expect(yrf.getLocale()).toBe("zh-Hans-CN");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/zh-Hans-CN-CHOCOLATE.yml");
@@ -324,7 +324,7 @@ describe("yamlresourcefiletype", function() {
         var yrft = new YamlResourceFileType(p2);
         expect(yrft).toBeTruthy();
 
-        var yrf = yrft.getResourceFile("fr-FR");
+        var yrf = yrft.getResourceFile({ locale: "fr-FR" });
 
         expect(yrf.getLocale()).toBe("fr-FR");
         expect(yrf.getPath()).toBe("test/testfiles/config/locales/fr.yml");

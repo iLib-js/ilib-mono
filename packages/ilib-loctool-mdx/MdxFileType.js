@@ -202,7 +202,7 @@ MdxFileType.prototype.newFile = function(path, options) {
         project: this.project,
         pathName: path,
         type: this,
-        targetLocale: options && options.locale
+        targetLocale: options && options.targetLocale
     });
 };
 

@@ -91,7 +91,7 @@ MockJsonFileType.prototype.write = function(translations, locales) {
         res = resources[i];
 
         // have to store the base English string or else there will be nothing to override in the translations
-        file = this.getResourceFile(res.getSourceLocale());
+        file = this.getResourceFile({ locale: res.getSourceLocale() });
         file.addResource(res);
 
         // for each extracted string, write out the translations of it
@@ -123,7 +123,7 @@ MockJsonFileType.prototype.write = function(translations, locales) {
                     this.newres.add(newres);
                 }
 
-                file = this.getResourceFile(locale);
+                file = this.getResourceFile({ locale: locale });
                 file.addResource(r || res);
             }.bind(this));
         }.bind(this));
@@ -135,7 +135,7 @@ MockJsonFileType.prototype.write = function(translations, locales) {
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
-        file = this.getResourceFile(res.getTargetLocale());
+        file = this.getResourceFile({ locale: res.getTargetLocale() });
         file.addResource(res);
     }
 
@@ -174,15 +174,16 @@ MockJsonFileType.prototype.newFile = function(pathName, options) {
  * @return {MockJsonFile} the Android resource file that serves the
  * given project, context, and locale.
  */
-MockJsonFileType.prototype.getResourceFile = function(locale) {
-    var key = locale || this.project.sourceLocale;
+MockJsonFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var key = opts.locale || (opts.resource && opts.resource.getTargetLocale()) || this.project.sourceLocale;
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
 
     if (!resfile) {
         resfile = this.resourceFiles[key] = new MockJsonFile({
             project: this.project,
-            locale: key,
+            targetLocale: key,
             type: this
         });
     }

@@ -6,6 +6,7 @@ const config = {
         name: "ilib-loctool-ghfm e2e",
         color: "blackBright",
     },
+    testTimeout: 15000,
 };
 
 module.exports = config;

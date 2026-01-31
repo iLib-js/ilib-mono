@@ -103,7 +103,8 @@ var MrkdwnJsFile = function(options) {
         // needed to parse the front matter, which is in yaml format
         var type = this.type.getYamlFileType();
         this.yamlfile = type.newFile(this.pathName, {
-            sourceLocale: this.project.getSourceLocale()
+            sourceLocale: this.project.getSourceLocale(),
+            targetLocale: this.project.getSourceLocale()
         });
     }
 };

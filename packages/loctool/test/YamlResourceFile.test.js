@@ -90,7 +90,7 @@ describe("yamlresourcefile", function() {
          var yml = new YamlResourceFile({
             project: p,
             type: yft,
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(yml).toBeTruthy();
 
@@ -411,7 +411,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./asdf.yml",
-            locale: "de-DE",
+            targetLocale: "de-DE",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -455,7 +455,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./zh.yml",
-            locale: "zh-Hans-CN",
+            targetLocale: "zh-Hans-CN",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -497,7 +497,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./zh.yml",
-            locale: "zh-Hans-CN",
+            targetLocale: "zh-Hans-CN",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -541,7 +541,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./asdf.yml",
-            locale: "de-DE",
+            targetLocale: "de-DE",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -555,7 +555,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./test.yml",
-            locale: "en-US",
+            targetLocale: "en-US",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -578,7 +578,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./test2.yml",
-            locale: "en-US",
+            targetLocale: "en-US",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -603,7 +603,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./test2.yml",
-            locale: "en-US",
+            targetLocale: "en-US",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -627,7 +627,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./test2.yml",
-            locale: "en-US",
+            targetLocale: "en-US",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -649,7 +649,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./zh.yml",
-            locale: "zh-Hans-CN",
+            targetLocale: "zh-Hans-CN",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -692,7 +692,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./zh.yml",
-            locale: "zh-Hans-CN",
+            targetLocale: "zh-Hans-CN",
             type: yft
         });
         expect(yml).toBeTruthy();
@@ -728,7 +728,7 @@ describe("yamlresourcefile", function() {
         var yml = new YamlResourceFile({
             project: p,
             pathName: "./zh.yml",
-            locale: "zh-Hans-CN",
+            targetLocale: "zh-Hans-CN",
             type: yft
         });
         expect(yml).toBeTruthy();

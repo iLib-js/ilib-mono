@@ -29,7 +29,7 @@ var Locale = require("ilib/lib/Locale.js");
  * <li>project - the name of the project for this file
  * <li>pathName - the path to the file, relative to the root of the project
  * <li>type - type of this resource file
- * <li>locale - the locale of this file
+ * <li>targetLocale - the locale of this file
  * </ul>
  * @param {Object} props properties that control the construction of this file.
  */
@@ -40,6 +40,9 @@ var MockResourceFile = function(props) {
     if (props) {
         this.project = props.project;
         this.pathName = props.pathName;
+        if (props.targetLocale) {
+            this.locale = new Locale(props.targetLocale);
+        }
     }
 };
 

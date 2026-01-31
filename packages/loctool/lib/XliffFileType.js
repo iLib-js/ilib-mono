@@ -79,11 +79,14 @@ XliffFileType.prototype.write = function() {
     // write out the resources
 };
 
-XliffFileType.prototype.newFile = function(pathName) {
+XliffFileType.prototype.newFile = function(pathName, options) {
+    var opts = options || {};
     return new XliffFile({
         project: this.project,
         pathName: pathName,
-        sourceLocale: this.project.sourceLocale
+        type: this,
+        targetLocale: opts.targetLocale,
+        sourceLocale: opts.sourceLocale || this.project.sourceLocale
     });
 };
 
@@ -93,7 +96,7 @@ XliffFileType.prototype.newFile = function(pathName) {
  *
  * @return {XliffFile} the Xliff file that serves the current project
  */
-XliffFileType.prototype.getResourceFile = function() {
+XliffFileType.prototype.getResourceFile = function(options) {
     return this.file;
 };
 

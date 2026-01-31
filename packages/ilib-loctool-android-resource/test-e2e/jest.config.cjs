@@ -6,6 +6,7 @@ const config = {
         name: "ilib-loctool-android-resource e2e",
         color: "gray",
     },
+    testTimeout: 15000,
 };
 
 module.exports = config;

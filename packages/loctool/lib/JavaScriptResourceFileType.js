@@ -94,15 +94,14 @@ JavaScriptResourceFileType.prototype.newFile = function(pathName) {
 };
 
 /**
- * Find or create the resource file object for the given project, context,
- * and locale.
+ * Find or create the resource file object for the given options.
  *
- * @param {String} locale the name of the locale in which the resource
- * file will reside
- * @return {JavaScriptResourceFile} the Android resource file that serves the
- * given project, context, and locale.
+ * @param {Object} [options] options.locale or options.resource (from which locale is derived)
+ * @return {JavaScriptResourceFile} the resource file that serves the given project and locale.
  */
-JavaScriptResourceFileType.prototype.getResourceFile = function(locale) {
+JavaScriptResourceFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var locale = opts.locale || (opts.resource && opts.resource.getTargetLocale());
     var key = locale || this.project.sourceLocale;
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
@@ -110,7 +109,7 @@ JavaScriptResourceFileType.prototype.getResourceFile = function(locale) {
     if (!resfile) {
         resfile = this.resourceFiles[key] = new JavaScriptResourceFile({
             project: this.project,
-            locale: key
+            targetLocale: key
         });
 
         logger.trace("Defining new resource file");
@@ -148,6 +147,7 @@ JavaScriptResourceFileType.prototype.generatePseudo = function(locale, pb) {
             }
         }
     }.bind(this));
+    return this.pseudo;
 };
 
 /**
