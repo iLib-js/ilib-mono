@@ -7,14 +7,14 @@ Make sure you've got them installed in correct versions before continuing.
 
 Versions used for development:
 
--   Node.js: version specified in `.nvmrc` file
--   pnpm: version specified in `package.json` file
+- Node.js: version specified in `.nvmrc` file
+- pnpm: version specified in `package.json` file
 
 You can find installation instructions at:
 
--   [nodejs.org](https://nodejs.org/)
--   [github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
--   [pnpm.io/](https://pnpm.io/)
+- [nodejs.org](https://nodejs.org/)
+- [github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
+- [pnpm.io/](https://pnpm.io/)
 
 ### Repository clone
 
@@ -54,20 +54,7 @@ nvm use
 Optional: You can add automated `nvm use` to shell profile. See
 guide [here](https://github.com/nvm-sh/nvm?tab=readme-ov-file#zsh).
 
-#### 2. Enabling pnpm
-
-Since v16.13, Node.js is shipping [Corepack](https://nodejs.org/api/corepack.html) for managing package managers, so you
-do not need to install pnpm separately.
-However, this is an experimental feature, so you need to enable it by running:
-
-```bash
-corepack enable pnpm
-```
-
-Optional: `pnpm` might be hard to type, so you may use a shorter alias like `pn` instead. See
-guide [here](https://pnpm.io/installation#using-a-shorter-alias).
-
-#### 3. Installing project dependencies
+#### 2. Installing project dependencies
 
 The final step is to install the project dependencies. Run:
 
@@ -78,7 +65,7 @@ pnpm install
 You do NOT need to run `pnpm install` from package directories, as the monorepo is set up to handle dependencies for all
 packages automatically.
 
-#### 4. Install Git Hooks
+#### 3. Installing Git Hooks
 
 The project comes with a set of Git Hooks that are automatically installed as part of the post-installation process.
 You do not need to run a separate command for this. The hooks are set up when you run:
