@@ -44,7 +44,7 @@ Every pull request should include the following:
 
 -   Documentation in the code (following the JSDoc/TSDoc standard).
 -   Tests.
--   A changelog entry.
+-   A changelog entry (add a [changeset](#creating-a-changeset) for any change that should appear in the release notes).
 
 ## Environment
 
@@ -294,11 +294,55 @@ TBD
 
 ## Versioning
 
-TBD
+This monorepo uses [Changesets](https://github.com/changesets/changesets) to manage versions and changelogs. If your PR changes a published package in a way that should be noted in the release, you need to add a changeset.
+
+### Creating a changeset
+
+From the **repo root**, run:
+
+```bash
+pnpm changeset
+```
+
+The Changesets CLI will:
+
+1. **Ask which packages to include** — use the space bar to select each package your change affects, then press Enter.
+2. **Ask the bump type** for each selected package:
+   - **patch** — bug fixes, small changes (e.g. `1.0.0` → `1.0.1`)
+   - **minor** — new features, backward compatible (e.g. `1.0.0` → `1.1.0`)
+   - **major** — breaking changes (e.g. `1.0.0` → `2.0.0`)
+3. **Ask for a summary** — a short description that will appear in the package changelog.
+
+A new markdown file will be created under `.changeset/` (e.g. `.changeset/my-change-name.md`). Commit this file with your PR so the release workflow can use it.
+
+**Example** of what a changeset file looks like:
+
+```md
+---
+"ilib-po": patch
+---
+
+Fix character escaping in PO message strings
+```
+
+The frontmatter lists each affected package and its bump type; the rest is the changelog text.
+
+**After your PR is merged:** Version bumps and changelog updates are applied by the release workflow when changesets are published. You do not need to run `pnpm changeset version` or `pnpm changeset publish` yourself for normal contributions.
 
 ## Publishing
 
-TBD
+Publishing to npm is **automated** and handled by the [Release workflow](.github/workflows/release.yml) when changes are merged to `main`. Contributors do not publish packages manually.
+
+### How it works
+
+1. **You add changesets** in your PR (see [Creating a changeset](#creating-a-changeset)) and merge to `main`.
+2. **The release workflow runs** on every push to `main`. If there are unversioned changesets, it opens or updates a **"Version Packages"** pull request that bumps package versions and updates changelogs.
+3. **A maintainer merges** the Version Packages PR.
+4. **The workflow runs again** and publishes the new versions to npm using `pnpm ci:release` (build then `changeset publish`). Publishing uses the GitHub **Release** environment and npm trusted publishing (OIDC); no long-lived npm tokens are stored in the repo.
+
+### What you need to do
+
+As a contributor: **add a changeset** for any change that should be released. The rest (versioning, changelog updates, and publishing) is done by the workflow. Maintainers are responsible for reviewing and merging the Version Packages PR when a release is ready.
 
 ## Reporting Issues
 
