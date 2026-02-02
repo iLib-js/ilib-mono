@@ -22,8 +22,8 @@ var fs = require('fs');
 var log4js = require("log4js");
 var ISet = require("ilib/lib/ISet.js");
 
+var utils = require('./utils.js');
 var XliffFactory = require("./XliffFactory.js");
-const utils = require('./utils.js');
 
 var logger = log4js.getLogger("loctool.lib.XliffSelect");
 

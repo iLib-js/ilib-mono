@@ -1064,4 +1064,3 @@ describe("xliff exclude translation units in webOSXliff", function() {
 
 });
 
-
