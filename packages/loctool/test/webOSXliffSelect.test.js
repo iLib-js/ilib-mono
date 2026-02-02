@@ -837,6 +837,22 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
+        '  <file id="app2_f2" original="app2">\n' +
+        '    <group id="app2_g3" name="javascript">\n' +
+        '      <unit id="app2_g3_1">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2a</source>\n' +
+        '          <target>app2: String 2a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app2_g3_2">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2b</source>\n' +
+        '          <target>app2: String 2b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
         '</xliff>';
         expect(actual).toBe(expected);
     });

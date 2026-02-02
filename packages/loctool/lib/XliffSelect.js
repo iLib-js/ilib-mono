@@ -65,12 +65,6 @@ function tuHash(unit) {
 var XliffSelect = function XliffSelect(settings) {
     if (!settings) return;
 
-    // In exclude mode, only one input file is allowed
-    if (settings.exclude && Array.isArray(settings.infiles) && settings.infiles.length !== 1) {
-        logger.warn("exclude mode only supports a single input file. Only the first file will be used.");
-        settings.infiles = [settings.infiles[0]]; // Use only the first file
-    }
-
     // Remember which files we have already read, so we don't have
     // to read them again.
     var fileNameCache = new ISet();
