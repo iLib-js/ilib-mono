@@ -23,6 +23,7 @@ var log4js = require("log4js");
 var ISet = require("ilib/lib/ISet.js");
 
 var XliffFactory = require("./XliffFactory.js");
+const utils = require('./utils.js');
 
 var logger = log4js.getLogger("loctool.lib.XliffSelect");
 
@@ -43,8 +44,17 @@ function wordCount(string) {
  * @returns {string} the hash for the translation unit
  */
 function tuHash(unit) {
-    return [unit.project, unit.targetLocale, unit.key].join("_");
+    return [
+        unit.project,
+        unit.targetLocale,
+        unit.key,
+        unit.datatype,
+        unit.flavor,
+        unit.context,
+        utils.hashKey(unit.source)
+    ].join("_");
 }
+
 
 /**
  * Select translation units from the given xliff files and write them

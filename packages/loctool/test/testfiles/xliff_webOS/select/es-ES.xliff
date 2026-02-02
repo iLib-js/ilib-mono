@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="es-ES">
+ <file id="app2_f1" original="app2">
+  <group id="app2_g2" name="x-qml">
+   <unit id="app2_g2_1">
+    <segment>
+     <source>High</source>
+     <target>Alto</target>
+    </segment>
+   </unit>
+   <unit id="app2_g2_2" name="SoundSettings">
+    <segment>
+     <source>High</source>
+     <target>Volumen: Alto</target>
+    </segment>
+   </unit>
+   <unit id="app2_g2_2" name="SoundSettings">
+    <segment>
+     <source>Low</source>
+     <target>Volumen: Bajo</target>
+    </segment>
+   </unit>
+  </group>
+  </file>
+</xliff>

@@ -366,6 +366,96 @@ describe("xliff select translation units in webOSXliff", function() {
         expect(actual).toBe(expected);
     });
 
+    test("Select with multiple criteria (only source)", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            xliffStyle: "webOS",
+            infiles: [
+                "test/testfiles/xliff_webOS/select/en-US.xliff"
+            ],
+            criteria: "source=^OK$,key=^OK$"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '  <file id="app1_f1" original="app1">\n' +
+        '    <group id="app1_g1" name="cpp">\n' +
+        '      <unit id="app1_g1_1">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>OK</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with multiple criteria (datatype)", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            xliffStyle: "webOS",
+            infiles: [
+                "test/testfiles/xliff_webOS/select/en-US.xliff"
+            ],
+            criteria: "key=^OK2$,datatype=cpp"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '  <file id="app1_f1" original="app1">\n' +
+        '    <group id="app1_g1" name="cpp">\n' +
+        '      <unit id="app1_g1_1" name="OK2">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>OK2</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Select with multiple criteria (duplicate keys)", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            xliffStyle: "webOS",
+            infiles: [
+                "test/testfiles/xliff_webOS/select/es-ES.xliff"
+            ],
+            criteria: "source=^High$,key=^SoundSettings$"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="es-ES" version="2.0">\n' +
+        '  <file id="app2_f1" original="app2">\n' +
+        '    <group id="app2_g1" name="x-qml">\n' +
+        '      <unit id="app2_g1_1" name="SoundSettings">\n' +
+        '        <segment>\n' +
+        '          <source>High</source>\n' +
+        '          <target>Volumen: Alto</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
     test("Select while avoiding duplicated file names", function() {
         expect.assertions(2);
 
@@ -761,6 +851,121 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(actual).toBe(expected);
     });
 
+    test("Exclude with multiple criteria (only source)", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            xliffStyle: "webOS",
+            infiles: [
+                "test/testfiles/xliff_webOS/select/en-US.xliff"
+            ],
+            exclude: true,
+            criteria: "source=^OK$,key=^OK$"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '  <file id="app1_f1" original="app1">\n' +
+        '    <group id="app1_g1" name="cpp">\n' +
+        '      <unit id="app1_g1_1" name="OK2">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>OK2</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="app1_g2" name="x-json">\n' +
+        '      <unit id="app1_g2_1" name="OK2">\n' +
+        '        <segment>\n' +
+        '          <source>Done</source>\n' +
+        '          <target>Done</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with multiple criteria (datatype)", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            xliffStyle: "webOS",
+            infiles: [
+                "test/testfiles/xliff_webOS/select/en-US.xliff"
+            ],
+            exclude: true,
+            criteria: "key=^OK2$,datatype=cpp"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '  <file id="app1_f1" original="app1">\n' +
+        '    <group id="app1_g1" name="cpp">\n' +
+        '      <unit id="app1_g1_1">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>OK</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '    <group id="app1_g2" name="x-json">\n' +
+        '      <unit id="app1_g2_1" name="OK2">\n' +
+        '        <segment>\n' +
+        '          <source>Done</source>\n' +
+        '          <target>Done</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
+    test("Exclude with multiple criteria (duplicate keys)", function() {
+        expect.assertions(2);
+        var settings = {
+            xliffVersion: 2,
+            xliffStyle: "webOS",
+            infiles: [
+                "test/testfiles/xliff_webOS/select/es-ES.xliff"
+            ],
+            exclude: true,
+            criteria: "source=^High$,key=^SoundSettings$"
+        };
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+        var actual = target.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="es-ES" version="2.0">\n' +
+        '  <file id="app2_f1" original="app2">\n' +
+        '    <group id="app2_g1" name="x-qml">\n' +
+        '      <unit id="app2_g1_1">\n' +
+        '        <segment>\n' +
+        '          <source>High</source>\n' +
+        '          <target>Alto</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app2_g1_2" name="SoundSettings">\n' +
+        '        <segment>\n' +
+        '          <source>Low</source>\n' +
+        '          <target>Volumen: Bajo</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>';
+        expect(actual).toBe(expected);
+    });
+
     test("Exclude while avoiding duplicated file names", function() {
         expect.assertions(2);
         var settings = {
@@ -858,4 +1063,5 @@ describe("xliff exclude translation units in webOSXliff", function() {
     });
 
 });
+
 
