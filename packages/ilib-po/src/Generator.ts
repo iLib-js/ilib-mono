@@ -23,7 +23,7 @@ import Locale from "ilib-locale";
 import {
   Comments,
   CommentType,
-  escapeQuotes,
+  escapeQuotesAndBackslashes,
   makeKey,
   Plural,
   PluralCategory,
@@ -193,7 +193,7 @@ class Generator {
         output += `#p ${r.getProject()}\n`;
       }
       if (type === "string" && r.getSource() !== key) {
-        output += `#k ${escapeQuotes(r.getKey())}\n`;
+        output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
       } else if (type === "plural") {
         const generatedKey = makeKey(
           "plural",
@@ -201,14 +201,14 @@ class Generator {
           this.contextInKey && r.getContext(),
         );
         if (key !== generatedKey) {
-          output += `#k ${escapeQuotes(r.getKey())}\n`;
+          output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
         }
       }
       if (r.getContext()) {
-        output += `msgctxt "${escapeQuotes(r.getContext())}"\n`;
+        output += `msgctxt "${escapeQuotesAndBackslashes(r.getContext())}"\n`;
       }
       if (type === "string") {
-        output += `msgid "${escapeQuotes(r.getSource())}"\n`;
+        output += `msgid "${escapeQuotesAndBackslashes(r.getSource())}"\n`;
         let translatedText = r.getTarget() ?? "";
 
         if (translatedText === r.getSource()) {
@@ -216,7 +216,7 @@ class Generator {
           translatedText = "";
         }
 
-        output += `msgstr "${escapeQuotes(translatedText)}"\n`;
+        output += `msgstr "${escapeQuotesAndBackslashes(translatedText)}"\n`;
       } else if (type === "array") {
         const sourceArray = r.getSource();
         let translatedArray = r.getTarget() || [];
@@ -227,18 +227,18 @@ class Generator {
           }
           const translation =
             translatedArray[index] !== source ? translatedArray[index] : "";
-          output += `#k ${escapeQuotes(r.getKey())}\n`;
+          output += `#k ${escapeQuotesAndBackslashes(r.getKey())}\n`;
           output += `## ${index}\n`;
-          output += `msgid "${escapeQuotes(source)}"\n`;
-          output += `msgstr "${escapeQuotes(translation)}"\n`;
+          output += `msgid "${escapeQuotesAndBackslashes(source)}"\n`;
+          output += `msgstr "${escapeQuotesAndBackslashes(translation)}"\n`;
         });
       } else {
         // plural string
         const sourcePlurals = r.getSource();
-        output += `msgid "${escapeQuotes(sourcePlurals.one)}"\n`;
+        output += `msgid "${escapeQuotesAndBackslashes(sourcePlurals.one)}"\n`;
         let translatedPlurals = r.getTarget() || {};
 
-        output += `msgid_plural "${escapeQuotes(sourcePlurals.other)}"\n`;
+        output += `msgid_plural "${escapeQuotesAndBackslashes(sourcePlurals.other)}"\n`;
         if (translatedPlurals) {
           const translated = this.backfillTranslations(
             translatedPlurals,
@@ -251,7 +251,7 @@ class Generator {
               sourcePlurals,
               category,
             );
-            output += `msgstr[${index}] "${escapeQuotes(translation)}"\n`;
+            output += `msgstr[${index}] "${escapeQuotesAndBackslashes(translation)}"\n`;
           });
         }
       }

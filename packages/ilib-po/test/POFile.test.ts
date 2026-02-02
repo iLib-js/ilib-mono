@@ -109,4 +109,30 @@ describe("pofile", () => {
     expect(r.getKey()).toBe("string 1");
     expect(r.getType()).toBe("string");
   });
+
+  test("parses escaped backslashes and quotes", () => {
+    const file = new POFile({
+      pathName: "./testfiles/po/messages.po",
+      targetLocale: "es-ES",
+    });
+
+    const set = file.parse(
+      'msgid "Name cannot contain \\"/\\", \\"\\\\\\", or characters outside the basic multilingual plane.\\""\n' +
+        'msgstr "El nombre no puede contener \\"/\\", \\"\\\\\\", o caracteres fuera del plano multilingüe básico.\\""\n',
+    );
+
+    const source =
+      'Name cannot contain "/", "\\", or characters outside the basic multilingual plane."';
+    const target =
+      'El nombre no puede contener "/", "\\", o caracteres fuera del plano multilingüe básico."';
+
+    // When a target locale exists and there is a translation, ResourceString.hashKey()
+    // uses the target locale (not the source locale).
+    const resource = set.get(
+      ResourceString.hashKey("messages", "es-ES", source, "po"),
+    );
+
+    expect(resource.getSource()).toBe(source);
+    expect(resource.getTarget()).toBe(target);
+  });
 });

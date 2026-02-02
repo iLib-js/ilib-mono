@@ -19,7 +19,7 @@
 
 import { isSpace, isAlpha, isAlnum } from "ilib-ctype";
 
-import { unescapeQuotes } from "./utils";
+import { unescapeQuotesAndBackslashes } from "./utils";
 
 /**
  * Defines the types of tokens that the tokenizer can return.
@@ -127,7 +127,7 @@ class Tokenizer {
 
       return {
         type: TokenType.STRING,
-        value: unescapeQuotes(value),
+        value: unescapeQuotesAndBackslashes(value),
       };
     } else if (isSpace(this.data[this.index])) {
       if (

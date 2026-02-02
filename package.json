@@ -2,7 +2,7 @@
   "private": true,
   "version": "0.0.0",
   "name": "ilib-mono",
-  "packageManager": "pnpm@10.26.0",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "build": "turbo build",
     "postinstall": "cp git-hooks/* .git/hooks/",
