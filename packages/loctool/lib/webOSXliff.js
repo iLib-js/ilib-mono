@@ -2,7 +2,7 @@
 /*
  * webOSXliff.js - model an xliff file for the webOS
  *
- * Copyright © 2025, JEDLSoft
+ * Copyright © 2025-2026, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -210,8 +210,6 @@ webOSXliff.prototype._mergeMetadata = function(newMetadata, baseMetadata) {
 
     var baseGroups = normalizeGroup(baseMetadata["mda:metaGroup"]);
     var newGroups = normalizeGroup(newMetadata["mda:metaGroup"]);
-    console.log("Base Groups:", JSON.stringify(baseGroups, null, 2));
-    console.log("New Groups:", JSON.stringify(newGroups, null, 2));
     var groupMap = new Map();
 
     // Index base groups
@@ -460,6 +458,7 @@ webOSXliff.prototype.toStringData = function(units) {
         xliff: {
             _attributes: {
                 "xmlns": "urn:oasis:names:tc:xliff:document:2.0",
+                "xmlns:mda": "urn:oasis:names:tc:xliff:metadata:2.0",
             }
         }
     };
@@ -565,19 +564,16 @@ webOSXliff.prototype.toStringData = function(units) {
         json.xliff.file.push(files[fileHashKey]);
     });
 
-    if (hasMetadata) {
-        json.xliff._attributes["xmlns:mda"] = "urn:oasis:names:tc:xliff:metadata:2.0";
-    }
     json.xliff._attributes.srcLang = sourceLocale;
     if (targetLocale) {
         json.xliff._attributes.trgLang = targetLocale;
     }
     json.xliff._attributes.version = versionString(this.version);
 
-    var xml = '<?xml version="1.0" encoding="utf-8"?>\n' + xmljs.js2xml(json, {
+    var xml = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' + xmljs.js2xml(json, {
         compact: true,
         spaces: 2
-    });
+    }).trimEnd() + '\n';
 
     return xml;
 }
