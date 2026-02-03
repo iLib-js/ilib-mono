@@ -47,6 +47,21 @@
      <target>“Hi，我需要帮助！”</target>
     </segment>
    </unit>
+   <unit id="sample-rs-edge-whitespace_g1_370">
+      <mda:metadata>
+        <mda:metaGroup category="device-type">
+          <mda:meta type="Monitor">快速</mda:meta>
+          <mda:meta type="Projector">快速</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <notes>
+        <note>copied strings by 9253</note>
+      </notes>
+      <segment>
+        <source>Fast</source>
+        <target>快</target>
+      </segment>
+    </unit>
   </group>
  </file>
 </xliff>

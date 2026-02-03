@@ -1,5 +1,363 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`jsonfile JsonFileGetLocalizedTextGeneratedAll 1`] = `
+"{
+    "string 1": "C'est la chaîne numéro 1",
+    "string 2": "one#Ceci est la chaîne 'one'|few#Ceci est la chaîne 'few'|#Ceci est la chaîne 'other'",
+    "string 3": [
+        "C'est la chaîne numéro 1",
+        "C'est la chaîne numéro 2",
+        "C'est la chaîne numéro 3"
+    ]
+}
+"
+`;
+
+exports[`jsonfile JsonFileGetLocalizedTextGeneratedArray 1`] = `
+"{
+    "string 1": [
+        "C'est la chaîne numéro 1",
+        "C'est la chaîne numéro 2",
+        "C'est la chaîne numéro 3"
+    ]
+}
+"
+`;
+
+exports[`jsonfile JsonFileGetLocalizedTextGeneratedEscapeDoubleQuotes 1`] = `
+"{
+    "string 1": "C'est la \\"chaîne\\" numéro 1",
+    "string 2": "one#Ceci est la chaîne \\"one\\"|few#Ceci est la chaîne \\"few\\"|#Ceci est la chaîne \\"other\\"",
+    "string 3": [
+        "C'est la chaîne numéro \\"1\\"",
+        "C'est la chaîne numéro \\"2\\"",
+        "C'est la chaîne numéro \\"3\\""
+    ]
+}
+"
+`;
+
+exports[`jsonfile JsonFileGetLocalizedTextGeneratedPlural 1`] = `
+"{
+    "string 1": "one#Ceci est la chaîne 'one'|few#Ceci est la chaîne 'few'|#Ceci est la chaîne 'other'"
+}
+"
+`;
+
+exports[`jsonfile JsonFileGetLocalizedTextGeneratedString 1`] = `
+"{
+    "string 1": "C'est la chaîne numéro 1"
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalize 1`] = `
+"{
+    "plurals": {
+        "foo": "asdf",
+        "bar": {
+            "one": "singulaire",
+            "many": "plupart",
+            "other": "autres"
+        }
+    },
+    "arrays": {
+        "asdf": [
+            "chaîne 1",
+            "chaîne 2",
+            "chaîne 3"
+        ],
+        "asdfasdf": [
+            "1",
+            "2",
+            "3"
+        ]
+    },
+    "strings": {
+        "a": "la b",
+        "c": "la d"
+    }
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalize 2`] = `
+"{
+    "plurals": {
+        "foo": "asdf",
+        "bar": {
+            "one": "einslige",
+            "many": "mehrere",
+            "other": "andere"
+        }
+    },
+    "arrays": {
+        "asdf": [
+            "Zeichenfolge 1",
+            "Zeichenfolge 2",
+            "Zeichenfolge 3"
+        ],
+        "asdfasdf": [
+            "1",
+            "2",
+            "3"
+        ]
+    },
+    "strings": {
+        "a": "Die b",
+        "c": "Der d"
+    }
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeArrayOfBooleans 1`] = `
+"{
+    "booleans": [
+        false,
+        true
+    ]
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeArrayOfNumbers 1`] = `
+"{
+    "numbers": [
+        29,
+        12,
+        -17.3,
+        0
+    ]
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeArrayOfObjects 1`] = `
+"{
+    "objects": [
+        {
+            "name": "Premier objet",
+            "randomProp": "Non-translatable"
+        },
+        {
+            "name": "Deuxième objet",
+            "description": "Propriété String"
+        }
+    ]
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeArrayOfObjectsWithBooleansOnly 1`] = `
+"{
+    "objects": [
+        {
+            "nullable": false
+        },
+        {
+            "nullable": true
+        }
+    ]
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeArrayOfStrings 1`] = `
+"{
+    "strings": [
+        "chaîne 1",
+        "chaîne 2",
+        "chaîne 3"
+    ]
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeDefaultMethodAndTemplate 1`] = `
+"{
+    "string 1": "C'est la chaîne numéro 1",
+    "string 2": "this is string two"
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeMethodSparse 1`] = `
+"{
+    "plurals": {
+        "bar": {
+            "one": "singulaire",
+            "many": "plupart",
+            "other": "autres"
+        }
+    },
+    "strings": {
+        "a": "la b"
+    }
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeMethodSparse 2`] = `
+"{
+    "plurals": {
+        "bar": {
+            "one": "einslige",
+            "many": "mehrere",
+            "other": "andere"
+        }
+    },
+    "strings": {
+        "a": "Die b"
+    }
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeTextMethodSparse 1`] = `
+"{
+    "string 1": "C'est la chaîne numéro 1"
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeTextSimple 1`] = `
+"{
+    "string 1": "C'est la chaîne numéro 1",
+    "string 2": "this is string two"
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeTextUsePseudoForMissing 1`] = `
+"{
+    "plurals": {
+        "bar": {
+            "one": "[šíñğüľàŕ3210]",
+            "many": "[màñÿ10]",
+            "other": "[þľüŕàľ210]"
+        }
+    },
+    "strings": {
+        "a": "[b0]",
+        "c": "[ð0]"
+    },
+    "arrays": {
+        "asdf": [
+            "[šţŕíñğ 13210]",
+            "[šţŕíñğ 23210]",
+            "[šţŕíñğ 33210]"
+        ]
+    },
+    "others": {
+        "first": "abc",
+        "second": "bcd"
+    }
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeTextWithSchema 1`] = `
+"{
+    "plurals": {
+        "bar": {
+            "one": "singulaire",
+            "many": "plupart",
+            "other": "autres"
+        }
+    },
+    "strings": {
+        "a": "la b",
+        "c": "la d"
+    },
+    "arrays": {
+        "asdf": [
+            "chaîne 1",
+            "chaîne 2",
+            "chaîne 3"
+        ]
+    },
+    "others": {
+        "first": "abc",
+        "second": "bcd"
+    }
+}
+"
+`;
+
+exports[`jsonfile JsonFileLocalizeTextWithSchemaSparseComplex 1`] = `
+"{
+    "plurals": {
+        "bar": {
+            "one": "singulaire",
+            "many": "plupart",
+            "other": "autres"
+        }
+    },
+    "strings": {
+        "a": "la b"
+    }
+}
+"
+`;
+
+exports[`jsonfile Localize an array of objects that includes an empty object 1`] = `
+"{
+    "objects": [
+        {},
+        {
+            "name": "Premier objet",
+            "randomProp": "Non-translatable"
+        },
+        {
+            "name": "Deuxième objet",
+            "description": "Propriété String"
+        }
+    ]
+}
+"
+`;
+
+exports[`jsonfile Localizing an empty object should return an empty object 1`] = `
+"{}
+"
+`;
+
+exports[`resourceFileTypes delegation JsonFile localize delegates to resourceFileType and writes file with header/footer 1`] = `
+"// HEADER: AUTO-GENERATED
+{
+    "farewell": "Au revoir",
+    "greeting": "Bonjour"
+}
+// FOOTER: END OF FILE
+"
+`;
+
+exports[`resourceFileTypes delegation JsonFile localize with resourceFileType handles multiple locales 1`] = `
+"// HEADER: AUTO-GENERATED
+{
+    "greeting": "Bonjour"
+}
+// FOOTER: END OF FILE
+"
+`;
+
+exports[`resourceFileTypes delegation JsonFile localize with resourceFileType handles multiple locales 2`] = `
+"// HEADER: AUTO-GENERATED
+{
+    "greeting": "Hallo"
+}
+// FOOTER: END OF FILE
+"
+`;
+
+exports[`resourceFileTypes delegation JsonFile localize writes directly when no resourceFileType configured 1`] = `
+"{
+    "greeting": "Bonjour"
+}
+"
+`;
+
 exports[`schema 'localizable' applies translations to JSON file using 'localizable' schema properties 1`] = `
 "{
     "project.whateverModal.saveButton": {

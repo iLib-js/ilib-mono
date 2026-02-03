@@ -63,7 +63,8 @@ class XliffSerializer extends Serializer {
         const xliffObj = XliffFactory(getXliffInfo(ir.sourceFile.getContent()));
         const xliff = new ResourceXliff({
             path: ir.sourceFile.getPath(),
-            xliff: xliffObj
+            xliff: xliffObj,
+            sourceLocale: xliffObj.sourceLocale
         });
         resources.forEach(resource => {
             xliff.addResource(resource);

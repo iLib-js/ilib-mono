@@ -1,7 +1,7 @@
 /*
  * Locale.js - Locale specifier definition
  *
- * Copyright © 2012-2015,2018,2021-2022 JEDLSoft
+ * Copyright © 2012-2015, 2018, 2021-2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,7 +114,18 @@ class Locale {
             if (typeof(spec) === 'string') {
                 const parts = spec.split(/[-_]/g);
                 for (let i = 0; i < parts.length; i++ ) {
-                    if (Locale._isLanguageCode(parts[i])) {
+                    // Check for BCP-47 extension singleton (single letter a-z or digit)
+                    // or private use singleton "x". Everything from the singleton
+                    // onwards becomes part of the variant.
+                    if (Locale._isExtensionSingleton(parts[i]) && i < parts.length - 1) {
+                        const extensionPart = parts.slice(i).join('-');
+                        /**
+                         * @private
+                         * @type {string|undefined}
+                         */
+                        this.variant = this.variant ? this.variant + '-' + extensionPart : extensionPart;
+                        break;
+                    } else if (Locale._isLanguageCode(parts[i])) {
                         /**
                          * @private
                          * @type {string|undefined}
@@ -137,7 +148,8 @@ class Locale {
                          * @private
                          * @type {string|undefined}
                          */
-                        this.variant = parts[i];
+                        // Append to existing variant instead of overwriting
+                        this.variant = this.variant ? this.variant + '-' + parts[i] : parts[i];
                     }
                 }
                 this.language = this.language || undefined;
@@ -412,6 +424,23 @@ Locale._isScriptCode = function(str) {
     }
 
     return true;
+};
+
+/**
+ * Tell whether or not the given string is a BCP-47 extension singleton.
+ * Extension singletons are single lowercase letters (a-z) that introduce
+ * extension subtags. This includes 'x' for private use and other letters
+ * like 'u' for Unicode locale extensions and 't' for transformed content.
+ *
+ * @private
+ * @param {string} str the string to check
+ * @return {boolean} true if the string is an extension singleton.
+ */
+Locale._isExtensionSingleton = function(str) {
+    if (typeof(str) === 'undefined' || str.length !== 1) {
+        return false;
+    }
+    return !Locale._notLower(str.charAt(0));
 };
 
 /**

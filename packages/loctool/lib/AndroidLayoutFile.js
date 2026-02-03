@@ -1,7 +1,7 @@
 /*
  * AndroidLayoutFile.js - tool to extract resources from source code
  *
- * Copyright © 2016-2017, 2020 HealthTap, Inc.
+ * Copyright © 2016-2017, 2020, 2026 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ var log4js = require("log4js");
 var path = require("path");
 var xmljs = require("xml-js");
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale");
+var Locale = require("ilib-locale");
 
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");

@@ -1,7 +1,7 @@
 /*
  * Project.js - represents an project
  *
- * Copyright © 2016-2017, 2019-2025 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2026 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ var path = require("path");
 var Queue = require("js-stl").Queue;
 var ilib = require("ilib");
 var JSUtils = require("ilib/lib/JSUtils.js");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 var LocalRepository = require("./LocalRepository.js");
 var TranslationSet = require("./TranslationSet.js");
@@ -451,7 +451,8 @@ Project.prototype.isResourcePath = function(type, pathName) {
 Project.prototype.isSourceLocale = function(locale) {
     var l = new Locale(locale);
     var s = new Locale(this.sourceLocale);
-    return (l.getLanguage() === s.getLanguage() && l.getRegion() === s.getRegion() && l.getScript() === s.getScript());
+    const pseudoVariant = PseudoFactory.isPseudoLocale(locale, this) || (l.getVariant() && l.getVariant().includes("pseudo"));
+    return (l.getLanguage() === s.getLanguage() && l.getRegion() === s.getRegion() && l.getScript() === s.getScript() && !pseudoVariant);
 };
 
 /**
@@ -774,8 +775,11 @@ Project.prototype.close = function(cb) {
                 sourceLocale: this.sourceLocale
             }).filter(function(res) {
                 // no source means nothing to translate, so don't need those resources
-                return res.source || res.sourceArray || res.sourceStrings;
-            }));
+                // also exclude resources with a target locale - those are translations, not extracted source strings
+                var targetLocale = res.getTargetLocale();
+                return (res.source || res.sourceArray || res.sourceStrings) &&
+                    (!targetLocale || targetLocale === this.sourceLocale);
+            }.bind(this)));
 
             if (this.fileTypes[i].modern && this.fileTypes[i].modern.size() > 0) {
                 var modernPath = path.join(dir, base + "-modern.xliff");

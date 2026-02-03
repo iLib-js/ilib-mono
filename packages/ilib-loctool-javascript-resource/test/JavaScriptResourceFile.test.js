@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFile.test.js - test the JavaScript file handler object.
  *
- * Copyright © 2019-2020, 2023, 2025 Box, Inc.
+ * Copyright © 2019-2020, 2023, 2025-2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,6 +141,22 @@ var p5 = new CustomProject({
     javascript: {
         header: "/* This is a generated file. DO NOT EDIT THIS. */\n\nimport type ReactString from './types.d.ts';\n\nconst strings = ",
         footer: ";\n\nexport default strings;\n"
+    },
+    identify: true
+});
+
+// Project with a line comment header (starts with //)
+var p6 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "de-AT"],
+    javascript: {
+        header: "// This is a generated file. DO NOT MODIFY BY HAND\nexport default ",
+        footer: ";\n"
     },
     identify: true
 });
@@ -1258,6 +1274,39 @@ describe("javascriptresourcefile", function() {
             '    "yet more source text": "<span loclang=\\"javascript\\" locid=\\"yet more source text\\">noch mehr Quellentext</span>"\n' +
             '};\n\n' +
             'export default strings_de;\n';
+
+        var actual = jsrf.getContent();
+        diff(actual, expected);
+
+        expect(actual).toBe(expected);
+    });
+
+    test("JavaScriptResourceFile test header with line comment starting with double slash", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p6,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        jsrf.addResource(p6.getAPI().newResource({
+            type: "string",
+            project: "webapp",
+            sourceLocale: "en-US",
+            source: "source text",
+            targetLocale: "de-DE",
+            key: "source text",
+            target: "Quellentext"
+        }));
+
+        // The header starts with "// This is..." - the first slash should be preserved
+        var expected =
+            '// This is a generated file. DO NOT MODIFY BY HAND\n' +
+            'export default {\n' +
+            '    "source text": "<span loclang=\\"javascript\\" locid=\\"source text\\">Quellentext</span>"\n' +
+            '};\n';
 
         var actual = jsrf.getContent();
         diff(actual, expected);

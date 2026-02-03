@@ -19,7 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 /**
  * @class Represents an Android resource file.
@@ -200,13 +200,9 @@ JavaScriptResourceFile.prototype.getContent = function() {
     if (settings && settings.JavaScriptResourceFile && settings.JavaScriptResourceFile.prefix) {
         output = settings.JavaScriptResourceFile.prefix;
     }
-    output += this.API.utils.formatPath(this.header, {
-        locale: defaultLocale
-    });
+    output += this.API.utils.formatLocaleParams(this.header, defaultLocale);
     output += JSON.stringify(json, undefined, 4);
-    output += this.API.utils.formatPath(this.footer, {
-        locale: defaultLocale
-    });
+    output += this.API.utils.formatLocaleParams(this.footer, defaultLocale);
 
     // take care of double-escaped unicode chars
     output = output.replace(/\\\\u/g, "\\u");

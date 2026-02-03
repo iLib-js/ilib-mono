@@ -294,6 +294,61 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getDataType()).toBe("javascript");
     }),
 
+    test("ResourceXliffOptionwebOSXliffWithMetadata", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+        let tu = new WebOSTU({
+            source: "NOT AVAILABLE",
+            sourceLocale: "en-KR",
+            target: "이용이 불가능합니다",
+            targetLocale: "ko-KR",
+            key: "foobar",
+            file: "foo/bar/asdf.js",
+            project: "webapp",
+            resType: "string",
+            datatype: "javascript"
+        });
+
+        const metaDataInfo = {
+            "mda:metaGroup": {
+                "mda:meta": [
+                    {
+                        "_attributes" : {"type": "Monitor"},
+                        "_text": "\"Monitor\" 이용이 불가능합니다"
+                    },
+                    {
+                        "_attributes" : {"type": "Box"},
+                        "_text": "\"Box\" 이용이 불가능합니다"
+                    },
+                ],
+                "_attributes": {
+                    "category": "device-type"
+                }
+            }
+        }
+        tu.metadata = metaDataInfo;
+
+        expect(tu).toBeTruthy();
+        xf.addTranslationUnit(tu);
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        const reslist = x.getResources({
+            reskey: "foobar"
+        });
+
+        expect(reslist).toBeTruthy();
+        expect(reslist.length).toBe(1);
+        expect(reslist[0].getSource()).toBe("NOT AVAILABLE");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getKey()).toBe("foobar");
+        expect(reslist[0].getPath()).toBe("foo/bar/asdf.js");
+        expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].getDataType()).toBe("javascript");
+        expect(reslist[0].getMetadata()).toEqual(metaDataInfo);
+    }),
+
     test("ResourceXliffOptionwebOSXliffAddResource", () => {
         const xf = new webOSXliff();
         expect(xf).toBeTruthy();
@@ -338,6 +393,70 @@ describe("testResourceXliff", () => {
                 '        <segment>\n' +
                 '          <source>Asdf asdf2</source>\n' +
                 '          <target>baby baby2</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    }),
+
+    test("ResourceXliffOptionwebOSXliffAddResourceWithMetadata", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        const metaDataInfo = {
+            "mda:metaGroup": {
+                "mda:meta": [
+                    {
+                        "_attributes" : {"type": "Monitor"},
+                        "_text": "\"Monitor\" 이용이 불가능합니다"
+                    },
+                    {
+                        "_attributes" : {"type": "Box"},
+                        "_text": "\"Box\" 이용이 불가능합니다"
+                    },
+                ],
+                "_attributes": {
+                    "category": "device-type"
+                }
+            }
+        }
+
+        let res = new ResourceString({
+            source: "NOT AVAILABLE",
+            sourceLocale: "en-KR",
+            target: "이용이 불가능합니다",
+            targetLocale: "ko-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp",
+            metadata: metaDataInfo
+        });
+        x.addResource(res);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <mda:metadata>\n' +
+                '          <mda:metaGroup category="device-type">\n' +
+                '            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
+                '            <mda:meta type="Box">"Box" 이용이 불가능합니다</mda:meta>\n' +
+                '          </mda:metaGroup>\n' +
+                '        </mda:metadata>\n' +
+                '        <segment>\n' +
+                '          <source>NOT AVAILABLE</source>\n' +
+                '          <target>이용이 불가능합니다</target>\n' +
                 '        </segment>\n' +
                 '      </unit>\n' +
                 '    </group>\n' +
