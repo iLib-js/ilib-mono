@@ -27,4 +27,59 @@ module "ilib-tools-common" {
         constructor(props: any);
     }
 
+    interface Escaper {
+        escape(str: string): string;
+        unescape(str: string): string;
+    }
+
+    type EscaperStyle =
+        | "cpp"
+        | "cpp-char"
+        | "cpp-raw"
+        | "cpp-wide"
+        | "cpp-utf8"
+        | "cpp-utf16"
+        | "cpp-utf32"
+        | "csharp"
+        | "c#"
+        | "csharp-raw"
+        | "c#-raw"
+        | "csharp-verbatim"
+        | "c#-verbatim"
+        | "kotlin"
+        | "kotlin-raw"
+        | "java"
+        | "java-raw"
+        | "json"
+        | "js"
+        | "js-template"
+        | "javascript"
+        | "javascript-template"
+        | "php"
+        | "php-double"
+        | "php-single"
+        | "php-heredoc"
+        | "php-nowdoc"
+        | "scala"
+        | "scala-raw"
+        | "scala-triple"
+        | "scala-char"
+        | "smarty"
+        | "smarty-double"
+        | "smarty-single"
+        | "python"
+        | "python-raw"
+        | "python-byte"
+        | "python-multi"
+        | "swift"
+        | "swift-multi"
+        | "swift-extended"
+        | "po"
+        | "uri"
+        | "url"
+        | "html"
+        | "xml"
+        | "xml-attr";
+
+    function escaperFactory(style: EscaperStyle): Escaper | undefined;
 }
