@@ -1,5 +1,11 @@
 # ilib-assemble
 
+## 1.3.3
+
+### Patch Changes
+
+- b454304: Update the legacy ilib assembly to ensure that locale-independent root data is not omitted.
+
 ## 1.3.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # ilib-tools-common
 
+## 1.21.0
+
+### Minor Changes
+
+- 1f44881: - Split formatPath into formatPath and formatLocaleParams
+  - this way we can format template strings with locale substitutions
+    in it without treating the whole string as a path
+
 ## 1.20.1
 
 ### Patch Changes
