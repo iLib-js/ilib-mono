@@ -38,8 +38,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -80,7 +80,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -102,8 +102,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -120,7 +120,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
 
         expect(actual).toBe(expected);
     });
@@ -144,8 +144,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -170,7 +170,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -193,8 +193,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -219,7 +219,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -241,8 +241,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -253,7 +253,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -275,8 +275,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -287,7 +287,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -309,8 +309,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app2_f1" original="app2">\n' +
         '    <group id="app2_g1" name="javascript">\n' +
         '      <unit id="app2_g1_1">\n' +
@@ -327,7 +327,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
 
         expect(actual).toBe(expected);
     });
@@ -350,8 +350,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="x-json">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -362,7 +362,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -386,8 +386,8 @@ describe("xliff select translation units in webOSXliff", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -412,7 +412,7 @@ describe("xliff select translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
 
         expect(actual).toBe(expected);
     });
@@ -452,8 +452,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="x-json">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -464,7 +464,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -515,8 +515,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -535,7 +535,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -554,8 +554,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="x-json">\n' +
         '      <unit id="app1_g1_1" name="OK2">\n' +
@@ -566,7 +566,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -585,8 +585,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -597,7 +597,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -616,8 +616,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -636,7 +636,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -655,8 +655,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -681,7 +681,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -700,8 +700,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -718,7 +718,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -737,8 +737,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -757,7 +757,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -777,8 +777,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -797,7 +797,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
@@ -817,8 +817,8 @@ describe("xliff exclude translation units in webOSXliff", function() {
         expect(target).toBeTruthy();
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -837,7 +837,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
 
