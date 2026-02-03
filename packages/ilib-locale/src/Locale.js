@@ -479,7 +479,11 @@ Locale.languageAlpha1ToAlpha3 = function(alpha1) {
  */
 Locale._parsePosixLocale = function(spec) {
     // Return null for undefined, null, or empty strings
-    if (!spec || typeof spec !== 'string' || spec.length === 0) {
+    if (!spec || typeof spec !== 'string') {
+        return null;
+    }
+    spec = spec.trim();
+    if (spec.length === 0) {
         return null;
     }
 
@@ -497,7 +501,7 @@ Locale._parsePosixLocale = function(spec) {
     // Parse the full format: language[_territory][.codeset][@modifier]
     // - language: 2-3 lowercase letters (ISO 639)
     // - territory: 2 uppercase letters or 3 digits (ISO 3166 / M.49)
-    // - codeset: alphanumeric characters and hyphens (e.g., UTF-8, ISO-8859-1)
+    // - codeset: alphanumeric characters and hyphens (e.g., UTF-8, ISO-8859-1); dots not allowed
     // - modifier: alphanumeric characters (e.g., euro, latin)
     const posixRegex = /^([a-z]{2,3})(?:_([A-Z]{2}|[0-9]{3}))?(?:\.([A-Za-z0-9-]+))?(?:@([A-Za-z0-9]+))?$/;
     const match = spec.match(posixRegex);
@@ -536,6 +540,9 @@ Locale._parsePosixLocale = function(spec) {
  * @return {boolean} true if the string conforms to POSIX locale syntax, false otherwise
  */
 Locale.isPosixLocale = function(spec) {
+    if (typeof spec !== 'string') {
+        return false;
+    }
     return Locale._parsePosixLocale(spec) !== null;
 };
 
@@ -558,8 +565,14 @@ Locale.isPosixLocale = function(spec) {
  * and hyphens removed.
  *
  * The modifier may be mapped to a BCP-47 script or variant as appropriate.
- * For example, `@latin` may become script "Latn", while `@euro` may become
- * a variant.
+ * For example, `@latin` will become script "Latn", whereas `@euro` will become
+ * a regular variant.
+ *
+ * Examples:
+ * - `en_US.UTF-8` → `en-US-x-encoding-utf8` The dot encoding becomes a BCP-47 encoding variant.
+ * - `de_DE@euro` → `de-DE-euro` The at sign modifier becomes a variant.
+ * - `sr_RS@latin` → `sr-Latn-RS` The at sign modifier becomes the script.
+ * - `en_US.UTF-8@latin` → `en-Latn-US-x-encoding-utf8` The at sign modifier becomes the script and the dot encoding becomes a BCP-47 encoding variant.
  *
  * If the input string does not conform to POSIX locale syntax, this method
  * returns `undefined`. Use {@link Locale.isPosixLocale} to check whether a
@@ -572,6 +585,9 @@ Locale.isPosixLocale = function(spec) {
  *     or `undefined` if the input does not conform to POSIX locale syntax
  */
 Locale.fromPosix = function(posixLocale) {
+    if (typeof posixLocale !== 'string') {
+        return undefined;
+    }
     // Parse the POSIX locale - returns null if invalid
     const parsed = Locale._parsePosixLocale(posixLocale);
     if (!parsed) {
@@ -585,21 +601,31 @@ Locale.fromPosix = function(posixLocale) {
 
     // Check if modifier maps to a script (using generated scriptNameToCode mapping)
     if (modifier) {
+        // Purely numeric modifiers are invalid
+        if (/^\d+$/.test(modifier)) {
+            return undefined;
+        }
         const lowerModifier = modifier.toLowerCase();
         if (scriptNameToCode[lowerModifier]) {
             script = scriptNameToCode[lowerModifier];
         } else {
-            // Modifier becomes a variant
-            variant = modifier;
+            // Modifier becomes a variant; normalize to lowercase
+            variant = lowerModifier;
         }
     }
 
     // Normalize codeset and add as x-encoding- variant
     if (codeset) {
-        const normalizedCodeset = codeset.toLowerCase().replace(/[-.]/g, '');
-        const encodingVariant = "x-encoding-" + normalizedCodeset;
+        // normalize the codeset to lowercase and remove hyphens and dots
+        // example: ISO-8859-1 → iso88591, UTF8/UTF-8/UTF--8/UTF.8 → utf8
+        let normalizedCodeset = codeset.toLowerCase().replace(/[-.]/g, '');
+        // canonical form for UTF-8 variants
+        if (normalizedCodeset === 'utf8') {
+            normalizedCodeset = 'utf-8';
+        }
+        const encodingVariant = `x-encoding-${normalizedCodeset}`;
         if (variant) {
-            variant = variant + "-" + encodingVariant;
+            variant = `${variant}-${encodingVariant}`;
         } else {
             variant = encodingVariant;
         }

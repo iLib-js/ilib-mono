@@ -29,12 +29,13 @@ const __dirname = dirname(__filename);
 const scriptInfoPath = join(__dirname, '../node_modules/ucd-full/ScriptInfo.json');
 const scriptInfo = JSON.parse(readFileSync(scriptInfoPath, 'utf8'));
 
-// Extract just the script codes and sort them alphabetically
+// Extract just the ISO 15924 script codes and sort them alphabetically
 const scriptCodes = scriptInfo.iso15924
     .map(script => script.code)
     .sort();
 
-// Build script name to code mapping for POSIX locale modifiers
+// Build mapping from script name in English to ISO 15924 code
+// for use in parsing POSIX locale modifiers which are in English.
 const scriptNameToCode = {};
 
 /**
@@ -61,6 +62,11 @@ function isValidPosixModifier(str) {
 
 /**
  * Normalize a script name for use as a POSIX locale modifier key.
+ * A script name from a POSIX locale modifier is usually in plain English,
+ * but may contain accents or other non-ASCII characters. We need to normalize
+ * the name to a ASCII-only lowercase string that can be used as a key in the
+ * mapping.
+ * This function does the following:
  * - Convert accented characters to ASCII
  * - Lowercase
  * - Remove spaces (POSIX modifiers can't contain spaces or underscores)
@@ -94,9 +100,16 @@ function shouldExcludeParenthetical(paren) {
 }
 
 /**
- * Extract script names from an englishName field
+ * Extract script names from an englishName field. 
+ * The englishName field may contain parenthetical content which should be
+ * excluded from the mapping. Parenthetical content may contain comma-separated
+ * aliases for combinations of scripts. We need to extract the main script name
+ * and the aliases and add them to the mapping.
+ * Example: "Latin (Latin Extended-A, Latin Extended-B)"
+ * would add "latin" and "latin extended-a" and "latin extended-b" to the mapping.
+ * 
  * @param {string} englishName - The englishName from UCD
- * @param {string} code - The script code
+ * @param {string} code - The ISO 15924 script code
  */
 function extractScriptNames(englishName, code) {
     // Check for parenthetical content
