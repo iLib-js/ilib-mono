@@ -1800,6 +1800,22 @@ describe("xliff exclude translation units in xliff v2", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
+        '  <file original="app2" l:project="app2">\n' +
+        '    <group id="group_3" name="javascript">\n' +
+        '      <unit id="app2_1" name="String 2a" type="res:string" l:datatype="javascript">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2a</source>\n' +
+        '          <target>app2: String 2a</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="app2_2" name="String 2b" type="res:string" l:datatype="javascript">\n' +
+        '        <segment>\n' +
+        '          <source>app2: String 2b</source>\n' +
+        '          <target>app2: String 2b</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
         '</xliff>';
         expect(actual).toBe(expected);
     });
