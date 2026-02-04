@@ -519,7 +519,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: ""
         };
         var target = XliffSelect(settings);
@@ -535,7 +535,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxunits:2"
         };
         var target = XliffSelect(settings);
@@ -566,7 +566,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxsource:8"
         };
         var target = XliffSelect(settings);
@@ -582,7 +582,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxtarget:8"
         };
         var target = XliffSelect(settings);
@@ -598,7 +598,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);
@@ -637,7 +637,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/select/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=OK"
         };
         var target = XliffSelect(settings);
@@ -668,7 +668,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/select/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "key=OK2"
         };
         var target = XliffSelect(settings);
@@ -699,7 +699,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^app1:.*a$"
         };
         var target = XliffSelect(settings);
@@ -738,7 +738,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^app2"
         };
         var target = XliffSelect(settings);
@@ -783,7 +783,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=1,datatype=x-json"
         };
         var target = XliffSelect(settings);
@@ -820,7 +820,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/select/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=OK,key=OK2"
         };
         var target = XliffSelect(settings);
@@ -859,7 +859,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/select/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^OK$,key=^OK$"
         };
         var target = XliffSelect(settings);
@@ -898,7 +898,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/select/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "key=^OK2$,datatype=cpp"
         };
         var target = XliffSelect(settings);
@@ -937,7 +937,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
             infiles: [
                 "test/testfiles/xliff_webOS/select/es-ES.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^High$,key=^SoundSettings$"
         };
         var target = XliffSelect(settings);
@@ -975,7 +975,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
                 "test/testfiles/xliff_webOS/app1/en-US.xliff",
                 "test/testfiles/xliff_webOS/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);
@@ -1015,7 +1015,7 @@ describe("xliff exclude translation units in webOSXliff", function() {
                 "test/testfiles/xliff_webOS/app1/en-US.xliff",
                 "test/testfiles/xliff_webOS/app2/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);
