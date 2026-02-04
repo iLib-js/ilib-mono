@@ -1,5 +1,15 @@
 # loctool
 
+## 2.32.1
+
+### Patch Changes
+
+- d4b368e: Rename --exclude to --prune in select command
+  - To avoid conflict with the localize command’s --exclude option.
+- 125cb54: Refactor XliffSelect for improved deduplication and cleanup
+  - Expand `tuHash()` to include additional fields: `datatype`, `flavor`, `context`, and `source`
+  - Remove redundant logic for handling `settings.exclude` with multiple input files
+
 ## 2.32.0
 
 ### Minor Changes
