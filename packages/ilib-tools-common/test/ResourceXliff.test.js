@@ -479,7 +479,7 @@ describe("testResourceXliff", () => {
             key: "foobar",
             pathName: "src/index.js",
             project: "webapp",
-            sourceHash: JSUtils.hashCode("Asdf asdf")
+            sourceHash: JSUtils.hashCode("Asdf asdf").toString()
         });
         x.addResource(res);
 
@@ -490,7 +490,7 @@ describe("testResourceXliff", () => {
             key: "foobar",
             pathName: "src/index.js",
             project: "webapp",
-            sourceHash: JSUtils.hashCode("Asdf asdf2")
+            sourceHash: JSUtils.hashCode("Asdf asdf2").toString()
         });
         x.addResource(res);
         expect(x.size()).toBe(2);
