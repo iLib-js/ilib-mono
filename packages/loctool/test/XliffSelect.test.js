@@ -1239,7 +1239,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: ""
         };
         var target = XliffSelect(settings);
@@ -1254,7 +1254,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxunits:2"
         };
         var target = XliffSelect(settings);
@@ -1288,7 +1288,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxsource:8"
         };
         var target = XliffSelect(settings);
@@ -1303,7 +1303,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxtarget:15"
         };
         var target = XliffSelect(settings);
@@ -1318,7 +1318,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=by"
         };
         var target = XliffSelect(settings);
@@ -1352,7 +1352,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^baby baby$"
         };
         var target = XliffSelect(settings);
@@ -1386,7 +1386,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^Asdf"
         };
         var target = XliffSelect(settings);
@@ -1425,7 +1425,7 @@ describe("xliff exclude translation units in xliff v1", function() {
             infiles: [
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^Asdf,datatype=plaintext"
         };
         var target = XliffSelect(settings);
@@ -1465,7 +1465,7 @@ describe("xliff exclude translation units in xliff v1", function() {
                 "test/testfiles/xliffs/nl-NL.xliff",
                 "test/testfiles/xliffs/nl-NL.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=asdf"
         };
         var target = XliffSelect(settings);
@@ -1502,7 +1502,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: ""
         };
         var target = XliffSelect(settings);
@@ -1517,7 +1517,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxunits:2"
         };
         var target = XliffSelect(settings);
@@ -1547,7 +1547,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxsource:8"
         };
         var target = XliffSelect(settings);
@@ -1562,7 +1562,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "maxtarget:8"
         };
         var target = XliffSelect(settings);
@@ -1577,7 +1577,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);
@@ -1615,7 +1615,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^app1:.*a$"
         };
         var target = XliffSelect(settings);
@@ -1653,7 +1653,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=^app2"
         };
         var target = XliffSelect(settings);
@@ -1697,7 +1697,7 @@ describe("xliff exclude translation units in xliff v2", function() {
             infiles: [
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=1,datatype=x-json"
         };
         var target = XliffSelect(settings);
@@ -1734,7 +1734,7 @@ describe("xliff exclude translation units in xliff v2", function() {
                 "test/testfiles/xliff20/app1/en-US.xliff",
                 "test/testfiles/xliff20/app1/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);
@@ -1773,7 +1773,7 @@ describe("xliff exclude translation units in xliff v2", function() {
                 "test/testfiles/xliff20/app1/en-US.xliff",
                 "test/testfiles/xliff20/app2/en-US.xliff"
             ],
-            exclude: true,
+            prune: true,
             criteria: "source=1a"
         };
         var target = XliffSelect(settings);

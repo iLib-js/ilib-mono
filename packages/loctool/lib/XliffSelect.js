@@ -107,7 +107,7 @@ var XliffSelect = function XliffSelect(settings) {
                 if (typeof(settings.extendedAttr) === "object") {
                     Object.assign(unit.extended, settings.extendedAttr);
                 }
-                if (!settings.exclude) {
+                if (!settings.prune) {
                     unit.extended["original-file"] = file;
                 }
                 var hash = tuHash(unit);
@@ -126,7 +126,7 @@ var XliffSelect = function XliffSelect(settings) {
 
     if (units.length > 0) {
         if (!settings.criteria) {
-            if (settings.exclude) {
+            if (settings.prune) {
                 units = [];
             }
         } else {
@@ -213,7 +213,7 @@ var XliffSelect = function XliffSelect(settings) {
                     }
                 }
 
-                if (settings.exclude) {
+                if (settings.prune) {
                     return !match;
                 } else {
                     return match;
