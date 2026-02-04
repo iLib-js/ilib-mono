@@ -238,7 +238,7 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
                     // translated, just skip it and Android will default back to the base English
                     // strings instead.
                     if (anyTranslated) {
-                        file = this.getResourceFile(r.context, locale, r.resType + "s", r.pathName);
+                        file = this.getResourceFile({ context: r.context, locale: locale, type: r.resType + "s", pathName: r.pathName });
                         file.addResource(r);
                         logger.trace("Added " + r.getKey() + " to " + file.pathName);
                     }
@@ -253,7 +253,7 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
-        file = this.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
+        file = this.getResourceFile({ resource: res });
         file.addResource(res);
         logger.trace("Added " + res.reskey + " to " + file.pathName);
     }
@@ -295,25 +295,25 @@ AndroidResourceFileType.prototype.newFile = function(pathName) {
 };
 
 /**
- * Find or create the resource file object for the given project, context,
- * locale, and flavor. If the original file that this resource came from
- * exists within a flavor, then the resource file for this resource should
- * also be in that same flavor. If the original file is not within a
- * flavor, this resource should go into the main resources.
+ * Find or create the resource file object for the given options.
  *
- * @param {String} context the name of the context in which the resource
- * file will reside
- * @param {String} locale the name of the locale in which the resource
- * file will reside
- * @param {String} type type of the resource file being sought. Should be one
- * of "strings", "arrays", or "plurals"
- * @param {String} original the path to the original file that this resource
- * came from
+ * @param {Object} [options] options identifying the resource file; either options.locale or options.resource is required
+ * @param {string} [options.context] optional context (e.g. for Android qualified resources)
+ * @param {string} [options.locale] locale of the resource file; required if options.resource is not provided
+ * @param {string} [options.type] resource type (e.g. "strings", "arrays", "plurals")
+ * @param {string} [options.pathName] path to the original file (for flavor lookup)
+ * @param {Resource} [options.resource] when provided, context/locale/type/pathName can be derived from the resource; required if options.locale is not provided
  * @return {AndroidResourceFile} the Android resource file that serves the
  * given project, context, and locale.
  */
-AndroidResourceFileType.prototype.getResourceFile = function(context, locale, type, original) {
-    // first find the flavor
+AndroidResourceFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var res = opts.resource;
+    var context = opts.context || (res && res.context);
+    var locale = opts.locale || (res && res.getTargetLocale());
+    var type = opts.type || (res && (res.resType + "s"));
+    var original = opts.pathName || (res && res.pathName);
+    // find the flavor from the original file path
     var flavor = this.project.flavors.getFlavorForPath(original);
     var key = makeHashKey(context, locale, type, flavor);
 
@@ -359,7 +359,7 @@ AndroidResourceFileType.prototype.getResourceFile = function(context, locale, ty
         resfile = this.resourceFiles[key] = new AndroidResourceFile({
             project: this.project,
             context: context,
-            locale: locale || this.project.sourceLocale,
+            targetLocale: locale || this.project.sourceLocale,
             type: type,
             pathName: pathName
         });
@@ -405,6 +405,7 @@ AndroidResourceFileType.prototype.generatePseudo = function(locale, pb) {
             }
         }
     }.bind(this));
+    return this.pseudo;
 };
 
 /**

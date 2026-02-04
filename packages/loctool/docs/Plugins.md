@@ -84,19 +84,28 @@ interface:
 interface File {
     /**
      * Construct a new instance of this file class for the file
-     * at the given pathName.
+     * at the given pathName. Implementations typically receive
+     * an options object (e.g. from FileType.newFile(pathName, options))
+     * rather than a separate API; the project and API are available
+     * via options.project and options.project.getAPI().
      *
-     * @param {string} pathName path to the file to respresent
-     * @param {API} API a set of calls that that the plugin can use
-     * to get things done.
+     * @param {string} pathName path to the file to represent
+     * @param {Object} [options] options for the file. When created by
+     *   the loctool or a plugin, properties may include:
+     *   - options.project {Project} the project instance
+     *   - options.pathName {string} path to the file (may duplicate pathName)
+     *   - options.type {FileType} the file type instance
+     *   - options.targetLocale {string} locale of this file (e.g. target
+     *     locale of a resource file). Use targetLocale, not locale.
+     *   - options.sourceLocale {string} source locale of the project
      */
-    constructor(pathName, API) {}
+    constructor(pathName, options) {}
 
     /**
      * Extract all the localizable strings from the file and add
      * them to the project's translation set. This method should
      * open the file, read its contents, parse it, and add each
-     * string it finds to the project's traslation set, which can
+     * string it finds to the project's translation set, which can
      * be retrieved from the API passed to the constructor.
      */
     extract() {}
@@ -141,7 +150,7 @@ interface File {
 
 Each implementation of a filetype class must adhere to the following interface:
 
-```
+```javascript
 interface FileType {
     /**
      * Construct a new instance of this filetype subclass to represent
@@ -208,9 +217,47 @@ interface FileType {
      * Return a new instance of a file class for the given path.
      * This method acts as a factory for the file class that
      * goes along with this filetype class.
+     *
+     * The loctool calls this with (pathName, options) where options
+     * includes at least sourceLocale and targetLocale. Plugins that
+     * call another FileType's newFile must also pass an options
+     * object with at least targetLocale (and sourceLocale when
+     * relevant). Use the option name targetLocale (not locale) for
+     * the file's locale. Implementations that use options should
+     * guard with options = options || {} so that callers passing
+     * only pathName do not cause errors, and should pass
+     * options.targetLocale (and options.sourceLocale) through to
+     * the File constructor.
+     *
      * @param {string} path path to the file to represent
+     * @param {Object} [options] optional options for the file
+     * @param {string} [options.targetLocale] locale of the file (e.g. target locale of a resource file)
+     * @param {string} [options.sourceLocale] source locale of the project
+     * @param {Project} [options.project] the project instance
+     * @param {FileType} [options.type] the file type instance
      * @returns {File} a File class instance for the given path
-    newFile(path) {}
+     */
+    newFile(path, options) {}
+
+    /**
+     * Return a resource file instance for the given options. Used when
+     * writing localized resources: the file type returns the appropriate
+     * resource file object to which translations are added. All implementations
+     * use a single options object; implementations may use whichever properties
+     * they need and ignore the rest. Either options.locale or options.resource is required.
+     *
+     * @param {Object} [options] options identifying the resource file
+     * @param {string} [options.locale] locale of the resource file (e.g. target locale); required if options.resource is not provided
+     * @param {Resource} [options.resource] when provided, locale/context/type/pathName/flavor
+     *     can be derived from the resource (getTargetLocale(), getContext(), getDataType(), getPath(), getFlavor()); required if options.locale is not provided
+     * @param {string} [options.context] optional context (e.g. for Android)
+     * @param {string} [options.flavor] optional flavor name
+     * @param {string} [options.type] optional resource type (e.g. "strings", "arrays", "plurals")
+     * @param {string} [options.pathName] optional path or path template (original file path)
+     * @returns {File|undefined} a File instance representing the resource file, or
+     * undefined if this FileType is not a resource file type
+     */
+    getResourceFile(options) {}
 
     /**
      * Return a unique string that can be used to identify strings
@@ -277,13 +324,47 @@ interface FileType {
     getNew() {}
 
     /**
-    * Return the translation set containing all of the pseudo
-    * localized resources for all instances of this type of file.
-    *
-    * @returns {TranslationSet} the set containing all of the
-    * pseudo localized resources
-    */
+     * Return the translation set containing all of the pseudo
+     * localized resources for all instances of this type of file.
+     *
+     * @returns {TranslationSet} the set containing all of the
+     * pseudo localized resources
+     */
     getPseudo() {}
+
+    /**
+     * Return an array of all resources extracted so far for this file type.
+     * (Convenience method; equivalent to getExtracted().getAll().)
+     *
+     * @returns {Array.<Resource>} array of resources extracted so far
+     */
+    getResources() {}
+
+    /**
+     * Initialize the file type. Opportunity to load files or perform
+     * asynchronous setup before extraction and translation. Call the
+     * callback when done.
+     *
+     * @param {Function} cb callback to call when initialization is complete
+     */
+    init(cb) {}
+
+    /**
+     * Generate pseudo-localized resources for the given locale using the
+     * given pseudo bundle. Optionally operate on a specific translation set.
+     *
+     * @param {string} locale target locale for the pseudo resources
+     * @param {ResBundle} pb pseudo translation bundle
+     * @param {TranslationSet|undefined} set set to use, or undefined for default
+     * @returns {TranslationSet} the set of generated pseudo resources
+     */
+    generatePseudo(locale, pb, set) {}
+
+    /**
+     * Release any resources held by this file type. Called when the project
+     * is closing.
+     */
+    close() {}
 }
 ```
 
@@ -293,7 +374,7 @@ An instance of this is sent to the constructor of the FileType
 class. The FileType.newFile method should send it to instances
 of the File class as well.
 
-```
+```javascript
 class API {
     /**
      * Return a new instance of a resource of the given type.
@@ -507,7 +588,7 @@ the translation should go into when the translated
 The API for the superclass of all resources is as
 follows:
 
-```
+```javascript
 class Resource {
     /**
      * @class Represents a resource from a resource file or
@@ -623,7 +704,7 @@ class Resource {
      * stage of life of this resource. Currently, it can be one of "new",
      * "translated", or "accepted".
      *
-     * @parma {String} state the state of this resource
+     * @param {String} state the state of this resource
      */
     setState(state) {}
 
@@ -731,7 +812,7 @@ class Resource {
      * #2 has 12 spaces at the beginning, but they both have the exact
      * same text after that, there is no good reason that they should not
      * share the same translation. The spaces do not really affect the
-     * traslation of that text. A cleaned hash key can be cleaned in
+     * translation of that text. A cleaned hash key can be cleaned in
      * a variety of ways, and the exact methods used are unique to the
      * type of resource.
      *
@@ -763,7 +844,7 @@ class Resource {
 
 Additionally, a string resource has these methods:
 
-```
+```javascript
 class ResourceString extends Resource {
     /**
      * Return the source string written in the source
@@ -801,7 +882,7 @@ class ResourceString extends Resource {
 
 Additionally, an array resource has these methods:
 
-```
+```javascript
 class ResourceArray extends Resource {
     /**
      * Return the array of source strings for this resource.
@@ -885,7 +966,7 @@ class ResourceArray extends Resource {
 
 Additionally, a plural resource has these methods:
 
-```
+```javascript
 class ResourcePlural extends Resource {
     /**
      * Return the source plurals hash of this plurals resource.
@@ -1002,7 +1083,7 @@ strings and the source and translated strings themselves.
 A translation set may contain the same source phrase
 multiple times if the meta-data is different because the
 same phrase may be used in different ways in different
-ontexts of the application and thus may need a different
+contexts of the application and thus may need a different
 translation.<p>
 
 This is differentiated from a translation memory where
@@ -1024,7 +1105,7 @@ its idiosyncratic context.<p>
 The loctool uses translation sets to collect source strings
 in the application and to represent translations of them.
 
-```
+```javascript
 class TranslationSet {
     /**
      * Get a resource by its hashkey.
@@ -1220,7 +1301,7 @@ need it.
 The Project class has the following methods and properties
 that a plugin might need:
 
-```
+```javascript
 class Project {
     /**
      * Return the translation set for this project.

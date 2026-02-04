@@ -72,7 +72,7 @@ OldHamlFileType.prototype.name = function() {
 };
 
 OldHamlFileType.prototype.getResources = function() {
-    return this.extracted;
+    return this.extracted ? this.extracted.getAll() : [];
 };
 
 /**

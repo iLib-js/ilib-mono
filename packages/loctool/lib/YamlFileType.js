@@ -104,11 +104,14 @@ YamlFileType.prototype.name = function() {
  * @return {AndroidResourceFile} a resource file instance for the
  * given path
  */
-YamlFileType.prototype.newFile = function(pathName) {
+YamlFileType.prototype.newFile = function(pathName, options) {
+    var opts = options || {};
     return new YamlFile({
         project: this.project,
         pathName: pathName,
-        type: this
+        type: this,
+        targetLocale: opts.targetLocale,
+        sourceLocale: opts.sourceLocale
     });
 };
 

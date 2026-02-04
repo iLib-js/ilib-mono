@@ -97,7 +97,7 @@ describe("scriptresourcefiletype", function() {
         var htf = new JavaScriptResourceFileType(p);
         expect(htf).toBeTruthy();
 
-        var jsrf = htf.getResourceFile("fr-FR");
+        var jsrf = htf.getResourceFile({ locale: "fr-FR" });
         expect(jsrf.getLocale().toString()).toBe("fr-FR");
     });
 
@@ -114,9 +114,9 @@ describe("scriptresourcefiletype", function() {
         var htf = new JavaScriptResourceFileType(p);
         expect(htf).toBeTruthy();
 
-        var jsrf1 = htf.getResourceFile("fr-FR");
+        var jsrf1 = htf.getResourceFile({ locale: "fr-FR" });
         expect(jsrf1.getLocale().toString()).toBe("fr-FR");
-        var jsrf2 = htf.getResourceFile("fr-FR");
+        var jsrf2 = htf.getResourceFile({ locale: "fr-FR" });
         expect(jsrf2.getLocale().toString()).toBe("fr-FR");
         expect(jsrf1).toStrictEqual(jsrf2);
     });

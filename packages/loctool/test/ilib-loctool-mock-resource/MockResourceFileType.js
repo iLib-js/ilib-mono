@@ -90,7 +90,7 @@ MockResourceFileType.prototype.getResourceFile = function(locale) {
     if (!resfile) {
         resfile = this.resourceFiles[key] = new MockResourceFile({
             project: this.project,
-            locale: key
+            targetLocale: key
         });
 
         logger.trace("Defining new resource file");

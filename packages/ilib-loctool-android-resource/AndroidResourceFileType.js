@@ -229,7 +229,7 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
                     // translated, just skip it and Android will default back to the base English
                     // strings instead.
                     if (anyTranslated) {
-                        file = this.getResourceFile(r.context, locale, r.resType + "s", r.pathName);
+                        file = this.getResourceFile({ context: r.context, locale: locale, type: r.resType + "s", pathName: r.pathName });
                         file.addResource(r);
                         this.logger.trace("Added " + r.getKey() + " to " + file.pathName);
                     }
@@ -244,7 +244,7 @@ AndroidResourceFileType.prototype.write = function(translations, locales) {
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
-        file = this.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
+        file = this.getResourceFile({ context: res.context, locale: res.getTargetLocale(), type: res.resType + "s", pathName: res.pathName });
         file.addResource(res);
         this.logger.trace("Added " + res.reskey + " to " + file.pathName);
     }
@@ -292,18 +292,21 @@ AndroidResourceFileType.prototype.newFile = function(pathName) {
  * also be in that same flavor. If the original file is not within a
  * flavor, this resource should go into the main resources.
  *
- * @param {String} context the name of the context in which the resource
- * file will reside
- * @param {String} locale the name of the locale in which the resource
- * file will reside
- * @param {String} type type of the resource file being sought. Should be one
- * of "strings", "arrays", or "plurals"
- * @param {String} original the path to the original file that this resource
- * came from
+ * @param {Object} [options] options identifying the resource file; either options.locale or options.resource is required
+ * @param {string} [options.context] optional context (e.g. for Android qualified resources)
+ * @param {string} [options.locale] locale of the resource file; required if options.resource is not provided
+ * @param {string} [options.type] resource type (e.g. "strings", "arrays", "plurals")
+ * @param {string} [options.pathName] path to the original file that this resource came from (for flavor lookup)
+ * @param {Resource} [options.resource] when provided, context/locale/type/pathName can be derived from the resource; required if options.locale is not provided
  * @return {AndroidResourceFile} the Android resource file that serves the
  * given project, context, and locale.
  */
-AndroidResourceFileType.prototype.getResourceFile = function(context, locale, type, original) {
+AndroidResourceFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var context = opts.context !== undefined ? opts.context : (opts.resource && opts.resource.context);
+    var locale = opts.locale || (opts.resource && opts.resource.getTargetLocale && opts.resource.getTargetLocale());
+    var type = opts.type || (opts.resource && opts.resource.resType && opts.resource.resType + "s");
+    var original = opts.pathName || (opts.resource && opts.resource.pathName);
     // first find the flavor
     var flavor = (this.project.flavors && this.project.flavors.getFlavorForPath(original));
     var key = makeHashKey(context, locale, type, flavor);
@@ -396,6 +399,7 @@ AndroidResourceFileType.prototype.generatePseudo = function(locale, pb) {
             }
         }
     }.bind(this));
+    return this.pseudo;
 };
 
 AndroidResourceFileType.prototype.getDataType = function() {

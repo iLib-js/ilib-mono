@@ -29,7 +29,7 @@ var Locale = require("ilib-locale");
  * @param {string} props.project the project that this resource file is part of
  * @param {string} props.pathName the path to the file, relative
  * to the root
- * @param {string} props.locale the locale of this resource file
+ * @param {string} props.targetLocale the locale of this resource file
  * @param {string} props.type the type of this resource file
  */
 var PHPResourceFile = function(props) {
@@ -38,7 +38,7 @@ var PHPResourceFile = function(props) {
     if (props) {
         this.project = props.project;
         this.pathName = props.pathName;
-        this.locale = new Locale(props.locale);
+        this.locale = new Locale(props.targetLocale);
         this.API = props.project.getAPI();
         this.type = props.type;
     }

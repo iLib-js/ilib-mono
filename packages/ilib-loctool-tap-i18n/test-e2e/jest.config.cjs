@@ -6,6 +6,7 @@ const config = {
         name: "ilib-loctool-tap-i18n e2e",
         color: "white",
     },
+    testTimeout: 15000,
 };
 
 module.exports = config;

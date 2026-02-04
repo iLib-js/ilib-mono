@@ -251,7 +251,7 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
                         r.reskey = res.reskey;
                     }
 
-                    file = resFileType.getResourceFile(locale, this.getLocalizedPath(res.mapping, res.getPath(), locale));
+                    file = resFileType.getResourceFile({ locale: locale, pathName: this.getLocalizedPath(res.mapping, res.getPath(), locale) });
                     file.addResource(r);
                     this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                 }
@@ -266,7 +266,7 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.getTargetLocale(), this.getLocalizedPath(res.mapping, res.getPath(), locale));
+            file = resFileType.getResourceFile({ locale: res.getTargetLocale(), pathName: this.getLocalizedPath(res.mapping, res.getPath(), res.getTargetLocale()) });
             file.addResource(res);
             this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }

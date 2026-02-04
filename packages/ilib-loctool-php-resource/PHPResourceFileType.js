@@ -110,15 +110,16 @@ PHPResourceFileType.prototype.name = function() {
  * given path
  */
 PHPResourceFileType.prototype.newFile = function(pathName, options) {
-    if (this.resourceFiles[options.locale]) {
-        return this.resourceFiles[options.locale];
+    var opts = options || {};
+    if (opts.targetLocale && this.resourceFiles[opts.targetLocale]) {
+        return this.resourceFiles[opts.targetLocale];
     }
 
     var file = new PHPResourceFile({
         project: this.project,
         pathName: pathName,
         type: this,
-        locale: options.locale
+        targetLocale: opts.targetLocale
     });
 
     var locale = file.getLocale() || this.project.sourceLocale;
@@ -137,8 +138,10 @@ PHPResourceFileType.prototype.newFile = function(pathName, options) {
  * @return {PHPResourceFile} the PHP resource file that serves the
  * given locale.
  */
-PHPResourceFileType.prototype.getResourceFile = function(locale, pathName) {
-    var loc = locale || this.project.sourceLocale;
+PHPResourceFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var loc = opts.locale || (opts.resource && opts.resource.getTargetLocale && opts.resource.getTargetLocale()) || this.project.sourceLocale;
+    var pathName = opts.pathName || (opts.resource && opts.resource.getPath && opts.resource.getPath());
     var formattedPathName = pathName ?
         this.API.utils.formatPath(pathName, {
             locale: loc
@@ -148,7 +151,7 @@ PHPResourceFileType.prototype.getResourceFile = function(locale, pathName) {
     if (!this.resourceFiles[key]) {
         this.resourceFiles[key] = new PHPResourceFile({
             project: this.project,
-            locale: loc,
+            targetLocale: loc,
             pathName: formattedPathName,
             type: this
         });
@@ -188,6 +191,7 @@ PHPResourceFileType.prototype.generatePseudo = function(locale, pb) {
             }
         }
     }.bind(this));
+    return this.pseudo;
 };
 
 PHPResourceFileType.prototype.getDataType = function() {

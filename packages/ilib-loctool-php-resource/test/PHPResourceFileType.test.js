@@ -70,7 +70,7 @@ describe("PHPresourcefiletype", function() {
         var ptf = new PHPResourceFileType(p);
         expect(ptf).toBeTruthy();
 
-        var phprf = ptf.getResourceFile("fr-FR");
+        var phprf = ptf.getResourceFile({ locale: "fr-FR" });
 
         expect(phprf.getLocale().toString()).toBe("fr-FR");
     });
@@ -81,10 +81,10 @@ describe("PHPresourcefiletype", function() {
         var ptf = new PHPResourceFileType(p);
         expect(ptf).toBeTruthy();
 
-        var phprf1 = ptf.getResourceFile("fr-FR");
+        var phprf1 = ptf.getResourceFile({ locale: "fr-FR" });
         expect(phprf1.getLocale().toString()).toBe("fr-FR");
 
-        var phprf2 = ptf.getResourceFile("fr-FR");
+        var phprf2 = ptf.getResourceFile({ locale: "fr-FR" });
         expect(phprf2.getLocale().toString()).toBe("fr-FR");
 
         expect(phprf1).toStrictEqual(phprf2);
@@ -96,10 +96,10 @@ describe("PHPresourcefiletype", function() {
         var ptf = new PHPResourceFileType(p);
         expect(ptf).toBeTruthy();
 
-        var phprf1 = ptf.getResourceFile("fr-FR");
+        var phprf1 = ptf.getResourceFile({ locale: "fr-FR" });
         expect(phprf1.getLocale().toString()).toBe("fr-FR");
 
-        var phprf2 = ptf.getResourceFile("fr-FR", "sublibrary/fr/FR/foo.phpon");
+        var phprf2 = ptf.getResourceFile({ locale: "fr-FR", pathName: "sublibrary/fr/FR/foo.phpon" });
         expect(phprf2.getLocale().toString()).toBe("fr-FR");
 
         expect(phprf1 !== phprf2).toBeTruthy();

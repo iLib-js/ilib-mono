@@ -85,7 +85,7 @@ JavaFileType.prototype.write = function(translations, locales) {
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
         // have to store the base English string or else there will be nothing to override in the translations
-        file = resFileType.getResourceFile(res.context, res.getSourceLocale(), res.resType + "s", res.pathName);
+        file = resFileType.getResourceFile({ context: res.context, locale: res.getSourceLocale(), type: res.resType + "s", pathName: res.pathName });
         file.addResource(res);
 
         // for each extracted string, write out the translations of it
@@ -113,7 +113,7 @@ JavaFileType.prototype.write = function(translations, locales) {
                     // skip because the fallbacks will go to the English resources anyways
                     this.logger.trace("No translation for " + res.reskey + " to " + locale);
                 } else if (r.getTarget() !== res.getSource()) {
-                    file = resFileType.getResourceFile(r.context, locale, r.resType + "s", r.pathName);
+                    file = resFileType.getResourceFile({ context: r.context, locale: locale, type: r.resType + "s", pathName: r.pathName });
                     file.addResource(r);
                     this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                 }
@@ -129,7 +129,7 @@ JavaFileType.prototype.write = function(translations, locales) {
         res = resources[i];
         // only need to add the resource if it is different from the source text
         if (res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
+            file = resFileType.getResourceFile({ context: res.context, locale: res.getTargetLocale(), type: res.resType + "s", pathName: res.pathName });
             file.addResource(res);
             this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }

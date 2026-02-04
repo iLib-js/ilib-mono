@@ -68,7 +68,7 @@ describe("stringsfile", function() {
         var strings = new IosStringsFile({
             project: p,
             type: isft,
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(strings).toBeTruthy();
 
@@ -94,7 +94,7 @@ describe("stringsfile", function() {
         var strings = new IosStringsFile({
             project: p,
             type: isft,
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(strings).toBeTruthy();
 
@@ -120,7 +120,7 @@ describe("stringsfile", function() {
         var strings = new IosStringsFile({
             project: p,
             type: isft,
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(strings).toBeTruthy();
 
@@ -147,7 +147,7 @@ describe("stringsfile", function() {
         var strings = new IosStringsFile({
             project: p,
             type: isft,
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(strings).toBeTruthy();
 
@@ -173,7 +173,7 @@ describe("stringsfile", function() {
         var strings = new IosStringsFile({
             project: p,
             type: isft,
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(strings).toBeTruthy();
 
@@ -196,7 +196,7 @@ describe("stringsfile", function() {
         var strings = new IosStringsFile({
             project: p,
             type: isft,
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(strings).toBeTruthy();
 
@@ -315,7 +315,7 @@ describe("stringsfile", function() {
         var strings = new IosStringsFile({
             project: p,
             type: isft,
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(strings).toBeTruthy();
 

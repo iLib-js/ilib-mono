@@ -268,7 +268,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "es-US", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "es-US", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-es/strings.xml")
@@ -286,7 +286,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "es-US", "plurals", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "es-US", type: "plurals", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-es/plurals.xml")
@@ -304,7 +304,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "es-US", "arrays", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "es-US", type: "arrays", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-es/arrays.xml")
@@ -322,7 +322,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "en-US", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "en-US", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values/strings.xml")
@@ -340,7 +340,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "en-HK", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "en-HK", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-en-rHK/strings.xml")
@@ -358,7 +358,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "en-GB", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "en-GB", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-en-rGB/strings.xml")
@@ -376,7 +376,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "zh-Hans-CN", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "zh-Hans-CN", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-zh/strings.xml")
@@ -394,7 +394,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "zh-Hant-HK", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "zh-Hant-HK", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-zh-rHK/strings.xml")
@@ -412,7 +412,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "es-ES", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "es-ES", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-es-rES/strings.xml")
@@ -430,7 +430,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("", "ko-KR", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "", locale: "ko-KR", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-ko/strings.xml")
@@ -448,7 +448,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("context", "en-US", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "context", locale: "en-US", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-context/strings.xml")
@@ -466,7 +466,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("context", "es-US", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "context", locale: "es-US", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-es-context/strings.xml")
@@ -484,7 +484,7 @@ describe("androidresourcefiletype", function() {
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
 
-        var rf = alft.getResourceFile("context", "zh-Hant-HK", "strings", "src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "context", locale: "zh-Hant-HK", type: "strings", pathName: "src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values-zh-rHK-context/strings.xml")
@@ -501,7 +501,7 @@ describe("androidresourcefiletype", function() {
         }, "./test/testfiles", settings);
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/a/src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: undefined, locale: "en-US", type: "strings", pathName: "test/testfiles/flavors/a/src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("flavors/a/res/values/strings.xml")
@@ -518,7 +518,7 @@ describe("androidresourcefiletype", function() {
         }, "./test/testfiles", settings);
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/bproj/src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: undefined, locale: "en-US", type: "strings", pathName: "test/testfiles/flavors/bproj/src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("flavors/bproj/res/values/strings.xml")
@@ -535,7 +535,7 @@ describe("androidresourcefiletype", function() {
         }, "./test/testfiles", settings);
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/xXx/src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: undefined, locale: "en-US", type: "strings", pathName: "test/testfiles/flavors/xXx/src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("flavors/xXx/res/values/strings.xml")
@@ -552,7 +552,7 @@ describe("androidresourcefiletype", function() {
         }, "./test/testfiles", settings);
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/a/res/layouts/testlayout.xml");
+        var rf = alft.getResourceFile({ context: undefined, locale: "en-US", type: "strings", pathName: "test/testfiles/flavors/a/res/layouts/testlayout.xml" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("flavors/a/res/values/strings.xml")
@@ -569,7 +569,7 @@ describe("androidresourcefiletype", function() {
         }, "./test/testfiles", settings);
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
-        var rf = alft.getResourceFile(undefined, "en-US", "strings", "test/testfiles/flavors/d/src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: undefined, locale: "en-US", type: "strings", pathName: "test/testfiles/flavors/d/src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("android/res/values/strings.xml")
@@ -586,7 +586,7 @@ describe("androidresourcefiletype", function() {
         }, "./test/testfiles", settings);
         var alft = new AndroidResourceFileType(p);
         expect(alft).toBeTruthy();
-        var rf = alft.getResourceFile("context", "zh-Hant-HK", "strings", "test/testfiles/flavors/a/src/java/com/myproduct/Test.java");
+        var rf = alft.getResourceFile({ context: "context", locale: "zh-Hant-HK", type: "strings", pathName: "test/testfiles/flavors/a/src/java/com/myproduct/Test.java" });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("flavors/a/res/values-zh-rHK-context/strings.xml")

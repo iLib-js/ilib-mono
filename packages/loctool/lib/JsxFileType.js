@@ -132,7 +132,7 @@ JsxFileType.prototype.write = function(translations, locales) {
                         r.reskey = res.reskey;
                     }
 
-                    file = resFileType.getResourceFile(locale);
+                    file = resFileType.getResourceFile({ locale: locale });
                     file.addResource(r);
                     logger.trace("Added " + r.reskey + " to " + file.pathName);
                 }
@@ -147,7 +147,7 @@ JsxFileType.prototype.write = function(translations, locales) {
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.getTargetLocale());
+            file = resFileType.getResourceFile({ resource: res });
             file.addResource(res);
             logger.trace("Added " + res.reskey + " to " + file.pathName);
         }

@@ -354,11 +354,12 @@ JsonFileType.prototype.write = function() {
 };
 
 JsonFileType.prototype.newFile = function(pathName, options) {
+    var opts = options || {};
     return new JsonFile({
         project: this.project,
         pathName: pathName,
         type: this,
-        locale: options.locale
+        targetLocale: opts.targetLocale
     });
 };
 
@@ -366,13 +367,17 @@ JsonFileType.prototype.newFile = function(pathName, options) {
  * Find or create the resource file object for the given project, context,
  * and locale.
  *
- * @param {String} locale the name of the locale in which the resource
- * file will reside
- * @param {String} pathName path to the resource file, if known, or undefined otherwise
+ * @param {Object} [options] options identifying the resource file; either options.locale or options.resource is required
+ * @param {string} [options.locale] the name of the locale in which the resource file will reside
+ * @param {string} [options.pathName] path to the resource file, if known, or undefined otherwise
+ * @param {Resource} [options.resource] when provided, locale/pathName can be derived from the resource
  * @return {JavaScriptResourceFile} the Android resource file that serves the
  * given project, context, and locale.
  */
-JsonFileType.prototype.getResourceFile = function(locale, pathName) {
+JsonFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var locale = opts.locale || (opts.resource && opts.resource.getTargetLocale && opts.resource.getTargetLocale()) || this.project.sourceLocale;
+    var pathName = opts.pathName || (opts.resource && opts.resource.getPath && opts.resource.getPath());
     var key = locale || this.project.sourceLocale;
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
@@ -380,7 +385,7 @@ JsonFileType.prototype.getResourceFile = function(locale, pathName) {
     if (!resfile) {
         resfile = this.resourceFiles[key] = this.newFile(pathName, {
             project: this.project,
-            locale: key
+            targetLocale: key
         });
 
         this.logger.trace("Defining new resource file");

@@ -122,7 +122,7 @@ SwiftFileType.prototype.write = function(translations, locales) {
                     r = r.clone();
                     r.reskey = res.reskey;
                 }
-                file = resFileType.getResourceFile(r);
+                file = resFileType.getResourceFile({ resource: r });
                 file.addResource(r);
                 this.logger.trace("Added " + r.hashKey() + " to " + file.pathName);
             }.bind(this));
@@ -135,7 +135,7 @@ SwiftFileType.prototype.write = function(translations, locales) {
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
-        file = resFileType.getResourceFile(res);
+        file = resFileType.getResourceFile({ resource: res });
         file.addResource(res);
         this.logger.trace("Added " + res.reskey + " to " + file.pathName);
     }

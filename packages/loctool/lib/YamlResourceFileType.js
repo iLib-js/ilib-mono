@@ -170,7 +170,7 @@ YamlResourceFileType.prototype.write = function(translations, locales) {
                         logger.trace("No translation for " + res.reskey + " to " + locale);
                     } else {
                         this.checkAllPluralCases(res, r, locale);
-                        file = resFileType.getResourceFile(locale, res.getFlavor());
+                        file = resFileType.getResourceFile({ locale: locale, flavor: res.getFlavor() });
                         file.addResource(translated);
                     }
                     logger.trace("Added " + r.reskey + " to " + (file ? file.pathName : "an unknown file"));
@@ -188,7 +188,7 @@ YamlResourceFileType.prototype.write = function(translations, locales) {
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
         if (res.getTargetLocale() !== this.project.sourceLocale && res.getSource() !== res.getTarget()) {
-            file = resFileType.getResourceFile(res.getTargetLocale());
+            file = resFileType.getResourceFile({ locale: res.getTargetLocale() });
             file.addResource(res);
             logger.trace("Added " + res.reskey + " to " + file.pathName);
         }
@@ -228,16 +228,17 @@ YamlResourceFileType.prototype.newFile = function(pathName) {
 };
 
 /**
- * Find or create the resource file object for the given project
- * and locale.
+ * Find or create the resource file object for the given options.
  *
- * @param {String} locale the name of the locale in which the resource
- * file will reside
- * @param {String} flavor the flavor of the resource type
+ * @param {Object} [options] options.locale, options.flavor, or options.resource
+ *   (from which locale/flavor are derived)
  * @return {YamlResourceFile} the yaml resource file that serves the
  * given project and locale.
  */
-YamlResourceFileType.prototype.getResourceFile = function(locale, flavor) {
+YamlResourceFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var locale = opts.locale || (opts.resource && (opts.resource.getTargetLocale() || opts.resource.getSourceLocale()));
+    var flavor = opts.flavor || (opts.resource && opts.resource.getFlavor && opts.resource.getFlavor());
     var key = (locale || this.project.sourceLocale) + (flavor ? '-' + flavor : '');
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
@@ -245,7 +246,7 @@ YamlResourceFileType.prototype.getResourceFile = function(locale, flavor) {
     if (!resfile) {
         resfile = this.resourceFiles[key] = new YamlResourceFile({
             project: this.project,
-            locale: locale,
+            targetLocale: locale,
             type: this,
             flavor: flavor
         });
@@ -274,6 +275,7 @@ YamlResourceFileType.prototype.generatePseudo = function(locale, pb) {
             this.pseudo.add(res);
         }
     }.bind(this));
+    return this.pseudo;
 };
 
 /**
