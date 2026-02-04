@@ -222,6 +222,24 @@ describe("test the Escaper class and its subclasses", () => {
         expect(escaper.unescape("abc \\\\ \\0\\f\\n\\b\\t\\v\\rㅽr𝄞")).toBe('abc \\ \0\f\n\b\t\v\rㅽr𝄞');
     });
 
+    test("the po escape works properly", () => {
+        const escaper = escaperFactory("po");
+        const input = 'Name cannot contain "/", "\\", or characters outside the basic multilingual plane."';
+        
+        const escaped = escaper.escape(input);
+    
+        expect(escaper.unescape(escaped)).toBe(input);
+    });
+
+    test("the po unescape works properly", () => {
+        const escaper = escaperFactory("po");
+        const expected = 'Name cannot contain "/", "\\", or characters outside the basic multilingual plane."';
+        
+        const escaped = escaper.escape(expected);
+        
+        expect(escaper.unescape(escaped)).toBe(expected);
+    });
+
     test("the php double escape works properly", () => {
         expect.assertions(1);
 
