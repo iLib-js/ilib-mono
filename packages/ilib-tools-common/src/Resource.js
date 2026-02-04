@@ -369,7 +369,7 @@ class Resource {
     /**
     * Sets the hash value for the source of this resource.
     *
-    * @param {number} hashValue the hash value to set for this resource.
+    * @param {string} hashValue the hash value to set for this resource.
     */
     setSourceHash(hashValue) {
         this.sourceHash = hashValue;
@@ -378,7 +378,7 @@ class Resource {
     /**
     * Returns the hash value for the source of this resource.
     *
-    * @returns {number|undefined} the hash value of this resource.
+    * @returns {string|undefined} the hash value of this resource.
     */
     getSourceHash() {
         return this.sourceHash;

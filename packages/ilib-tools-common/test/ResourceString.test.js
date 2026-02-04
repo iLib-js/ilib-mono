@@ -278,8 +278,8 @@ describe("testResourceString", () => {
         });
 
         expect(rs).toBeTruthy();
-        rs.setSourceHash(JSUtils.hashCode("source string"));
-        expect(rs.getSourceHash()).toBe(59831423);
+        rs.setSourceHash(JSUtils.hashCode("source string").toString());
+        expect(rs.getSourceHash()).toBe("59831423");
     });
 
     test("ResourceStringgetSourceHash", function() {
@@ -293,11 +293,11 @@ describe("testResourceString", () => {
             metadata:  {
                 "test": "test-abcd"
             },
-            sourceHash: JSUtils.hashCode("source string")
+            sourceHash: JSUtils.hashCode("source string").toString()
         });
 
         expect(rs).toBeTruthy();
-        expect(rs.getSourceHash()).toBe(59831423);
+        expect(rs.getSourceHash()).toBe("59831423");
     });
 
     test("ResourceStringSetMetadata", function() {
