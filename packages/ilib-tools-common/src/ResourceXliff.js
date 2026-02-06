@@ -1,7 +1,7 @@
 /*
- * Xliff.js - convert an Xliff file into a set of resources and vice versa
+ * ResourceXliff.js - convert an ResourceXliff file into a set of resources and vice versa
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -262,7 +262,8 @@ class ResourceXliff {
                 flavor: tu.flavor,
                 location: new Location(tu.location),
                 resfile: tu.resfile,
-                metadata: tu.metadata
+                metadata: tu.metadata,
+                sourceHash: tu.sourceHash
             });
 
             if (tu.target) {

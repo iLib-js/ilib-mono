@@ -1,7 +1,7 @@
 /*
  * Resource.js - super class that represents a resource
  *
- * Copyright © 2022-2025 JEDLSoft
+ * Copyright © 2022-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,6 +173,7 @@ class Resource {
      * @param {string} [props.comment] the comment (translator's note) of this resource
      * @param {boolean} [props.dnt] Do not translate this resource when this is set to true. Default: false
      * @param {string} [props.datatype] the type of file that this resource came from
+     * @param {string} [props.sourceHash] the hash value of a source string
      * @param {string} [props.flavor] the "flavor" of this string, if any. (Android)
      * @param {Location} [props.location] the location in the file given in pathName where this this resource
      * is located
@@ -207,7 +208,7 @@ class Resource {
             this.origin = props.origin || "source";
             this.dnt = props.dnt;
             this.datatype = props.datatype;
-            this.sourceHash = props.sourceHash;
+            this.sourceHash = props.sourceHash || undefined;
             this.localize = typeof(props.localize) === "boolean" ? props.localize : true; // some files have resources we do not want to localize/translate
             this.flavor = props.flavor;
             this.index = props.index;
@@ -363,6 +364,24 @@ class Resource {
      */
     getState() {
         return this.state;
+    }
+
+    /**
+    * Sets the hash value for the source of this resource.
+    *
+    * @param {string} hashValue the hash value to set for this resource.
+    */
+    setSourceHash(hashValue) {
+        this.sourceHash = hashValue;
+    }
+
+    /**
+    * Returns the hash value for the source of this resource.
+    *
+    * @returns {string|undefined} the hash value of this resource.
+    */
+    getSourceHash() {
+        return this.sourceHash;
     }
 
     /**

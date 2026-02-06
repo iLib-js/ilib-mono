@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`samples lint should generate the modified file (am-ET) 1`] = `
-"<?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="am-ET" version="2.0">
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="am-ET" version="2.0">
   <file id="sample-rs-edge-whitespace_f1" original="sample-rs-edge-whitespace">
     <group id="sample-rs-edge-whitespace_g1" name="javascript">
       <unit id="sample-rs-edge-whitespace_g1_1">
@@ -31,12 +31,44 @@ exports[`samples lint should generate the modified file (am-ET) 1`] = `
       </unit>
     </group>
   </file>
-</xliff>"
+</xliff>
+
+"
+`;
+
+exports[`samples lint should generate the modified file (cs-CZ) 1`] = `
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="cs-CZ" version="2.0">
+  <file id="sample-rs-edge-whitespace_f1" original="sample-rs-edge-whitespace">
+    <group id="sample-rs-edge-whitespace_g1" name="javascript">
+      <unit id="sample-rs-edge-whitespace_g1_1" name="pictureControlHigh_Male">
+        <segment>
+          <source>Auto</source>
+          <target>Vysoká</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_2" name="pictureControlHigh_Male">
+        <segment>
+          <source>ON</source>
+          <target>ZAPNUTO</target>
+        </segment>
+      </unit>
+      <unit id="sample-rs-edge-whitespace_g1_3">
+        <segment>
+          <source>Password</source>
+          <target>Heslo</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
+
+"
 `;
 
 exports[`samples lint should generate the modified file (en-US) 1`] = `
-"<?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">
   <file id="sample_f1" original="sample">
     <group id="sample_g1" name="javascript">
       <unit id="sample_g1_1">
@@ -56,11 +88,13 @@ exports[`samples lint should generate the modified file (en-US) 1`] = `
       </unit>
     </group>
   </file>
-</xliff>"
+</xliff>
+
+"
 `;
 
 exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `
-"<?xml version="1.0" encoding="utf-8"?>
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="zh-Hans-CN" version="2.0">
   <file id="sample-rs-edge-whitespace_f1" original="sample-rs-edge-whitespace">
     <group id="sample-rs-edge-whitespace_g1" name="javascript">
@@ -126,5 +160,7 @@ exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `
       </unit>
     </group>
   </file>
-</xliff>"
+</xliff>
+
+"
 `;

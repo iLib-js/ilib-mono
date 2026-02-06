@@ -1,7 +1,7 @@
 /*
- * Xliff.test.js - test the Xliff object.
+ * ResourceXliff.test.js - test the ResourceXliff object.
  *
- * Copyright © 2016-2017, 2019-2023, 2025 HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2023, 2025-2026 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import fs from "fs";
 import { ResourceArray, ResourcePlural, ResourceString, ResourceXliff } from "../src/index.js";
 import { Xliff, TranslationUnit } from "ilib-xliff";
 import { webOSXliff, TranslationUnit as WebOSTU  } from "ilib-xliff-webos";
+import { JSUtils } from "ilib-common";
 
 function diff(a, b) {
     const min = Math.min(a.length, b.length);
@@ -349,6 +350,66 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getMetadata()).toEqual(metaDataInfo);
     }),
 
+    test("ResourceXliffOptionwebOSXliffParseSamekey", () => {
+        const xf = new webOSXliff();
+        const x = new ResourceXliff({
+            path: "foo/bar/de-DE.xliff",
+            xliff: xf
+        });
+
+        expect(x).toBeTruthy();
+        x.parse(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '      <unit id="webapp_g1_2" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf222</source>\n' +
+                '          <target>baby baby222</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>'
+            );
+
+        const reslist = x.getResources();
+
+        expect(reslist).toBeTruthy();
+        expect(reslist.length).toBe(2);
+
+        expect(reslist[0].getSource()).toBe("Asdf asdf");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getTarget()).toBeTruthy();
+        expect(reslist[0].getTargetLocale()).toBe("de-DE");
+        expect(reslist[0].getTarget()).toBe("baby baby");
+        expect(reslist[0].getKey()).toBe("foobar");
+        expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].resType).toBe("string");
+        expect(reslist[0].getId()).toBe("webapp_g1_1");
+        expect(reslist[0].getSourceHash()).toBe("1482422553");
+        expect(reslist[0].getResFile()).toBe("foo/bar/de-DE.xliff");
+
+        expect(reslist[1].getSource()).toBe("Asdf asdf222");
+        expect(reslist[1].getSourceLocale()).toBe("en-KR");
+        expect(reslist[1].getTarget()).toBeTruthy();
+        expect(reslist[1].getTarget()).toBe("baby baby222");
+        expect(reslist[1].getTargetLocale()).toBe("de-DE");
+        expect(reslist[1].getKey()).toBe("foobar");
+        expect(reslist[1].getProject()).toBe("webapp");
+        expect(reslist[1].resType).toBe("string");
+        expect(reslist[1].getId()).toBe("webapp_g1_2");
+        expect(reslist[1].getSourceHash()).toBe("1630766648");
+        expect(reslist[1].getResFile()).toBe("foo/bar/de-DE.xliff");
+    });
+
     test("ResourceXliffOptionwebOSXliffAddResource", () => {
         const xf = new webOSXliff();
         expect(xf).toBeTruthy();
@@ -379,8 +440,8 @@ describe("testResourceXliff", () => {
 
         const actual = x.getText();
         const expected =
-                '<?xml version="1.0" encoding="utf-8"?>\n' +
-                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" version="2.0">\n' +
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" version="2.0">\n' +
                 '  <file id="webapp_f1" original="webapp">\n' +
                 '    <group id="webapp_g1" name="plaintext">\n' +
                 '      <unit id="webapp_g1_1" name="foobar">\n' +
@@ -397,7 +458,64 @@ describe("testResourceXliff", () => {
                 '      </unit>\n' +
                 '    </group>\n' +
                 '  </file>\n' +
-                '</xliff>';
+                '</xliff>\n\n';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    }),
+
+    test("ResourceXliffOptionwebOSXliffAddResourceSameKey", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        let res = new ResourceString({
+            source: "Asdf asdf",
+            target: "baby baby",
+            sourceLocale: "en-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp",
+            sourceHash: JSUtils.hashCode("Asdf asdf").toString()
+        });
+        x.addResource(res);
+
+        res = new ResourceString({
+            source: "Asdf asdf2",
+            target: "baby baby2",
+            sourceLocale: "en-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp",
+            sourceHash: JSUtils.hashCode("Asdf asdf2").toString()
+        });
+        x.addResource(res);
+        expect(x.size()).toBe(2);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '      <unit id="webapp_g1_2" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf2</source>\n' +
+                '          <target>baby baby2</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>\n\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -443,7 +561,7 @@ describe("testResourceXliff", () => {
 
         const actual = x.getText();
         const expected =
-                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
                 '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
                 '  <file id="webapp_f1" original="webapp">\n' +
                 '    <group id="webapp_g1" name="plaintext">\n' +
@@ -461,7 +579,7 @@ describe("testResourceXliff", () => {
                 '      </unit>\n' +
                 '    </group>\n' +
                 '  </file>\n' +
-                '</xliff>';
+                '</xliff>\n\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -538,7 +656,7 @@ describe("testResourceXliff", () => {
     });
 
     test("ResourceXliffAddMultipleResourcesAddInstance", () => {
-        expect.assertions(17);
+        expect.assertions(18);
 
         const x = new ResourceXliff();
         expect(x).toBeTruthy();
@@ -578,6 +696,7 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getKey()).toBe("foobar");
         expect(reslist[0].getPath()).toBe("foo/bar/asdf.java");
         expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].getSourceHash()).toBe(undefined);
         expect(!reslist[0].getComment()).toBeTruthy();
 
         const inst = reslist[0].getInstances();

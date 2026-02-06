@@ -1,7 +1,7 @@
 /*
  * XliffSerializer.test.js - test the built-in XliffSerializer plugin
  *
- * Copyright © 2024-2025 JEDLSoft
+ * Copyright © 2024-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,8 +143,8 @@ describe("test the XliffParser plugin", () => {
         expect(newSourceFile).toBeTruthy();
         expect(newSourceFile.getPath()).toBe(sourceFile.getPath());
         expect(newSourceFile.getContent()).toBe(
-`<?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="es-ES" version="2.0">
+`<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="es-ES" version="2.0">
   <file id="home_f1" original="home">
     <group id="home_g1" name="javascript">
       <unit id="home_g1_1">
@@ -155,7 +155,9 @@ describe("test the XliffParser plugin", () => {
       </unit>
     </group>
   </file>
-</xliff>`);
+</xliff>
+
+`);
     });
     test("Serialize a regular xliff file with multiple resources", () => {
         expect.assertions(3);

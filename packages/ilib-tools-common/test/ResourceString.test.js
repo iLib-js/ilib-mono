@@ -1,7 +1,7 @@
 /*
  * ResourceString.test.js - test the resource string object.
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  */
 
 import { ResourceString } from "../src/index.js";
+import { JSUtils } from "ilib-common";
 
 describe("testResourceString", () => {
     test("ResourceStringConstructorEmpty", () => {
@@ -264,6 +265,39 @@ describe("testResourceString", () => {
         });
         expect(rs).toBeTruthy();
         expect(rs.getMetadata()).toBeFalsy();
+    });
+
+    test("ResourceStringsetSourceHash", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+        });
+
+        expect(rs).toBeTruthy();
+        rs.setSourceHash(JSUtils.hashCode("source string").toString());
+        expect(rs.getSourceHash()).toBe("59831423");
+    });
+
+    test("ResourceStringgetSourceHash", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+            metadata:  {
+                "test": "test-abcd"
+            },
+            sourceHash: JSUtils.hashCode("source string").toString()
+        });
+
+        expect(rs).toBeTruthy();
+        expect(rs.getSourceHash()).toBe("59831423");
     });
 
     test("ResourceStringSetMetadata", function() {
@@ -553,23 +587,23 @@ describe("testResourceString", () => {
     test("ResourceStringStaticHashKey", () => {
         expect.assertions(1);
 
-        expect(ResourceString.hashKey("iosapp", "de-DE", "This is a test", "html", "chocolate")).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_");
+        expect(ResourceString.hashKey("iosapp", "de-DE", "This is a test", "html", "chocolate")).toBe("rs_iosapp_de-DE_This is a test_html_chocolate__");
     });
 
     test("ResourceStringStaticHashKeyWithContext", () => {
         expect.assertions(1);
 
-        expect(ResourceString.hashKey("iosapp", "de-DE", "This is a test", "html", "chocolate", "context")).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context");
+        expect(ResourceString.hashKey("iosapp", "de-DE", "This is a test", "html", "chocolate", "context")).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context_");
     });
 
     test("ResourceStringStaticHashKeyMissingParts", () => {
         expect.assertions(1);
 
-        expect(ResourceString.hashKey(undefined, "de-DE", undefined, undefined)).toBe("rs__de-DE____");
+        expect(ResourceString.hashKey(undefined, "de-DE", undefined, undefined)).toBe("rs__de-DE_____");
     });
 
     test("ResourceStringHashKey", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rs = new ResourceString({
             project: "iosapp",
@@ -583,11 +617,12 @@ describe("testResourceString", () => {
         });
         expect(rs).toBeTruthy();
 
-        expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html__");
+        expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html___");
+        expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_This is a test_html___");
     });
 
     test("ResourceStringHashKeyWithFlavor", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rs = new ResourceString({
             project: "iosapp",
@@ -602,11 +637,12 @@ describe("testResourceString", () => {
         });
         expect(rs).toBeTruthy();
 
-        expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_");
+        expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate__");
+        expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate__");
     });
 
     test("ResourceStringHashKeyWithFlavorAndContext", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rs = new ResourceString({
             project: "iosapp",
@@ -622,7 +658,8 @@ describe("testResourceString", () => {
         });
         expect(rs).toBeTruthy();
 
-        expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context");
+        expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context_");
+        expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context_");
     });
 
     test("ResourceStringSourceOnlyHashKey", () => {
@@ -638,7 +675,7 @@ describe("testResourceString", () => {
         });
         expect(rs).toBeTruthy();
 
-        expect(rs.hashKey()).toBe("rs_iosapp_en-US_This is a test_html__");
+        expect(rs.hashKey()).toBe("rs_iosapp_en-US_This is a test_html___");
     });
 
     test("ResourceStringIsInstanceSame", () => {
