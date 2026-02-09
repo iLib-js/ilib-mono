@@ -372,7 +372,11 @@ class Resource {
     * @param {string} hashValue the hash value to set for this resource.
     */
     setSourceHash(hashValue) {
+        if (hashValue !== undefined && typeof hashValue !== 'string') {
+            throw new TypeError('hashValue must be a string or undefined');
+        }
         this.sourceHash = hashValue;
+        this.dirty = true;
     }
 
     /**

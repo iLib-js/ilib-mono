@@ -282,6 +282,37 @@ describe("testResourceString", () => {
         expect(rs.getSourceHash()).toBe("59831423");
     });
 
+    test("ResourceStringsetSourceHashUndefined", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+        });
+
+        expect(rs).toBeTruthy();
+        rs.setSourceHash(undefined);
+        expect(rs.getSourceHash()).toBe(undefined);
+    });
+
+    test("ResourceStringsetSourceHashWrongType", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+        });
+
+        expect(rs).toBeTruthy();
+        expect(() => {
+            rs.setSourceHash(12345678);
+        }).toThrow(TypeError);
+    });
+
     test("ResourceStringgetSourceHash", function() {
         expect.assertions(2);
 
@@ -601,6 +632,24 @@ describe("testResourceString", () => {
 
         expect(ResourceString.hashKey(undefined, "de-DE", undefined, undefined)).toBe("rs__de-DE_____");
     });
+    test("ResourceStringStaticHashKeyWithContextSourceHash", () => {
+        expect.assertions(2);
+
+        expect(ResourceString.hashKey(undefined, "de-DE", undefined, undefined, undefined, "candy", "59831423")).toBe("rs__de-DE____candy_59831423");
+        expect(ResourceString.cleanHashKey(undefined, "de-DE", undefined, undefined, undefined, "candy", "59831423")).toBe("rs__de-DE____candy_59831423");
+    });
+    test("ResourceStringStaticHashKeyWithSourceHash", () => {
+        expect.assertions(2);
+
+        expect(ResourceString.hashKey(undefined, "de-DE", undefined, undefined, undefined, undefined, "59831423")).toBe("rs__de-DE_____59831423");
+        expect(ResourceString.cleanHashKey(undefined, "de-DE", undefined, undefined, undefined, "candy", "59831423")).toBe("rs__de-DE____candy_59831423");
+    });
+    test("ResourceStringStaticHashKeyWithContextNoSourceHash", () => {
+        expect.assertions(2);
+
+        expect(ResourceString.hashKey(undefined, "de-DE", undefined, undefined, undefined, "candy", undefined)).toBe("rs__de-DE____candy_");
+        expect(ResourceString.cleanHashKey(undefined, "de-DE", undefined, undefined, undefined, "candy", undefined)).toBe("rs__de-DE____candy_");
+    });
 
     test("ResourceStringHashKey", () => {
         expect.assertions(3);
@@ -660,6 +709,27 @@ describe("testResourceString", () => {
 
         expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context_");
         expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_This is a test_html_chocolate_context_");
+    });
+
+    test("ResourceStringHashKeyWithContextAndSourceHash", () => {
+        expect.assertions(3);
+
+        const rs = new ResourceString({
+            project: "iosapp",
+            key: "This is a test",
+            source: "This is a test",
+            sourceLocale: "en-US",
+            target: "Dies ist einen Test.",
+            targetLocale: "de-DE",
+            pathName: "a/b/c.java",
+            datatype: "html",
+            context: "context",
+            sourceHash: "59831423"
+        });
+        expect(rs).toBeTruthy();
+
+        expect(rs.hashKey()).toBe("rs_iosapp_de-DE_This is a test_html__context_59831423");
+        expect(rs.cleanHashKey()).toBe("rs_iosapp_de-DE_This is a test_html__context_59831423");
     });
 
     test("ResourceStringSourceOnlyHashKey", () => {
