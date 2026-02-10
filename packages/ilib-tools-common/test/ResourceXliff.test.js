@@ -278,7 +278,7 @@ describe("testResourceXliff", () => {
             datatype: "javascript"
         });
         expect(tu).toBeTruthy();
-        debugger;
+
         xf.addTranslationUnit(tu);
         const x = new ResourceXliff({
             xliff: xf
@@ -397,7 +397,7 @@ describe("testResourceXliff", () => {
             path: "foo/bar/de-DE.xliff",
             xliff: xf
         });
-        debugger;
+
         expect(x).toBeTruthy();
         x.parse(
             '<?xml version="1.0" encoding="utf-8"?>\n' +
