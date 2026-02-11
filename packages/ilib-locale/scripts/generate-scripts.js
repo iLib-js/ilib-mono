@@ -34,8 +34,13 @@ const scriptCodes = scriptInfo.iso15924
     .map(script => script.code)
     .sort();
 
-// Build mapping from script name in English to ISO 15924 code
-// for use in parsing POSIX locale modifiers which are in English.
+// Build a mapping from script names in English to ISO 15924 codes,
+// for use when parsing POSIX locale modifiers, which are in English.
+// e.g. {
+//   Latin: "Latn",
+//   Cyrillic: "Cyrl",
+//   Greek: "Grek"
+// }
 const scriptNameToCode = {};
 
 /**
