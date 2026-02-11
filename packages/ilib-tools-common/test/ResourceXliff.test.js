@@ -391,7 +391,7 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getMetadata()).toEqual(metaDataInfo);
     }),
 
-    test("ResourceXliffOptionwebOSXliffParseandgetText", () => {
+    test("ResourceXliffOptionwebOSXliffParseandgetTextAutoKeyTrue", () => {
         const xf = new webOSXliff();
         const x = new ResourceXliff({
             path: "foo/bar/de-DE.xliff",
