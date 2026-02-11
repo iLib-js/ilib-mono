@@ -32,7 +32,6 @@ exports[`samples lint should generate the modified file (am-ET) 1`] = `
     </group>
   </file>
 </xliff>
-
 "
 `;
 
@@ -62,7 +61,6 @@ exports[`samples lint should generate the modified file (cs-CZ) 1`] = `
     </group>
   </file>
 </xliff>
-
 "
 `;
 
@@ -89,7 +87,6 @@ exports[`samples lint should generate the modified file (en-US) 1`] = `
     </group>
   </file>
 </xliff>
-
 "
 `;
 
@@ -161,6 +158,5 @@ exports[`samples lint should generate the modified file (zh-Hans-CN) 1`] = `
     </group>
   </file>
 </xliff>
-
 "
 `;

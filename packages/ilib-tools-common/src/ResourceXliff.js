@@ -136,7 +136,8 @@ class ResourceXliff {
                     flavor: res.getFlavor ? res.getFlavor() : undefined,
                     translate: !res.getDNT(),
                     location: res.getLocation(),
-                    metadata: res.metadata
+                    metadata: res.metadata,
+                    autoKey: res.getAutoKey()
                 });
                 units.push(tu);
                 break;
@@ -161,7 +162,8 @@ class ResourceXliff {
                     datatype: res.datatype,
                     flavor: res.getFlavor ? res.getFlavor() : undefined,
                     translate: !res.getDNT(),
-                    location: res.getLocation()
+                    location: res.getLocation(),
+                    autoKey: res.getAutoKey()
                 });
 
                 for (let j = 0; j < sarr.length; j++) {
@@ -199,7 +201,8 @@ class ResourceXliff {
                     datatype: res.datatype,
                     flavor: res.getFlavor ? res.getFlavor() : undefined,
                     location: res.getLocation(),
-                    translate: !res.getDNT()
+                    translate: !res.getDNT(),
+                    autoKey: res.getAutoKey()
                 });
 
                 const sp = res.getSource();
@@ -263,7 +266,8 @@ class ResourceXliff {
                 location: new Location(tu.location),
                 resfile: tu.resfile,
                 metadata: tu.metadata,
-                sourceHash: tu.sourceHash
+                sourceHash: tu.sourceHash,
+                autoKey: tu.autoKey
             });
 
             if (tu.target) {

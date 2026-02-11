@@ -132,7 +132,8 @@ describe("test the XliffParser plugin", () => {
                     datatype: "javascript",
                     restype: "string",
                     project: "home",
-                    pathName: "foo/bar/asdf.js"
+                    pathName: "foo/bar/asdf.js",
+                    autoKey: true
                 })
             ],
             sourceFile
@@ -156,7 +157,6 @@ describe("test the XliffParser plugin", () => {
     </group>
   </file>
 </xliff>
-
 `);
     });
     test("Serialize a regular xliff file with multiple resources", () => {

@@ -38,7 +38,7 @@ describe("samples", () => {
                 "xliffs/am-ET.xliff.modified",
                 "xliffs/zh-Hans-CN.xliff.modified",
                 "xliffs/en-US.xliff.modified",
-                "xliffs/cz-CZ.xliff.modified"
+                "xliffs/cs-CZ.xliff.modified"
             ].map(f => path.resolve(path.join(projectPath, f))));
 
             try {

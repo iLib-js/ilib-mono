@@ -176,6 +176,35 @@ describe("testResourceString", () => {
         expect(!rs.getAutoKey()).toBeTruthy();
     });
 
+    test("ResourceStringNotAutoKeyDefault", () => {
+        expect.assertions(2);
+
+        const rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE"
+        });
+        expect(rs).toBeTruthy();
+        expect(!rs.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourceStringAutoKeyWithTarget", () => {
+        expect.assertions(2);
+
+        const rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            target: "Zielzeichenfolge",
+            autoKey: true,
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE"
+        });
+        expect(rs).toBeTruthy();
+        expect(rs.getAutoKey()).toBe(true);
+    });
+
     test("ResourceStringGetKeyEmpty", () => {
         expect.assertions(2);
 
