@@ -1,5 +1,23 @@
 # loctool
 
+## 2.32.1
+
+### Patch Changes
+
+- d4b368e: Rename --exclude to --prune in select command
+  - To avoid conflict with the localize command’s --exclude option.
+- 125cb54: Refactor XliffSelect for improved deduplication and cleanup
+  - Expand `tuHash()` to include additional fields: `datatype`, `flavor`, `context`, and `source`
+  - Remove redundant logic for handling `settings.exclude` with multiple input files
+- bc09024: Resolve metadata merging issues and update XLIFF header
+  - Improved metadata merging logic to prevent data loss during the merge process
+  - Adjusted XLIFF header structure for webOS style
+- Updated dependencies [74d3761]
+- Updated dependencies [08d9461]
+- Updated dependencies [28ab248]
+  - ilib-tools-common@1.21.1
+  - ilib-locale@1.4.0
+
 ## 2.32.0
 
 ### Minor Changes

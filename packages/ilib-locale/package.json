@@ -1,6 +1,6 @@
 {
     "name": "ilib-locale",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "main": "./lib/Locale.js",
     "module": "./src/Locale.js",
     "types": "./src/Locale.d.ts",
