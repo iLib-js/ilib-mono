@@ -190,7 +190,7 @@ var commandOptionHelp = {
         "  Add an extended attribute to the output file. This can be used to add arbitrary metadata to\n" +
         "  each translation unit in the output file. You may specify this option multiple times to add\n" +
         "  multiple extended attributes.\n" +
-        "--exclude\n" +
+        "--prune\n" +
         "  Exclude all translation units that match the selection criteria.\n" +
         "  This can be used to filter out translation units that should not be included in the output.\n",
 };
@@ -492,8 +492,8 @@ for (var i = 0; i < argv.length; i++) {
                 }
             });
         }
-    } else if (val === "--exclude") {
-        settings.exclude = true;
+    } else if (val === "--prune") {
+        settings.prune = true;
     } else {
         options.push(val);
     }

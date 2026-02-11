@@ -22,6 +22,7 @@ var fs = require('fs');
 var log4js = require("log4js");
 var ISet = require("ilib/lib/ISet.js");
 
+var utils = require('./utils.js');
 var XliffFactory = require("./XliffFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.XliffSelect");
@@ -43,8 +44,17 @@ function wordCount(string) {
  * @returns {string} the hash for the translation unit
  */
 function tuHash(unit) {
-    return [unit.project, unit.targetLocale, unit.key].join("_");
+    return [
+        unit.project,
+        unit.targetLocale,
+        unit.key,
+        unit.datatype,
+        unit.flavor,
+        unit.context,
+        utils.hashKey(unit.source)
+    ].join("_");
 }
+
 
 /**
  * Select translation units from the given xliff files and write them
@@ -64,12 +74,6 @@ function tuHash(unit) {
  */
 var XliffSelect = function XliffSelect(settings) {
     if (!settings) return;
-
-    // In exclude mode, only one input file is allowed
-    if (settings.exclude && Array.isArray(settings.infiles) && settings.infiles.length !== 1) {
-        logger.warn("exclude mode only supports a single input file. Only the first file will be used.");
-        settings.infiles = [settings.infiles[0]]; // Use only the first file
-    }
 
     // Remember which files we have already read, so we don't have
     // to read them again.
@@ -103,7 +107,7 @@ var XliffSelect = function XliffSelect(settings) {
                 if (typeof(settings.extendedAttr) === "object") {
                     Object.assign(unit.extended, settings.extendedAttr);
                 }
-                if (!settings.exclude) {
+                if (!settings.prune) {
                     unit.extended["original-file"] = file;
                 }
                 var hash = tuHash(unit);
@@ -122,7 +126,7 @@ var XliffSelect = function XliffSelect(settings) {
 
     if (units.length > 0) {
         if (!settings.criteria) {
-            if (settings.exclude) {
+            if (settings.prune) {
                 units = [];
             }
         } else {
@@ -209,7 +213,7 @@ var XliffSelect = function XliffSelect(settings) {
                     }
                 }
 
-                if (settings.exclude) {
+                if (settings.prune) {
                     return !match;
                 } else {
                     return match;
