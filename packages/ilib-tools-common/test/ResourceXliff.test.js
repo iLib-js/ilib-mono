@@ -431,11 +431,56 @@ describe("testResourceXliff", () => {
                 '      </unit>\n' +
                 '    </group>\n' +
                 '  </file>\n' +
-                '</xliff>\n\n';
+                '</xliff>\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
+    });
 
+    test("ResourceXliffOptionwebOSXliffParseandgetTextAutoKeyfalse", () => {
+        const xf = new webOSXliff();
+        const x = new ResourceXliff({
+            path: "foo/bar/de-DE.xliff",
+            xliff: xf
+        });
+
+        expect(x).toBeTruthy();
+        x.parse(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>'
+            );
+        const reslist = x.getResources();
+        expect(reslist.length).toBe(1);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>\n';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
     });
 
     test("ResourceXliffOptionwebOSXliffParseSamekey", () => {
@@ -546,7 +591,7 @@ describe("testResourceXliff", () => {
                 '      </unit>\n' +
                 '    </group>\n' +
                 '  </file>\n' +
-                '</xliff>\n\n';
+                '</xliff>\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -603,7 +648,7 @@ describe("testResourceXliff", () => {
                 '      </unit>\n' +
                 '    </group>\n' +
                 '  </file>\n' +
-                '</xliff>\n\n';
+                '</xliff>\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -667,7 +712,7 @@ describe("testResourceXliff", () => {
                 '      </unit>\n' +
                 '    </group>\n' +
                 '  </file>\n' +
-                '</xliff>\n\n';
+                '</xliff>\n';
 
         diff(actual, expected);
         expect(actual).toBe(expected);
