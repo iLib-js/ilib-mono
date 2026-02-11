@@ -3,8 +3,10 @@
     "version": "1.3.0",
     "main": "./lib/Locale.js",
     "module": "./src/Locale.js",
+    "types": "./src/Locale.d.ts",
     "exports": {
         ".": {
+            "types": "./src/Locale.d.ts",
             "import": "./src/Locale.js",
             "require": "./lib/Locale.js"
         }
@@ -62,7 +64,7 @@
         "build": "npm-run-all --npm-path pnpm -p generate build:prod",
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
         "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
-        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json && cp src/*.d.ts lib/",
         "generate": "npm-run-all --npm-path pnpm -p generate:scripts generate:languages generate:regions",
         "generate:scripts": "node scripts/generate-scripts.js",
         "generate:languages": "node scripts/generate-languages.js",
