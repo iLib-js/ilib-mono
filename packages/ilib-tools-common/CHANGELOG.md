@@ -1,5 +1,15 @@
 # ilib-tools-common
 
+## 1.21.1
+
+### Patch Changes
+
+- 74d3761: Pass `autoKey` property correctly to preserve auto-generated key information
+- 08d9461: - Fix an issue in the webOS XLIFF file that causes data loss when entries have the same key but different sources.
+  Update to add a sourceHash property to the Resource, and if the value exists, use it to generate a hashkey.
+- Updated dependencies [28ab248]
+  - ilib-locale@1.4.0
+
 ## 1.21.0
 
 ### Minor Changes
