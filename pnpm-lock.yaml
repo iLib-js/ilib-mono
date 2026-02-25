@@ -837,8 +837,8 @@ importers:
         specifier: workspace:^
         version: link:../ilib-xliff
       ilib-xliff-webos:
-        specifier: ^1.0.10
-        version: 1.0.10
+        specifier: ^1.0.11
+        version: 1.0.11
       intl-messageformat:
         specifier: ^10.5
         version: 10.7.3
@@ -2780,8 +2780,8 @@ importers:
         specifier: workspace:^
         version: link:../ilib-xliff
       ilib-xliff-webos:
-        specifier: ^1.0.10
-        version: 1.0.10
+        specifier: ^1.0.11
+        version: 1.0.11
       intl-messageformat:
         specifier: ^10.7.11
         version: 10.7.11
@@ -7593,8 +7593,8 @@ packages:
     resolution: {integrity: sha512-0vKj3NDD7gXYTIwwZYcLNu0JSdeMN2uOde8g2AwsA6X3uXCPZmVaU26KoFMq+YBONRvYrIxtAK6fKgEK3gB4iA==}
     engines: {node: '>=10.0.0'}
 
-  ilib-xliff-webos@1.0.10:
-    resolution: {integrity: sha512-Gon83Yk+qaBcHj/8lwWUG6rq9RWWLiB11/jEypf/VDAuDki8igVphzT3A6W0VV9015WN/CDMoxaVdZ0VCr/hKA==}
+  ilib-xliff-webos@1.0.11:
+    resolution: {integrity: sha512-CnWVbasWW7ztt2HLI7A4lx+OW8liJTfGk8w1aiyj7NtgObgVUKTqOl5c2xqstbf/xlKQ4DEhmiManIZc4b0erQ==}
 
   ilib-xliff@1.4.0:
     resolution: {integrity: sha512-/t1ZvrY4dI/iSs3pVAsUbfEJU/TGyYs5h34OqDkh1QnB7oer+YBR1Y1qcwCKK0DG7HHMvrUGxlW5x8PbYFpf3g==}
@@ -17359,7 +17359,7 @@ snapshots:
       intl-messageformat: 10.7.11
       micromatch: 4.0.8
 
-  ilib-xliff-webos@1.0.10:
+  ilib-xliff-webos@1.0.11:
     dependencies:
       ilib-common: 1.1.6
       ilib-xml-js: 1.7.0
