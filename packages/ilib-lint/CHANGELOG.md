@@ -1,5 +1,13 @@
 # ilib-lint
 
+## 2.21.2
+
+### Patch Changes
+
+- 8b26137: Update the `ilib-xliff-webos` dependency to the latest version.
+- Updated dependencies [8b26137]
+  - ilib-tools-common@1.21.2
+
 ## 2.21.1
 
 ### Patch Changes
