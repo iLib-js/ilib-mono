@@ -130,6 +130,29 @@ var MdxFile = function(options) {
 };
 
 /**
+ * Return true if the given yaml resource's key is allowed by the
+ * frontmatter config. When frontmatter is an array (allowlist),
+ * only keys in the list pass. When it is boolean true, all keys pass.
+ *
+ * @static
+ * @param {Object} utils the loctool API utils object (provides hashKey)
+ * @param {Resource} res a yaml resource from the frontmatter
+ * @param {Array|boolean} frontmatter the frontmatter config from the mapping
+ * @returns {boolean} true if the resource is allowed
+ */
+MdxFile.isFrontmatterAllowed = function(utils, res, frontmatter) {
+    if (typeof(frontmatter) === 'boolean') {
+        return true;
+    }
+    var resKey = res.getKey();
+    var fileNameHash = res.getPath() && utils.hashKey(res.getPath());
+    if (fileNameHash && resKey.startsWith(fileNameHash + ".")) {
+        resKey = resKey.substring(fileNameHash.length + 1);
+    }
+    return frontmatter.indexOf(resKey) > -1;
+};
+
+/**
  * Unescape the string to make the same string that would be
  * in memory in the target programming language. This includes
  * unescaping both special and Unicode characters.
@@ -735,13 +758,10 @@ MdxFile.prototype._walk = function(node) {
                 this.yamlfile.parse(node.value);
                 var resources = this.yamlfile.getAll();
                 if (resources) {
-                    var fileNameHash = this.pathName && this.API.utils.hashKey(this.pathName);
+                    var utils = this.API.utils;
+                    var frontmatter = this.mapping.frontmatter;
                     resources.forEach(function(res) {
-                        var modifiedResKey = res.getKey();
-                        if (modifiedResKey.startsWith(fileNameHash)) {
-                            modifiedResKey = modifiedResKey.substring(fileNameHash.length+1);
-                        }
-                        if (typeof(this.mapping.frontmatter) === 'boolean' || this.mapping.frontmatter.indexOf(modifiedResKey) > -1) {
+                        if (MdxFile.isFrontmatterAllowed(utils, res, frontmatter)) {
                             this.set.add(res);
                         }
                     }.bind(this));

@@ -252,7 +252,22 @@ MdxFileType.prototype.getNew = function() {
     // get the new strings from the front matter and the file itself and
     // put them together
     var set = this.API.newTranslationSet(this.project.getSourceLocale());
-    set.addSet(this.yamlFileType.getNew());
+
+    // The yaml plugin processes all frontmatter keys during localization
+    // and reports any without a translation as "new". When a mapping uses
+    // a frontmatter allowlist (array), keys outside that list were
+    // intentionally excluded from extraction and must not appear as new
+    // strings. Filter them out so the new-strings XLIFF only contains
+    // genuinely untranslated resources.
+    var yamlResources = this.yamlFileType.getNew().getAll();
+    for (var i = 0; i < yamlResources.length; i++) {
+        var res = yamlResources[i];
+        var mapping = this.getMapping(res.getPath());
+        if (!mapping || !mapping.frontmatter || MdxFile.isFrontmatterAllowed(this.API.utils, res, mapping.frontmatter)) {
+            set.add(res);
+        }
+    }
+
     set.addSet(this.newres);
     return set;
 };
