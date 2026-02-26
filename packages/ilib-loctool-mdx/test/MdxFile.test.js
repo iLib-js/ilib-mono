@@ -3762,6 +3762,56 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(actual).toBe(expected);
     });
 
+    test("MdxFileLocalizeTextProcessFrontMatterSkipUnknownFieldsNotInNewSet", function() {
+        expect.assertions(3);
+        var mf = new MdxFile({
+            project: p3,
+            type: mdft3,
+            pathName: "a/b/x/foo.mdx"
+        });
+        expect(mf).toBeTruthy();
+        mdft3.newres.clear();
+        mdft3.getYamlFileType().getNew().clear();
+        // Frontmatter allowlist for **/x/*.mdx is ["Title", "Description"].
+        // "type", "mode", and "related_pages" are NOT in the allowlist.
+        mf.parse(
+            '---\n' +
+            'Title: This is a test of the front matter\n' +
+            'type: quick-start\n' +
+            'mode: wide\n' +
+            'related_pages:\n' +
+            '  - sdks-and-tools\n' +
+            '---\n\n' +
+            'This is a test\n');
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r654479252",
+            source: "This is a test",
+            sourceLocale: "en-US",
+            target: "Ceci est un essai",
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "r679920659.Title",
+            source: "This is a test of the front matter",
+            sourceLocale: "en-US",
+            target: "Ceci est aussi un essai de la question en face",
+            targetLocale: "fr-FR",
+            datatype: "x-yaml"
+        }));
+        mf.localizeText(translations, "fr-FR");
+
+        // All body text and allowlisted frontmatter keys have translations,
+        // so getNew() should be empty. The non-allowlisted keys (type, mode,
+        // related_pages) must not appear as new strings.
+        var newset = mdft3.getNew();
+        expect(newset).toBeTruthy();
+        expect(newset.size()).toBe(0);
+    });
+
     test("MdxFileLocalizeTextProcessFrontMatterLocalizeAll", function() {
         expect.assertions(2);
         var mf = new MdxFile({
