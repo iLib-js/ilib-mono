@@ -9,9 +9,9 @@ or custom schema.
 ## Configuration
 
 Internally, this plugin uses two other loctool plugins:
-[ilib-loctool-json](https://github.com/iLib-js/ilib-loctool-json)
+[ilib-loctool-json](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-loctool-json)
 and
-[ilib-loctool-ghfm](https://github.com/iLib-js/ilib-loctool-ghfm)
+[ilib-loctool-ghfm](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-loctool-ghfm)
 
 OpenAPI plugin configuration is identical to
 [JSON plugin's config](https://github.com/iLib-js/ilib-loctool-json#configuring-the-plugin).

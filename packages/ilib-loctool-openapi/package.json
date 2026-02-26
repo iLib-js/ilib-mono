@@ -41,23 +41,22 @@
         "url": "https://github.com/iLib-js/ilib-mono"
     },
     "scripts": {
-        "dist": "npm pack",
-        "test": "node node_modules/jest/bin/jest.js",
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "coverage": "pnpm test --coverage",
         "test:watch": "node node_modules/jest/bin/jest.js --watch",
-        "debug": "node --inspect-brk node_modules/.bin/jest -i",
-        "clean": "git clean -f -d test"
+        "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i"
     },
     "engines": {
-        "node": ">=12 <25"
+        "node": ">=16 <23"
     },
     "dependencies": {
-        "ilib": "^14.21.1",
+        "ilib": "^14.21.2",
         "ilib-loctool-ghfm": "workspace:^",
         "ilib-loctool-json": "workspace:^"
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",
         "loctool": "workspace:^",
-        "jest": "^29.0.0"
+        "jest": "^29.7.0"
     }
 }
