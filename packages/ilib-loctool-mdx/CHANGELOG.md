@@ -1,5 +1,11 @@
 # ilib-loctool-mdx
 
+## 1.1.1
+
+### Patch Changes
+
+- 8442fc2: Filter non-allowlisted frontmatter from new-strings set
+
 ## 1.1.0
 
 ### Minor Changes
