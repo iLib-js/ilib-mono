@@ -17,6 +17,10 @@
  * limitations under the License.
  */
 
+import { Escaper, escaperFactory } from "ilib-tools-common";
+
+const poEscaper = escaperFactory("po")!;
+
 /**
  * Plural categories according to Unicode's CLDR.
  */
@@ -58,10 +62,8 @@ export type Comments = {
 };
 
 /**
- * Escape quotes and backslashes in a string.
- * IMPORTANT: The order of escaping matters.
- * We must escape backslashes first so we don't double-escape the
- * backslashes introduced when escaping quotes.
+ * Escape quotes and backslashes in a string for PO file format (msgid, msgstr, etc.).
+ * Uses ilib-tools-common RegexBasedEscaper with "po" style (GNU gettext: \\ and ").
  * @param str the string to escape
  * @returns the escaped string
  */
@@ -69,16 +71,12 @@ export function escapeQuotesAndBackslashes(str: string): string {
   if (!str) {
     return "";
   }
-
-  return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+  return poEscaper.escape(str);
 }
 
 /**
- * Unescape quotes and backslashes in a string.
- * IMPORTANT: The order of unescaping matters.
- * We must unescape escaped quotes (\\") BEFORE unescaping backslashes (\\\\),
- * otherwise we could accidentally remove backslashes that are part of an
- * escaped quote sequence.
+ * Unescape quotes and backslashes in a string from PO file format.
+ * Uses ilib-tools-common RegexBasedEscaper with "po" style.
  * @param str the string to unescape
  * @returns the unescaped string
  */
@@ -86,7 +84,7 @@ export function unescapeQuotesAndBackslashes(str: string): string {
   if (!str) {
     return "";
   }
-  return str.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+  return poEscaper.unescape(str);
 }
 
 export type MakeKeyProps =
