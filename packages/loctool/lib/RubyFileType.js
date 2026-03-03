@@ -170,14 +170,14 @@ RubyFileType.prototype.write = function(translations, locales) {
                                 logger.trace("No translation for " + res.reskey + " to " + locale);
                             } else {
                                 this.checkAllPluralCases(res, translated);
-                                file = resFileType.getResourceFile(locale, res.getFlavor());
+                                file = resFileType.getResourceFile({ locale: locale, flavor: res.getFlavor() });
                                 file.addResource(translated);
                                 logger.trace("Added " + r.reskey + " to " + file.pathName);
                             }
                         }.bind(this));
                     } else {
                         this.checkAllPluralCases(res, translated);
-                        file = resFileType.getResourceFile(locale, res.getFlavor());
+                        file = resFileType.getResourceFile({ locale: locale, flavor: res.getFlavor() });
                         file.addResource(translated);
                         logger.trace("Added " + r.reskey + " to " + file.pathName);
                     }
@@ -194,7 +194,7 @@ RubyFileType.prototype.write = function(translations, locales) {
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
-        file = resFileType.getResourceFile(res.getTargetLocale(), res.getFlavor());
+        file = resFileType.getResourceFile({ locale: res.getTargetLocale(), flavor: res.getFlavor() });
         file.addResource(res);
         logger.trace("Added " + res.reskey + " to " + file.pathName);
     }

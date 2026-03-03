@@ -249,7 +249,7 @@ describe("stringsfiletype", function() {
             pathName: "src/myproduct/Base.lproj/Test.xib",
             datatype: istf.datatype
         })
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("src/myproduct/en-001.lproj/Test.strings")
@@ -268,7 +268,7 @@ describe("stringsfiletype", function() {
             datatype: istf.datatype
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("src/myproduct/en-US.lproj/Test.strings")
@@ -287,7 +287,7 @@ describe("stringsfiletype", function() {
             datatype: istf.datatype
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("src/myproduct/zh-Hans.lproj/Test.strings")
@@ -306,7 +306,7 @@ describe("stringsfiletype", function() {
             datatype: istf.datatype
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("src/myproduct/zh-Hant.lproj/Test.strings")
@@ -325,7 +325,7 @@ describe("stringsfiletype", function() {
             datatype: istf.datatype
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("src/myproduct/es.lproj/Test.strings")
@@ -344,7 +344,7 @@ describe("stringsfiletype", function() {
             datatype: istf.datatype
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("src/myproduct/en-NZ.lproj/Test.strings")
@@ -363,7 +363,7 @@ describe("stringsfiletype", function() {
             datatype: istf.datatype
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("src/myproduct/sv.lproj/Test.strings")
@@ -382,7 +382,7 @@ describe("stringsfiletype", function() {
             datatype: "x-objective-c"
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("foo/en-US.lproj/Localizable.strings")
@@ -401,7 +401,7 @@ describe("stringsfiletype", function() {
             datatype: "x-objective-c"
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("foo/en-001.lproj/Localizable.strings")
@@ -420,7 +420,7 @@ describe("stringsfiletype", function() {
             datatype: "x-objective-c"
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("foo/zh-Hans.lproj/Localizable.strings")
@@ -439,7 +439,7 @@ describe("stringsfiletype", function() {
             datatype: "x-objective-c"
         })
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("foo/es.lproj/Localizable.strings")
@@ -459,7 +459,7 @@ describe("stringsfiletype", function() {
             flavor: "chocolate"
         });
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("foo/en-001.lproj/chocolate.strings")
@@ -479,7 +479,7 @@ describe("stringsfiletype", function() {
             flavor: "chocolate"
         });
 
-        var rf = istf.getResourceFile(res);
+        var rf = istf.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("foo/zh-Hans.lproj/chocolate.strings")

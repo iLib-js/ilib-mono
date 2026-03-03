@@ -72,7 +72,7 @@ describe("PHPresourcefile", function() {
             type: phpft,
             project: p,
             pathName: "localized/TranslationEnUS.php",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
 
         expect(phprf).toBeTruthy();
@@ -85,7 +85,7 @@ describe("PHPresourcefile", function() {
             type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(phprf).toBeTruthy();
@@ -133,7 +133,7 @@ describe("PHPresourcefile", function() {
             type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(phprf).toBeTruthy();
@@ -205,7 +205,7 @@ describe("PHPresourcefile", function() {
             type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(phprf).toBeTruthy();
@@ -242,7 +242,7 @@ describe("PHPresourcefile", function() {
             type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(phprf).toBeTruthy();
@@ -303,7 +303,7 @@ describe("PHPresourcefile", function() {
             type: phpft,
             project: p,
             pathName: "localized/TranslationDeDE.php",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(phprf).toBeTruthy();
@@ -363,7 +363,7 @@ describe("PHPresourcefile", function() {
         var phprf = new PHPResourceFile({
             type: phpft,
             project: p,
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(phprf).toBeTruthy();
@@ -377,7 +377,7 @@ describe("PHPresourcefile", function() {
         var phprf = new PHPResourceFile({
             type: phpft,
             project: p,
-            locale: "zh-Hans-CN"
+            targetLocale: "zh-Hans-CN"
         });
 
         expect(phprf).toBeTruthy();
@@ -405,7 +405,7 @@ describe("PHPresourcefile", function() {
         var phprf = new PHPResourceFile({
             type: phpft,
             project: p,
-            locale: "de-AT",
+            targetLocale: "de-AT",
             pathName: "path/to/foo.php"
         });
 
@@ -420,7 +420,7 @@ describe("PHPresourcefile", function() {
         var phprf = new PHPResourceFile({
             type: phpft,
             project: p,
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(phprf).toBeTruthy();
@@ -494,7 +494,7 @@ describe("PHPresourcefile", function() {
         var phprf = new PHPResourceFile({
             type: phpft,
             project: p,
-            locale: "zh-Hans-CN"
+            targetLocale: "zh-Hans-CN"
         });
 
         expect(phprf).toBeTruthy();
@@ -568,7 +568,7 @@ describe("PHPresourcefile", function() {
         var phprf = new PHPResourceFile({
             type: phpft,
             project: p,
-            locale: "zh-Hant-HK"
+            targetLocale: "zh-Hant-HK"
         });
 
         expect(phprf).toBeTruthy();
@@ -642,7 +642,7 @@ describe("PHPresourcefile", function() {
         var phprf = new PHPResourceFile({
             type: phpft,
             project: p,
-            locale: "nl-NL"
+            targetLocale: "nl-NL"
         });
 
         expect(phprf).toBeTruthy();

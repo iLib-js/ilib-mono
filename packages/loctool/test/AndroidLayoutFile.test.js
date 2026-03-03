@@ -48,7 +48,7 @@ describe("androidlayoutfile", function() {
             project: p,
             type: alft,
             pathName: "./java/res/layout/t1.xml",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
 
         expect(alf).toBeTruthy();

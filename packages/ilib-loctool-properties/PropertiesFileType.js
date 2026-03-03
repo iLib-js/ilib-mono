@@ -128,21 +128,40 @@ PropertiesFileType.prototype.newFile = function(pathName) {
  * Find or create the resource file object for the given project, context,
  * and locale.
  *
- * @param {String} locale the name of the locale in which the resource
- * file will reside
+ * @param {Object} [options] options identifying the resource file. Properties:
+ *   - options.locale {string} - locale of the resource file
+ *   - options.resource {Resource} - when provided, locale/pathName/type/flavor can be derived from the resource
  * @return {PropertiesFile} the Android resource file that serves the
  * given project, context, and locale.
  */
-PropertiesFileType.prototype.getResourceFile = function(locale) {
-    var key = locale || this.project.sourceLocale;
+PropertiesFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var locale = opts.locale || (opts.resource && (opts.resource.getTargetLocale() || opts.resource.getSourceLocale())) || this.project.sourceLocale;
+    var pathName = opts.pathName || (opts.resource && opts.resource.getPath());
+    var type = opts.type || (opts.resource && opts.resource.getDataType());
+    var flavor = opts.flavor || (opts.resource && opts.resource.getFlavor && opts.resource.getFlavor());
+
+    var key;
+    if (pathName !== undefined) {
+        var newPath = this.getResourceFilePath(locale, pathName, type, flavor);
+        key = newPath;
+        this.logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
+    } else {
+        key = locale || this.project.sourceLocale;
+    }
 
     var resfile = this.resourceFiles && this.resourceFiles[key];
 
     if (!resfile) {
-        resfile = this.resourceFiles[key] = new PropertiesFile({
+        var fileOpts = {
             project: this.project,
-            locale: key
-        });
+            locale: locale || this.project.sourceLocale,
+            type: this
+        };
+        if (pathName !== undefined) {
+            fileOpts.pathName = key;
+        }
+        resfile = this.resourceFiles[key] = new PropertiesFile(fileOpts);
 
         this.logger.trace("Defining new resource file");
     }
@@ -189,41 +208,6 @@ PropertiesFileType.prototype.getResourceFilePath = function(locale, pathName, ty
 };
 
 /**
- * Find or create the resource file object for the given project, context,
- * and locale.
- *
- * @param {Resource} res resource to find the resource file for
- * @return {PropertiesFileType} the Android resource file that serves the
- * given project, context, and locale.
- */
-PropertiesFileType.prototype.getResourceFile = function(res) {
-    var locale = res.getTargetLocale() || res.getSourceLocale(),
-        pathName = res.getPath(),
-        type = res.getDataType(),
-        flavor = res.getFlavor && res.getFlavor();
-    var newPath = this.getResourceFilePath(locale, pathName, type, flavor);
-
-    this.logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
-
-    var resfile = this.resourceFiles && this.resourceFiles[newPath];
-
-    if (!resfile) {
-        resfile = this.resourceFiles[newPath] = new PropertiesFile({
-            project: this.project,
-            locale: locale || this.project.sourceLocale,
-            pathName: newPath,
-            type: this
-        });
-
-        this.logger.trace("Defining new resource file");
-    } else {
-        this.logger.trace("Returning existing resource file");
-    }
-
-    return resfile;
-};
-
-/**
  * Return all resource files known to this file type instance.
  *
  * @returns {Array.<PropertiesFile>} an array of resource files
@@ -250,6 +234,7 @@ PropertiesFileType.prototype.generatePseudo = function(locale, pb) {
             this.pseudo.add(res);
         }
     }.bind(this));
+    return this.pseudo;
 };
 
 PropertiesFileType.prototype.getDataType = function() {

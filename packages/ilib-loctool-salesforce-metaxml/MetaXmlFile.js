@@ -62,7 +62,8 @@ var MetaXmlFile = function(options) {
     this.locale = new Locale(options.locale || "en-US");
 
     this.xmlFile = this.type.xmlFileType.newFile(this.pathName, {
-        mapping: this.mapping
+        mapping: this.mapping,
+        targetLocale: this.locale.getSpec()
     });
 
     this.translationFile = this.isTranslationFile(this.pathName);

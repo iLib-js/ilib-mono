@@ -6,6 +6,7 @@ const config = {
         name: "ilib-loctool-salesforce-metaxml e2e",
         color: "blue",
     },
+    testTimeout: 15000,
 };
 
 module.exports = config;

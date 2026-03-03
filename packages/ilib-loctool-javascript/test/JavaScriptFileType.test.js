@@ -318,7 +318,7 @@ describe("javascriptfiletype", function() {
         var resFileType = p.getResourceFileType("javascript");
         expect(resFileType instanceof JavaScriptResourceFileType).toBeTruthy();
 
-        var resfile = resFileType.getResourceFile("de-DE");
+        var resfile = resFileType.getResourceFile({ locale: "de-DE" });
 
         expect(resfile).toBeTruthy();
         expect(resfile.locale.getSpec()).toBe("de-DE");
@@ -334,7 +334,7 @@ describe("javascriptfiletype", function() {
         var resFileType = p2.getResourceFileType("javascript");
         expect(resFileType instanceof JsonFileType).toBeTruthy();
 
-        var resfile = resFileType.getResourceFile("de-DE");
+        var resfile = resFileType.getResourceFile({ locale: "de-DE" });
 
         expect(resfile).toBeTruthy();
         expect(resfile.locale.getSpec()).toBe("de-DE");
@@ -350,11 +350,11 @@ describe("javascriptfiletype", function() {
         var resFileType = p2.getResourceFileType("javascript");
         expect(resFileType instanceof JsonFileType).toBeTruthy();
 
-        var resfile1 = resFileType.getResourceFile("de-DE");
+        var resfile1 = resFileType.getResourceFile({ locale: "de-DE" });
 
         expect(resfile1).toBeTruthy();
 
-        var resfile2 = resFileType.getResourceFile("de-DE");
+        var resfile2 = resFileType.getResourceFile({ locale: "de-DE" });
 
         expect(resfile2).toBeTruthy();
 
@@ -371,11 +371,11 @@ describe("javascriptfiletype", function() {
         var resFileType = p2.getResourceFileType("javascript");
         expect(resFileType instanceof JsonFileType).toBeTruthy();
 
-        var resfile1 = resFileType.getResourceFile("de-DE");
+        var resfile1 = resFileType.getResourceFile({ locale: "de-DE" });
 
         expect(resfile1).toBeTruthy();
 
-        var resfile2 = resFileType.getResourceFile("fr-FR");
+        var resfile2 = resFileType.getResourceFile({ locale: "fr-FR" });
 
         expect(resfile2).toBeTruthy();
 

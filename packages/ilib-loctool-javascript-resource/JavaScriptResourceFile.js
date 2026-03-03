@@ -29,7 +29,7 @@ var Locale = require("ilib-locale");
  * <li>project - the name of the project for this file
  * <li>pathName - the path to the file, relative to the root of the project
  * <li>type - type of this resource file
- * <li>locale - the locale of this file
+ * <li>targetLocale - the locale of this file
  * </ul>
  * @param {Object} props properties that control the construction of this file.
  */
@@ -39,7 +39,7 @@ var JavaScriptResourceFile = function(props) {
     if (props) {
         this.project = props.project;
         this.pathName = props.pathName;
-        this.locale = new Locale(props.locale);
+        this.locale = new Locale(props.targetLocale);
         this.API = props.project.getAPI();
         this.type = props.type;
     }

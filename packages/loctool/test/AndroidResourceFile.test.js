@@ -63,7 +63,7 @@ describe("androidresourcefile", function() {
             project: p,
             type: arft,
             pathName: "./java/res/values/t1.xml",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
 
         expect(arf).toBeTruthy();
@@ -114,7 +114,7 @@ describe("androidresourcefile", function() {
         var arf = new AndroidResourceFile({
             project: p,
             type: arft,
-            locale: "de-DE" // different from source locale, so should produce target resources
+            targetLocale: "de-DE" // different from source locale, so should produce target resources
         });
         expect(arf).toBeTruthy();
 
@@ -529,7 +529,7 @@ describe("androidresourcefile", function() {
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/foo.xml",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(arf).toBeTruthy();
 
@@ -541,7 +541,7 @@ describe("androidresourcefile", function() {
                 "few": "This is few",
                 "other": "This is other"
             },
-            locale: "en-US",
+            targetLocale: "en-US",
             comment: "comment1"
         }));
 
@@ -553,7 +553,7 @@ describe("androidresourcefile", function() {
                 "few": "deux",
                 "other": "trois"
             },
-            locale: "en-US",
+            targetLocale: "en-US",
             comment: "comment2"
         }));
 
@@ -583,7 +583,7 @@ describe("androidresourcefile", function() {
             project: p,
             type: arft,
             pathName: "./test/testfiles/java/res/values/foo.xml",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
         expect(arf).toBeTruthy();
 

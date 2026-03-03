@@ -59,7 +59,7 @@ describe("scriptresourcefile", function() {
         var jsrf = new JavaScriptResourceFile({
             project: p,
             pathName: "localized_js/en-US.js",
-            locale: "en-US"
+            targetLocale: "en-US"
         });
 
         expect(jsrf).toBeTruthy();
@@ -81,7 +81,7 @@ describe("scriptresourcefile", function() {
         var jsrf = new JavaScriptResourceFile({
             project: p,
             pathName: "localized_js/de-DE.js",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -135,7 +135,7 @@ describe("scriptresourcefile", function() {
         var jsrf = new JavaScriptResourceFile({
             project: p,
             pathName: "localized_js/de-DE.js",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -192,7 +192,7 @@ describe("scriptresourcefile", function() {
         var jsrf = new JavaScriptResourceFile({
             project: p,
             pathName: "localized_js/de-DE.js",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -215,7 +215,7 @@ describe("scriptresourcefile", function() {
         var jsrf = new JavaScriptResourceFile({
             project: p,
             pathName: "localized_js/de-DE.js",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -263,7 +263,7 @@ describe("scriptresourcefile", function() {
         var jsrf = new JavaScriptResourceFile({
             project: p,
             pathName: "localized_js/de-DE.js",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -312,7 +312,7 @@ describe("scriptresourcefile", function() {
         var jsrf = new JavaScriptResourceFile({
             project: p,
             pathName: "localized_js/de-DE.js",
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -397,7 +397,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -421,7 +421,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -467,7 +467,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-AT"
+            targetLocale: "de-AT"
         });
 
         expect(jsrf).toBeTruthy();
@@ -513,7 +513,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-DE-ASDF"
+            targetLocale: "de-DE-ASDF"
         });
 
         expect(jsrf).toBeTruthy();
@@ -559,7 +559,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-AT-ASDF"
+            targetLocale: "de-AT-ASDF"
         });
 
         expect(jsrf).toBeTruthy();
@@ -605,7 +605,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hans-CN"
+            targetLocale: "zh-Hans-CN"
         });
 
         expect(jsrf).toBeTruthy();
@@ -629,7 +629,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hans-CN"
+            targetLocale: "zh-Hans-CN"
         });
 
         expect(jsrf).toBeTruthy();
@@ -675,7 +675,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hant-HK"
+            targetLocale: "zh-Hant-HK"
         });
 
         expect(jsrf).toBeTruthy();
@@ -721,7 +721,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hans-SG"
+            targetLocale: "zh-Hans-SG"
         });
 
         expect(jsrf).toBeTruthy();
@@ -767,7 +767,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hant-TW"
+            targetLocale: "zh-Hant-TW"
         });
 
         expect(jsrf).toBeTruthy();
@@ -859,7 +859,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-AT",
+            targetLocale: "de-AT",
             pathName: "localized_js/foo.js"
         });
 
@@ -906,7 +906,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -970,7 +970,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-DE"
+            targetLocale: "de-DE"
         });
 
         expect(jsrf).toBeTruthy();
@@ -1056,7 +1056,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-AT"
+            targetLocale: "de-AT"
         });
 
         expect(jsrf).toBeTruthy();
@@ -1142,7 +1142,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hans-CN"
+            targetLocale: "zh-Hans-CN"
         });
 
         expect(jsrf).toBeTruthy();
@@ -1228,7 +1228,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hant-HK"
+            targetLocale: "zh-Hant-HK"
         });
 
         expect(jsrf).toBeTruthy();
@@ -1314,7 +1314,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hans-SG"
+            targetLocale: "zh-Hans-SG"
         });
 
         expect(jsrf).toBeTruthy();
@@ -1400,7 +1400,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "zh-Hant-TW"
+            targetLocale: "zh-Hant-TW"
         });
 
         expect(jsrf).toBeTruthy();
@@ -1486,7 +1486,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-DE-ASDF"
+            targetLocale: "de-DE-ASDF"
         });
 
         expect(jsrf).toBeTruthy();
@@ -1572,7 +1572,7 @@ describe("scriptresourcefile", function() {
 
         var jsrf = new JavaScriptResourceFile({
             project: p,
-            locale: "de-DE-ASDF"
+            targetLocale: "de-DE-ASDF"
         });
 
         expect(jsrf).toBeTruthy();

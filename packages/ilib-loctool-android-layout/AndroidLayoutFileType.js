@@ -121,7 +121,7 @@ AndroidLayoutFileType.prototype.write = function(translations, locales) {
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
-        file = resFileType.getResourceFile(res.context, res.getSourceLocale(), "strings", res.pathName);
+        file = resFileType.getResourceFile({ context: res.context, locale: res.getSourceLocale(), type: "strings", pathName: res.pathName });
         file.addResource(res);
 
         // for each extracted string, write out the translations of it
@@ -141,7 +141,7 @@ AndroidLayoutFileType.prototype.write = function(translations, locales) {
                     // skip to cause it to fall back to the english strings
                     this.logger.trace("No translation for " + res.reskey + " to " + locale);
                 } else {
-                    file = resFileType.getResourceFile(r.context, locale, "strings", r.pathName);
+                    file = resFileType.getResourceFile({ context: r.context, locale: locale, type: "strings", pathName: r.pathName });
                     file.addResource(r);
                     this.logger.trace("Added " + r.reskey + " to " + file.pathName);
                 }
@@ -157,7 +157,7 @@ AndroidLayoutFileType.prototype.write = function(translations, locales) {
         res = resources[i];
         // only add if the pseudo is different than the source
         if (res.getSource() != res.getTarget()) {
-            file = resFileType.getResourceFile(res.context, res.getTargetLocale(), res.resType + "s", res.pathName);
+            file = resFileType.getResourceFile({ context: res.context, locale: res.getTargetLocale(), type: res.resType + "s", pathName: res.pathName });
             file.addResource(res);
             this.logger.trace("Added " + res.reskey + " to " + file.pathName);
         }

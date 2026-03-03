@@ -39,7 +39,7 @@ var JsonFile = function (options) {
 
     this.API = this.project.getAPI();
     this.mapping = this.type.getMapping(this.pathName);
-    this.localeSpec = (options && options.locale) ||
+    this.localeSpec = (options && options.targetLocale) ||
         (this.mapping && this.pathName && this.API.utils.getLocaleFromPath(this.mapping.template, this.pathName)) ||
         this.project.sourceLocale ||
         "en-US";
@@ -964,7 +964,7 @@ JsonFile.prototype.localize = function (translations, locales) {
                 var locale = locales[i];
                 // Don't pass pathName - let the resource file type use its own template
                 this.logger.debug("Delegating output to resourceFileType for locale " + locale);
-                var resFile = resFileType.getResourceFile(locale);
+                var resFile = resFileType.getResourceFile({ locale: locale });
 
                 // For each extracted resource, look up its translation and add to the resource file
                 for (var j = 0; j < resources.length; j++) {

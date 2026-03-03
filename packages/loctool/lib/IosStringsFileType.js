@@ -123,7 +123,7 @@ IosStringsFileType.prototype.write = function(translations, locales) {
                     logger.trace("No translation for " + res.reskey + " to " + locale + ". Adding to new resources file.");
                 }
 
-                file = this.getResourceFile(r);
+                file = this.getResourceFile({ resource: r });
                 file.addResource(r);
                 logger.trace("Added " + r.reskey + " to " + file.pathName);
             }.bind(this));
@@ -136,7 +136,7 @@ IosStringsFileType.prototype.write = function(translations, locales) {
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
-        file = this.getResourceFile(res);
+        file = this.getResourceFile({ resource: res });
         file.addResource(res);
         logger.trace("Added " + res.reskey + " to " + file.pathName);
     }
@@ -217,18 +217,18 @@ IosStringsFileType.prototype.getResourceFilePath = function(locale, pathName, ty
 };
 
 /**
- * Find or create the resource file object for the given project, context,
- * and locale.
+ * Find or create the resource file object for the given options.
  *
- * @param {Resource} res resource to find the resource file for
- * @return {IosStringsFile} the Android resource file that serves the
- * given project, context, and locale.
+ * @param {Object} [options] options.resource, or options.locale, options.pathName, options.type, options.flavor
+ * @return {IosStringsFile} the resource file that serves the given project, context, and locale.
  */
-IosStringsFileType.prototype.getResourceFile = function(res) {
-    var locale = res.getTargetLocale() || res.getSourceLocale(),
-        pathName = res.getPath(),
-        type = res.getDataType(),
-        flavor = res.getFlavor && res.getFlavor();
+IosStringsFileType.prototype.getResourceFile = function(options) {
+    var opts = options || {};
+    var res = opts.resource;
+    var locale = opts.locale || (res && (res.getTargetLocale() || res.getSourceLocale()));
+    var pathName = opts.pathName || (res && res.getPath());
+    var type = opts.type || (res && res.getDataType());
+    var flavor = opts.flavor || (res && res.getFlavor && res.getFlavor());
     var newPath = this.getResourceFilePath(locale, pathName, type, flavor);
 
     logger.trace("getResourceFile converted path " + pathName + " for locale " + locale + " to path " + newPath);
@@ -238,7 +238,7 @@ IosStringsFileType.prototype.getResourceFile = function(res) {
     if (!resfile) {
         resfile = this.resourceFiles[newPath] = new IosStringsFile({
             project: this.project,
-            locale: locale || this.project.sourceLocale,
+            targetLocale: locale || this.project.sourceLocale,
             pathName: newPath,
             type: this
         });

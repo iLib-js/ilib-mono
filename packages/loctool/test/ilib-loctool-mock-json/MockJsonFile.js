@@ -29,7 +29,7 @@ var Locale = require("ilib/lib/Locale.js");
  * <li>project - the name of the project for this file
  * <li>pathName - the path to the file, relative to the root of the project
  * <li>type - type of this resource file
- * <li>locale - the locale of this file
+ * <li>targetLocale - the locale of this file
  * </ul>
  * @param {Object} props properties that control the construction of this file.
  */
@@ -40,7 +40,7 @@ var MockJsonFile = function(props) {
         this.API = props.project.getAPI();
         this.project = props.project;
         this.pathName = props.pathName;
-        this.locale = props.locale;
+        this.locale = props.targetLocale;
         this.type = props.type;
     }
 

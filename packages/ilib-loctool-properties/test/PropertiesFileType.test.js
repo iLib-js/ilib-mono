@@ -180,7 +180,7 @@ describe("propertiesfiletype", function() {
             pathName: "src/myproduct/Test.properties",
             datatype: pft.datatype
         })
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         // default for non-US English locales
@@ -200,7 +200,7 @@ describe("propertiesfiletype", function() {
             datatype: pft.datatype
         })
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         // default for the source locale
@@ -220,7 +220,7 @@ describe("propertiesfiletype", function() {
             datatype: pft.datatype
         })
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         // default for Chinese
@@ -240,7 +240,7 @@ describe("propertiesfiletype", function() {
             datatype: pft.datatype
         })
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         // default for Chinese traditional
@@ -260,7 +260,7 @@ describe("propertiesfiletype", function() {
             datatype: pft.datatype
         })
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         // non default locale
@@ -280,7 +280,7 @@ describe("propertiesfiletype", function() {
             datatype: pft.datatype
         })
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         // for default locales that are not English, use only the language
@@ -300,7 +300,7 @@ describe("propertiesfiletype", function() {
             datatype: pft.datatype
         })
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         // for non-default locales, use all the locale parts
@@ -320,7 +320,7 @@ describe("propertiesfiletype", function() {
             datatype: pft.datatype
         })
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         // when unknown, only use the language part
@@ -341,7 +341,7 @@ describe("propertiesfiletype", function() {
             flavor: "chocolate"
         });
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("foo/QHC_es_AR_CHOCOLATE.properties")
@@ -361,7 +361,7 @@ describe("propertiesfiletype", function() {
             flavor: "chocolate"
         });
 
-        var rf = pft.getResourceFile(res);
+        var rf = pft.getResourceFile({ resource: res });
         expect(rf).toBeTruthy();
 
         expect(rf.getPath()).toBe("foo/QHC_zh_CHOCOLATE.properties")
