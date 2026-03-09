@@ -5487,6 +5487,219 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(content).toBe(expected);
     });
 
+    test("MdxFileLocalizeFileReportOnlyFullyTranslated", function() {
+        expect.assertions(3);
+        // "report-only" mode: always output translations, write fullyTranslated: true when 100% translated
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            nopseudo: true,
+            mdx: {
+                fullyTranslated: "report-only"
+            }
+        });
+        var mdft2 = new MdxFileType(p2);
+        var mf = new MdxFile({
+            project: p2,
+            pathName: "./notrans.mdx",
+            type: mdft2
+        });
+        expect(mf).toBeTruthy();
+        mf.extract();
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r112215756',
+            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r260813817',
+            source: 'This is the last bit of localizable text.',
+            target: 'C\'est le dernier morceau de texte localisable.',
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        mf.localize(translations, ["fr-FR"]);
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.mdx"))).toBeTruthy();
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.mdx"), "utf-8");
+        // fully translated: should have fullyTranslated: true and all translations
+        var expected =
+            '---\n' +
+            'fullyTranslated: true\n' +
+            '---\n\n' +
+            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
+            '\n' +
+            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
+            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
+            'C\'est le dernier morceau de texte localisable.\n\n' +
+            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+        diff(content, expected);
+        expect(content).toBe(expected);
+    });
+
+    test("MdxFileLocalizeFileReportOnlyNotFullyTranslated", function() {
+        expect.assertions(3);
+        // "report-only" mode: always output translations, write fullyTranslated: false when not 100% translated
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            nopseudo: true,
+            mdx: {
+                fullyTranslated: "report-only"
+            }
+        });
+        var mdft2 = new MdxFileType(p2);
+        var mf = new MdxFile({
+            project: p2,
+            pathName: "./notrans.mdx",
+            type: mdft2
+        });
+        expect(mf).toBeTruthy();
+        mf.extract();
+        var translations = new TranslationSet();
+        // only provide translations for 2 of 4 strings
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        mf.localize(translations, ["fr-FR"]);
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.mdx"))).toBeTruthy();
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.mdx"), "utf-8");
+        // NOT fully translated: should have fullyTranslated: false but STILL output
+        // the partial translations (translated strings in French, untranslated in English)
+        var expected =
+            '---\n' +
+            'fullyTranslated: false\n' +
+            '---\n\n' +
+            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
+            '\n' +
+            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
+            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
+            'This is the last bit of localizable text.\n\n' +
+            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+        diff(content, expected);
+        expect(content).toBe(expected);
+    });
+
+    test("MdxFileLocalizeFileReportOnlyNoTranslations", function() {
+        expect.assertions(3);
+        // "report-only" mode with zero translations: should output source with fullyTranslated: false
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            nopseudo: true,
+            mdx: {
+                fullyTranslated: "report-only"
+            }
+        });
+        var mdft2 = new MdxFileType(p2);
+        var mf = new MdxFile({
+            project: p2,
+            pathName: "./notrans.mdx",
+            type: mdft2
+        });
+        expect(mf).toBeTruthy();
+        mf.extract();
+        var translations = new TranslationSet();
+        mf.localize(translations, ["fr-FR"]);
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.mdx"))).toBeTruthy();
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.mdx"), "utf-8");
+        // no translations: should have fullyTranslated: false and output source text
+        var expected =
+            '---\n' +
+            'fullyTranslated: false\n' +
+            '---\n\n' +
+            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
+            'This is some text. This is more text. Pretty, pretty text.\n\n' +
+            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
+            'This is the last bit of localizable text.\n\n' +
+            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+        diff(content, expected);
+        expect(content).toBe(expected);
+    });
+
+    test("MdxFileLocalizeFileReportOnlyWithFrontMatterNotFullyTranslated", function() {
+        expect.assertions(3);
+        // "report-only" mode with existing frontmatter: fullyTranslated: false appended to frontmatter
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            nopseudo: true,
+            mdx: {
+                fullyTranslated: "report-only"
+            }
+        });
+        var mdft2 = new MdxFileType(p2);
+        var mf = new MdxFile({
+            project: p2,
+            pathName: "./notrans2.mdx",
+            type: mdft2
+        });
+        expect(mf).toBeTruthy();
+        mf.extract();
+        var translations = new TranslationSet();
+        // only provide translations for 2 of 4 strings
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r548615397',
+            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
+            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        translations.add(new ResourceString({
+            project: "loctest2",
+            key: 'r777006502',
+            source: 'This is some text. This is more text. Pretty, pretty text.',
+            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
+            targetLocale: "fr-FR",
+            datatype: "mdx"
+        }));
+        mf.localize(translations, ["fr-FR"]);
+        expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.mdx"))).toBeTruthy();
+        var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.mdx"), "utf-8");
+        // NOT fully translated with existing frontmatter: should append fullyTranslated: false
+        // and still output partial translations
+        var expected =
+            '---\n' +
+            'frontmatter: true\n' +
+            'other: "asdf"\n' +
+            'fullyTranslated: false\n' +
+            '---\n\n' +
+            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
+            '\n' +
+            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
+            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
+            'This is the last bit of localizable text.\n\n' +
+            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+        diff(content, expected);
+        expect(content).toBe(expected);
+    });
+
     test("MdxFileLocalizeCodeSnippetsInBulletList", function() {
         expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true

@@ -206,6 +206,47 @@ describe("mdxfiletype", function() {
         expect(!fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeTruthy();
     });
 
+    test("MdxFileTypeProjectCloseReportOnly", function() {
+        expect.assertions(3);
+        var p2 = ProjectFactory("./test/testfiles/subproject", {
+            mdx: {
+                fullyTranslated: "report-only"
+            }
+        });
+        var mdft = new MdxFileType(p2);
+        expect(mdft).toBeTruthy();
+        var statii = [
+            {path: "fr-FR/a/b/c.mdx", locale: "fr-FR", fullyTranslated: false},
+            {path: "de-DE/a/b/c.mdx", locale: "de-DE", fullyTranslated: true},
+            {path: "ja-JP/a/b/c.mdx", locale: "ja-JP", fullyTranslated: false},
+            {path: "fr-FR/x/y.mdx", locale: "fr-FR", fullyTranslated: true},
+            {path: "de-DE/x/y.mdx", locale: "de-DE", fullyTranslated: false},
+            {path: "ja-JP/x/y.mdx", locale: "ja-JP", fullyTranslated: true}
+        ];
+        statii.forEach(function(status) {
+            mdft.addTranslationStatus(status);
+        });
+        mdft.projectClose();
+        expect(fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeTruthy();
+        var contents = fs.readFileSync("./test/testfiles/subproject/translation-status.json", "utf-8");
+        var actual = JSON.parse(contents);
+        var expected = {
+            translated: [
+                "de-DE/a/b/c.mdx",
+                "fr-FR/x/y.mdx",
+                "ja-JP/x/y.mdx"
+            ],
+            untranslated: [
+                "fr-FR/a/b/c.mdx",
+                "ja-JP/a/b/c.mdx",
+                "de-DE/x/y.mdx"
+            ]
+        };
+        expect(actual).toStrictEqual(expected);
+        // clean up
+        fs.unlinkSync("./test/testfiles/subproject/translation-status.json");
+    });
+
     test("should handle .mdx files as a default extension", function() {
         expect.assertions(3);
         var p3 = new CustomProject({

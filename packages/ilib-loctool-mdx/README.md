@@ -320,6 +320,43 @@ The localeMap setting specifies the mapping between locales that are used
 internally in the plugin, and the output locale that should be used for constructing
 the file name of output files.
 
+## Fully Translated Flag
+
+The `fullyTranslated` setting controls whether a `fullyTranslated` frontmatter
+field is added to output files and how partially translated files are handled.
+
+```json
+{
+    "settings": {
+        "mdx": {
+            "fullyTranslated": true
+        }
+    }
+}
+```
+
+Possible values:
+
+- **`true`** (boolean): Adds `fullyTranslated: true` to the frontmatter of
+  files where every string has a translation. Files that are not 100% translated
+  output the **original source text** (no translations at all) and do not get
+  the frontmatter flag. This is an all-or-nothing mode.
+
+- **`"report-only"`** (string): Adds `fullyTranslated: true` or
+  `fullyTranslated: false` to the frontmatter based on actual translation
+  status. Files always output the **best available translation** — translated
+  strings use the translation, untranslated strings fall back to the source
+  text. This reports translation status without enforcing it, allowing
+  downstream consumers to read the flag without losing partial translations.
+
+- **`false`** or not set: No `fullyTranslated` behavior. Files are output with
+  whatever translations are available and no frontmatter flag is added.
+
+When `fullyTranslated` is set to `true` or `"report-only"`, a
+`translation-status.json` file is written to the project root at the end of
+the loctool run, listing which output files are fully translated and which
+are not.
+
 ## License
 
 This plugin is licensed under Apache2. See the [LICENSE](./LICENSE)

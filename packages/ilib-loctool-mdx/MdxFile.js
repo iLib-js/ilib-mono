@@ -115,8 +115,18 @@ var MdxFile = function(options) {
     this.set = this.API.newTranslationSet(this.project ? this.project.sourceLocale : "zxx-XX");
     this.localizeLinks = false;
     // this.componentIndex = 0;
-    // if this is set, only produce fully translated mdx files. Otherwise if they
-    // are not fully translated, just output the original source text.
+    // Controls the fullyTranslated frontmatter flag and output behavior.
+    // Possible values:
+    //   - true (boolean): Only produce fully translated mdx files. If not fully
+    //     translated, output the original source text (no translations at all).
+    //     Adds "fullyTranslated: true" to frontmatter only when 100% translated.
+    //   - "report-only": Always output the best available translation (with source
+    //     text fallback for missing strings). Adds "fullyTranslated: true" when
+    //     100% translated, or "fullyTranslated: false" when not. This reports
+    //     translation status without enforcing it — partial translations are
+    //     preserved in the output, and consumers can read the flag to decide
+    //     how to handle incomplete files.
+    //   - false/undefined: No fullyTranslated behavior at all.
     this.fullyTranslated = this.project && this.project.settings && this.project.settings.mdx && this.project.settings.mdx.fullyTranslated;
     this.translationStatus = {};
 
@@ -1342,6 +1352,8 @@ MdxFile.prototype.localizeText = function(translations, locale) {
         } // else leave the source nodes alone
     }
 
+    var isReportOnly = (this.fullyTranslated === "report-only");
+
     if (this.fullyTranslated && this.translationStatus[locale]) {
         // record in the front matter that the file was fully translated
         if (nodeArray[1].type === "yaml") {
@@ -1354,12 +1366,32 @@ MdxFile.prototype.localizeText = function(translations, locale) {
                 value: "fullyTranslated: true"
             }));
         }
+    } else if (isReportOnly && !this.translationStatus[locale]) {
+        // In "report-only" mode, also record when the file is NOT fully translated.
+        // This allows consumers to read the flag without losing partial translations.
+        if (nodeArray[1].type === "yaml") {
+            nodeArray[1].value += "\nfullyTranslated: false";
+        } else {
+            nodeArray.splice(1, 0, new Node({
+                type: "yaml",
+                use: "startend",
+                value: "fullyTranslated: false"
+            }));
+        }
     }
 
     // convert to a tree again
     ast = mapToAst(Node.fromArray(nodeArray));
 
-    var str = mdstringify.stringify((!this.fullyTranslated || this.translationStatus[locale]) ? ast : this.ast);
+    // In "report-only" mode, always output the localized AST (with source text
+    // fallback for missing strings). In boolean true mode, output the original
+    // source AST when not fully translated (legacy behavior).
+    var str;
+    if (isReportOnly) {
+        str = mdstringify.stringify(ast);
+    } else {
+        str = mdstringify.stringify((!this.fullyTranslated || this.translationStatus[locale]) ? ast : this.ast);
+    }
 
     return str;
 };
