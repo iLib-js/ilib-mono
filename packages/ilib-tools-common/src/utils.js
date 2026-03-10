@@ -20,10 +20,13 @@
 import fs from 'fs';
 import path from 'path';
 import Locale from 'ilib-locale';
+import log4js from '@log4js-node/log4js-api';
 
 import { isAlnum, isIdeo } from 'ilib-ctype';
 
 import pluralCategories from './pluralCategories.js';
+
+const logger = log4js.getLogger('tools-common.utils');
 
 /**
  * Clean a string for matching against other strings by removing
@@ -242,6 +245,13 @@ const matchExprs = {
             basename: 1
         }
     },
+    "resourceDir": {
+        regex: "(.*?)",
+        brackets: 1,
+        groups: {
+            resourceDir: 1
+        }
+    },
     "extension": {
         regex: "(.*)",
         brackets: 1,
@@ -343,34 +353,66 @@ export function parsePath(template, pathname) {
             const keyword = template.substring(start, i);
             switch (keyword) {
                 case 'filename':
-                    regex += path.basename(pathname);
+                    // escape special characters in the filename so they don't have their special meaning in the regex
+                    regex += path.basename(pathname || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
                     break;
                 default:
                     if (!matchExprs[keyword]) {
                         logger.warning("Warning: template contains unknown substitution parameter " + keyword);
                         return "";
                     }
-                    regex += matchExprs[keyword].regex;
-                    for (let prop in matchExprs[keyword].groups) {
-                        matchGroups[prop] = totalBrackets + matchExprs[keyword].groups[prop];
+                    // [dir]/ is optional when followed by / and another token. Always capture dir so callers
+                    // (e.g. PropertiesParser) can build paths. Use (?:()|(.*?)/) so we require the slash when
+                    // dir is non-empty - this prevents "test.properties" from matching as locale "est" with dir "test/testfiles/t".
+                    // For "./de.po" the empty alternative matches; for "test/testfiles/de-DE.properties" we capture dir.
+                    // Do NOT make optional for [basename], [extension], [resourceDir] - that would break path parsing.
+                    let optionalDirSlash = false;
+                    if (keyword === "dir" && i + 1 < template.length && template[i + 1] === "/" && i + 2 < template.length && template[i + 2] === "[") {
+                        const endBracket = template.indexOf("]", i + 2);
+                        const nextKeyword = endBracket > -1 ? template.substring(i + 3, endBracket) : "";
+                        const optionalDirTokens = ["filename", "locale", "language", "script", "region", "localeDir", "localeUnder", "localeLower"];
+                        optionalDirSlash = optionalDirTokens.includes(nextKeyword);
                     }
-                    totalBrackets += matchExprs[keyword].brackets;
+                    if (keyword === "dir" && optionalDirSlash) {
+                        // (?:()|(.*?)/) - empty dir or (.*?)/ (require slash when dir is non-empty)
+                        regex += "(?:()|(.*?)/)";
+                        matchGroups.dir = totalBrackets + 2; // second group has dir when present
+                        totalBrackets += 2;
+                        i++;
+                    } else {
+                        regex += matchExprs[keyword].regex;
+                        for (let prop in matchExprs[keyword].groups) {
+                            matchGroups[prop] = totalBrackets + matchExprs[keyword].groups[prop];
+                        }
+                        totalBrackets += matchExprs[keyword].brackets;
+                    }
                     break;
             }
         }
     }
 
-    const re = new RegExp(regex, "u");
-    let match;
-
-    if ((match = re.exec(pathname)) !== null) {
+    // Anchor at start. If path starts with "./", allow it so template matches the rest (e.g. "./ja/foo.mdx" matches "[language]/[dir]/[filename]").
+    const prefix = (pathname && pathname.startsWith("./")) ? "^\\.\\/" : "^";
+    const re = new RegExp(prefix + regex, "u");
+    const match = re.exec(pathname || "");
+    if (match !== null) {
         let groups = {};
         let found = false;
         for (let groupName in matchGroups) {
-            if (match[matchGroups[groupName]]) {
-                groups[groupName] = match[matchGroups[groupName]];
+            const idx = matchGroups[groupName];
+            const value = idx < match.length ? match[idx] : undefined;
+            // Capture empty only for dir (so "[dir]/[filename]" with "foo.mdx" gives dir "."); optional locale parts stay omitted.
+            if (value !== undefined && (value || (groupName === "dir" && value === ""))) {
+                groups[groupName] = value === undefined ? "" : value;
                 found = true;
             }
+        }
+        if (groups.dir === "" || (matchGroups.dir && groups.dir === undefined)) {
+            groups.dir = ".";
+        }
+        // When path started with "./", prefix consumed it; put it back into dir so dir is the full path.
+        if (pathname && pathname.startsWith("./") && groups.dir !== undefined && groups.dir !== ".") {
+            groups.dir = "./" + groups.dir;
         }
         return groups;
     }
