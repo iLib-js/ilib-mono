@@ -585,6 +585,50 @@ describe("utils", function() {
         expect(utils.getLocaleFromPath('[dir]/strings_[localeLower].json', undefined)).toBe("");
     });
 
+    test("GetLocaleFromPathLanguageTemplateWithNonLocaleDirectoryReturnsEmpty", function() {
+        expect.assertions(2);
+        // MDX-style template [language]/[dir]/[filename]: English at root, localized under ja/, etc.
+        // When path is a source file at root (e.g. guides/ai-studio/index.mdx), the first segment
+        // must not be mistaken for a language code. "guides" and "documentation" are too long
+        // (language is 2-3 letters) so they must not match; without ^ anchor they could match
+        // in the middle (e.g. "des" from "guides") and wrongly return a locale.
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "guides/ai-studio/index.mdx")).toBe("");
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "documentation/getting-started/page.mdx")).toBe("");
+    });
+
+    test("GetLocaleFromPathLocaleTemplateWithNonLocaleDirectoryReturnsEmpty", function() {
+        expect.assertions(3);
+        // [locale]/[dir]/[filename]: first segment must be a valid locale (e.g. en, de-DE), not a directory name.
+        expect(utils.getLocaleFromPath("[locale]/[dir]/[filename]", "guides/ai-studio/index.mdx")).toBe("");
+        expect(utils.getLocaleFromPath("[locale]/[dir]/[filename]", "content/faq/index.mdx")).toBe("");
+        expect(utils.getLocaleFromPath("[locale]/[dir]/[filename]", "samples/code/demo.mdx")).toBe("");
+    });
+
+    test("GetLocaleFromPathValidLanguageAtRootStillMatches", function() {
+        expect.assertions(3);
+        // Valid 2- or 3-letter language codes at first segment should still be recognized.
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "ja/guides/ai-studio/index.mdx")).toBe("ja");
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "en/guides/ai-studio/index.mdx")).toBe("en");
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "de/getting-started/page.mdx")).toBe("de");
+    });
+
+    test("GetLocaleFromPathResourcesLocaleDirMessagesPo", function() {
+        expect.assertions(6);
+        // template "resources/[localeDir]/messages.po" so handles() can distinguish source vs already-localized
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "resources/en/GB/messages.po")).toBe("en-GB");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/en/GB/messages.po")).toBe("en-GB");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "resources/zh/Hans/CN/messages.po")).toBe("zh-Hans-CN");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/zh/Hans/CN/messages.po")).toBe("zh-Hans-CN");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "resources/en/US/messages.po")).toBe("en-US");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/en/US/messages.po")).toBe("en-US");
+    });
+
+    test("GetLocaleFromPathDirLocalePoWithLeadingDotSlash", function() {
+        expect.assertions(1);
+        // "[dir]/[locale].po" with "./de.po" so handles("de.po") returns false (not source)
+        expect(utils.getLocaleFromPath("[dir]/[locale].po", "./de.po")).toBe("de");
+    });
+
     test("UtilsCleanString", function() {
         expect.assertions(1);
         expect(utils.cleanString(' \n \t \\    &quot;a    b&apos;s &lt;b&gt;&amp; c’s     ')).toBe("\"a b's <b>& c's");
