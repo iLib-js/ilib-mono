@@ -1,5 +1,21 @@
 # loctool
 
+## 2.32.2
+
+### Patch Changes
+
+- a1be468: Fix a problem with getLocaleFromPath
+
+  - regex was not anchored to the beginning of the string, so when
+    you have a template like "[language]/[dir]/[filename]", it would
+    match against "guides/ai-zone/index.mdx" where the language
+    would end up being "des". (Last 3 letters of "guides".)
+  - Now with it anchored properly, it returns "" for the language
+    because "guides" does not match an ISO language code.
+
+- Updated dependencies [a1be468]
+  - ilib-tools-common@1.21.3
+
 ## 2.32.1
 
 ### Patch Changes
