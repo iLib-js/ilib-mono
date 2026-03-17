@@ -167,14 +167,14 @@ function zoneinfoWalk(zoneinfoPath) {
 }
 
 function assemblejs() {
-    let readData = "";
-    let filePath;
-    allJSList.forEach(function(file){
-        if (file !== "index.js") {
-            filePath = path.join(ilibPath, "js/lib", file);
+    allJSList
+    .filter(file => file !== "index.js")
+    .forEach(file => {
+        const filePath = path.join(ilibPath, "js/lib", file);
+        const readData = readFile(filePath);
+        if (readData) {
+            assembleJSAll += readData;
         }
-        readData = readFile(filePath, "utf-8");
-        if (readData) assembleJSAll += readData;
     });
 
     assembleJSAll = deletePatterns(assembleJSAll);
