@@ -1,5 +1,12 @@
 # ilib-assemble
 
+## 1.3.4
+
+### Patch Changes
+
+- dc76424: - Fix the issue of duplicated code inclusion of legacyilibassemble
+  - When the filePath is `index.js`, the path that should be read is not updated, causing previously read data to be included again as duplicates.
+
 ## 1.3.3
 
 ### Patch Changes
