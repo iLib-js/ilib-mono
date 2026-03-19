@@ -425,6 +425,221 @@ describe("testUtils", () => {
         })).toBe("x/y/Makefile_de-DE");
     });
 
+    describe("parsePath fills partial results when template does not match", () => {
+        // When the source path has no locale (e.g. guides.xliff, messages.properties),
+        // but the template expects a locale, then parsePath cannot fully match the template.
+        // It should still fill dir, basename, extension from the path so the caller can pass
+        // them to formatPath.
+        test("returns dir basename extension for guides.xliff when template expects locale", () => {
+            expect.assertions(1);
+
+            const actual = parsePath('[dir]/[basename]_[locale].[extension]', "l10n/xliff/guides.xliff");
+            expect(actual).toStrictEqual({
+                dir: "l10n/xliff",
+                basename: "guides",
+                extension: "xliff"
+            });
+        });
+
+        test("returns dir basename extension for messages.properties-style path", () => {
+            expect.assertions(1);
+
+            const actual = parsePath('[dir]/[basename]_[locale].[extension]', "src/main/resources/messages.properties");
+            expect(actual).toStrictEqual({
+                dir: "src/main/resources",
+                basename: "messages",
+                extension: "properties"
+            });
+        });
+
+        test("returns partial results for nested path without locale", () => {
+            expect.assertions(1);
+
+            const actual = parsePath('[dir]/[basename]_[locale].xliff', "a/b/c/guides.xliff");
+            expect(actual).toStrictEqual({
+                dir: "a/b/c",
+                basename: "guides",
+                extension: "xliff"
+            });
+        });
+
+        test("returns partial results for file at root", () => {
+            expect.assertions(1);
+
+            const actual = parsePath('[dir]/[basename]_[locale].[extension]', "guides.xliff");
+            expect(actual).toStrictEqual({
+                dir: ".",
+                basename: "guides",
+                extension: "xliff"
+            });
+        });
+
+        test("returns dir basename extension for [language]/[dir]/[basename].[extension] template", () => {
+            expect.assertions(1);
+
+            // Template has locale (language) at start; path has no locale
+            const actual = parsePath('[language]/[dir]/[basename].[extension]', "guides/l10n/using-ai.md");
+            expect(actual).toStrictEqual({
+                dir: "guides/l10n",
+                basename: "using-ai",
+                extension: "md"
+            });
+        });
+
+        test("returns partial results for [language]/[dir]/[basename].[extension] with nested path", () => {
+            expect.assertions(1);
+
+            const actual = parsePath('[language]/[dir]/[basename].[extension]', "en/docs/guides/getting-started.mdx");
+            expect(actual).toStrictEqual({
+                language: "en",
+                dir: "docs/guides",
+                basename: "getting-started",
+                extension: "mdx"
+            });
+        });
+
+        test("parses [language]/[dir]/[basename].[extension] with multi-dot filename (basename.locale.extension)", () => {
+            expect.assertions(1);
+
+            // Filename "getting-started.en-US.mdx" has multiple dots; extension is after last dot
+            const actual = parsePath('[language]/[dir]/[basename].[extension]', "en/docs/guides/getting-started.en-US.mdx");
+            expect(actual).toStrictEqual({
+                language: "en",
+                dir: "docs/guides",
+                basename: "getting-started.en-US",
+                extension: "mdx"
+            });
+        });
+
+        test("parses [dir]/[basename].[locale].[extension] with multi-dot filename (basename.locale.extension)", () => {
+            expect.assertions(1);
+
+            // Filename "getting-started.en-US.mdx" has multiple dots; extension is after last dot
+            // the fr-FR is thrown in there at the beginning of the path to try and fool the parser into thinking it's a locale.
+            const actual = parsePath('[dir]/[basename].[locale].[extension]', "fr-FR/docs/guides/getting-started.en-US.mdx");
+            expect(actual).toStrictEqual({
+                locale: "en-US",
+                language: "en",
+                region: "US",
+                dir: "fr-FR/docs/guides",
+                basename: "getting-started",
+                extension: "mdx"
+            });
+        });
+
+    });
+
+    describe("parsePath uses source locale when no locale in path", () => {
+        // When template does not match (or match has no locale), use sourceLocale to fill
+        // locale, language, script, region. Use Locale class to parse source locale.
+        test("fills locale parts from sourceLocale for guides.xliff", () => {
+            expect.assertions(1);
+
+            const actual = parsePath('[dir]/[basename]_[locale].[extension]', "l10n/xliff/guides.xliff", "en-US");
+            expect(actual).toStrictEqual({
+                dir: "l10n/xliff",
+                basename: "guides",
+                extension: "xliff",
+                locale: "en-US",
+                language: "en",
+                region: "US"
+            });
+        });
+
+        test("fills locale script from sourceLocale for zh-Hans-CN", () => {
+            expect.assertions(1);
+
+            const actual = parsePath('[dir]/[basename]_[locale].[extension]', "docs/readme.md", "zh-Hans-CN");
+            expect(actual).toStrictEqual({
+                dir: "docs",
+                basename: "readme",
+                extension: "md",
+                locale: "zh-Hans-CN",
+                language: "zh",
+                script: "Hans",
+                region: "CN"
+            });
+        });
+
+        test("fills locale parts for [language]/[dir]/[basename].[extension] with sourceLocale", () => {
+            expect.assertions(1);
+
+            const actual = parsePath('[language]/[dir]/[basename].[extension]', "guides/l10n/using-ai.md", "en-US");
+            expect(actual).toStrictEqual({
+                dir: "guides/l10n",
+                basename: "using-ai",
+                extension: "md",
+                locale: "en-US",
+                language: "en",
+                region: "US"
+            });
+        });
+    });
+
+    describe("formatPath with parts from parsePath (caller passes parts, not sourcepath)", () => {
+        // Caller uses parsePath to get parts, then passes them to formatPath.
+        // formatPath does not call parsePath; it uses the provided parts.
+        test("produces localized path from parsePath parts for guides.xliff", () => {
+            expect.assertions(1);
+
+            const parsed = parsePath('[dir]/[basename]_[locale].[extension]', "l10n/xliff/guides.xliff");
+            expect(formatPath('[dir]/[basename]_[locale].[extension]', {
+                ...parsed,
+                locale: "de"
+            })).toBe("l10n/xliff/guides_de.xliff");
+        });
+
+        test("produces localized path for messages.properties-style", () => {
+            expect.assertions(1);
+
+            const parsed = parsePath('[dir]/[basename]_[locale].[extension]', "src/main/resources/messages.properties");
+            expect(formatPath('[dir]/[basename]_[locale].[extension]', {
+                ...parsed,
+                locale: "fr-FR"
+            })).toBe("src/main/resources/messages_fr-FR.properties");
+        });
+
+        test("produces localized path for nested path", () => {
+            expect.assertions(1);
+
+            const parsed = parsePath('[dir]/[basename]_[locale].xliff', "a/b/c/guides.xliff");
+            expect(formatPath('[dir]/[basename]_[locale].xliff', {
+                ...parsed,
+                locale: "pl-PL"
+            })).toBe("a/b/c/guides_pl-PL.xliff");
+        });
+
+        test("produces localized path for file at root", () => {
+            expect.assertions(1);
+
+            const parsed = parsePath('[dir]/[basename]_[locale].[extension]', "guides.xliff");
+            expect(formatPath('[dir]/[basename]_[locale].[extension]', {
+                ...parsed,
+                locale: "ja"
+            })).toBe("guides_ja.xliff");
+        });
+
+        test("produces localized path for [language]/[dir]/[basename].[extension] template", () => {
+            expect.assertions(1);
+
+            const parsed = parsePath('[language]/[dir]/[basename].[extension]', "guides/l10n/using-ai.md", "en-US");
+            expect(formatPath('[language]/[dir]/[basename].[extension]', {
+                ...parsed,
+                locale: "de"
+            })).toBe("de/guides/l10n/using-ai.md");
+        });
+
+        test("produces localized path for [language]/[dir]/[basename].[extension] with full locale", () => {
+            expect.assertions(1);
+
+            const parsed = parsePath('[language]/[dir]/[basename].[extension]', "en/docs/guides/getting-started.mdx", "en-US");
+            expect(formatPath('[language]/[dir]/[basename].[extension]', {
+                ...parsed,
+                locale: "zh-Hans-CN"
+            })).toBe("zh/docs/guides/getting-started.mdx");
+        });
+    });
+
     test("ParsePath", () => {
         expect.assertions(1);
 
@@ -455,10 +670,14 @@ describe("testUtils", () => {
     test("ParsePathNoMatch", () => {
         expect.assertions(1);
 
-        // missing the underscore
+        // missing the underscore - template expects [basename]_en-US, path has "en-US.json"
+        // parsePath fills partial results (dir, basename, extension) from path
         const actual = parsePath('[dir]/[basename]_en-US.[extension]', "x/y/en-US.json");
-        const expected = {};
-        expect(actual).toStrictEqual(expected);
+        expect(actual).toStrictEqual({
+            dir: "x/y",
+            basename: "en-US",
+            extension: "json"
+        });
     });
 
     test("GetLocaleFromPathDir", () => {
@@ -502,6 +721,28 @@ describe("testUtils", () => {
 
         expect(getLocaleFromPath('[dir]/[basename]_[localeUnder].[extension]', "x/y/strings_de_DE.json")).toBe("de-DE");
     });
+
+    test("GetLocaleFromPathBasenameAndLocaleTogetherWithHashLikeBasename language code only", () => {
+        expect.assertions(1);
+
+        // basename is a long alphanumeric ID (e.g. content hash), locale is short (e.g. fr)
+        expect(getLocaleFromPath('[dir]/[basename]_[locale].[extension]', "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_fr.xliff")).toBe("fr");
+    });
+
+    test("GetLocaleFromPathBasenameAndLocaleTogetherWithHashLikeBasename locale with region", () => {
+        expect.assertions(1);
+
+        // basename is a long alphanumeric ID (e.g. content hash), locale is short (e.g. fr)
+        expect(getLocaleFromPath('[dir]/[basename]_[locale].[extension]', "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_fr-FR.xliff")).toBe("fr-FR");
+    });
+
+    test("GetLocaleFromPathBasenameAndLocaleTogetherWithHashLikeBasename full locale", () => {
+        expect.assertions(1);
+
+        // basename is a long alphanumeric ID (e.g. content hash), locale is short (e.g. fr)
+        expect(getLocaleFromPath('[dir]/[basename]_[locale].[extension]', "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_zh-Hans-CN.xliff")).toBe("zh-Hans-CN");
+    });
+
 
     test("GetLocaleFromPathFilename", () => {
         expect.assertions(1);
@@ -667,8 +908,12 @@ describe("testUtils", () => {
     test("ParsePathDirLocalePropertiesNoMatchWhenFilenameIsNotLocale", () => {
         expect.assertions(1);
         // Regression: "test.properties" must NOT match [dir]/[locale].properties - "test" is not a valid locale.
-        // Previously (.*?)/? incorrectly matched dir="test/testfiles/t" and locale="est".
-        expect(parsePath("[dir]/[locale].properties", "./test/testfiles/test.properties")).toStrictEqual({});
+        // parsePath returns partial fill (dir, basename, extension) with no locale - getLocaleFromPath will return "".
+        expect(parsePath("[dir]/[locale].properties", "./test/testfiles/test.properties")).toStrictEqual({
+            dir: "./test/testfiles",
+            basename: "test",
+            extension: "properties"
+        });
     });
 
     test("ParsePathDirLocalePropertiesWithOptionalDir", () => {
