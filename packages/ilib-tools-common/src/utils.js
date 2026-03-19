@@ -216,10 +216,13 @@ export function formatPath(template, parameters) {
     const dir = parameters.dir ?? pathParts.dir;
     const basename = parameters.basename ?? pathParts.basename;
     const extension = parameters.extension ?? pathParts.extension;
-    const filename = parameters.filename ?? [basename, extension].join(".");
+    const filename = parameters.filename ?? (extension ? basename + "." + extension : basename);
 
     // First, handle locale-related substitutions without path normalization
     let output = formatLocaleParams(template, locale);
+
+    // Handle [basename].[extension] as a unit to avoid trailing dot when extension is empty
+    output = output.replace(/\[basename\]\.\[extension\]/g, extension ? basename + "." + extension : basename);
 
     // Now handle path-specific keywords
     output = output.replace(/\[dir\]/g, dir);
@@ -390,7 +393,9 @@ export function parsePath(template, pathname, sourceLocale) {
 
     for (let i = 0; i < template.length; i++) {
         if ( template[i] !== '[' ) {
-            regex += template[i];
+            // Escape regex metacharacters so literal "." etc. match correctly (e.g. [basename].[locale].[extension])
+            const c = template[i];
+            regex += (c === "." || c === "*" || c === "+" || c === "?" || c === "^" || c === "$" || c === "{" || c === "}" || c === "(" || c === ")" || c === "|" || c === "\\") ? "\\" + c : c;
         } else {
             let start = ++i;
             while (i < template.length && template[i] !== ']') {
