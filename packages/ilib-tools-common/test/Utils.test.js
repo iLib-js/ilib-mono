@@ -619,6 +619,16 @@ describe("testUtils", () => {
             })).toBe("guides_ja.xliff");
         });
 
+        test("produces path without trailing dot when extension is empty", () => {
+            expect.assertions(1);
+
+            // Path "asdf/bar/simple" has no extension; [basename].[extension] should not produce "simple."
+            expect(formatPath('[locale]/[dir]/[basename].[extension]', {
+                sourcepath: "asdf/bar/simple",
+                locale: "fr-FR"
+            })).toBe("fr-FR/asdf/bar/simple");
+        });
+
         test("produces localized path for [language]/[dir]/[basename].[extension] template", () => {
             expect.assertions(1);
 
