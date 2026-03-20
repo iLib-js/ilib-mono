@@ -327,11 +327,11 @@ const matchExprs = {
 };
 
 /**
- * Derive dir, basename, extension from a pathname using path operations.
+ * Derive dir, basename, extension, and whole filename from a pathname using path operations.
  * Used when the template does not match so we can still fill path parts.
  *
  * @param {String} pathname the path name
- * @returns {Object} { dir, basename, extension }
+ * @returns {Object} { dir, basename, extension, filename }
  */
 function fillPartialPathParts(pathname) {
     if (!pathname) {
@@ -342,7 +342,7 @@ function fillPartialPathParts(pathname) {
     const lastDot = filename.lastIndexOf(".");
     const basename = lastDot > -1 ? filename.substring(0, lastDot) : filename;
     const extension = lastDot > -1 ? filename.substring(lastDot + 1) : "";
-    return { dir, basename, extension };
+    return { dir, basename, extension, filename };
 }
 
 /**

@@ -428,7 +428,7 @@ describe("testUtils", () => {
     describe("parsePath fills partial results when template does not match", () => {
         // When the source path has no locale (e.g. guides.xliff, messages.properties),
         // but the template expects a locale, then parsePath cannot fully match the template.
-        // It should still fill dir, basename, extension from the path so the caller can pass
+        // It should still fill dir, basename, extension, filename from the path so the caller can pass
         // them to formatPath.
         test("returns dir basename extension for guides.xliff when template expects locale", () => {
             expect.assertions(1);
@@ -437,7 +437,8 @@ describe("testUtils", () => {
             expect(actual).toStrictEqual({
                 dir: "l10n/xliff",
                 basename: "guides",
-                extension: "xliff"
+                extension: "xliff",
+                filename: "guides.xliff"
             });
         });
 
@@ -448,7 +449,8 @@ describe("testUtils", () => {
             expect(actual).toStrictEqual({
                 dir: "src/main/resources",
                 basename: "messages",
-                extension: "properties"
+                extension: "properties",
+                filename: "messages.properties"
             });
         });
 
@@ -459,7 +461,8 @@ describe("testUtils", () => {
             expect(actual).toStrictEqual({
                 dir: "a/b/c",
                 basename: "guides",
-                extension: "xliff"
+                extension: "xliff",
+                filename: "guides.xliff"
             });
         });
 
@@ -470,7 +473,8 @@ describe("testUtils", () => {
             expect(actual).toStrictEqual({
                 dir: ".",
                 basename: "guides",
-                extension: "xliff"
+                extension: "xliff",
+                filename: "guides.xliff"
             });
         });
 
@@ -482,7 +486,8 @@ describe("testUtils", () => {
             expect(actual).toStrictEqual({
                 dir: "guides/l10n",
                 basename: "using-ai",
-                extension: "md"
+                extension: "md",
+                filename: "using-ai.md"
             });
         });
 
@@ -540,6 +545,7 @@ describe("testUtils", () => {
                 dir: "l10n/xliff",
                 basename: "guides",
                 extension: "xliff",
+                filename: "guides.xliff",
                 locale: "en-US",
                 language: "en",
                 region: "US"
@@ -554,6 +560,7 @@ describe("testUtils", () => {
                 dir: "docs",
                 basename: "readme",
                 extension: "md",
+                filename: "readme.md",
                 locale: "zh-Hans-CN",
                 language: "zh",
                 script: "Hans",
@@ -569,6 +576,7 @@ describe("testUtils", () => {
                 dir: "guides/l10n",
                 basename: "using-ai",
                 extension: "md",
+                filename: "using-ai.md",
                 locale: "en-US",
                 language: "en",
                 region: "US"
@@ -681,12 +689,13 @@ describe("testUtils", () => {
         expect.assertions(1);
 
         // missing the underscore - template expects [basename]_en-US, path has "en-US.json"
-        // parsePath fills partial results (dir, basename, extension) from path
+        // parsePath fills partial results (dir, basename, extension, filename) from path
         const actual = parsePath('[dir]/[basename]_en-US.[extension]', "x/y/en-US.json");
         expect(actual).toStrictEqual({
             dir: "x/y",
             basename: "en-US",
-            extension: "json"
+            extension: "json",
+            filename: "en-US.json"
         });
     });
 
@@ -918,11 +927,12 @@ describe("testUtils", () => {
     test("ParsePathDirLocalePropertiesNoMatchWhenFilenameIsNotLocale", () => {
         expect.assertions(1);
         // Regression: "test.properties" must NOT match [dir]/[locale].properties - "test" is not a valid locale.
-        // parsePath returns partial fill (dir, basename, extension) with no locale - getLocaleFromPath will return "".
+        // parsePath returns partial fill (dir, basename, extension, filename) with no locale - getLocaleFromPath will return "".
         expect(parsePath("[dir]/[locale].properties", "./test/testfiles/test.properties")).toStrictEqual({
             dir: "./test/testfiles",
             basename: "test",
-            extension: "properties"
+            extension: "properties",
+            filename: "test.properties"
         });
     });
 
