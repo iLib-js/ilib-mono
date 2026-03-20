@@ -2747,6 +2747,29 @@ describe("jsonfile", function () {
         expect(actual).toMatchSnapshot();
     });
 
+    test("array items anyOf string|object preserves nested structure (Mintlify-style nav)", function () {
+        const jsonFile = setupTest({
+            mappings: {
+                "json/any-of-array-items.json": {
+                    schema: "any-of-array-items-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/any-of-array-items.json",
+                },
+            },
+            pathName: "json/any-of-array-items.json",
+        });
+
+        jsonFile.extract();
+        const translations = new TranslationSet("en-US");
+        const actual = jsonFile.localizeText(translations, "ja-JP");
+        expect(actual).not.toContain("[object Object]");
+        var parsed = JSON.parse(actual);
+        expect(parsed.tabs[0].pages[0].pages[0]).toBe("guides/index");
+        expect(parsed.tabs[0].pages[0].pages[1].group).toBe("Nested");
+        expect(parsed.tabs[0].pages[1]).toBe("plain-slug");
+        expect(parsed.tabs[1].groups[0].group).toBe("G");
+    });
+
 });
 
 describe("schema 'localizable'", () => {
