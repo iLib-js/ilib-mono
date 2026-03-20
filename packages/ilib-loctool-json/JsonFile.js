@@ -130,13 +130,9 @@ function itemSchemaHasObjectBranch(itemSchema, root) {
     if (itemSchema.type === "object") {
         return true;
     }
-    if (itemSchema.anyOf) {
-        return itemSchema.anyOf.some(function (sub) {
-            return itemSchemaHasObjectBranch(sub, root);
-        });
-    }
-    if (itemSchema.oneOf) {
-        return itemSchema.oneOf.some(function (sub) {
+    if (itemSchema.anyOf || itemSchema.oneOf) {
+        const operator = itemSchema.anyOf || itemSchema.oneOf;
+        return operator.some(function (sub) {
             return itemSchemaHasObjectBranch(sub, root);
         });
     }
