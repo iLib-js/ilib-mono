@@ -23,7 +23,10 @@ var ilib = require("ilib");
 var Locale = require("ilib-locale");
 var mm = require("micromatch");
 var JsonFile = require("./JsonFile.js");
+var toolsCommon = require("ilib-tools-common");
 
+var parsePath = toolsCommon.parsePath;
+var formatPath = toolsCommon.formatPath;
 var JsonFileType = function(project) {
     this.type = "json";
     this.datatype = "json";
@@ -331,8 +334,9 @@ JsonFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
         template = defaultMappings["**/*.json"].template;
     }
 
-    return path.normalize(this.API.utils.formatPath(template, {
-        sourcepath: pathname,
+    const parts = parsePath(template, pathname);
+    return path.normalize(formatPath(template, {
+        ...parts,
         locale: l
     }));
 };
@@ -378,7 +382,9 @@ JsonFileType.prototype.getResourceFile = function(locale, pathName) {
     var resfile = this.resourceFiles && this.resourceFiles[key];
 
     if (!resfile) {
-        resfile = this.resourceFiles[key] = this.newFile(pathName, {
+        var mapping = this.getMapping(pathName);
+        var localizedPath = this.getLocalizedPath(mapping, pathName, key);
+        resfile = this.resourceFiles[key] = this.newFile(localizedPath, {
             project: this.project,
             locale: key
         });
