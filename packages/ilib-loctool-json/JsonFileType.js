@@ -337,6 +337,7 @@ JsonFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
     const parts = parsePath(template, pathname);
     return path.normalize(formatPath(template, {
         ...parts,
+        sourcepath: pathname,
         locale: l
     }));
 };

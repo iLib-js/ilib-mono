@@ -1,7 +1,7 @@
 /*
  * JsonFileType.test.js - test the json file type handler object.
  *
- * Copyright © 2021-2023, Box, Inc.
+ * Copyright © 2021-2023, 2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+var path = require("path");
 
 if (!JsonFileType) {
     var JsonFileType = require("../JsonFileType.js");
@@ -221,6 +223,112 @@ describe("jsonfiletype", function() {
         expect(jft.getLocalizedPath({template: '[dir]/strings_[localeUnder].json'}, "x/y/strings.json", "zh-Hans-CN")).toBe("x/y/strings_zh_Hans_CN.json");
     });
 
+    test("JsonFileTypeGetLocalizedPathNullMappingUsesDefaultTemplate", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getLocalizedPath(undefined, "pkg/foo.json", "de-DE")).toBe(
+            path.normalize("resources/de/DE/foo.json")
+        );
+    });
+
+    test("JsonFileTypeGetLocalizedPathEmptyMappingUsesDefaultTemplate", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getLocalizedPath({}, "pkg/foo.json", "ja-JP")).toBe(
+            path.normalize("resources/ja/JP/foo.json")
+        );
+    });
+
+    test("JsonFileTypeGetLocalizedPathDefaultTemplateRespectsProjectLocaleMap", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p2);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getLocalizedPath(undefined, "pkg/foo.json", "de-DE")).toBe(
+            path.normalize("resources/de/foo.json")
+        );
+    });
+
+    test("JsonFileTypeGetLocalizedPathSourceAtRepoRoot", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getLocalizedPath(
+            { template: "resources/[localeDir]/strings2.json" },
+            "strings.json",
+            "de-DE"
+        )).toBe(path.normalize("resources/de/DE/strings2.json"));
+    });
+
+    test("JsonFileTypeGetLocalizedPathWhenSourcePathDoesNotMatchTemplateShape", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p);
+        expect(jft).toBeTruthy();
+
+        // Default template is resources/[localeDir]/[filename]. parsePath may not match
+        // (e.g. src/t1.js), but formatPath still needs sourcepath for [filename] — see
+        // samples/js-json with resourceFileTypes javascript -> ilib-loctool-json.
+        expect(jft.getLocalizedPath(undefined, "src/t1.js", "ko-KR")).toBe(
+            path.normalize("resources/ko/KR/t1.js")
+        );
+    });
+
+    test("JsonFileTypeGetOutputLocaleFromMappingLocaleMap", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getOutputLocale({ localeMap: { "de-DE": "de-AT" } }, "de-DE").getSpec()).toBe("de-AT");
+    });
+
+    test("JsonFileTypeGetOutputLocaleMappingOverridesProjectLocaleMap", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p2);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getOutputLocale({ localeMap: { "de-DE": "de-AT" } }, "de-DE").getSpec()).toBe("de-AT");
+    });
+
+    test("JsonFileTypeGetOutputLocaleFallsThroughToProjectLocaleMap", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p2);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getOutputLocale({ template: "[dir]/[localeDir]/strings.json" }, "de-DE").getSpec()).toBe("de");
+    });
+
+    test("JsonFileTypeGetOutputLocaleUndefinedMappingUsesProjectLocaleMap", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p2);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getOutputLocale(undefined, "de-DE").getSpec()).toBe("de");
+    });
+
+    test("JsonFileTypeGetOutputLocaleUndefinedMappingNoProjectMap", function() {
+        expect.assertions(3);
+
+        var jft = new JsonFileType(p);
+        expect(jft).toBeTruthy();
+
+        expect(jft.getOutputLocale(undefined, "fr-FR").getSpec()).toBe("fr-FR");
+        expect(jft.getOutputLocale(null, "fr-FR").getSpec()).toBe("fr-FR");
+    });
+
      test("JsonFileTypeGetMapping1", function() {
         expect.assertions(2);
 
@@ -384,6 +492,45 @@ describe("jsonfiletype", function() {
 
         // we figure this out from the template
         expect(jft.handles("resources/en/US/messages.json")).toBeTruthy();
+    });
+
+    test("JsonFileTypeGetResourceFileUsesLocalizedPath", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p);
+        var rf = jft.getResourceFile("de-DE", "x/y/z/messages.json");
+
+        expect(rf.pathName).toBe(path.normalize("resources/de/DE/messages.json"));
+        expect(rf.localeSpec).toBe("de-DE");
+    });
+
+    test("JsonFileTypeGetResourceFileUsesLocalizedPathAlternateExtension", function() {
+        expect.assertions(1);
+
+        var jft = new JsonFileType(p);
+        var rf = jft.getResourceFile("de-DE", "x/y/z/test/str.jsn");
+
+        expect(rf.pathName).toBe(path.normalize("x/y/z/test/de/DE/str.json"));
+    });
+
+    test("JsonFileTypeGetResourceFileCachesPerLocale", function() {
+        expect.assertions(2);
+
+        var jft = new JsonFileType(p);
+        var rf1 = jft.getResourceFile("de-DE", "x/y/z/messages.json");
+        var rf2 = jft.getResourceFile("de-DE", "a/b/messages.json");
+
+        expect(rf1).toBe(rf2);
+        expect(rf1.pathName).toBe(path.normalize("resources/de/DE/messages.json"));
+    });
+
+    test("JsonFileTypeGetResourceFileUsesSourceLocaleWhenLocaleOmitted", function() {
+        expect.assertions(1);
+
+        var jft = new JsonFileType(p);
+        var rf = jft.getResourceFile(undefined, "x/y/z/messages.json");
+
+        expect(rf.pathName).toBe(path.normalize("resources/en/US/messages.json"));
     });
 
     test("JsonFileTypeRejectInvalidSchema", function() {
