@@ -110,11 +110,36 @@ export class PendoXliffFileType implements FileType {
         );
         // Accept when path has no locale (e.g. guides.xliff) — treat as source file.
         // Reject when path has a locale that is not the source locale (already localized).
-        if (fileLocale && !this.project.isSourceLocale(fileLocale)) {
+        if (fileLocale && !this.pathLocaleIndicatesSource(fileLocale)) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * True if the locale segment parsed from the path refers to the project's source
+     * strings. Pendo often names source files with a language-only suffix (e.g. {@code _en.xliff});
+     * {@link Project.isSourceLocale} compares full language/region/script, so {@code en}
+     * does not match source {@code en-US}. When the path encodes only a language and it
+     * matches the source language, treat it as source.
+     */
+    private pathLocaleIndicatesSource(fileLocale: string): boolean {
+        if (this.project.isSourceLocale(fileLocale)) {
+            return true;
+        }
+        // ilib-locale: require() for CJS output; package exposes default on lib build.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+        const Locale = require("ilib-locale").default || require("ilib-locale");
+        const fromPath = new Locale(fileLocale);
+        const source = new Locale(this.project.getSourceLocale());
+        if (fromPath.getLanguage() !== source.getLanguage()) {
+            return false;
+        }
+        if (!fromPath.getRegion()) {
+            return true;
+        }
+        return false;
     }
 
     write(): void {
@@ -260,6 +285,7 @@ export class PendoXliffFileType implements FileType {
 
         return formatPath(mapping.template, {
             ...parsed,
+            sourcepath: pathInProject,
             locale: outputLocale,
         });
     }
