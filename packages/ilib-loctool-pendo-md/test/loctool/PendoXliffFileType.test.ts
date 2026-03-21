@@ -115,6 +115,13 @@ describe("PendoXliffFileType", () => {
                 ).toBe(true);
             });
 
+            it("should handle source file with language-only suffix (_en) when source locale is en-US", () => {
+                const fileType = createFileType(projectWithDefaultMappings);
+                expect(
+                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en.xliff")
+                ).toBe(true);
+            });
+
             it("should reject already localized file (fr)", () => {
                 const fileType = createFileType(projectWithDefaultMappings);
                 expect(
