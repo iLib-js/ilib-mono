@@ -1,0 +1,325 @@
+/**
+ * Copyright © 2026 Box, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import PendoXliffFileType from "../../src/loctool/PendoXliffFileType";
+import CustomProject from "loctool/lib/CustomProject.js";
+
+// CustomProject extends Project at runtime; loctool types don't reflect this
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createFileType(project: any): PendoXliffFileType {
+    return new PendoXliffFileType(project, project.getAPI());
+}
+
+const projectWithDefaultMappings = new CustomProject(
+    {
+        sourceLocale: "en-US",
+        id: "pendo-test",
+        plugins: [],
+    },
+    "./testfiles",
+    {
+        locales: ["pl-PL"],
+    }
+);
+
+const projectWithCustomMappings = new CustomProject(
+    {
+        sourceLocale: "en-US",
+        id: "pendo-test",
+        plugins: [],
+    },
+    "./testfiles",
+    {
+        locales: ["pl-PL"],
+        pendo: {
+            mappings: {
+                "l10n/xliff/guides/*.xliff": {
+                    template: "[dir]/[basename]_[locale].[extension]",
+                },
+            },
+        },
+    }
+);
+
+/** Source file has no locale suffix (e.g. guides.xliff); translations add locale (e.g. guides_de.xliff) */
+const projectSourceWithoutLocale = new CustomProject(
+    {
+        sourceLocale: "en-US",
+        id: "pendo-no-locale",
+        plugins: [],
+    },
+    "./testfiles",
+    {
+        locales: ["de", "fr"],
+        pendo: {
+            mappings: {
+                "**/guides.xliff": {
+                    template: "[dir]/[basename]_[locale].xliff",
+                },
+            },
+        },
+    }
+);
+
+
+describe("PendoXliffFileType", () => {
+    describe("constructor", () => {
+        it("should create a PendoXliffFileType instance", () => {
+            const fileType = createFileType(projectWithDefaultMappings);
+            expect(fileType).toBeTruthy();
+        });
+    });
+
+    describe("getExtensions", () => {
+        it("should return xliff and xlf extensions", () => {
+            const fileType = createFileType(projectWithDefaultMappings);
+            const extensions = fileType.getExtensions();
+            expect(extensions).toContain(".xliff");
+            expect(extensions).toContain(".xlf");
+        });
+    });
+
+    describe("name", () => {
+        it("should return the file type name", () => {
+            const fileType = createFileType(projectWithDefaultMappings);
+            expect(fileType.name()).toBe("Pendo XLIFF");
+        });
+    });
+
+    describe("getDataType", () => {
+        it("should return the Pendo datatype", () => {
+            const fileType = createFileType(projectWithDefaultMappings);
+            expect(fileType.getDataType()).toBe("x-pendoguide-escaped");
+        });
+    });
+
+    describe("handles", () => {
+        describe("with default mappings", () => {
+            it("should handle source locale file (en-US)", () => {
+                const fileType = createFileType(projectWithDefaultMappings);
+                expect(
+                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff")
+                ).toBe(true);
+            });
+
+            it("should handle source file with language-only suffix (_en) when source locale is en-US", () => {
+                const fileType = createFileType(projectWithDefaultMappings);
+                expect(
+                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en.xliff")
+                ).toBe(true);
+            });
+
+            it("should reject already localized file (fr)", () => {
+                const fileType = createFileType(projectWithDefaultMappings);
+                expect(
+                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_fr.xliff")
+                ).toBe(false);
+            });
+
+            it("should reject already localized file (de-DE)", () => {
+                const fileType = createFileType(projectWithDefaultMappings);
+                expect(
+                    fileType.handles("l10n/xliff/guides/strings_de-DE.xliff")
+                ).toBe(false);
+            });
+
+            it("should reject already localized file (zh-Hans-CN)", () => {
+                const fileType = createFileType(projectWithDefaultMappings);
+                expect(
+                    fileType.handles("l10n/xliff/guides/content_zh-Hans-CN.xliff")
+                ).toBe(false);
+            });
+
+            it("should handle .xlf extension with source locale", () => {
+                const fileType = createFileType(projectWithDefaultMappings);
+                expect(fileType.handles("l10n/xliff/guides/guide_en-US.xlf")).toBe(true);
+            });
+
+            it("should handle source file without locale suffix (e.g. guides.xliff, messages.properties-style)", () => {
+                const fileType = createFileType(projectWithDefaultMappings);
+                expect(fileType.handles("l10n/xliff/guides/guides.xliff")).toBe(true);
+            });
+        });
+
+        describe("with custom mappings", () => {
+            it("should handle source locale file matching custom pattern", () => {
+                const fileType = createFileType(projectWithCustomMappings);
+                expect(
+                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff")
+                ).toBe(true);
+            });
+
+            it("should reject already localized file (fr)", () => {
+                const fileType = createFileType(projectWithCustomMappings);
+                expect(
+                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_fr.xliff")
+                ).toBe(false);
+            });
+
+            it("should reject path not matching custom pattern", () => {
+                const fileType = createFileType(projectWithCustomMappings);
+                expect(fileType.handles("other/dir/strings_en-US.xliff")).toBe(false);
+            });
+        });
+
+        describe("handles with different source locales", () => {
+            it("should handle when path locale matches source (fr)", () => {
+                const projectFr = new CustomProject(
+                    { sourceLocale: "fr", id: "pendo-fr", plugins: [] },
+                    "./testfiles",
+                    {
+                        locales: ["en-US"],
+                        pendo: {
+                            mappings: {
+                                "**/*.xliff": {
+                                    template: "[dir]/[basename]_[locale].[extension]",
+                                },
+                            },
+                        },
+                    }
+                );
+                const fileType = createFileType(projectFr);
+                expect(
+                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_fr.xliff")
+                ).toBe(true);
+            });
+
+            it("should reject when path locale does not match source", () => {
+                const projectFr = new CustomProject(
+                    { sourceLocale: "fr", id: "pendo-fr", plugins: [] },
+                    "./testfiles",
+                    {
+                        locales: ["en-US"],
+                        pendo: {
+                            mappings: {
+                                "**/*.xliff": {
+                                    template: "[dir]/[basename]_[locale].[extension]",
+                                },
+                            },
+                        },
+                    }
+                );
+                const fileType = createFileType(projectFr);
+                expect(
+                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff")
+                ).toBe(false);
+            });
+        });
+    });
+
+    describe("getResourceTypes", () => {
+        it("should return ResourceString for the datatype", () => {
+            const fileType = createFileType(projectWithDefaultMappings);
+            const resourceTypes = fileType.getResourceTypes();
+            expect(resourceTypes["x-pendoguide-escaped"]).toBe("ResourceString");
+        });
+    });
+
+    describe("getLocalizedPath", () => {
+        /**
+         * getLocalizedPath is private; access via type assertion for testing.
+         * Returns the path relative to project root where the localized file should be written.
+         */
+        function getLocalizedPath(
+            fileType: PendoXliffFileType,
+            pathInProject: string,
+            loctoolLocale: string
+        ): string {
+            return (fileType as unknown as { getLocalizedPath: (p: string, l: string) => string }).getLocalizedPath(
+                pathInProject,
+                loctoolLocale
+            );
+        }
+
+        describe("with template [dir]/[basename]_[locale].[extension]", () => {
+            it("should strip source locale from basename and replace with target locale (en-US -> pl-PL)", () => {
+                const fileType = createFileType(projectWithCustomMappings);
+                const result = getLocalizedPath(
+                    fileType,
+                    "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff",
+                    "pl-PL"
+                );
+                expect(result).toBe("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_pl-PL.xliff");
+            });
+
+            it("should strip source locale from basename and replace with target locale (en -> fr)", () => {
+                const projectEn = new CustomProject(
+                    { sourceLocale: "en", id: "pendo-en", plugins: [] },
+                    "./testfiles",
+                    {
+                        locales: ["fr"],
+                        pendo: {
+                            mappings: {
+                                "l10n/xliff/guides/*.xliff": {
+                                    template: "[dir]/[basename]_[locale].[extension]",
+                                },
+                            },
+                        },
+                    }
+                );
+                const fileTypeEn = createFileType(projectEn);
+                const result = getLocalizedPath(
+                    fileTypeEn,
+                    "l10n/xliff/guides/guide_en.xliff",
+                    "fr"
+                );
+                expect(result).toBe("l10n/xliff/guides/guide_fr.xliff");
+            });
+
+            it("should produce correct path for hash-like basename with en-US source", () => {
+                const fileType = createFileType(projectWithCustomMappings);
+                const result = getLocalizedPath(
+                    fileType,
+                    "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff",
+                    "fr"
+                );
+                expect(result).toBe("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_fr.xliff");
+            });
+        });
+
+        describe("source file without locale suffix (guides.xliff -> guides_de.xliff)", () => {
+            it("should derive dir, basename, extension when parsePath returns empty", () => {
+                const fileType = createFileType(projectSourceWithoutLocale);
+                const result = getLocalizedPath(
+                    fileType,
+                    "l10n/xliff/guides.xliff",
+                    "de"
+                );
+                expect(result).toBe("l10n/xliff/guides_de.xliff");
+            });
+
+            it("should produce correct path for French", () => {
+                const fileType = createFileType(projectSourceWithoutLocale);
+                const result = getLocalizedPath(
+                    fileType,
+                    "l10n/xliff/guides.xliff",
+                    "fr"
+                );
+                expect(result).toBe("l10n/xliff/guides_fr.xliff");
+            });
+
+            it("should work with nested path", () => {
+                const fileType = createFileType(projectSourceWithoutLocale);
+                const result = getLocalizedPath(
+                    fileType,
+                    "a/b/c/guides.xliff",
+                    "de"
+                );
+                expect(result).toBe("a/b/c/guides_de.xliff");
+            });
+        });
+    });
+});

@@ -194,10 +194,16 @@ export function formatLocaleParams(template, locale) {
  * @param {string} template the path template string
  * @param {Object} parameters an object containing:
  * @param {string} parameters.sourcepath the path to the source file, relative to the
- *     root of the project
+ *     root of the project (used when path parts are not provided)
  * @param {string} parameters.locale the locale for the output file path
  * @param {string} parameters.resourceDir optional resource directory to substitute
  *     for [resourceDir] in the template
+ * @param {string} parameters.dir optional pre-parsed directory (e.g. from parsePath)
+ * @param {string} parameters.basename optional pre-parsed basename without extension
+ * @param {string} parameters.extension optional pre-parsed file extension
+ * @param {string} parameters.filename optional pre-parsed filename (basename + extension)
+ *     When any of dir, basename, extension, or filename are provided, they are used
+ *     instead of deriving from sourcepath. This allows using parsePath output directly.
  * @returns {string} the formatted file path
  */
 export function formatPath(template, parameters) {
@@ -205,27 +211,25 @@ export function formatPath(template, parameters) {
     const locale = parameters.locale || "en";
     const resourceDir = parameters.resourceDir || ".";
 
+    // Use pre-parsed path parts when provided (e.g. from parsePath); otherwise derive from sourcepath
+    const pathParts = fillPartialPathParts(pathname);
+    const dir = parameters.dir ?? pathParts.dir;
+    const basename = parameters.basename ?? pathParts.basename;
+    const extension = parameters.extension ?? pathParts.extension;
+    const filename = parameters.filename ?? (extension ? basename + "." + extension : basename);
+
     // First, handle locale-related substitutions without path normalization
     let output = formatLocaleParams(template, locale);
 
+    // Handle [basename].[extension] as a unit to avoid trailing dot when extension is empty
+    output = output.replace(/\[basename\]\.\[extension\]/g, extension ? basename + "." + extension : basename);
+
     // Now handle path-specific keywords
-    let base;
-    let lastDot;
-
-    output = output.replace(/\[dir\]/g, path.dirname(pathname));
-    output = output.replace(/\[filename\]/g, path.basename(pathname));
+    output = output.replace(/\[dir\]/g, dir);
+    output = output.replace(/\[filename\]/g, filename);
     output = output.replace(/\[resourceDir\]/g, resourceDir);
-
-    if (output.includes('[extension]')) {
-        base = path.basename(pathname);
-        output = output.replace(/\[extension\]/g, base.indexOf('.') > -1 ? base.substring(base.lastIndexOf('.')+1) : "");
-    }
-
-    if (output.includes('[basename]')) {
-        base = path.basename(pathname);
-        lastDot = base.lastIndexOf('.');
-        output = output.replace(/\[basename\]/g, lastDot > -1 ? base.substring(0, lastDot) : base);
-    }
+    output = output.replace(/\[extension\]/g, extension);
+    output = output.replace(/\[basename\]/g, basename);
 
     return path.normalize(output);
 };
@@ -323,16 +327,61 @@ const matchExprs = {
 };
 
 /**
+ * Derive dir, basename, extension, and whole filename from a pathname using path operations.
+ * Used when the template does not match so we can still fill path parts.
+ *
+ * @param {String} pathname the path name
+ * @returns {Object} { dir, basename, extension, filename }
+ */
+function fillPartialPathParts(pathname) {
+    if (!pathname) {
+        return { dir: ".", basename: "", extension: "" };
+    }
+    const dir = path.dirname(pathname) || ".";
+    const filename = path.basename(pathname);
+    const lastDot = filename.lastIndexOf(".");
+    const basename = lastDot > -1 ? filename.substring(0, lastDot) : filename;
+    const extension = lastDot > -1 ? filename.substring(lastDot + 1) : "";
+    return { dir, basename, extension, filename };
+}
+
+/**
+ * Fill locale, language, script, region from a source locale string using Locale class.
+ *
+ * @param {String} sourceLocale BCP-47 locale string
+ * @returns {Object} { locale, language, script?, region? }
+ */
+function fillLocalePartsFromSource(sourceLocale) {
+    if (!sourceLocale) {
+        return {};
+    }
+    const l = new Locale(sourceLocale);
+    const result = {
+        locale: l.getSpec(),
+        language: l.language || ""
+    };
+    if (l.script) {
+        result.script = l.script;
+    }
+    if (l.region) {
+        result.region = l.region;
+    }
+    return result;
+}
+
+/**
  * Parse a path according to the given template, and return the parts.
  * The parts can be any of the fields mentioned in the {@link formatPath}
- * documentation. If any field is not parsed, the result is an empty object
+ * documentation. If the template does not match, fills dir, basename, extension
+ * from the path. When sourceLocale is provided and no locale is in the path,
+ * fills locale, language, script, region from the source locale.
  *
  * @param {String} template the ilib template for matching against the path
  * @param {String} pathname the path name to match against the template
- * @returns {Object} an object mapping the fields to their values in the
- * the pathname
+ * @param {String} sourceLocale optional; when no locale in path, use this to fill locale parts
+ * @returns {Object} an object mapping the fields to their values in the pathname
  */
-export function parsePath(template, pathname) {
+export function parsePath(template, pathname, sourceLocale) {
     let regex = "";
     let matchGroups = {};
     let totalBrackets = 0;
@@ -344,7 +393,9 @@ export function parsePath(template, pathname) {
 
     for (let i = 0; i < template.length; i++) {
         if ( template[i] !== '[' ) {
-            regex += template[i];
+            // Escape regex metacharacters so literal "." etc. match correctly (e.g. [basename].[locale].[extension])
+            const c = template[i];
+            regex += (c === "." || c === "*" || c === "+" || c === "?" || c === "^" || c === "$" || c === "{" || c === "}" || c === "(" || c === ")" || c === "|" || c === "\\") ? "\\" + c : c;
         } else {
             let start = ++i;
             while (i < template.length && template[i] !== ']') {
@@ -360,6 +411,19 @@ export function parsePath(template, pathname) {
                     if (!matchExprs[keyword]) {
                         logger.warning("Warning: template contains unknown substitution parameter " + keyword);
                         return "";
+                    }
+                    // [basename].[extension]: use last dot to split so "foo.en-US.mdx" -> basename="foo.en-US", extension="mdx"
+                    if (keyword === "basename" && template[i + 1] === "." && template[i + 2] === "[") {
+                        const nextEnd = template.indexOf("]", i + 2);
+                        const nextKeyword = nextEnd > -1 ? template.substring(i + 3, nextEnd) : "";
+                        if (nextKeyword === "extension") {
+                            regex += "(.*)\\.([^.]+)";
+                            matchGroups.basename = totalBrackets + 1;
+                            matchGroups.extension = totalBrackets + 2;
+                            totalBrackets += 2;
+                            i = nextEnd;
+                            break;
+                        }
                     }
                     // [dir]/ is optional when followed by / and another token. Always capture dir so callers
                     // (e.g. PropertiesParser) can build paths. Use (?:()|(.*?)/) so we require the slash when
@@ -417,7 +481,12 @@ export function parsePath(template, pathname) {
         return groups;
     }
 
-    return {};
+    // Template did not match; fill dir, basename, extension from path
+    const partial = fillPartialPathParts(pathname || "");
+    if (sourceLocale) {
+        Object.assign(partial, fillLocalePartsFromSource(sourceLocale));
+    }
+    return partial;
 }
 
 /**
