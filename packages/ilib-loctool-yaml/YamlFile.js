@@ -416,12 +416,15 @@ YamlFile.prototype.getPath = function() {
 
 /**
  * Get the path name of schema file for the given resource file.
+ * Schema files are only used for .yml/.yaml files. When YamlFile is used for
+ * other formats (e.g. MDX frontmatter via ilib-loctool-mdx), return undefined
+ * to avoid spurious "No schema file found" warnings.
  *
- * @returns {String} the path name to this file
+ * @returns {String|undefined} the path name to the schema file, or undefined if not applicable
  */
 YamlFile.prototype.getSchemaPath = function() {
-    if (this.pathName) {
-        return this.pathName.replace(".yml", "-schema.json");
+    if (this.pathName && (this.pathName.endsWith(".yml") || this.pathName.endsWith(".yaml"))) {
+        return this.pathName.replace(/\.ya?ml$/, "-schema.json");
     }
 };
 
