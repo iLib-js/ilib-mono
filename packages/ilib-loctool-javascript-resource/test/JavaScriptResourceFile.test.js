@@ -589,6 +589,20 @@ describe("javascriptresourcefile", function() {
         expect(jsrf.getResourceFilePath()).toBe("path/to/foo.js");
     });
 
+    test("JavaScriptResourceFileGetResourceFilePathJsonDelegatingSourceUsesTemplate", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p2,
+            locale: "de-DE",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de.js");
+    });
+
     test("JavaScriptResourceFileGetContentDefaultLocale", function() {
         expect.assertions(2);
 
