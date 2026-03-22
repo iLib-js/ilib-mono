@@ -1,0 +1,51 @@
+{
+  "name": "ilib-csv",
+  "version": "0.0.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "description": "Pure CSV/TSV parser and serializer library",
+  "keywords": [
+    "internationalization",
+    "i18n",
+    "localization",
+    "l10n",
+    "csv",
+    "tsv",
+    "parser",
+    "serializer"
+  ],
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Edwin Hoogerbeets",
+    "email": "ehoogerbeets@gmail.com"
+  },
+  "files": [
+    "lib",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iLib-js/ilib-mono"
+  },
+  "engines": {
+    "node": ">=12 <23"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "test": "node node_modules/jest/bin/jest.js",
+    "test:watch": "pnpm test --watch",
+    "coverage": "pnpm test --coverage",
+    "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i"
+  },
+  "devDependencies": {
+    "@tsconfig/node12": "^12.1.4",
+    "@types/jest": "^29.5.0",
+    "@types/node": "12",
+    "ilib-internal": "workspace:^",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.9.2"
+  }
+}
