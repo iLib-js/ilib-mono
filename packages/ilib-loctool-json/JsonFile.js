@@ -1,7 +1,7 @@
 /*
  * JsonFile.js - plugin to extract resources from an Json file
  *
- * Copyright © 2021-2023, Box, Inc.
+ * Copyright © 2021-2023, 2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ var Locale = require("ilib-locale");
  */
 var JsonFile = function (options) {
     this.project = options.project;
-    this.pathName = path.normalize(options.pathName || "");
+    this.pathName = options.pathName ? path.normalize(options.pathName) : undefined;
     this.type = options.type;
 
     this.API = this.project.getAPI();
@@ -112,9 +112,38 @@ function isPrimitive(type) {
 }
 
 /**
+ * True if an array `items` schema includes an object shape (or a $ref to one),
+ * including under anyOf/oneOf. Used so heterogeneous arrays (e.g. string | pageGroup)
+ * use element-wise parseObj instead of the string[] path that does String(item).
+ */
+function itemSchemaHasObjectBranch(itemSchema, root) {
+    if (!itemSchema) {
+        return false;
+    }
+    if (typeof itemSchema.$ref !== "undefined") {
+        var resolved = root["$$refs"][itemSchema.$ref];
+        if (!resolved) {
+            return false;
+        }
+        return itemSchemaHasObjectBranch(resolved, root);
+    }
+    if (itemSchema.type === "object") {
+        return true;
+    }
+    if (itemSchema.anyOf || itemSchema.oneOf) {
+        const operator = itemSchema.anyOf || itemSchema.oneOf;
+        return operator.some(function (sub) {
+            return itemSchemaHasObjectBranch(sub, root);
+        });
+    }
+    return false;
+}
+
+/**
  * Gets type of array based on provided schema.
  *
- * TODO: Add support for "anyOf" and "oneOf" type definitions.
+ * When items are anyOf/oneOf mixing strings and objects, returns "object" so each
+ * element is parsed with parseObj (see itemSchemaHasObjectBranch).
  */
 function getArrayTypeFromSchema(schema, root) {
     if (schema.type !== "array") {
@@ -139,6 +168,10 @@ function getArrayTypeFromSchema(schema, root) {
 
     if (schema.type && allowedTypes.indexOf(schema.type) > -1) {
         return schema.type;
+    }
+
+    if (itemSchemaHasObjectBranch(schema, root)) {
+        return "object";
     }
 
     // Default type is string for compatibility reasons.
@@ -964,7 +997,7 @@ JsonFile.prototype.localize = function (translations, locales) {
                 var locale = locales[i];
                 // Don't pass pathName - let the resource file type use its own template
                 this.logger.debug("Delegating output to resourceFileType for locale " + locale);
-                var resFile = resFileType.getResourceFile(locale);
+                var resFile = resFileType.getResourceFile(locale, this.pathName);
 
                 // For each extracted resource, look up its translation and add to the resource file
                 for (var j = 0; j < resources.length; j++) {
