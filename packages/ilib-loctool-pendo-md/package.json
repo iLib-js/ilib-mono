@@ -51,6 +51,8 @@
     },
     "dependencies": {
         "@ungap/structured-clone": "^1.2.0",
+        "ilib-locale": "workspace:^",
+        "ilib-tools-common": "workspace:^",
         "ilib-xml-js": "^1.7.0",
         "mdast-util-from-markdown": "^0",
         "mdast-util-gfm-strikethrough": "^0",
