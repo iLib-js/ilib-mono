@@ -1,7 +1,7 @@
 /*
  * legacyilibassemble.js - assemble of legacy style of ilib files.
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,6 +125,9 @@ function deletePatterns(data) {
 function assembleLocaleRootData() {
     let readData;
     let allData = "";
+    let rootJsonFiles = ["scripts", "scriptToRange", "ctype", "ctype_c", "ctype_l", "ctype_m", "ctype_n", "ctype_p", "ctype_s", "ctype_z" ];
+    dependentData.push(... rootJsonFiles);
+
     dependentData.forEach(function(data){
         let dataPath = path.join(ilibPath, "js/data/locale", data + ".json" );
         readData = readFile(dataPath);
@@ -164,14 +167,14 @@ function zoneinfoWalk(zoneinfoPath) {
 }
 
 function assemblejs() {
-    let readData = "";
-    let filePath;
-    allJSList.forEach(function(file){
-        if (file !== "index.js") {
-            filePath = path.join(ilibPath, "js/lib", file);
+    allJSList
+    .filter(file => file !== "index.js")
+    .forEach(file => {
+        const filePath = path.join(ilibPath, "js/lib", file);
+        const readData = readFile(filePath);
+        if (readData) {
+            assembleJSAll += readData;
         }
-        readData = readFile(filePath, "utf-8");
-        if (readData) assembleJSAll += readData;
     });
 
     assembleJSAll = deletePatterns(assembleJSAll);

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="en-US/README.md" source-language="en-US" target-language="nl-NL" product-name="sample-mdx">
+    <body>
+      <trans-unit id="3" resname="r696870087.Title" restype="string" datatype="x-yaml">
+        <source>Readme for the MDX Sample</source>
+        <target>Readme voor het MDX voorbeeld</target>
+      </trans-unit>
+      <trans-unit id="4" resname="r317325714" restype="string" datatype="mdx">
+        <source>ilib-loctool-mdx</source>
+        <target>ilib-loctool-mdx</target>
+      </trans-unit>
+      <trans-unit id="7" resname="r452200524" restype="string" datatype="mdx">
+        <source>Ilib loctool plugin to parse and localize MDX-style markdown</source>
+        <target>Een plug-in voor ilib loctool om Github-flavored markdown te ontleden en te lokaliseren</target>
+      </trans-unit>
+      <trans-unit id="10" resname="r127245803" restype="string" datatype="mdx">
+        <source>Markdown is broken into paragraphs and phrases using the
+&lt;c0&gt;remark&lt;/c0&gt; family of parsers.
+Here is a [link]&lt;c1/&gt; that is not localized.
+Here is a [footnote]&lt;c2/&gt; that is localized.
+Here is a [link]&lt;c3/&gt; that is is localized as well.</source>
+        <target>Markdown wordt opgedeeld in alinea's en zinnen met behulp van de
+&lt;c0&gt;remark&lt;/c0&gt; familie van ontledeners.
+Hier is een [link]&lt;c1/&gt; die niet gelokaliseerd is.
+Hier is een [footnote]&lt;c2/&gt; die is gelokaliseerd.
+Hier is een [link]&lt;c3/&gt; dat is ook gelokaliseerd.</target>
+      </trans-unit>
+      <trans-unit id="12" resname="r185975191" restype="string" datatype="mdx">
+        <source>Escapes</source>
+        <target>Ontsnappingen</target>
+      </trans-unit>
+      <trans-unit id="14" resname="r342091031" restype="string" datatype="mdx">
+        <source>Whenever there is syntax in the markdown that translators should
+not touch, this plugin converts them into xml-like components.</source>
+        <target>Wanneer er syntaxis in markdown die de vertalers niet aanraken
+zouden moeten, zet deze plug-in ze om in xml-achtige componenten.</target>
+      </trans-unit>
+      <trans-unit id="22" resname="r906565896" restype="string" datatype="mdx">
+        <source>http://www.sample.com/url/that/will/be/localized</source>
+        <target state="translated">http://www.sample.nl/url/that/will/be/localized</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="en-US/example.mdx" source-language="en-US" target-language="nl-NL" product-name="sample-mdx">
+    <body>
+      <trans-unit id="1" resname="r496301270.Title" restype="string" datatype="x-yaml">
+        <source>Example MDX File</source>
+        <target>Voorbeeld MDX-bestand</target>
+      </trans-unit>
+      <trans-unit id="5" resname="r496301270.Description" restype="string" datatype="x-yaml">
+        <source>This is an example MDX file with some content to localize</source>
+        <target>Dit is een voorbeeld van een MDX-bestand met some inhoud om te lokaliseren</target>
+      </trans-unit>
+      <trans-unit id="11" resname="r220017246" restype="string" datatype="mdx">
+        <source>MDX allows you to use JSX components directly in your markdown files.</source>
+        <target>MDX laat je JSX-componenten direct in je markdown-bestanden gebruiken.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

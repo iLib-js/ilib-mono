@@ -1,5 +1,18 @@
 # ilib-po
 
+## 1.1.4
+
+### Patch Changes
+
+- ea53ec0: Fix character escaping in PO message strings
+
+  - Escape backslashes as well as quotes when generating PO output (msgid, msgstr, msgctxt, #k)
+  - Unescape backslashes and quotes correctly when parsing PO files
+  - Rename `escapeQuotes` / `unescapeQuotes` to `escapeQuotesAndBackslashes` / `unescapeQuotesAndBackslashes` in utils
+
+- Updated dependencies [1f44881]
+  - ilib-tools-common@1.21.0
+
 ## 1.1.3
 
 ### Patch Changes

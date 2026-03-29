@@ -32,7 +32,7 @@
  * Examples:
  * - English period (.) should become Japanese maru (。) in Japanese
  * - English question mark (?) should become Japanese question mark (？) in Japanese
- * - English exclamation mark (!) should become Japanese exclamation mark (！) in Japanese
+ * - English exclamation mark (!) checking is disabled by default for Japanese (exclamation: null)
  * - English ellipsis (...) should become Japanese ellipsis (…) in Japanese
  * - English colon (:) should become Japanese colon (：) in Japanese
  */
@@ -71,7 +71,8 @@ const defaults = {
  * Punctuation map for each language, with default punctuation for each punctuation type
  */
 const punctuationMap = {
-    'ja': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
+    // exclamation is disabled for Japanese because it's rarely used in Japanese
+    'ja': { 'period': '。', 'question': '？', 'exclamation': null, 'ellipsis': '…', 'colon': '：' },
     'zh': { 'period': '。', 'question': '？', 'exclamation': '！', 'ellipsis': '…', 'colon': '：' },
     'el': { 'period': '.', 'question': ';', 'exclamation': '!', 'ellipsis': '...', 'colon': ':' },
     'ar': { 'period': '.', 'question': '؟', 'exclamation': '!', 'ellipsis': '…', 'colon': ':' },
@@ -89,10 +90,10 @@ const punctuationMap = {
 
 /**
  * @ignore
- * @typedef {{period?: string, question?: string, exclamation?: string, ellipsis?: string, colon?: string, exceptions?: string[]}} LocaleOptions
+ * @typedef {{period?: string, question?: string, exclamation?: string | null, ellipsis?: string, colon?: string, exceptions?: string[]}} LocaleOptions
  * @property {string} [period] - Custom period punctuation for this locale
  * @property {string} [question] - Custom question mark punctuation for this locale
- * @property {string} [exclamation] - Custom exclamation mark punctuation for this locale
+ * @property {string | null} [exclamation] - Custom exclamation mark punctuation for this locale, or null to disable checking for exclamation marks
  * @property {string} [ellipsis] - Custom ellipsis punctuation for this locale
  * @property {string} [colon] - Custom colon punctuation for this locale
  * @property {string[]} [exceptions] - Array of source strings to skip checking for this locale.
@@ -137,7 +138,7 @@ class ResourceSentenceEnding extends ResourceRule {
      *   'ja-JP': {
      *     period: '。',
      *     question: '？',
-     *     exclamation: '！',
+     *     exclamation: null,
      *     ellipsis: '…',
      *     colon: '：'
      *   }
@@ -174,21 +175,24 @@ class ResourceSentenceEnding extends ResourceRule {
         this.description = "Checks that sentence-ending punctuation is appropriate for the locale of the target string and matches the punctuation in the source string";
         this.link = "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-sentence-ending.md";
 
+        // Get the parameter from the options
+        const param = this.getParam() || {};
+
         // Initialize minimum length configuration
-        this.minimumLength = Math.max(0, options?.minimumLength ?? 10);
+        this.minimumLength = Math.max(0, param?.minimumLength ?? 10);
 
         // Initialize custom punctuation mappings from configuration
         this.customPunctuationMap = {};
         // Initialize exception lists from configuration
         this.exceptionsMap = {};
 
-        if (options && typeof options === 'object' && !Array.isArray(options)) {
-            // options is an object with locale codes as keys and punctuation mappings as values
+        if (param && typeof param === 'object' && !Array.isArray(param)) {
+            // param is an object with locale codes as keys and punctuation mappings as values
             // Merge the default punctuation with the custom punctuation so that the custom
             // punctuation overrides the default and we don't have to specify all punctuation types.
             // Custom maps are stored by language, not locale, so that they apply to all locales of
             // that language.
-            for (const locale in options) {
+            for (const locale in param) {
                 const localeObj = new Locale(locale);
 
                 // only process config for valid locales
@@ -198,7 +202,7 @@ class ResourceSentenceEnding extends ResourceRule {
                     if (!language) continue;
 
                     // Separate punctuation mappings from exceptions
-                    const { exceptions, ...punctuationMappings } = options[locale];
+                    const { exceptions, ...punctuationMappings } = param[locale];
 
                     // Apply locale-specific defaults for any locale that usesthis language
                     const localeDefaults = this.getLocaleDefaults(language);
@@ -334,7 +338,7 @@ class ResourceSentenceEnding extends ResourceRule {
         const language = localeObj.getLanguage();
         if (!language) return null;
         // Custom config
-        if (this.customPunctuationMap[language] && this.customPunctuationMap[language][type]) {
+        if (this.customPunctuationMap[language] && type in this.customPunctuationMap[language]) {
             return this.customPunctuationMap[language][type];
         }
         // For English ellipsis, only accept the default (Unicode ellipsis) in the target
@@ -343,8 +347,12 @@ class ResourceSentenceEnding extends ResourceRule {
         }
         // Get locale-specific defaults for this language
         const localeDefaults = this.getLocaleDefaults(language);
-        const result = localeDefaults[type] || this.getDefaultPunctuation(type);
-        return result;
+        // Check if the type exists in localeDefaults (even if it's null)
+        if (type in localeDefaults) {
+            return localeDefaults[type];
+        }
+        // Type not in localeDefaults, use default
+        return this.getDefaultPunctuation(type);
     }
 
     /**
@@ -543,6 +551,15 @@ class ResourceSentenceEnding extends ResourceRule {
     static getUnicodeCodes(str) {
         if (!str) return '';
         return str.split('').map(char => ResourceSentenceEnding.getUnicodeCode(char)).join(' ');
+    }
+
+    /**
+     * Format punctuation for error messages - replace empty strings with "no punctuation"
+     * @param {string} punctuation - The punctuation string to format
+     * @returns {string} - The formatted punctuation string
+     */
+    static formatPunctuationForMessage(punctuation) {
+        return punctuation === '' ? 'no punctuation' : `"${punctuation}"`;
     }
 
     /**
@@ -985,7 +1002,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 rule: this,
                 severity: "warning",
                 id: resource.getKey(),
-                description: `Sentence ending should be "" for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`,
+                description: `Sentence ending should be no punctuation for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`,
                 source,
                 highlight,
                 pathName: file,
@@ -1025,7 +1042,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 rule: this,
                 severity: "warning",
                 id: resource.getKey(),
-                description: `Sentence ending should be "${insertString}" (${unicodeCode}) for ${targetLocale} locale instead of ""`,
+                description: `Sentence ending should be "${insertString}" (${unicodeCode}) for ${targetLocale} locale instead of ${ResourceSentenceEnding.formatPunctuationForMessage('')}`,
                 source,
                 highlight,
                 pathName: file,
@@ -1187,7 +1204,7 @@ class ResourceSentenceEnding extends ResourceRule {
             const expectedUnicode = ResourceSentenceEnding.getUnicodeCodes(expectedPunctuation);
             const positionInfo = this.findIncorrectPunctuationPosition(target, lastSentence, targetEnding.original);
 
-            description = `Sentence ending should be "${expectedPunctuation}" (${expectedUnicode}) for ${targetLocale} locale instead of "${targetEnding.original}" (${unicodeCode})`;
+            description = `Sentence ending should be ${ResourceSentenceEnding.formatPunctuationForMessage(expectedPunctuation)} (${expectedUnicode}) for ${targetLocale} locale instead of ${ResourceSentenceEnding.formatPunctuationForMessage(targetEnding.original)} (${unicodeCode})`;
 
             if (positionInfo) {
                 const beforePunctuation = target.substring(0, positionInfo.position);
@@ -1203,7 +1220,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         const expectedUnicodeWithSpace = ResourceSentenceEnding.getUnicodeCodes(expectedWithSpace);
 
                         highlight = `${beforePunctuation}<e0/>`;
-                        description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of ""`;
+                        description = `Sentence ending should be "${expectedWithSpace}" (${expectedUnicodeWithSpace}) for ${targetLocale} locale instead of no punctuation`;
                         fix = this.createPunctuationFix(resource, target, '', expectedWithSpace, index, category, targetLocaleObj);
                     } else {
                         // Target has some punctuation - check for spacing issues

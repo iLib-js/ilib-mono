@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="" source-language="en-US" target-language="pl-PL" product-name="pendo-md">
+    <body>
+      <trans-unit id="1" resname="73e6c197-f1c0-4bb1-9b31-a40ce2270870|ariaLabel" restype="string" datatype="plaintext">
+        <source>Close</source>
+        <target>Zamknij</target>
+        <note>CloseButton</note>
+      </trans-unit>
+      <trans-unit id="2" resname="8de49842-c1fd-4536-905e-8817673b4c24|md" restype="string" datatype="plaintext">
+        <source>Callout!</source>
+        <target>Wywołanie!</target>
+        <note>TextView</note>
+      </trans-unit>
+      <trans-unit id="3" resname="a165c0e2-11de-40b4-9209-55bcdff6d67b|md" restype="string" datatype="plaintext">
+        <source>&lt;c0&gt;First paragraph of a multi-paragraph string.&lt;/c0&gt;&lt;c1&gt;Second paragraph of a multi-paragraph string.&lt;/c1&gt;</source>
+        <target>&lt;c0&gt;Pierwszy akapit wieloakapitowego ciągu.&lt;/c0&gt;&lt;c1&gt;Drugi akapit wieloakapitowego ciągu.&lt;/c1&gt;</target>
+        <note>TextView [c0: paragraph, c1: paragraph]</note>
+      </trans-unit>
+      <trans-unit id="4" resname="5f8bec10-d663-43d7-a185-49824564060c|md" restype="string" datatype="plaintext">
+        <source>String with &lt;c0&gt;a link in it&lt;/c0&gt;</source>
+        <target>Ciąg z &lt;c0&gt;linkiem wewnątrz&lt;/c0&gt;</target>
+        <note>TextView [c0: link]</note>
+      </trans-unit>
+      <trans-unit id="5" resname="cff9a58d-39e6-4562-8b39-96a137d0bfd1|url" restype="string" datatype="plaintext">
+        <source>https://example.com/linkOnly</source>
+        <target>https://example.com/linkOnly</target>
+        <note>ButtonLink</note>
+      </trans-unit>
+      <trans-unit id="6" resname="7542337f-62c3-44c3-9a4a-d0f7944dd5b4|md" restype="string" datatype="plaintext">
+        <source>&lt;c0&gt;First paragraph of a multi-paragraph string with list.&lt;/c0&gt;&lt;c1&gt;This is a list:&lt;/c1&gt;&lt;c2&gt;&lt;c3&gt;&lt;c4&gt;first&lt;/c4&gt; item&lt;/c3&gt;&lt;c5&gt;second &lt;c6&gt;item&lt;/c6&gt;&lt;/c5&gt;&lt;c7&gt;&lt;c8&gt;third&lt;/c8&gt; item&lt;/c7&gt;&lt;/c2&gt;</source>
+        <target>&lt;c0&gt;Pierwszy akapit wieloakapitowego ciągu z listą.&lt;/c0&gt;&lt;c1&gt;To jest lista:&lt;/c1&gt;&lt;c2&gt;&lt;c3&gt;&lt;c4&gt;pierwszy&lt;/c4&gt; element&lt;/c3&gt;&lt;c5&gt;drugi &lt;c6&gt;element&lt;/c6&gt;&lt;/c5&gt;&lt;c7&gt;&lt;c8&gt;trzeci&lt;/c8&gt; element&lt;/c7&gt;&lt;/c2&gt;</target>
+        <note>TextView [c0: paragraph, c1: paragraph, c2: list, c3: listItem&gt;paragraph, c4: strong, c5: listItem&gt;paragraph, c6: strong, c7: listItem&gt;paragraph, c8: strong]</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

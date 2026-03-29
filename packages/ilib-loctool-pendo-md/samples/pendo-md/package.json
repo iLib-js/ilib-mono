@@ -1,0 +1,13 @@
+{
+  "name": "ilib-loctool-pendo-md Sample",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Sample localization project",
+  "devDependencies": {
+    "ilib-loctool-pendo-md": "workspace:^",
+    "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
+  }
+}

@@ -19,7 +19,7 @@
         "resources"
     ],
     "settings": {
-        "xliffsDir": "./xliffs",
+        "xliffsDir": "translations",
         "locales":[
             "ko-KR",
             "de-DE"

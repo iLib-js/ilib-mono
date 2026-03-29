@@ -1,7 +1,7 @@
 /*
  * Project.js - represents an project
  *
- * Copyright © 2016-2017, 2019-2025 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2026 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ var path = require("path");
 var Queue = require("js-stl").Queue;
 var ilib = require("ilib");
 var JSUtils = require("ilib/lib/JSUtils.js");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 var LocalRepository = require("./LocalRepository.js");
 var TranslationSet = require("./TranslationSet.js");
@@ -259,7 +259,27 @@ Project.prototype.init = function(cb) {
                     extensionMap[extension] = [];
                 }
                 extensionMap[extension].push(type);
-            })
+            });
+
+            // Check if the file type has a mappings property, and if so,
+            // give a warning if the user is using a mapping pattern that
+            // has an extension that is not listed in the extensions
+            // supported by the file type.
+            var settings = this.settings && this.settings[type.name()];
+            if (settings && settings.mappings) {
+                var mappings = settings.mappings;
+                var patterns = Object.keys(mappings);
+                patterns.forEach(function(pattern) {
+                    // extract extension from pattern (e.g., "**/*.mdx" -> ".mdx")
+                    var match = pattern.match(/(\.\w+)$/);
+                    if (match && match.length > 1) {
+                        var ext = match[1].toLowerCase();
+                        if (!extensionMap[ext]) {
+                            logger.warn("File type " + type.name() + " is configured to handle mapping pattern " + pattern + ", but the extension " + ext + " is not listed in the extensions supported by the file type.");
+                        }
+                    }
+                }.bind(this));
+            }
         });
         this.extensionMap = extensionMap;
 
@@ -431,7 +451,8 @@ Project.prototype.isResourcePath = function(type, pathName) {
 Project.prototype.isSourceLocale = function(locale) {
     var l = new Locale(locale);
     var s = new Locale(this.sourceLocale);
-    return (l.getLanguage() === s.getLanguage() && l.getRegion() === s.getRegion() && l.getScript() === s.getScript());
+    const pseudoVariant = PseudoFactory.isPseudoLocale(locale, this) || (l.getVariant() && l.getVariant().includes("pseudo"));
+    return (l.getLanguage() === s.getLanguage() && l.getRegion() === s.getRegion() && l.getScript() === s.getScript() && !pseudoVariant);
 };
 
 /**
@@ -526,9 +547,11 @@ Project.prototype.extract = function(cb) {
     this.db.getBy({
         project: this.options.id
     }, function(err, resources) {
-        logger.trace("Getting all resources. Length: " + resources.length);
-        logger.trace("Getting all resources. tu length: " + this.db.ts.resources.length);
-        this.translations.addAll(resources);
+        if (!this.localizeOnly || !this.settings.nopseudo) {
+            logger.trace("Getting all resources. Length: " + resources.length);
+            logger.trace("Getting all resources. tu length: " + this.db.ts.resources.length);
+            this.translations.addAll(resources);
+        }
         var pathName;
 
         while (!this.paths.isEmpty()) {
@@ -578,10 +601,12 @@ Project.prototype.extract = function(cb) {
 Project.prototype.save = function(cb) {
     logger.trace("Project save called to save new resources to the DB");
 
-    for (var i = 0; i < this.fileTypes.length; i++) {
-        var set = this.fileTypes[i].getNew(this.translations);
-        if (set && set.size()) {
-            this.newres.addSet(set);
+    if (!this.localizeOnly) {
+        for (var i = 0; i < this.fileTypes.length; i++) {
+            var set = this.fileTypes[i].getNew(this.translations);
+            if (set && set.size()) {
+                this.newres.addSet(set);
+            }
         }
     }
 
@@ -750,8 +775,11 @@ Project.prototype.close = function(cb) {
                 sourceLocale: this.sourceLocale
             }).filter(function(res) {
                 // no source means nothing to translate, so don't need those resources
-                return res.source || res.sourceArray || res.sourceStrings;
-            }));
+                // also exclude resources with a target locale - those are translations, not extracted source strings
+                var targetLocale = res.getTargetLocale();
+                return (res.source || res.sourceArray || res.sourceStrings) &&
+                    (!targetLocale || targetLocale === this.sourceLocale);
+            }.bind(this)));
 
             if (this.fileTypes[i].modern && this.fileTypes[i].modern.size() > 0) {
                 var modernPath = path.join(dir, base + "-modern.xliff");

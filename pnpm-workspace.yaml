@@ -1,4 +1,12 @@
 packages:
-    - "packages/*"
-    - "packages/*/samples/*"
-    - "packages/*/test-e2e/__testfiles__/*"
+    - packages/*
+    - packages/*/samples/*
+    - packages/*/test-e2e/__testfiles__/*
+
+ignoredBuiltDependencies:
+    - ejs
+    - esbuild
+    - unrs-resolver
+
+onlyBuiltDependencies:
+    - node-expat

@@ -595,7 +595,17 @@ class Project extends DirItem {
      * @param {Array.<Result>} results the results of the linting process
      */
     applyTransformers(results) {
-        this.get().forEach((file) => file.applyTransformers(results));
+        const files = this.get();
+        for (const file of files) {
+            if (!this.options.opt.quiet && this.options.opt.progressInfo) {
+                logger.info(`Applying transformers to file [${file.filePath}]`);
+            }
+            try {
+                file.applyTransformers(results);
+            } catch (e) {
+                logger.error(`Error applying transformers to file [${file.getFilePath()}]`, e);
+            }
+        }
     }
 
     /**
@@ -603,9 +613,19 @@ class Project extends DirItem {
      * file type of each file.
      */
     serialize() {
-        if (this.options.opt.write) {
-            const files = this.get();
-            files.forEach((file) => {
+        if (!this.options.opt.write) {
+            logger.debug("Skipping serialization because write option is not set");
+            return;
+        }
+        const files = this.get();
+        for (const file of files) {
+            if (!this.options.opt.quiet && this.options.opt.progressInfo) {
+                logger.info(
+                    `Serializing file [${file.filePath}]` +
+                        (this.options.opt.overwrite ? " (overwriting)" : "(as .modified)")
+                );
+            }
+            try {
                 const irs = file.getIRs();
                 const fileType = file.getFileType();
                 const serializer = fileType.getSerializer();
@@ -619,7 +639,9 @@ class Project extends DirItem {
                     }
                     sourceFile.write();
                 }
-            });
+            } catch (e) {
+                logger.error(`Error serializing file [${file.getFilePath()}]`, e);
+            }
         }
     }
 

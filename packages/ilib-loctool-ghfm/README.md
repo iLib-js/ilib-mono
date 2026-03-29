@@ -139,6 +139,17 @@ This text is [translated][tr].
 In this case, the url itself will be extracted as a separate string resource and will
 be localizable.
 
+## File Extensions
+
+By default, this plugin handles files with the following extensions:
+- `.md`
+- `.markdown`
+- `.mdown`
+- `.mkd`
+- `.rst`
+- `.rmd`
+- `.mdx`
+
 ## Mappings
 
 This plugin now supports mappings:
@@ -149,6 +160,9 @@ This plugin now supports mappings:
   "settings": {
     "markdown": {
       "mappings": {
+        "**/*.mdx": {
+          "template": "[localeDir]/[filename]"
+        },
         "**/foobar.md": {
           "template": "[dir]/[basename]_[locale].[extension]",
           "frontmatter": ["Title", "Description"],

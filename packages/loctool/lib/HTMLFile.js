@@ -1,7 +1,7 @@
 /*
  * HTMLFile.js - plugin to extract resources from an HTML file
  *
- * Copyright © 2018-2019, 2020 Box, Inc.
+ * Copyright © 2018-2019, 2020, 2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ var path = require("path");
 var log4js = require("log4js");
 var htmlParser = require("html-parser");
 var jsstl = require("js-stl");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var he = require("he");
 var MessageAccumulator = require("message-accumulator");
 
