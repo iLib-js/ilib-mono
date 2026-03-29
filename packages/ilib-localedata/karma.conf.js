@@ -1,7 +1,7 @@
 /*
  * karma.conf.js - configure the karma testing environment
  *
- * Copyright © 2023, 2025 JEDLSoft
+ * Copyright © 2025, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const path = require("path");
 const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
     config.set(createKarmaConfig({
         // list of files to exclude
         exclude: [
-            "./test/env-browser.test.js"
+            "./test/LocaleDataNode.test.js"
         ],
+
+        webpack: {
+            resolve: {
+                fallback: {
+                    buffer: require.resolve("buffer")
+                },
+                alias: {
+                    "calling-module": path.resolve(__dirname, "./test/files3"),
+                    "ilib-loader": "ilib-loader/browser",
+                    "fs": false,
+                    "path": false
+                }
+            },
+        }
     }));
-};
+}; 
