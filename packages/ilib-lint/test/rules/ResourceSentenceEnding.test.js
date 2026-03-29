@@ -73,15 +73,14 @@ describe("ResourceSentenceEnding rule", function() {
                 source: "This is amazing!",
                 target: "これは素晴らしいです！",
                 expectedResult: undefined,
-                description: "Japanese exclamation mark is converted to fullwidth"
+                description: "Japanese exclamation mark checking is disabled by default"
             },
             {
                 targetLocale: "ja-JP",
                 source: "This is amazing!",
-                target: "これは素晴らしいです!",
-                expectedResult: "Sentence ending should be \"！\" (U+FF01) for ja-JP locale instead of \"!\" (U+0021)",
-                highlight: "これは素晴らしいです<e0>! (U+0021)</e0>",
-                description: "Japanese exclamation mark triggers warning if not fullwidth"
+                target: "これは素晴らしいです。",
+                expectedResult: undefined,
+                description: "Japanese exclamation mark checking is disabled by default"
             },
             {
                 targetLocale: "ja-JP",
@@ -618,10 +617,9 @@ describe("ResourceSentenceEnding rule", function() {
             {
                 targetLocale: "ja-JP",
                 source: "She said, \"Hello!\"",
-                target: "彼女は「こんにちは!」と言いました。",
-                expectedResult: "Sentence ending should be \"！\" (U+FF01) for ja-JP locale instead of \"!\" (U+0021)",
-                highlight: "彼女は「こんにちは<e0>! (U+0021)</e0>」と言いました。",
-                description: "Japanese exclamation mark in quotes triggers warning if not fullwidth exclamation mark"
+                target: "彼女は「こんにちは。」と言いました。",
+                expectedResult: undefined,
+                description: "Japanese exclamation mark checking is disabled by default, even in quotes"
             },
             {
                 targetLocale: "zh-CN",
@@ -938,7 +936,7 @@ describe("ResourceSentenceEnding rule", function() {
                 targetLocale: "ms-MY",
                 source: "Hello world",
                 target: "Halo dunia.",
-                expectedResult: "Sentence ending should be \"\" for ms-MY locale instead of \".\" (U+002E)",
+                expectedResult: "Sentence ending should be no punctuation for ms-MY locale instead of \".\" (U+002E)",
                 highlight: "Halo dunia<e0>. (U+002E)</e0>",
                 description: "Extra punctuation in translation for optional punctuation language (Malay) when source has none - should be removed"
             },
@@ -946,7 +944,7 @@ describe("ResourceSentenceEnding rule", function() {
                 targetLocale: "tl-PH",
                 source: "Hello world",
                 target: "Kamusta mundo!",
-                expectedResult: "Sentence ending should be \"\" for tl-PH locale instead of \"!\" (U+0021)",
+                expectedResult: "Sentence ending should be no punctuation for tl-PH locale instead of \"!\" (U+0021)",
                 highlight: "Kamusta mundo<e0>! (U+0021)</e0>",
                 description: "Extra punctuation in translation for optional punctuation language (Tagalog) when source has none - should be removed"
             },
@@ -1192,7 +1190,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1229,7 +1227,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1301,7 +1299,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1341,7 +1339,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1381,7 +1379,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
                 expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1421,7 +1419,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1461,7 +1459,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1501,7 +1499,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1540,7 +1538,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1576,7 +1574,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1615,7 +1613,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1651,7 +1649,7 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             };
 
-            const rule = new ResourceSentenceEnding(customConfig);
+            const rule = new ResourceSentenceEnding({ param: customConfig });
             expect(rule).toBeTruthy();
 
             const resource = new ResourceString({
@@ -1701,7 +1699,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         expect(actual).toBeTruthy();
-        expect(actual?.description).toContain('Sentence ending should be "" for ja-JP locale instead of "。" (U+3002)');
+        expect(actual?.description).toContain('Sentence ending should be no punctuation for ja-JP locale instead of "。" (U+3002)');
         expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("こんにちは世界<e0>。 (U+3002)</e0>");
         expect(actual?.fix).toBeTruthy();
@@ -1732,7 +1730,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
 
         expect(actual).toBeTruthy();
-        expect(actual?.description).toContain('Sentence ending should be "。" (U+3002) for ja-JP locale instead of ""');
+        expect(actual?.description).toContain('Sentence ending should be "。" (U+3002) for ja-JP locale instead of no punctuation');
         expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("こんにちは世界<e0/>");
         expect(actual?.fix).toBeTruthy();
@@ -2413,7 +2411,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "." (U+002E) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "." (U+002E) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -2448,7 +2446,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "\u202F!" (U+202F U+0021) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "\u202F!" (U+202F U+0021) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -2483,7 +2481,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "\u202F?" (U+202F U+003F) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "\u202F?" (U+202F U+003F) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -2518,7 +2516,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "\u202F:" (U+202F U+003A) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "\u202F:" (U+202F U+003A) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -2553,7 +2551,7 @@ describe("ResourceSentenceEnding rule", function() {
             });
 
             expect(actual).toBeTruthy();
-            expect(actual?.description).toContain('Sentence ending should be "\u2026" (U+2026) for fr-FR locale instead of ""');
+            expect(actual?.description).toContain('Sentence ending should be "\u2026" (U+2026) for fr-FR locale instead of no punctuation');
             expect(actual?.id).toBe(resource.getKey());
             expect(actual?.highlight).toBe("Bonjour le monde<e0/>");
             expect(actual?.fix).toBeTruthy();
@@ -3376,7 +3374,7 @@ describe("ResourceSentenceEnding rule", function() {
 
                 expect(rule.getExpectedPunctuation(localeObj, "period")).toBe("。");
                 expect(rule.getExpectedPunctuation(localeObj, "question")).toBe("？");
-                expect(rule.getExpectedPunctuation(localeObj, "exclamation")).toBe("！");
+                expect(rule.getExpectedPunctuation(localeObj, "exclamation")).toBe(null);
                 expect(rule.getExpectedPunctuation(localeObj, "ellipsis")).toBe("…");
                 expect(rule.getExpectedPunctuation(localeObj, "colon")).toBe("：");
             });
@@ -3623,7 +3621,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(2);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 15
+                    param: {
+                        minimumLength: 15
+                    }
                 });
 
                 const resource1 = new ResourceString({
@@ -3665,7 +3665,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 15
+                    param: {
+                        minimumLength: 15
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3732,7 +3734,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 0
+                    param: {
+                        minimumLength: 0
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3758,7 +3762,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 100
+                    param: {
+                        minimumLength: 100
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3784,7 +3790,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 100
+                    param: {
+                        minimumLength: 100
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3810,7 +3818,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: -5
+                    param: {
+                        minimumLength: -5
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3836,7 +3846,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: -5
+                    param: {
+                        minimumLength: -5
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3862,7 +3874,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 5.2
+                    param: {
+                        minimumLength: 5.2
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -3888,7 +3902,9 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    minimumLength: 5.2
+                    param: {
+                        minimumLength: 5.2
+                    }
                 });
 
                 const resource = new ResourceString({
@@ -4053,8 +4069,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["For your appointment, please see the Dr."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["For your appointment, please see the Dr."]
+                        }
                     }
                 });
 
@@ -4080,8 +4098,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["Please see the Dr. for your appointment."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["Please see the Dr. for your appointment."]
+                        }
                     }
                 });
 
@@ -4108,8 +4128,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["Please see the Dr. for your appointment.", "Visit today with the Prof.", "Call the Rev. tomorrow."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["Please see the Dr. for your appointment.", "Visit today with the Prof.", "Call the Rev. tomorrow."]
+                        }
                     }
                 });
 
@@ -4135,8 +4157,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev."]
+                        }
                     }
                 });
 
@@ -4162,8 +4186,10 @@ describe("ResourceSentenceEnding rule", function() {
                 expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({
-                    "de-DE": {
-                        exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev.", "please see the doctor for your appointment."]
+                    param: {
+                        "de-DE": {
+                            exceptions: ["Please see the Dr. for your appointment.", "Visit the Prof. today.", "Tomorrow, call the Rev.", "please see the doctor for your appointment."]
+                        }
                     }
                 });
 
@@ -4302,8 +4328,8 @@ describe("ResourceSentenceEnding rule", function() {
                 expect(result).toBeUndefined(); // Should not trigger error since punctuation is correct
             });
 
-            test("should detect incorrect punctuation when target has spaces after wrong exclamation mark", () => {
-                expect.assertions(2);
+            test("should not detect incorrect punctuation when target has spaces after wrong exclamation mark (exclamation checking disabled for Japanese)", () => {
+                expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding();
                 const resource = new ResourceString({
@@ -4311,7 +4337,7 @@ describe("ResourceSentenceEnding rule", function() {
                     sourceLocale: "en-US",
                     targetLocale: "ja-JP",
                     source: "That's amazing!",
-                    target: "すごい!   " // spaces after English exclamation mark instead of Japanese
+                    target: "すごい。   " // spaces after the kuten mark
                 });
 
                 const result = rule.matchString({
@@ -4321,8 +4347,7 @@ describe("ResourceSentenceEnding rule", function() {
                     file: "test.xliff"
                 });
 
-                expect(result).toBeDefined();
-                expect(result?.description).toContain('Sentence ending should be "！" (U+FF01) for ja-JP locale instead of "!" (U+0021)');
+                expect(result).toBeUndefined(); // Exclamation checking is disabled for Japanese by default
             });
         });
 

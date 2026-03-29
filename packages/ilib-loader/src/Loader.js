@@ -106,6 +106,14 @@ class Loader {
     }
 
     /**
+     * Return the current sync mode.
+     * @returns {boolean} true if the loader is in synchronous mode, false otherwise.
+     */
+    getSyncMode() {
+        return this.sync;
+    }
+
+    /**
      * Add an array of paths to search for files.
      * @param {Array.<string>} paths to search
      */
@@ -174,6 +182,9 @@ class Loader {
      */
     loadFiles(paths, options) {
         let { sync } = options || {};
+        if (typeof(sync) === "boolean" && sync && !this.sync) {
+            throw new Error("This loader does not support synchronous loading of data.");
+        }
         sync = typeof(sync) === "boolean" ? sync : this.sync;
         let values = [];
         if (paths) {

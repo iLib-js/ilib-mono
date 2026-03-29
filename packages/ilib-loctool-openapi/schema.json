@@ -1,0 +1,354 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "openapi-schema",
+  "type": "object",
+  "description": "Schema that describes OpenAPI-compatible json structure",
+  "properties": {
+    "info": {
+      "$ref": "#/refs/info"
+    },
+    "servers": {
+      "$ref": "#/refs/servers"
+    },
+    "paths": {
+      "$ref": "#/refs/paths"
+    },
+    "components": {
+      "$ref": "#/refs/components"
+    },
+    "externalDocs": {
+      "$ref": "#/refs/externalDocs"
+    },
+    "tags": {
+      "$ref": "#/refs/tags"
+    }
+  },
+  "refs": {
+    "info": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        }
+      }
+    },
+    "servers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/refs/server"
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/refs/methods"
+      }
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "securitySchemes": {
+          "$ref": "#/refs/securitySchemes"
+        },
+        "schemas": {
+          "$ref": "#/refs/schemas"
+        }
+      }
+    },
+    "externalDocs": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/refs/tag"
+      }
+    },
+    "schemas": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/refs/schema"
+      }
+    },
+    "schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "properties": {
+          "$ref": "#/refs/properties"
+        },
+        "additionalProperties": {
+          "$ref": "#/refs/property"
+        },
+        "items": {
+          "$ref": "#/refs/schemaItems"
+        },
+        "allOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/refs/schema"
+          }
+        }
+      }
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "$ref": "#/refs/schemaItems"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/refs/property"
+      }
+    },
+    "property": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "additionalProperties": {
+          "$ref": "#/refs/property"
+        },
+        "items": {
+          "$ref": "#/refs/schemaItems"
+        },
+        "properties": {
+          "$ref": "#/refs/properties"
+        },
+        "allOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/refs/property"
+          }
+        }
+      }
+    },
+    "methods": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/refs/method"
+      }
+    },
+    "method": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "tags": {
+          "$ref": "#/refs/common/localizableArray"
+        },
+        "servers": {
+          "$ref": "#/refs/servers"
+        },
+        "parameters": {
+          "$ref": "#/refs/parameters"
+        },
+        "responses": {
+          "$ref": "#/refs/responses"
+        },
+        "requestBody": {
+          "$ref": "#/refs/requestBody"
+        }
+      }
+    },
+    "server": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        }
+      }
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "$ref": "#/refs/common/localizableString"
+          },
+          "schema": {
+            "$ref": "#/refs/schema"
+          }
+        }
+      }
+    },
+    "responses": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/refs/response"
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "content": {
+          "$ref": "#/refs/content"
+        },
+        "headers": {
+          "$ref": "#/refs/headers"
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "$ref": "#/refs/schema"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/refs/contentObject"
+      }
+    },
+    "contentObject": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "$ref": "#/refs/schema"
+        }
+      }
+    },
+    "requestBody": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/refs/requestContent"
+        }
+      }
+    },
+    "requestContent": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "$ref": "#/refs/schema"
+          }
+        }
+      }
+    },
+    "schemaItems": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "items": {
+          "$ref": "#/refs/schemaItems"
+        },
+        "properties": {
+          "$ref": "#/refs/properties"
+        },
+        "allOf": {
+          "type": "array",
+          "items": {
+            "$ref": "#/refs/property"
+          }
+        }
+      }
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/refs/header"
+      }
+    },
+    "header": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        },
+        "schema": {
+          "$ref": "#/refs/schema"
+        }
+      }
+    },
+    "securitySchemes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/refs/securitySchema"
+      }
+    },
+    "securitySchema": {
+      "type": "object",
+      "properties": {
+        "flows": {
+          "$ref": "#/refs/flows"
+        }
+      }
+    },
+    "flows": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/refs/flow"
+      }
+    },
+    "flow": {
+      "type": "object",
+      "properties": {
+        "scopes": {
+          "$ref": "#/refs/scopes"
+        }
+      }
+    },
+    "scopes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "localizable": true
+      }
+    },
+    "common": {
+      "localizableString": {
+        "type": "string",
+        "localizable": true
+      },
+      "localizableArray": {
+        "type": "array",
+        "localizable": true,
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "tag": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "localizable": true
+        }
+      }
+    }
+  }
+}

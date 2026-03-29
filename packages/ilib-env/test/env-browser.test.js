@@ -64,4 +64,4 @@ describe("testEnvBrowser", () => {
         expect.assertions(1);
         expect(ilibEnv.getLocale()).toBe(loc);
     });
-}); 
+});

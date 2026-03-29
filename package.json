@@ -2,7 +2,7 @@
   "private": true,
   "version": "0.0.0",
   "name": "ilib-mono",
-  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "build": "turbo build",
     "postinstall": "cp git-hooks/* .git/hooks/",
@@ -37,14 +37,9 @@
     "run:samples:affected": "pnpm -F '{packages/*/samples/*}[origin/main]' run:sample"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.9",
+    "@changesets/cli": "^2.29.8",
     "jest-junit": "^16.0.0",
     "semver": "^7.6.3",
-    "turbo": "^2.2.3"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan@6.0.4.patch"
-    }
+    "turbo": "^2.6.3"
   }
 }

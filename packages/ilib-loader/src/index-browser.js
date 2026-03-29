@@ -23,4 +23,4 @@ import WebpackLoader from './WebpackLoader.js';
 registerLoader(WebpackLoader);
 
 export { Loader, registerLoader };
-export default LoaderFactory; 
+export default LoaderFactory;

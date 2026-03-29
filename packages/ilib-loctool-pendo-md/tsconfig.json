@@ -1,0 +1,5 @@
+{
+    "extends": "ilib-internal/config/tsconfig.base.json",
+    "include": ["."],
+    "exclude": ["node_modules", "lib", "docs"]
+}

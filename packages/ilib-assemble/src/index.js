@@ -4,7 +4,7 @@
  * classes and then assembling the locale data for those classes into
  * files that can be included in webpack
  *
- * Copyright © 2022, 2024 JEDLSoft
+ * Copyright © 2022, 2024, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,11 @@ const optionConfig = {
             banner: 'Usage: ilib-assemble [-h] [options] outputPath [input_file_or_directory ...]',
             output: console.log
         }
+    },
+    assemble: {
+        short: "a",
+        multi: true,
+        help: "Directly specify the path to an assemble.mjs file to include. When this option is used, the walk/scan step is skipped and only the specified assemble.mjs files are loaded. This option may be specified multiple times for multiple assemble.mjs files. VAL is the path to an assemble.mjs file."
     },
     compressed: {
         short: "c",
@@ -150,61 +155,96 @@ options.opt.locales = options.opt.locales.map(spec => {
 });
 
 if (!options.opt.legacyilib) {
-    let paths = options.args.slice(1);
-    if (paths.length === 0) {
-        paths.push(".");
-    }
-
     if (!options.opt.format) {
         options.opt.format = "js";
     }
 
     if (!options.opt.quiet) console.log(`Assembling data for locales: ${options.opt.locales.join(", ")}`);
 
-    if (!options.opt.quiet) console.log(`\n\nScanning input paths: ${JSON.stringify(paths)}`);
-
-    let files = [];
-
-    paths.forEach((pathName) => {
-        if (!options.opt.quiet) console.log(`  Scanning ${pathName} for Javascript files...`);
-        files = files.concat(walk(pathName, options.opt));
-    });
-
-    let ilibModules = new Set();
-
-    if (!options.opt.quiet) console.log(`\n\nScanning javascript files...`);
-
-    files.forEach((file) => {
-        if (!options.opt.quiet) console.log(`  ${file} ...`);
-        scan(file, ilibModules);
-    });
-
-    if (options.opt.module) {
-        options.opt.module.forEach(module => {
-            if (!options.opt.quiet) console.log(`\nAdding module ${module} to the list of modules to search`);
-            ilibModules.add((module[0] === '.') ? path.join(process.cwd(), module) : module);
-        });
-    }
-
     let localeData = {};
-
-    if (!options.opt.quiet) console.log(`\n\nScanning ilib modules for locale data`);
     let promise = Promise.resolve(false);
-    ilibModules.forEach((module) => {
-        if (!options.opt.quiet) console.log(`  Scanning module ${module} ...`);
-        promise = promise.then(result => {
-            return scanModule(module, options.opt).then(data => {
-                if (data && typeof(data) === "object") {
-                    // merge in the sublocales separately
-                    for (const sublocale in data) {
-                        localeData = JSUtils.merge(localeData, data[sublocale], true);
+
+    // If --assemble is specified, skip the walk/scan steps and directly load the assemble.mjs files
+    if (options.opt.assemble && options.opt.assemble.length > 0) {
+        if (!options.opt.quiet) console.log(`\n\nLoading specified assemble.mjs files directly...`);
+
+        options.opt.assemble.forEach((assembleFile) => {
+            // Resolve relative paths to absolute paths
+            const resolvedPath = path.isAbsolute(assembleFile) ? assembleFile : path.resolve(process.cwd(), assembleFile);
+            if (!options.opt.quiet) console.log(`  Loading ${resolvedPath} ...`);
+
+            promise = promise.then(result => {
+                return import(resolvedPath).then(module => {
+                    const assemble = module && module.default;
+                    if (assemble && typeof(assemble) === 'function') {
+                        return assemble(options.opt).then(data => {
+                            if (data && typeof(data) === "object") {
+                                // merge in the sublocales separately
+                                for (const sublocale in data) {
+                                    localeData = JSUtils.merge(localeData, data[sublocale], true);
+                                }
+                                return true;
+                            }
+                            return result;
+                        });
                     }
-                    return true;
-                }
-                return result;
+                    if (!options.opt.quiet) console.log(`    Warning: ${resolvedPath} does not export a default assemble function`);
+                    return result;
+                }).catch(err => {
+                    console.log(`    Error loading ${resolvedPath}: ${err.message}`);
+                    return result;
+                });
             });
         });
-    });
+    } else {
+        // Original walk/scan logic
+        let paths = options.args.slice(1);
+        if (paths.length === 0) {
+            paths.push(".");
+        }
+
+        if (!options.opt.quiet) console.log(`\n\nScanning input paths: ${JSON.stringify(paths)}`);
+
+        let files = [];
+
+        paths.forEach((pathName) => {
+            if (!options.opt.quiet) console.log(`  Scanning ${pathName} for Javascript files...`);
+            files = files.concat(walk(pathName, options.opt));
+        });
+
+        let ilibModules = new Set();
+
+        if (!options.opt.quiet) console.log(`\n\nScanning javascript files...`);
+
+        files.forEach((file) => {
+            if (!options.opt.quiet) console.log(`  ${file} ...`);
+            scan(file, ilibModules);
+        });
+
+        if (options.opt.module) {
+            options.opt.module.forEach(module => {
+                if (!options.opt.quiet) console.log(`\nAdding module ${module} to the list of modules to search`);
+                ilibModules.add((module[0] === '.') ? path.join(process.cwd(), module) : module);
+            });
+        }
+
+        if (!options.opt.quiet) console.log(`\n\nScanning ilib modules for locale data`);
+        ilibModules.forEach((module) => {
+            if (!options.opt.quiet) console.log(`  Scanning module ${module} ...`);
+            promise = promise.then(result => {
+                return scanModule(module, options.opt).then(data => {
+                    if (data && typeof(data) === "object") {
+                        // merge in the sublocales separately
+                        for (const sublocale in data) {
+                            localeData = JSUtils.merge(localeData, data[sublocale], true);
+                        }
+                        return true;
+                    }
+                    return result;
+                });
+            });
+        });
+    }
 
 
     if (!options.opt.quiet) {

@@ -1,7 +1,7 @@
 /*
  * Utils.test.js - test the utility functions
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@
 
 import fs from 'fs';
 import semver from 'semver';
+import Locale from 'ilib-locale';
 import {
+    formatLocaleParams,
     formatPath,
     parsePath,
     getLocaleFromPath,
@@ -105,6 +107,127 @@ describe("testUtils", () => {
         expect(!cleanString(345)).toBeTruthy();
         expect(!cleanString(true)).toBeTruthy();
         expect(!cleanString({'obj': 'foo'})).toBeTruthy();
+    });
+
+    test("FormatLocaleParamsLocale", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[locale]', "de-DE")).toBe("de-DE");
+    });
+
+    test("FormatLocaleParamsLanguage", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[language]', "de-DE")).toBe("de");
+    });
+
+    test("FormatLocaleParamsScript", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[script]', "zh-Hans-CN")).toBe("Hans");
+    });
+
+    test("FormatLocaleParamsScriptNotThere", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[script]', "de-DE")).toBe("");
+    });
+
+    test("FormatLocaleParamsRegion", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[region]', "de-DE")).toBe("DE");
+    });
+
+    test("FormatLocaleParamsRegionNotThere", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[region]', "de")).toBe("");
+    });
+
+    test("FormatLocaleParamsLocaleDir", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[localeDir]', "zh-Hans-CN")).toBe("zh/Hans/CN");
+    });
+
+    test("FormatLocaleParamsLocaleUnder", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[localeUnder]', "zh-Hans-CN")).toBe("zh_Hans_CN");
+    });
+
+    test("FormatLocaleParamsLocaleLower", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[localeLower]', "zh-Hans-CN")).toBe("zh-hans-cn");
+    });
+
+    test("FormatLocaleParamsMultiple", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('strings_[language]_[region].json', "de-DE")).toBe("strings_de_DE.json");
+    });
+
+    test("FormatLocaleParamsPreservesUnknownKeywords", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('[dir]/[locale]/strings.json', "de-DE")).toBe("[dir]/de-DE/strings.json");
+    });
+
+    test("FormatLocaleParamsEmptyTemplate", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams('', "de-DE")).toBe("");
+    });
+
+    test("FormatLocaleParamsUndefinedTemplate", () => {
+        expect.assertions(1);
+
+        expect(formatLocaleParams(undefined, "de-DE")).toBe("");
+    });
+
+    test("FormatLocaleParamsPreservesDoubleSlashes", () => {
+        expect.assertions(1);
+
+        // This is the critical test - double slashes in comments should be preserved
+        expect(formatLocaleParams('// This is a comment for [locale]\nexport default ', "de-DE")).toBe("// This is a comment for de-DE\nexport default ");
+    });
+
+    test("FormatLocaleParamsWithHeader", () => {
+        expect.assertions(1);
+
+        const header = "// This is a generated file. DO NOT MODIFY BY HAND\nexport default ";
+        expect(formatLocaleParams(header, "de-DE")).toBe("// This is a generated file. DO NOT MODIFY BY HAND\nexport default ");
+    });
+
+    test("FormatLocaleParamsWithLocaleObject", () => {
+        expect.assertions(1);
+
+        // Test that Locale objects are accepted as well as strings
+        const l = new Locale("fr-CA");
+        expect(formatLocaleParams('strings_[locale].json', l)).toBe("strings_fr-CA.json");
+    });
+
+    test("FormatLocaleParamsLanguageMissing", () => {
+        expect.assertions(1);
+
+        // "DE" is a region only, no language
+        expect(formatLocaleParams('[language]/strings.json', "DE")).toBe("/strings.json");
+    });
+
+    test("FormatLocaleParamsRegionMissing", () => {
+        expect.assertions(1);
+
+        // "de" is a language only, no region
+        expect(formatLocaleParams('[region]/strings.json', "de")).toBe("/strings.json");
+    });
+
+    test("FormatLocaleParamsScriptMissing", () => {
+        expect.assertions(1);
+
+        // "zh-CN" has no script
+        expect(formatLocaleParams('[script]/strings.json', "zh-CN")).toBe("/strings.json");
     });
 
     test("GetLocalizedPathLocaleDir", () => {
@@ -249,6 +372,57 @@ describe("testUtils", () => {
             sourcepath: "x/y/strings.json",
             locale: "zh-Hans-CN"
         })).toBe("x/y/strings_zh-hans-cn.json");
+    });
+
+    test("GetLocalizedPathResourceDir", () => {
+        expect.assertions(1);
+
+        expect(formatPath('[resourceDir]/[locale]/strings.json', {
+            sourcepath: "x/y/strings.json",
+            locale: "de-DE",
+            resourceDir: "resources"
+        })).toBe("resources/de-DE/strings.json");
+    });
+
+    test("GetLocalizedPathResourceDirWithLocaleDir", () => {
+        expect.assertions(1);
+
+        expect(formatPath('[resourceDir]/[localeDir]/[filename]', {
+            sourcepath: "src/strings.json",
+            locale: "zh-Hans-CN",
+            resourceDir: "i18n"
+        })).toBe("i18n/zh/Hans/CN/strings.json");
+    });
+
+    test("GetLocalizedPathResourceDirNotProvided", () => {
+        expect.assertions(1);
+
+        // When resourceDir is not provided, it defaults to "."
+        expect(formatPath('[resourceDir]/[locale]/strings.json', {
+            sourcepath: "x/y/strings.json",
+            locale: "de-DE"
+        })).toBe("de-DE/strings.json");
+    });
+
+    test("GetLocalizedPathResourceDirMultiple", () => {
+        expect.assertions(1);
+
+        // Multiple occurrences of [resourceDir] should all be replaced
+        expect(formatPath('[resourceDir]/[locale]/[resourceDir]/strings.json', {
+            sourcepath: "x/y/strings.json",
+            locale: "de-DE",
+            resourceDir: "res"
+        })).toBe("res/de-DE/res/strings.json");
+    });
+
+    test("GetLocalizedPathBasenameNoExtension", () => {
+        expect.assertions(1);
+
+        // Files without extensions should return the full filename for [basename]
+        expect(formatPath('[dir]/[basename]_[locale]', {
+            sourcepath: "x/y/Makefile",
+            locale: "de-DE"
+        })).toBe("x/y/Makefile_de-DE");
     });
 
     test("ParsePath", () => {
@@ -429,6 +603,101 @@ describe("testUtils", () => {
         expect.assertions(1);
 
         expect(getLocaleFromPath('[dir]/strings_[localeLower].json', "x/y/strings_zh-hans-cn.json")).toBe("zh-Hans-CN");
+    });
+
+    test("GetLocaleFromPathLanguageTemplateWithNonLocaleDirectoryReturnsEmpty", () => {
+        expect.assertions(2);
+        // MDX-style template [language]/[dir]/[filename]: English at root, localized under ja/, etc.
+        // When path is a source file at root (e.g. guides/ai-studio/index.mdx), the first segment
+        // must not be mistaken for a language code. "guides" and "documentation" are too long
+        // (language is 2-3 letters) so they must not match; without ^ anchor they could match
+        // in the middle (e.g. "des" from "guides") and wrongly return a locale.
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "guides/ai-studio/index.mdx")).toBe("");
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "documentation/getting-started/page.mdx")).toBe("");
+    });
+
+    test("GetLocaleFromPathLocaleTemplateWithNonLocaleDirectoryReturnsEmpty", () => {
+        expect.assertions(3);
+        // [locale]/[dir]/[filename]: first segment must be a valid locale (e.g. en, de-DE), not a directory name.
+        expect(getLocaleFromPath("[locale]/[dir]/[filename]", "guides/ai-studio/index.mdx")).toBe("");
+        expect(getLocaleFromPath("[locale]/[dir]/[filename]", "content/faq/index.mdx")).toBe("");
+        expect(getLocaleFromPath("[locale]/[dir]/[filename]", "samples/code/demo.mdx")).toBe("");
+    });
+
+    test("GetLocaleFromPathValidLanguageAtRootStillMatches", () => {
+        expect.assertions(3);
+        // Valid 2- or 3-letter language codes at first segment should still be recognized.
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "ja/guides/ai-studio/index.mdx")).toBe("ja");
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "en/guides/ai-studio/index.mdx")).toBe("en");
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "de/getting-started/page.mdx")).toBe("de");
+    });
+
+    test("GetLocaleFromPathLanguageMatchesJaFooAndJaWithLeadingDotSlash", () => {
+        expect.assertions(2);
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "ja/foo.mdx")).toBe("ja");
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "./ja/foo.mdx")).toBe("ja");
+    });
+
+    test("GetLocaleFromPathLanguageDoesNotMatchLongFirstSegment", () => {
+        expect.assertions(3);
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "guides/foo.mdx")).toBe("");
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "./guides/foo.mdx")).toBe("");
+        expect(getLocaleFromPath("[language]/[dir]/[filename]", "guides")).toBe("");
+    });
+
+    test("ParsePathDirFilenameCapturesFullDirIncludingLeadingDotSlash", () => {
+        expect.assertions(3);
+        // [dir] captures multiple segments and preserves leading "./"
+        expect(parsePath("[dir]/[filename]", "./guides/foo/bar/foo.mdx")).toStrictEqual({ dir: "./guides/foo/bar" });
+        expect(parsePath("[dir]/[filename]", "./foo.mdx")).toStrictEqual({ dir: "." });
+        expect(parsePath("[dir]/[filename]", "foo.mdx")).toStrictEqual({ dir: "." });
+    });
+
+    test("GetLocaleFromPathResourcesLocaleDirMessagesPo", () => {
+        expect.assertions(6);
+        // template "resources/[localeDir]/messages.po" so handles() can distinguish source vs already-localized
+        expect(getLocaleFromPath("resources/[localeDir]/messages.po", "resources/en/GB/messages.po")).toBe("en-GB");
+        expect(getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/en/GB/messages.po")).toBe("en-GB");
+        expect(getLocaleFromPath("resources/[localeDir]/messages.po", "resources/zh/Hans/CN/messages.po")).toBe("zh-Hans-CN");
+        expect(getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/zh/Hans/CN/messages.po")).toBe("zh-Hans-CN");
+        expect(getLocaleFromPath("resources/[localeDir]/messages.po", "resources/en/US/messages.po")).toBe("en-US");
+        expect(getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/en/US/messages.po")).toBe("en-US");
+    });
+
+    test("ParsePathDirLocalePropertiesNoMatchWhenFilenameIsNotLocale", () => {
+        expect.assertions(1);
+        // Regression: "test.properties" must NOT match [dir]/[locale].properties - "test" is not a valid locale.
+        // Previously (.*?)/? incorrectly matched dir="test/testfiles/t" and locale="est".
+        expect(parsePath("[dir]/[locale].properties", "./test/testfiles/test.properties")).toStrictEqual({});
+    });
+
+    test("ParsePathDirLocalePropertiesWithOptionalDir", () => {
+        expect.assertions(4);
+        // PropertiesParser uses [dir]/[locale].properties for locale-only filenames (e.g. de-DE.properties).
+        // Must capture dir so callers can build source paths like ./test/testfiles/en-US.properties.
+        const actual = parsePath("[dir]/[locale].properties", "./test/testfiles/de-DE.properties");
+        expect(actual.dir).toBe("./test/testfiles");
+        expect(actual.locale).toBe("de-DE");
+        expect(actual.language).toBe("de");
+        expect(actual.region).toBe("DE");
+    });
+
+    test("ParsePathDirLocalePoWithOptionalDir", () => {
+        expect.assertions(2);
+        // Loctool PO plugin: [dir]/[locale].po with ./de.po (no dir) must match and return locale "de".
+        expect(parsePath("[dir]/[locale].po", "./de.po")).toStrictEqual({ dir: ".", locale: "de", language: "de" });
+        expect(getLocaleFromPath("[dir]/[locale].po", "./de.po")).toBe("de");
+    });
+
+    test("ParsePathDirBasenameLocaleProperties", () => {
+        expect.assertions(5);
+        // dir must include leading "./" so built paths stay "./test/testfiles/..."
+        const actual = parsePath("[dir]/[basename]_[locale].properties", "./test/testfiles/test_de-DE.properties");
+        expect(actual.dir).toBe("./test/testfiles");
+        expect(actual.basename).toBe("test");
+        expect(actual.locale).toBe("de-DE");
+        expect(actual.language).toBe("de");
+        expect(actual.region).toBe("DE");
     });
 
     test("ContainsActualTextHtml", () => {

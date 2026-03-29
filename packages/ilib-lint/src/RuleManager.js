@@ -108,13 +108,13 @@ class RuleManager {
             const ruleClass = typeMap[ruleConfig.type];
             return new ruleClass({
                 ...ruleConfig,
-                ...options,
+                param: options,
                 sourceLocale: this.sourceLocale,
                 getLogger: log4js.getLogger.bind(log4js),
             });
         } else {
             return new ruleConfig({
-                ...options,
+                param: options,
                 sourceLocale: this.sourceLocale,
                 getLogger: log4js.getLogger.bind(log4js),
             });

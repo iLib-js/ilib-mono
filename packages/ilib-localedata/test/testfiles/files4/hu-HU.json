@@ -1,0 +1,12 @@
+{
+    "hu-HU": {
+        "info": {
+            "a": "b hu-HU",
+            "c": "d hu-HU"
+        },
+        "foo": {
+            "m": "n hu-HU",
+            "o": "p hu-HU"
+        }
+    }
+}

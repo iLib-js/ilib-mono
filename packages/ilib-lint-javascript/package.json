@@ -1,6 +1,6 @@
 {
     "name": "ilib-lint-javascript",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "type": "module",
     "main": "./src/index.js",
     "module": "./src/index.js",
@@ -17,10 +17,10 @@
         "README.md"
     ],
     "engines": {
-        "node": ">=14.0.0"
+        "node": ">=12 <23"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
@@ -40,5 +40,9 @@
         "ilib-lint-common": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-tools-common": "workspace:^"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
     }
 }

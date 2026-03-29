@@ -23,4 +23,4 @@ import NodeLoader from './NodeLoader.js';
 registerLoader(NodeLoader);
 
 export { Loader, registerLoader };
-export default LoaderFactory; 
+export default LoaderFactory;

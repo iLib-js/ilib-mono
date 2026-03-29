@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Resource from './Resource.js';
+import Resource, { VALID_STATES, isValidState } from './Resource.js';
 import ResourceString from './ResourceString.js';
 import ResourceArray from './ResourceArray.js';
 import ResourcePlural from './ResourcePlural.js';
@@ -31,6 +31,7 @@ import {convertPluralResToICU, convertICUToPluralRes} from './ResourceConvert.js
 import escaperFactory from './EscaperFactory.js';
 
 import {
+    formatLocaleParams,
     formatPath,
     parsePath,
     getLocaleFromPath,
@@ -49,6 +50,8 @@ import {
 
 export {
     Resource,
+    VALID_STATES,
+    isValidState,
     ResourceString,
     ResourceArray,
     ResourcePlural,
@@ -56,6 +59,7 @@ export {
     TranslationUnit,
     TranslationVariant,
     ResourceXliff,
+    formatLocaleParams,
     formatPath,
     parsePath,
     getLocaleFromPath,
