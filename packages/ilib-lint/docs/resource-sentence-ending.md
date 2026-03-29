@@ -14,12 +14,15 @@ Sentence ending punctuation should be "。" for ja-JP locale, not "."
 ### For Japanese and Chinese
 Replace English punctuation with the appropriate full-width characters:
 
-| English | Japanese/Chinese |
-|---------|-----------------|
-| `.` | `。` |
-| `?` | `？` |
-| `!` | `！` |
-| `:` | `：` |
+| English | Japanese | Chinese |
+|---------|----------|---------|
+| `.` | `。` | `。` |
+| `?` | `？` | `？` |
+| `!` |  | `！` |
+| `:` | `：` | `：` |
+
+**Note:** For Japanese, exclamation mark (`!`) checking is **disabled by default** because exclamation marks are rarely used in Japanese.
+The corresponding sentence ending often a kuten `。`, but not necessarily.
 
 **Before:**
 ```xml
@@ -155,6 +158,26 @@ In this example, Japanese will use:
 - **Custom**: Question mark (`?`) and exclamation mark (`!`)
 - **Default**: Period (`。`), ellipsis (`…`), and colon (`：`)
 
+#### Disabling Punctuation Types
+
+You can disable checking for specific punctuation types by setting them to `null`. This is useful for languages where certain punctuation types should not be checked:
+
+```json
+{
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "ja-JP": {
+          "exclamation": null
+        }
+      }
+    }
+  }
+}
+```
+
+**Note:** For Japanese, exclamation marks are disabled by default (`exclamation: null`). If you want to enable exclamation mark checking for Japanese, you can explicitly set it to a value like `"！"` or `"!"`.
+
 #### Multiple Locales
 
 You can configure different punctuation rules for multiple locales:
@@ -228,7 +251,7 @@ Here's a comprehensive example showing all configuration options together:
 
 This configuration:
 - Sets minimum length to 8 characters
-- Configures Japanese punctuation and exceptions
+- Configures Japanese punctuation and exceptions (note: exclamation marks are disabled by default for Japanese, but this example explicitly enables them with `"exclamation": "！"`)
 - Adds German exceptions for common abbreviations
 - Overrides French ellipsis behavior
 
@@ -250,6 +273,7 @@ The following punctuation types can be customized:
 - **Language-Based Storage**: Custom configurations are stored by language code (e.g., "ja" for Japanese) and apply to all locales of that language.
 - **Merging**: Custom configurations merge with the default locale-specific rules, so you only need to specify the punctuation types you want to override.
 - **Fallback**: If a punctuation type is not specified in the custom configuration, the rule uses the default punctuation for that language.
+- **Null Values**: Setting a punctuation type to `null` disables checking for that type. For Japanese, exclamation marks are disabled by default (`exclamation: null`).
 - **Exception Processing**: Exception lists are processed before punctuation checking, so strings in the exception list will never trigger warnings regardless of punctuation mismatches.
 - **Automatic Skipping**: The rule automatically skips strings that are shorter than `minimumLength` or have no spaces (unless they end with sentence-ending punctuation).
 

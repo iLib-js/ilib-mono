@@ -18,10 +18,13 @@
  */
 import fs from "fs";
 import { ResourceString, Location } from "ilib-tools-common";
-import { Serializer, SourceFile } from "ilib-lint-common";
+import { expectToBeDefined } from "ilib-internal";
 
 import Project from "../src/Project.js";
 import PluginManager from "../src/PluginManager.js";
+
+// ESM support
+const jest = import.meta.jest;
 
 const pluginManager = new PluginManager();
 
@@ -294,11 +297,11 @@ describe("testProject", () => {
         const locales = ["en-US", "ko-KR"];
 
         const options = {
-            pluginManager
+            pluginManager,
         };
         const project = new Project("x", options, {
             ...genericConfig,
-            locales
+            locales,
         });
         expect(project).toBeTruthy();
 
@@ -309,7 +312,7 @@ describe("testProject", () => {
         expect.assertions(2);
 
         const options = {
-            pluginManager
+            pluginManager,
         };
         const project = new Project("x", options, genericConfig);
         expect(project).toBeTruthy();
@@ -643,6 +646,84 @@ describe("testProject", () => {
         rmf("test/testproject/x/empty.xyz.modified");
         rmf("test/testproject/x/test_ru_RU.xyz.modified");
         rmf("test/testproject/x/test.xyz.modified");
+    });
+
+    test("Verify that serialization recovers from errors", async () => {
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
+
+        const project = new Project(
+            "test/testproject",
+            {
+                pluginManager,
+                opt: {
+                    write: true,
+                },
+            },
+            testConfig
+        );
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("parser-xyz")[0];
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["./test/testproject/x"]);
+
+        const issues = project.findIssues(["en-US"]);
+        expect(issues).toBeTruthy();
+
+        // artificially mark the files as modified
+        const files = project.get();
+        expect(files).toBeTruthy();
+        files.forEach((file) => {
+            // sneakily mark the file as dirty when it really hasn't been modified
+            file.irs[0].dirty = true;
+        });
+
+        // patch the serializer to throw an error when trying to serialize test/testproject/x/test_ru_RU.xyz
+        const serializer = files
+            .find((file) => file.getFilePath() === "test/testproject/x/test_ru_RU.xyz")
+            ?.getFileType()
+            .getSerializer();
+        expectToBeDefined(serializer);
+        const originalSerialize = serializer.serialize;
+        const serializeSpy = jest.spyOn(serializer, "serialize");
+        serializeSpy.mockImplementation((representations) => {
+            if (
+                representations.some(
+                    (representation) => representation.sourceFile.getPath() === "test/testproject/x/test_ru_RU.xyz"
+                )
+            ) {
+                throw new Error("test error");
+            }
+            return originalSerialize(representations);
+        });
+
+        project.serialize();
+
+        // this file should not have been serialized due to the error
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        // remaining files should have been serialized normally
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(true);
+        rmf("test/testproject/x/test_ru_RU.xyz.modified");
+        rmf("test/testproject/x/test.xyz.modified");
+        rmf("test/testproject/x/empty.xyz.modified");
+
+        // cleanup
+        serializeSpy.mockRestore();
     });
 
     test("Verify that serialization works when only some of the files are modified", async () => {
@@ -1020,5 +1101,71 @@ describe("testProject", () => {
 
         // clean-up
         rmf(modifiedFileName);
+    });
+
+    test("Recover from error when applying transformers on one of the files", async () => {
+        const project = new Project("test/testproject/x", { pluginManager, opt: {} }, testConfig2);
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("xliff");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["test/testfiles/xliff/param-problems.xliff", "test/testfiles/xliff/quote-problems.xliff"]);
+
+        const files = project.get();
+        expect(files).toBeTruthy();
+        expect(files.length).toBe(2);
+
+        const quoteProblemsFile = files.find(
+            (file) => file.getFilePath() === "test/testfiles/xliff/quote-problems.xliff"
+        );
+        expectToBeDefined(quoteProblemsFile);
+        const paramProblemsFile = files.find(
+            (file) => file.getFilePath() === "test/testfiles/xliff/param-problems.xliff"
+        );
+        expectToBeDefined(paramProblemsFile);
+
+        // patch the transformer to throw an error for one of the files
+        const transformer = quoteProblemsFile.getFileType().getTransformers()?.[0];
+        expectToBeDefined(transformer);
+        const originalTransform = transformer.transform;
+        const transformSpy = jest.spyOn(transformer, "transform");
+        transformSpy.mockImplementation((ir, results) => {
+            if (ir.getSourceFile().getPath() === "test/testfiles/xliff/quote-problems.xliff") {
+                throw new Error("Test error");
+            }
+            return originalTransform(ir, results);
+        });
+
+        const results = project.findIssues(["en-US"]);
+        expect(results).toBeTruthy();
+        expect(results.length).toBeGreaterThan(0);
+
+        // verify that the param problems file has been transformed correctly
+        // despite the error in the quote problems file
+
+        // findIssues calls the parsers, so we can only get the intermediate representations
+        // after we have called findIssues
+        let irs = paramProblemsFile.getIRs();
+        expect(irs.length).toBe(1);
+        let resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(7);
+
+        // should remove the resources that have problems
+        project.applyTransformers(results);
+
+        // make sure we deleted 2 of the 7 resources
+        irs = paramProblemsFile.getIRs();
+        expect(irs.length).toBe(1);
+        resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(5);
+
+        // cleanup
+        transformSpy.mockRestore();
     });
 });

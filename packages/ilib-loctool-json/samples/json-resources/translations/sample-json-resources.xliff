@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/strings1.json" source-language="en-US" target-language="de-DE" product-name="sample-json-resources">
+    <body>
+      <trans-unit id="1" resname="greeting" restype="string" datatype="json">
+        <source>Hello</source>
+        <target>Hallo</target>
+      </trans-unit>
+      <trans-unit id="2" resname="farewell" restype="string" datatype="json">
+        <source>Goodbye</source>
+        <target>Auf Wiedersehen</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="src/strings2.json" source-language="en-US" target-language="de-DE" product-name="sample-json-resources">
+    <body>
+      <trans-unit id="1" resname="thank_you" restype="string" datatype="json">
+        <source>Thank you</source>
+        <target>Danke</target>
+      </trans-unit>
+      <trans-unit id="2" resname="welcome" restype="string" datatype="json">
+        <source>Welcome</source>
+        <target>Willkommen</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="src/strings1.json" source-language="en-US" target-language="ko-KR" product-name="sample-json-resources">
+    <body>
+      <trans-unit id="1" resname="greeting" restype="string" datatype="json">
+        <source>Hello</source>
+        <target>안녕하세요</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+

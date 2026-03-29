@@ -1,7 +1,7 @@
 /*
  * ResourcePlural.test.js - test the resource plural object.
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -419,6 +419,78 @@ describe("testResourcePlural", () => {
         });
         expect(rp).toBeTruthy();
         expect(!rp.getContext()).toBeTruthy();
+    });
+
+    test("ResourcePluralAutoKey", () => {
+        expect.assertions(2);
+
+        const rp = new ResourcePlural({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            autoKey: true,
+            source: {
+                "one": "This is singular",
+                "other": "This is plural"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourcePluralNotAutoKey", () => {
+        expect.assertions(2);
+
+        const rp = new ResourcePlural({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            autoKey: false,
+            source: {
+                "one": "This is singular",
+                "other": "This is plural"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(!rp.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourcePluralNotAutoKeyDefault", () => {
+        expect.assertions(2);
+
+        const rp = new ResourcePlural({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            source: {
+                "one": "This is singular",
+                "other": "This is plural"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(!rp.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourcePluralAutoKeyWithTarget", () => {
+        expect.assertions(2);
+
+        const rp = new ResourcePlural({
+            key: "foo",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            pathName: "a/b/c.txt",
+            autoKey: true,
+            source: {
+                "one": "This is singular",
+                "other": "This is plural"
+            },
+            target: {
+                "one": "Dies ist einzigartig",
+                "other": "Das ist Plural"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getAutoKey()).toBe(true);
     });
 
     test("ResourcePluralGetSourcePlurals", () => {

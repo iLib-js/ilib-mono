@@ -1,7 +1,7 @@
 /*
  * Project.test.js - test Project class
  *
- * Copyright © 2020-2021, 2023-2025 JEDLSoft
+ * Copyright © 2020-2021, 2023-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1838,5 +1838,120 @@ describe("project", function() {
         }
         var project = ProjectFactory('./test/testfiles', settings);
         expect(project.translationsDir).toStrictEqual(["test/testfiles/xliffs"]);
+    });
+
+    test("isSourceLocale returns true when locale matches source locale", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en-US"
+        });
+        expect(project.isSourceLocale("en-US")).toBe(true);
+    });
+
+    test("isSourceLocale returns true when locale matches source locale with only language", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en"
+        });
+        expect(project.isSourceLocale("en")).toBe(true);
+    });
+
+    test("isSourceLocale returns false when locale has different language", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en-US"
+        });
+        expect(project.isSourceLocale("de-DE")).toBe(false);
+    });
+
+    test("isSourceLocale returns false when locale has different region", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en-US"
+        });
+        expect(project.isSourceLocale("en-GB")).toBe(false);
+    });
+
+    test("isSourceLocale returns false when locale has different script", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "zh-Hans-CN"
+        });
+        expect(project.isSourceLocale("zh-Hant-CN")).toBe(false);
+    });
+
+    test("isSourceLocale returns false when locale has a variant but source does not", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en"
+        });
+        // Variant "pseudo" cannot be a source locale, so this returns false
+        expect(project.isSourceLocale("en-pseudo")).toBe(false);
+    });
+
+    test("isSourceLocale returns false for locale with pseudo in the variant", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en-US"
+        });
+        // Variant "pseudo" cannot be a source locale, so this returns false
+        expect(project.isSourceLocale("en-US-pseudo")).toBe(false);
+    });
+
+    test("isSourceLocale returns true for flavor variant when source has no variant", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en-US"
+        });
+        // Flavor handling is done in the file type classes, not here
+        expect(project.isSourceLocale("en-US-CHOCOLATE")).toBe(true);
+    });
+
+    test("isSourceLocale returns true when both locale and source have same variant", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en-US-variant"
+        });
+        expect(project.isSourceLocale("en-US-variant")).toBe(true);
+    });
+
+    test("isSourceLocale returns true when locale and source have different variants", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en-US-variant1"
+        });
+        // variants are ignored unless they represent an actual pseudo locale
+        expect(project.isSourceLocale("en-US-variant2")).toBe(true);
+    });
+
+    test("isSourceLocale returns true when source has variant but locale does not", function() {
+        expect.assertions(1);
+        var project = ProjectFactory.newProject({
+            rootDir: "./test/testfiles",
+            projectType: "custom",
+            sourceLocale: "en-US-variant"
+        });
+        // variants are ignored unless they represent an actual pseudo locale
+        expect(project.isSourceLocale("en-US")).toBe(true);
     });
 });

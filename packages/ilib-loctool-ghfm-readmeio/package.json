@@ -42,7 +42,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "scripts": {
         "test": "node test/testSuite.js",
@@ -50,7 +50,7 @@
         "clean": "git clean -f -d *"
     },
     "engines": {
-        "node": ">=6.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "he": "^1.2.0",

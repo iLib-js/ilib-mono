@@ -9908,6 +9908,31 @@ packages:
       - '@isaacs/import-jsx'
       - react
 
+  tap@16.3.10:
+    resolution: {integrity: sha512-q5Am+PpGHS6JSjk/Zn4bCRBihmZVM15v/MYXUy60wenw5HDe7pVrevLCEoMEz7tuw6jaPOJJqni1y8apN23IGw==}
+    engines: {node: '>=12'}
+    hasBin: true
+    peerDependencies:
+      coveralls: ^3.1.1
+      flow-remove-types: '>=2.112.0'
+      ts-node: '>=8.5.2'
+      typescript: '>=3.7.2'
+    peerDependenciesMeta:
+      coveralls:
+        optional: true
+      flow-remove-types:
+        optional: true
+      ts-node:
+        optional: true
+      typescript:
+        optional: true
+    bundledDependencies:
+      - ink
+      - treport
+      - '@types/react'
+      - '@isaacs/import-jsx'
+      - react
+
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}

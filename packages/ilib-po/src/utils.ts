@@ -27,60 +27,72 @@ export type PluralCategory = "zero" | "one" | "two" | "few" | "many" | "other";
  * languages. In English, the "one" form (singular) is also required.
  */
 export type Plural = {
-    other: string,
-    zero?: string,
-    one?: string,
-    two?: string,
-    few?: string,
-    many?: string
+  other: string;
+  zero?: string;
+  one?: string;
+  two?: string;
+  few?: string;
+  many?: string;
 };
 
 /**
  * The types of comments that can be in a PO file.
  */
 export enum CommentType {
-    TRANSLATOR = "translator",
-    EXTRACTED = "extracted",
-    FLAGS = "flags",
-    PREVIOUS = "previous",
-    PATHS = "paths",
-    KEY = "key",
-    INDEX = "index",
-    DATATYPE = "datatype",
-    PROJECT = "project"
-};
+  TRANSLATOR = "translator",
+  EXTRACTED = "extracted",
+  FLAGS = "flags",
+  PREVIOUS = "previous",
+  PATHS = "paths",
+  KEY = "key",
+  INDEX = "index",
+  DATATYPE = "datatype",
+  PROJECT = "project",
+}
 
 /**
  * The values of various types of comments in a PO file.
  */
 export type Comments = {
-    [key in CommentType]?: string[]
+  [key in CommentType]?: string[];
 };
 
 /**
- * Escape quotes in a string.
+ * Escape quotes and backslashes in a string.
+ * IMPORTANT: The order of escaping matters.
+ * We must escape backslashes first so we don't double-escape the
+ * backslashes introduced when escaping quotes.
  * @param str the string to escape
  * @returns the escaped string
  */
-export function escapeQuotes(str: string): string {
-    if (!str) return "";
-    return str ? str.replace(/"/g, '\\"') : str;
+export function escapeQuotesAndBackslashes(str: string): string {
+  if (!str) {
+    return "";
+  }
+
+  return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
 /**
- * Unescape quotes in a string.
+ * Unescape quotes and backslashes in a string.
+ * IMPORTANT: The order of unescaping matters.
+ * We must unescape escaped quotes (\\") BEFORE unescaping backslashes (\\\\),
+ * otherwise we could accidentally remove backslashes that are part of an
+ * escaped quote sequence.
  * @param str the string to unescape
  * @returns the unescaped string
  */
-export function unescapeQuotes(str: string): string {
-    if (!str) return "";
-    return str ? str.replace(/\\"/g, '"') : str;
+export function unescapeQuotesAndBackslashes(str: string): string {
+  if (!str) {
+    return "";
+  }
+  return str.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
 }
 
 export type MakeKeyProps =
-    | readonly [ type: "plural", source: Plural, context?: string ]
-    | readonly [ type: "array", source: string[], context?: string ]
-    | readonly [ type: "string", source: string, context?: string ];
+  | readonly [type: "plural", source: Plural, context?: string]
+  | readonly [type: "array", source: string[], context?: string]
+  | readonly [type: "string", source: string, context?: string];
 
 /**
  * Get the key to use for the given source and context.
@@ -90,15 +102,14 @@ export type MakeKeyProps =
  * @returns the key to use
  */
 export function makeKey(...[type, source, context]: MakeKeyProps): string {
-    switch (type) {
-        case "plural":
-            const key = source.one ?? source.other;
-            return context ? key + " --- " + context : key;
-        case "array":
-            return context ? source[0] + " --- " + context : source[0];
-        case "string":
-        default:
-            return context ? source + " --- " + context : source;
-    }
+  switch (type) {
+    case "plural":
+      const key = source.one ?? source.other;
+      return context ? key + " --- " + context : key;
+    case "array":
+      return context ? source[0] + " --- " + context : source[0];
+    case "string":
+    default:
+      return context ? source + " --- " + context : source;
+  }
 }
-

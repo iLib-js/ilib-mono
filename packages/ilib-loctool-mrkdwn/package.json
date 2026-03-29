@@ -43,10 +43,10 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "test": "node node_modules/jest/bin/jest.js",
         "test:watch": "node node_modules/jest/bin/jest.js --watch",
         "debug": "node --inspect-brk node_modules/jest/bin/jest.js -i",
@@ -55,7 +55,7 @@
         "test:e2e": "node node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs"
     },
     "engines": {
-        "node": ">=10.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib": "^14.20.0",

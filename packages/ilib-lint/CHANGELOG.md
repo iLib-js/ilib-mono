@@ -1,5 +1,70 @@
 # ilib-lint
 
+## 2.21.2
+
+### Patch Changes
+
+- 8b26137: Update the `ilib-xliff-webos` dependency to the latest version.
+- Updated dependencies [8b26137]
+  - ilib-tools-common@1.21.2
+
+## 2.21.1
+
+### Patch Changes
+
+- 3a0702e: Update the XliffParser and XliffSerializer processes to correctly pass the sourceLocale value. Otherwise, the webOSXliff is passed as en-US, which causes an issue.
+
+## 2.21.0
+
+### Minor Changes
+
+- 54b7c40: Disabled checking of exclamation point in Japanese
+
+  - it is not used very much in Japanese in translations of
+    English sentences that end in an exclamation point, so
+    we don't need to check it
+
+### Patch Changes
+
+- 2155187: - Fixed a bug where the parameter to the resource-state-checker
+  rule was not being used properly, making it impossible to check
+  for any state other than the default "translated".
+  - Fixed tests and the rule manager to pass the parameters from
+    the config file properly so that all rules can access parameters
+    of any type, including string.
+- Updated dependencies [7658dff]
+- Updated dependencies [92e0b3a]
+  - ilib-lint-common@3.7.0
+  - ilib-tools-common@1.20.0
+
+## 2.20.0
+
+### Minor Changes
+
+- 3ac309b: - Update to automatically extract the version and style from input xliff files to generate an autofix modified file according to the input file format.
+  - Add an `XliffFactory` to properly create instances in XLIFF format.
+
+### Patch Changes
+
+- d0b847a: Now supports use of apostrophes for contractions and ellisions
+  in those languages that use them. The Quote Style
+  Checker rule now does not give false positive results when the
+  apostrophes are used in contractions or ellisions. - Contractions: English, French, Portuguese, Catalan, Italian - Ellisions: Irish, Samoan, Hawaiian
+- Updated dependencies [3ac309b]
+  - ilib-tools-common@1.19.1
+
+## 2.19.1
+
+### Patch Changes
+
+- 2726c86: - the sentence-ending punctuation rule now properly skips URLs and email addresses when
+  searching for the beginning of a sentence
+- f9ddf84: Fixed error handling during serialization and transformers - linter will now continue processing other files.
+- 93b6535: - Changed the message from the sentence-ending punctuation rule
+  so that it says 'no punctuation' instead of the empty string
+  "" to indicate that there should not be punctuation there. This
+  is less confusing to users.
+
 ## 2.19.0
 
 ### Minor Changes
