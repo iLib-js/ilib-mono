@@ -825,8 +825,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       ilib-localematcher:
-        specifier: ^1.2.2
-        version: 1.3.1
+        specifier: ^1.3.2
+        version: 1.3.2
       ilib-scriptinfo:
         specifier: workspace:^
         version: link:../ilib-scriptinfo
@@ -1401,8 +1401,8 @@ importers:
         specifier: workspace:^
         version: link:../ilib-locale
       ilib-localematcher:
-        specifier: ^1.2.2
-        version: 1.3.1
+        specifier: ^1.3.2
+        version: 1.3.2
       json5:
         specifier: ^2.2.1
         version: 2.2.3
@@ -3150,8 +3150,8 @@ importers:
         specifier: workspace:^
         version: link:../ilib-locale
       ilib-localematcher:
-        specifier: ^1.3.1
-        version: 1.3.1
+        specifier: ^1.3.2
+        version: 1.3.2
       ilib-po:
         specifier: workspace:^
         version: link:../ilib-po
@@ -7596,8 +7596,9 @@ packages:
   ilib-localeinfo@1.1.0:
     resolution: {integrity: sha512-F77DV01lWANKqEw1QxEqYNO3Jj3H30kkYMGinMWoCIF18Kb/Gc/aJaaENWlS9kfZkbvfXthcBL7kuswMY+Hjdg==}
 
-  ilib-localematcher@1.3.1:
-    resolution: {integrity: sha512-sDqSdYfAouyGH9OPKPuXk2Lyb4+HU3Gz05bLTJ5fn3FRn/IzG5sUQjSrhfmQAsklQ6WLlJE3nL5wbpV0fpX8Lw==}
+  ilib-localematcher@1.3.2:
+    resolution: {integrity: sha512-v+2rT11WOMlDQesseIYm4Kb9L6072SqLU7oObY3wPDh51Cr3s25bI8YEX+5VUT/YEN1e7h3bUslWt6huzlv62g==}
+    engines: {node: '>=12 <23'}
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     resolution: {integrity: sha512-nZdR3YHuNUMleBjsl7tWr1LHMSBnXxAJN1uUIDrgaiI8klP8E58ePalsjFC1t9E5gHp653HeTwldS6p/KmQ9TQ==, tarball: file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz}
@@ -17328,7 +17329,7 @@ snapshots:
       ilib-env: 1.4.2
       ilib-loader: 1.3.2
       ilib-locale: 1.3.0
-      ilib-localematcher: 1.3.1
+      ilib-localematcher: 1.3.2
       json5: 2.2.3
 
   ilib-localedata@1.5.2:
@@ -17338,7 +17339,7 @@ snapshots:
       ilib-env: 1.4.2
       ilib-loader: 1.3.5
       ilib-locale: 1.4.0
-      ilib-localematcher: 1.3.1
+      ilib-localematcher: 1.3.2
       json5: 2.2.3
 
   ilib-localeinfo@1.1.0:
@@ -17348,13 +17349,13 @@ snapshots:
       ilib-env: 1.4.0
       ilib-locale: 1.3.0
       ilib-localedata: 1.5.0
-      ilib-localematcher: 1.3.1
+      ilib-localematcher: 1.3.2
       json5: 2.2.3
 
-  ilib-localematcher@1.3.1:
+  ilib-localematcher@1.3.2:
     dependencies:
       ilib-common: 1.1.6
-      ilib-locale: 1.3.0
+      ilib-locale: 1.4.0
 
   ilib-loctool-mock-json@file:packages/loctool/test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz:
     dependencies:
@@ -17387,7 +17388,7 @@ snapshots:
       '@log4js-node/log4js-api': 1.0.2
       ilib-ctype: 1.2.2
       ilib-istring: 1.1.1
-      ilib-locale: 1.3.0
+      ilib-locale: 1.4.0
       ilib-xliff: 1.4.0
       intl-messageformat: 10.7.11
       micromatch: 4.0.8
@@ -17400,7 +17401,7 @@ snapshots:
   ilib-xliff@1.4.0:
     dependencies:
       ilib-common: 1.1.6
-      ilib-locale: 1.3.0
+      ilib-locale: 1.4.0
       ilib-xml-js: 1.7.0
       json5: 2.2.3
 
