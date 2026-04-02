@@ -644,8 +644,10 @@ describe("utils", function() {
         expect(!utils.cleanString({'obj': 'foo'})).toBeTruthy();
     });
     test("isBaseLocale", function() {
-        expect.assertions(3);
+        expect.assertions(5);
         expect(utils.isBaseLocale("ko-KR")).toBe(true);
+        expect(utils.isBaseLocale("ko-TW")).toBe(false);
+        expect(utils.isBaseLocale("ko-CN")).toBe(false);
         expect(utils.isBaseLocale("fr-CA")).toBe(false);
         expect(utils.isBaseLocale()).toBe(false);
     });
