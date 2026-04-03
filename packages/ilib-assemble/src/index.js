@@ -32,6 +32,7 @@ import scan from './scan.js';
 import scanModule from './scanmodule.js';
 import scanResources from './scanres.js';
 import assembleilib from './legacyilibassemble.js';
+import mergeJson from './mergeJson.js';
 
 const optionConfig = {
     help: {
@@ -99,6 +100,11 @@ const optionConfig = {
         short: "p",
         "default" : undefined,
         help: "Specify the path to customized locale data that overrides existing open-source locale data."
+    },
+    mergeJson: {
+        short: "x",
+        flag: true,
+        help: "Merge JSON locale data files based on ilibincPath and locales, then write merged output files."
     }
 };
 
@@ -149,7 +155,12 @@ options.opt.locales = options.opt.locales.map(spec => {
     return loc.getSpec();
 });
 
-if (!options.opt.legacyilib) {
+
+if (options.opt.legacyilib) {
+    assembleilib(options);
+} else if (options.opt.mergeJson) {
+    mergeJson(options);
+} else {
     let paths = options.args.slice(1);
     if (paths.length === 0) {
         paths.push(".");
@@ -282,7 +293,5 @@ if (!options.opt.legacyilib) {
         if (!options.opt.quiet) console.log("Done. No locale data found.");
     });
 
-    } else {
-        assembleilib(options);
-    }
+}
     console.log("DONE");
