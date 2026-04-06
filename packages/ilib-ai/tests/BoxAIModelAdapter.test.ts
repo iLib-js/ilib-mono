@@ -92,7 +92,6 @@ describe("BoxAIModelAdapter", () => {
             });
             const caps = adapter.getCapabilities();
             expect(caps.supportsModelListing).toBe(true);
-            expect(caps.supportsStructuredOutput).toBe(false);
             expect(caps.defaultModel).toMatch(/gpt|openai|azure/i);
         });
 
@@ -221,7 +220,7 @@ describe("BoxAIModelAdapter", () => {
             expect(agent.basicGen?.model).toBe(modelId);
         });
 
-        test("maps SDK answer to rawContent and sets isStructuredOutput false", async () => {
+        test("maps SDK answer to rawContent", async () => {
             createAiTextGen.mockResolvedValue(
                 boxAiResponse("  boxed answer  ")
             );
@@ -230,7 +229,6 @@ describe("BoxAIModelAdapter", () => {
             const res = await adapter.complete(baseRequest);
             expect(res.error).toBeUndefined();
             expect(res.rawContent).toBe("  boxed answer  ");
-            expect(res.isStructuredOutput).toBe(false);
         });
 
         /**
@@ -254,7 +252,6 @@ describe("BoxAIModelAdapter", () => {
             await adapter.connect();
             const res = await adapter.complete(baseRequest);
             expect(res.rawContent === "" || res.error).toBeTruthy();
-            expect(res.isStructuredOutput).toBe(false);
         });
 
         test("userContent may contain JSON and unicode", async () => {

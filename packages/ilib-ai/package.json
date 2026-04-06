@@ -1,6 +1,6 @@
 {
     "name": "ilib-ai",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "description": "Library for calling AI services and receiving responses to prompts. Part of the iLib-js internationalization toolkit.",

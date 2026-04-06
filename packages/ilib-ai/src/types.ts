@@ -117,11 +117,6 @@ export interface CompletionResponse {
      */
     providerRequestId?: string;
     /**
-     * `true` if this response path **guaranteed** structured output (e.g. strict JSON schema from the API).
-     * `false` for plain or best-effort text (typical for Box AI `answer`-style responses).
-     */
-    isStructuredOutput: boolean;
-    /**
      * Set when the adapter reports a transport/SDK failure in-band instead of throwing.
      * When present, inspect {@link CompletionResponseError.message} and optional HTTP fields.
      */
@@ -130,17 +125,13 @@ export interface CompletionResponse {
 
 /**
  * Static capability flags for an adapter instance. Used to choose UI options (e.g. whether to show
- * “list models”, structured output). These are **not** a live catalog of model names; use
+ * “list models”). These are **not** a live catalog of model names; use
  * {@link import("./AIModelAdapter").AIModelAdapter.listAvailableModels} for that.
  *
  * **Image / multimodal inputs are not supported** in this initial version; only text (`systemPrompt` +
  * `userContent`). Batch APIs are also **not** supported; use repeated {@link import("./AIModelAdapter").AIModelAdapter.complete} calls for bulk work.
  */
 export interface AdapterCapabilities {
-    /**
-     * Whether the provider can **enforce** structured output (e.g. JSON schema) for this adapter path.
-     */
-    supportsStructuredOutput: boolean;
     /**
      * Whether this adapter’s provider exposes a way to **discover** LLM ids for this account (e.g. OpenAI
      * `GET /v1/models`, Box **`GET /2.0/ai_agents`** via `BoxClient.aiStudio.getAiAgents()`). If `true`,

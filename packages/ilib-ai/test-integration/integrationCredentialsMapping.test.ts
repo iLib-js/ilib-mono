@@ -1,6 +1,8 @@
 /*
  * integrationCredentialsMapping.test.ts
  *
+ * Static tests for {@link loadIntegrationCredentials} (no live Box API).
+ *
  * Copyright © 2026, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -9,11 +11,11 @@
 
 import path from "path";
 
-import type { BoxIntegrationCredentialsFile } from "../test-integration/loadIntegrationCredentials";
+import type { BoxIntegrationCredentialsFile } from "./loadIntegrationCredentials";
 import {
     normalizeIntegrationCredentialPaths,
     stripIntegrationOnlyFields,
-} from "../test-integration/loadIntegrationCredentials";
+} from "./loadIntegrationCredentials";
 
 describe("stripIntegrationOnlyFields (Box Developer Console JSON)", () => {
     test("maps top-level boxAppSettings + enterpriseID to boxDeveloperJwtConfig", () => {

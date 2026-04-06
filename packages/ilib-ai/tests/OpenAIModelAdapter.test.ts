@@ -123,13 +123,6 @@ describe("OpenAIModelAdapter", () => {
             expect(adapter.getCapabilities().supportsModelListing).toBe(true);
         });
 
-        test("getCapabilities: supportsStructuredOutput false in initial version", () => {
-            const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
-            expect(adapter.getCapabilities().supportsStructuredOutput).toBe(
-                false
-            );
-        });
-
         test("isConfigured is false only when apiKey would fail constructor", () => {
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-ok" });
             expect(adapter.isConfigured()).toBe(true);
@@ -340,7 +333,7 @@ describe("OpenAIModelAdapter", () => {
             expect(parsed.max_tokens).toBe(256);
         });
 
-        test("successful response maps assistant content to rawContent and sets isStructuredOutput false", async () => {
+        test("successful response maps assistant content to rawContent", async () => {
             (globalThis as FetchHolder).fetch = jest
                 .fn()
                 .mockResolvedValueOnce(connectHandshakeResponse())
@@ -358,7 +351,6 @@ describe("OpenAIModelAdapter", () => {
             const res = await adapter.complete(baseRequest);
             expect(res.error).toBeUndefined();
             expect(res.rawContent).toBe("  trimmed answer  ");
-            expect(res.isStructuredOutput).toBe(false);
             expect(res.providerRequestId).toBe("chatcmpl-abc");
         });
 
@@ -385,7 +377,6 @@ describe("OpenAIModelAdapter", () => {
             expect(res.error?.httpStatus).toBe(401);
             expect(res.error?.message).toMatch(/key|401|Unauthorized|invalid/i);
             expect(res.rawContent).toBe("");
-            expect(res.isStructuredOutput).toBe(false);
         });
 
         test("HTTP 429 includes rate limit context in error.message or providerBody", async () => {
