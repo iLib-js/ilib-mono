@@ -1,0 +1,73 @@
+{
+    "name": "ilib-ai",
+    "version": "1.0.0",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "description": "Library for calling AI services and receiving responses to prompts. Part of the iLib-js internationalization toolkit.",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "ai",
+        "llm",
+        "prompt"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-ai",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "lib",
+        "src",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
+    },
+    "engines": {
+        "node": ">=12 <23"
+    },
+    "scripts": {
+        "build": "tsc --project tsconfig.build.json",
+        "coverage": "pnpm test --coverage",
+        "types": "tsc",
+        "test": "node node_modules/jest/bin/jest.js --config jest.config.js",
+        "test:unit": "pnpm test",
+        "test:integration": "node node_modules/jest/bin/jest.js --config jest.integration.config.cjs --runInBand",
+        "test:watch": "pnpm test --watch",
+        "debug": "node --inspect-brk node_modules/jest/bin/jest.js --config jest.config.js --runInBand",
+        "clean": "git clean -f -d src tests; rm -rf lib",
+        "doc": "mkdir -p docs && npm-run-all --npm-path pnpm doc:html doc:md",
+        "doc:md": "mkdir -p docs && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
+        "doc:html": "mkdir -p docs && typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts"
+    },
+    "devDependencies": {
+        "@tsconfig/node12": "^12.1.4",
+        "@types/jest": "^29.5.14",
+        "@types/node": "12",
+        "ilib-internal": "workspace:^",
+        "jest": "^29.7.0",
+        "npm-run-all": "^4.1.5",
+        "ts-jest": "^29.2.5",
+        "typedoc": "^0.26.11",
+        "typedoc-plugin-markdown": "^4.2.10",
+        "typescript": "^5.9.2"
+    },
+    "dependencies": {
+        "box-node-sdk": "^10.6.0"
+    }
+}
