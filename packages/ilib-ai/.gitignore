@@ -1,0 +1,5 @@
+# Local Box integration credentials (never commit)
+test-integration/box-integration-credentials.json
+test-integration/*_config.json
+test-integration/*.pvk
+test-integration/*.pem
