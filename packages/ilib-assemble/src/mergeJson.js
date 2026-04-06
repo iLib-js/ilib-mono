@@ -23,7 +23,21 @@ import path from 'node:path';
 import scan from './scan.js';
 import writeFiles from './write.js';
 
-async function mergeJson(options) {
+/**
+ * Scans ilib include files to collect required modules, assembles locale
+ * JSON data via assembleJson.mjs, and writes the merged output files.
+ *
+ * @async
+ * @param {object} options - ilib-assemble options object
+ * @param {string[]} options.args - Positional arguments; args[0] is the output directory
+ * @param {object} options.opt - CLI/config options
+ * @param {string} [options.opt.ilibincPath] - Path to the ilib include file (default: "./ilib-all-inc.js")
+ * @param {boolean} [options.opt.compressed] - Write minified JSON when true (default: false)
+ * @param {string[]} [options.opt.locales] - Target locale list (BCP-47)
+ * @param {string} [options.opt.customLocalePath] - Custom locale data directory path
+ * @returns {Promise<void>}
+ */
+function mergeJson(options) {
     console.log("Merging JSON files...");
     const incPath = options.opt.ilibincPath || "./ilib-all-inc.js";
     const outDir = options.args[0];
@@ -33,10 +47,10 @@ async function mergeJson(options) {
     scan(incPath, ilibModules, true);
 
     const assemblePath = path.join(process.cwd(), "js/assemblefiles", "assembleJson.mjs");
-    const { assemble } = await import(pathToFileURL(assemblePath).href);
-
-    const result_data = assemble([...ilibModules], options);
-    writeFiles(result_data, outDir, isCompressed);
+    return import(pathToFileURL(assemblePath).href).then(({ assemble }) => {
+        const result_data = assemble([...ilibModules], options);
+        writeFiles(result_data, outDir, isCompressed);
+    });
 }
 
 export default mergeJson;
