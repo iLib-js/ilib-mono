@@ -35,6 +35,10 @@ export function listKnownAIModelAdapterNames(): readonly KnownAIModelAdapterName
     return [OPENAI_ADAPTER_NAME, BOX_AI_ADAPTER_NAME];
 }
 
+/**
+ * Overload signatures (no bodies) narrow the return type when `name` is a known literal;
+ * the implementation below is the single runtime function.
+ */
 export function createAIModelAdapter(
     name: typeof OPENAI_ADAPTER_NAME,
     init: OpenAIModelInitOptions

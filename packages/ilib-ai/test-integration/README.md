@@ -97,10 +97,11 @@ You may instead put **`boxAppSettings`** (and **`enterpriseID`** / **`userID`**)
 
 | Test file | What it checks |
 |-----------|----------------|
+| `integrationCredentialsMapping.test.ts` | **Static:** `stripIntegrationOnlyFields` / `normalizeIntegrationCredentialPaths` (no Box API). Always runs. |
 | `box-adapter-connection.integration.test.ts` | **`BoxAIModelAdapter`**: `connect()` / `disconnect()` via `users.getUserMe`. |
 | `box-ai-prompts.integration.test.ts` | **`createBoxClientFromInit`** + **`createAiTextGen`** with JSON-shaped prompts. |
 
-If **`box-integration-credentials.json`** is missing or invalid, these suites are **skipped** (they do not fail the job for developers without secrets).
+If **`box-integration-credentials.json`** is missing or invalid, the **Box API** suites are **skipped** (they do not fail the job for developers without secrets). The credential-mapping tests do not require credentials.
 
 ## Troubleshooting
 

@@ -73,7 +73,6 @@ export class BoxAIModelAdapter extends AIModelAdapter {
 
     getCapabilities(): AdapterCapabilities {
         return {
-            supportsStructuredOutput: false,
             supportsModelListing: true,
             defaultModel: DEFAULT_BOX_MODEL,
             maxConcurrentRequests: 20,
@@ -178,7 +177,6 @@ export class BoxAIModelAdapter extends AIModelAdapter {
         const answer = out.answer ?? "";
         return {
             rawContent: answer,
-            isStructuredOutput: false,
         };
     }
 }

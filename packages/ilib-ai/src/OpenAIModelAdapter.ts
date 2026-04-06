@@ -113,7 +113,6 @@ export class OpenAIModelAdapter extends AIModelAdapter {
 
     getCapabilities(): AdapterCapabilities {
         return {
-            supportsStructuredOutput: false,
             supportsModelListing: true,
             defaultModel: this.init.defaultModel ?? DEFAULT_OPENAI_MODEL,
             maxConcurrentRequests: 20,
@@ -245,7 +244,6 @@ export class OpenAIModelAdapter extends AIModelAdapter {
             const err = await fail();
             return {
                 rawContent: "",
-                isStructuredOutput: false,
                 error: err,
             };
         }
@@ -257,7 +255,6 @@ export class OpenAIModelAdapter extends AIModelAdapter {
             const text = await res.text().catch(() => "");
             return {
                 rawContent: "",
-                isStructuredOutput: false,
                 error: {
                     message:
                         (e as Error)?.message ||
@@ -280,7 +277,6 @@ export class OpenAIModelAdapter extends AIModelAdapter {
         if (choices.length === 0 || content === undefined || content === null) {
             return {
                 rawContent: "",
-                isStructuredOutput: false,
                 error: {
                     message: "OpenAI returned no assistant message",
                     httpStatus: res.status,
@@ -291,7 +287,6 @@ export class OpenAIModelAdapter extends AIModelAdapter {
 
         return {
             rawContent: content,
-            isStructuredOutput: false,
             providerRequestId: id,
         };
     }

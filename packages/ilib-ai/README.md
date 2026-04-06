@@ -56,6 +56,8 @@ async function run() {
     apiKey: process.env.OPENAI_API_KEY,
   });
 
+  await ai.connect();
+
   const { rawContent, error } = await ai.complete({
     systemPrompt: "You are a helpful assistant.",
     userContent: "Say hello in one sentence.",
@@ -94,7 +96,9 @@ const ai = createAIModelAdapter(OPENAI_ADAPTER_NAME, {
   // baseUrl, defaultModel hint, … — see OpenAIModelInitOptions TSDoc
 });
 
-const { rawContent, isStructuredOutput, error } = await ai.complete({
+await ai.connect();
+
+const { rawContent, error } = await ai.complete({
   systemPrompt: "You are a helpful assistant. Reply with valid JSON only.",
   userContent: JSON.stringify({ task: "greet", language: "es" }),
   model: "gpt-4o-2024-08-06",
@@ -119,7 +123,9 @@ const ai = createAIModelAdapter(BOX_AI_ADAPTER_NAME, {
   // `configPath` / flat JWT fields — see BoxAIModelInitOptions TSDoc
 });
 
-const { rawContent, isStructuredOutput, error } = await ai.complete({
+await ai.connect();
+
+const { rawContent, error } = await ai.complete({
   systemPrompt: "You help with product copy.",
   userContent: "Rewrite this headline to be shorter: …",
   model: "azure__openai__gpt_4o_mini",
@@ -129,8 +135,9 @@ const { rawContent, isStructuredOutput, error } = await ai.complete({
 ### List **LLM** models available to an adapter (async)
 
 ```typescript
+await ai.connect();
 const models = await ai.listAvailableModels();
-// May be empty if unsupported or not yet implemented — see Architecture.md
+// May be empty on failure or if unsupported
 ```
 
 ### Capabilities
@@ -138,18 +145,23 @@ const models = await ai.listAvailableModels();
 ```typescript
 const caps = ai.getCapabilities();
 if (caps.supportsModelListing) {
+  await ai.connect();
   const models = await ai.listAvailableModels();
 }
 ```
+
+### JSON (or other formats) in `rawContent`
+
+There is no separate “JSON mode” on **`CompletionRequest`**: the library forwards **`systemPrompt`** and **`userContent`** and returns the model’s text in **`rawContent`**. If you want JSON, say so in the prompts, then **`JSON.parse(rawContent)`** yourself (and handle extra text or markdown fences if the model adds them).
 
 ---
 
 ## API reference (TypeDoc)
 
-The package is documented with **TypeDoc** from TypeScript sources (same general approach as [ilib-po](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-po)). After installing the package (or in a monorepo clone), generate HTML (and optional Markdown) from the package directory:
+The package ships with **TypeDoc**-ready source. After **`npm install ilib-ai`**, generate HTML (and optional Markdown) from the installed package:
 
 ```bash
-cd node_modules/ilib-ai   # or packages/ilib-ai in ilib-mono
+cd node_modules/ilib-ai
 pnpm doc
 ```
 
@@ -157,22 +169,9 @@ Open the generated files under `docs/` (e.g. `docs/index.html`). **Subclass init
 
 ---
 
-## Optional integration tests (real APIs)
-
-Integration tests that call **live** APIs are **optional** and are **not** part of default CI for this repo.
-
-From the **ilib-ai package root** (`packages/ilib-ai` in this monorepo):
-
-- **`pnpm test`** — runs **unit tests only** (`tests/`, `jest.config.js`).
-- **`pnpm test:integration`** — runs **integration tests only** (`test-integration/`, `jest.integration.config.cjs`).
-
-Box integration credentials and layout are documented in **[test-integration/README.md](./test-integration/README.md)**. **Never commit** real secrets.
-
----
-
 ## Status
 
-Unit tests live under **`tests/`** and run with **`pnpm test`** from the package root (not `test-integration/`). **`complete()`** and real **`listAvailableModels()`** behavior are still stubs to be filled in next. Treat unreleased API as subject to change until a stable version is published.
+Treat unreleased API as subject to change until a stable version is published.
 
 ---
 
