@@ -159,7 +159,11 @@ options.opt.locales = options.opt.locales.map(spec => {
 if (options.opt.legacyilib) {
     assembleilib(options);
 } else if (options.opt.mergeJson) {
-    mergeJson(options);
+    mergeJson(options).then(() => {
+        console.log("mergeJson completed.");
+    }).catch(err => {
+        console.error("mergeJson failed:", err);
+    });
 } else {
     let paths = options.args.slice(1);
     if (paths.length === 0) {

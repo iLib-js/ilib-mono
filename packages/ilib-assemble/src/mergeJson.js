@@ -18,38 +18,25 @@
  */
 
 
-import { spawnSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import path from 'node:path';
 import scan from './scan.js';
+import writeFiles from './write.js';
 
-let outDir = ".";
-let isCompressed;
-let customPath;
-
-function mergeJson(options) {
+async function mergeJson(options) {
     console.log("Merging JSON files...");
     const incPath = options.opt.ilibincPath || "./ilib-all-inc.js";
-    const locales = options.opt.locales;
-
-    outDir = options.args[0];
-    isCompressed = options.opt.compressed || false;
-    customPath = options.opt.customLocalePath;
+    const outDir = options.args[0];
+    const isCompressed = options.opt.compressed || false;
 
     const ilibModules = new Set();
     scan(incPath, ilibModules, true);
 
-    const ilibPath = options.opt.ilibPath;
-    let scriptPath = path.join(process.cwd(), "js/assemblefiles", "testNode.js");
-    if (scriptPath) {
-        //const result = spawnSync('node', [scriptPath, ...[...ilibModules]], { stdio: ['inherit', 'pipe', 'inherit'] });
-        const result = spawnSync('node', ['--inspect-brk=9230', scriptPath, ...[...ilibModules]], { stdio: ['inherit', 'pipe', 'inherit'] });
+    const assemblePath = path.join(process.cwd(), "js/assemblefiles", "assembleJson.mjs");
+    const { assemble } = await import(pathToFileURL(assemblePath).href);
 
-        if (result.status !== 0) {
-            console.error(`Script ${scriptPath} exited with status ${result.status}`);
-        }
-        const result_data = JSON.parse(result.stdout.toString());
-        console.log("!!!!" + result_data);
-    }
+    const result_data = assemble([...ilibModules], options);
+    writeFiles(result_data, outDir, isCompressed);
 }
 
 export default mergeJson;
