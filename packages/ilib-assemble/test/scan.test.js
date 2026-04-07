@@ -1,7 +1,7 @@
 /*
  * scan.test.js - test the assemble utility
  *
- * Copyright © 2022, 2024 JEDLSoft
+ * Copyright © 2022, 2024, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,5 +141,44 @@ describe("testscan", () => {
         expect(set.size).toBe(2);
         expect(set.has("ilib-something")).toBeTruthy();
         expect(set.has("ilib-locale")).toBeTruthy();
+    });
+
+    test("ScanSkipScanStringWithoutJsExtension", () => {
+        expect.assertions(3);
+        let set = new Set();
+        scan("./test/testfiles/ilib-all-inc.js", set, true);
+        expect(set.size).toBe(2);
+        expect(set.has("ilib-mock.js")).toBeTruthy();
+        expect(set.has("ilib-common.js")).toBeTruthy();
+    });
+
+    test("ScanSkipScanStringWithJsExtension", () => {
+        expect.assertions(3);
+        let set = new Set();
+        scan("./test/testfiles/ilib-inc-withjs.js", set, true);
+        expect(set.size).toBe(2);
+        expect(set.has("ilib-mock.js")).toBeTruthy();
+        expect(set.has("ilib-common.js")).toBeTruthy();
+    });
+
+    test("ScanSkipScanStringEmptyLinesSkipped", () => {
+        expect.assertions(4);
+        let set = new Set();
+        scan("./test/testfiles/ilib-inc-empty.js", set, true);
+        expect(set.size).toBe(3);
+        expect(set.has("ilib-mock.js")).toBeTruthy();
+        expect(set.has("ilib-common.js")).toBeTruthy();
+        expect(set.has("ilib-locale.js")).toBeTruthy();
+    });
+
+    test("ScanSkipScanStringMixed", () => {
+        expect.assertions(5);
+        let set = new Set();
+        scan("./test/testfiles/ilib-inc-mixed.js", set, true);
+        expect(set.size).toBe(4);
+        expect(set.has("ilib-mock.js")).toBeTruthy();
+        expect(set.has("ilib-common.js")).toBeTruthy();
+        expect(set.has("ilib-locale.js")).toBeTruthy();
+        expect(set.has("ilib-something.js")).toBeTruthy();
     });
 });

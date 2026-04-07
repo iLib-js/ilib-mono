@@ -39,7 +39,7 @@ function writeFiles(allData, outDir, isCompressed) {
             ? JSON.stringify(data)
             : JSON.stringify(data, null, 4);
 
-        console.log("writing " + resultFilePath + " file.");
+        //console.log("writing " + resultFilePath + " file.");
         fs.writeFileSync(resultFilePath, contents, "utf-8");
     });
 }

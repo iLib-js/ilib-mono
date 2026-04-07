@@ -34,6 +34,7 @@ import writeFiles from './write.js';
  * @param {string} [options.opt.ilibincPath] - Path to the ilib include file (default: "./ilib-all-inc.js")
  * @param {boolean} [options.opt.compressed] - Write minified JSON when true (default: false)
  * @param {string[]} [options.opt.locales] - Target locale list (BCP-47)
+ * @param {string} [options.opt.ilibPath] - Base path for ilib installation (default: "./")
  * @param {string} [options.opt.customLocalePath] - Custom locale data directory path
  * @returns {Promise<void>}
  */
@@ -43,13 +44,22 @@ function mergeJson(options) {
     const isCompressed = options.opt.compressed || false;
 
     const ilibModules = new Set();
-    scan(incPath, ilibModules, true);
+    try {
+        scan(incPath, ilibModules, true);
+    } catch (e) {
+        return Promise.reject(new Error(`Failed to read include file "${incPath}": ${e.message}`));
+    }
 
-    const assemblePath = path.join(process.cwd(), "js/assembleData", "assembleJson.mjs");
-    return import(pathToFileURL(assemblePath).href).then(({ assemble }) => {
-        const result_data = assemble([...ilibModules], options);
-        writeFiles(result_data, outDir, isCompressed);
-    });
+    const ilibPath = options.opt.ilibPath || "./";
+    const assemblePath = path.resolve(ilibPath, "js/assembleData", "assembleJson.mjs");
+    return import(pathToFileURL(assemblePath).href)
+        .then(({ assemble }) => {
+            const result_data = assemble([...ilibModules], options);
+            writeFiles(result_data, outDir, isCompressed);
+        })
+        .catch(e => {
+            throw new Error(`mergeJson failed: ${e.message}`);
+        });
 }
 
 export default mergeJson;
