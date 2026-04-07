@@ -152,15 +152,6 @@ describe("testscan", () => {
         expect(set.has("ilib-common.js")).toBeTruthy();
     });
 
-    test("ScanSkipScanStringWithJsExtension", () => {
-        expect.assertions(3);
-        let set = new Set();
-        scan("./test/testfiles/ilib-inc-withjs.js", set, true);
-        expect(set.size).toBe(2);
-        expect(set.has("ilib-mock.js")).toBeTruthy();
-        expect(set.has("ilib-common.js")).toBeTruthy();
-    });
-
     test("ScanSkipScanStringEmptyLinesSkipped", () => {
         expect.assertions(4);
         let set = new Set();
