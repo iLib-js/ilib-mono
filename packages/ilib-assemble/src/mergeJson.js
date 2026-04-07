@@ -38,7 +38,6 @@ import writeFiles from './write.js';
  * @returns {Promise<void>}
  */
 function mergeJson(options) {
-    console.log("Merging JSON files...");
     const incPath = options.opt.ilibincPath || "./ilib-all-inc.js";
     const outDir = options.args[0];
     const isCompressed = options.opt.compressed || false;
@@ -46,7 +45,7 @@ function mergeJson(options) {
     const ilibModules = new Set();
     scan(incPath, ilibModules, true);
 
-    const assemblePath = path.join(process.cwd(), "js/assemblefiles", "assembleJson.mjs");
+    const assemblePath = path.join(process.cwd(), "js/assembleData", "assembleJson.mjs");
     return import(pathToFileURL(assemblePath).href).then(({ assemble }) => {
         const result_data = assemble([...ilibModules], options);
         writeFiles(result_data, outDir, isCompressed);
