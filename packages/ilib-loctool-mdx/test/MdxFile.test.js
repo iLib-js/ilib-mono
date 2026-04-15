@@ -1879,6 +1879,64 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r160369622");
     });
 
+    test("MdxFileParseImgJsxStringAltIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<img alt="Test string" src="foo.png" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+        var r = set.getBySource("Test string");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Test string");
+    });
+
+    test("MdxFileParseImgJsxExpressionAltIsNotExtracted", function() {
+        expect.assertions(3);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<img alt={translate("abc")} src="foo.png" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+
+    test("MdxFileParseImgJsxStringTitleIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<img title="Test string" src="foo.png" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+        var r = set.getBySource("Test string");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Test string");
+    });
+
+    test("MdxFileParseImgJsxExpressionTitleIsNotExtracted", function() {
+        expect.assertions(3);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<img title={translate("abc")} src="foo.png" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+
     test("MdxFileParseI18NComments", function() {
         expect.assertions(10);
         var mf = new MdxFile({

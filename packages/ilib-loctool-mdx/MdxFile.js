@@ -359,14 +359,10 @@ MdxFile.prototype._findAttributes = function(node) {
             // Direct string value
             stringValue = value;
         } else if (typeof value === 'object') {
-            // Check if it's a literal value object
+            // Only extract literal string values; expressions ({variable}, {fn()}) are not localizable
             if (value.type === 'mdxJsxAttributeValueLiteral' && value.value !== undefined) {
                 stringValue = value.value;
-            } else if (value.value !== undefined && typeof value.value === 'string') {
-                // Fallback: try value.value if it exists and is a string
-                stringValue = value.value;
             } else {
-                // It's likely an expression (like {variable}), skip it - expressions are not localizable
                 continue;
             }
         } else {
@@ -416,12 +412,18 @@ MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) 
 
         // In MDX, string attribute values might be stored as:
         // - A string directly: "Click me"
-        // - A literal object with a value property: { type: 'mdxJsxAttributeValueLiteral', value: "Click me" }
-        var stringValue = value;
+        // - A literal object: { type: 'mdxJsxAttributeValueLiteral', value: "Click me" }
+        // Expression attributes ({ type: 'mdxJsxAttributeValueExpression' }) are not localizable.
+        var stringValue = null;
         var isLiteralObject = false;
-        if (value && typeof value === 'object' && value.value !== undefined) {
+        if (typeof value === 'string') {
+            stringValue = value;
+        } else if (value && typeof value === 'object' && value.type === 'mdxJsxAttributeValueLiteral' && value.value !== undefined) {
             stringValue = value.value;
             isLiteralObject = true;
+        } else {
+            // Expression or unknown type – skip
+            continue;
         }
 
         // For JSX components, only localize specific attributes: title, placeholder, label
@@ -510,8 +512,8 @@ MdxFile.prototype._walk = function(node) {
 
         case 'image':
         case 'imageReference':
-            node.title && this._addTransUnit(node.title);
-            node.alt && this._addTransUnit(node.alt);
+            node.title && typeof node.title === 'string' && this._addTransUnit(node.title);
+            node.alt && typeof node.alt === 'string' && this._addTransUnit(node.alt);
             // images are non-breaking, self-closing nodes
             // this.text += '<c' + this.componentIndex++ + '/>';
             if (this.message.getTextLength()) {
@@ -1009,10 +1011,10 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
 
         case 'image':
         case 'imageReference':
-            if (node.title) {
+            if (node.title && typeof node.title === 'string') {
                 node.title = this._localizeString(node.title, locale, translations);
             }
-            if (node.alt) {
+            if (node.alt && typeof node.alt === 'string') {
                 node.alt = this._localizeString(node.alt, locale, translations);
             }
             // images are non-breaking, self-closing nodes
