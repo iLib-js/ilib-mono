@@ -1,5 +1,5 @@
 /*
- * assembleJson.mjs - mock assembler for testing mergeJson
+ * assemble.mjs - mock assembler for testing mergeJson
  *
  * Copyright © 2026 JEDLSoft
  *

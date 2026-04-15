@@ -25,7 +25,7 @@ import writeFiles from './write.js';
 
 /**
  * Scans ilib include files to collect required modules, assembles locale
- * JSON data via assembleJson.mjs, and writes the merged output files.
+ * JSON data via assemble.mjs, and writes the merged output files.
  *
  * @async
  * @param {object} options - ilib-assemble options object
@@ -51,7 +51,7 @@ function mergeJson(options) {
     }
 
     const ilibPath = options.opt.ilibPath || "./";
-    const assemblePath = path.resolve(ilibPath, "js/assembleData", "assembleJson.mjs");
+    const assemblePath = path.resolve(ilibPath, "js/assembleData", "assemble.mjs");
     return import(pathToFileURL(assemblePath).href)
         .then(({ assemble }) => {
             const result_data = assemble([...ilibModules], options);
