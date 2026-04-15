@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="xml/res/values/arrays.xml" source-language="en-US" target-language="de-DE" product-name="sample-xml">
+    <body>
+      <trans-unit id="1" resname="subaccount_questions" restype="array" datatype="xml" extype="0">
+        <source>How many times has {first_name} been pregnant?</source>
+        <target state="translated">Wie oft war {first_name} schon schwanger?</target>
+      </trans-unit>
+      <trans-unit id="2" resname="subaccount_questions" restype="array" datatype="xml" extype="1">
+        <source>How many deliveries did {first_name} have?</source>
+        <target state="translated">Wie viele Lieferungen hatte {first_name}?</target>
+      </trans-unit>
+      <trans-unit id="5" resname="subaccount_questions" restype="array" datatype="xml" extype="4">
+        <source>How many living children does {first_name} have?</source>
+        <target state="translated">Wie viel Kinderen hat {first_name}?</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="xml/res/values/plurals.xml" source-language="en-US" target-language="de-DE" product-name="sample-xml">
+    <body>
+      <trans-unit id="10" resname="app_recommend" restype="plural" datatype="xml" extype="one">
+        <source>
+            {start}1{end} friend recommends
+        </source>
+        <target state="translated">
+            {start}1{end} Freund empfiehlt
+        </target>
+      </trans-unit>
+      <trans-unit id="11" resname="app_recommend" restype="plural" datatype="xml" extype="other">
+        <source>
+            {start}%d{end} friends recommend
+        </source>
+        <target state="translated">
+            {start}%d{end} Freunden empfiehlen
+        </target>
+      </trans-unit>
+      <trans-unit id="12" resname="app_recommend2" restype="plural" datatype="xml" extype="one">
+        <source>
+            {start}1 friend{end} recommends this app
+        </source>
+        <target state="translated">
+            {start}1 Freund{end} hat diese App empfiehlt
+        </target>
+      </trans-unit>
+      <trans-unit id="13" resname="app_recommend2" restype="plural" datatype="xml" extype="other">
+        <source>
+            {start}%d friends{end} recommend this app
+        </source>
+        <target state="translated">
+            {start}%d Freunden{end} haben diese App empfiehlen
+        </target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="xml/res/values/strings.xml" source-language="en-US" target-language="de-DE" product-name="sample-xml">
+    <body>
+      <trans-unit id="17" resname="disclaimer" restype="string" datatype="xml">
+        <source>Disclaimer</source>
+        <target state="translated">Haftungsausschluss</target>
+      </trans-unit>
+      <trans-unit id="21" resname="thanks" restype="string" datatype="xml">
+        <source>Thank you!</source>
+        <target state="translated">Danke Schoen!</target>
+      </trans-unit>
+      <trans-unit id="22" resname="talk_to_friend" restype="string" datatype="xml">
+        <source>Get help now</source>
+        <target state="translated">Krieg Hilfe jetzt</target>
+      </trans-unit>
+      <trans-unit id="23" resname="ask_question" restype="string" datatype="xml">
+        <source>Ask friends</source>
+        <target state="translated">Freuden fragen</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="xml/test.properties" source-language="en-US" target-language="de-DE" product-name="sample-xml">
+    <body>
+      <trans-unit id="4" resname="src" restype="string" datatype="xml">
+        <source>This is a source string.</source>
+        <target state="translated">Dies ist eine Quellzeichenfolge.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -74,8 +74,8 @@ class ResourceNoTranslation extends ResourceRule {
                 source,
                 locale: targetLocale.getSpec()
             };
-            if (typeof(lineNumber) !== 'undefined') {
-                value.lineNumber = lineNumber;
+            if (resource.getLocation()?.line !== undefined) {
+                value.lineNumber = resource.getLocation().line;
             }
             return new Result(value);
         }

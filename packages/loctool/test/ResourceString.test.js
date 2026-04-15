@@ -1,7 +1,7 @@
 /*
  * ResourceString.test.js - test the resource string object.
  *
- * Copyright © 2016-2017, 2023 2019-2020, 2023 2023 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2020, 2023 HealthTap, Inc. 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -250,6 +250,50 @@ describe("resourcestring", function() {
         var rs = new ResourceString();
         expect(rs).toBeTruthy();
         expect(!rs.getSource()).toBeTruthy();
+    });
+
+    test("ResourceStringGetMetadata", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+            metadata:  {
+                "test": "test-abcd"
+            }
+        });
+        expect(rs).toBeTruthy();
+        expect(rs.getMetadata()).toStrictEqual({"test": "test-abcd"});
+    });
+
+    test("ResourceStringGetMetadata2", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+        });
+        expect(rs).toBeTruthy();
+        expect(rs.getMetadata()).toBeFalsy();
+    });
+
+    test("ResourceStringSetMetadata", function() {
+        expect.assertions(2);
+
+        var rs = new ResourceString({
+            key: "foo",
+            source: "source string",
+            pathName: "a/b/c.txt",
+            sourceLocale: "de-DE",
+            metadata:{}
+        });
+        expect(rs).toBeTruthy();
+        rs.setMetadata({"test": "test-xyz"});
+        expect(rs.getMetadata()).toStrictEqual({"test": "test-xyz"});
     });
 
     test("ResourceStringGeneratePseudo", function() {

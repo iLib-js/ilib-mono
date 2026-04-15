@@ -1,0 +1,15 @@
+{
+  "name": "ilib-loctool-php-resource Regex Sample",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Sample localization project for the regex-based loctool plugin",
+  "devDependencies": {
+    "ilib-loctool-javascript-resource": "workspace:^",
+    "ilib-loctool-php-resource": "workspace:^",
+    "ilib-loctool-regex": "workspace:^",
+    "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
+  }
+}

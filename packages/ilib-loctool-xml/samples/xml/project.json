@@ -1,0 +1,47 @@
+{
+    "name": "sample-xml",
+    "id": "sample-xml",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "plugins": [
+        "ilib-loctool-xml"
+    ],
+    "excludes": [
+        "xliffs",
+        "locale",
+        "schemas"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "de-DE",
+            "nl-NL"
+        ],
+        "xml": {
+            "schemas": [
+                "./schemas"
+            ],
+            "mappings": {
+                "xml/res/**/*.xml": {
+                    "schema": "android-resources-schema",
+                    "method": "copy",
+                    "template": "xml/res/values-[language]-r[region]/[filename]"
+                },
+                "**/sparse.xml": {
+                    "schema": "strings-schema",
+                    "method": "sparse",
+                    "template": "xml/res/[basename]_[locale].[extension]"
+                },
+                "**/*.properties": {
+                    "schema": "properties-schema",
+                    "method": "copy",
+                    "template": "[dir]/[basename]_[localeUnder].[extension]",
+                    "localeMap": {
+                        "nl-NL": "nl"
+                    }
+                }
+            }
+        }
+    }
+}

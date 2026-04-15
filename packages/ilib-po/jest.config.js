@@ -1,16 +1,9 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} **/
-const baseConfig = require("../../jest.config.js");
+const { tsJestConfig } = require("ilib-internal");
 
 module.exports = {
-    ...baseConfig,
+    ...tsJestConfig,
     displayName: {
         name: "ilib-po",
         color: "white",
     },
-    testEnvironment: "node",
-    transform: {
-        "^.+\\.tsx?$": ["ts-jest", {}],
-    },
-    rootDir: "test",
-    setupFiles: ["<rootDir>/../jest.setup.js"],
 };

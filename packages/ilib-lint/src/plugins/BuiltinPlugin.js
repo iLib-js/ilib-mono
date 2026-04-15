@@ -31,6 +31,7 @@ import JsonFormatter from '../formatters/JsonFormatter.js';
 import ResourceICUPlurals from '../rules/ResourceICUPlurals.js';
 import ResourceICUPluralTranslation from '../rules/ResourceICUPluralTranslation.js';
 import ResourceQuoteStyle from '../rules/ResourceQuoteStyle.js';
+import ResourceSentenceEnding from '../rules/ResourceSentenceEnding.js';
 import ResourceUniqueKeys from '../rules/ResourceUniqueKeys.js';
 import ResourceEdgeWhitespace from '../rules/ResourceEdgeWhitespace.js';
 import ResourceCompleteness from '../rules/ResourceCompleteness.js';
@@ -45,10 +46,16 @@ import ResourceXML from '../rules/ResourceXML.js';
 import ResourceCamelCase from '../rules/ResourceCamelCase.js';
 import ResourceSnakeCase from '../rules/ResourceSnakeCase.js';
 import ResourceKebabCase from '../rules/ResourceKebabCase.js';
+import ResourceAllCaps from '../rules/ResourceAllCaps.js';
 import ResourceGNUPrintfMatch from '../rules/ResourceGNUPrintfMatch.js';
 import ResourceReturnChar from '../rules/ResourceReturnChar.js';
 import StringFixer from './string/StringFixer.js';
 import ResourceFixer from './resource/ResourceFixer.js';
+import ByteParser from './byte/ByteParser.js';
+import FileEncodingRule from '../rules/byte/FileEncodingRule.js';
+import XliffHeaderEncoding from '../rules/string/XliffHeaderEncoding.js';
+import BOMRule from '../rules/byte/BOMRule.js';
+import ByteFixer from './byte/ByteFixer.js';
 
 // built-in declarative rules
 export const regexRules = [
@@ -152,6 +159,19 @@ export const regexRules = [
         fixes: [
             { search: "([\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF])\\s+", replace: "$1" },
             { search: "\\s+([\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FAF])", replace: "$1" }
+        ]
+    },
+    {
+        type: "resource-target",
+        name: "resource-apostrophe",
+        description: "Ensure that the target uses proper Unicode apostrophes instead of ASCII straight quotes.",
+        note: "The word \"{matchString}\" contains an ASCII straight quote used as an apostrophe. Use the Unicode apostrophe character instead.",
+        regexps: [
+            "(\\p{L}+('\\p{L}+)+)"         // word boundary + word chars + quote + word chars + word boundary (e.g., it's, don't, d'l'homme)
+        ],
+        link: "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-apostrophe.md",
+        fixes: [
+            { search: "'", replace: "\u2019" }
         ]
     },
     {
@@ -409,6 +429,13 @@ export const builtInRulesets = {
         "resource-no-halfwidth-kana-characters": true,
         "resource-no-double-byte-space": true,
         "resource-no-space-with-fullwidth-punctuation": true,
+        "resource-apostrophe": true,
+    },
+
+    xliff: {
+        "file-encoding": true,
+        "xliff-header-encoding": true,
+        "utf-bom": true,
     },
 
     gnu: {
@@ -440,6 +467,9 @@ export const builtInRulesets = {
     "windows": {
         "resource-return-char": true
     },
+    "punctuation-checks": {
+        "resource-sentence-ending": true
+    },
     "tap": {
         "resource-tap-named-params": true
     }
@@ -465,7 +495,7 @@ class BuiltinPlugin extends Plugin {
      * plugin
      */
     getParsers() {
-        return [XliffParser, LineParser, StringParser];
+        return [XliffParser, LineParser, StringParser, ByteParser];
     }
 
     /**
@@ -498,6 +528,7 @@ class BuiltinPlugin extends Plugin {
             ResourceICUPlurals,
             ResourceICUPluralTranslation,
             ResourceQuoteStyle,
+            ResourceSentenceEnding,
             ResourceUniqueKeys,
             ResourceEdgeWhitespace,
             ResourceCompleteness,
@@ -512,8 +543,12 @@ class BuiltinPlugin extends Plugin {
             ResourceCamelCase,
             ResourceSnakeCase,
             ResourceKebabCase,
+            ResourceAllCaps,
             ResourceGNUPrintfMatch,
             ResourceReturnChar,
+            FileEncodingRule,
+            XliffHeaderEncoding,
+            BOMRule,
             ...regexRules
         ];
     }
@@ -535,7 +570,8 @@ class BuiltinPlugin extends Plugin {
     getFixers() {
         return [
             StringFixer,
-            ResourceFixer
+            ResourceFixer,
+            ByteFixer
         ];
     }
 };

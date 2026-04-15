@@ -10,12 +10,15 @@
 - Configuration in [turbo.json](mdc:turbo.json) defines build, test, and coverage tasks
 - Build tasks depend on dependencies (`^build`)
 - Test tasks depend on build and test dependencies (`^test`)
+- E2E test tasks depend on build and test dependencies (`^test:e2e`)
 
 ## Development Commands
 From the root directory:
 - `pnpm build` - Build all packages
 - `pnpm test` - Test affected packages only (recommended)
 - `pnpm test:all` - Test all packages
+- `pnpm test:e2e` - Test E2E tests for affected packages only (recommended)
+- `pnpm test:e2e:all` - Test E2E tests for all packages
 - `pnpm doc` - Generate documentation for affected packages
 - `pnpm coverage` - Generate coverage reports
 
@@ -23,6 +26,7 @@ From the root directory:
 From individual package directories:
 - `pnpm build` - Build the current package
 - `pnpm test` - Test the current package
+- `pnpm test:e2e` - Test E2E tests for the current package
 - `pnpm doc` - Generate documentation for the current package
 
 ## Affected Packages

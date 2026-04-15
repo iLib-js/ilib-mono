@@ -2,7 +2,7 @@
 /*
  * loctool.js - tool to extract resources from source code
  *
- * Copyright © 2016-2017, 2019-2025, HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2026, HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ var mm = require("micromatch");
 
 var ProjectFactory = require("./lib/ProjectFactory.js");
 var GenerateModeProcess = require("./lib/GenerateModeProcess.js");
-
+var XliffFactory = require("./lib/XliffFactory.js");
 var XliffMerge = require("./lib/XliffMerge.js");
 var XliffSplit = require("./lib/XliffSplit.js");
 var XliffSelect = require("./lib/XliffSelect.js");
@@ -90,7 +90,9 @@ var commandOptionHelp = {
         "--xliffResRoot\n" +
         "  Specify the dir where the generation output should go. (Default is resources/) \n" +
         "--xliffStyle\n" +
-        "  Specify the Xliff format style. Style can be 'standard' or 'custom'. (Default is 'standard')",
+        "  Specify the Xliff format style. Style can be 'standard', 'default' or 'webOS'. (Default is 'standard')\n" +
+        "--metadata\n" +
+        "  Accepts any value in the form of 'aaa=bbb' and can be used as needed. i.e) type=Monitor",
 //  to be implemented
 //  report:
 //      "report\n" +
@@ -147,8 +149,11 @@ var commandOptionHelp = {
         "  to the output file. All files must be xliff files.\n\n" +
         "criteria\n" +
         "  The selection criteria. The syntax is as follows:\n" +
-        "    [field]=[regexp]\n" +
-        "      Select any translation units where the given field name matches the regular expression.\n" +
+        "    [field]=[regexp]     or\n" +
+        "    [field]!=[regexp]\n" +
+        "      Select any translation units where the given field name matches the regular expression,\n" +
+        "      or if the operator is \"!=\", select translation units where the given field does not\n" +
+        "      match the regular expression.\n" + 
         "      Fields can be one of: project, context, sourceLocale, targetLocale, key, pathName, state,\n" +
         "        comment, dnt, datatype, resType, flavor, source, or target\n" +
         "      Additionally, the field name may be one of the following:\n" +
@@ -184,7 +189,10 @@ var commandOptionHelp = {
         "--extendedAttr <name>=<value>\n" +
         "  Add an extended attribute to the output file. This can be used to add arbitrary metadata to\n" +
         "  each translation unit in the output file. You may specify this option multiple times to add\n" +
-        "  multiple extended attributes.",
+        "  multiple extended attributes.\n" +
+        "--prune\n" +
+        "  Exclude all translation units that match the selection criteria.\n" +
+        "  This can be used to filter out translation units that should not be included in the output.\n",
 };
 
 function usage() {
@@ -430,9 +438,13 @@ for (var i = 0; i < argv.length; i++) {
             usage();
         }
     } else if (val === "--xliffStyle") {
-        var candidate = ["standard", "custom"];
-        if (candidate.indexOf(argv[i+1]) !== -1) {
+        var candidate = XliffFactory.getAllStyles();
+        if (candidate.includes(argv[i+1])) {
             settings.xliffStyle = argv[++i];
+        } else {
+            ++i;
+            logger.warn("Warning: '" + argv[i] + "' is an invalid xliffStyle: set to 'standard'");
+            settings.xliffStyle = "standard";
         }
     } else if (val === "--noxliffDups") {
         settings.allowDups = false;
@@ -469,6 +481,19 @@ for (var i = 0; i < argv.length; i++) {
                 usage();
             }
         }
+    } else if (val === "--metadata") {
+        settings.metadata = {};
+        if (i + 1 < argv.length && argv[i + 1]) {
+            const pairs = argv[++i].split(",");
+            pairs.forEach(pair => {
+                const [key, value] = pair.split("=");
+                if (key && value) {
+                    settings.metadata[key.trim()] = value.trim();
+                }
+            });
+        }
+    } else if (val === "--prune") {
+        settings.prune = true;
     } else {
         options.push(val);
     }
@@ -545,7 +570,7 @@ case "select":
         usage();
     }
     settings.criteria = options[3];
-    settings.outfile = options[4]
+    settings.outfile = options[4];
     settings.infiles = options.slice(5);
     settings.infiles.forEach(function (file) {
         if (!fs.existsSync(file)) {
@@ -595,6 +620,7 @@ function processNextProject() {
                         });
                     });
                 });
+
             });
         });
     }
@@ -807,7 +833,6 @@ try {
     }
     exitValue = 2;
 }
+
+process.exitCode = exitValue;
 logger.info("Done");
-log4js.shutdown(function() {
-    process.exit(exitValue);
-});

@@ -1,7 +1,7 @@
 /*
- * Xliff.test.js - test the Xliff object.
+ * ResourceXliff.test.js - test the ResourceXliff object.
  *
- * Copyright © 2016-2017, 2019-2023, 2025 HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2023, 2025-2026 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,9 @@
 import fs from "fs";
 
 import { ResourceArray, ResourcePlural, ResourceString, ResourceXliff } from "../src/index.js";
+import { Xliff, TranslationUnit } from "ilib-xliff";
+import { webOSXliff, TranslationUnit as WebOSTU  } from "ilib-xliff-webos";
+import { JSUtils } from "ilib-common";
 
 function diff(a, b) {
     const min = Math.min(a.length, b.length);
@@ -52,7 +55,7 @@ describe("testResourceXliff", () => {
     });
 
     test("ResourceXliffConstructorFull", () => {
-        expect.assertions(7);
+        expect.assertions(9);
 
         const x = new ResourceXliff({
             "tool-id": "loctool",
@@ -62,14 +65,16 @@ describe("testResourceXliff", () => {
             copyright: "Copyright 2016, My Company, Inc. All rights reserved.",
             path: "a/b/c.xliff"
         });
-        expect(x).toBeTruthy();
 
+        expect(x).toBeTruthy();
         expect(x["tool-id"]).toBe("loctool");
         expect(x["tool-name"]).toBe("Localization Tool");
         expect(x["tool-version"]).toBe("1.2.34");
         expect(x["tool-company"]).toBe("My Company, Inc.");
         expect(x.copyright).toBe("Copyright 2016, My Company, Inc. All rights reserved.");
         expect(x.path).toBe("a/b/c.xliff");
+        expect(x.xliff).toBeTruthy();
+        expect(x.xliff instanceof Xliff).toBeTruthy();
     });
 
     test("ResourceXliffGetPath", () => {
@@ -82,7 +87,6 @@ describe("testResourceXliff", () => {
 
         expect(x.getPath()).toBe("foo/bar/x.xliff");
     });
-
 
     test("ResourceXliffSetPath", () => {
         expect.assertions(3);
@@ -174,6 +178,546 @@ describe("testResourceXliff", () => {
         expect(x.size()).toBe(1);
     });
 
+    test("ResourceXliffOptionXliff", () => {
+        const xf = new Xliff();
+        expect(xf).toBeTruthy();
+
+        let tu = new TranslationUnit({
+            source: "Asdf asdf",
+            sourceLocale: "en-US",
+            key: "foobar",
+            file: "foo/bar/asdf.java",
+            project: "webapp",
+            resType: "string",
+            state: "new",
+            comment: "This is a comment",
+            datatype: "java"
+        });
+        xf.addTranslationUnit(tu);
+
+        tu = new TranslationUnit({
+            source: "foobar",
+            sourceLocale: "en-US",
+            key: "asdf",
+            file: "x.java",
+            project: "webapp",
+            resType: "string",
+            state: "translated",
+            comment: "No comment",
+            datatype: "java",
+            autoKey: true
+        });
+
+        xf.addTranslationUnit(tu);
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        let reslist = x.getResources({
+            reskey: "asdf"
+        });
+
+        expect(reslist).toBeTruthy();
+        expect(reslist.length).toBe(1);
+        expect(reslist[0].getSource()).toBe("foobar");
+        expect(reslist[0].getSourceLocale()).toBe("en-US");
+        expect(reslist[0].getKey()).toBe("asdf");
+        expect(reslist[0].getPath()).toBe("x.java");
+        expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].getAutoKey()).toBe(true);
+    }),
+
+    test("ResourceXliffOptionXliffAddResource", () => {
+        const xf = new Xliff();
+        expect(xf).toBeTruthy();
+
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+        let res = new ResourceString({
+            source: "Asdf asdf",
+            sourceLocale: "en-US",
+            key: "foobar",
+            pathName: "foo/bar/asdf.java",
+            project: "webapp"
+        });
+
+        x.addResource(res);
+        expect(x.size()).toBe(1);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff version="1.2">\n' +
+                '  <file original="foo/bar/asdf.java" source-language="en-US" product-name="webapp">\n' +
+                '    <body>\n' +
+                '      <trans-unit id="1" resname="foobar" restype="string" datatype="plaintext">\n' +
+                '        <source>Asdf asdf</source>\n' +
+                '      </trans-unit>\n' +
+                '    </body>\n' +
+                '  </file>\n' +
+                '</xliff>';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    }),
+
+    test("ResourceXliffOptionwebOSXliffAutoKey", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+        let tu = new WebOSTU({
+            source: "Asdf asdf",
+            sourceLocale: "en-KR",
+            key: "Asdf asdf",
+            autoKey: true,
+            file: "foo/bar/asdf.js",
+            project: "webapp",
+            resType: "string",
+            state: "new",
+            comment: "This is a comment",
+            datatype: "javascript"
+        });
+        expect(tu).toBeTruthy();
+
+        xf.addTranslationUnit(tu);
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        const reslist = x.getResources({
+            reskey: "Asdf asdf"
+        });
+
+        expect(reslist).toBeTruthy();
+
+        expect(reslist.length).toBe(1);
+        expect(reslist[0].getSource()).toBe("Asdf asdf");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getKey()).toBe("Asdf asdf");
+        expect(reslist[0].getPath()).toBe("foo/bar/asdf.js");
+        expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].getDataType()).toBe("javascript");
+        expect(reslist[0].getAutoKey()).toBe(true);
+    }),
+
+    test("ResourceXliffOptionwebOSXliff", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+        let tu = new WebOSTU({
+            source: "Asdf asdf",
+            sourceLocale: "en-KR",
+            key: "foobar",
+            file: "foo/bar/asdf.js",
+            project: "webapp",
+            resType: "string",
+            state: "new",
+            comment: "This is a comment",
+            datatype: "javascript"
+        });
+        expect(tu).toBeTruthy();
+        xf.addTranslationUnit(tu);
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        const reslist = x.getResources({
+            reskey: "foobar"
+        });
+
+        expect(reslist).toBeTruthy();
+
+        expect(reslist.length).toBe(1);
+        expect(reslist[0].getSource()).toBe("Asdf asdf");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getKey()).toBe("foobar");
+        expect(reslist[0].getPath()).toBe("foo/bar/asdf.js");
+        expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].getDataType()).toBe("javascript");
+        expect(reslist[0].getAutoKey()).toBe(false);
+    }),
+
+    test("ResourceXliffOptionwebOSXliffWithMetadata", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+        let tu = new WebOSTU({
+            source: "NOT AVAILABLE",
+            sourceLocale: "en-KR",
+            target: "이용이 불가능합니다",
+            targetLocale: "ko-KR",
+            key: "foobar",
+            file: "foo/bar/asdf.js",
+            project: "webapp",
+            resType: "string",
+            datatype: "javascript"
+        });
+
+        const metaDataInfo = {
+            "mda:metaGroup": {
+                "mda:meta": [
+                    {
+                        "_attributes" : {"type": "Monitor"},
+                        "_text": "\"Monitor\" 이용이 불가능합니다"
+                    },
+                    {
+                        "_attributes" : {"type": "Box"},
+                        "_text": "\"Box\" 이용이 불가능합니다"
+                    },
+                ],
+                "_attributes": {
+                    "category": "device-type"
+                }
+            }
+        }
+        tu.metadata = metaDataInfo;
+
+        expect(tu).toBeTruthy();
+        xf.addTranslationUnit(tu);
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        const reslist = x.getResources({
+            reskey: "foobar"
+        });
+
+        expect(reslist).toBeTruthy();
+        expect(reslist.length).toBe(1);
+        expect(reslist[0].getSource()).toBe("NOT AVAILABLE");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getKey()).toBe("foobar");
+        expect(reslist[0].getPath()).toBe("foo/bar/asdf.js");
+        expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].getDataType()).toBe("javascript");
+        expect(reslist[0].getMetadata()).toEqual(metaDataInfo);
+    }),
+
+    test("ResourceXliffOptionwebOSXliffParseandgetTextAutoKeyTrue", () => {
+        const xf = new webOSXliff();
+        const x = new ResourceXliff({
+            path: "foo/bar/de-DE.xliff",
+            xliff: xf
+        });
+
+        expect(x).toBeTruthy();
+        x.parse(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="Asdf asdf">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>'
+            );
+        const reslist = x.getResources();
+        expect(reslist.length).toBe(1);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="Asdf asdf">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>\n';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("ResourceXliffOptionwebOSXliffParseandgetTextAutoKeyfalse", () => {
+        const xf = new webOSXliff();
+        const x = new ResourceXliff({
+            path: "foo/bar/de-DE.xliff",
+            xliff: xf
+        });
+
+        expect(x).toBeTruthy();
+        x.parse(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>'
+            );
+        const reslist = x.getResources();
+        expect(reslist.length).toBe(1);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>\n';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("ResourceXliffOptionwebOSXliffParseSamekey", () => {
+        const xf = new webOSXliff();
+        const x = new ResourceXliff({
+            path: "foo/bar/de-DE.xliff",
+            xliff: xf
+        });
+
+        expect(x).toBeTruthy();
+        x.parse(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '      <unit id="webapp_g1_2" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf222</source>\n' +
+                '          <target>baby baby222</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>'
+            );
+
+        const reslist = x.getResources();
+
+        expect(reslist).toBeTruthy();
+        expect(reslist.length).toBe(2);
+
+        expect(reslist[0].getSource()).toBe("Asdf asdf");
+        expect(reslist[0].getSourceLocale()).toBe("en-KR");
+        expect(reslist[0].getTarget()).toBeTruthy();
+        expect(reslist[0].getTargetLocale()).toBe("de-DE");
+        expect(reslist[0].getTarget()).toBe("baby baby");
+        expect(reslist[0].getKey()).toBe("foobar");
+        expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].resType).toBe("string");
+        expect(reslist[0].getId()).toBe("webapp_g1_1");
+        expect(reslist[0].getSourceHash()).toBe("1482422553");
+        expect(reslist[0].getResFile()).toBe("foo/bar/de-DE.xliff");
+
+        expect(reslist[1].getSource()).toBe("Asdf asdf222");
+        expect(reslist[1].getSourceLocale()).toBe("en-KR");
+        expect(reslist[1].getTarget()).toBeTruthy();
+        expect(reslist[1].getTarget()).toBe("baby baby222");
+        expect(reslist[1].getTargetLocale()).toBe("de-DE");
+        expect(reslist[1].getKey()).toBe("foobar");
+        expect(reslist[1].getProject()).toBe("webapp");
+        expect(reslist[1].resType).toBe("string");
+        expect(reslist[1].getId()).toBe("webapp_g1_2");
+        expect(reslist[1].getSourceHash()).toBe("1630766648");
+        expect(reslist[1].getResFile()).toBe("foo/bar/de-DE.xliff");
+    });
+
+    test("ResourceXliffOptionwebOSXliffAddResource", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+        let res = new ResourceString({
+            source: "Asdf asdf",
+            target: "baby baby",
+            sourceLocale: "en-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp"
+        });
+        x.addResource(res);
+
+        res = new ResourceString({
+            source: "Asdf asdf2",
+            target: "baby baby2",
+            sourceLocale: "en-KR",
+            key: "foobar2",
+            pathName: "src/index.js",
+            project: "webapp"
+        });
+        x.addResource(res);
+        expect(x.size()).toBe(2);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '      <unit id="webapp_g1_2" name="foobar2">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf2</source>\n' +
+                '          <target>baby baby2</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>\n';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    }),
+
+    test("ResourceXliffOptionwebOSXliffAddResourceSameKey", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        let res = new ResourceString({
+            source: "Asdf asdf",
+            target: "baby baby",
+            sourceLocale: "en-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp",
+            sourceHash: JSUtils.hashCode("Asdf asdf").toString()
+        });
+        x.addResource(res);
+
+        res = new ResourceString({
+            source: "Asdf asdf2",
+            target: "baby baby2",
+            sourceLocale: "en-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp",
+            sourceHash: JSUtils.hashCode("Asdf asdf2").toString()
+        });
+        x.addResource(res);
+        expect(x.size()).toBe(2);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf</source>\n' +
+                '          <target>baby baby</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '      <unit id="webapp_g1_2" name="foobar">\n' +
+                '        <segment>\n' +
+                '          <source>Asdf asdf2</source>\n' +
+                '          <target>baby baby2</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>\n';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    }),
+
+    test("ResourceXliffOptionwebOSXliffAddResourceWithMetadata", () => {
+        const xf = new webOSXliff();
+        expect(xf).toBeTruthy();
+
+        const x = new ResourceXliff({
+            xliff: xf
+        });
+
+        const metaDataInfo = {
+            "mda:metaGroup": {
+                "mda:meta": [
+                    {
+                        "_attributes" : {"type": "Monitor"},
+                        "_text": "\"Monitor\" 이용이 불가능합니다"
+                    },
+                    {
+                        "_attributes" : {"type": "Box"},
+                        "_text": "\"Box\" 이용이 불가능합니다"
+                    },
+                ],
+                "_attributes": {
+                    "category": "device-type"
+                }
+            }
+        }
+
+        let res = new ResourceString({
+            source: "NOT AVAILABLE",
+            sourceLocale: "en-KR",
+            target: "이용이 불가능합니다",
+            targetLocale: "ko-KR",
+            key: "foobar",
+            pathName: "src/index.js",
+            project: "webapp",
+            metadata: metaDataInfo
+        });
+        x.addResource(res);
+
+        const actual = x.getText();
+        const expected =
+                '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+                '  <file id="webapp_f1" original="webapp">\n' +
+                '    <group id="webapp_g1" name="plaintext">\n' +
+                '      <unit id="webapp_g1_1" name="foobar">\n' +
+                '        <mda:metadata>\n' +
+                '          <mda:metaGroup category="device-type">\n' +
+                '            <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>\n' +
+                '            <mda:meta type="Box">"Box" 이용이 불가능합니다</mda:meta>\n' +
+                '          </mda:metaGroup>\n' +
+                '        </mda:metadata>\n' +
+                '        <segment>\n' +
+                '          <source>NOT AVAILABLE</source>\n' +
+                '          <target>이용이 불가능합니다</target>\n' +
+                '        </segment>\n' +
+                '      </unit>\n' +
+                '    </group>\n' +
+                '  </file>\n' +
+                '</xliff>\n';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    }),
+
     test("ResourceXliffAddMultipleResources", () => {
         expect.assertions(8);
 
@@ -245,7 +789,7 @@ describe("testResourceXliff", () => {
     });
 
     test("ResourceXliffAddMultipleResourcesAddInstance", () => {
-        expect.assertions(17);
+        expect.assertions(18);
 
         const x = new ResourceXliff();
         expect(x).toBeTruthy();
@@ -285,6 +829,7 @@ describe("testResourceXliff", () => {
         expect(reslist[0].getKey()).toBe("foobar");
         expect(reslist[0].getPath()).toBe("foo/bar/asdf.java");
         expect(reslist[0].getProject()).toBe("webapp");
+        expect(reslist[0].getSourceHash()).toBe(undefined);
         expect(!reslist[0].getComment()).toBeTruthy();
 
         const inst = reslist[0].getInstances();

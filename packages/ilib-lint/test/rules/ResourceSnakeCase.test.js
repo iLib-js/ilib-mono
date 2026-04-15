@@ -18,9 +18,12 @@
  */
 
 import {Result, Fix} from "ilib-lint-common";
-import {ResourceString} from "ilib-tools-common";
+import {ResourceString, Location} from "ilib-tools-common";
 
 import ResourceSnakeCase from "../../src/rules/ResourceSnakeCase.js";
+import ResourceFixer from "../../src/plugins/resource/ResourceFixer.js";
+import RuleManager from "../../src/RuleManager.js";
+import BuiltinPlugin from "../../src/plugins/BuiltinPlugin.js";
 
 describe("ResourceSnakeCase", () => {
     test("creates ResourceSnakeCase rule instance", () => {
@@ -39,7 +42,7 @@ describe("ResourceSnakeCase", () => {
         {},
         () => {},
     ])("handles invalid `except` parameter gracefully (and does not break in runtime)", (invalidExcept) => {
-        const rule = new ResourceSnakeCase({param: {except: invalidExcept}});
+        const rule = new ResourceSnakeCase({except: invalidExcept});
 
         const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
         const result = rule.matchString({
@@ -91,8 +94,8 @@ describe("ResourceSnakeCase", () => {
     });
 
     test("returns `undefined` if source string is an exception", () => {
-        const options = {param: {except: ["snake_case_exception"]}}
-        const rule = new ResourceSnakeCase(options);
+        const options = {except: ["snake_case_exception"]}
+        const rule = new ResourceSnakeCase({ param: options });
         const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
 
         const result = rule.matchString({
@@ -103,6 +106,54 @@ describe("ResourceSnakeCase", () => {
         });
 
         expect(result).toBeUndefined();
+    });
+
+    test("returns `undefined` if source string is an exception when instantiated via RuleManager", () => {
+        // This test verifies that the exception functionality works correctly when the rule is instantiated
+        // through the RuleManager.get() method, which is the actual code path used in the system
+        const ruleManager = new RuleManager();
+        const builtinPlugin = new BuiltinPlugin();
+        ruleManager.add(builtinPlugin.getRules());
+
+        const rule = ruleManager.get("resource-snake-case", {except: ["snake_case_exception"]});
+
+        expect(rule).toBeInstanceOf(ResourceSnakeCase);
+
+        const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeUndefined();
+    });
+
+    test("returns error when source string is NOT an exception (showing exception functionality works)", () => {
+        // This test verifies that the exception functionality is actually working by showing that
+        // without the except parameter, the same test case would produce an error
+        const ruleManager = new RuleManager();
+        const builtinPlugin = new BuiltinPlugin();
+        ruleManager.add(builtinPlugin.getRules());
+
+        const rule = ruleManager.get("resource-snake-case", {}); // No except parameter
+
+        expect(rule).toBeInstanceOf(ResourceSnakeCase);
+
+        const resource = createTestResourceString({source: "snake_case_exception", target: "some_target"});
+
+        const result = rule.matchString({
+            source: resource.source,
+            target: resource.target,
+            file: resource.pathName,
+            resource
+        });
+
+        expect(result).toBeInstanceOf(Result);
+        expect(result.rule).toBeInstanceOf(ResourceSnakeCase);
+        expect(result.severity).toEqual("error");
     });
 
     test("returns `undefined` if source string is NOT in snake case", () => {
@@ -135,7 +186,11 @@ describe("ResourceSnakeCase", () => {
 
     test("returns error if source is in snake case and target is different", () => {
         const rule = new ResourceSnakeCase({});
-        const resource = createTestResourceString({source: "snake_case", target: "different_target"});
+        const resource = createTestResourceString({
+            source: "snake_case",
+            target: "different_target",
+            location: new Location({ line: 41, offset: 0, char: 0 })
+        });
 
         const result = rule.matchString({
             source: resource.source,
@@ -147,6 +202,8 @@ describe("ResourceSnakeCase", () => {
         expect(result).toBeInstanceOf(Result);
         expect(result.rule).toBeInstanceOf(ResourceSnakeCase);
         expect(result.severity).toEqual("error");
+        expect(result.locale).toBe("xd-XD");
+        expect(result.lineNumber).toBe(41);
         expect(result.fix).toBeDefined();
     });
 
@@ -166,11 +223,9 @@ describe("ResourceSnakeCase", () => {
         expect(fix.commands).toHaveLength(1);
 
         const command = fix.commands[0];
-        expect(command.stringFix).toEqual({
-            position: 0,
-            deleteCount: resource.target.length,
-            insertContent: resource.source
-        });
+        expect(command.stringFix.position).toBe(0);
+        expect(command.stringFix.deleteCount).toBe(resource.target.length);
+        expect(command.stringFix.insertContent).toEqual(resource.source);
     });
 });
 
@@ -218,13 +273,24 @@ describe('ResourceSnakeCase.isSnakeCase', () => {
     });
 });
 
-function createTestResourceString({source, target}) {
+/**
+ * Create a test resource string
+ * @private
+ * @param {Object} param0 The parameters
+ * @param {string} param0.source The source string
+ * @param {string} param0.target The target string
+ * @param {Location} [param0.location] The location of the resource
+ *
+ * @returns {ResourceString} The test resource string
+ */
+function createTestResourceString({source, target, location}) {
     return new ResourceString({
         source,
         target,
         key: "snake.case.test.string.id",
         targetLocale: "xd-XD",
-        pathName: "tests/for/snake_case.xliff"
+        pathName: "tests/for/snake_case.xliff",
+        ...(location && { location })
     });
 }
 

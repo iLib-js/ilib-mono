@@ -1,7 +1,7 @@
 /*
  * AndroidResourceFile.js - represents an Android strings.xml resource file
  *
- * Copyright © 2016-2017, 2019-2021 HealthTap, Inc.
+ * Copyright © 2016-2017, 2019-2021, 2026 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ var fs = require("fs");
 var path = require("path");
 var xmljs = require('xml-js');
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var log4js = require("log4js");
 
 var ContextResourceString = require("../lib/ContextResourceString.js");

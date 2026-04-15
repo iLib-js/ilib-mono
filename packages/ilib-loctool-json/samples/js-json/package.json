@@ -1,0 +1,15 @@
+{
+  "name": "ilib-loctool-json JS-JSON Sample",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Sample localization project",
+  "devDependencies": {
+    "ilib-internal": "workspace:^",
+    "ilib-loctool-javascript": "workspace:^",
+    "ilib-loctool-json": "workspace:^",
+    "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
+  }
+}

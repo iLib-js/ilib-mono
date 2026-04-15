@@ -1,5 +1,92 @@
 # ilib-tools-common
 
+## 1.21.3
+
+### Patch Changes
+
+- a1be468: Fix a problem with getLocaleFromPath
+
+  - regex was not anchored to the beginning of the string, so when
+    you have a template like "[language]/[dir]/[filename]", it would
+    match against "guides/ai-zone/index.mdx" where the language
+    would end up being "des". (Last 3 letters of "guides".)
+  - Now with it anchored properly, it returns "" for the language
+    because "guides" does not match an ISO language code.
+
+## 1.21.2
+
+### Patch Changes
+
+- 8b26137: Update the `ilib-xliff-webos` dependency to the latest version.
+
+## 1.21.1
+
+### Patch Changes
+
+- 74d3761: Pass `autoKey` property correctly to preserve auto-generated key information
+- 08d9461: - Fix an issue in the webOS XLIFF file that causes data loss when entries have the same key but different sources.
+  Update to add a sourceHash property to the Resource, and if the value exists, use it to generate a hashkey.
+- Updated dependencies [28ab248]
+  - ilib-locale@1.4.0
+
+## 1.21.0
+
+### Minor Changes
+
+- 1f44881: - Split formatPath into formatPath and formatLocaleParams
+  - this way we can format template strings with locale substitutions
+    in it without treating the whole string as a path
+
+## 1.20.1
+
+### Patch Changes
+
+- ca616ec: Fix an issue where the metadata property was missing from ResourceXliff.
+
+## 1.20.0
+
+### Minor Changes
+
+- 92e0b3a: - The Resource.setState() call now throws an exception if you
+  set an invalid state. Valid states are ones defined in the
+  xliff 1.2 specification, plus a few nonstandard states for ilib
+  and mojito, and custom states which must all have the prefix
+  "x-".
+  - valid states are: needs-translation, needs-l10n, needs-adaptation,
+    translated, needs-review-translation, needs-review-l10n,
+    needs-review-adaptation, final, new, signed-off, accepted
+
+## 1.19.1
+
+### Patch Changes
+
+- 3ac309b: Add the xliff option to the ResourceXliff class so that it can be used in instances of ResourceXliff.
+
+## 1.19.0
+
+### Minor Changes
+
+- 32130cf: - Added support for Scala and C++ string escaping and unescaping
+  - All Scala string types:
+    - scala - Regular single or double-quoted strings ("...")
+    - scala-raw - Raw strings like (raw"foo")
+    - scala-triple - Triple-quoted strings like ("""foo""")
+    - scala-char - Character literals like ('a')
+  - All C++ string types:
+    - cpp - Regular double-quoted strings ("...")
+    - cpp-char - Character literals ('...')
+    - cpp-raw - Raw strings (R"(...)") - no escape processing
+    - cpp-wide - Wide strings (L"...")
+    - cpp-utf8 - UTF-8 strings (u8"...")
+    - cpp-utf16 - UTF-16 strings (u"...")
+    - cpp-utf32 - UTF-32 strings (U"...")
+
+## 1.18.0
+
+### Minor Changes
+
+- 2f63633: - Add a `metadata` property to the `Resource` class to store any metadata that may exist on a per-Resource basis. It is up to parsers to recognize and parse the metadata appropriately and up to the serializers to serialize it properly again.
+
 ## 1.17.0
 
 ### Minor Changes

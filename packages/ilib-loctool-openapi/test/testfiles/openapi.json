@@ -1,0 +1,53 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Test OpenAPI File",
+        "description": "File used for testing OpenAPI parser",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://swagger.io/specification/",
+            "description": "OpenAPI docs"
+        }
+    ],
+    "paths": {
+        "/json": {
+            "get": {
+                "summary": "Test path without markdown",
+                "description": "Test path to verify simple json parser",
+                "tags": [
+                    "First Tag",
+                    "Second Tag",
+                    "Third Tag"
+                ],
+                "parameters": [
+                    {
+                        "name": "testParam",
+                        "in": "query",
+                        "description": "Param parsing"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK Response"
+                    }
+                }
+            }
+        },
+        "/markdown": {
+            "post": {
+                "summary": "Test path with markdown",
+                "description": "Markdown string with `code` in it",
+                "responses": {
+                    "200": {
+                        "description": "`code only string`"
+                    },
+                    "404": {
+                        "description": "Not Found\n\nresponse with markdown break line"
+                    }
+                }
+            }
+        }
+    }
+}

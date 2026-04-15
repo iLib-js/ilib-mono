@@ -1,0 +1,24 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"#-#-#-#-#  messages.pot  #-#-#-#-#\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: loctool\n"
+"Project-Id-Version: 1\n"
+
+#: a/b/c.js:32
+msgid "Hello"
+msgstr "dd"
+
+# a plural string
+msgid "one string"
+msgid_plural "{$count} strings"
+
+# another string
+msgid "Good bye"
+
+# string with continuation
+msgid ""
+"Thank you "
+"too"

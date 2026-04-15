@@ -1,0 +1,36 @@
+{
+  "name": "Sample JSON Project",
+  "id": "sample-json",
+  "projectType": "custom",
+  "sourceLocale": "en-US",
+  "pseudoLocale": "zxx-XX",
+  "resourceDirs": {
+    "json": "i18n"
+  },
+  "excludes": [
+    ".*",
+    "xliffs"
+  ],
+  "settings": {
+    "xliffsDir": "translations",
+    "locales":[
+      "ko-KR",
+      "de-DE"
+    ],
+    "json": {
+      "schemas": [
+        "./schemas"
+      ],
+      "mappings": {
+        "**/sample.json": {
+          "schema": "sample-json-schema",
+          "method": "copy",
+          "template": "[dir]/[locale].json"
+        }
+      }
+    }
+  },
+  "plugins": [
+    "ilib-loctool-json"
+  ]
+}

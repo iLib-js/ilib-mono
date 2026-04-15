@@ -1,0 +1,62 @@
+{
+    "name": "ilib-loctool-openapi",
+    "version": "1.0.9",
+    "main": "./OpenAPIFileType.js",
+    "description": "A loctool plugin that knows how to localize openapi files",
+    "license": "Apache-2.0",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "strings",
+        "resources",
+        "locale",
+        "translation",
+        "webpack",
+        "loader",
+        "json"
+    ],
+    "author": {
+        "name": "Dmitriy Rassadkin",
+        "email": "drassadkin@box.com"
+    },
+    "contributors": [
+        {
+            "name": "Dmitriy Rassadkin",
+            "email": "drassadkin@box.com"
+        }
+    ],
+    "files": [
+        "README.md",
+        "LICENSE",
+        "OpenAPIFile.js",
+        "OpenAPIFileType.js",
+        "schema.json"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
+    },
+    "scripts": {
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "coverage": "pnpm test --coverage",
+        "test:watch": "node node_modules/jest/bin/jest.js --watch",
+        "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i"
+    },
+    "engines": {
+        "node": ">=16 <23"
+    },
+    "dependencies": {
+        "ilib": "^14.21.2",
+        "ilib-loctool-ghfm": "workspace:^",
+        "ilib-loctool-json": "workspace:^"
+    },
+    "devDependencies": {
+        "ilib-internal": "workspace:^",
+        "loctool": "workspace:^",
+        "jest": "^29.7.0"
+    }
+}

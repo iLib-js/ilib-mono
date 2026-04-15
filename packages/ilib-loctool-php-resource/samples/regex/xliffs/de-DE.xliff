@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/js/test.jsx" source-language="en-US" target-language="de-DE" product-name="sample-regex">
+    <body>
+      <trans-unit id="2" resname="r796936243" restype="string" datatype="javascript">
+        <source>Products</source>
+        <target>Produkte</target>
+      </trans-unit>
+      <trans-unit id="4" resname="r646147467" restype="string" datatype="javascript">
+        <source>Solutions</source>
+        <target>Löschungen</target>
+      </trans-unit>
+      <trans-unit id="5" resname="r771656885" restype="string" datatype="javascript">
+        <source>Documentation</source>
+        <target>Dokumentation</target>
+      </trans-unit>
+      <trans-unit id="6" resname="r253422909" restype="string" datatype="javascript">
+        <source>About Us</source>
+        <target>Über uns</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="src/smarty/test.tmpl" source-language="en-US" target-language="de-DE" product-name="sample-regex">
+    <body>
+      <trans-unit id="1" resname="nav_button_label_text" restype="string" datatype="php">
+        <source>Navigation</source>
+        <target>Navigation</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

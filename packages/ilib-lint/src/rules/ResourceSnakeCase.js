@@ -32,20 +32,21 @@ class ResourceSnakeCase extends ResourceRule {
     /**
      * Create a ResourceSnakeCase rule instance.
      * @param {object} options
-     * @param {object} [options.param]
-     * @param {string[]} [options.param.except] An array of strings to exclude from the rule.
+     * @param {string[]} [options.except] An array of strings to exclude from the rule.
      */
     constructor(options) {
         super(options);
 
         this.name = "resource-snake-case";
         this.description = "Ensure that when source strings contain only snake case and no whitespace, then the targets are the same";
-        this.link = "https://gihub.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-snake-case.md",
+        this.link = "https://gihub.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-snake-case.md";
         this.regexps = [
             "^\\s*[a-zA-Z0-9]*(_[a-zA-Z0-9]+)+\\s*$",
             "^\\s*[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*_\\s*$"
-        ]
-        this.exceptions = Array.isArray(options?.param?.except) ? options.param.except : [];
+        ];
+
+        const param = this.getParam() || {};
+        this.exceptions = Array.isArray(param?.except) ? param.except : [];
     }
 
     /**
@@ -76,9 +77,10 @@ class ResourceSnakeCase extends ResourceRule {
                 source,
                 description: "Do not translate the source string if it consists solely of snake cased strings and/or digits. Please update the target string so it matches the source string.",
                 rule: this,
-                locale: resource.sourceLocale,
+                locale: resource.getTargetLocale(),
                 pathName: file,
-                highlight: `<e0>${target}</e0>`
+                highlight: `<e0>${target}</e0>`,
+                lineNumber: resource.getLocation()?.line
             });
             result.fix = this.getFix(resource, source, index, category);
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/strings.json" source-language="en-US" target-language="ko-KR" product-name="sample-slack-json">
+    <body>
+      <trans-unit id="2" resname="string1" restype="string" datatype="mrkdwn">
+        <source>Hello</source>
+        <target>안녕</target>
+      </trans-unit>
+      <trans-unit id="3" resname="string2" restype="string" datatype="mrkdwn">
+        <source>Thank &lt;c0>you&lt;/c0></source>
+        <target>&lt;c0>감사합니다&lt;/c0></target>
+      </trans-unit>
+      <trans-unit id="5" resname="string4" restype="string" datatype="mrkdwn">
+        <source>This is a &lt;c0>test&lt;/c0> with a slack &lt;c1>link&lt;/c1> in it and a &lt;@user|User&lt;/c2> reference.</source>
+        <target>이것은 Slack &lt;c1>링크와&lt;/c1> &lt;c2>사용자&lt;/c2> 참조가 포함된 &lt;c0>테스트&lt;/c0>입니다.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

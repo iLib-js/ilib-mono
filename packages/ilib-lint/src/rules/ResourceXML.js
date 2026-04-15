@@ -75,8 +75,9 @@ class ResourceXML extends ResourceRule {
      * @param {Node} targetAst the root of the AST of the target string
      * @param {Resource} resource the resource instance where the source
      * and target strings came from
+     * @param {string} file the file path being processed
      */
-    matchElements(sourceAst, targetAst, resource) {
+    matchElements(sourceAst, targetAst, resource, file) {
         // first traverse the source tree looking for elements to count
         let sourceElements = {}, targetElements = {};
         let problems = [];
@@ -95,7 +96,7 @@ class ResourceXML extends ResourceRule {
                         description: `The number of XML <${element}> elements in the target (${targetElements[element] ?? 0}) does not match the number in the source (${sourceElements[element]}).`,
                         id: resource.getKey(),
                         highlight: `Target: ${resource.getTarget()}<e0/>`,
-                        pathName: resource.getPath(),
+                        pathName: file,
                         source: resource.getSource(),
                         locale: resource.getTargetLocale()
                     };
@@ -114,7 +115,7 @@ class ResourceXML extends ResourceRule {
                         description: `The XML element <${element}> in the target does not appear in the source.`,
                         id: resource.getKey(),
                         highlight: `Target: ${highlight}`,
-                        pathName: resource.getPath(),
+                        pathName: file,
                         source: resource.getSource(),
                         locale: resource.getTargetLocale()
                     };
@@ -154,7 +155,7 @@ class ResourceXML extends ResourceRule {
     /**
      * @override
      */
-    matchString({source, target, resource}) {
+    matchString({source, target, resource, file}) {
         if (!target) return; // can't check "nothing" !
         let srcObj, tgtObj;
         let problems = [];
@@ -199,7 +200,7 @@ class ResourceXML extends ResourceRule {
                     description: `Empty XML elements <> and </> are not allowed in the target.`,
                     id: resource.getKey(),
                     highlight: `Target: ${highlight}`,
-                    pathName: resource.getPath(),
+                    pathName: file,
                     source: resource.getSource(),
                     locale: resource.getTargetLocale()
                 };
@@ -213,12 +214,12 @@ class ResourceXML extends ResourceRule {
             });
 
             // And finally match the xml elements/tags from the source to the target
-            problems = problems.concat(this.matchElements(srcObj, tgtObj, resource));
+            problems = problems.concat(this.matchElements(srcObj, tgtObj, resource, file));
         } catch (e) {
             const lines = e.message.split(/\n/g);
             // find the column number in the 3rd line of the exception message and subtract off
             // the length of the prefix text we added in wrappedTarget
-            const column = parseInt(lines[2].substring(8)) - prefix.length;
+            const column = lines.length >= 3 ? parseInt(lines[2].substring(8)) - prefix.length : 0;
             // create the highlight, but make sure to escape any less than characters so that
             // it does not conflict with the highlight
             const highlight = column >= target.length ?
@@ -230,7 +231,7 @@ class ResourceXML extends ResourceRule {
                 description: `XML in translation is not well-formed. Error: ${lines[0]}`,
                 id: resource.getKey(),
                 highlight: `Target: ${highlight}`,
-                pathName: resource.getPath(),
+                pathName: file,
                 source: resource.getSource(),
                 locale: resource.getTargetLocale()
             };

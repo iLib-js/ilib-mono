@@ -26,7 +26,7 @@ var itc = require("ilib-tools-common");
 var utils = require("./utils.js");
 var TranslationSet = require("./TranslationSet.js");
 var iff = require("./IntermediateFileFactory.js");
-
+var XliffFactory = require("./XliffFactory.js");
 var getIntermediateFile = iff.getIntermediateFile;
 var getIntermediateFileExtensions = iff.getIntermediateFileExtensions;
 var logger = log4js.getLogger("loctool.lib.LocalRepository");
@@ -126,12 +126,25 @@ LocalRepository.prototype.init = function(cb) {
     var numIFsRead = 0;
     var fileFormat = this.intermediateFormat;
     var fileFilter = fileFormat === "xliff" ? xliffFileFilter : poFileFilter;
+    var xliffStyle = this.project ? this.project.settings.xliffStyle : XliffFactory.defaultStyle;
+    var projectMetadata = this.project ? this.project.settings.metadata : undefined;
 
     if (this.translationsDir && this.translationsDir.length > 0) {
         var files = [];
         var miniMatchExpressions = getIntermediateFileExtensions().map(function(ext) {
             return "**/*." + ext;
         });
+
+        // Normalize and deduplicate translationsDir
+        var normalizedPaths = [];
+        for (var i = 0; i < this.translationsDir.length; i++) {
+            var resolvedPath = path.resolve(this.translationsDir[i]);
+            if (normalizedPaths.indexOf(resolvedPath) === -1) {
+                normalizedPaths.push(resolvedPath);
+            }
+        }
+        this.translationsDir = normalizedPaths;
+
         this.translationsDir.forEach(function(dir) {
             if (!fs.existsSync(dir)) {
                logger.warn("Translation dir " + dir + " does not exist.");
@@ -146,7 +159,9 @@ LocalRepository.prototype.init = function(cb) {
                 var intermediateFile = getIntermediateFile({
                     sourceLocale: this.sourceLocale,
                     path: file,
-                    projectName: this.project && this.project.getProjectId()
+                    projectName: this.project && this.project.getProjectId(),
+                    style: xliffStyle,
+                    metadata: projectMetadata
                 });
                 logger.info("Reading in translations from the translations dir: " + file);
                 this.ts.addSet(intermediateFile.read());

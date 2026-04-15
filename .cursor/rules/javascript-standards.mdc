@@ -26,6 +26,15 @@
 - Use descriptive English test names that explain the expected behavior
 - Wherever possible, import real classes from other packages inside of this monorepo instead of implementing mock objects
 
+## E2E Testing
+- Write E2E tests where applicable
+- Use Jest as the E2E testing framework for CLI tools
+- Extract common E2E test functionality (like running a CLI tool, asserting on output, cleanup after test) to `e2e-test` package
+- Place test files in the `test-e2e/` directory
+- Name test files with `.e2e.test.js` suffix
+- Use descriptive English test names that explain the expected behavior
+- Wherever possible, import real classes from other packages inside of this monorepo instead of implementing mock objects
+
 ## Documentation
 - Document all public APIs with JSDoc/TSDoc comments
 - Include parameter types, return types, and examples

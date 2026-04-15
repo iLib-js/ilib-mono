@@ -31,6 +31,7 @@ GNU printf parameters have the following syntax:
 - `%p` - pointer address
 - `%n` - number of characters written
 - `%%` - literal percent sign
+- `%@` - format object that responds to "description" method (only for Objective-C and Swift on Apple platforms)
 
 ## Examples
 

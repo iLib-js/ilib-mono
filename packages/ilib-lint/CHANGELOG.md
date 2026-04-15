@@ -1,5 +1,301 @@
 # ilib-lint
 
+## 2.21.2
+
+### Patch Changes
+
+- 8b26137: Update the `ilib-xliff-webos` dependency to the latest version.
+- Updated dependencies [8b26137]
+  - ilib-tools-common@1.21.2
+
+## 2.21.1
+
+### Patch Changes
+
+- 3a0702e: Update the XliffParser and XliffSerializer processes to correctly pass the sourceLocale value. Otherwise, the webOSXliff is passed as en-US, which causes an issue.
+
+## 2.21.0
+
+### Minor Changes
+
+- 54b7c40: Disabled checking of exclamation point in Japanese
+
+  - it is not used very much in Japanese in translations of
+    English sentences that end in an exclamation point, so
+    we don't need to check it
+
+### Patch Changes
+
+- 2155187: - Fixed a bug where the parameter to the resource-state-checker
+  rule was not being used properly, making it impossible to check
+  for any state other than the default "translated".
+  - Fixed tests and the rule manager to pass the parameters from
+    the config file properly so that all rules can access parameters
+    of any type, including string.
+- Updated dependencies [7658dff]
+- Updated dependencies [92e0b3a]
+  - ilib-lint-common@3.7.0
+  - ilib-tools-common@1.20.0
+
+## 2.20.0
+
+### Minor Changes
+
+- 3ac309b: - Update to automatically extract the version and style from input xliff files to generate an autofix modified file according to the input file format.
+  - Add an `XliffFactory` to properly create instances in XLIFF format.
+
+### Patch Changes
+
+- d0b847a: Now supports use of apostrophes for contractions and ellisions
+  in those languages that use them. The Quote Style
+  Checker rule now does not give false positive results when the
+  apostrophes are used in contractions or ellisions. - Contractions: English, French, Portuguese, Catalan, Italian - Ellisions: Irish, Samoan, Hawaiian
+- Updated dependencies [3ac309b]
+  - ilib-tools-common@1.19.1
+
+## 2.19.1
+
+### Patch Changes
+
+- 2726c86: - the sentence-ending punctuation rule now properly skips URLs and email addresses when
+  searching for the beginning of a sentence
+- f9ddf84: Fixed error handling during serialization and transformers - linter will now continue processing other files.
+- 93b6535: - Changed the message from the sentence-ending punctuation rule
+  so that it says 'no punctuation' instead of the empty string
+  "" to indicate that there should not be punctuation there. This
+  is less confusing to users.
+
+## 2.19.0
+
+### Minor Changes
+
+- 0270710: - Add new all capitals rule
+  - If the source string contains 2 or more alphabetic letter
+    characters and all alphabetic letter characters are upper-case,
+    and the target language uses a writing script that also
+    supports casing, then the target string should also be in
+    all upper-case to echo the style of the source.
+  - all characters that are not alphabetic letters are unmodified
+  - all strings written in scripts that do not support casing
+    are unmodified
+  - auto-fix available to automatically replace the target text
+    with the upper-cased version of the string. The text is
+    upper-cased locale-sensitively using ilib-casemapper.
+- 17d0665: - ResourceSentenceEnding rule enhancements to support various exception
+  - Added minimumLength configuration option (default: 10) to skip checking short strings/abbreviations
+  - Added automatic skipping of strings with no spaces
+  - Added exceptions array per locale to skip specific source strings from checking
+  - Enhanced punctuation detection for quoted content to handle punctuation after closing quotes
+  - Updated rule documentation with new configuration options and examples
+
+### Patch Changes
+
+- d6cb734: - Fixed two bugs in the sentence-ending punctuation rule
+  - if the target has a subordinate clause that is iterrogatory, then according to Spanish grammar rules, the inverted punctuation should come mid-sentence right before the clause. Now the rule checks for the inverted punctuation in a better way to handle this.
+  - colons in the middle of the string should not be considered sentence-ending punctuation when looking backwards for the inverted punctuation in Spanish
+- c43b5cb: - Fixed bug: now get and use the right locales
+  - command-line overrides the config file which overrides the default
+  - before, it only ever used the defaults!
+- Updated dependencies [0270710]
+  - ilib-scriptinfo@1.0.0
+
+## 2.18.2
+
+### Patch Changes
+
+- bd9293f: - Fixed a bug in the quote style rule which would cause infinite fix loops
+  - Quote detection in the source was not working properly for quote-optional
+    languages, such as Italian or Swedish, causing it to apply the same fix
+    over and over again
+- 4938290: - Fixed a bug where whitespace at the end of the target string would cause problems with the
+  sentence-ending punctuation rule
+  - Sentence-ending punctuation would not be found if there was one or more whitespace chars
+    at the end of the target string. (Source string was okay, though.)
+  - Rule now trims the whitespace from the target string before checking it.
+
+## 2.18.1
+
+### Patch Changes
+
+- cd9f188: Fixed ErrorFilterTransformer clearing the dirty flag when all issues have been autofixed
+- Updated dependencies [ff57dc9]
+  - ilib-ctype@1.3.0
+
+## 2.18.0
+
+### Minor Changes
+
+- f1cebb6: Added new rule to detect XLIFF files with UTF-8 BOM
+- 2ff58c2: - Added new rules to validate encoding of the underlying text file - file-encoding rule - check that the file is encoded with the right character set - xliff-header-encoding - check that the xliff header mentions a valid encoding
+
+### Patch Changes
+
+- a164407: Introduced a hardcoded limit on the number of autofixing iterations that can be performed on a single IntermediateRepresentation. This prevents infinite loops in case of conflicting (or otherwise unsafe) Rules.
+- 8aaa6fd: - Various result and formatter fixes to give better formatted output
+  - make sure all rules are setting the locale field of a Result properly
+  - make sure all rules are setting the lineNumber field of a Result properly
+  - make sure all rules are getting the pathName from the intermediate representation instead
+    of the resource. The intermediate representation contains the name of the xliff file that
+    the resource was read from, whereas the resource instance contains
+    the path to the original source file where the string was extracted
+  - does not divide by zero any more causing incomplete stats table at
+    the end of the formatted result output
+- Updated dependencies [a164407]
+  - ilib-lint-common@3.6.0
+
+## 2.17.1
+
+### Patch Changes
+
+- ea31e0d: Fixed the issue where an incorrect xliff instance was created because the version was not being passed in the XliffSerializer.
+- 114eae0: - fix incorrect fixes in the sentence-ending punctuation rule that extended past the end of the string
+  - add differentiation between question mark, exclamation point, colon vs. period and ellipsis.
+    - the first group gets a narrow non-breaking space in front of it, whereas the second group does not
+  - make the French rule only apply to Euro locales
+    - Canadian French for example does not follow the Euro French spacing rules
+  - harmonize the description field to be similar for all cases
+- 9212dff: - Add defensive code to the serializers so they don't
+  crash if they are given bogus input
+- Updated dependencies [9212dff]
+  - ilib-lint-common@3.5.0
+
+## 2.17.0
+
+### Minor Changes
+
+- 445db19: - Add a rule that checks for single quotes used as apostrophes in the middle of words
+  - Fix converts them to actual Unicode apostrophes
+  - Don't check for single quotes at the beginning or ending of words because we can't
+    really tell if they are used as apostrophes or as actual quote characters
+- 2a359b6: - Added the ability to specify exceptions to the
+  resource-icu-plural-translated rule. - It does not produce warnings for those exception phrases.
+  Now you can list the exceptions by locale in the parameters
+  to the rule:
+  `    "rulesets": {
+  "myruleset": {
+    "resource-icu-plural-translated": {
+      "exceptions": {
+        "it-IT": ["File", "Files"]
+      }
+    }
+  }
+}` - Exceptions are entire phrases, not individual words. The idea
+  of the rule is to catch entire plural categories that the
+  translators missed, and the idea of the exceptions to avoid
+  those few false positives that pop up infrequently.
+- 21b1009: - Fix resource-sentence-ending rule to reduce false positives
+  - If the source ends in non-sentence-ending punctuation or
+    no punctuation at all, then do not flag and remove the
+    non-sentence-ending punctuation from the target, even if
+    it is different
+  - Added support for Bengali sentence-ending punctuation
+    - A regular western period was incorrectly used instead of
+      the Bengali period (danda)
+  - Fix support for French sentence-ending punctuation
+    - In French, you put a non-breaking space between the
+      last text and the sentence-ending punctuation
+    - This change will ensure that the non-breaking space is
+      there. If there is a breaking space, it will be converted to
+      a non-breaking space. If there is no space at all, a
+      non-breaking space will be added. If there is already a
+      non-breaking space, it will not touch it. It will only
+      ensure that the sentence-ending punctuation is correct
+
+### Patch Changes
+
+- e6b2896: - Fix quote handling for Swedish and Italian
+  - Quotes are optional in those languages for many places
+    where were would use quotes in English
+  - The rule now checks for the presence of quotes in the
+    source and target, and if the quotes are not present
+    in the target, no Result is generated. (For other locales
+    a result is generated for this case.) If the quotes are
+    present in the target, they must be the native quotes.
+    They cannot be the ascii ones.
+- 2959c54: - Fixed resource-kebab-case rule so that there are no false
+  positives for simple hyphenated words
+  - now does not complain for simple English words that are
+    hyphenated, such as "co-owner" or "share-only"
+  - new rule is that there has to be at least 2 dashes in
+    the text, and the text can only be letters or numbers
+    in order to be considered kebab case
+- ba699b7: - Fixed a bug where the unique id of resources was not
+  set into the Result object for the
+  resource-sentence-ending rule
+
+## 2.16.2
+
+### Patch Changes
+
+- 154b879: - handle sentence ending rule much better
+  - fixed the handling of its customization in the config
+    file so that it can have customized sentence ending
+    punctuation per locale
+  - fix highlight field in the Result instances produced
+  - handles quoted strings better
+  - fix a hang caused by treating non-sentence-ending
+    punctuation in the source as a period which got the
+    linter into a loop in auto-fix mode. It would add a
+    period to the translation over and over again which
+    still did not match the non-period in the source
+    string, causing it to add another period.
+
+## 2.16.1
+
+### Patch Changes
+
+- efebec7: - fixed null pointer exception in the ascii formatter if
+  the Result.fix is set to null instead of undefined
+
+## 2.16.0
+
+### Minor Changes
+
+- 89dee27: - Added ResourceSentenceEnding rule with auto-fix support
+  - Matches the sentence ending punctuation in the English source string and
+    the locale-sensitive sentence-ending punctuation in the target string.
+  - Only checks the end of the string, not the middle.
+  - Ignores any quotation marks or whitespace at the end of the string
+  - Added support for both Unicode ellipsis (…) and three dots (...) in English
+  - Added configuration parameter support for custom punctuation mappings per locale
+
+### Patch Changes
+
+- 44ada06: - Fixed a bug where the exceptions for some rules were not taking effect
+  - resource-kebab-case, resource-camel-case, and resource-snake-case
+  - Syntax as noted in their documents for exceptions did not work
+- Updated dependencies [2f63633]
+  - ilib-tools-common@1.18.0
+
+## 2.15.0
+
+### Minor Changes
+
+- d4dfcc3: - Add resource-return-char rule to check for return character count mismatches
+  - Ensure source and target strings have matching counts of CR, LF, and CRLF characters.
+  - Added new ruleset called "windows" which contains this rule
+- e8a6eb7: - Added ability to match Swift and ObjC style printf params
+  - The GNU printf rule now supports %@ params
+  - Fixed some bugs in the GNU printf param rule
+    - was not able to detect multiple missing params
+- 6f36165: - Add ResourceGNUPrintfMatch rule for GNU printf parameter validation
+  - Implement new linting rule that validates GNU printf-style parameters between source and target strings
+  - Support full GNU printf syntax including positional parameters (%1$s, %2$d), width/precision from arguments, and GNU extensions
+  - Handle ResourceString, ResourceArray, and ResourcePlural resources with proper category matching
+  - Register rule in new "gnu" ruleset for programming-language-agnostic GNU printf validation
+- c0807be: - Add Tap I18n named parameter support
+  - Add resource-tap-named-params rule for Tap I18n parameter syntax (**param**)
+  - Support parameter names with underscores, dots for property access, and numbers
+  - Add comprehensive test coverage including parameter reordering scenarios
+  - Add documentation for Tap I18n parameter validation
+  - Include new "tap" ruleset in built-in rulesets
+
+### Patch Changes
+
+- da4e63b: - Fixed the regex for parsing URLs in the resource-url-match rule
+  - does not accept a dot as the last character in the string anymore
+  - now supports URL queries, hashes, and URL-encoded characters
+
 ## 2.14.0
 
 ### Minor Changes

@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceString } from 'ilib-tools-common';
+import { ResourceString, Location } from 'ilib-tools-common';
 import { Result } from 'ilib-lint-common';
 import ResourceSourceICUPluralParams from '../src/rules/ResourceSourceICUPluralParams.js';
 
 describe("that parameters in the other category also exist in the one category", () => {
     test("when the one category is missing the replacement param", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rule = new ResourceSourceICUPluralParams();
         expect(rule).toBeTruthy();
@@ -31,7 +31,12 @@ describe("that parameters in the other category also exist in the one category",
             key: "plural.test",
             sourceLocale: "en-US",
             source: '{count, plural, one {There is one singular.} other {There are {count} plurals.}}',
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            location: new Location({
+                line: 23,
+                offset: 0,
+                char: 0
+            })
         });
         const result = rule.matchString({
             source: resource.getSource(),
@@ -45,9 +50,11 @@ describe("that parameters in the other category also exist in the one category",
             source: '{count, plural, one {There is one singular.} other {There are {count} plurals.}}',
             highlight: '<e0>{count, plural, one {There is one singular.} other {There are {count} plurals.}}</e0>',
             rule,
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            lineNumber: 23
         });
         expect(result).toStrictEqual(expected);
+        expect(result.lineNumber).toBe(23);
     });
 
     test("when the one category is missing the hash replacement param", () => {

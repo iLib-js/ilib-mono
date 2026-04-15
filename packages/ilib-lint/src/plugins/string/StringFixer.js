@@ -44,14 +44,20 @@ export class StringFixer extends Fixer {
             return queue;
         }, /** @type {StringFix[]} */ ([]));
 
+        /** @type {string} */
+        const content = ir.ir;
+
+        const modifiedContent = StringFixCommand.applyCommands(
+            content,
+            enqueued.flatMap((fix) => fix.commands)
+        );
+
+        ir.ir = modifiedContent;
+
+        // mark the fixes as applied only after the content has been modified successfully
         enqueued.forEach((fix) => {
             fix.applied = true;
         });
-
-        ir.ir = StringFixCommand.applyCommands(
-            ir.ir,
-            enqueued.flatMap((fix) => fix.commands)
-        );
     }
 }
 

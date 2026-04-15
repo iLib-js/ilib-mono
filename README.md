@@ -49,7 +49,7 @@ import { JSUtils, Utils, Path } from 'ilib-common';
 
 
 ## Setup
-For detailed setup instructions to get the project running on local machine, please refer to the [SETUP.md](./SETUP.md) file.
+For detailed setup instructions to get the project running on local machine, please refer to the [SETUP.md](./docs/SETUP.md) file.
 
 
 ## Contributing

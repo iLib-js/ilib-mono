@@ -1,5 +1,160 @@
 # loctool
 
+## 2.32.3
+
+### Patch Changes
+
+- 07df11c: Update the dependency module `ilib-localematcher` to the latest version to ensure
+  translation data is generated with the correct locale.
+
+## 2.32.2
+
+### Patch Changes
+
+- a1be468: Fix a problem with getLocaleFromPath
+
+  - regex was not anchored to the beginning of the string, so when
+    you have a template like "[language]/[dir]/[filename]", it would
+    match against "guides/ai-zone/index.mdx" where the language
+    would end up being "des". (Last 3 letters of "guides".)
+  - Now with it anchored properly, it returns "" for the language
+    because "guides" does not match an ISO language code.
+
+- Updated dependencies [a1be468]
+  - ilib-tools-common@1.21.3
+
+## 2.32.1
+
+### Patch Changes
+
+- d4b368e: Rename --exclude to --prune in select command
+  - To avoid conflict with the localize command’s --exclude option.
+- 125cb54: Refactor XliffSelect for improved deduplication and cleanup
+  - Expand `tuHash()` to include additional fields: `datatype`, `flavor`, `context`, and `source`
+  - Remove redundant logic for handling `settings.exclude` with multiple input files
+- bc09024: Resolve metadata merging issues and update XLIFF header
+  - Improved metadata merging logic to prevent data loss during the merge process
+  - Adjusted XLIFF header structure for webOS style
+- Updated dependencies [74d3761]
+- Updated dependencies [08d9461]
+- Updated dependencies [28ab248]
+  - ilib-tools-common@1.21.1
+  - ilib-locale@1.4.0
+
+## 2.32.0
+
+### Minor Changes
+
+- fc534f1: - Split utils formatPath into formatPath and formatLocaleParams
+  - this way we can format template strings with locale substitutions
+    in it without treating the whole string as a path
+  - plugins can now use the new function
+  - Switched to use the more modern ilib-locale package instead of
+    the older Locale class in ilib
+  - Fixed a problem in the detection of whether or not a locale is the
+    same as source locale. Variants were completely ignored, meaning that
+    the pseudo locale "en-x-pseudo" (with a BCP-47 extension) was
+    considered to be the same as the source locale "en". This would cause
+    the loctool to never produce any output for the locale "en-x-pseudo".
+    - Now if the locale is a known pseudo locale or if the variant
+      contains the word "pseudo" then it will be considered different
+      than the source locale
+    - Otherwise, variants are still ignored.
+- d9e4f2d: - Add `--exclude` flag to select command to exclude translation units match specific criteria
+  - Add the ability to exclude resources with field values using the selection criteria syntax `<fieldname>!=<regexp>` whereas before you could only include resources with `<fieldname>=<regexp>`
+
+### Patch Changes
+
+- Updated dependencies [ea53ec0]
+- Updated dependencies [1f44881]
+  - ilib-po@1.1.4
+  - ilib-tools-common@1.21.0
+
+## 2.31.8
+
+### Patch Changes
+
+- 831c004: Fixed a bug where the loctool would exit immediately
+  and not allow a plugin to run if that plugin had an
+  async init method. Now it gives the async code a
+  chance to run before exiting.
+- Updated dependencies [ca616ec]
+  - ilib-tools-common@1.20.1
+
+## 2.31.7
+
+### Patch Changes
+
+- 60f27e7: Fix a bug where resources were not added to the translation set when `nopseudo` was set to false.
+
+## 2.31.6
+
+### Patch Changes
+
+- 16cffab: Add condition to add all DB resources to translations only when localizeOnly is false or pseudo is enabled
+
+## 2.31.5
+
+### Patch Changes
+
+- 3377289: - Add a warning if the mappings for a file type use a
+  file name extension that does not exist in that file
+  type's list of supported extensions. Previously, users would be
+  confused that they put a mapping in, but none of the files they
+  mapped would get read by the loctool and there would be no
+  explanation of why.
+
+## 2.31.4
+
+### Patch Changes
+
+- 83b5732: New resources are no longer saved in memory when localizeOnly is true because the loctool does not produce any extracted or any new strings files in this mode
+
+## 2.31.3
+
+### Patch Changes
+
+- 7af420b: Clean up the xliff files for the loctool test by separating the test files for the XLIFF 2.0 format and the webOS XLIFF format, and deleting unnecessary files.
+- 6978961: Normalize and deduplicate translationsDir paths
+
+## 2.31.2
+
+### Patch Changes
+
+- d3865cf: Assign structured unit IDs with group index during xliff serialization for webOS
+
+## 2.31.1
+
+### Patch Changes
+
+- edc242f: Fixed a case where XliffFactory was not being used.
+- Updated dependencies [32130cf]
+  - ilib-tools-common@1.19.0
+
+## 2.31.0
+
+### Minor Changes
+
+- 90814bf: - Add a `metadata` property to the `Resource` class to store any metadata that may exist on a per-Resource basis. It is up to parsers to recognize and parse the metadata appropriately and up to the serializers to serialize it properly again.
+  - Update to pass `style` property in `GenerateMode` to work with correct XliffFile class.
+
+### Patch Changes
+
+- Updated dependencies [2f63633]
+  - ilib-tools-common@1.18.0
+
+## 2.30.0
+
+### Minor Changes
+
+- da9e913: \* Add the `XliffFactory` to support various XLIFF formats.
+  It creates an instance of either the `Xliff` class or the new `webOSXliff` class, depending on whether it’s targeting the webOS platform or another use case. Additional format support can be added in the same way if required.
+  - Update loctool options:
+    - Add the new `--metadata` option.
+      It accepts key-value pairs in the form `aaa=bbb` (e.g. --metadata device=Monitor), and is currently used by webOSXliff.
+    - Remove the `custom` option from `--xliffStyle`. Instead, the option `webOS` will be used.
+      Previously, the content of the `custom` option was already parsed as xliff for webOS.
+
 ## 2.29.3
 
 ### Patch Changes

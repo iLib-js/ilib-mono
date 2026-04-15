@@ -1,0 +1,14 @@
+{
+    "name": "ilib-loctool-mdx Sample",
+    "private": true,
+    "version": "0.0.0",
+    "description": "Sample localization project",
+    "devDependencies": {
+        "ilib-loctool-mdx": "workspace:^",
+        "loctool": "workspace:^"
+    },
+    "scripts": {
+        "clean": "rm -rf *.xliff locales",
+        "run:sample": "pnpm clean ; loctool localize ."
+    }
+}

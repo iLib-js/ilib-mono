@@ -1,7 +1,7 @@
 /*
  * XliffMerge.js - Merge multiple xliff files into one
  *
- * Copyright © 2020, JEDLSoft
+ * Copyright © 2020, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 var fs = require('fs');
 var log4js = require("log4js");
-const Xliff = require("./Xliff");
+var XliffFactory = require("./XliffFactory.js");
 var logger = log4js.getLogger("loctool.lib.XliffMerge");
 
 /**
@@ -32,7 +32,7 @@ var logger = log4js.getLogger("loctool.lib.XliffMerge");
 var XliffMerge = function XliffMerge(settings) {
     if (!settings) return;
 
-    var target = new Xliff({
+    var target = XliffFactory({
         path: settings.outfile,
         version: settings.xliffVersion,
         style: settings.xliffStyle
@@ -42,7 +42,7 @@ var XliffMerge = function XliffMerge(settings) {
         if (fs.existsSync(file)) {
             logger.info("Merging " + file + " ...");
             var data = fs.readFileSync(file, "utf-8");
-            var xliff = new Xliff({
+            var xliff = XliffFactory({
                 version: settings.xliffVersion,
                 style: settings.xliffStyle
             });
@@ -68,6 +68,5 @@ XliffMerge.write = function (xliff) {
     fs.writeFileSync(xliff.getPath(), xliff.serialize(), "utf-8");
     return true;
 }
-
 
 module.exports = XliffMerge;

@@ -1,6 +1,6 @@
 {
     "name": "ilib-lint",
-    "version": "2.14.0",
+    "version": "2.21.2",
     "type": "module",
     "main": "./src/index.js",
     "module": "./src/index.js",
@@ -43,16 +43,18 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
-        "node": ">=14.0.0"
+        "node": ">=12 <23"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
-        "test": "pnpm test:jest",
-        "test:jest": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "coverage": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+        "test": "pnpm test:cli",
+        "test:cli": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js",
         "test:watch": "pnpm test:jest --watch",
+        "test:e2e": "LANG=en_US.UTF8 node --trace-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --config test-e2e/jest.config.cjs",
+        "test:all": "npm-run-all test:cli test:e2e",
         "debug": "LANG=en_US.UTF8 node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i",
         "lint": "node src/index.js",
         "clean": "git clean -f -d src test",
@@ -63,29 +65,40 @@
     "devDependencies": {
         "@tsconfig/node14": "^14.1.2",
         "@types/jest": "^29.5.14",
+        "@types/micromatch": "^4.0.9",
         "@types/node": "^14.0.0",
         "dedent": "^1.5.3",
         "docdash": "^2.0.2",
         "i18nlint-plugin-test-old": "file:test/i18nlint-plugin-test-old",
+        "ilib-es6": "^14.21.0",
+        "ilib-internal": "workspace:^",
         "ilib-lint-plugin-obsolete": "file:test/ilib-lint-plugin-obsolete",
         "ilib-lint-plugin-test": "file:test/ilib-lint-plugin-test",
         "jest": "^29.7.0",
         "jsdoc": "^4.0.3",
         "jsdoc-to-markdown": "^8.0.3",
-        "typescript": "^5.5.4"
+        "typescript": "^5.9.2",
+        "npm-run-all": "^4.1.5",
+        "ilib-lint-webos": "^1.3.0"
     },
     "dependencies": {
         "@formatjs/intl": "^2.10.4",
+        "ilib-casemapper": "workspace:^",
         "ilib-common": "workspace:^",
+        "ilib-ctype": "workspace:^",
         "ilib-lint-common": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-localeinfo": "^1.1.0",
+        "ilib-localematcher": "^1.3.2",
+        "ilib-scriptinfo": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "intl-messageformat": "^10.5",
         "json5": "^2.2.3",
         "log4js": "^6.9.1",
         "micromatch": "^4.0.7",
         "options-parser": "^0.4.0",
-        "xml-js": "^1.6.11"
+        "xml-js": "^1.6.11",
+        "ilib-xliff": "workspace:^",
+        "ilib-xliff-webos": "^1.0.11"
     }
 }

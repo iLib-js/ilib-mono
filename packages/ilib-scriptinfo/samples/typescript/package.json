@@ -1,0 +1,21 @@
+{
+  "name": "ilib-scriptinfo-typescript-sample",
+  "private": true,
+  "version": "0.0.0",
+  "description": "TypeScript sample app demonstrating ilib-scriptinfo usage with full type safety",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "run:sample": "tsx index.ts"
+  },
+  "dependencies": {
+    "ilib-scriptinfo": "workspace:^"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

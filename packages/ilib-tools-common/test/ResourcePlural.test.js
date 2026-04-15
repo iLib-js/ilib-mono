@@ -1,7 +1,7 @@
 /*
  * ResourcePlural.test.js - test the resource plural object.
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -277,6 +277,86 @@ describe("testResourcePlural", () => {
         expect(rp.getTargetPlural("many")).toBe("Dies ist der viele Fall");
     });
 
+    test("ResourcePluralGetMetadata", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            },
+            metadata:  {
+                "test": "test-abcd"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getMetadata()).toStrictEqual({"test": "test-abcd"});
+    });
+
+    test("ResourcePluralGetMetadata2", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getMetadata()).toBeFalsy();
+    });
+
+    test("ResourcePluralSetMetadata", function() {
+        expect.assertions(2);
+
+        var rp = new ResourcePlural({
+            key: "foo",
+            pathName: "a/b/c.txt",
+            sourceLocale: "en-US",
+            sourceStrings: {
+                "one": "This is singular",
+                "two": "This is double",
+                "few": "This is the few case",
+                "many": "This is the many case"
+            },
+            targetLocale: "de-DE",
+            targetStrings: {
+                "one": "Dies ist einzigartig",
+                "two": "Dies ist doppelt",
+                "few": "Dies ist der wenige Fall",
+                "many": "Dies ist der viele Fall"
+            },
+            metadata:{}
+        });
+        expect(rp).toBeTruthy();
+        rp.setMetadata({"test": "test-xyz"});
+        expect(rp.getMetadata()).toStrictEqual({"test": "test-xyz"});
+    });
+
     test("ResourcePluralGetNonExistent", () => {
         expect.assertions(3);
 
@@ -339,6 +419,78 @@ describe("testResourcePlural", () => {
         });
         expect(rp).toBeTruthy();
         expect(!rp.getContext()).toBeTruthy();
+    });
+
+    test("ResourcePluralAutoKey", () => {
+        expect.assertions(2);
+
+        const rp = new ResourcePlural({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            autoKey: true,
+            source: {
+                "one": "This is singular",
+                "other": "This is plural"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourcePluralNotAutoKey", () => {
+        expect.assertions(2);
+
+        const rp = new ResourcePlural({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            autoKey: false,
+            source: {
+                "one": "This is singular",
+                "other": "This is plural"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(!rp.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourcePluralNotAutoKeyDefault", () => {
+        expect.assertions(2);
+
+        const rp = new ResourcePlural({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            source: {
+                "one": "This is singular",
+                "other": "This is plural"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(!rp.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourcePluralAutoKeyWithTarget", () => {
+        expect.assertions(2);
+
+        const rp = new ResourcePlural({
+            key: "foo",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            pathName: "a/b/c.txt",
+            autoKey: true,
+            source: {
+                "one": "This is singular",
+                "other": "This is plural"
+            },
+            target: {
+                "one": "Dies ist einzigartig",
+                "other": "Das ist Plural"
+            }
+        });
+        expect(rp).toBeTruthy();
+        expect(rp.getAutoKey()).toBe(true);
     });
 
     test("ResourcePluralGetSourcePlurals", () => {

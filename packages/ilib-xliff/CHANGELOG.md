@@ -1,5 +1,11 @@
 # ilib-xliff
 
+## 1.4.1
+
+### Patch Changes
+
+- 4102b09: Update to return `undefined` when the target element does not exist in xliff 2.0 format.
+
 ## 1.4.0
 
 ### Minor Changes

@@ -1,0 +1,112 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples salesforce should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="force-app/all/labels/MyLabels.labels-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="6" resname="Show_Sender_in_Recipient_List" restype="string" datatype="xml">
+        <source>Show Sender in Recipient List</source>
+        <note>Whether or not the sender should be shown in the recipient list of the email.</note>
+      </trans-unit>
+      <trans-unit id="13" resname="Test_of_emergency_warning_system" restype="string" datatype="xml">
+        <source>Test of the emergency warning system.</source>
+        <note>Had this been a real test, you would have been instructed to calmly leave the building.</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/application/MyApp.app-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="1" resname="MyApp" restype="string" datatype="xml">
+        <source>My Application</source>
+        <note>The best way to do X on the Internet!</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/customMetadata/MyApp_Setting.Default_Configuration.md-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="12" resname="MyApp_Setting" restype="string" datatype="xml">
+        <source>Default Configuration</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/objects/Foo__c/Foo__c.object-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="11" resname="Foo__c" restype="string" datatype="xml" x-context="CustomObject/nameField/label/_text">
+        <source>Lead Convert Queue Name</source>
+      </trans-unit>
+      <trans-unit id="14" resname="Foo__c" restype="plural" datatype="xml" extype="one">
+        <source>Lead Convert Queue</source>
+        <note>Used in the lead conversion process</note>
+      </trans-unit>
+      <trans-unit id="15" resname="Foo__c" restype="plural" datatype="xml" extype="other">
+        <source>Lead Convert Queue Entries</source>
+        <note>Used in the lead conversion process</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/objects/Foo__c/fields/AccessToken_Expr__c.field-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="2" resname="AccessToken_Expr__c" restype="string" datatype="xml">
+        <source>Access token expired</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/objects/Foo__c/fields/Allocation_status__c.field-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="3" resname="Allocation_status__c" restype="string" datatype="xml">
+        <source>Allocation status</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/objects/Foo__c/fields/Collaboration__c.field-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="4" resname="Collaboration__c" restype="string" datatype="xml">
+        <source>Collaboration</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/objects/Foo__c/fields/Retry_Count__c.field-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="5" resname="Retry_Count__c" restype="string" datatype="xml">
+        <source>Retry Count</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/objects/Foo__c/listviews/ListView.listView-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="10" resname="All" restype="string" datatype="xml">
+        <source>All items</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/permissionsets/Standard.permissionset-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="9" resname="Standard" restype="string" datatype="xml" x-context="Foo__c">
+        <source>MyApp Standard</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/quickActions/SendEmail.quickAction-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="8" resname="SendEmail" restype="string" datatype="xml">
+        <source>Send Email</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/tabs/MyApp_Files2.tab-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="7" resname="MyApp_Files2" restype="string" datatype="xml">
+        <source>My Application Files</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="force-app/main/default/translations/en_US.translation-meta.xml" source-language="en-US" product-name="sample-metaxml">
+    <body>
+      <trans-unit id="16" resname="String_only_in_translations_meta_xml" restype="string" datatype="xml">
+        <source>Translations Only String</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

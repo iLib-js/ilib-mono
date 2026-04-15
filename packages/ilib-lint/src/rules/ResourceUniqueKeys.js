@@ -63,28 +63,27 @@ class ResourceUniqueKeys extends Rule {
             const other = this.ts.get(hash);
 
             if (other) {
-                const resourceLocation = resource.location?.getLocation();
-                const otherLocation = other.location?.getLocation();
+                const resourceLocation = resource.getLocation();
+                const otherLocation = other.getLocation();
                 if (resourceLocation && otherLocation && resourceLocation.line === otherLocation.line) {
                     return; // skip if the same resource is found in the same line
                 }
-                if (!resourceLocation || !otherLocation) {
-                    logger.trace(`hash '${hash}' already found in the translation set!`);
-                    const otherFile = other.getResFile() ?? other.getPath();
-                    let value = {
-                        severity: "error",
-                        id: resource.getKey(),
-                        rule: this,
-                        pathName: file,
-                        highlight: `Key is also defined in this file: ${otherFile}`,
-                        description: `Key is not unique within locale ${locale}.`,
-                        locale
-                    };
-                    if (typeof(resource.lineNumber) !== 'undefined') {
-                        resource.lineNumber = resource.lineNumber;
-                    }
-                    return new Result(value);
+                // Create result for duplicate key (different lines or missing location info)
+                logger.trace(`hash '${hash}' already found in the translation set!`);
+                const otherFile = other.getResFile() ?? other.getPath();
+                let value = {
+                    severity: "error",
+                    id: other.getKey(), // Report the first occurrence
+                    rule: this,
+                    pathName: file,
+                    highlight: `Key is also defined in this file: ${otherFile}`,
+                    description: `Key is not unique within locale ${locale}.`,
+                    locale
+                };
+                if (other.getLocation()?.line !== undefined) {
+                    value.lineNumber = other.getLocation().line; // Use the first occurrence's line number
                 }
+                return new Result(value);
             }
 
             this.ts.add(resource);

@@ -32,8 +32,7 @@ class ResourceCamelCase extends ResourceRule {
     /**
      * Create a ResourceCamelCase rule instance.
      * @param {object} options
-     * @param {object} [options.param]
-     * @param {string[]} [options.param.except] An array of strings to exclude from the rule.
+     * @param {string[]} [options.except] An array of strings to exclude from the rule.
      */
     constructor(options) {
         super(options);
@@ -45,7 +44,9 @@ class ResourceCamelCase extends ResourceRule {
             "^\\s*[a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
             "^\\s*[A-Z][a-z\\d]+([A-Z][a-z\\d]+)+\\s*$",
         ];
-        this.exceptions = Array.isArray(options?.param?.except) ? options.param.except : [];
+
+        const param = this.getParam() || {};
+        this.exceptions = Array.isArray(param?.except) ? param.except : [];
     }
 
     /**
@@ -76,9 +77,10 @@ class ResourceCamelCase extends ResourceRule {
                 source,
                 description: "Do not translate the source string if it consists solely of camel cased strings and/or digits. Please update the target string so it matches the source string.",
                 rule: this,
-                locale: resource.sourceLocale,
+                locale: resource.getTargetLocale(),
                 pathName: file,
-                highlight: `<e0>${target}</e0>`
+                highlight: `<e0>${target}</e0>`,
+                lineNumber: resource.getLocation()?.line
             });
             result.fix = this.getFix(resource, source, index, category);
 

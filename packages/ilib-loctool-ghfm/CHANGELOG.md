@@ -1,5 +1,22 @@
 # ilib-loctool-ghfm
 
+## 1.12.0
+
+### Minor Changes
+
+- 7ef4feb: - Added .mdx to the list of extensions that the github-flavored markdown plugin
+  supports
+
+## 1.11.7
+
+### Patch Changes
+
+- fcfe79c: - Fixed a bug where some whitespace was not being added
+  to translatable strings properly during extraction but
+  not during localization, meaning that some strings were
+  not able to be translated because the string did not
+  match the translations
+
 ## 1.11.6
 
 ### Patch Changes

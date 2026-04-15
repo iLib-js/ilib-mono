@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="i18n/sample.json" source-language="en-US" target-language="ko-KR" product-name="sample-json">
+    <body>
+      <trans-unit id="1" resname="project.whatever.hello" restype="string" datatype="json">
+        <source>Hello</source>
+        <target>안녕</target>
+        <note>A greeting</note>
+      </trans-unit>
+      <trans-unit id="2" resname="project.whatever.world" restype="string" datatype="json">
+        <source>World</source>
+        <target>세계</target>
+        <note>An object that greetings are directed to</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="i18n/sample.json" source-language="en-US" target-language="de-DE" product-name="sample-json">
+    <body>
+      <trans-unit id="1" resname="project.whatever.hello" restype="string" datatype="json">
+        <source>Hello</source>
+        <target>Hallo</target>
+        <note>A greeting</note>
+      </trans-unit>
+      <trans-unit id="2" resname="project.whatever.world" restype="string" datatype="json">
+        <source>World</source>
+        <target>Welt</target>
+        <note>An object that greetings are directed to</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,14 @@
+{
+  "name": "ilib-loctool-android-resource Sample",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Sample localization project",
+  "devDependencies": {
+    "ilib-loctool-android-layout": "workspace:^",
+    "ilib-loctool-android-resource": "workspace:^",
+    "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
+  }
+}
