@@ -2,6 +2,11 @@ packages:
     - packages/*
     - packages/*/samples/*
     - packages/*/test-e2e/__testfiles__/*
+    # file: devDependencies under packages/ilib-lint/test/ are not under packages/*;
+    # they must be listed here or workspace:^ resolves from the registry (duplicate ilib-lint-common).
+    # Do not use test/* — listing ilib-mock adds node_modules under test/ilib-mock and breaks walk tests.
+    - packages/ilib-lint/test/ilib-lint-plugin-test
+    - packages/ilib-lint/test/plugin-test
 
 ignoredBuiltDependencies:
     - ejs

@@ -41,5 +41,10 @@
     "jest-junit": "^16.0.0",
     "semver": "^7.6.3",
     "turbo": "^2.6.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "ilib-lint-common": "workspace:*"
+    }
   }
 }

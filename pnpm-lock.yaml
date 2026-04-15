@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  ilib-lint-common: workspace:*
+
 importers:
 
   .:
@@ -816,7 +819,7 @@ importers:
         specifier: workspace:^
         version: link:../ilib-ctype
       ilib-lint-common:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: workspace:^
@@ -913,7 +916,7 @@ importers:
   packages/ilib-lint-apple:
     dependencies:
       ilib-lint-common:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ilib-lint-common
       ilib-tools-common:
         specifier: workspace:^
@@ -962,7 +965,7 @@ importers:
   packages/ilib-lint-java:
     dependencies:
       ilib-lint-common:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: workspace:^
@@ -990,7 +993,7 @@ importers:
   packages/ilib-lint-javascript:
     dependencies:
       ilib-lint-common:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: workspace:^
@@ -1021,7 +1024,7 @@ importers:
   packages/ilib-lint-python:
     dependencies:
       ilib-lint-common:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: workspace:^
@@ -1052,7 +1055,7 @@ importers:
   packages/ilib-lint-python-gnu:
     dependencies:
       ilib-lint-common:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: workspace:^
@@ -1098,7 +1101,7 @@ importers:
         specifier: workspace:^
         version: link:../ilib-istring
       ilib-lint-common:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ilib-lint-common
       ilib-locale:
         specifier: workspace:^
@@ -1150,7 +1153,7 @@ importers:
         specifier: workspace:^
         version: link:../..
       ilib-lint-common:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../../ilib-lint-common
       ilib-lint-python:
         specifier: workspace:^
@@ -1170,6 +1173,36 @@ importers:
       ilib-lint-webos:
         specifier: ^1.3.0
         version: 1.3.0
+
+  packages/ilib-lint/test/ilib-lint-plugin-test:
+    dependencies:
+      ilib-lint-common:
+        specifier: workspace:*
+        version: link:../../../ilib-lint-common
+      ilib-locale:
+        specifier: workspace:^
+        version: link:../../../ilib-locale
+      ilib-tools-common:
+        specifier: workspace:^
+        version: link:../../../ilib-tools-common
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
+
+  packages/ilib-lint/test/plugin-test:
+    dependencies:
+      ilib-lint-common:
+        specifier: workspace:*
+        version: link:../../../ilib-lint-common
+      ilib-locale:
+        specifier: workspace:^
+        version: link:../../../ilib-locale
+      ilib-tools-common:
+        specifier: workspace:^
+        version: link:../../../ilib-tools-common
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
 
   packages/ilib-loader:
     dependencies:
@@ -7702,14 +7735,6 @@ packages:
 
   ilib-istring@1.1.1:
     resolution: {integrity: sha512-j8UfwARn5FcjrP0qQ+DHA/Ds9RF72+PVQkfp1sHnF79EkY4wXFeEqXh/wm+O+ZRYp88twsmyvFKYSIaVBs9vgQ==}
-
-  ilib-lint-common@3.1.2:
-    resolution: {integrity: sha512-WiNVrKpwdPn1sEqGYXs4DXZBqSTrEAzBWKQKVuoGz+Uh7ru0gvBJUtbm3WLlKEN9elQj0AFTBI3XHG/LOKnaqA==}
-    engines: {node: '>=14.0.0'}
-
-  ilib-lint-common@3.7.0:
-    resolution: {integrity: sha512-N9kB+DRhByIJROv0QcFz3NogNSjs61wu7hXrysz7H2gpAnYvZU/2RGxlCMC4vDm5tiQnHM5N1QKpmKhy/tVJhQ==}
-    engines: {node: '>=12 <23'}
 
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
     resolution: {directory: packages/ilib-lint/test/ilib-lint-plugin-obsolete, type: directory}
@@ -17472,10 +17497,6 @@ snapshots:
       ilib-localedata: 1.5.2
       regenerator-runtime: 0.14.1
 
-  ilib-lint-common@3.1.2: {}
-
-  ilib-lint-common@3.7.0: {}
-
   ilib-lint-plugin-obsolete@file:packages/ilib-lint/test/ilib-lint-plugin-obsolete:
     dependencies:
       i18nlint-common: 2.2.1
@@ -17485,14 +17506,14 @@ snapshots:
 
   ilib-lint-plugin-test@file:packages/ilib-lint/test/ilib-lint-plugin-test:
     dependencies:
-      ilib-lint-common: 3.1.2
+      ilib-lint-common: link:packages/ilib-lint-common
       ilib-locale: 1.2.4
       ilib-tools-common: 1.16.0
       json5: 2.2.3
 
   ilib-lint-webos@1.3.0:
     dependencies:
-      ilib-lint-common: 3.7.0
+      ilib-lint-common: link:packages/ilib-lint-common
       log4js: 6.9.1
     transitivePeerDependencies:
       - supports-color
