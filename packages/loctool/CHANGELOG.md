@@ -1,5 +1,12 @@
 # loctool
 
+## 2.32.3
+
+### Patch Changes
+
+- b0c6b6b: Update the dependency module `ilib-localematcher` to the latest version to ensure
+  translation data is generated with the correct locale.
+
 ## 2.32.2
 
 ### Patch Changes
