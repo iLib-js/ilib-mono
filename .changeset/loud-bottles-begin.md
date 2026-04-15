@@ -2,4 +2,4 @@
 "ilib-loctool-mdx": patch
 ---
 
-- 3cc48da: only extract literal string JSX attributes
+Fixed <img> extraction so that "alt" and "title" attributes are extracted only when they are literal strings
