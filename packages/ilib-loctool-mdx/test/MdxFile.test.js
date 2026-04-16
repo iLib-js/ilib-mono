@@ -1937,6 +1937,39 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(0);
     });
 
+    test("MdxFileParseMarkdownLinkStringUrlIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('{/* i18n-enable localize-links */}\n[link text](http://example.com)\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        // link text + URL are both extracted when localize-links is enabled
+        expect(set.size()).toBe(2);
+        var r = set.getBySource("http://example.com");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("http://example.com");
+    });
+
+    test("MdxFileParseMarkdownDefinitionStringUrlIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('{/* i18n-enable localize-links */}\n[ref]: http://example.com\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+        var r = set.getBySource("http://example.com");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("http://example.com");
+    });
+
     test("MdxFileParseJsxAStringTitleIsExtracted", function() {
         expect.assertions(5);
         var mf = new MdxFile({

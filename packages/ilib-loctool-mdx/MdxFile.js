@@ -484,7 +484,7 @@ MdxFile.prototype._walk = function(node) {
         case 'emphasis':
         case 'strong':
             node.title && typeof node.title === 'string' && this._addTransUnit(node.title);
-            if (this.localizeLinks && node.url) {
+            if (this.localizeLinks && node.url && typeof node.url === 'string') {
                 var value = node.url;
                 var parts = trim(this.API, value);
                 // only localizable if there already is some localizable text
@@ -535,7 +535,7 @@ MdxFile.prototype._walk = function(node) {
         case 'definition':
             // definitions are breaking nodes
             this._emitText();
-            if (node.url && this.localizeLinks) {
+            if (node.url && typeof node.url === 'string' && this.localizeLinks) {
                 var value = node.url;
                 var parts = trim(this.API, value);
                 // only localizable if there already is some localizable text
@@ -996,7 +996,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             if (node.title && typeof node.title === 'string') {
                node.title = this._localizeString(node.title, locale, translations);
             }
-            if (node.url && node.localizedLink) {
+            if (node.url && typeof node.url === 'string' && node.localizedLink) {
                 // don't pseudo-localize URLs
                 node.url = this._localizeString(node.url, locale, translations, true);
             }
@@ -1064,7 +1064,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
                     message.pop();
                 }
 
-                if (node.url) {
+                if (node.url && typeof node.url === 'string') {
                     // don't pseudo-localize URLs
                     node.url = this._localizeString(node.url, locale, translations, true);
                 }
