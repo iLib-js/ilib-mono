@@ -89,7 +89,7 @@
         "ilib-lint-common": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-localeinfo": "^1.1.0",
-        "ilib-localematcher": "^1.3.2",
+        "ilib-localematcher": "workspace:^",
         "ilib-scriptinfo": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "intl-messageformat": "^10.5",
