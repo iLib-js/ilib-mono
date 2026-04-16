@@ -483,7 +483,7 @@ MdxFile.prototype._walk = function(node) {
         case 'link':
         case 'emphasis':
         case 'strong':
-            node.title && this._addTransUnit(node.title);
+            node.title && typeof node.title === 'string' && this._addTransUnit(node.title);
             if (this.localizeLinks && node.url) {
                 var value = node.url;
                 var parts = trim(this.API, value);
@@ -544,7 +544,7 @@ MdxFile.prototype._walk = function(node) {
                     this._addTransUnit(node.url);
                     node.localizable = true;
                 }
-                node.title && this._addTransUnit(node.title);
+                node.title && typeof node.title === 'string' && this._addTransUnit(node.title);
             }
             break;
 
@@ -993,7 +993,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
         case 'link':
         case 'emphasis':
         case 'strong':
-            if (node.title) {
+            if (node.title && typeof node.title === 'string') {
                node.title = this._localizeString(node.title, locale, translations);
             }
             if (node.url && node.localizedLink) {
@@ -1068,7 +1068,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
                     // don't pseudo-localize URLs
                     node.url = this._localizeString(node.url, locale, translations, true);
                 }
-                if (node.title) {
+                if (node.title && typeof node.title === 'string') {
                     node.title = this._localizeString(node.title, locale, translations);
                 }
             }
