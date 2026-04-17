@@ -108,49 +108,47 @@ describe("PendoXliffFileType", () => {
 
     describe("handles", () => {
         describe("with default mappings", () => {
-            it("should handle source locale file (en-US)", () => {
+            it.each([
+                {
+                    path: "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff",
+                    expected: true,
+                    description: "should handle source locale file (en-US)",
+                },
+                {
+                    path: "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en.xliff",
+                    expected: true,
+                    description:
+                        "should handle source file with language-only suffix (_en) when source locale is en-US",
+                },
+                {
+                    path: "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_fr.xliff",
+                    expected: false,
+                    description: "should reject already localized file (fr)",
+                },
+                {
+                    path: "l10n/xliff/guides/strings_de-DE.xliff",
+                    expected: false,
+                    description: "should reject already localized file (de-DE)",
+                },
+                {
+                    path: "l10n/xliff/guides/content_zh-Hans-CN.xliff",
+                    expected: false,
+                    description: "should reject already localized file (zh-Hans-CN)",
+                },
+                {
+                    path: "l10n/xliff/guides/guide_en-US.xlf",
+                    expected: true,
+                    description: "should handle .xlf extension with source locale",
+                },
+                {
+                    path: "l10n/xliff/guides/guides.xliff",
+                    expected: true,
+                    description:
+                        "should handle source file without locale suffix (e.g. guides.xliff, messages.properties-style)",
+                },
+            ])("$description", ({ path, expected }) => {
                 const fileType = createFileType(projectWithDefaultMappings);
-                expect(
-                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff")
-                ).toBe(true);
-            });
-
-            it("should handle source file with language-only suffix (_en) when source locale is en-US", () => {
-                const fileType = createFileType(projectWithDefaultMappings);
-                expect(
-                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en.xliff")
-                ).toBe(true);
-            });
-
-            it("should reject already localized file (fr)", () => {
-                const fileType = createFileType(projectWithDefaultMappings);
-                expect(
-                    fileType.handles("l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_fr.xliff")
-                ).toBe(false);
-            });
-
-            it("should reject already localized file (de-DE)", () => {
-                const fileType = createFileType(projectWithDefaultMappings);
-                expect(
-                    fileType.handles("l10n/xliff/guides/strings_de-DE.xliff")
-                ).toBe(false);
-            });
-
-            it("should reject already localized file (zh-Hans-CN)", () => {
-                const fileType = createFileType(projectWithDefaultMappings);
-                expect(
-                    fileType.handles("l10n/xliff/guides/content_zh-Hans-CN.xliff")
-                ).toBe(false);
-            });
-
-            it("should handle .xlf extension with source locale", () => {
-                const fileType = createFileType(projectWithDefaultMappings);
-                expect(fileType.handles("l10n/xliff/guides/guide_en-US.xlf")).toBe(true);
-            });
-
-            it("should handle source file without locale suffix (e.g. guides.xliff, messages.properties-style)", () => {
-                const fileType = createFileType(projectWithDefaultMappings);
-                expect(fileType.handles("l10n/xliff/guides/guides.xliff")).toBe(true);
+                expect(fileType.handles(path)).toBe(expected);
             });
         });
 
@@ -229,26 +227,12 @@ describe("PendoXliffFileType", () => {
     });
 
     describe("getLocalizedPath", () => {
-        /**
-         * getLocalizedPath is private; access via type assertion for testing.
-         * Returns the path relative to project root where the localized file should be written.
-         */
-        function getLocalizedPath(
-            fileType: PendoXliffFileType,
-            pathInProject: string,
-            loctoolLocale: string
-        ): string {
-            return (fileType as unknown as { getLocalizedPath: (p: string, l: string) => string }).getLocalizedPath(
-                pathInProject,
-                loctoolLocale
-            );
-        }
+        // Paths are relative to the project root (same convention as loctool file paths).
 
         describe("with template [dir]/[basename]_[locale].[extension]", () => {
             it("should strip source locale from basename and replace with target locale (en-US -> pl-PL)", () => {
                 const fileType = createFileType(projectWithCustomMappings);
-                const result = getLocalizedPath(
-                    fileType,
+                const result = fileType.getLocalizedPath(
                     "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff",
                     "pl-PL"
                 );
@@ -271,18 +255,13 @@ describe("PendoXliffFileType", () => {
                     }
                 );
                 const fileTypeEn = createFileType(projectEn);
-                const result = getLocalizedPath(
-                    fileTypeEn,
-                    "l10n/xliff/guides/guide_en.xliff",
-                    "fr"
-                );
+                const result = fileTypeEn.getLocalizedPath("l10n/xliff/guides/guide_en.xliff", "fr");
                 expect(result).toBe("l10n/xliff/guides/guide_fr.xliff");
             });
 
             it("should produce correct path for hash-like basename with en-US source", () => {
                 const fileType = createFileType(projectWithCustomMappings);
-                const result = getLocalizedPath(
-                    fileType,
+                const result = fileType.getLocalizedPath(
                     "l10n/xliff/guides/zJ14meSfAuIGNT7VDDzReXI8HM4_en-US.xliff",
                     "fr"
                 );
@@ -293,31 +272,19 @@ describe("PendoXliffFileType", () => {
         describe("source file without locale suffix (guides.xliff -> guides_de.xliff)", () => {
             it("should derive dir, basename, extension when parsePath returns empty", () => {
                 const fileType = createFileType(projectSourceWithoutLocale);
-                const result = getLocalizedPath(
-                    fileType,
-                    "l10n/xliff/guides.xliff",
-                    "de"
-                );
+                const result = fileType.getLocalizedPath("l10n/xliff/guides.xliff", "de");
                 expect(result).toBe("l10n/xliff/guides_de.xliff");
             });
 
             it("should produce correct path for French", () => {
                 const fileType = createFileType(projectSourceWithoutLocale);
-                const result = getLocalizedPath(
-                    fileType,
-                    "l10n/xliff/guides.xliff",
-                    "fr"
-                );
+                const result = fileType.getLocalizedPath("l10n/xliff/guides.xliff", "fr");
                 expect(result).toBe("l10n/xliff/guides_fr.xliff");
             });
 
             it("should work with nested path", () => {
                 const fileType = createFileType(projectSourceWithoutLocale);
-                const result = getLocalizedPath(
-                    fileType,
-                    "a/b/c/guides.xliff",
-                    "de"
-                );
+                const result = fileType.getLocalizedPath("a/b/c/guides.xliff", "de");
                 expect(result).toBe("a/b/c/guides_de.xliff");
             });
         });

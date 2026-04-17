@@ -17,6 +17,7 @@
 
 import type { FileType, Project, API, TranslationSet, ResourceString } from "loctool";
 import path from "path";
+import Locale from "ilib-locale";
 import { parsePath, formatPath } from "ilib-tools-common";
 import PendoXliffFile, { type TranslationUnit } from "./PendoXliffFile";
 import micromatch from "micromatch";
@@ -128,9 +129,6 @@ export class PendoXliffFileType implements FileType {
         if (this.project.isSourceLocale(fileLocale)) {
             return true;
         }
-        // ilib-locale: require() for CJS output; package exposes default on lib build.
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-        const Locale = require("ilib-locale").default || require("ilib-locale");
         const fromPath = new Locale(fileLocale);
         const source = new Locale(this.project.getSourceLocale());
         if (fromPath.getLanguage() !== source.getLanguage()) {
@@ -272,7 +270,7 @@ export class PendoXliffFileType implements FileType {
      * Uses parsePath to extract path parts (fills partial results when template does not match),
      * then formatPath to reassemble with the target locale.
      */
-    private getLocalizedPath(pathInProject: string, loctoolLocale: string) {
+    getLocalizedPath(pathInProject: string, loctoolLocale: string) : string {
         // apply locale mapping for output path
         const outputLocale = this.getOuputLocale(loctoolLocale);
 

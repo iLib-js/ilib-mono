@@ -6,4 +6,5 @@ module.exports = {
         name: "ilib-loctool-pendo-md",
         color: "cyan",
     },
+    globalTeardown: "<rootDir>/test-e2e/globalTeardown.ts",
 };

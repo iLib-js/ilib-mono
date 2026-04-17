@@ -20,11 +20,12 @@
 import path from "path";
 import fs from "fs";
 import { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } from "ilib-internal";
+import { sampleProjectRoot, getSampleE2eArtifactPaths } from "./sampleE2eArtifactPaths";
 
 describe("samples", () => {
     describe("pendo-md", () => {
-        let fsSnapshot: FSSnapshot;
-        const projectPath = path.resolve(__dirname, "..", "samples", "pendo-md");
+        let fsSnapshot: FSSnapshot | undefined;
+        const projectPath = sampleProjectRoot;
         const pathInProject = (p: string) => path.resolve(projectPath, p);
 
         const projectFiles = {
@@ -39,7 +40,10 @@ describe("samples", () => {
         };
 
         beforeAll(async () => {
-            const filesToSnapshot = Object.values(projectFiles).flatMap((f) => Object.values(f));
+            const filesToSnapshot = [
+                ...getSampleE2eArtifactPaths(),
+                projectFiles.pendo.source,
+            ];
             fsSnapshot = FSSnapshot.create(filesToSnapshot);
 
             // run loctool
@@ -48,7 +52,7 @@ describe("samples", () => {
         });
 
         afterAll(() => {
-            fsSnapshot.restore();
+            fsSnapshot?.restore();
         });
 
         it("should produce an extracted Loctool XLIFF file", () => {
