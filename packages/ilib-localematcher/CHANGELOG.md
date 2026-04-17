@@ -1,27 +1,35 @@
 ## Release Notes
 
+## 1.3.3
+
+### Patch Changes
+
+- 4b14226: - Moved from ilib-js/ilib-localematcher to ilib-js/ilib-mono/packages/ilib-localematcher
+- 4b14226: - Updated to use latest ilib-localematcher package
+
 ### v1.3.2
-* Add the missing `ko-TW` and `ko-US` locales to the LocaleMatcher.
+
+- Add the missing `ko-TW` and `ko-US` locales to the LocaleMatcher.
 
 ### v1.3.1
 
-* Convert all unit tests from nodeunit to jest
-    * tests are now able to be run on headless browsers via karma
-* Fixed a bug where the territory containment reverse was generated
+- Convert all unit tests from nodeunit to jest
+  - tests are now able to be run on headless browsers via karma
+- Fixed a bug where the territory containment reverse was generated
   incorrectly
 
 ### v1.3.0
 
-* Update to CLDR v44.0.0
+- Update to CLDR v44.0.0
 
 ### v1.2.2
 
-* This module is now a hybrid ESM/CommonJS package that works under node
+- This module is now a hybrid ESM/CommonJS package that works under node
   or webpack
 
 ### v1.2.1
 
-* Updated dependencies
+- Updated dependencies
 
 ### v1.2.0
 
