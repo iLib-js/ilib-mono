@@ -1,5 +1,11 @@
 # ilib-loctool-mdx
 
+## 1.1.2
+
+### Patch Changes
+
+- 11c5fc0: Fixed <img> extraction so that "alt" and "title" attributes are extracted only when they are literal strings
+
 ## 1.1.1
 
 ### Patch Changes

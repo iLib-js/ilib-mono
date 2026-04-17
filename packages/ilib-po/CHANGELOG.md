@@ -1,5 +1,13 @@
 # ilib-po
 
+## 1.1.5
+
+### Patch Changes
+
+- 4b14226: - Updated to use latest ilib-localematcher package
+- Updated dependencies [4b14226]
+  - ilib-tools-common@1.21.4
+
 ## 1.1.4
 
 ### Patch Changes

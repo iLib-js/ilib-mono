@@ -1,5 +1,15 @@
 # ilib-lint
 
+## 2.21.3
+
+### Patch Changes
+
+- 4b14226: - Updated to use latest ilib-localematcher package
+- Updated dependencies [4b14226]
+- Updated dependencies [4b14226]
+  - ilib-localematcher@1.3.3
+  - ilib-tools-common@1.21.4
+
 ## 2.21.2
 
 ### Patch Changes
