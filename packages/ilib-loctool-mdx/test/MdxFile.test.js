@@ -1879,6 +1879,161 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r160369622");
     });
 
+    test("MdxFileParseImgJsxStringAltIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<img alt="Test string" src="foo.png" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+        var r = set.getBySource("Test string");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Test string");
+    });
+
+    test("MdxFileParseImgJsxExpressionAltIsNotExtracted", function() {
+        expect.assertions(3);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<img alt={translate("abc")} src="foo.png" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+
+    test("MdxFileParseImgJsxStringTitleIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<img title="Test string" src="foo.png" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+        var r = set.getBySource("Test string");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("Test string");
+    });
+
+    test("MdxFileParseImgJsxExpressionTitleIsNotExtracted", function() {
+        expect.assertions(3);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<img title={translate("abc")} src="foo.png" />\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(0);
+    });
+
+    test("MdxFileParseMarkdownLinkStringUrlIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('{/* i18n-enable localize-links */}\n[link text](http://example.com)\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        // link text + URL are both extracted when localize-links is enabled
+        expect(set.size()).toBe(2);
+        var r = set.getBySource("http://example.com");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("http://example.com");
+    });
+
+    test("MdxFileParseMarkdownDefinitionStringUrlIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('{/* i18n-enable localize-links */}\n[ref]: http://example.com\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(1);
+        var r = set.getBySource("http://example.com");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("http://example.com");
+    });
+
+    test("MdxFileParseJsxAStringTitleIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<a href="http://example.com" title="My link title">link text</a>\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        // title attribute + text content are both extracted
+        expect(set.size()).toBe(2);
+        var r = set.getBySource("My link title");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("My link title");
+    });
+
+    test("MdxFileParseJsxAExpressionTitleIsNotExtracted", function() {
+        expect.assertions(4);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<a href="http://example.com" title={translate("abc")}>link text</a>\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        // only the text content is extracted; the expression title is not
+        expect(set.size()).toBe(1);
+        expect(set.getBySource("link text")).toBeTruthy();
+    });
+
+    test("MdxFileParseJsxStrongStringTitleIsExtracted", function() {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<strong title="My strong title">bold text</strong>\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        // title attribute + text content are both extracted
+        expect(set.size()).toBe(2);
+        var r = set.getBySource("My strong title");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("My strong title");
+    });
+
+    test("MdxFileParseJsxStrongExpressionTitleIsNotExtracted", function() {
+        expect.assertions(4);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft
+        });
+        expect(mf).toBeTruthy();
+        mf.parse('<strong title={translate("abc")}>bold text</strong>\n');
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        // only the text content is extracted; the expression title is not
+        expect(set.size()).toBe(1);
+        expect(set.getBySource("bold text")).toBeTruthy();
+    });
+
     test("MdxFileParseI18NComments", function() {
         expect.assertions(10);
         var mf = new MdxFile({
