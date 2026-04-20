@@ -119,7 +119,7 @@ if (options.args.length < 1) {
     process.exit(1);
 }
 
-if (!options.opt.quiet) console.log("ilib-assemble - Copyright (c) 2022, 2024 JEDLsoft, All rights reserved.");
+if (!options.opt.quiet) console.log("ilib-assemble - Copyright (c) 2022, 2024, 2026 JEDLsoft, All rights reserved.");
 
 const outputPath = options.args[0];
 let stat;
