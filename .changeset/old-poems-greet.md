@@ -3,7 +3,7 @@
 ---
 
 Added `mergeJson` function that scans an ilib include file to collect required
-modules, assembles locale JSON data via `assembleJson.mjs`, and writes the
+modules, assembles locale JSON data via `assemble.mjs`, and writes the
 merged output into per-locale JSON files.
 
 - A new `--mergeJson` (`-x`) CLI option has been added. When specified,
