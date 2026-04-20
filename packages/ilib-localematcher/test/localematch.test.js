@@ -1,7 +1,7 @@
 /*
  * localematch.test.js - test the locale matcher object
  *
- * Copyright © 2012-2015, 2017,2019 2022-2023, 2025 JEDLSoft
+ * Copyright © 2012-2015, 2017,2019 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,6 +183,39 @@ describe("testLocaleMatch", () => {
         expect(locale.getSpec()).toBe("arc-Elym-IR");
     });
 
+    test("LocaleMatcherGetLikelyLocaleByUndLanguageAndScriptArab", () => {
+        expect.assertions(3);
+        var lm = new LocaleMatcher({
+            locale: "und-Arab"
+        });
+        expect(typeof(lm) !== "undefined").toBeTruthy();
+        var locale = lm.getLikelyLocale();
+        expect(typeof(locale) !== "undefined").toBeTruthy();
+        expect(locale.getSpec()).toBe("ar-Arab-EG");
+    });
+
+    test("LocaleMatcherGetLikelyLocaleByUndLanguageAndScriptHans", () => {
+        expect.assertions(3);
+        var lm = new LocaleMatcher({
+            locale: "und-Hans"
+        });
+        expect(typeof(lm) !== "undefined").toBeTruthy();
+        var locale = lm.getLikelyLocale();
+        expect(typeof(locale) !== "undefined").toBeTruthy();
+        expect(locale.getSpec()).toBe("zh-Hans-CN");
+    });
+
+    test("LocaleMatcherGetLikelyLocaleByUndLanguageAndScriptCyrl", () => {
+        expect.assertions(3);
+        var lm = new LocaleMatcher({
+            locale: "und-Cyrl"
+        });
+        expect(typeof(lm) !== "undefined").toBeTruthy();
+        var locale = lm.getLikelyLocale();
+        expect(typeof(locale) !== "undefined").toBeTruthy();
+        expect(locale.getSpec()).toBe("ru-Cyrl-RU");
+    });
+
     test("LocaleMatcherGetLikelyLocaleByLanguageAndScript1", () => {
         expect.assertions(3);
         var lm = new LocaleMatcher({
@@ -280,6 +313,28 @@ describe("testLocaleMatch", () => {
         var locale = lm.getLikelyLocale();
         expect(typeof(locale) !== "undefined").toBeTruthy();
         expect(locale.getSpec()).toBe("fr-Latn-MA");
+    });
+
+    test("LocaleMatcherGetLikelyLocaleByRegionAndScript2", () => {
+        expect.assertions(3);
+        var lm = new LocaleMatcher({
+            locale: "Arab-IN"
+        });
+        expect(typeof(lm) !== "undefined").toBeTruthy();
+        var locale = lm.getLikelyLocale();
+        expect(typeof(locale) !== "undefined").toBeTruthy();
+        expect(locale.getSpec()).toBe("ur-Arab-IN");
+    });
+
+    test("LocaleMatcherGetLikelyLocaleByRegionAndScript3", () => {
+        expect.assertions(3);
+        var lm = new LocaleMatcher({
+            locale: "Deva-PK"
+        });
+        expect(typeof(lm) !== "undefined").toBeTruthy();
+        var locale = lm.getLikelyLocale();
+        expect(typeof(locale) !== "undefined").toBeTruthy();
+        expect(locale.getSpec()).toBe("btv-Deva-PK");
     });
 
     test("LocaleMatcherGetLikelyLocaleAlreadySpecified", () => {
@@ -1368,6 +1423,16 @@ describe("testLocaleMatch", () => {
         var locale = lm.getLikelyLocale();
         expect(typeof(locale) !== "undefined").toBeTruthy();
         expect(locale.getSpec()).toBe("ko-Kore-TW");
+    });
+    test("LocaleMatcherGetLikelyLocaleByLocaleCode_ko_CN", () => {
+        expect.assertions(3);
+        var lm = new LocaleMatcher({
+            locale: "ko-CN"
+        });
+        expect(typeof(lm) !== "undefined").toBeTruthy();
+        var locale = lm.getLikelyLocale();
+        expect(typeof(locale) !== "undefined").toBeTruthy();
+        expect(locale.getSpec()).toBe("ko-Kore-CN");
     });
     test("LocaleMatcherMatchExactFullLocale", () => {
         expect.assertions(2);

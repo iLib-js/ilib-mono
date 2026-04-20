@@ -2,7 +2,7 @@
 /*
  * localematch.js - Locale match mappings
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -351,6 +351,7 @@ export const matchdata = {
         "Kits": "zkt-Kits-CN",
         "Knda": "kn-Knda-IN",
         "Kore": "ko-Kore-KR",
+        "Kore-CN": "ko-Kore-CN",
         "Kore-KP": "ko-Kore-KP",
         "Kore-KR": "ko-Kore-KR",
         "Kore-TW": "ko-Kore-TW",
@@ -9982,6 +9983,7 @@ export const matchdata = {
         "knz-BF": "knz-Latn-BF",
         "knz-Latn": "knz-Latn-BF",
         "ko": "ko-Kore-KR",
+        "ko-CN": "ko-Kore-CN",
         "ko-KP": "ko-Kore-KP",
         "ko-KR": "ko-Kore-KR",
         "ko-Kore": "ko-Kore-KR",

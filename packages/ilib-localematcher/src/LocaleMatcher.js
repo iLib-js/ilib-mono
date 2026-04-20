@@ -91,22 +91,22 @@ class LocaleMatcher {
 
         if (typeof(matchdata.likelyLocales[locale.getSpec()]) === 'undefined') {
             // try various partials before giving up
-            let partial = matchdata.likelyLocales[new Locale(locale.language, undefined, locale.region).getSpec()];
+            let partial = matchdata.likelyLocales[new Locale(locale.language, locale.region, undefined).getSpec()];
             if (typeof(partial) !== 'undefined') return new Locale(partial);
 
-            partial = matchdata.likelyLocales[new Locale(locale.language, locale.script, undefined).getSpec()];
+            partial = matchdata.likelyLocales[new Locale(locale.language, undefined, undefined, locale.script).getSpec()];
             if (typeof(partial) !== 'undefined') return new Locale(partial);
 
             partial = matchdata.likelyLocales[new Locale(locale.language, undefined, undefined).getSpec()];
             if (typeof(partial) !== 'undefined') return new Locale(partial);
 
-            partial = matchdata.likelyLocales[new Locale(undefined, locale.script, locale.region).getSpec()];
+            partial = matchdata.likelyLocales[new Locale(undefined, locale.region, undefined, locale.script).getSpec()];
             if (typeof(partial) !== 'undefined') return new Locale(partial);
 
-            partial = matchdata.likelyLocales[new Locale(undefined, undefined, locale.region).getSpec()];
+            partial = matchdata.likelyLocales[new Locale(undefined, locale.region, undefined).getSpec()];
             if (typeof(partial) !== 'undefined') return new Locale(partial);
 
-            partial = matchdata.likelyLocales[new Locale(undefined, locale.script, undefined).getSpec()];
+            partial = matchdata.likelyLocales[new Locale(undefined, undefined, undefined, locale.script).getSpec()];
             if (typeof(partial) !== 'undefined') return new Locale(partial);
 
             return locale;
@@ -161,7 +161,7 @@ class LocaleMatcher {
         const fullLocale = this._getLikelyLocale(this.locale);
         const langLocale = this._getLikelyLocale(new Locale(fullLocale.language));
         return fullLocale.script === langLocale.script && !multiScriptLanguages[fullLocale.language] ?
-            new Locale(fullLocale.language, undefined, fullLocale.region) :
+            new Locale(fullLocale.language, fullLocale.region, undefined) :
             fullLocale;
     }
 
