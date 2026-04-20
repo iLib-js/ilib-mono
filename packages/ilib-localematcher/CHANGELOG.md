@@ -1,5 +1,12 @@
 ## Release Notes
 
+## 1.3.4
+
+### Patch Changes
+
+- eafc892: Fix a bug where locale parsing information is passed incorrectly.
+  Add the missing `ko-CN` locale to the LocaleMatcher.
+
 ## 1.3.3
 
 ### Patch Changes
