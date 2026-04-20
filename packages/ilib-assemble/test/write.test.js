@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from 'fs';
+import path from 'path';
 
 import writeFiles from '../src/write.js';
 
 const OUTPUT_DIR = "test/testfiles/output/write";
 
-afterEach(() => {
-    if (fs.existsSync(OUTPUT_DIR)) {
-        fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
-    }
-});
-
 describe("testWriteFiles", () => {
+    afterEach(() => {
+        if (fs.existsSync(OUTPUT_DIR)) {
+            fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
+        }
+    });
+
     test("WriteFilesNull", () => {
         expect.assertions(1);
         writeFiles(null, OUTPUT_DIR, false);

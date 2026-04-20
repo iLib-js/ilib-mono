@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'url';
 import path from 'node:path';
 import scan from './scan.js';
 import writeFiles from './write.js';

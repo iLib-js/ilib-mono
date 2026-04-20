@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from 'fs';
+import path from 'path';
 
 import mergeJson from '../src/mergeJson.js';
 
 const OUTPUT_DIR = "test/testfiles/output/mergeJson";
 
-afterEach(() => {
-    if (fs.existsSync(OUTPUT_DIR)) {
-        fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
-    }
-});
-
 describe("testMergeJson", () => {
+    afterEach(() => {
+        if (fs.existsSync(OUTPUT_DIR)) {
+            fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
+        }
+    });
+
     test("MergeJsonReturns", async () => {
         expect.assertions(1);
         const options = {
