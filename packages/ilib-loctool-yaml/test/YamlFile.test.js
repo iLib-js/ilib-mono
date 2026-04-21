@@ -1621,6 +1621,18 @@ describe("yamlfile testsWithLegacySchema", function() {
         expect(y).toBeTruthy();
         expect(y.getSchemaPath()).toBeUndefined();
     });
+    test("YamlGetSchemaPathReturnsUndefinedForMdxFiles", function() {
+        expect.assertions(2);
+        // When ilib-loctool-mdx uses YamlFile for frontmatter parsing, pathName is an .mdx file.
+        // Schema lookup is only for .yml/.yaml - must not try to load schema at MDX path.
+        var y = new YamlFile({
+            project: p,
+            type: yft,
+            pathName: "sign/webhooks/index.mdx"
+        });
+        expect(y).toBeTruthy();
+        expect(y.getSchemaPath()).toBeUndefined();
+    });
     test("YamlExtractSchemaFile", function() {
         expect.assertions(2);
         var y = new YamlFile({
