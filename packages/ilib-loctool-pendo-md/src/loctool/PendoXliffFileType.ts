@@ -270,7 +270,7 @@ export class PendoXliffFileType implements FileType {
      * Uses parsePath to extract path parts (fills partial results when template does not match),
      * then formatPath to reassemble with the target locale.
      */
-    getLocalizedPath(pathInProject: string, loctoolLocale: string) : string {
+    private getLocalizedPath(pathInProject: string, loctoolLocale: string): string {
         // apply locale mapping for output path
         const outputLocale = this.getOuputLocale(loctoolLocale);
 
