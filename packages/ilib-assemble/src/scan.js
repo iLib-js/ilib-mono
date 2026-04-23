@@ -1,7 +1,7 @@
 /*
  * scan.js - scan a file for references to ilib modules
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,10 +62,19 @@ export function scanString(data, set) {
  *
  * @param {string} pathName the path to the file to scan
  * @param {Set} set the set to which to add the name of each ilib module
+ * @param {boolean} [skipScanString=false] if true, skip the scanString regex logic
  */
-function scan(pathName, set) {
+function scan(pathName, set, skipScanString = false) {
     const data = readFileSync(pathName, "utf-8");
-    scanString(data, set);
+    if (!skipScanString) {
+        scanString(data, set);
+    } else {
+        data.split('\n').forEach(line => {
+            const trimmed = line.trim();
+            if (!trimmed) return;
+            set.add(trimmed.endsWith(".js") ? trimmed : trimmed + ".js");
+        });
+    }
 }
 
 export default scan;
