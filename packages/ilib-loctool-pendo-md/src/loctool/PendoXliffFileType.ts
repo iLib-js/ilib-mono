@@ -17,6 +17,8 @@
 
 import type { FileType, Project, API, TranslationSet, ResourceString } from "loctool";
 import path from "path";
+import Locale from "ilib-locale";
+import { parsePath, formatPath } from "ilib-tools-common";
 import PendoXliffFile, { type TranslationUnit } from "./PendoXliffFile";
 import micromatch from "micromatch";
 
@@ -107,11 +109,35 @@ export class PendoXliffFileType implements FileType {
             pathMapping.template,
             pathInProject
         );
-        if (fileLocale !== this.sourceLocale) {
+        // Accept when path has no locale (e.g. guides.xliff) — treat as source file.
+        // Reject when path has a locale that is not the source locale (already localized).
+        if (fileLocale && !this.pathLocaleIndicatesSource(fileLocale)) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * True if the locale segment parsed from the path refers to the project's source
+     * strings. Pendo often names source files with a language-only suffix (e.g. {@code _en.xliff});
+     * {@link Project.isSourceLocale} compares full language/region/script, so {@code en}
+     * does not match source {@code en-US}. When the path encodes only a language and it
+     * matches the source language, treat it as source.
+     */
+    private pathLocaleIndicatesSource(fileLocale: string): boolean {
+        if (this.project.isSourceLocale(fileLocale)) {
+            return true;
+        }
+        const fromPath = new Locale(fileLocale);
+        const source = new Locale(this.project.getSourceLocale());
+        if (fromPath.getLanguage() !== source.getLanguage()) {
+            return false;
+        }
+        if (!fromPath.getRegion()) {
+            return true;
+        }
+        return false;
     }
 
     write(): void {
@@ -240,8 +266,11 @@ export class PendoXliffFileType implements FileType {
     /**
      * Given a source file path and a locale, returns a path where the localized file should be written
      * (accounting for locale mapping and path template mapping).
+     *
+     * Uses parsePath to extract path parts (fills partial results when template does not match),
+     * then formatPath to reassemble with the target locale.
      */
-    private getLocalizedPath(pathInProject: string, loctoolLocale: string) {
+    private getLocalizedPath(pathInProject: string, loctoolLocale: string): string {
         // apply locale mapping for output path
         const outputLocale = this.getOuputLocale(loctoolLocale);
 
@@ -250,18 +279,13 @@ export class PendoXliffFileType implements FileType {
             throw new Error(`No applicable path mapping found for path: ${pathInProject}`);
         }
 
-        /* eslint-disable-next-line
-         @typescript-eslint/no-unsafe-assignment,
-         @typescript-eslint/no-unsafe-call,
-         @typescript-eslint/no-explicit-any,
-         @typescript-eslint/no-unsafe-member-access -- yet undocumented utility method,
-         signature based on https://github.com/iLib-js/ilib-loctool-ghfm/blob/4db00063852758e801f1d0b2c7b7a98ead38bde1/MarkdownFile.js#L938-L941 */
-        const localizedPath: string = (this.loctoolAPI.utils as any).formatPath(mapping.template, {
+        const parsed = parsePath(mapping.template, pathInProject, this.sourceLocale);
+
+        return formatPath(mapping.template, {
+            ...parsed,
             sourcepath: pathInProject,
             locale: outputLocale,
         });
-
-        return localizedPath;
     }
 
     /**

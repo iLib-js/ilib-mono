@@ -21,10 +21,13 @@ import path from "path";
 import fs from "fs";
 import { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } from "ilib-internal";
 
+/** Root of the sample project passed to LoctoolRunner (absolute path). */
+const sampleProjectRoot = path.join(__dirname, "..", "samples", "pendo-md");
+
 describe("samples", () => {
     describe("pendo-md", () => {
-        let fsSnapshot: FSSnapshot;
-        const projectPath = path.resolve(__dirname, "..", "samples", "pendo-md");
+        let fsSnapshot: FSSnapshot | undefined;
+        const projectPath = sampleProjectRoot;
         const pathInProject = (p: string) => path.resolve(projectPath, p);
 
         const projectFiles = {
@@ -34,13 +37,13 @@ describe("samples", () => {
             },
             pendo: {
                 source: pathInProject("l10n/xliff/guides/A000A00Aaa0aaa-AaaaAaa00A0a_en-US.xliff"),
-                localized: pathInProject("l10n/xliff/guides/A000A00Aaa0aaa-AaaaAaa00A0a_en-US_pl-PL.xliff"),
+                localized: pathInProject("l10n/xliff/guides/A000A00Aaa0aaa-AaaaAaa00A0a_pl-PL.xliff"),
             },
         };
 
         beforeAll(async () => {
-            const filesToSnapshot = Object.values(projectFiles).flatMap((f) => Object.values(f));
-            fsSnapshot = FSSnapshot.create(filesToSnapshot);
+            // Snapshot the whole sample tree so any file loctool creates or modifies is restored in afterAll.
+            fsSnapshot = FSSnapshot.create([sampleProjectRoot]);
 
             // run loctool
             const loctool = new LoctoolRunner(projectPath);
@@ -48,7 +51,7 @@ describe("samples", () => {
         });
 
         afterAll(() => {
-            fsSnapshot.restore();
+            fsSnapshot?.restore();
         });
 
         it("should produce an extracted Loctool XLIFF file", () => {
