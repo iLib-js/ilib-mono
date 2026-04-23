@@ -20,7 +20,9 @@
 import path from "path";
 import fs from "fs";
 import { expectFileToMatchSnapshot, LoctoolRunner, FSSnapshot } from "ilib-internal";
-import { sampleProjectRoot, getSampleE2eArtifactPaths } from "./sampleE2eArtifactPaths";
+
+/** Root of the sample project passed to LoctoolRunner (absolute path). */
+const sampleProjectRoot = path.join(__dirname, "..", "samples", "pendo-md");
 
 describe("samples", () => {
     describe("pendo-md", () => {
@@ -40,11 +42,8 @@ describe("samples", () => {
         };
 
         beforeAll(async () => {
-            const filesToSnapshot = [
-                ...getSampleE2eArtifactPaths(),
-                projectFiles.pendo.source,
-            ];
-            fsSnapshot = FSSnapshot.create(filesToSnapshot);
+            // Snapshot the whole sample tree so any file loctool creates or modifies is restored in afterAll.
+            fsSnapshot = FSSnapshot.create([sampleProjectRoot]);
 
             // run loctool
             const loctool = new LoctoolRunner(projectPath);
