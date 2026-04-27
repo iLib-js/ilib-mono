@@ -34,7 +34,11 @@ describe("samples", () => {
             },
             pendo: {
                 source: pathInProject("l10n/xliff/guides/A000A00Aaa0aaa-AaaaAaa00A0a_en-US.xliff"),
-                localized: pathInProject("l10n/xliff/guides/A000A00Aaa0aaa-AaaaAaa00A0a_en-US_pl-PL.xliff"),
+                localized: pathInProject("l10n/xliff/guides/A000A00Aaa0aaa-AaaaAaa00A0a_pl-PL.xliff"),
+            },
+            /** Loctool reads/writes locale XLIFF under {@code settings.xliffsDir} during localize. */
+            translations: {
+                plPl: pathInProject("translations/ilib-loctool-pendo-md-test-pl-PL.xliff"),
             },
         };
 
