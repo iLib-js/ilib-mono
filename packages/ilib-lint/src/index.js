@@ -178,7 +178,7 @@ if (options.opt.quiet) {
     logger.level = "debug";
 }
 
-logger.info("ilib-lint - Copyright (c) 2022-2025 JEDLsoft, All rights reserved.");
+logger.info("ilib-lint - Copyright (c) 2022-2026 JEDLsoft, All rights reserved.");
 
 let paths = options.args;
 if (paths.length === 0) {

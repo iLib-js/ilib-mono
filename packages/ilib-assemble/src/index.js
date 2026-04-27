@@ -4,7 +4,7 @@
  * classes and then assembling the locale data for those classes into
  * files that can be included in webpack
  *
- * Copyright © 2022, 2024 JEDLSoft
+ * Copyright © 2022, 2024, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import scan from './scan.js';
 import scanModule from './scanmodule.js';
 import scanResources from './scanres.js';
 import assembleilib from './legacyilibassemble.js';
+import mergeJson from './mergeJson.js';
 
 const optionConfig = {
     help: {
@@ -99,6 +100,16 @@ const optionConfig = {
         short: "p",
         "default" : undefined,
         help: "Specify the path to customized locale data that overrides existing open-source locale data."
+    },
+    mergeJson: {
+        short: "x",
+        flag: true,
+        help: "Merge JSON locale data files based on ilibincPath and locales, then write merged output files."
+    },
+    splitLocale: {
+        short: "s",
+        flag: true,
+        help: "Used with --mergeJson. Write locale data as a hierarchy of files (root.json, en.json, en/US.json) instead of one merged file per locale."
     }
 };
 
@@ -113,7 +124,7 @@ if (options.args.length < 1) {
     process.exit(1);
 }
 
-if (!options.opt.quiet) console.log("ilib-assemble - Copyright (c) 2022, 2024 JEDLsoft, All rights reserved.");
+if (!options.opt.quiet) console.log("ilib-assemble - Copyright (c) 2022, 2024, 2026 JEDLsoft, All rights reserved.");
 
 const outputPath = options.args[0];
 let stat;
@@ -149,7 +160,15 @@ options.opt.locales = options.opt.locales.map(spec => {
     return loc.getSpec();
 });
 
-if (!options.opt.legacyilib) {
+if (options.opt.legacyilib) {
+    assembleilib(options);
+} else if (options.opt.mergeJson) {
+    mergeJson(options).then(() => {
+        console.log("mergeJson completed.");
+    }).catch(err => {
+        console.error("mergeJson failed:", err);
+    });
+} else {
     let paths = options.args.slice(1);
     if (paths.length === 0) {
         paths.push(".");
@@ -282,7 +301,5 @@ if (!options.opt.legacyilib) {
         if (!options.opt.quiet) console.log("Done. No locale data found.");
     });
 
-    } else {
-        assembleilib(options);
-    }
+}
     console.log("DONE");
