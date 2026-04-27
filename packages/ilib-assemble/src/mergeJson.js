@@ -38,6 +38,10 @@ import writeFiles from './write.js';
  * @returns {Promise<void>}
  */
 function mergeJson(options) {
+    if (options.opt.splitLocale && !options.opt.mergeJson) {
+        return Promise.reject(new Error("--splitLocale requires --mergeJson"));
+    }
+
     const incPath = options.opt.ilibincPath || "./ilib-all-inc.js";
     const outDir = options.args[0];
     const isCompressed = options.opt.compressed || false;

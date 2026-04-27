@@ -21,9 +21,11 @@ import fs from 'fs';
 import path from 'path';
 
 /**
- * Write merged locale data into per-locale JSON files.
+ * Write locale data into per-locale JSON files.
+ * Keys may be BCP-47 locale specs ("en-US") or sublocale path keys ("en/US");
+ * slashes are normalized to hyphens so both produce the same flat filenames.
  *
- * @param {Record<string, object>} allData Locale-keyed merged data map.
+ * @param {Record<string, object>} allData Locale-keyed data map.
  * @param {string} outDir Output directory path.
  * @param {boolean} isCompressed When true, write minified JSON.
  * @returns {void}
@@ -33,14 +35,13 @@ function writeFiles(allData, outDir, isCompressed) {
 
     fs.mkdirSync(outDir, { recursive: true });
 
-    Object.entries(allData).forEach(([loc, data]) => {
-        const resultFilePath = path.join(outDir, loc + ".json");
+    Object.entries(allData).forEach(([key, data]) => {
+        const filePath = path.join(outDir, key.replace(/\//g, "-") + ".json");
         const contents = isCompressed
             ? JSON.stringify(data)
             : JSON.stringify(data, null, 4);
 
-        //console.log("writing " + resultFilePath + " file.");
-        fs.writeFileSync(resultFilePath, contents, "utf-8");
+        fs.writeFileSync(filePath, contents, "utf-8");
     });
 }
 

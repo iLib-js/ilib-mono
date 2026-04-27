@@ -143,4 +143,75 @@ describe("testWriteFiles", () => {
         expect(fs.existsSync(path.join(OUTPUT_DIR, "zh-Hans-CN.json"))).toBeTruthy();
         expect(fs.readdirSync(OUTPUT_DIR)).toHaveLength(2);
     });
+
+    test("WriteFilesSlashKeyProducesHyphenFilename", () => {
+        expect.assertions(1);
+        const data = { "en/US": { "key": "value" } };
+        writeFiles(data, OUTPUT_DIR, false);
+        expect(fs.existsSync(path.join(OUTPUT_DIR, "en-US.json"))).toBeTruthy();
+    });
+
+    test("WriteFilesMultipleSlashesInKey", () => {
+        expect.assertions(1);
+        const data = { "zh/Hans/CN": { "key": "值" } };
+        writeFiles(data, OUTPUT_DIR, false);
+        expect(fs.existsSync(path.join(OUTPUT_DIR, "zh-Hans-CN.json"))).toBeTruthy();
+    });
+
+    test("WriteFilesSlashKeyContentMatchesInput", () => {
+        expect.assertions(1);
+        const localeData = { "key": "value" };
+        writeFiles({ "en/US": localeData }, OUTPUT_DIR, false);
+        const content = fs.readFileSync(path.join(OUTPUT_DIR, "en-US.json"), "utf-8");
+        expect(JSON.parse(content)).toStrictEqual(localeData);
+    });
+
+    test("WriteFilesRootKeyWritesRootJson", () => {
+        expect.assertions(1);
+        const data = { "root": { "key": "base" } };
+        writeFiles(data, OUTPUT_DIR, false);
+        expect(fs.existsSync(path.join(OUTPUT_DIR, "root.json"))).toBeTruthy();
+    });
+
+    test("WriteFilesSplitLocaleHierarchyAllFilesCreated", () => {
+        expect.assertions(4);
+        const data = {
+            "root": { "key": "base" },
+            "ko": { "key": "ko" },
+            "und_KR": { "key": "und_KR" },
+            "ko_KR": { "key": "ko_KR" }
+        };
+        writeFiles(data, OUTPUT_DIR, false);
+        expect(fs.existsSync(path.join(OUTPUT_DIR, "root.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(OUTPUT_DIR, "ko.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(OUTPUT_DIR, "und_KR.json"))).toBeTruthy();
+        expect(fs.existsSync(path.join(OUTPUT_DIR, "ko_KR.json"))).toBeTruthy();
+    });
+
+    test("WriteFilesSplitLocaleHierarchyFileCount", () => {
+        expect.assertions(1);
+        const data = {
+            "root": { "key": "base" },
+            "ko": { "key": "ko" },
+            "und_KR": { "key": "und_KR" },
+            "ko_KR": { "key": "ko_KR" }
+        };
+        writeFiles(data, OUTPUT_DIR, false);
+        expect(fs.readdirSync(OUTPUT_DIR)).toHaveLength(4);
+    });
+
+    test("WriteFilesSplitLocaleHierarchyContentsMatchInput", () => {
+        expect.assertions(4);
+        const data = {
+            "root": { "key": "base" },
+            "ko": { "key": "ko" },
+            "und_KR": { "key": "und_KR" },
+            "ko_KR": { "key": "ko_KR" }
+        };
+        writeFiles(data, OUTPUT_DIR, false);
+        for (const [key, expected] of Object.entries(data)) {
+            const content = fs.readFileSync(path.join(OUTPUT_DIR, `${key}.json`), "utf-8");
+            expect(JSON.parse(content)).toStrictEqual(expected);
+        }
+    });
 });

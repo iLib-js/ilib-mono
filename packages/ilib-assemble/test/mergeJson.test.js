@@ -106,7 +106,6 @@ describe("testMergeJson", () => {
         };
         await mergeJson(options);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
-        // pretty-printed JSON contains newlines
         expect(content).toContain("\n");
     });
 
@@ -123,7 +122,6 @@ describe("testMergeJson", () => {
         };
         await mergeJson(options);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
-        // minified JSON has no newlines
         expect(content).not.toContain("\n");
     });
 
@@ -230,6 +228,37 @@ describe("testMergeJson", () => {
         await expect(mergeJson(options)).rejects.toThrow(
             'Failed to read include file "test/testfiles/nonexistent-inc.js"'
         );
+    });
+
+    test("MergeJsonSplitLocaleWithoutMergeJsonRejects", async () => {
+        expect.assertions(1);
+        const options = {
+            args: [OUTPUT_DIR],
+            opt: {
+                ilibincPath: "test/testfiles/ilib-all-inc.js",
+                ilibPath: "test/",
+                locales: ["en"],
+                splitLocale: true,
+                mergeJson: false
+            }
+        };
+        await expect(mergeJson(options)).rejects.toThrow("--splitLocale requires --mergeJson");
+    });
+
+    test("MergeJsonSplitLocaleWithoutMergeJsonNoOutputCreated", async () => {
+        expect.assertions(1);
+        const options = {
+            args: [OUTPUT_DIR],
+            opt: {
+                ilibincPath: "test/testfiles/ilib-all-inc.js",
+                ilibPath: "test/",
+                locales: ["en"],
+                splitLocale: true,
+                mergeJson: false
+            }
+        };
+        await mergeJson(options).catch(() => {});
+        expect(fs.existsSync(OUTPUT_DIR)).toBeFalsy();
     });
 
     test("MergeJsonInvalidIncludePathNoOutputCreated", async () => {
