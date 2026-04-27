@@ -2,9 +2,8 @@
 "ilib-assemble": minor
 ---
 
-Added `mergeJson` function that scans an ilib include file to collect required
-modules, assembles locale JSON data via `assemble.mjs`, and writes the
-merged output into per-locale JSON files.
+Added `mergeJson` function and `--mergeJson/--splitLocale` CLI options to ilib-assemble
+for assembling and writing locale JSON data from ilib include files.
 
 - A new `--mergeJson` (`-x`) CLI option has been added. When specified,
   `ilib-assemble` runs the `mergeJson` function 
