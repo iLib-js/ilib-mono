@@ -1,5 +1,17 @@
 # ilib-loctool-pendo-md
 
+## 3.0.1
+
+### Patch Changes
+
+- 9f4aa1f: - Fixed a bug where the plugin would make factorial file growth
+  - The PendoXliffFileType.getLocalizedPath was not stripping off
+    the old locale before appending the new locale, causing a
+    factorial growth in the number of files as the locales
+    multiplied with each other appending more and more locales
+- Updated dependencies [68bb962]
+  - ilib-tools-common@1.22.0
+
 ## 3.0.0
 
 ### Patch Changes
