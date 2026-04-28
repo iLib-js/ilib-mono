@@ -2289,4 +2289,53 @@ describe("testResourceQuoteStyle", () => {
         // Proper quotes are used for "sauni"
         expect(actual).toBeFalsy();
     });
+
+    test("ResourceQuoteStyleMatchAsciiQuotesChines", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "Prevent Input Delay (Input Lag) setting will return to Standard if 'Game Optimizer' is not used.",
+            targetLocale: "zh-Hans-CN",
+            target: '如果未使用“游戏优化器”，则“防止输入延迟（输入滞后）”设置将返回“标准”',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+    });
+    test("ResourceQuoteStyleMatchAsciiQuotesChines2", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "To delete the list, press 'OK'.",
+            targetLocale: "zh-Hans-CN",
+            target: '要删除此列表，请按“确定”。',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+    });
 });

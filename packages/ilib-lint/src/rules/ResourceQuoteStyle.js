@@ -236,14 +236,17 @@ class ResourceQuoteStyle extends ResourceRule {
             }
             let match;
             let commands = [];
+            const startQuotePositions = new Set();
 
             while ((match = startQuote.exec(tar)) !== null) {
                 // now that we have found a start quote, find it in the matched string so
                 // that we can get the index into that string
                 const offset = match[0].indexOf(match[3]);
+                const pos = match.index + offset;
+                startQuotePositions.add(pos);
 
                 commands.push(ResourceFixer.createStringCommand(
-                    match.index + offset,
+                    pos,
                     1,
                     correctQuoteStart
                 ));
@@ -253,9 +256,13 @@ class ResourceQuoteStyle extends ResourceRule {
                 // now that we have found an end quote, find it in the matched string so
                 // that we can get the index into that string
                 const offset = match[0].indexOf(match[3]);
+                const pos = match.index + offset;
+                // skip positions already handled by startQuote to avoid overlapping commands
+                // (can occur when a quote char is surrounded by CJK letters on both sides)
+                if (startQuotePositions.has(pos)) continue;
 
                 commands.push(ResourceFixer.createStringCommand(
-                    match.index + offset,
+                    pos,
                     1,
                     correctQuoteEnd
                 ));
