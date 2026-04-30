@@ -1,5 +1,5 @@
 /*
- * readFile.js - read text files for ilib assemble tools
+ * mergeJson.js - read text files for ilib assemble tools
  *
  * Copyright © 2026 JEDLSoft
  *
@@ -19,7 +19,7 @@
 
 import { pathToFileURL } from 'url';
 import path from 'node:path';
-import scan from './scan.js';
+import readLines from './readLines.js';
 import writeFiles from './write.js';
 
 /**
@@ -38,8 +38,8 @@ import writeFiles from './write.js';
  * @returns {Promise<void>}
  */
 function mergeJson(options) {
-    if (options.opt.splitLocale && !options.opt.mergeJson) {
-        return Promise.reject(new Error("--splitLocale requires --mergeJson"));
+    if (options.opt.splitByLocale && !options.opt.mergeJson) {
+        return Promise.reject(new Error("--splitByLocale requires --mergeJson"));
     }
 
     const incPath = options.opt.ilibincPath || "./ilib-all-inc.js";
@@ -48,7 +48,7 @@ function mergeJson(options) {
 
     const ilibModules = new Set();
     try {
-        scan(incPath, ilibModules, true);
+        readLines(incPath, ilibModules);
     } catch (e) {
         return Promise.reject(new Error(`Failed to read include file "${incPath}": ${e.message}`));
     }

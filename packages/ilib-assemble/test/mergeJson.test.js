@@ -90,8 +90,8 @@ describe("testMergeJson", () => {
         await mergeJson(options);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
         const parsed = JSON.parse(content);
-        expect(parsed.modules).toContain("ilib-mock.js");
-        expect(parsed.modules).toContain("ilib-common.js");
+        expect(parsed.modules).toContain("LocaleInfo.js");
+        expect(parsed.modules).toContain("DateFmt.js");
     });
 
     test("MergeJsonNotCompressedByDefault", async () => {
@@ -230,7 +230,7 @@ describe("testMergeJson", () => {
         );
     });
 
-    test("MergeJsonSplitLocaleWithoutMergeJsonRejects", async () => {
+    test("MergeJsonsplitByLocaleWithoutMergeJsonRejects", async () => {
         expect.assertions(1);
         const options = {
             args: [OUTPUT_DIR],
@@ -238,14 +238,14 @@ describe("testMergeJson", () => {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
                 ilibPath: "test/",
                 locales: ["en"],
-                splitLocale: true,
+                splitByLocale: true,
                 mergeJson: false
             }
         };
-        await expect(mergeJson(options)).rejects.toThrow("--splitLocale requires --mergeJson");
+        await expect(mergeJson(options)).rejects.toThrow("--splitByLocale requires --mergeJson");
     });
 
-    test("MergeJsonSplitLocaleWithoutMergeJsonNoOutputCreated", async () => {
+    test("MergeJsonsplitByLocaleWithoutMergeJsonNoOutputCreated", async () => {
         expect.assertions(1);
         const options = {
             args: [OUTPUT_DIR],
@@ -253,7 +253,7 @@ describe("testMergeJson", () => {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
                 ilibPath: "test/",
                 locales: ["en"],
-                splitLocale: true,
+                splitByLocale: true,
                 mergeJson: false
             }
         };

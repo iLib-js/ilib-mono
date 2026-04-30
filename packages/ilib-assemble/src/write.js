@@ -1,5 +1,5 @@
 /*
- * writeFiles.js - write merged JSON files for ilib
+ * write.js - write merged JSON files for ilib
  *
  * Copyright © 2026 JEDLSoft
  *

@@ -106,10 +106,10 @@ const optionConfig = {
         flag: true,
         help: "Merge JSON locale data files based on ilibincPath and locales, then write merged output files."
     },
-    splitLocale: {
+    splitByLocale: {
         short: "s",
         flag: true,
-        help: "Used with --mergeJson. Write locale data as a hierarchy of files (root.json, en.json, en/US.json) instead of one merged file per locale."
+        help: "Used with --mergeJson. Write locale data as a hierarchy of files (root.json, en.json, en-US.json) instead of one merged file per locale."
     }
 };
 
@@ -302,4 +302,4 @@ if (options.opt.legacyilib) {
     });
 
 }
-    console.log("DONE");
+console.log("DONE");
