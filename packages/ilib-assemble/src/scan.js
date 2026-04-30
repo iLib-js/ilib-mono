@@ -62,7 +62,6 @@ export function scanString(data, set) {
  *
  * @param {string} pathName the path to the file to scan
  * @param {Set} set the set to which to add the name of each ilib module
- * @param {boolean} [skipScanString=false] if true, skip the scanString regex logic
  */
 function scan(pathName, set) {
     const data = readFileSync(pathName, "utf-8");

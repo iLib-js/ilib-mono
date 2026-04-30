@@ -20,7 +20,7 @@
 import { pathToFileURL } from 'url';
 import path from 'node:path';
 import readLines from './readLines.js';
-import writeFiles from './write.js';
+import write from './write.js';
 
 /**
  * Scans ilib include files to collect required modules, assembles locale
@@ -58,7 +58,7 @@ function mergeJson(options) {
     return import(pathToFileURL(assemblePath).href)
         .then(({ assemble }) => {
             const result_data = assemble([...ilibModules], options);
-            writeFiles(result_data, outDir, isCompressed);
+            write(result_data, outDir, isCompressed);
         })
         .catch(e => {
             throw new Error(`mergeJson failed: ${e.message}`);

@@ -1,5 +1,5 @@
 /*
- * write.test.js - test the writeFiles utility
+ * write.test.js - test the write utility
  *
  * Copyright © 2026 JEDLSoft
  *
@@ -20,160 +20,160 @@
 import fs from 'fs';
 import path from 'path';
 
-import writeFiles from '../src/write.js';
+import write from '../src/write.js';
 
 const OUTPUT_DIR = "test/testfiles/output/write";
 
-describe("testWriteFiles", () => {
+describe("testWrite", () => {
     afterEach(() => {
         if (fs.existsSync(OUTPUT_DIR)) {
             fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
         }
     });
 
-    test("WriteFilesNull", () => {
+    test("WriteNull", () => {
         expect.assertions(1);
-        writeFiles(null, OUTPUT_DIR, false);
+        write(null, OUTPUT_DIR, false);
         expect(fs.existsSync(OUTPUT_DIR)).toBeFalsy();
     });
 
-    test("WriteFilesUndefined", () => {
+    test("WriteUndefined", () => {
         expect.assertions(1);
-        writeFiles(undefined, OUTPUT_DIR, false);
+        write(undefined, OUTPUT_DIR, false);
         expect(fs.existsSync(OUTPUT_DIR)).toBeFalsy();
     });
 
-    test("WriteFilesNonObject", () => {
+    test("WriteNonObject", () => {
         expect.assertions(1);
-        writeFiles("not an object", OUTPUT_DIR, false);
+        write("not an object", OUTPUT_DIR, false);
         expect(fs.existsSync(OUTPUT_DIR)).toBeFalsy();
     });
 
-    test("WriteFilesEmptyObject", () => {
+    test("WriteEmptyObject", () => {
         expect.assertions(2);
-        writeFiles({}, OUTPUT_DIR, false);
+        write({}, OUTPUT_DIR, false);
         expect(fs.existsSync(OUTPUT_DIR)).toBeTruthy();
         expect(fs.readdirSync(OUTPUT_DIR)).toHaveLength(0);
     });
 
-    test("WriteFilesSingleLocale", () => {
+    test("WriteSingleLocale", () => {
         expect.assertions(1);
         const data = { "en": { "key": "value" } };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.existsSync(path.join(OUTPUT_DIR, "en.json"))).toBeTruthy();
     });
 
-    test("WriteFilesMultipleLocales", () => {
+    test("WriteMultipleLocales", () => {
         expect.assertions(4);
         const data = {
             "en": { "key": "value" },
             "de": { "key": "Wert" },
             "fr": { "key": "valeur" }
         };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.existsSync(path.join(OUTPUT_DIR, "en.json"))).toBeTruthy();
         expect(fs.existsSync(path.join(OUTPUT_DIR, "de.json"))).toBeTruthy();
         expect(fs.existsSync(path.join(OUTPUT_DIR, "fr.json"))).toBeTruthy();
         expect(fs.readdirSync(OUTPUT_DIR)).toHaveLength(3);
     });
 
-    test("WriteFilesContentsAreValidJson", () => {
+    test("WriteContentsAreValidJson", () => {
         expect.assertions(1);
         const data = { "en": { "key": "value", "num": 42 } };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
         expect(() => JSON.parse(content)).not.toThrow();
     });
 
-    test("WriteFilesContentMatchesInput", () => {
+    test("WriteContentMatchesInput", () => {
         expect.assertions(1);
         const localeData = { "key": "value", "nested": { "a": 1 } };
-        writeFiles({ "en": localeData }, OUTPUT_DIR, false);
+        write({ "en": localeData }, OUTPUT_DIR, false);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
         expect(JSON.parse(content)).toStrictEqual(localeData);
     });
 
-    test("WriteFilesNotCompressed", () => {
+    test("WriteNotCompressed", () => {
         expect.assertions(1);
         const data = { "en": { "key": "value" } };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
         expect(content).toContain("\n");
     });
 
-    test("WriteFilesCompressed", () => {
+    test("WriteCompressed", () => {
         expect.assertions(1);
         const data = { "en": { "key": "value" } };
-        writeFiles(data, OUTPUT_DIR, true);
+        write(data, OUTPUT_DIR, true);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
         expect(content).not.toContain("\n");
     });
 
-    test("WriteFilesCompressedContentMatchesInput", () => {
+    test("WriteCompressedContentMatchesInput", () => {
         expect.assertions(1);
         const localeData = { "key": "value", "nested": { "a": 1 } };
-        writeFiles({ "en": localeData }, OUTPUT_DIR, true);
+        write({ "en": localeData }, OUTPUT_DIR, true);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
         expect(JSON.parse(content)).toStrictEqual(localeData);
     });
 
-    test("WriteFilesCreatesOutputDirectory", () => {
+    test("WriteCreatesOutputDirectory", () => {
         expect.assertions(1);
         const data = { "en": { "key": "value" } };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.existsSync(OUTPUT_DIR)).toBeTruthy();
     });
 
-    test("WriteFilesCreatesNestedDirectory", () => {
+    test("WriteCreatesNestedDirectory", () => {
         expect.assertions(1);
         const nestedDir = path.join(OUTPUT_DIR, "nested", "subdir");
         const data = { "en": { "key": "value" } };
-        writeFiles(data, nestedDir, false);
+        write(data, nestedDir, false);
         expect(fs.existsSync(path.join(nestedDir, "en.json"))).toBeTruthy();
     });
 
-    test("WriteFilesLocaleNameInFilename", () => {
+    test("WriteLocaleNameInFilename", () => {
         expect.assertions(3);
         const data = {
             "en-US": { "key": "value" },
             "zh-Hans-CN": { "key": "值" }
         };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.existsSync(path.join(OUTPUT_DIR, "en-US.json"))).toBeTruthy();
         expect(fs.existsSync(path.join(OUTPUT_DIR, "zh-Hans-CN.json"))).toBeTruthy();
         expect(fs.readdirSync(OUTPUT_DIR)).toHaveLength(2);
     });
 
-    test("WriteFilesSlashKeyProducesHyphenFilename", () => {
+    test("WriteSlashKeyProducesHyphenFilename", () => {
         expect.assertions(1);
         const data = { "en/US": { "key": "value" } };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.existsSync(path.join(OUTPUT_DIR, "en-US.json"))).toBeTruthy();
     });
 
-    test("WriteFilesMultipleSlashesInKey", () => {
+    test("WriteMultipleSlashesInKey", () => {
         expect.assertions(1);
         const data = { "zh/Hans/CN": { "key": "值" } };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.existsSync(path.join(OUTPUT_DIR, "zh-Hans-CN.json"))).toBeTruthy();
     });
 
-    test("WriteFilesSlashKeyContentMatchesInput", () => {
+    test("WriteSlashKeyContentMatchesInput", () => {
         expect.assertions(1);
         const localeData = { "key": "value" };
-        writeFiles({ "en/US": localeData }, OUTPUT_DIR, false);
+        write({ "en/US": localeData }, OUTPUT_DIR, false);
         const content = fs.readFileSync(path.join(OUTPUT_DIR, "en-US.json"), "utf-8");
         expect(JSON.parse(content)).toStrictEqual(localeData);
     });
 
-    test("WriteFilesRootKeyWritesRootJson", () => {
+    test("WriteRootKeyWritesRootJson", () => {
         expect.assertions(1);
         const data = { "root": { "key": "base" } };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.existsSync(path.join(OUTPUT_DIR, "root.json"))).toBeTruthy();
     });
 
-    test("WriteFilesSplitLocaleHierarchyAllFilesCreated", () => {
+    test("WriteSplitLocaleHierarchyAllFilesCreated", () => {
         expect.assertions(4);
         const data = {
             "root": { "key": "base" },
@@ -181,14 +181,14 @@ describe("testWriteFiles", () => {
             "und_KR": { "key": "und_KR" },
             "ko_KR": { "key": "ko_KR" }
         };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.existsSync(path.join(OUTPUT_DIR, "root.json"))).toBeTruthy();
         expect(fs.existsSync(path.join(OUTPUT_DIR, "ko.json"))).toBeTruthy();
         expect(fs.existsSync(path.join(OUTPUT_DIR, "und_KR.json"))).toBeTruthy();
         expect(fs.existsSync(path.join(OUTPUT_DIR, "ko_KR.json"))).toBeTruthy();
     });
 
-    test("WriteFilesSplitLocaleHierarchyFileCount", () => {
+    test("WriteSplitLocaleHierarchyFileCount", () => {
         expect.assertions(1);
         const data = {
             "root": { "key": "base" },
@@ -196,11 +196,11 @@ describe("testWriteFiles", () => {
             "und_KR": { "key": "und_KR" },
             "ko_KR": { "key": "ko_KR" }
         };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         expect(fs.readdirSync(OUTPUT_DIR)).toHaveLength(4);
     });
 
-    test("WriteFilesSplitLocaleHierarchyContentsMatchInput", () => {
+    test("WriteSplitLocaleHierarchyContentsMatchInput", () => {
         expect.assertions(4);
         const data = {
             "root": { "key": "base" },
@@ -208,7 +208,7 @@ describe("testWriteFiles", () => {
             "und_KR": { "key": "und_KR" },
             "ko_KR": { "key": "ko_KR" }
         };
-        writeFiles(data, OUTPUT_DIR, false);
+        write(data, OUTPUT_DIR, false);
         for (const [key, expected] of Object.entries(data)) {
             const content = fs.readFileSync(path.join(OUTPUT_DIR, `${key}.json`), "utf-8");
             expect(JSON.parse(content)).toStrictEqual(expected);

@@ -30,7 +30,7 @@ import path from 'path';
  * @param {boolean} isCompressed When true, write minified JSON.
  * @returns {void}
  */
-function writeFiles(allData, outDir, isCompressed) {
+function write(allData, outDir, isCompressed) {
     if (!allData || typeof allData !== "object") return;
 
     fs.mkdirSync(outDir, { recursive: true });
@@ -45,4 +45,4 @@ function writeFiles(allData, outDir, isCompressed) {
     });
 }
 
-export default writeFiles;
+export default write;
