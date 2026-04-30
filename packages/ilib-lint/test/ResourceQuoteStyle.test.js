@@ -2289,4 +2289,199 @@ describe("testResourceQuoteStyle", () => {
         // Proper quotes are used for "sauni"
         expect(actual).toBeFalsy();
     });
+
+    test("ResourceQuoteStyleMatchAsciiQuotesChines", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "Prevent Input Delay (Input Lag) setting will return to Standard if 'Game Optimizer' is not used.",
+            targetLocale: "zh-Hans-CN",
+            target: '如果未使用“游戏优化器”，则“防止输入延迟（输入滞后）”设置将返回“标准”',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+    });
+    test("ResourceQuoteStyleMatchAsciiQuotesChines2", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "To delete the list, press 'OK'.",
+            targetLocale: "zh-Hans-CN",
+            target: '要删除此列表，请按“确定”。',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleMatchAsciiQuotesChinese -- apply fix", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "To delete the list, press 'OK'.",
+            targetLocale: "zh-Hans-CN",
+            // target uses primary “” quotes instead of correct alt ‘’ quotes
+            target: '要删除此列表，请按“确定”。',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        expect(actual?.fix).toBeTruthy();
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual?.fix]);
+
+        // fix should replace primary “” quotes with alt ‘’ quotes
+        expect(resource.getTarget()).toBe('要删除此列表，请按‘确定’。');
+    });
+
+    test("ResourceQuoteStyleNoViolationChineseCorrectAltQuotes", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "To delete the list, press 'OK'.",
+            targetLocale: "zh-Hans-CN",
+            // target uses correct alt ‘’ quotes for zh-Hans-CN
+            target: '要删除此列表，请按‘确定’。',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        // correct native alt quotes should not trigger a violation
+        expect(actual).toBeFalsy();
+    });
+
+    test("ResourceQuoteStyleKoreanCorrectPrimaryQuotes", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'Click the "OK" button.',
+            targetLocale: "ko-KR",
+            // target uses correct primary “/” quotes for ko-KR
+            target: '“확인” 버튼을 클릭하세요.',
+            pathName: "a/b/ko-KR.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/ko-KR.xliff"
+        });
+
+        // correct native primary quotes should not trigger a violation
+        expect(actual).toBeFalsy();
+    });
+    
+    test("ResourceQuoteStyleKoreanCorrectAltQuotes", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "Press 'OK' to confirm.",
+            targetLocale: "ko-KR",
+            // target uses correct alt ‘/’ quotes for ko-KR
+            target: "‘확인‘을 눌러 확인하세요.",
+            pathName: "a/b/ko-KR.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/ko-KR.xliff"
+        });
+
+        // correct native alt quotes should not trigger a violation
+        expect(actual).toBeFalsy();
+    });
+
+    test("ResourceQuoteStyleJapaneseCorrectCornerBrackets", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'Click "OK" to continue.',
+            targetLocale: "ja-JP",
+            // target uses correct 「/」 corner bracket quotes for ja-JP
+            target: "「確認」をクリックして続行します。",
+            pathName: "a/b/ja-JP.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/ja-JP.xliff"
+        });
+
+        // correct native corner bracket quotes should not trigger a violation
+        expect(actual).toBeFalsy();
+    });
 });
