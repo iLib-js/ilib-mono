@@ -57,6 +57,11 @@ Add the plugin to your ilib-lint-config.json configuration:
 
 ## License
 
-Copyright © 2025 JEDLSoft
+Copyright © 2025-2026 JEDLSoft
 
-Licensed under the Apache License, Version 2.0. 
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-java/LICENSE) file in the ilib-mono repository on GitHub.
+
+## Release Notes
+
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint-java/CHANGELOG.md).
+
