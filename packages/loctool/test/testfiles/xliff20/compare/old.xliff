@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">
+  <file original="app1" l:project="app1">
+    <group id="group_1" name="javascript">
+      <unit id="app1_1" name="String 1" type="res:string" l:datatype="javascript">
+        <segment>
+          <source>Hello</source>
+          <target>안녕</target>
+        </segment>
+      </unit>
+      <unit id="app1_2" name="String 2" type="res:string" l:datatype="javascript">
+        <segment>
+          <source>Goodbye</source>
+          <target>잘가</target>
+        </segment>
+      </unit>
+      <unit id="app1_3" name="String 3" type="res:string" l:datatype="javascript">
+        <segment>
+          <source>Thank you</source>
+          <target>감사합니다</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
