@@ -55,7 +55,7 @@ function tuHash(unit) {
  * @returns {{ modified: Array, added: Array, deleted: Array } | undefined}
  */
 var XliffCompare = function XliffCompare(settings) {
-    if (!settings) return;
+    if (!settings || !settings.infiles) return;
 
     var previousXliff = XliffFactory({ version: settings.xliffVersion, style: settings.xliffStyle });
     var currentXliff = XliffFactory({ version: settings.xliffVersion, style: settings.xliffStyle });
@@ -89,7 +89,8 @@ var XliffCompare = function XliffCompare(settings) {
         var key = tuHash(u);
         if (!previousMap[key]) {
             added.push(u);
-        } else if (u.target !== previousMap[key].target) {
+        } else if (u.target !== previousMap[key].target ||
+                JSON.stringify(u.metadata) !== JSON.stringify(previousMap[key].metadata)) {
             modified.push(u);
         }
     });
@@ -112,7 +113,7 @@ var XliffCompare = function XliffCompare(settings) {
  * @returns {boolean} true if done
  */
 XliffCompare.write = function(result, settings) {
-    if (!result) return;
+    if (!result) return false;
 
     var outDir = settings.outfile;
     if (!fs.existsSync(outDir)) {
