@@ -828,11 +828,11 @@ These are the actions which are available:
   maximum number of units, or the maximum number of source or target words.
   It also allows you to randomize the selection so you can create a sample
   of the input translations units.
-- compare - Compare two xliff files (previous and current) and write the
+- compare - Compare two xliff files (from and to) and write the
   differences to an output directory. Outputs up to three files:
   modified.xliff (units present in both but with changed target),
-  added.xliff (units only in current), and deleted.xliff (units only in
-  previous). A file is only created if there are units of that type.
+  added.xliff (units only in to), and deleted.xliff (units only in
+  from). A file is only created if there are units of that type.
 
 Copyright and License
 -------

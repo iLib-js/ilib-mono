@@ -145,16 +145,16 @@ var commandOptionHelp = {
         "  Style of segmentation to use when writing out TMX files. Style can be 'sentence'\n" +
         "  or 'paragraph'. (Default is 'paragraph')",
     compare:
-        "compare previous_xliff current_xliff output_dir\n" +
+        "compare from_xliff to_xliff output_dir\n" +
         "  Compare two xliff files and write the differences to the output directory.\n\n" +
-        "previous_xliff\n" +
-        "  the path to the previous xliff file\n" +
-        "current_xliff\n" +
-        "  the path to the current xliff file\n" +
+        "from_xliff\n" +
+        "  the path to the from xliff file\n" +
+        "to_xliff\n" +
+        "  the path to the to xliff file\n" +
         "output_dir\n" +
         "  the path to the directory where the output files will be written.\n" +
         "  Output files: modified.xliff, added.xliff, deleted.xliff\n" +
-        "  added contains units only in current_xliff, deleted contains units only in previous_xliff.\n" +
+        "  added contains units only in to_xliff, deleted contains units only in from_xliff.\n" +
         "  A file is only created if there are units of that type.",
     select:
         "select criteria outfile filename ...\n" +
@@ -579,7 +579,7 @@ case "convert":
 
 case "compare":
     if (options.length < 6) {
-        console.log("Error: must specify a previous xliff file, a current xliff file, and an output directory.");
+        console.log("Error: must specify a from xliff file, a to xliff file, and an output directory.");
         usage();
     }
     settings.infiles = [options[3], options[4]];

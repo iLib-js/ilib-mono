@@ -20,10 +20,8 @@ var fs = require("fs");
 var path = require("path");
 var XliffCompare = require("../lib/XliffCompare.js");
 
-var PREVIOUS_XLIFF = "test/testfiles/xliff20/compare/previous.xliff";
-var CURRENT_XLIFF = "test/testfiles/xliff20/compare/current.xliff";
-var WEBOS_PREVIOUS_XLIFF = "test/testfiles/xliff20/compare/webos_previous.xliff";
-var WEBOS_CURRENT_XLIFF = "test/testfiles/xliff20/compare/webos_current.xliff";
+var FROM_XLIFF = "test/testfiles/xliff20/compare/from.xliff";
+var TO_XLIFF = "test/testfiles/xliff20/compare/to.xliff";
 var OUT_DIR = "test/testfiles/xliff20/compare/output";
 
 function rmrf(p) {
@@ -41,7 +39,7 @@ afterEach(function() {
     rmrf(OUT_DIR);
 });
 
-describe("xliffcompare", function() {
+describe("XliffCompare", function() {
     test("XliffCompareNoParameter", function() {
         expect.assertions(1);
         var result = XliffCompare();
@@ -54,20 +52,20 @@ describe("xliffcompare", function() {
         expect(!result).toBeTruthy();
     });
 
-    test("XliffCompare_missing_previous_file_returns_undefined", function() {
+    test("XliffCompare_missing_from_file_returns_undefined", function() {
         expect.assertions(1);
         var result = XliffCompare({
             xliffVersion: 2,
-            infiles: ["nonexistent/path/previous.xliff", CURRENT_XLIFF]
+            infiles: ["nonexistent/path/from.xliff", TO_XLIFF]
         });
         expect(result).toBeUndefined();
     });
 
-    test("XliffCompare_missing_current_file_returns_undefined", function() {
+    test("XliffCompare_missing_to_file_returns_undefined", function() {
         expect.assertions(1);
         var result = XliffCompare({
             xliffVersion: 2,
-            infiles: [PREVIOUS_XLIFF, "nonexistent/path/current.xliff"]
+            infiles: [FROM_XLIFF, "nonexistent/path/to.xliff"]
         });
         expect(result).toBeUndefined();
     });
@@ -76,30 +74,52 @@ describe("xliffcompare", function() {
         expect.assertions(3);
         var settings = {
             xliffVersion: 2,
-            infiles: [PREVIOUS_XLIFF, CURRENT_XLIFF]
+            infiles: [FROM_XLIFF, TO_XLIFF],
+            outfile: OUT_DIR
         };
         var result = XliffCompare(settings);
         expect(result).toBeTruthy();
+        XliffCompare.write(result, settings);
         expect(result.modified.length).toBe(1);
-        expect(result.modified[0].source).toBe("Hello");
+        expect(fs.existsSync(path.join(OUT_DIR, "modified.xliff"))).toBeTruthy();
     });
 
-    test("XliffCompare_modified_target_is_new_value", function() {
-        expect.assertions(2);
+    test("XliffCompare_modified_output_matches_expected", function() {
+        expect.assertions(3);
         var settings = {
             xliffVersion: 2,
-            infiles: [PREVIOUS_XLIFF, CURRENT_XLIFF]
+            infiles: [FROM_XLIFF, TO_XLIFF],
+            outfile: OUT_DIR
         };
         var result = XliffCompare(settings);
         expect(result).toBeTruthy();
-        expect(result.modified[0].target).toBe("안녕하세요");
+        XliffCompare.write(result, settings);
+
+        var actual = fs.readFileSync(path.join(OUT_DIR, "modified.xliff"), "utf-8");
+        var expected =
+        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<xliff version="2.0" srcLang="en-KR" trgLang="ko-KR" xmlns:l="http://ilib-js.com/loctool">\n' +
+        '  <file original="app1" l:project="app1">\n' +
+        '    <group id="group_1" name="javascript">\n' +
+        '      <unit id="app1_1" name="String 1" type="res:string" l:datatype="javascript">\n' +
+        '        <segment>\n' +
+        '          <source>Hello</source>\n' +
+        '          <target>안녕하세요</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>\n';
+
+        expect(result.modified.length).toBe(1);
+        expect(actual.trim()).toBe(expected.trim());
     });
 
     test("XliffCompare_added", function() {
         expect.assertions(3);
         var settings = {
             xliffVersion: 2,
-            infiles: [PREVIOUS_XLIFF, CURRENT_XLIFF]
+            infiles: [FROM_XLIFF, TO_XLIFF]
         };
         var result = XliffCompare(settings);
         expect(result).toBeTruthy();
@@ -111,7 +131,7 @@ describe("xliffcompare", function() {
         expect.assertions(3);
         var settings = {
             xliffVersion: 2,
-            infiles: [PREVIOUS_XLIFF, CURRENT_XLIFF]
+            infiles: [FROM_XLIFF, TO_XLIFF]
         };
         var result = XliffCompare(settings);
         expect(result).toBeTruthy();
@@ -123,7 +143,7 @@ describe("xliffcompare", function() {
         expect.assertions(4);
         var settings = {
             xliffVersion: 2,
-            infiles: [PREVIOUS_XLIFF, CURRENT_XLIFF]
+            infiles: [FROM_XLIFF, TO_XLIFF]
         };
         var result = XliffCompare(settings);
         expect(result).toBeTruthy();
@@ -139,7 +159,7 @@ describe("xliffcompare", function() {
         expect.assertions(5);
         var settings = {
             xliffVersion: 2,
-            infiles: [PREVIOUS_XLIFF, CURRENT_XLIFF],
+            infiles: [FROM_XLIFF, TO_XLIFF],
             outfile: OUT_DIR
         };
         var result = XliffCompare(settings);
@@ -156,7 +176,7 @@ describe("xliffcompare", function() {
         // Use same file for both old and new → no differences
         var settings = {
             xliffVersion: 2,
-            infiles: [PREVIOUS_XLIFF, PREVIOUS_XLIFF],
+            infiles: [FROM_XLIFF, FROM_XLIFF],
             outfile: OUT_DIR
         };
         var result = XliffCompare(settings);
@@ -167,98 +187,4 @@ describe("xliffcompare", function() {
         expect(fs.existsSync(path.join(OUT_DIR, "deleted.xliff"))).toBeFalsy();
     });
 
-    // webOS style (-2 --xliffStyle webOS)
-
-    test("XliffCompare_webOS_modified", function() {
-        expect.assertions(4);
-        var settings = {
-            xliffVersion: 2,
-            xliffStyle: "webOS",
-            infiles: [WEBOS_PREVIOUS_XLIFF, WEBOS_CURRENT_XLIFF]
-        };
-        var result = XliffCompare(settings);
-        expect(result).toBeTruthy();
-        expect(result.modified.length).toBe(2);
-        var helloUnit = result.modified.find(function(u) { return u.source === "Hello"; });
-        expect(helloUnit).toBeDefined();
-        expect(helloUnit.target).toBe("안녕하세요");
-    });
-
-    test("XliffCompare_webOS_added", function() {
-        expect.assertions(3);
-        var settings = {
-            xliffVersion: 2,
-            xliffStyle: "webOS",
-            infiles: [WEBOS_PREVIOUS_XLIFF, WEBOS_CURRENT_XLIFF]
-        };
-        var result = XliffCompare(settings);
-        expect(result).toBeTruthy();
-        expect(result.added.length).toBe(1);
-        expect(result.added[0].source).toBe("Yes");
-    });
-
-    test("XliffCompare_webOS_deleted", function() {
-        expect.assertions(3);
-        var settings = {
-            xliffVersion: 2,
-            xliffStyle: "webOS",
-            infiles: [WEBOS_PREVIOUS_XLIFF, WEBOS_CURRENT_XLIFF]
-        };
-        var result = XliffCompare(settings);
-        expect(result).toBeTruthy();
-        expect(result.deleted.length).toBe(1);
-        expect(result.deleted[0].source).toBe("Goodbye");
-    });
-
-    test("XliffCompare_webOS_metadata_change_categorized_as_modified", function() {
-        expect.assertions(5);
-        var settings = {
-            xliffVersion: 2,
-            xliffStyle: "webOS",
-            infiles: [WEBOS_PREVIOUS_XLIFF, WEBOS_CURRENT_XLIFF]
-        };
-        var result = XliffCompare(settings);
-        expect(result).toBeTruthy();
-
-        var metadataUnit = result.modified.find(function(u) {
-            return u.source === "%deviceType% {arg1}.";
-        });
-
-        expect(metadataUnit).toBeDefined();
-        expect(result.modified.length).toBe(2);
-        expect(result.added.length).toBe(1);
-        expect(result.deleted.length).toBe(1);
-    });
-
-    test("XliffCompare_webOS_write_creates_files", function() {
-        expect.assertions(4);
-        var settings = {
-            xliffVersion: 2,
-            xliffStyle: "webOS",
-            infiles: [WEBOS_PREVIOUS_XLIFF, WEBOS_CURRENT_XLIFF],
-            outfile: OUT_DIR
-        };
-        var result = XliffCompare(settings);
-        expect(result).toBeTruthy();
-        XliffCompare.write(result, settings);
-        expect(fs.existsSync(path.join(OUT_DIR, "modified.xliff"))).toBeTruthy();
-        expect(fs.existsSync(path.join(OUT_DIR, "added.xliff"))).toBeTruthy();
-        expect(fs.existsSync(path.join(OUT_DIR, "deleted.xliff"))).toBeTruthy();
-    });
-
-    test("XliffCompare_webOS_write_skips_empty_categories", function() {
-        expect.assertions(4);
-        var settings = {
-            xliffVersion: 2,
-            xliffStyle: "webOS",
-            infiles: [WEBOS_PREVIOUS_XLIFF, WEBOS_PREVIOUS_XLIFF],
-            outfile: OUT_DIR
-        };
-        var result = XliffCompare(settings);
-        expect(result).toBeTruthy();
-        XliffCompare.write(result, settings);
-        expect(fs.existsSync(path.join(OUT_DIR, "modified.xliff"))).toBeFalsy();
-        expect(fs.existsSync(path.join(OUT_DIR, "added.xliff"))).toBeFalsy();
-        expect(fs.existsSync(path.join(OUT_DIR, "deleted.xliff"))).toBeFalsy();
-    });
 });

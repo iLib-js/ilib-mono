@@ -44,11 +44,11 @@ function tuHash(unit) {
  * modified, added, and deleted translation units.
  *
  * - modified: unit exists in both files (same hash key) but target text differs
- * - added: unit exists only in current_xliff
- * - deleted: unit exists only in previous_xliff
+ * - added: unit exists only in to_xliff
+ * - deleted: unit exists only in from_xliff
  *
  * @param {Object} settings
- * @param {Array.<string>} settings.infiles [previous_xliff_path, current_xliff_path]
+ * @param {Array.<string>} settings.infiles [from_xliff_path, to_xliff_path]
  * @param {string} settings.outfile path to the output directory
  * @param {number} settings.xliffVersion xliff version
  * @param {string} settings.xliffStyle xliff style
@@ -57,46 +57,46 @@ function tuHash(unit) {
 var XliffCompare = function XliffCompare(settings) {
     if (!settings || !settings.infiles) return;
 
-    var previousXliff = XliffFactory({ version: settings.xliffVersion, style: settings.xliffStyle });
-    var currentXliff = XliffFactory({ version: settings.xliffVersion, style: settings.xliffStyle });
+    var fromXliff = XliffFactory({ version: settings.xliffVersion, style: settings.xliffStyle });
+    var toXliff = XliffFactory({ version: settings.xliffVersion, style: settings.xliffStyle });
 
     if (!fs.existsSync(settings.infiles[0])) {
-        logger.warn("Could not open previous file " + settings.infiles[0]);
+        logger.warn("Could not open from file " + settings.infiles[0]);
         return;
     }
     if (!fs.existsSync(settings.infiles[1])) {
-        logger.warn("Could not open current file " + settings.infiles[1]);
+        logger.warn("Could not open to file " + settings.infiles[1]);
         return;
     }
 
-    previousXliff.deserialize(fs.readFileSync(settings.infiles[0], "utf-8"));
-    currentXliff.deserialize(fs.readFileSync(settings.infiles[1], "utf-8"));
+    fromXliff.deserialize(fs.readFileSync(settings.infiles[0], "utf-8"));
+    toXliff.deserialize(fs.readFileSync(settings.infiles[1], "utf-8"));
 
-    var previousUnits = previousXliff.getTranslationUnits();
-    var currentUnits = currentXliff.getTranslationUnits();
+    var fromUnits = fromXliff.getTranslationUnits();
+    var toUnits = toXliff.getTranslationUnits();
 
-    var previousMap = {};
-    previousUnits.forEach(function(u) { previousMap[tuHash(u)] = u; });
+    var fromMap = {};
+    fromUnits.forEach(function(u) { fromMap[tuHash(u)] = u; });
 
-    var currentMap = {};
-    currentUnits.forEach(function(u) { currentMap[tuHash(u)] = u; });
+    var toMap = {};
+    toUnits.forEach(function(u) { toMap[tuHash(u)] = u; });
 
     var modified = [];
     var added = [];
     var deleted = [];
 
-    currentUnits.forEach(function(u) {
+    toUnits.forEach(function(u) {
         var key = tuHash(u);
-        if (!previousMap[key]) {
+        if (!fromMap[key]) {
             added.push(u);
-        } else if (u.target !== previousMap[key].target ||
-                JSON.stringify(u.metadata) !== JSON.stringify(previousMap[key].metadata)) {
+        } else if (u.target !== fromMap[key].target ||
+                JSON.stringify(u.metadata) !== JSON.stringify(fromMap[key].metadata)) {
             modified.push(u);
         }
     });
 
-    previousUnits.forEach(function(u) {
-        if (!currentMap[tuHash(u)]) {
+    fromUnits.forEach(function(u) {
+        if (!toMap[tuHash(u)]) {
             deleted.push(u);
         }
     });
