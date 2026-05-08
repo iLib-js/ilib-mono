@@ -169,7 +169,7 @@ export const regexRules = [
         regexps: [
             "(\\p{L}+('\\p{L}+)+)"         // word boundary + word chars + quote + word chars + word boundary (e.g., it's, don't, d'l'homme)
         ],
-        link: "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-apostrophe.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-apostrophe.md",
         fixes: [
             { search: "'", replace: "\u2019" }
         ]
