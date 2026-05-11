@@ -34,7 +34,7 @@ export default class ResourceReturnChar extends ResourceRule {
         super(options);
         this.name = "resource-return-char";
         this.description = "Checks that the number of return characters (CR, LF, CRLF) in the source matches the target";
-        this.link = "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-return-char.md";
+        this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-return-char.md";
         this.type = "resource";
     }
 
