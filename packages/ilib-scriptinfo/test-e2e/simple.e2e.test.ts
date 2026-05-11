@@ -17,62 +17,38 @@
  */
 
 import path from "path";
-import { execFile } from "child_process";
-import { promisify } from "util";
+import { spawnSync } from "child_process";
 
-const execFileAsync = promisify(execFile);
-
-interface TestResult {
-    stdout: string;
-    stderr: string;
-    code: number;
-}
-
-/**
- * Helper function to run simple test scripts
- */
-async function runSimpleTest(testDir: string): Promise<TestResult> {
-    const testPath = path.resolve(__dirname, testDir);
-
-    let command: string = "pnpm";
-    let commandArgs: string[] = ["--silent", "start"];
-
-    try {
-        const { stdout, stderr } = await execFileAsync(command, commandArgs, {
-            cwd: testPath,
-            env: { ...process.env, NODE_ENV: "node" },
-        });
-        return { stdout, stderr, code: 0 };
-    } catch (error: any) {
-        return {
-            stdout: error.stdout || "",
-            stderr: error.stderr || "",
-            code: error.code || 1,
-        };
-    }
-}
+const testRootDir = path.resolve(__dirname);
+const fixturesDir = path.resolve(testRootDir, "__testfiles__");
 
 /**
  * Test suite for simple package loading
  */
 describe("ilib-scriptinfo simple package loading", () => {
     test("ESM module loading works", async () => {
-        const result = await runSimpleTest("__testfiles__/esm-test");
-        expect(result.code).toBe(0);
+        const testDir = path.resolve(fixturesDir, "esm-test");
+        const result = spawnSync("node", ["index.js"], { cwd: testDir, encoding: "utf8" });
+        expect(result.status).toBe(0);
+        expect(result.error).toBeUndefined();
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
     }, 10000);
 
     test("CommonJS module loading works", async () => {
-        const result = await runSimpleTest("__testfiles__/legacy-test");
-        expect(result.code).toBe(0);
+        const testDir = path.resolve(fixturesDir, "legacy-test");
+        const result = spawnSync("node", ["index.js"], { cwd: testDir, encoding: "utf8" });
+        expect(result.status).toBe(0);
+        expect(result.error).toBeUndefined();
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
     }, 10000);
 
     test("TypeScript module loading works", async () => {
-        const result = await runSimpleTest("__testfiles__/typescript-test");
-        expect(result.code).toBe(0);
+        const testDir = path.resolve(fixturesDir, "typescript-test");
+        const result = spawnSync("tsx", ["index.ts"], { cwd: testDir, encoding: "utf8" });
+        expect(result.status).toBe(0);
+        expect(result.error).toBeUndefined();
         expect(result.stdout).toMatchSnapshot();
         expect(result.stderr).toBe("");
     }, 15000);

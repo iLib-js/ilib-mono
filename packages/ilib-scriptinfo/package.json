@@ -76,6 +76,7 @@
         "babel-loader": "^10.0.0",
         "ilib": "^14.21.1",
         "ilib-internal": "workspace:^",
+        "ilib-scriptinfo": "workspace:^",
         "jest": "^29.7.0",
         "karma": "^6.4.2",
         "karma-assert": "^1.0.1",
