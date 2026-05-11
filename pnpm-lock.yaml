@@ -98,7 +98,7 @@ importers:
         version: link:../ilib-assemble
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.10.2)(node-notifier@8.0.2)
+        version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
       jsdoc:
         specifier: ^4.0.4
         version: 4.0.4
@@ -3348,6 +3348,9 @@ importers:
       grunt-contrib-jshint:
         specifier: ^3.2.0
         version: 3.2.0
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.17.4)(node-notifier@8.0.2)
@@ -7653,6 +7656,9 @@ packages:
 
   ilib-env@1.4.1:
     resolution: {integrity: sha512-lhXj5AaOT6AAft3eSFTqncNSYhqMdXAq9RpAeCral1tJpZDmzxhxpnKcFghgbjk9NkFFBRxFxTIAkgSq9NfEfQ==}
+
+  ilib-env@1.4.2:
+    resolution: {integrity: sha512-H/nFk+qnC6hfgD6bgaSF+mohZUWqtfjQmStBCU3c832vv00Vtco6GrOSGaXwdr3QgnhzxL8zhLOUTtSTJ2gHxA==}
 
   ilib-es6@14.21.0:
     resolution: {integrity: sha512-0RNWnaZ5ojMuK/we1UP1Z2olbm45VETB6oVTlTWkCZTvlgDpuqTdtNymbvgSn6s7UP/qRBP5uHBZ7RrBrWgxug==}
@@ -15037,7 +15043,7 @@ snapshots:
       loader-utils: 2.0.4
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 5.95.0(webpack-cli@4.10.0)
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   babel-loader@9.2.1(@babel/core@7.26.0)(webpack@5.102.1):
     dependencies:
@@ -15051,7 +15057,7 @@ snapshots:
       '@babel/core': 7.26.0
       find-cache-dir: 4.0.0
       schema-utils: 4.2.0
-      webpack: 5.95.0
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   babel-loader@9.2.1(@babel/core@7.28.4)(webpack@5.102.1):
     dependencies:
@@ -17306,7 +17312,7 @@ snapshots:
   ilib-common@1.1.6:
     dependencies:
       '@log4js-node/log4js-api': 1.0.2
-      ilib-env: 1.4.2
+      ilib-env: 1.4.1
       ilib-locale: 1.2.4
 
   ilib-ctype@1.2.2:
@@ -17316,6 +17322,8 @@ snapshots:
   ilib-env@1.4.0: {}
 
   ilib-env@1.4.1: {}
+
+  ilib-env@1.4.2: {}
 
   ilib-es6@14.21.0:
     dependencies:
@@ -18582,7 +18590,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.10.2
+      '@types/node': 20.17.4
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -21690,7 +21698,7 @@ snapshots:
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
       terser: 5.36.0
-      webpack: 5.95.0(webpack-cli@4.10.0)
+      webpack: 5.95.0(webpack-cli@5.1.4)
 
   terser-webpack-plugin@5.3.14(webpack@5.102.1):
     dependencies:
@@ -22345,36 +22353,6 @@ snapshots:
       wildcard: 2.0.1
 
   webpack-sources@3.2.3: {}
-
-  webpack@5.95.0:
-    dependencies:
-      '@types/estree': 1.0.6
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/wasm-edit': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.14.0
-      acorn-import-attributes: 1.9.5(acorn@8.14.0)
-      browserslist: 4.24.2
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.17.1
-      es-module-lexer: 1.5.4
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.95.0)
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
 
   webpack-sources@3.3.3: {}
 
