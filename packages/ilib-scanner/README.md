@@ -123,7 +123,13 @@ files as well) to your web server or check it in to your
 repo so that it all gets published with the next push. We also recommend that
 you check these files in to your source code control system.
 
-Release Notes
--------------
+## License
 
-See [CHANGELOG.md](./CHANGELOG.md)
+Copyright © 2026 JEDLSoft
+
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-scanner/LICENSE) file in the ilib-mono repository on GitHub.
+
+## Release Notes
+
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-scanner/CHANGELOG.md).
+

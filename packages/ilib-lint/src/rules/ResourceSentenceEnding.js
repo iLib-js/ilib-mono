@@ -173,7 +173,7 @@ class ResourceSentenceEnding extends ResourceRule {
         super(options);
         this.name = "resource-sentence-ending";
         this.description = "Checks that sentence-ending punctuation is appropriate for the locale of the target string and matches the punctuation in the source string";
-        this.link = "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-sentence-ending.md";
+        this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-sentence-ending.md";
 
         // Get the parameter from the options
         const param = this.getParam() || {};

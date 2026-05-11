@@ -39,7 +39,7 @@ class ResourceSnakeCase extends ResourceRule {
 
         this.name = "resource-snake-case";
         this.description = "Ensure that when source strings contain only snake case and no whitespace, then the targets are the same";
-        this.link = "https://gihub.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-snake-case.md";
+        this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-snake-case.md";
         this.regexps = [
             "^\\s*[a-zA-Z0-9]*(_[a-zA-Z0-9]+)+\\s*$",
             "^\\s*[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*_\\s*$"

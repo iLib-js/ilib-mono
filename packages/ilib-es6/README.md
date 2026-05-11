@@ -146,23 +146,6 @@ CalendarFactoryAsync({ locale: "ja-JP" }).then(function (cal) {
 });
 ```
 
-## License
-
-Copyright © 2019-2024, JEDLSoft
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and
-limitations under the License.
-
 ## Versions
 
 Starting with version 14.2.0, the version of ilib-es6 will echo the version of ilib
@@ -181,3 +164,14 @@ As of v14.15.0, ilib-es6 will no longer have transpiled sources in it will be li
 as an ESM-only project in its package.json. If you need commonjs sources, use ilib
 directly. Because of this, this package will no longer work on node versions less
 than 12.
+
+## License
+
+Copyright © 2019-2024, 2026, JEDLSoft
+
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-es6/LICENSE) file in the ilib-mono repository on GitHub.
+
+## Release Notes
+
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-es6/CHANGELOG.md).
+

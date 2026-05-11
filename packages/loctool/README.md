@@ -5,7 +5,7 @@ This tool reads source files in various formats, extracts strings
 for translation, and writes out the translated strings the various
 resource file formats needed by each project.
 
-See the [release notes](./CHANGELOG.md) for details on what is
+See the [release notes](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/CHANGELOG.md) for details on what is
 new and what has changed.
 
 Installation
@@ -834,20 +834,13 @@ These are the actions which are available:
   added.xliff (units only in to), and deleted.xliff (units only in
   from). A file is only created if there are units of that type.
 
-Copyright and License
--------
+## License
 
-Copyright &copy; 2016-2025, HealthTap, Inc. and JEDLSoft
+Copyright © 2016-2026, HealthTap, Inc. and JEDLSoft
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this tool except in compliance with the License.
-You may obtain a copy of the License at
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/LICENSE.txt) file in the ilib-mono repository on GitHub.
 
-http://www.apache.org/licenses/LICENSE-2.0
+## Release Notes
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/CHANGELOG.md).
 
-See the License for the specific language governing permissions and
-limitations under the License.
