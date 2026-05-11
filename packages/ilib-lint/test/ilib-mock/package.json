@@ -1,5 +1,6 @@
 {
     "name": "ilib-mock",
+    "private": true,
     "version": "1.0.0",
     "main": "./index.js",
     "description": "mock i18nlint package used for testing the walk function",
