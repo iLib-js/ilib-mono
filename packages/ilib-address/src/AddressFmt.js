@@ -26,7 +26,9 @@ import ResBundle from 'ilib-resbundle';
 import getLocaleData, { LocaleData } from 'ilib-localedata';
 import { getPlatform } from 'ilib-env';
 
-import Address from './Address.js';
+/**
+ * @typedef {import('./Address.js')} Address
+ */
 
 /**
  * @private
@@ -435,10 +437,12 @@ class AddressFmt {
             mostSpecific: true
         }).then((regions) => {
             this.regions = regions;
+            // For Korean translations, use ko-KR specifically since that's where the translations are stored
+            const resBundleLocale = (locale && locale.getLanguage() === "ko") ? "ko-KR" : loc;
             return ResBundle.create({
                 basePath: locdir,
                 name: "addressres",
-                locale: loc
+                locale: resBundleLocale
             });
         }).then((res) => {
             rb = res;

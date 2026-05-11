@@ -47,7 +47,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono"
+        "url": "https://github.com/iLib-js/ilib-mono.git"
     },
     "engines": {
         "node": ">=12 <23"
