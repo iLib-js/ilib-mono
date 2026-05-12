@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples markdown should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="en-US/example.mdx" source-language="en-US" product-name="sample-mdx">
+    <body>
+      <trans-unit id="1" resname="r496301270.Title" restype="string" datatype="x-yaml">
+        <source>Example MDX File</source>
+      </trans-unit>
+      <trans-unit id="2" resname="r1023125524" restype="string" datatype="mdx">
+        <source>Example MDX File</source>
+      </trans-unit>
+      <trans-unit id="3" resname="r496301270.Description" restype="string" datatype="x-yaml">
+        <source>This is an example MDX file with some content to localize</source>
+      </trans-unit>
+      <trans-unit id="4" resname="r2265377" restype="string" datatype="mdx">
+        <source>This is an example of an MDX file that contains both &lt;c0&gt;markdown&lt;/c0&gt; and &lt;c1&gt;XML&lt;/c1&gt; components.</source>
+      </trans-unit>
+      <trans-unit id="5" resname="r348436399" restype="string" datatype="mdx">
+        <source>Features</source>
+      </trans-unit>
+      <trans-unit id="6" resname="r220017246" restype="string" datatype="mdx">
+        <source>MDX allows you to use JSX components directly in your markdown files.</source>
+      </trans-unit>
+      <trans-unit id="7" resname="r40413860" restype="string" datatype="mdx">
+        <source>Here is some &lt;c0&gt;bold text&lt;/c0&gt; and &lt;c1&gt;underscore text&lt;/c1&gt; for translation.</source>
+      </trans-unit>
+      <trans-unit id="8" resname="r1025826350" restype="string" datatype="mdx">
+        <source>You can also include interactive components like buttons and forms in your markdown content.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

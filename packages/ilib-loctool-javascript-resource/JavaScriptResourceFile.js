@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFile.js - represents a javascript resource file
  *
- * Copyright © 2019-2022, 2025 JEDLSoft
+ * Copyright © 2019-2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 /**
  * @class Represents an Android resource file.
@@ -200,13 +200,9 @@ JavaScriptResourceFile.prototype.getContent = function() {
     if (settings && settings.JavaScriptResourceFile && settings.JavaScriptResourceFile.prefix) {
         output = settings.JavaScriptResourceFile.prefix;
     }
-    output += this.API.utils.formatPath(this.header, {
-        locale: defaultLocale
-    });
+    output += this.API.utils.formatLocaleParams(this.header, defaultLocale);
     output += JSON.stringify(json, undefined, 4);
-    output += this.API.utils.formatPath(this.footer, {
-        locale: defaultLocale
-    });
+    output += this.API.utils.formatLocaleParams(this.footer, defaultLocale);
 
     // take care of double-escaped unicode chars
     output = output.replace(/\\\\u/g, "\\u");
@@ -225,7 +221,11 @@ JavaScriptResourceFile.prototype.getContent = function() {
  * given project, context, and locale.
  */
 JavaScriptResourceFile.prototype.getResourceFilePath = function(locale, flavor) {
-    if (this.pathName) return this.pathName;
+    // Only treat pathName as the output path when it is a JS file. Callers
+    // (e.g. JsonFile delegating localize) may pass a source path like
+    // "dir/strings.json" for cache disambiguation; output still uses the
+    // project javascript template under resourceDirs.
+    if (this.pathName && /\.js$/i.test(this.pathName)) return this.pathName;
 
     var localeDir, dir, newPath, spec;
     locale = locale || this.locale;
@@ -253,6 +253,10 @@ JavaScriptResourceFile.prototype.write = function() {
 
             // must be a new file, so create the name
             this.pathName = this.getResourceFilePath();
+        } else if (!/\.js$/i.test(this.pathName)) {
+            this.logger.trace("Non-JS pathName is a delegating source path; computing JS output path");
+            this.pathName = this.getResourceFilePath();
+            this.defaultSpec = this.locale.getSpec();
         } else {
             this.defaultSpec = this.locale.getSpec();
         }

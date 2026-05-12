@@ -166,10 +166,10 @@ export const regexRules = [
         name: "resource-apostrophe",
         description: "Ensure that the target uses proper Unicode apostrophes instead of ASCII straight quotes.",
         note: "The word \"{matchString}\" contains an ASCII straight quote used as an apostrophe. Use the Unicode apostrophe character instead.",
-        regexps: [ 
+        regexps: [
             "(\\p{L}+('\\p{L}+)+)"         // word boundary + word chars + quote + word chars + word boundary (e.g., it's, don't, d'l'homme)
         ],
-        link: "https://github.com/iLib-js/ilib-lint/blob/main/docs/resource-apostrophe.md",
+        link: "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-apostrophe.md",
         fixes: [
             { search: "'", replace: "\u2019" }
         ]

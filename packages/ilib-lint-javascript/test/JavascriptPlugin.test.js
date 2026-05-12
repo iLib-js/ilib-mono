@@ -1,7 +1,7 @@
 /*
  * JavascriptPlugin.test.js - test the Javascript plugin
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ describe("test the javascript plugin", () => {
 
         const rules = xp.getRules();
         expect(rules).toBeTruthy();
-        expect(rules.length).toBe(1);
+        expect(rules.length).toBe(2);
     });
 
     test("the javascript plugin get rule sets", () => {

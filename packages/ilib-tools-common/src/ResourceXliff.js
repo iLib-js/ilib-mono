@@ -1,7 +1,7 @@
 /*
- * Xliff.js - convert an Xliff file into a set of resources and vice versa
+ * ResourceXliff.js - convert an ResourceXliff file into a set of resources and vice versa
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import ResourceArray from './ResourceArray.js';
 import ResourcePlural from './ResourcePlural.js';
 import TranslationSet from './TranslationSet.js';
 import Location from './Location.js';
-
 import { isEmpty } from './utils.js';
 
 const logger = log4js.getLogger("tools-common.ResourceXliff");
@@ -75,7 +74,8 @@ class ResourceXliff {
      * two instances of the same resource may have been extracted from different source files.
      * @param {string} [options.version] The version of xliff that will be produced by this instance. This
      * may be either "1.2" or "2.0"
-     */
+     * @param {Xliff} [options.xliff] The xliff instance to use for this resource xliff instance.
+    */
     constructor(options) {
         if (options) {
             this["tool-id"] = options["tool-id"];
@@ -93,9 +93,15 @@ class ResourceXliff {
             }
         }
         this.sourceLocale = this.sourceLocale || "en-US";
-
-        this.xliff = new Xliff(options);
+        this.xliff = options?.xliff ?? new Xliff(options);
         this.ts = new TranslationSet(this.sourceLocale);
+
+        if (this.xliff.getTranslationUnits().length) {
+            const translationUnits = this.xliff.getTranslationUnits();
+            translationUnits.forEach(tu => {
+                this.ts.add(this.convertTransUnit(tu));
+            });
+        }
     }
 
     /**
@@ -129,7 +135,9 @@ class ResourceXliff {
                     datatype: res.datatype,
                     flavor: res.getFlavor ? res.getFlavor() : undefined,
                     translate: !res.getDNT(),
-                    location: res.getLocation()
+                    location: res.getLocation(),
+                    metadata: res.metadata,
+                    autoKey: res.getAutoKey()
                 });
                 units.push(tu);
                 break;
@@ -154,7 +162,8 @@ class ResourceXliff {
                     datatype: res.datatype,
                     flavor: res.getFlavor ? res.getFlavor() : undefined,
                     translate: !res.getDNT(),
-                    location: res.getLocation()
+                    location: res.getLocation(),
+                    autoKey: res.getAutoKey()
                 });
 
                 for (let j = 0; j < sarr.length; j++) {
@@ -192,7 +201,8 @@ class ResourceXliff {
                     datatype: res.datatype,
                     flavor: res.getFlavor ? res.getFlavor() : undefined,
                     location: res.getLocation(),
-                    translate: !res.getDNT()
+                    translate: !res.getDNT(),
+                    autoKey: res.getAutoKey()
                 });
 
                 const sp = res.getSource();
@@ -254,7 +264,10 @@ class ResourceXliff {
                 state: tu.state,
                 flavor: tu.flavor,
                 location: new Location(tu.location),
-                resfile: tu.resfile
+                resfile: tu.resfile,
+                metadata: tu.metadata,
+                sourceHash: tu.sourceHash,
+                autoKey: tu.autoKey
             });
 
             if (tu.target) {

@@ -1,0 +1,50 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "any-of-array-items-schema",
+    "type": "object",
+    "definitions": {
+        "pageGroup": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "localizable": true
+                },
+                "pages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tabPageOrGroupItem"
+                    }
+                }
+            }
+        },
+        "tabPageOrGroupItem": {
+            "anyOf": [
+                { "type": "string" },
+                { "$ref": "#/definitions/pageGroup" }
+            ]
+        }
+    },
+    "properties": {
+        "tabs": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "pages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/tabPageOrGroupItem"
+                        }
+                    },
+                    "groups": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/tabPageOrGroupItem"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

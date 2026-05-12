@@ -53,10 +53,11 @@ class ResourceDNTTerms extends ResourceRule {
      * @property {("json"|"txt")} [termsFileType] Determines how DNT file should be parsed - either as JSON or as TXT with one term per line
      */
 
-    constructor(/** @type {ExplicitTerms | FileTerms | {}} */ params) {
-        super(params);
+    constructor(options) {
+        super(options);
         let /** @type {string[]} */ terms = [];
 
+        const params = this.getParam() || {};
         if ("terms" in params) {
             // explicit terms from config
             terms = params.terms;

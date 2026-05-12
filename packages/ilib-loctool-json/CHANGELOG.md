@@ -1,5 +1,39 @@
 # ilib-loctool-json
 
+## 2.1.1
+
+### Patch Changes
+
+- 604565d: Fix json plugin to localize anyOf or oneOf properly
+
+  - If there was anyOf or oneOf in the schema, it would sometimes
+    localize the json object as a string instead of as an object.
+  - `JsonFileType.getResourceFile` now creates resource files at the path
+    from the mapping template and target locale (same as `getLocalizedPath`)
+    instead of reusing the source file path, so merged translations are
+    written to the correct output location.
+  - `getLocalizedPath` uses `parsePath` / `formatPath` from `ilib-tools-common`
+    so template placeholders line up with the source path the same way as
+    other loctool file types. `formatPath` still receives `sourcepath` so
+    `[filename]` / `[dir]` resolve when the template does not regex-match the
+    source (e.g. `src/t1.js` with the default `resources/...` template).
+  - When `JsonFile` delegates to `ilib-loctool-javascript-resource`, it passes
+    the source JSON path into `getResourceFile` for disambiguation. JavaScript
+    resource files now treat only `.js` paths as explicit output paths; a
+    non-`.js` path still resolves through the javascript `resourceDirs` template.
+
+## 2.1.0
+
+### Minor Changes
+
+- 13c09b8: - Added support for `resourceFileTypes` configuration to delegate output writing to a
+  different plugin. When a `resourceFileTypes` mapping exists for "json" in the project
+  configuration, the plugin will use the configured resource file type plugin to write
+  localized files instead of writing JSON directly. This allows using plugins like
+  `ilib-loctool-javascript-resource` to add custom headers/footers to the output.
+  - Allow the plugin to send resources that have a target locale that has a variant to a
+    resource file during localization. Previously, locales with variants were ignored.
+
 ## 2.0.1
 
 ### Patch Changes

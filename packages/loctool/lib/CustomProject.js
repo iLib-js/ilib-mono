@@ -234,27 +234,6 @@ CustomProject.prototype.defineFileTypes = function() {
 };
 
 /**
- * Extract all strings for all file types and when that is
- * done, call the callback function.
- *
- * @param {Function} cb callback function to call when the
- * extraction is done
- */
-CustomProject.prototype.extract = function(cb) {
-    this.parent.prototype.extract.call(this, function() {
-        this.db.getBy({
-            project: this.options.id,
-        }, function(err, resources) {
-            logger.trace("Getting all resources. Length: " + resources.length);
-            // logger.trace("Getting all resources. tu length: " + this.db.ts.resources.length);
-            this.translations.addAll(resources);
-
-            cb();
-        }.bind(this));
-    }.bind(this));
-};
-
-/**
  * Return the resource file type for this project.
  * The resource file type will be able to read in and
  * write out resource files and other file types put

@@ -1,7 +1,7 @@
 /*
  * JsonFileType.js - Represents a collection of json files
  *
- * Copyright © 2021-2023, Box, Inc.
+ * Copyright © 2021-2023, 2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,13 @@
 var fs = require("fs");
 var path = require("path");
 var ilib = require("ilib");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 var mm = require("micromatch");
 var JsonFile = require("./JsonFile.js");
+var toolsCommon = require("ilib-tools-common");
 
+var parsePath = toolsCommon.parsePath;
+var formatPath = toolsCommon.formatPath;
 var JsonFileType = function(project) {
     this.type = "json";
     this.datatype = "json";
@@ -331,7 +334,9 @@ JsonFileType.prototype.getLocalizedPath = function(mapping, pathname, locale) {
         template = defaultMappings["**/*.json"].template;
     }
 
-    return path.normalize(this.API.utils.formatPath(template, {
+    const parts = parsePath(template, pathname);
+    return path.normalize(formatPath(template, {
+        ...parts,
         sourcepath: pathname,
         locale: l
     }));
@@ -378,7 +383,9 @@ JsonFileType.prototype.getResourceFile = function(locale, pathName) {
     var resfile = this.resourceFiles && this.resourceFiles[key];
 
     if (!resfile) {
-        resfile = this.resourceFiles[key] = this.newFile(pathName, {
+        var mapping = this.getMapping(pathName);
+        var localizedPath = this.getLocalizedPath(mapping, pathName, key);
+        resfile = this.resourceFiles[key] = this.newFile(localizedPath, {
             project: this.project,
             locale: key
         });

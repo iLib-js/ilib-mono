@@ -1720,4 +1720,171 @@ describe("testUtils", () => {
         expect.assertions(1);
         expect(JSUtils.pad("1.234323", 4, true)).toBe("1.234323");
     });
+
+    // Security tests for prototype pollution prevention (CWE-1321)
+    test("ExtendPrototypePollutionPreventionProto", () => {
+        expect.assertions(2);
+        const malicious = JSON.parse('{"__proto__":{"polluted":"yes"}}');
+        const target = {};
+        JSUtils.extend(target, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+        expect(({}).polluted).toBeUndefined();
+    });
+
+    test("ExtendPrototypePollutionPreventionConstructor", () => {
+        expect.assertions(1);
+        const malicious = JSON.parse('{"constructor":{"prototype":{"polluted":"yes"}}}');
+        const target = {};
+        JSUtils.extend(target, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+    });
+
+    test("Extend2PrototypePollutionPreventionProto", () => {
+        expect.assertions(2);
+        const malicious = JSON.parse('{"__proto__":{"polluted":"yes"}}');
+        const target = {};
+        JSUtils.extend2(target, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+        expect(({}).polluted).toBeUndefined();
+    });
+
+    test("Extend2PrototypePollutionPreventionConstructor", () => {
+        expect.assertions(1);
+        const malicious = JSON.parse('{"constructor":{"prototype":{"polluted":"yes"}}}');
+        const target = {};
+        JSUtils.extend2(target, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+    });
+
+    test("MergePrototypePollutionPreventionProto", () => {
+        expect.assertions(2);
+        const malicious = JSON.parse('{"__proto__":{"polluted":"yes"}}');
+        JSUtils.merge({}, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+        expect(({}).polluted).toBeUndefined();
+    });
+
+    test("MergePrototypePollutionPreventionConstructor", () => {
+        expect.assertions(1);
+        const malicious = JSON.parse('{"constructor":{"prototype":{"polluted":"yes"}}}');
+        JSUtils.merge({}, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+    });
+
+    test("MergePrototypePollutionPreventionPrototype", () => {
+        expect.assertions(1);
+        const malicious = JSON.parse('{"prototype":{"polluted":"yes"}}');
+        JSUtils.merge({}, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+    });
+
+    test("DeepCopyPrototypePollutionPreventionProto", () => {
+        expect.assertions(2);
+        const malicious = JSON.parse('{"__proto__":{"polluted":"yes"}}');
+        JSUtils.deepCopy(malicious, {});
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+        expect(({}).polluted).toBeUndefined();
+    });
+
+    test("DeepCopyPrototypePollutionPreventionConstructor", () => {
+        expect.assertions(1);
+        const malicious = JSON.parse('{"constructor":{"prototype":{"polluted":"yes"}}}');
+        JSUtils.deepCopy(malicious, {});
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+    });
+
+    test("ShallowCopyPrototypePollutionPreventionProto", () => {
+        expect.assertions(2);
+        const malicious = JSON.parse('{"__proto__":{"polluted":"yes"}}');
+        JSUtils.shallowCopy(malicious, {});
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+        expect(({}).polluted).toBeUndefined();
+    });
+
+    test("ShallowCopyPrototypePollutionPreventionConstructor", () => {
+        expect.assertions(1);
+        const malicious = JSON.parse('{"constructor":{"prototype":{"polluted":"yes"}}}');
+        JSUtils.shallowCopy(malicious, {});
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.polluted).toBeUndefined();
+    });
+
+    test("ExtendNestedPrototypePollutionPrevention", () => {
+        expect.assertions(2);
+        // Test nested attack via JSON.parse to bypass direct __proto__ assignment
+        const malicious = JSON.parse('{"nested":{"__proto__":{"deepPolluted":"yes"}}}');
+        const target = { nested: {} };
+        JSUtils.extend(target, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.deepPolluted).toBeUndefined();
+        expect(({}).deepPolluted).toBeUndefined();
+    });
+
+    test("MergeNestedPrototypePollutionPrevention", () => {
+        expect.assertions(2);
+        // Test nested attack via JSON.parse to bypass direct __proto__ assignment
+        const malicious = JSON.parse('{"nested":{"__proto__":{"deepPolluted":"yes"}}}');
+        JSUtils.merge({ nested: {} }, malicious);
+
+        // Verify that Object.prototype was NOT polluted
+        const clean = {};
+        expect(clean.deepPolluted).toBeUndefined();
+        expect(({}).deepPolluted).toBeUndefined();
+    });
+
+    test("ExtendStillWorksWithSafeKeys", () => {
+        expect.assertions(3);
+        const source = { a: 1, b: 2, c: { d: 3 } };
+        const target = {};
+        JSUtils.extend(target, source);
+
+        expect(target.a).toBe(1);
+        expect(target.b).toBe(2);
+        expect(target.c.d).toBe(3);
+    });
+
+    test("MergeStillWorksWithSafeKeys", () => {
+        expect.assertions(3);
+        const obj1 = { a: 1 };
+        const obj2 = { b: 2, c: { d: 3 } };
+        const result = JSUtils.merge(obj1, obj2);
+
+        expect(result.a).toBe(1);
+        expect(result.b).toBe(2);
+        expect(result.c.d).toBe(3);
+    });
 });

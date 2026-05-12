@@ -139,6 +139,17 @@ This text is [translated][tr].
 In this case, the url itself will be extracted as a separate string resource and will
 be localizable.
 
+## File Extensions
+
+By default, this plugin handles files with the following extensions:
+- `.md`
+- `.markdown`
+- `.mdown`
+- `.mkd`
+- `.rst`
+- `.rmd`
+- `.mdx`
+
 ## Mappings
 
 This plugin now supports mappings:
@@ -149,6 +160,9 @@ This plugin now supports mappings:
   "settings": {
     "markdown": {
       "mappings": {
+        "**/*.mdx": {
+          "template": "[localeDir]/[filename]"
+        },
         "**/foobar.md": {
           "template": "[dir]/[basename]_[locale].[extension]",
           "frontmatter": ["Title", "Description"],
@@ -186,9 +200,11 @@ the file name of output files.
 
 ## License
 
-This plugin is licensed under Apache2. See the [LICENSE](./LICENSE)
-file for more details.
+Copyright © 2026 JEDLSoft
+
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loctool-ghfm/LICENSE) file in the ilib-mono repository on GitHub.
 
 ## Release Notes
 
-See [CHANGELOG.md](./CHANGELOG.md)
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loctool-ghfm/CHANGELOG.md).
+

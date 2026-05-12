@@ -2,7 +2,7 @@
  * ILibPluralCategoriesChecker - Check whether the target plural has
  * the right plural categories in it for the locale
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,7 +213,7 @@ class ILibPluralCategoriesChecker extends Rule {
                     if (tarArray) {
                         return srcArray.flatMap((item, i) => {
                             if (i < tarArray.length && tarArray[i]) {
-                                if (isPluralString(item) && !isValidPluralString(tarArray[i])) {
+                                if (isPluralString(item) && isValidPluralString(tarArray[i])) {
                                     const sourcePlurals = convertPluralStringToObject(item);
                                     const targetPlurals = convertPluralStringToObject(tarArray[i]);
 
@@ -226,22 +226,8 @@ class ILibPluralCategoriesChecker extends Rule {
                     break;
 
                 case 'plural':
-                    const srcPlural = resource.getSource();
-                    const tarPlural = resource.getTarget();
-                    // it would be very odd to have an ilib-style plural inside of a plural resource,
-                    // but it is possible, so we check for it here
-                    if (tarPlural) {
-                        const categories = Array.from(new Set(Object.keys(tarPlural)).values());
-                        return categories.flatMap(category => {
-                            const item = srcPlural[category] || srcPlural.other;
-                            if (isPluralString(item) && !isValidPluralString(tarPlural[category])) {
-                                const sourcePlurals = convertPluralStringToObject(item);
-                                const targetPlurals = convertPluralStringToObject(tarPlural[category]);
-
-                                return this.matchCategories(sourcePlurals, targetPlurals, targetLocale, resource);
-                            }
-                        });
-                    }
+                    // Plural resources should not contain ICU plural strings.
+                    // If we receive one, just skip it gracefully.
                     break;
             }
 

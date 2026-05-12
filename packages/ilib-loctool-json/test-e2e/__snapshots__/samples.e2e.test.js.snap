@@ -1,5 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples js-json should produce a new XLIFF file for de-DE 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/t1.js" source-language="en-US" target-language="de-DE" product-name="sample-js-json">
+    <body>
+      <trans-unit id="1" resname="This is a string that has no translation yet" restype="string" datatype="javascript">
+        <source>This is a string that has no translation yet</source>
+        <target state="new">This is a string that has no translation yet</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;
+
+exports[`samples js-json should produce a new XLIFF file for ko-KR 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/t1.js" source-language="en-US" target-language="ko-KR" product-name="sample-js-json">
+    <body>
+      <trans-unit id="1" resname="This is a string that has no translation yet" restype="string" datatype="javascript">
+        <source>This is a string that has no translation yet</source>
+        <target state="new">This is a string that has no translation yet</target>
+      </trans-unit>
+      <trans-unit id="2" resname="id1" restype="string" datatype="javascript">
+        <source>This is a test with a unique id</source>
+        <target state="new">This is a test with a unique id</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;
+
 exports[`samples js-json should produce an extracted XLIFF file 1`] = `
 "<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.2">
@@ -16,6 +48,42 @@ exports[`samples js-json should produce an extracted XLIFF file 1`] = `
       </trans-unit>
       <trans-unit id="4" resname="id1" restype="string" datatype="javascript">
         <source>This is a test with a unique id</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;
+
+exports[`samples json should produce a new XLIFF file for de-DE 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="i18n/sample.json" source-language="en-US" target-language="de-DE" product-name="sample-json">
+    <body>
+      <trans-unit id="1" resname="project.whatever.translate.me" restype="string" datatype="json">
+        <source>Translate me</source>
+        <target state="new">Translate me</target>
+      </trans-unit>
+      <trans-unit id="2" resname="project.whatever.and.me" restype="string" datatype="json">
+        <source>And me</source>
+        <target state="new">And me</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;
+
+exports[`samples json should produce a new XLIFF file for ko-KR 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="i18n/sample.json" source-language="en-US" target-language="ko-KR" product-name="sample-json">
+    <body>
+      <trans-unit id="1" resname="project.whatever.translate.me" restype="string" datatype="json">
+        <source>Translate me</source>
+        <target state="new">Translate me</target>
+      </trans-unit>
+      <trans-unit id="2" resname="project.whatever.and.me" restype="string" datatype="json">
+        <source>And me</source>
+        <target state="new">And me</target>
       </trans-unit>
     </body>
   </file>
@@ -42,6 +110,35 @@ exports[`samples json should produce an extracted XLIFF file 1`] = `
       <trans-unit id="4" resname="project.whatever.and.me" restype="string" datatype="json">
         <source>And me</source>
         <note>Another string that has no translation yet</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;
+
+exports[`samples json-resources should produce an extracted XLIFF file with only source tags 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/strings1.json" source-language="en-US" product-name="sample-json-resources">
+    <body>
+      <trans-unit id="2" resname="greeting" restype="string" datatype="json">
+        <source>Hello</source>
+      </trans-unit>
+      <trans-unit id="4" resname="farewell" restype="string" datatype="json">
+        <source>Goodbye</source>
+      </trans-unit>
+      <trans-unit id="5" resname="untranslated" restype="string" datatype="json">
+        <source>This has no translation</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="src/strings2.json" source-language="en-US" product-name="sample-json-resources">
+    <body>
+      <trans-unit id="1" resname="thank_you" restype="string" datatype="json">
+        <source>Thank you</source>
+      </trans-unit>
+      <trans-unit id="3" resname="welcome" restype="string" datatype="json">
+        <source>Welcome</source>
       </trans-unit>
     </body>
   </file>

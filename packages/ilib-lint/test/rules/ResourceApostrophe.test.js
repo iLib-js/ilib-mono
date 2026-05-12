@@ -326,7 +326,7 @@ describe("resource-apostrophe rule", () => {
         expect(result1.pathName).toBe("a/b/c.xliff");
 
         // ignore the word 'oku because we can't tell if it's an apostrophe or a quote symbol
-        
+
         const result2 = results[1];
         expect(result2.severity).toBe("error");
         expect(result2.id).toBe("apostrophe.tongan");
@@ -2172,7 +2172,7 @@ describe("resource-apostrophe rule", () => {
         // Result can be a single object or an array
         const results = Array.isArray(result) ? result : [result];
         expect(results.length).toBe(2);
-        
+
         // Check first result (one form)
         expect(results[0].severity).toBe("error");
         expect(results[0].id).toBe("test.plural");
@@ -2180,7 +2180,7 @@ describe("resource-apostrophe rule", () => {
         expect(results[0].highlight).toBe("Target(one): La voiture <e0>d'l'homme</e0> est ici.");
         expect(results[0].source).toBe("The man's car is here.");
         expect(results[0].pathName).toBe("test.xliff");
-        
+
         // Check second result (other form)
         expect(results[1].severity).toBe("error");
         expect(results[1].id).toBe("test.plural");

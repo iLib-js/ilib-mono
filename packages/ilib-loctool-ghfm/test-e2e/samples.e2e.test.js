@@ -41,7 +41,7 @@ describe("samples", () => {
             fsSnapshot.restore();
         });
 
-        it("should produce an extracted XLIFF file", () => {
+        test("should produce an extracted XLIFF file", () => {
             expectFileToMatchSnapshot(xliffPath);
         });
     });

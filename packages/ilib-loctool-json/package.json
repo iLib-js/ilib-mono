@@ -1,6 +1,6 @@
 {
     "name": "ilib-loctool-json",
-    "version": "2.0.1",
+    "version": "2.1.1",
     "main": "./JsonFileType.js",
     "description": "A loctool plugin that knows how to localize json files",
     "license": "Apache-2.0",
@@ -40,10 +40,10 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "test": "node node_modules/jest/bin/jest.js",
         "test:watch": "node node_modules/jest/bin/jest.js --watch",
         "test:all": "npm-run-all --npm-path pnpm test test:e2e",
@@ -53,16 +53,20 @@
         "clean": "git clean -f -d test samples"
     },
     "engines": {
-        "node": ">=10.0"
+        "node": ">=12 <23"
     },
     "dependencies": {
         "ilib": "^14.19.0",
+        "ilib-locale": "workspace:^",
+        "ilib-tools-common": "workspace:^",
         "json5": "^2.2.3",
         "micromatch": "^4.0.8"
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",
+        "ilib-loctool-javascript-resource": "workspace:^",
         "jest": "^29.7.0",
-        "loctool": "workspace:^"
+        "loctool": "workspace:^",
+        "npm-run-all": "^4.1.5"
     }
 }

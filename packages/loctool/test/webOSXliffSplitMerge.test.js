@@ -1,7 +1,7 @@
 /*
  * webOSXliffSplitMerge.test.js - test the split/Merge of webOSXliff object.
  *
-  * Copyright © 2025, JEDLSoft
+  * Copyright © 2025-2026, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
         '      <unit id="sample1_g1_1">\n' +
@@ -64,7 +64,7 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
     test("webOSXliffMerge_write_en_US_Style", function() {
@@ -82,8 +82,8 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app1_f1" original="app1">\n' +
         '    <group id="app1_g1" name="cpp">\n' +
         '      <unit id="app1_g1_1">\n' +
@@ -124,7 +124,7 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
     test("webOSXliffMerge_write_ko_KR_Style", function() {
@@ -142,7 +142,7 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
@@ -189,7 +189,7 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
     test("webOSXliffMerge_write_sorted_by_project", function() {
@@ -208,7 +208,7 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
@@ -255,7 +255,7 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
     test("webOSXliffMerge_with_different_unit", function() {
@@ -273,8 +273,8 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = target.serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
         '      <unit id="sample1_g1_1">\n' +
@@ -324,7 +324,7 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
         expect(actual).toBe(expected);
     });
     test("webOSXliffSplitdistritueSerialize_xliffStyle", function() {
@@ -341,8 +341,8 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = result["app2"].serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app2_f1" original="app2">\n' +
         '    <group id="app2_g1" name="javascript">\n' +
         '      <unit id="app2_g1_1">\n' +
@@ -359,7 +359,7 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
 
         expect(actual).toBe(expected);
     });
@@ -378,7 +378,7 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = result["sample2"].serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
         '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample2_f1" original="sample2">\n' +
         '    <group id="sample2_g1" name="c">\n' +
@@ -409,7 +409,7 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
 
         expect(actual).toBe(expected);
     });
@@ -428,8 +428,8 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = result["sample1"].serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
         '  <file id="sample1_f1" original="sample1">\n' +
         '    <group id="sample1_g1" name="c">\n' +
         '      <unit id="sample1_g1_1">\n' +
@@ -446,7 +446,7 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
 
         expect(actual).toBe(expected);
     });
@@ -464,8 +464,8 @@ describe("webOSxliffSplitMerge", function() {
 
         var actual = result["app2"].serialize();
         var expected =
-        '<?xml version="1.0" encoding="utf-8"?>\n' +
-        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
         '  <file id="app2_f1" original="app2">\n' +
         '    <group id="app2_g1" name="javascript">\n' +
         '      <unit id="app2_g1_1">\n' +
@@ -482,13 +482,13 @@ describe("webOSxliffSplitMerge", function() {
         '      </unit>\n' +
         '    </group>\n' +
         '  </file>\n' +
-        '</xliff>';
+        '</xliff>\n';
 
         expect(actual).toBe(expected);
     });
     test("XliffMerge_write_en_US_webOSStyle", function() {
             expect.assertions(2);
-    
+
             var settings = {};
             settings.xliffVersion = 2;
             settings.xliffStyle = "webOS";
@@ -498,11 +498,11 @@ describe("webOSxliffSplitMerge", function() {
             ];
             var target = XliffMerge(settings);
             expect(target).toBeTruthy();
-    
+
             var actual = target.serialize();
             var expected =
-            '<?xml version="1.0" encoding="utf-8"?>\n' +
-            '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+            '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">\n' +
             '  <file id="app1_f1" original="app1">\n' +
             '    <group id="app1_g1" name="cpp">\n' +
             '      <unit id="app1_g1_1">\n' +
@@ -543,7 +543,7 @@ describe("webOSxliffSplitMerge", function() {
             '      </unit>\n' +
             '    </group>\n' +
             '  </file>\n' +
-            '</xliff>';
+            '</xliff>\n';
             expect(actual).toBe(expected);
         });
 })

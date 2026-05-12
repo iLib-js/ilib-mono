@@ -31,7 +31,8 @@ var MarkdownFileType = function(project) {
 
     this.logger = this.API.getLogger("loctool.lib.MarkdownFileType");
 
-    this.extensions = [ ".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd" ];
+    // default extensions
+    this.extensions = [ ".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd", ".mdx" ];
 
     this.extracted = this.API.newTranslationSet(project.getSourceLocale());
     this.newres = this.API.newTranslationSet(project.getSourceLocale());

@@ -1,7 +1,7 @@
 /*
  * Utils.test.js - test the utils object.
  *
- * Copyright © 2016-2017, 2022-2024 HealthTap, Inc.
+ * Copyright © 2016-2017, 2022-2024, 2026 HealthTap, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -327,6 +327,94 @@ describe("utils", function() {
         })).toBe("x/y/x-config.es.json");
     });
 
+    // formatLocaleParams tests
+    test("formatLocaleParams with locale", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('strings_[locale].json', "de-DE")).toBe("strings_de-DE.json");
+    });
+
+    test("formatLocaleParams with localeUnder", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('strings_[localeUnder].json', "zh-Hans-CN")).toBe("strings_zh_Hans_CN.json");
+    });
+
+    test("formatLocaleParams with localeLower", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('strings_[localeLower].json', "zh-Hans-CN")).toBe("strings_zh-hans-cn.json");
+    });
+
+    test("formatLocaleParams with localeDir", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[localeDir]/strings.json', "zh-Hans-CN")).toBe("zh/Hans/CN/strings.json");
+    });
+
+    test("formatLocaleParams with language", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[language]/strings.json', "de-DE")).toBe("de/strings.json");
+    });
+
+    test("formatLocaleParams with script", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[script]/strings.json', "zh-Hans-CN")).toBe("Hans/strings.json");
+    });
+
+    test("formatLocaleParams with region", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[region]/strings.json', "de-DE")).toBe("DE/strings.json");
+    });
+
+    test("formatLocaleParams with multiple substitutions", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('const strings_[localeUnder] = ', "de-DE")).toBe("const strings_de_DE = ");
+    });
+
+    test("formatLocaleParams preserves double slashes in comments", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('// This is a generated file\nexport default ', "en-US")).toBe("// This is a generated file\nexport default ");
+    });
+
+    test("formatLocaleParams with header containing line comment and locale substitution", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('// Generated for [locale]\nexport default ', "de-DE")).toBe("// Generated for de-DE\nexport default ");
+    });
+
+    test("formatLocaleParams with empty template", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('', "de-DE")).toBe("");
+    });
+
+    test("formatLocaleParams with undefined template", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams(undefined, "de-DE")).toBe("");
+    });
+
+    test("formatLocaleParams with Locale object", function() {
+        expect.assertions(1);
+        var Locale = require("ilib/lib/Locale.js");
+        var l = new Locale("fr-CA");
+        expect(utils.formatLocaleParams('strings_[locale].json', l)).toBe("strings_fr-CA.json");
+    });
+
+    test("formatLocaleParams preserves unknown keywords", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[dir]/[locale]/strings.json', "de-DE")).toBe("[dir]/de-DE/strings.json");
+    });
+
+    test("formatLocaleParams with language missing", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[language]/strings.json', "DE")).toBe("/strings.json");
+    });
+
+    test("formatLocaleParams with region missing", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[region]/strings.json', "de")).toBe("/strings.json");
+    });
+
+    test("formatLocaleParams with script missing", function() {
+        expect.assertions(1);
+        expect(utils.formatLocaleParams('[script]/strings.json', "zh-CN")).toBe("/strings.json");
+    });
+
     test("GetLocaleFromPathDir", function() {
         expect.assertions(1);
         expect(utils.getLocaleFromPath('[dir]/strings.json', "x/y/strings.json")).toBe("");
@@ -497,6 +585,50 @@ describe("utils", function() {
         expect(utils.getLocaleFromPath('[dir]/strings_[localeLower].json', undefined)).toBe("");
     });
 
+    test("GetLocaleFromPathLanguageTemplateWithNonLocaleDirectoryReturnsEmpty", function() {
+        expect.assertions(2);
+        // MDX-style template [language]/[dir]/[filename]: English at root, localized under ja/, etc.
+        // When path is a source file at root (e.g. guides/ai-studio/index.mdx), the first segment
+        // must not be mistaken for a language code. "guides" and "documentation" are too long
+        // (language is 2-3 letters) so they must not match; without ^ anchor they could match
+        // in the middle (e.g. "des" from "guides") and wrongly return a locale.
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "guides/ai-studio/index.mdx")).toBe("");
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "documentation/getting-started/page.mdx")).toBe("");
+    });
+
+    test("GetLocaleFromPathLocaleTemplateWithNonLocaleDirectoryReturnsEmpty", function() {
+        expect.assertions(3);
+        // [locale]/[dir]/[filename]: first segment must be a valid locale (e.g. en, de-DE), not a directory name.
+        expect(utils.getLocaleFromPath("[locale]/[dir]/[filename]", "guides/ai-studio/index.mdx")).toBe("");
+        expect(utils.getLocaleFromPath("[locale]/[dir]/[filename]", "content/faq/index.mdx")).toBe("");
+        expect(utils.getLocaleFromPath("[locale]/[dir]/[filename]", "samples/code/demo.mdx")).toBe("");
+    });
+
+    test("GetLocaleFromPathValidLanguageAtRootStillMatches", function() {
+        expect.assertions(3);
+        // Valid 2- or 3-letter language codes at first segment should still be recognized.
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "ja/guides/ai-studio/index.mdx")).toBe("ja");
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "en/guides/ai-studio/index.mdx")).toBe("en");
+        expect(utils.getLocaleFromPath("[language]/[dir]/[filename]", "de/getting-started/page.mdx")).toBe("de");
+    });
+
+    test("GetLocaleFromPathResourcesLocaleDirMessagesPo", function() {
+        expect.assertions(6);
+        // template "resources/[localeDir]/messages.po" so handles() can distinguish source vs already-localized
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "resources/en/GB/messages.po")).toBe("en-GB");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/en/GB/messages.po")).toBe("en-GB");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "resources/zh/Hans/CN/messages.po")).toBe("zh-Hans-CN");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/zh/Hans/CN/messages.po")).toBe("zh-Hans-CN");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "resources/en/US/messages.po")).toBe("en-US");
+        expect(utils.getLocaleFromPath("resources/[localeDir]/messages.po", "./resources/en/US/messages.po")).toBe("en-US");
+    });
+
+    test("GetLocaleFromPathDirLocalePoWithLeadingDotSlash", function() {
+        expect.assertions(1);
+        // "[dir]/[locale].po" with "./de.po" so handles("de.po") returns false (not source)
+        expect(utils.getLocaleFromPath("[dir]/[locale].po", "./de.po")).toBe("de");
+    });
+
     test("UtilsCleanString", function() {
         expect.assertions(1);
         expect(utils.cleanString(' \n \t \\    &quot;a    b&apos;s &lt;b&gt;&amp; c’s     ')).toBe("\"a b's <b>& c's");
@@ -512,8 +644,10 @@ describe("utils", function() {
         expect(!utils.cleanString({'obj': 'foo'})).toBeTruthy();
     });
     test("isBaseLocale", function() {
-        expect.assertions(3);
+        expect.assertions(5);
         expect(utils.isBaseLocale("ko-KR")).toBe(true);
+        expect(utils.isBaseLocale("ko-TW")).toBe(false);
+        expect(utils.isBaseLocale("ko-CN")).toBe(false);
         expect(utils.isBaseLocale("fr-CA")).toBe(false);
         expect(utils.isBaseLocale()).toBe(false);
     });

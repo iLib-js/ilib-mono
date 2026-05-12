@@ -13,7 +13,7 @@ jobs:
             TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
         strategy:
             matrix:
-                node-version: [20]
+                node-version: [22]
         steps:
             - name: Checkout code
               uses: actions/checkout@v4

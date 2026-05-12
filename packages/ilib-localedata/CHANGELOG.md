@@ -1,5 +1,14 @@
 # ilib-localedata
 
+## 1.5.4
+
+### Patch Changes
+
+- 4b14226: - Updated to use latest ilib-localematcher package
+- Updated dependencies [4b14226]
+- Updated dependencies [4b14226]
+  - ilib-localematcher@1.3.3
+
 ## 1.5.3
 
 ### Patch Changes

@@ -46,7 +46,8 @@ class ResourceAllCaps extends ResourceRule {
         this.name = "resource-all-caps";
         this.description = "Ensure that when source strings are in ALL CAPS, then the targets are also in ALL CAPS";
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-all-caps.md";
-        this.exceptions = Array.isArray(options?.exceptions) ? options.exceptions : [];
+        const param = this.getParam();
+        this.exceptions = Array.isArray(param?.exceptions) ? param.exceptions : [];
     }
 
     /**
@@ -133,7 +134,7 @@ class ResourceAllCaps extends ResourceRule {
 
     /**
      * Checks if a given string is in ALL CAPS style, i.e. at least 2 letter characters exist and all of them are uppercase.
-     * 
+     *
      * @public
      * @param {string} string A non-empty string to check.
      * @returns {boolean} Returns true for a string that is in ALL CAPS (all letter characters are uppercase and at least 2 letter characters exist).
@@ -172,7 +173,7 @@ class ResourceAllCaps extends ResourceRule {
      * Therefore, if no script is explicitly specified in the locale, this method will figure out
      * what the script is. It will use LocaleMatcher to guess the most likely full
      * locale, which always includes the script tag. This may not be the script that the caller intended
-     * to use with the locale, but it will be a good guess because most locales only use one script. 
+     * to use with the locale, but it will be a good guess because most locales only use one script.
      * Very few locales use multiple scripts, though they do exist. (Kurdish and Serbian for example
      * are commonly written in multiple scripts.) Once it has the name of the script, it will check whether
      * that script supports letter casing.
@@ -212,4 +213,4 @@ class ResourceAllCaps extends ResourceRule {
     }
 }
 
-export default ResourceAllCaps; 
+export default ResourceAllCaps;

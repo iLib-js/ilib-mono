@@ -1,7 +1,7 @@
 /*
  * ResourceArray.test.js - test the resource array object.
  *
- * Copyright © 2022-2023, 2025 JEDLSoft
+ * Copyright © 2022-2023, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -212,6 +212,63 @@ describe("testResourceArray", () => {
         });
         expect(ra).toBeTruthy();
         expect(!ra.getContext()).toBeTruthy();
+    });
+
+    test("ResourceArrayAutoKey", () => {
+        expect.assertions(2);
+
+        const ra = new ResourceArray({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            autoKey: true,
+            source: ["This is a test", "This is also a test"]
+        });
+        expect(ra).toBeTruthy();
+        expect(ra.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourceArrayNotAutoKey", () => {
+        expect.assertions(2);
+
+        const ra = new ResourceArray({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            autoKey: false,
+            source: ["This is a test", "This is also a test"]
+        });
+        expect(ra).toBeTruthy();
+        expect(!ra.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourceArrayNotAutoKeyDefault", () => {
+        expect.assertions(2);
+
+        const ra = new ResourceArray({
+            key: "foo",
+            sourceLocale: "en-US",
+            pathName: "a/b/c.txt",
+            source: ["This is a test", "This is also a test"]
+        });
+        expect(ra).toBeTruthy();
+        expect(!ra.getAutoKey()).toBeTruthy();
+    });
+
+    test("ResourceArrayAutoKeyWithTarget", () => {
+        expect.assertions(2);
+
+        const ra = new ResourceArray({
+            key: "foo",
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            pathName: "a/b/c.txt",
+            autoKey: true,
+            source: ["This is a test", "This is also a test"],
+            target: ["Dies ist einen Test.", "Dies ist auch einen Test."]
+        });
+        expect(ra).toBeTruthy();
+        expect(ra.getAutoKey()).toBe(true);
     });
 
     test("ResourceArrayGetSource", () => {

@@ -222,4 +222,89 @@ describe("markdownfiletype", function() {
         mdft.projectClose();
         expect(!fs.existsSync("./test/testfiles/subproject/translation-status.json")).toBeTruthy();
     });
+
+    test("should handle .mdx files as a default extension", function() {
+        expect.assertions(3);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.mdx": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        expect(mdft.handles("foo.mdx")).toBeTruthy();
+        var extensions = mdft.getExtensions();
+        expect(extensions.indexOf(".mdx") > -1).toBeTruthy();
+    });
+
+    test("should include .mdx in default extensions", function() {
+        expect.assertions(2);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.md": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        var extensions = mdft.getExtensions();
+        // check that default extensions are present, including .mdx
+        expect(extensions).toStrictEqual([".md", ".markdown", ".mdown", ".mkd", ".rst", ".rmd", ".mdx"]);
+    });
+
+    test("should handle .mdx files with mapping patterns", function() {
+        expect.assertions(3);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.mdx": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        expect(mdft.handles("foo.mdx")).toBeTruthy();
+        expect(mdft.handles("a/b/c/bar.mdx")).toBeTruthy();
+    });
+
+    test("should not handle extensions not in the default list", function() {
+        expect.assertions(2);
+        var p3 = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales:["en-GB"],
+            markdown: {
+                mappings: {
+                    "**/*.md": {
+                        "template": "[localeDir]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MarkdownFileType(p3);
+        expect(mdft).toBeTruthy();
+        expect(mdft.handles("foo.mdoc")).toBeFalsy();
+    });
 });
