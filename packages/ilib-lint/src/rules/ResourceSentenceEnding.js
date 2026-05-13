@@ -439,6 +439,40 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
+     * Detect whether a string uses "person quotation" style, where the quoted
+     * content is a direct speech quotation introduced by a comma.
+     *
+     * Person quotation: She said, "A quotation!"
+     * Call-out (default): select 'Manual Zoom.'
+     *
+     * @param {string} str
+     * @returns {boolean}
+     */
+    static isPersonQuotation(str) {
+        if (!str) return false;
+        const trimmed = str.trim();
+        const quoteChars = ResourceSentenceEnding.allQuoteChars;
+
+        const lastChar = trimmed.charAt(trimmed.length - 1);
+        if (!quoteChars.includes(lastChar)) return false;
+
+        let openPos = -1;
+        for (let i = trimmed.length - 2; i >= 0; i--) {
+            if (quoteChars.includes(trimmed.charAt(i))) {
+                openPos = i;
+                break;
+            }
+        }
+        if (openPos <= 0) return false;
+
+        let beforeQuote = openPos - 1;
+        while (beforeQuote >= 0 && /\s/.test(trimmed.charAt(beforeQuote))) {
+            beforeQuote--;
+        }
+        return beforeQuote >= 0 && trimmed.charAt(beforeQuote) === ',';
+    }
+
+    /**
      * Get the last quoted string in the input, or null if none found.
      * Handles all quote types in allQuoteChars.
      * @param {string} str
@@ -974,12 +1008,20 @@ class ResourceSentenceEnding extends ResourceRule {
         let highlight = '';
         let description = '';
 
+        const targetTrimmed = target?.trim() || '';
+        const targetEndsWithQuote = quoteChars.includes(targetTrimmed.charAt(targetTrimmed.length - 1));
+
         let lastSentence;
-        if (sourceEndsWithQuote) {
-            // Use the last quoted string in the target
+        if (sourceEndsWithQuote &&
+            (ResourceSentenceEnding.isPersonQuotation(sourceTrimmed) || targetEndsWithQuote)) {
+            // Person quotation (e.g. She said, "Hello!") or both source and target
+            // end with a quote — compare quoted content
             lastSentence = ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
+        } else if (sourceEndsWithQuote) {
+            // Call-out / reference where the target does not end with a quote —
+            // compare overall target ending, not a sentence fragment
+            lastSentence = target.trim();
         } else {
-            // Use the full target string
             lastSentence = this.getLastSentenceFromContent(target, targetLocaleObj);
         }
 

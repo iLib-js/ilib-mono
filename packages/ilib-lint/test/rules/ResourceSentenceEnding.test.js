@@ -3097,10 +3097,10 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual.source).toBe("What is this?");
         expect(actual.pathName).toBe("a/b/c.xliff");
     });
-    // Test for webOS XLIFF files ---------------------------------
-    // Test with the wrong target extracted
-    test("Test with the wrong target extracted", () => {
-        expect.assertions(4);
+    // Call-out style quotes: source ends with quote but it's a UI reference, not person quotation.
+    // The overall sentence ending (.) should be compared, not the quoted content.
+    test("Call-out quote with period outside closing quote in Italian target", () => {
+        expect.assertions(2);
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
 
@@ -3109,7 +3109,7 @@ describe("ResourceSentenceEnding rule", function() {
             sourceLocale: "en-US",
             source: "If you need to adjust the zoom area or unable to automatically zoom the sign language screen, select 'Manual Zoom.'",
             targetLocale: "it-IT",
-            target: "Se devi modificare l'area dello zoom o non è possibile applicare automaticamente lo zoom alla schermata della lingua dei segni, seleziona \"Zoom manuale\".",
+            target: "Se devi modificare l'area dello zoom o non \u00e8 possibile applicare automaticamente lo zoom alla schermata della lingua dei segni, seleziona \"Zoom manuale\".",
             pathName: "a/b/c.xliff",
             lineNumber: 25
         });
@@ -3119,15 +3119,11 @@ describe("ResourceSentenceEnding rule", function() {
             resource,
             file: "a/b/c.xliff"
         });
-        expect(actual).toBeTruthy();
-        expect(actual?.description).toContain("Sentence ending should be \".\" (U+002E) for it-IT locale instead of \"\"");
-        // https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/rules/ResourceSentenceEnding.js#L972
-        // ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
-        //received "Zoom manuale<e0/>"
-        expect(actual?.highlight).toBe('Zoom manuale<e0/>');
+        // Source ends with '.' and target ends with '.' - no violation
+        expect(actual).toBeFalsy();
     });
-    test("Test with the wrong target extracted2", () => {
-        expect.assertions(4);
+    test("Call-out quote with quoted text in middle of Afrikaans target", () => {
+        expect.assertions(2);
         const rule = new ResourceSentenceEnding();
         expect(rule).toBeTruthy();
 
@@ -3146,14 +3142,159 @@ describe("ResourceSentenceEnding rule", function() {
             resource,
             file: "a/b/c.xliff"
         });
-        // https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/src/rules/ResourceSentenceEnding.js#L980
-        // ResourceSentenceEnding.getLastQuotedString(target) || target.trim();
-        //received "Oudioleiding<e0/>"
-        expect(actual).toBeTruthy();
-        expect(actual?.description).toContain("Sentence ending should be \".\" (U+002E) for af-ZA locale instead of \"\"");
-        expect(actual?.highlight).toBe("Oudioleiding<e0/>");
+        // Source ends with '.' and target ends with '.' - no violation
+        expect(actual).toBeFalsy();
     });
-    // END ---------------------------------
+
+    test("Call-out quote with quoted text in middle of Gujarati target — missing punctuation", () => {
+        expect.assertions(4);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "targetspace.test",
+            sourceLocale: "en-US",
+            source: "Installing the high-quality language pack will provide more natural-sounding 'Audio Guidance.'",
+            targetLocale: "gu-IN",
+            target: "ઉચ્ચ ગુણવત્તાવાળું ભાષા પેક ઇન્સ્ટોલ કરવાથી વધુ કુદરતી અવાજ 'ઓડિયો ગાઇડન્સ' મળશે. ઓડિયો ગાઇડન્સ",
+            pathName: "a/b/c.xliff",
+            lineNumber: 25
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+
+        // Target ends without punctuation after the period-terminated sentence
+        // (last part has no period) — violation is correct
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain("instead of no punctuation");
+        expect(actual?.highlight).toBe("ઉચ્ચ ગુણવત્તાવાળું ભાષા પેક ઇન્સ્ટોલ કરવાથી વધુ કુદરતી અવાજ 'ઓડિયો ગાઇડન્સ' મળશે. ઓડિયો ગાઇડન્સ<e0/>");
+    });
+    // Call-out: source ends with quote, target puts period outside quote — endings match
+    test("Call-out quote with matching period outside closing quote in Korean target", () => {
+        expect.assertions(2);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "callout.period.outside",
+            sourceLocale: "en-US",
+            source: "To continue, press 'OK.'",
+            targetLocale: "ko-KR",
+            target: "계속하려면 \"확인\"을 누르세요.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Both end with '.' — target has period outside quote, no violation
+        expect(actual).toBeFalsy();
+    });
+
+    // Call-out: source period vs target exclamation outside quote — mismatch
+    test("Call-out quote with mismatched punctuation outside closing quote", () => {
+        expect.assertions(3);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "callout.mismatch",
+            sourceLocale: "en-US",
+            source: "To continue, press 'OK.'",
+            targetLocale: "de-DE",
+            target: "Um fortzufahren, drücken Sie \"OK\"!",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Source '.' vs target '!' — should detect mismatch
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain("instead of \"!\"");
+    });
+
+    // Person quotation: comma before quote, quoted content matches despite different overall ending
+    test("Person quotation with matching quoted content and different overall ending", () => {
+        expect.assertions(2);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "person.quotation.match",
+            sourceLocale: "en-US",
+            source: "She said, \"Hello!\"",
+            targetLocale: "it-IT",
+            target: "\"Ciao!\" ha detto.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Quoted content both end with '!' — no violation
+        expect(actual).toBeFalsy();
+    });
+
+    // Person quotation: comma before quote, quoted content mismatch
+    test("Person quotation with mismatched quoted content", () => {
+        expect.assertions(3);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "person.quotation.mismatch",
+            sourceLocale: "en-US",
+            source: "She said, \"Hello!\"",
+            targetLocale: "it-IT",
+            target: "\"Ciao.\" ha detto.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Source quoted content '!' vs target quoted content '.' — mismatch
+        expect(actual).toBeTruthy();
+        expect(actual?.description).toContain("instead of \".\"");
+    });
+
+    // Call-out: both source and target end with quote — compare quoted content
+    test("Call-out quote where both source and target end with quote", () => {
+        expect.assertions(2);
+        const rule = new ResourceSentenceEnding();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "callout.both.end.quote",
+            sourceLocale: "en-US",
+            source: "To continue, press 'OK.'",
+            targetLocale: "it-IT",
+            target: "Per continuare, premere 'OK.'",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Both end with '.' inside quotes — no violation
+        expect(actual).toBeFalsy();
+    });
+
     // Test for ResourcePlural with no sentence ending punctuation issues
     test("ResourcePlural with no sentence ending punctuation issues", () => {
         expect.assertions(2);
