@@ -18,7 +18,7 @@
  */
 
 import { pathToFileURL } from 'url';
-import path from 'node:path';
+import path from 'path';
 import readLines from './readLines.js';
 import write from './write.js';
 
