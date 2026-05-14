@@ -35,6 +35,9 @@ import write from './write.js';
  * @param {string[]} [options.opt.locales] - Target locale list (BCP-47)
  * @param {string} [options.opt.ilibPath] - Base path for ilib installation (default: "./")
  * @param {string} [options.opt.customLocalePath] - Custom locale data directory path
+ * @param {boolean} [options.opt.splitByLocale] - Write locale data as a hierarchy of files
+ *   (root.json, ko.json, ko_KR.json) instead of one merged file per locale. Requires mergeJson to be true.
+ * @param {boolean} [options.opt.mergeJson] - Must be true when splitByLocale is set
  * @returns {Promise<void>}
  */
 function mergeJson(options) {
