@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync } from 'fs';
 
 /**
  * Read a file and parse each non-empty line as a JS filename, adding it to
