@@ -10,7 +10,7 @@
         "assemble.mjs"
     ],
     "dependencies": {
-        "ilib-common": "workspace:^",
-        "ilib-locale": "workspace:^"
+        "ilib-common": "^1.0.0",
+        "ilib-locale": "^1.0.0"
     }
 }
