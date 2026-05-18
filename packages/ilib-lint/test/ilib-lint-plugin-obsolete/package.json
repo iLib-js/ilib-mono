@@ -1,5 +1,6 @@
 {
     "name": "ilib-lint-plugin-obsolete",
+    "private": true,
     "version": "1.0.0",
     "main": "./src/index.js",
     "type": "module",
@@ -18,8 +19,8 @@
     },
     "dependencies": {
         "i18nlint-common": "^2.0.0",
-        "ilib-locale": "^1.2.2",
-        "ilib-tools-common": "^1.6.0",
+        "ilib-locale": "^1.0.0",
+        "ilib-tools-common": "^1.0.0",
         "json5": "^2.2.3"
     }
 }
