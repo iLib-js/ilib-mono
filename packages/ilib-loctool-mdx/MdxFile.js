@@ -766,6 +766,9 @@ MdxFile.prototype._walk = function (node) {
                     if (this.API.utils.ignoreTags[trimmed]) {
                         // pass-through - same as inline code
                         node.localizable = true;
+                        // Children are intentionally skipped (not walked). Mark the node so
+                        // mapToNodes also excludes them, keeping localization consistent.
+                        node.ignoreChildren = true;
                         this._addComment(
                             "c" +
                                 this.message.componentIndex +
@@ -1173,7 +1176,7 @@ MdxFile.prototype._localizeNode = function (node, message, locale, translations)
                 } else if (node.use === "end") {
                     message.pop();
                 } else {
-                    message.push(node);
+                    message.push(node, node.ignoreChildren || undefined);
                     message.pop();
                 }
             }
@@ -1368,7 +1371,7 @@ MdxFile.prototype._getTranslationNodes = function (locale, translations, ma) {
 
 function mapToNodes(astNode) {
     var node = new Node(astNode);
-    if (astNode.children) {
+    if (astNode.children && !astNode.ignoreChildren) {
         for (var i = 0; i < astNode.children.length; i++) {
             node.add(mapToNodes(astNode.children[i]));
         }
