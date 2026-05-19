@@ -763,7 +763,20 @@ MdxFile.prototype._walk = function (node) {
             } else {
                 // HTML tag
                 if (!isFlowElement && this.message.getTextLength()) {
-                    if (this.API.utils.nonBreakingTags[trimmed]) {
+                    if (this.API.utils.ignoreTags[trimmed]) {
+                        // pass-through - same as inline code
+                        node.localizable = true;
+                        this._addComment(
+                            "c" +
+                                this.message.componentIndex +
+                                " will be replaced with the inline element <" +
+                                trimmed +
+                                ">.",
+                        );
+                        this.message.push(node, true);
+                        this.message.pop();
+                        break;
+                    } else if (this.API.utils.nonBreakingTags[trimmed]) {
                         this.message.push({
                             name: trimmed,
                             node: node,
