@@ -25,8 +25,8 @@ var Locale = require("ilib/lib/Locale.js");
 var isAlnum = require("ilib/lib/isAlnum.js");
 var isIdeo = require("ilib/lib/isIdeo.js");
 var he = require("he");
-var unistFilter = require('unist-util-filter');
-var u = require('unist-builder');
+var unistFilter = require("unist-util-filter");
+var u = require("unist-builder");
 
 // load the data for these
 isAlnum._init();
@@ -61,35 +61,30 @@ async function initMdxParser() {
     // treats all <tags> as JSX, requiring strict XML closing. Unfortunately, there's
     // no built-in way to configure this, so we may need to accept that HTML tags
     // in MDX need to be properly closed or self-closed (<br/> or <br></br>)
-    mdparser = remark().
-        use(remarkParse).
-        use(remarkFrontmatter, ['yaml']).
-        use(remarkMdx).
-        use(remarkGfm);
+    mdparser = remark().use(remarkParse).use(remarkFrontmatter, ["yaml"]).use(remarkMdx).use(remarkGfm);
 
     // Initialize the stringify processor as well
     // Use remark() instead of unified() to get the base compiler functionality
     // Include mdxPlugin to handle MDX-specific node types (mdxFlowExpression, mdxJsxTextElement, etc.)
-    mdstringify = remark().
-        use(remarkStringify, {
+    mdstringify = remark()
+        .use(remarkStringify, {
             commonmark: true,
             gfm: true,
-            rule: '-',
+            rule: "-",
             ruleSpaces: false,
-            bullet: '*',
-            listItemIndent: "one"
-        }).
-        use(remarkMdx).
-        use(remarkGfm).
-        use(remarkFrontmatter, ['yaml'])();
+            bullet: "*",
+            listItemIndent: "one",
+        })
+        .use(remarkMdx)
+        .use(remarkGfm)
+        .use(remarkFrontmatter, ["yaml"])();
 }
 
 // The init function will be exported at the end of the file
 
-
-isHtmlTag = function(tag) {
+isHtmlTag = function (tag) {
     return htmlTags.includes(tag);
-}
+};
 
 /**
  * Create a new Mdx file with the given path name and within
@@ -100,7 +95,7 @@ isHtmlTag = function(tag) {
  * of the project file
  * @param {FileType} type the file type instance of this file
  */
-var MdxFile = function(options) {
+var MdxFile = function (options) {
     options = options || {};
 
     this.project = options.project;
@@ -117,14 +112,15 @@ var MdxFile = function(options) {
     // this.componentIndex = 0;
     // if this is set, only produce fully translated mdx files. Otherwise if they
     // are not fully translated, just output the original source text.
-    this.fullyTranslated = this.project && this.project.settings && this.project.settings.mdx && this.project.settings.mdx.fullyTranslated;
+    this.fullyTranslated =
+        this.project && this.project.settings && this.project.settings.mdx && this.project.settings.mdx.fullyTranslated;
     this.translationStatus = {};
 
     if (this.mapping && this.mapping.frontmatter) {
         // needed to parse the front matter, which is in yaml format
         var type = this.type.getYamlFileType();
         this.yamlfile = type.newFile(this.pathName, {
-            sourceLocale: this.project.getSourceLocale()
+            sourceLocale: this.project.getSourceLocale(),
         });
     }
 };
@@ -140,8 +136,8 @@ var MdxFile = function(options) {
  * @param {Array|boolean} frontmatter the frontmatter config from the mapping
  * @returns {boolean} true if the resource is allowed
  */
-MdxFile.isFrontmatterAllowed = function(utils, res, frontmatter) {
-    if (typeof(frontmatter) === 'boolean') {
+MdxFile.isFrontmatterAllowed = function (utils, res, frontmatter) {
+    if (typeof frontmatter === "boolean") {
         return true;
     }
     var resKey = res.getKey();
@@ -161,15 +157,15 @@ MdxFile.isFrontmatterAllowed = function(utils, res, frontmatter) {
  * @param {String} string the string to unescape
  * @returns {String} the unescaped string
  */
-MdxFile.unescapeString = function(string) {
+MdxFile.unescapeString = function (string) {
     var unescaped = string;
 
     unescaped = he.decode(unescaped);
 
-    unescaped = unescaped.
-        replace(/^\\\\/g, "\\").
-        replace(/([^\\])\\\\/g, "$1\\").
-        replace(/\\(.)/g, "$1");
+    unescaped = unescaped
+        .replace(/^\\\\/g, "\\")
+        .replace(/([^\\])\\\\/g, "$1\\")
+        .replace(/\\(.)/g, "$1");
 
     return unescaped;
 };
@@ -186,12 +182,10 @@ MdxFile.unescapeString = function(string) {
  * @param {String} string the string to clean
  * @returns {String} the cleaned string
  */
-MdxFile.cleanString = function(string) {
+MdxFile.cleanString = function (string) {
     var unescaped = MdxFile.unescapeString(string);
 
-    unescaped = unescaped.
-        replace(/[ \n\t\r\f]+/g, " ").
-        trim();
+    unescaped = unescaped.replace(/[ \n\t\r\f]+/g, " ").trim();
 
     return unescaped;
 };
@@ -204,26 +198,28 @@ MdxFile.cleanString = function(string) {
  * key for
  * @returns {String} a unique key for this string
  */
-MdxFile.prototype.makeKey = function(source) {
+MdxFile.prototype.makeKey = function (source) {
     return this.API.utils.hashKey(MdxFile.cleanString(source));
 };
 
-MdxFile.prototype._addTransUnit = function(text, comment) {
+MdxFile.prototype._addTransUnit = function (text, comment) {
     if (text) {
         var source = this.API.utils.escapeInvalidChars(text);
-        this.set.add(this.API.newResource({
-            resType: "string",
-            project: this.project.getProjectId(),
-            key: this.makeKey(source),
-            sourceLocale: this.project.sourceLocale,
-            source: source,
-            autoKey: true,
-            pathName: this.pathName,
-            state: "new",
-            comment: comment,
-            datatype: "mdx",
-            index: this.resourceIndex++
-        }));
+        this.set.add(
+            this.API.newResource({
+                resType: "string",
+                project: this.project.getProjectId(),
+                key: this.makeKey(source),
+                sourceLocale: this.project.sourceLocale,
+                source: source,
+                autoKey: true,
+                pathName: this.pathName,
+                state: "new",
+                comment: comment,
+                datatype: "mdx",
+                index: this.resourceIndex++,
+            }),
+        );
     }
 };
 
@@ -235,10 +231,13 @@ MdxFile.prototype._addTransUnit = function(text, comment) {
  * and the trailing whitespace
  */
 function trim(API, text) {
-    var i, pre = "", post = "", ret = {};
+    var i,
+        pre = "",
+        post = "",
+        ret = {};
     if (!text) {
         return {
-            pre: ""
+            pre: "",
         };
     }
 
@@ -247,7 +246,7 @@ function trim(API, text) {
     if (i >= text.length) {
         // all white? just return it
         return {
-            pre: text
+            pre: text,
         };
     }
 
@@ -256,11 +255,11 @@ function trim(API, text) {
         text = text.substring(i);
     }
 
-    for (i = text.length-1; i > -1 && API.utils.isWhite(text.charAt(i)); i--);
+    for (i = text.length - 1; i > -1 && API.utils.isWhite(text.charAt(i)); i--);
 
-    if (i < text.length-1) {
-        ret.post = text.substring(i+1);
-        text = text.substring(0, i+1);
+    if (i < text.length - 1) {
+        ret.post = text.substring(i + 1);
+        text = text.substring(0, i + 1);
     }
 
     ret.text = text;
@@ -282,7 +281,7 @@ var reUrl = /^(https?|github|ftps?|mailto|file|data|irc):\/\/[\S]+$/;
  * @returns {boolean} true if the given string contains translatable text,
  * and false otherwise.
  */
-MdxFile.prototype.isTranslatable = function(str) {
+MdxFile.prototype.isTranslatable = function (str) {
     if (!str || !str.length || !str.trim().length) return false;
 
     if (!this.localizeLinks) {
@@ -292,14 +291,14 @@ MdxFile.prototype.isTranslatable = function(str) {
     }
 
     return this.API.utils.containsActualText(str);
-}
+};
 
 /**
  * @param {boolean} escape true if you want the translated
  * text to be escaped for attribute values
  * @private
  */
-MdxFile.prototype._emitText = function(escape) {
+MdxFile.prototype._emitText = function (escape) {
     if (!this.message.getTextLength()) {
         this.message = new MessageAccumulator();
         return;
@@ -307,15 +306,15 @@ MdxFile.prototype._emitText = function(escape) {
 
     var text = this.message.getMinimalString();
 
-    this.logger.trace('text using message accumulator is: ' + text);
+    this.logger.trace("text using message accumulator is: " + text);
 
     if (this.message.isTranslatable || this.isTranslatable(text)) {
         this._addTransUnit(text, this.comment);
         var prefixes = this.message.getPrefix();
         var suffixes = this.message.getSuffix();
 
-        prefixes.concat(suffixes).forEach(function(end) {
-            if (typeof(end) === "object") {
+        prefixes.concat(suffixes).forEach(function (end) {
+            if (typeof end === "object") {
                 end.localizable = false;
             }
         });
@@ -328,7 +327,7 @@ MdxFile.prototype._emitText = function(escape) {
 /**
  * @private
  */
-MdxFile.prototype._findAttributes = function(node) {
+MdxFile.prototype._findAttributes = function (node) {
     var match, name;
 
     if (!node.attributes || !node.attributes.length) {
@@ -355,12 +354,12 @@ MdxFile.prototype._findAttributes = function(node) {
         if (value === null || value === undefined) {
             // No value (boolean attribute like "disabled")
             continue;
-        } else if (typeof value === 'string') {
+        } else if (typeof value === "string") {
             // Direct string value
             stringValue = value;
-        } else if (typeof value === 'object') {
+        } else if (typeof value === "object") {
             // Only extract literal string values; expressions ({variable}, {fn()}) are not localizable
-            if (value.type === 'mdxJsxAttributeValueLiteral' && value.value !== undefined) {
+            if (value.type === "mdxJsxAttributeValueLiteral" && value.value !== undefined) {
                 stringValue = value.value;
             } else {
                 continue;
@@ -374,8 +373,11 @@ MdxFile.prototype._findAttributes = function(node) {
         // For HTML tags, use the configured localizableAttributes
         if (isJSXComponent) {
             // Only extract title, placeholder, and label attributes for JSX components
-            if ((name === "title" || name === "placeholder" || name === "label") &&
-                stringValue && typeof stringValue === 'string') {
+            if (
+                (name === "title" || name === "placeholder" || name === "label") &&
+                stringValue &&
+                typeof stringValue === "string"
+            ) {
                 var trimmed = stringValue.trim();
                 if (trimmed.length > 0) {
                     this._addTransUnit(trimmed);
@@ -383,22 +385,26 @@ MdxFile.prototype._findAttributes = function(node) {
             }
         } else {
             // HTML tags: use configured localizable attributes
-            if (name === "title" || (this.API.utils.localizableAttributes[node.name] && this.API.utils.localizableAttributes[node.name][name])) {
-                if (stringValue && typeof stringValue === 'string') {
+            if (
+                name === "title" ||
+                (this.API.utils.localizableAttributes[node.name] &&
+                    this.API.utils.localizableAttributes[node.name][name])
+            ) {
+                if (stringValue && typeof stringValue === "string") {
                     this._addTransUnit(stringValue);
-                } else if (value && typeof value === 'string') {
+                } else if (value && typeof value === "string") {
                     this._addTransUnit(value);
                 }
             }
         }
     }
-}
+};
 
 /**
  * @private
  * Localize JSX attributes in a node during the localization phase.
  */
-MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) {
+MdxFile.prototype._localizeJsxAttributes = function (node, locale, translations) {
     if (node.use == "end" || !node.attributes || !node.attributes.length) {
         return;
     }
@@ -416,9 +422,14 @@ MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) 
         // Expression attributes ({ type: 'mdxJsxAttributeValueExpression' }) are not localizable.
         var stringValue = null;
         var isLiteralObject = false;
-        if (typeof value === 'string') {
+        if (typeof value === "string") {
             stringValue = value;
-        } else if (value && typeof value === 'object' && value.type === 'mdxJsxAttributeValueLiteral' && value.value !== undefined) {
+        } else if (
+            value &&
+            typeof value === "object" &&
+            value.type === "mdxJsxAttributeValueLiteral" &&
+            value.value !== undefined
+        ) {
             stringValue = value.value;
             isLiteralObject = true;
         } else {
@@ -430,8 +441,12 @@ MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) 
         // For HTML tags, use the configured localizableAttributes
         if (isJSXComponent) {
             // Only localize title, placeholder, and label attributes for JSX components
-            if ((name === "title" || name === "placeholder" || name === "label") &&
-                stringValue && typeof stringValue === 'string' && stringValue.trim()) {
+            if (
+                (name === "title" || name === "placeholder" || name === "label") &&
+                stringValue &&
+                typeof stringValue === "string" &&
+                stringValue.trim()
+            ) {
                 var translated = this._localizeString(stringValue, locale, translations);
                 if (isLiteralObject) {
                     attr.value.value = translated;
@@ -441,21 +456,25 @@ MdxFile.prototype._localizeJsxAttributes = function(node, locale, translations) 
             }
         } else {
             // HTML tags: use configured localizable attributes
-            if (name === "title" || (this.API.utils.localizableAttributes[node.name] && this.API.utils.localizableAttributes[node.name][name])) {
-                if (stringValue && typeof stringValue === 'string') {
+            if (
+                name === "title" ||
+                (this.API.utils.localizableAttributes[node.name] &&
+                    this.API.utils.localizableAttributes[node.name][name])
+            ) {
+                if (stringValue && typeof stringValue === "string") {
                     var translated = this._localizeString(stringValue, locale, translations);
                     if (isLiteralObject) {
                         attr.value.value = translated;
                     } else {
                         attr.value = translated;
                     }
-                } else if (value && typeof value === 'string') {
+                } else if (value && typeof value === "string") {
                     attr.value = this._localizeString(value, locale, translations);
                 }
             }
         }
     }
-}
+};
 
 var reL10NComment = /\/\*\s*[iI]18[Nn]\s*(.*)\s*\*\//;
 
@@ -467,11 +486,11 @@ var reDirectiveComment = /i18n-(en|dis)able\s+(\S*)/;
  * @param {AST} node the current node of an abstract syntax tree to
  * walk.
  */
-MdxFile.prototype._walk = function(node) {
+MdxFile.prototype._walk = function (node) {
     var match, tagName;
 
     switch (node.type) {
-        case 'text':
+        case "text":
             // the message accumulator will handle the whitespace, so always
             // add this text to the accumulator even if it's just whitespace
             this.message.addText(node.value);
@@ -479,12 +498,12 @@ MdxFile.prototype._walk = function(node) {
             node.localizable = true;
             break;
 
-        case 'delete':
-        case 'link':
-        case 'emphasis':
-        case 'strong':
-            node.title && typeof node.title === 'string' && this._addTransUnit(node.title);
-            if (this.localizeLinks && node.url && typeof node.url === 'string') {
+        case "delete":
+        case "link":
+        case "emphasis":
+        case "strong":
+            node.title && typeof node.title === "string" && this._addTransUnit(node.title);
+            if (this.localizeLinks && node.url && typeof node.url === "string") {
                 var value = node.url;
                 var parts = trim(this.API, value);
                 // only localizable if there already is some localizable text
@@ -497,23 +516,25 @@ MdxFile.prototype._walk = function(node) {
             if (node.children && node.children.length) {
                 this.message.push({
                     name: node.type,
-                    node: node
+                    node: node,
                 });
-                node.children.forEach(function(child) {
-                    this._walk(child);
-                }.bind(this));
+                node.children.forEach(
+                    function (child) {
+                        this._walk(child);
+                    }.bind(this),
+                );
                 this.message.pop();
 
-                node.localizable = node.children.every(function(child) {
+                node.localizable = node.children.every(function (child) {
                     return child.localizable;
                 });
             }
             break;
 
-        case 'image':
-        case 'imageReference':
-            node.title && typeof node.title === 'string' && this._addTransUnit(node.title);
-            node.alt && typeof node.alt === 'string' && this._addTransUnit(node.alt);
+        case "image":
+        case "imageReference":
+            node.title && typeof node.title === "string" && this._addTransUnit(node.title);
+            node.alt && typeof node.alt === "string" && this._addTransUnit(node.alt);
             // images are non-breaking, self-closing nodes
             // this.text += '<c' + this.componentIndex++ + '/>';
             if (this.message.getTextLength()) {
@@ -523,7 +544,7 @@ MdxFile.prototype._walk = function(node) {
             }
             break;
 
-        case 'footnoteReference':
+        case "footnoteReference":
             // footnote references are non-breaking, self-closing nodes
             if (this.message.getTextLength()) {
                 node.localizable = true;
@@ -532,10 +553,10 @@ MdxFile.prototype._walk = function(node) {
             }
             break;
 
-        case 'definition':
+        case "definition":
             // definitions are breaking nodes
             this._emitText();
-            if (node.url && typeof node.url === 'string' && this.localizeLinks) {
+            if (node.url && typeof node.url === "string" && this.localizeLinks) {
                 var value = node.url;
                 var parts = trim(this.API, value);
                 // only localizable if there already is some localizable text
@@ -544,20 +565,20 @@ MdxFile.prototype._walk = function(node) {
                     this._addTransUnit(node.url);
                     node.localizable = true;
                 }
-                node.title && typeof node.title === 'string' && this._addTransUnit(node.title);
+                node.title && typeof node.title === "string" && this._addTransUnit(node.title);
             }
             break;
 
-        case 'footnoteDefinition':
+        case "footnoteDefinition":
             // definitions are breaking nodes
             this._emitText();
             if (node.children && node.children.length) {
                 // Check if the footnote definition contains only a URL
-                var allText = '';
+                var allText = "";
                 for (var i = 0; i < node.children.length; i++) {
-                    if (node.children[i].type === 'text') {
+                    if (node.children[i].type === "text") {
                         allText += node.children[i].value;
-                    } else if (node.children[i].type === 'link' && node.children[i].url) {
+                    } else if (node.children[i].type === "link" && node.children[i].url) {
                         allText += node.children[i].url;
                     }
                 }
@@ -579,24 +600,26 @@ MdxFile.prototype._walk = function(node) {
                         node.localizable = false;
                     }
                     if (node.children) {
-                        node.children.forEach(function(child) {
+                        node.children.forEach(function (child) {
                             child.localizable = false;
                         });
                     }
                 } else {
                     // Walk children normally
-                    node.children.forEach(function(child) {
-                        this._walk(child);
-                    }.bind(this));
+                    node.children.forEach(
+                        function (child) {
+                            this._walk(child);
+                        }.bind(this),
+                    );
 
-                    node.localizable = node.children.every(function(child) {
+                    node.localizable = node.children.every(function (child) {
                         return child.localizable;
                     });
                 }
             }
             break;
 
-        case 'linkReference':
+        case "linkReference":
             // inline code nodes and link references are non-breaking
             // Also, pass true to the push so that this node is never optimized out of a string,
             // even at the beginning or end.
@@ -608,7 +631,7 @@ MdxFile.prototype._walk = function(node) {
                     var child = new Node({
                         type: "text",
                         value: node.label,
-                        children: []
+                        children: [],
                     });
                     node.children.push(child);
                 }
@@ -616,37 +639,43 @@ MdxFile.prototype._walk = function(node) {
             }
             this.message.push(node, true);
             if (node.children && node.children.length) {
-                node.children.forEach(function(child) {
-                    this._walk(child);
-                }.bind(this));
+                node.children.forEach(
+                    function (child) {
+                        this._walk(child);
+                    }.bind(this),
+                );
             }
             this.message.pop();
             break;
 
-        case 'inlineCode':
+        case "inlineCode":
             node.localizable = true;
-            this._addComment("c" + this.message.componentIndex + " will be replaced with the inline code `" + node.value + "`.");
+            this._addComment(
+                "c" + this.message.componentIndex + " will be replaced with the inline code `" + node.value + "`.",
+            );
             this.message.push(node, true);
             this.message.pop();
             break;
 
-        case 'root':
+        case "root":
             // root node just contains children, don't emit text
             if (node.children && node.children.length) {
-                node.children.forEach(function(child) {
-                    this._walk(child);
-                }.bind(this));
+                node.children.forEach(
+                    function (child) {
+                        this._walk(child);
+                    }.bind(this),
+                );
             }
             break;
 
-        case 'mdxFlowExpression':
-            var trimmed = node.value ? node.value.trim() : '';
-            if (trimmed.substring(0, 2) === '/*') {
+        case "mdxFlowExpression":
+            var trimmed = node.value ? node.value.trim() : "";
+            if (trimmed.substring(0, 2) === "/*") {
                 reDirectiveComment.lastIndex = 0;
                 match = reDirectiveComment.exec(node.value);
                 if (match) {
                     if (match[2] === "localize-links") {
-                        this.localizeLinks = (match[1] === "en");
+                        this.localizeLinks = match[1] === "en";
                     }
                 } else {
                     reL10NComment.lastIndex = 0;
@@ -656,37 +685,45 @@ MdxFile.prototype._walk = function(node) {
                     }
                 }
             } else if (node.children && node.children.length) {
-                node.children.forEach(function(child) {
-                    this._walk(child);
-                }.bind(this));
+                node.children.forEach(
+                    function (child) {
+                        this._walk(child);
+                    }.bind(this),
+                );
             }
             break;
 
-        case 'mdxTextExpression':
+        case "mdxTextExpression":
             // inline JavaScript expressions like {variable} or {1 + 1}
             // Comments like {/* comment */} should be ignored (not extracted)
-            var trimmed = node.value ? node.value.trim() : '';
-            if (trimmed.substring(0, 2) === '/*') {
+            var trimmed = node.value ? node.value.trim() : "";
+            if (trimmed.substring(0, 2) === "/*") {
                 // This is a comment, skip it (don't extract it)
                 break;
             }
             // treat like inline code - non-breaking, self-closing node
             node.localizable = true;
-            this._addComment("c" + this.message.componentIndex + " will be replaced with the inline expression {" + (node.value || '') + "}.");
+            this._addComment(
+                "c" +
+                    this.message.componentIndex +
+                    " will be replaced with the inline expression {" +
+                    (node.value || "") +
+                    "}.",
+            );
             this.message.push(node, true);
             this.message.pop();
             break;
 
-        case 'mdxjsEsm':
+        case "mdxjsEsm":
             // ES Module import/export statements - breaking node, no translatable content
             this._emitText();
             // no children to walk, just the value which is code
             break;
 
-        case 'mdxJsxTextElement':
-        case 'mdxJsxFlowElement':
+        case "mdxJsxTextElement":
+        case "mdxJsxFlowElement":
             // Handle both inline and block-level JSX/HTML elements
-            var isFlowElement = (node.type === 'mdxJsxFlowElement');
+            var isFlowElement = node.type === "mdxJsxFlowElement";
             var trimmed = node.name;
 
             // Block-level JSX elements are always breaking nodes
@@ -700,7 +737,7 @@ MdxFile.prototype._walk = function(node) {
                     // Inline JSX components participate in text flow
                     this.message.push({
                         name: tagName,
-                        node: node
+                        node: node,
                     });
                     node.localizable = true;
                 }
@@ -714,9 +751,11 @@ MdxFile.prototype._walk = function(node) {
                     this._findAttributes(node);
                 }
                 if (node.children && node.children.length) {
-                    node.children.forEach(function(child) {
-                        this._walk(child);
-                    }.bind(this));
+                    node.children.forEach(
+                        function (child) {
+                            this._walk(child);
+                        }.bind(this),
+                    );
                 }
                 if (!isFlowElement) {
                     this.message.pop();
@@ -727,7 +766,7 @@ MdxFile.prototype._walk = function(node) {
                     if (this.API.utils.nonBreakingTags[trimmed]) {
                         this.message.push({
                             name: trimmed,
-                            node: node
+                            node: node,
                         });
                         node.localizable = true;
                     } else {
@@ -741,9 +780,11 @@ MdxFile.prototype._walk = function(node) {
                     this._emitText();
                 }
                 if (node.children && node.children.length) {
-                    node.children.forEach(function(child) {
-                        this._walk(child);
-                    }.bind(this));
+                    node.children.forEach(
+                        function (child) {
+                            this._walk(child);
+                        }.bind(this),
+                    );
                 }
 
                 if (!isFlowElement && node.localizable) {
@@ -754,7 +795,7 @@ MdxFile.prototype._walk = function(node) {
             }
             break;
 
-        case 'yaml':
+        case "yaml":
             // parse the front matter using the YamlFile plugin
             if (this.mapping && this.mapping.frontmatter) {
                 this.yamlfile.parse(node.value);
@@ -762,11 +803,13 @@ MdxFile.prototype._walk = function(node) {
                 if (resources) {
                     var utils = this.API.utils;
                     var frontmatter = this.mapping.frontmatter;
-                    resources.forEach(function(res) {
-                        if (MdxFile.isFrontmatterAllowed(utils, res, frontmatter)) {
-                            this.set.add(res);
-                        }
-                    }.bind(this));
+                    resources.forEach(
+                        function (res) {
+                            if (MdxFile.isFrontmatterAllowed(utils, res, frontmatter)) {
+                                this.set.add(res);
+                            }
+                        }.bind(this),
+                    );
                 }
             }
             break;
@@ -774,9 +817,11 @@ MdxFile.prototype._walk = function(node) {
         default:
             this._emitText();
             if (node.children && node.children.length) {
-                node.children.forEach(function(child, index, array) {
-                    this._walk(child);
-                }.bind(this));
+                node.children.forEach(
+                    function (child, index, array) {
+                        this._walk(child);
+                    }.bind(this),
+                );
             }
             break;
     }
@@ -787,14 +832,16 @@ MdxFile.prototype._walk = function(node) {
  * project's translation set.
  * @param {String} data the string to parse
  */
-MdxFile.prototype.parse = function(data) {
+MdxFile.prototype.parse = function (data) {
     this.logger.debug("Extracting strings from " + this.pathName);
 
     // Ensure remark-mdx parser is loaded (for ESM-only package)
     // The parser should be initialized via MdxFileType.init() before parse() is called
     if (!mdparser) {
-        throw new Error("remark-mdx parser not initialized. The parser must be initialized via MdxFileType.init() " +
-            "before calling parse(). This should happen automatically during project initialization.");
+        throw new Error(
+            "remark-mdx parser not initialized. The parser must be initialized via MdxFileType.init() " +
+                "before calling parse(). This should happen automatically during project initialization.",
+        );
     }
 
     try {
@@ -808,18 +855,36 @@ MdxFile.prototype.parse = function(data) {
     if (this.logger.isTraceEnabled()) {
         this.logger.trace("AST root type: " + (this.ast && this.ast.type));
         if (this.ast && this.ast.children) {
-            this.ast.children.forEach(function(child, i) {
-                this.logger.trace("AST child " + i + ": type=" + child.type +
-                    (child.value ? ", value=" + JSON.stringify(child.value.substring(0, 50)) : "") +
-                    (child.children ? ", children=" + child.children.length : ""));
-                // Log children of children for deeper inspection
-                if (child.children && child.type !== 'yaml') {
-                    child.children.forEach(function(grandchild, j) {
-                        this.logger.trace("  Child " + i + "." + j + ": type=" + grandchild.type +
-                            (grandchild.value ? ", value=" + JSON.stringify(grandchild.value.substring(0, 50)) : ""));
-                    }.bind(this));
-                }
-            }.bind(this));
+            this.ast.children.forEach(
+                function (child, i) {
+                    this.logger.trace(
+                        "AST child " +
+                            i +
+                            ": type=" +
+                            child.type +
+                            (child.value ? ", value=" + JSON.stringify(child.value.substring(0, 50)) : "") +
+                            (child.children ? ", children=" + child.children.length : ""),
+                    );
+                    // Log children of children for deeper inspection
+                    if (child.children && child.type !== "yaml") {
+                        child.children.forEach(
+                            function (grandchild, j) {
+                                this.logger.trace(
+                                    "  Child " +
+                                        i +
+                                        "." +
+                                        j +
+                                        ": type=" +
+                                        grandchild.type +
+                                        (grandchild.value
+                                            ? ", value=" + JSON.stringify(grandchild.value.substring(0, 50))
+                                            : ""),
+                                );
+                            }.bind(this),
+                        );
+                    }
+                }.bind(this),
+            );
         }
     }
 
@@ -838,7 +903,7 @@ MdxFile.prototype.parse = function(data) {
  * Extract all the localizable strings from the mdx file and add them to the
  * project's translation set.
  */
-MdxFile.prototype.extract = function() {
+MdxFile.prototype.extract = function () {
     this.logger.debug("Extracting strings from " + this.pathName);
     if (this.pathName) {
         var p = path.join(this.project.root, this.pathName);
@@ -860,12 +925,12 @@ MdxFile.prototype.extract = function() {
  * @returns {TranslationSet} The set of resources found in the
  * current Java file.
  */
-MdxFile.prototype.getTranslationSet = function() {
+MdxFile.prototype.getTranslationSet = function () {
     return this.set;
 };
 
 //we don't write Mdx source files
-MdxFile.prototype.write = function() {};
+MdxFile.prototype.write = function () {};
 
 /**
  * Return the alternate output locale or the shared output locale for the given
@@ -875,14 +940,14 @@ MdxFile.prototype.write = function() {};
  * @param {String} locale the locale spec for the target locale
  * @returns {Locale} the output locale
  */
-MdxFile.prototype.getOutputLocale = function(mapping, locale) {
+MdxFile.prototype.getOutputLocale = function (mapping, locale) {
     // we can remove the replace() call after upgrading to
     // ilib 14.10.0 or later because it can parse locale specs
     // with underscores in them
     return new Locale(
-        (mapping && mapping.localeMap && mapping.localeMap[locale] &&
-         mapping.localeMap[locale].replace(/_/g, '-')) ||
-        this.project.getOutputLocale(locale));
+        (mapping && mapping.localeMap && mapping.localeMap[locale] && mapping.localeMap[locale].replace(/_/g, "-")) ||
+            this.project.getOutputLocale(locale),
+    );
 };
 
 /**
@@ -891,20 +956,22 @@ MdxFile.prototype.getOutputLocale = function(mapping, locale) {
  * @param {String] locale the locale spec for the target locale
  * @returns {String} the localized path name
  */
-MdxFile.prototype.getLocalizedPath = function(locale) {
+MdxFile.prototype.getLocalizedPath = function (locale) {
     var mapping = this.mapping || this.type.getMapping(path.normalize(this.pathName)) || this.type.getDefaultMapping();
     var l = this.getOutputLocale(mapping, locale);
 
-    return path.normalize(this.API.utils.formatPath(mapping.template, {
-        sourcepath: this.pathName,
-        locale: l
-    }));
+    return path.normalize(
+        this.API.utils.formatPath(mapping.template, {
+            sourcepath: this.pathName,
+            locale: l,
+        }),
+    );
 };
 
 /**
  * @private
  */
-MdxFile.prototype._localizeString = function(source, locale, translations, nopseudo) {
+MdxFile.prototype._localizeString = function (source, locale, translations, nopseudo) {
     if (!source) return source;
 
     var key = this.makeKey(this.API.utils.escapeInvalidChars(source));
@@ -913,7 +980,7 @@ MdxFile.prototype._localizeString = function(source, locale, translations, nopse
         project: this.project.getProjectId(),
         sourceLocale: this.project.getSourceLocale(),
         reskey: key,
-        datatype: "mdx"
+        datatype: "mdx",
     });
     // var hashkey = ResourceString.hashKey(this.project.getProjectId(), locale, key, "mdx");
     var hashkey = tester.hashKeyForTranslation(locale);
@@ -935,20 +1002,22 @@ MdxFile.prototype._localizeString = function(source, locale, translations, nopse
             translation = this.type.pseudos[locale].getString(source);
         } else {
             this.logger.trace("New string found: " + source);
-            this.type.newres.add(this.API.newResource({
-                resType: "string",
-                project: this.project.getProjectId(),
-                key: key,
-                sourceLocale: this.project.sourceLocale,
-                source: this.API.utils.escapeInvalidChars(source),
-                targetLocale: locale,
-                target: this.API.utils.escapeInvalidChars(source),
-                autoKey: true,
-                pathName: this.pathName,
-                state: "new",
-                datatype: "mdx",
-                index: this.resourceIndex++
-            }));
+            this.type.newres.add(
+                this.API.newResource({
+                    resType: "string",
+                    project: this.project.getProjectId(),
+                    key: key,
+                    sourceLocale: this.project.sourceLocale,
+                    source: this.API.utils.escapeInvalidChars(source),
+                    targetLocale: locale,
+                    target: this.API.utils.escapeInvalidChars(source),
+                    autoKey: true,
+                    pathName: this.pathName,
+                    state: "new",
+                    datatype: "mdx",
+                    index: this.resourceIndex++,
+                }),
+            );
 
             translation = source;
 
@@ -968,7 +1037,7 @@ MdxFile.prototype._localizeString = function(source, locale, translations, nopse
 /**
  * @private
  */
-MdxFile.prototype._addComment = function(comment) {
+MdxFile.prototype._addComment = function (comment) {
     if (!this.comment) {
         this.comment = comment;
     } else {
@@ -979,24 +1048,24 @@ MdxFile.prototype._addComment = function(comment) {
 /**
  * @private
  */
-MdxFile.prototype._localizeNode = function(node, message, locale, translations) {
+MdxFile.prototype._localizeNode = function (node, message, locale, translations) {
     var match, translation, trimmed;
 
     switch (node.type) {
-        case 'text':
+        case "text":
             if (node.localizable) {
                 message.addText(node.value);
             }
             break;
 
-        case 'delete':
-        case 'link':
-        case 'emphasis':
-        case 'strong':
-            if (node.title && typeof node.title === 'string') {
-               node.title = this._localizeString(node.title, locale, translations);
+        case "delete":
+        case "link":
+        case "emphasis":
+        case "strong":
+            if (node.title && typeof node.title === "string") {
+                node.title = this._localizeString(node.title, locale, translations);
             }
-            if (node.url && typeof node.url === 'string' && node.localizedLink) {
+            if (node.url && typeof node.url === "string" && node.localizedLink) {
                 // don't pseudo-localize URLs
                 node.url = this._localizeString(node.url, locale, translations, true);
             }
@@ -1009,12 +1078,12 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'image':
-        case 'imageReference':
-            if (node.title && typeof node.title === 'string') {
+        case "image":
+        case "imageReference":
+            if (node.title && typeof node.title === "string") {
                 node.title = this._localizeString(node.title, locale, translations);
             }
-            if (node.alt && typeof node.alt === 'string') {
+            if (node.alt && typeof node.alt === "string") {
                 node.alt = this._localizeString(node.alt, locale, translations);
             }
             // images are non-breaking, self-closing nodes
@@ -1024,7 +1093,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'footnoteReference':
+        case "footnoteReference":
             // footnote references are non-breaking, self-closing nodes
             if (node.localizable) {
                 message.push(node, true);
@@ -1032,7 +1101,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'linkReference':
+        case "linkReference":
             if (node.localizable) {
                 if (node.use === "start") {
                     message.push(node, true);
@@ -1045,7 +1114,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'inlineCode':
+        case "inlineCode":
             // inline code is a non-breaking, self-closing node
             if (node.localizable) {
                 message.push(node, true);
@@ -1053,7 +1122,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'definition':
+        case "definition":
             if (node.localizable) {
                 if (node.use === "start") {
                     message.push(node);
@@ -1064,18 +1133,18 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
                     message.pop();
                 }
 
-                if (node.url && typeof node.url === 'string') {
+                if (node.url && typeof node.url === "string") {
                     // don't pseudo-localize URLs
                     node.url = this._localizeString(node.url, locale, translations, true);
                 }
-                if (node.title && typeof node.title === 'string') {
+                if (node.title && typeof node.title === "string") {
                     node.title = this._localizeString(node.title, locale, translations);
                 }
             }
             break;
 
-        case 'mdxJsxTextElement':
-        case 'mdxJsxFlowElement':
+        case "mdxJsxTextElement":
+        case "mdxJsxFlowElement":
             // Handle both inline and block-level JSX/HTML elements
             // Both types handle attributes the same way during localization
             var trimmed = node.name;
@@ -1097,7 +1166,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'footnoteDefinition':
+        case "footnoteDefinition":
             if (node.localizable) {
                 if (node.use === "start") {
                     message.push(node);
@@ -1107,11 +1176,11 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
                 // If the footnote definition contains only a URL and it was extracted,
                 // we need to localize it in the children
                 if (node.children && node.children.length) {
-                    var allText = '';
+                    var allText = "";
                     for (var i = 0; i < node.children.length; i++) {
-                        if (node.children[i].type === 'text') {
+                        if (node.children[i].type === "text") {
                             allText += node.children[i].value;
-                        } else if (node.children[i].type === 'link' && node.children[i].url) {
+                        } else if (node.children[i].type === "link" && node.children[i].url) {
                             allText += node.children[i].url;
                         }
                     }
@@ -1124,11 +1193,16 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
                     if (isUrlOnly) {
                         // Localize the URL in the text node or link node
                         for (var i = 0; i < node.children.length; i++) {
-                            if (node.children[i].type === 'text') {
-                                var localized = this._localizeString(node.children[i].value, locale, translations, true);
+                            if (node.children[i].type === "text") {
+                                var localized = this._localizeString(
+                                    node.children[i].value,
+                                    locale,
+                                    translations,
+                                    true,
+                                );
                                 node.children[i].value = localized;
                                 break;
-                            } else if (node.children[i].type === 'link' && node.children[i].url) {
+                            } else if (node.children[i].type === "link" && node.children[i].url) {
                                 // Localize the URL in the link node
                                 var localized = this._localizeString(node.children[i].url, locale, translations, true);
                                 node.children[i].url = localized;
@@ -1140,13 +1214,13 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'mdxFlowExpression':
+        case "mdxFlowExpression":
             if (!node.value) {
                 // container node, don't need to do anything for this one
                 break;
             }
             trimmed = node.value.trim();
-            if (trimmed.substring(0, 2) === '/*') {
+            if (trimmed.substring(0, 2) === "/*") {
                 reL10NComment.lastIndex = 0;
                 match = reL10NComment.exec(node.value);
                 if (match) {
@@ -1155,7 +1229,7 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'mdxTextExpression':
+        case "mdxTextExpression":
             // inline JavaScript expressions - non-breaking, self-closing node
             if (node.localizable) {
                 message.push(node, true);
@@ -1163,11 +1237,11 @@ MdxFile.prototype._localizeNode = function(node, message, locale, translations) 
             }
             break;
 
-        case 'mdxjsEsm':
+        case "mdxjsEsm":
             // ES Module import/export statements - no localization needed
             break;
 
-        case 'yaml':
+        case "yaml":
             if (this.mapping && this.mapping.frontmatter) {
                 // rely on the yaml plugin to localize the yaml properly
                 node.value = this.yamlfile.localizeText(translations, locale);
@@ -1197,7 +1271,7 @@ function mapToAst(node) {
     return u(node.type, node, children);
 }
 
-MdxFile.prototype._getTranslationNodes = function(locale, translations, ma) {
+MdxFile.prototype._getTranslationNodes = function (locale, translations, ma) {
     if (ma.getTextLength() === 0) {
         // nothing to localize
         return undefined;
@@ -1220,42 +1294,56 @@ MdxFile.prototype._getTranslationNodes = function(locale, translations, ma) {
         var mismatch = false;
 
         for (i = 0; i < nodes.length; i++) {
-           if (nodes[i].type == 'component' && (!nodes[i].extra || nodes[i].index > maxIndex)) {
-               nodes.splice(i, 1);
-               mismatch = true;
-           }
+            if (nodes[i].type == "component" && (!nodes[i].extra || nodes[i].index > maxIndex)) {
+                nodes.splice(i, 1);
+                mismatch = true;
+            }
         }
         if (mismatch) {
-            this.logger.warn("Warning! Translation of\n'" + text + "' (key: " + key + ")\nto locale " + locale + " is\n'" + translation + "'\nwhich has a more components in it than the source.");
+            this.logger.warn(
+                "Warning! Translation of\n'" +
+                    text +
+                    "' (key: " +
+                    key +
+                    ")\nto locale " +
+                    locale +
+                    " is\n'" +
+                    translation +
+                    "'\nwhich has a more components in it than the source.",
+            );
         }
 
         if (this.project.settings.identify) {
             var tmp = [];
-            tmp.push(new Node({
-                type: "mdxJsxTextElement",
-                use: "start",
-                name: "span",
-                attributes: [
-                    u("mdxJsxAttribute", {
-                        name: "x-locid",
-                        value: key
-                    })
-                ],
-                children: []
-            }));
+            tmp.push(
+                new Node({
+                    type: "mdxJsxTextElement",
+                    use: "start",
+                    name: "span",
+                    attributes: [
+                        u("mdxJsxAttribute", {
+                            name: "x-locid",
+                            value: key,
+                        }),
+                    ],
+                    children: [],
+                }),
+            );
             tmp = tmp.concat(nodes);
-            tmp.push(new Node({
-                type: "mdxJsxTextElement",
-                use: "end",
-                name: "span",
-                attributes: [
-                    u("mdxJsxAttribute", {
-                        name: "x-locid",
-                        value: key
-                    })
-                ],
-                children: []
-            }));
+            tmp.push(
+                new Node({
+                    type: "mdxJsxTextElement",
+                    use: "end",
+                    name: "span",
+                    attributes: [
+                        u("mdxJsxAttribute", {
+                            name: "x-locid",
+                            value: key,
+                        }),
+                    ],
+                    children: [],
+                }),
+            );
             nodes = tmp;
         }
 
@@ -1283,18 +1371,20 @@ function mapToNodes(astNode) {
  * @param {String} locale the locale to translate to
  * @returns {String} the localized text of this file
  */
-MdxFile.prototype.localizeText = function(translations, locale) {
+MdxFile.prototype.localizeText = function (translations, locale) {
     this.resourceIndex = 0;
 
     this.logger.debug("Localizing strings for locale " + locale);
 
     // copy the ast for this locale so that we don't modify the original
     if (!this.ast) {
-        this.logger.warn("Cannot localize file " + this.pathName + ": AST is not set. File may not have been parsed successfully.");
+        this.logger.warn(
+            "Cannot localize file " + this.pathName + ": AST is not set. File may not have been parsed successfully.",
+        );
         // Return empty string if AST is not set (file wasn't parsed successfully)
         return "";
     }
-    var ast = unistFilter(this.ast, function(node) {
+    var ast = unistFilter(this.ast, function (node) {
         return true;
     });
 
@@ -1302,7 +1392,9 @@ MdxFile.prototype.localizeText = function(translations, locale) {
     // localizable segments that will get replaced with the translation
     var nodeArray = mapToNodes(ast).toArray();
 
-    var start = -1, end, ma = new MessageAccumulator();
+    var start = -1,
+        end,
+        ma = new MessageAccumulator();
 
     this.translationStatus[locale] = true;
 
@@ -1322,10 +1414,15 @@ MdxFile.prototype.localizeText = function(translations, locale) {
                     var prefix = ma.getPrefix();
                     var suffix = ma.getSuffix();
                     var oldLength = nodeArray.length;
-                    nodeArray = nodeArray.slice(0, start).concat(prefix).concat(nodes).concat(suffix).concat(nodeArray.slice(end+1));
+                    nodeArray = nodeArray
+                        .slice(0, start)
+                        .concat(prefix)
+                        .concat(nodes)
+                        .concat(suffix)
+                        .concat(nodeArray.slice(end + 1));
 
                     // adjust for the difference in node length of the source and translation
-                    i += (nodeArray.length - oldLength);
+                    i += nodeArray.length - oldLength;
                 } // else leave the source nodes alone and register this string as new
             }
             start = -1;
@@ -1340,7 +1437,12 @@ MdxFile.prototype.localizeText = function(translations, locale) {
             // replace the last few source nodes with the translation nodes
             var prefix = ma.getPrefix();
             var suffix = ma.getSuffix();
-            nodeArray = nodeArray.slice(0, start).concat(prefix).concat(nodes).concat(suffix).concat(nodeArray.slice(end+1));
+            nodeArray = nodeArray
+                .slice(0, start)
+                .concat(prefix)
+                .concat(nodes)
+                .concat(suffix)
+                .concat(nodeArray.slice(end + 1));
         } // else leave the source nodes alone
     }
 
@@ -1350,18 +1452,22 @@ MdxFile.prototype.localizeText = function(translations, locale) {
             nodeArray[1].value += "\nfullyTranslated: true";
         } else {
             // no front matter already, so add one
-            nodeArray.splice(1, 0, new Node({
-                type: "yaml",
-                use: "startend",
-                value: "fullyTranslated: true"
-            }));
+            nodeArray.splice(
+                1,
+                0,
+                new Node({
+                    type: "yaml",
+                    use: "startend",
+                    value: "fullyTranslated: true",
+                }),
+            );
         }
     }
 
     // convert to a tree again
     ast = mapToAst(Node.fromArray(nodeArray));
 
-    var str = mdstringify.stringify((!this.fullyTranslated || this.translationStatus[locale]) ? ast : this.ast);
+    var str = mdstringify.stringify(!this.fullyTranslated || this.translationStatus[locale] ? ast : this.ast);
 
     return str;
 };
@@ -1374,7 +1480,7 @@ MdxFile.prototype.localizeText = function(translations, locale) {
  * translations
  * @param {Array.<String>} locales array of locales to translate to
  */
-MdxFile.prototype.localize = function(translations, locales) {
+MdxFile.prototype.localize = function (translations, locales) {
     var pathName;
     for (var i = 0; i < locales.length; i++) {
         if (!this.project.isSourceLocale(locales[i])) {
@@ -1394,7 +1500,7 @@ MdxFile.prototype.localize = function(translations, locales) {
             this.type.addTranslationStatus({
                 path: pathName,
                 locale: locales[i],
-                fullyTranslated: this.translationStatus[locales[i]]
+                fullyTranslated: this.translationStatus[locales[i]],
             });
         }
     }
@@ -1404,7 +1510,7 @@ MdxFile.prototype.localize = function(translations, locales) {
 MdxFile.initMdxParser = initMdxParser;
 
 // Export a function to check if parser is initialized (for testing)
-MdxFile.isParserInitialized = function() {
+MdxFile.isParserInitialized = function () {
     return mdparser !== null;
 };
 
