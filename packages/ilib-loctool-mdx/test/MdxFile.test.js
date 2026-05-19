@@ -2097,6 +2097,48 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r941132140");
     });
 
+    test("MdxFileParseIgnoreTagsInline", function () {
+        // Inline ignoreTags (<code>, <samp>, <output>) must be treated exactly like
+        // backtick inline code: an opaque <c0/> component with a translator comment,
+        // not a breaking tag that fragments the surrounding sentence.
+        expect.assertions(6);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse("This is a test of the <code>inline code</code> system.\n");
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a test of the <c0/> system.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0/> system.");
+        expect(r.getComment()).toBe("c0 will be replaced with the inline code `inline code`.");
+        expect(r.getKey()).toBe("r405516144");
+    });
+
+    test("MdxFileParseIgnoreTagsInlineMultiple", function () {
+        // Multiple inline ignoreTags in the same sentence produce multiple components
+        // (<c0/>, <c1/> …) and keep the whole sentence as one translation unit,
+        // just like multiple backtick inline codes do.
+        expect.assertions(6);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse("This is a <code>test</code> of the <samp>inline code</samp> system.\n");
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a <c0/> of the <c1/> system.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a <c0/> of the <c1/> system.");
+        expect(r.getComment()).toBe(
+            "c0 will be replaced with the inline code `test`. c1 will be replaced with the inline code `inline code`.",
+        );
+        expect(r.getKey()).toBe("r960448365");
+    });
+
     test("MdxFileParseWithFrontMatterNotParsed", function () {
         expect.assertions(10);
         var mf = new MdxFile({
