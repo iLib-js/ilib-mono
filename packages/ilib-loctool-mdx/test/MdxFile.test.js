@@ -6550,4 +6550,63 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getSource()).toBe("List of groups in JSON format");
         expect(r.getKey()).toBe("r903819442");
     });
+
+    it("should segment lists with inline code elements consistently between extraction and localization", () => {
+        // test prep:
+        // disable writing to disk during this test - file.localize() will be called
+        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => {});
+
+        // setup:
+        // parse test content (using suite-global project and file type classes for convenience)
+        const file = new MdxFile({
+            project: p,
+            type: mdft,
+            pathName: "./md/not-a-real-file.mdx",
+        });
+
+        const source =
+            "1. List item 1\n" +
+            "2. List item 2 line 1.\n" +
+            "   List item 2 line 2 sentence 1 <code>POST /api/endpoint some-variable</code> line 2 sentence 1 continued; line 2 sentence 2 <code>another_variable</code> line 2 sentence 2 continued.";
+
+        file.parse(source);
+
+        // get all extracted strings
+        const extracted = file.getTranslationSet().getAll();
+
+        expect(extracted).toContainEqual(
+            expect.objectContaining({
+                source: "List item 2 line 1.\nList item 2 line 2 sentence 1",
+            }),
+            expect.objectContaining({
+                source: "POST /api/endpoint some-variable line 2 sentence 1 continued; line 2 sentence 2",
+            }),
+            expect.objectContaining({
+                source: "another_variable line 2 sentence 2 continued.",
+            }),
+        );
+
+        // spy on a translation set to confirm that the correct string ids are being requested
+        const locale = "xx-YY";
+        const translationSet = new TranslationSet();
+        const getTranslationSpy = jest.spyOn(translationSet, "get");
+
+        // test:
+        // trigger localization
+        file.localize(translationSet, [locale]);
+
+        // assert:
+        // confirm that for each extracted string,
+        // the `MdxFile#localize` call retrieved translation for that exact same string
+        for (const resource of extracted) {
+            // `MdxFile#_localizeString` internally retrieves applicable translation
+            // using `Resource#hashKeyForTranslation` - reproduce that call here
+            const hashKey = resource.hashKeyForTranslation(locale);
+            expect(getTranslationSpy).toHaveBeenCalledWith(hashKey);
+        }
+
+        // cleanup:
+        // restore writeFileSync
+        writeFileSyncSpy.mockRestore();
+    });
 });
