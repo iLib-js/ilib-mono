@@ -915,7 +915,7 @@ Project.prototype.getConfig = function(settings) {
             "test",
             "node_modules",
             "package.json",
-            "project.json"
+            settings.configFile || "project.json"
         ],
         settings: {
             locales: ["en-GB", "de-DE", "fr-FR", "it-IT", "es-ES", "pt-BR", "ja-JP", "zh-Hans-CN", "ko-KR"]

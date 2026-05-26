@@ -51,7 +51,7 @@ function getVersion() {
 var commandOptionHelp = {
     init:
         "init  [project-name]\n" +
-        "  Initialize the current directory as a loctool project and write out a project.json file.\n\n" +
+        "  Initialize the current directory as a loctool project and write out a project config file.\n\n" +
         "project-name (optional)\n" +
         "  the name of the project to initialize",
     localize:
@@ -65,7 +65,7 @@ var commandOptionHelp = {
         "  during localization. This is intended for use with translation management systems that cannot\n" + 
         "  handle plurals properly.\n" +
         "--exclude\n" +
-        "  exclude a comma-separated list of directories while searching for project.json config files \n" +
+        "  exclude a comma-separated list of directories while searching for project config files \n" +
         "-f or --filetype\n" +
         "  Restrict operation to only the given list of file types. This allows you to\n" +
         "  run only the parts of the loctool that are needed at the moment.\n" +
@@ -228,6 +228,9 @@ function usage() {
 //        "  Do a git pull first to update to the latest. (Assumes clean dirs.)\n" +
         "--projectId\n" +
         "  Specify the default name of the project if not specified otherwise.\n" +
+        "--configFile\n" +
+        "  Specify the base name of the project config file to search for in any directory\n" +
+        "  during the tree walk. This is a file name only, not a path. (Default is 'project.json')\n" +
         "--projectType\n" +
         "  The type of project, which affects how source files are read and resource files are written. Default: web \n" +
         "--plugins\n" +
@@ -308,7 +311,8 @@ var settings = {
     localeMap: {},
     localeInherit: {},
     onlyTranslated: false,
-    convertPlurals: false
+    convertPlurals: false,
+    configFile: "project.json"
 };
 
 var options = [];
@@ -377,6 +381,13 @@ for (var i = 0; i < argv.length; i++) {
         }
     } else if (val === "--projectId") {
         settings.id = argv[++i];
+    } else if (val === "--configFile") {
+        if (i + 1 < argv.length && argv[i + 1] && argv[i + 1][0] !== "-") {
+            settings.configFile = argv[++i];
+        } else {
+            console.error("Error: --configFile option requires a file name argument to follow it.");
+            usage();
+        }
     } else if (val === "--projectType") {
         settings.projectType = argv[++i];
     } else if (val === "--plugins") {
@@ -499,6 +510,9 @@ for (var i = 0; i < argv.length; i++) {
     }
 }
 
+if (settings.configFile && settings.exclude.indexOf(settings.configFile) === -1) {
+    settings.exclude.push(settings.configFile);
+}
 
 if (settings.help) {
     if (options.length > 2 && options[2] && commandOptionHelp[options[2]]) {
@@ -777,8 +791,8 @@ try {
     case "init":
         var info = collectInfo();
         var project = ProjectFactory.newProject(info);
-        var config = project.getConfig(info);
-        var outputFile = path.join(settings.rootDir, "project.json");
+        var config = project.getConfig(settings);
+        var outputFile = path.join(settings.rootDir, settings.configFile);
         fs.writeFileSync(outputFile, JSON.stringify(config, undefined, 4) + '\n', "utf-8");
         logger.info("Wrote file " + outputFile);
         break;

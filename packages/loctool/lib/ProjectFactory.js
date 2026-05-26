@@ -38,11 +38,12 @@ var projectTypes = {
 };
 
 var projectCache = {};
+var defaultConfigFile = "project.json";
 
 /**
  * Create a new project of the correct type based on
- * the given dir. If the dir contains a project.json
- * file, this factory will return a project of the
+ * the given dir. If the dir contains the configured
+ * project config file, this factory will return a project of the
  * correct type. If not, it will return undefined.
  *
  * @param {String} path to the directory containing the root of the project
@@ -53,7 +54,8 @@ var projectCache = {};
  * of a project.
  */
 var ProjectFactory = function ProjectFactory(dir, settings) {
-    var pathName = path.join(dir, "project.json");
+    var configFile = ProjectFactory.getConfigFileName(settings);
+    var pathName = path.join(dir, configFile);
     logger.debug("checking for the existence of " + pathName);
     if (fs.existsSync(pathName)) {
         var data = fs.readFileSync(pathName, 'utf8');
@@ -74,6 +76,18 @@ var ProjectFactory = function ProjectFactory(dir, settings) {
         logger.debug("not there");
     }
     return undefined;
+};
+
+ProjectFactory.defaultConfigFile = defaultConfigFile;
+
+/**
+ * Return the name of the project config file to use.
+ *
+ * @param {Object} settings an object containing the current settings
+ * @returns {String} the config file name
+ */
+ProjectFactory.getConfigFileName = function(settings) {
+    return (settings && settings.configFile) || defaultConfigFile;
 };
 
 /**

@@ -136,4 +136,41 @@ describe("projectfactory", function() {
         expect(project.xliffsOut).toBe('/foo/asdf');
     });
 
+    test("ProjectFactoryDefaultConfigFileName", function() {
+        expect.assertions(2);
+        expect(ProjectFactory.getConfigFileName({})).toBe("project.json");
+        expect(ProjectFactory.getConfigFileName(undefined)).toBe("project.json");
+    });
+
+    test("ProjectFactoryDefaultConfigFileLoadsProjectJson", function() {
+        expect.assertions(2);
+        var project = ProjectFactory('./test/testfiles', {});
+        expect(project).not.toBeUndefined();
+        // make sure it loaded the default project.json file instead of the loctool.json file
+        expect(project.getProjectId()).toBe('loctest');
+    });
+
+    test("ProjectFactoryCustomConfigFileName", function() {
+        expect.assertions(3);
+        expect(ProjectFactory.getConfigFileName({configFile: "loctool.json"})).toBe("loctool.json");
+
+        var project = ProjectFactory('./test/testfiles', {configFile: "loctool.json"});
+        expect(project).not.toBeUndefined();
+        expect(project.options.id).toBe("loctest-alt");
+    });
+
+    test("ProjectFactoryCustomConfigFileNameDoesNotLoadDefault", function() {
+        expect.assertions(1);
+        var project = ProjectFactory('./test/testfiles', {configFile: "missing-config.json"});
+        expect(project).toBeUndefined();
+    });
+
+    test("ProjectFactoryCustomConfigFileNameInSubdirectory", function() {
+        expect.assertions(3);
+        var project = ProjectFactory('./test/testfiles/x/y/z', {configFile: "loctool.json"});
+        expect(project).not.toBeUndefined();
+        expect(project.getProjectId()).toBe('loctest-nested');
+        expect(project.root).toBe('./test/testfiles/x/y/z');
+    });
+
 });
