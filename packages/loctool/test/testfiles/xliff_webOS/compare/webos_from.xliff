@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR">
+  <file id="appA_f1" original="appA">
+    <group id="appA_g1" name="javascript">
+      <unit id="appA_1">
+        <segment>
+          <source>Hello</source>
+          <target>안녕</target>
+        </segment>
+      </unit>
+      <unit id="appA_2">
+        <segment>
+          <source>Goodbye</source>
+          <target>잘가</target>
+        </segment>
+      </unit>
+      <unit id="appA_3">
+        <segment>
+          <source>Thank you</source>
+          <target>감사합니다</target>
+        </segment>
+      </unit>
+      <unit id="appA_5">
+        <mda:metadata>
+          <mda:metaGroup category="device-type">
+            <mda:meta type="Monitor">Monitor {arg1}.</mda:meta>
+            <mda:meta type="StanbyME">The device {arg1}.</mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment>
+          <source>%deviceType% {arg1}.</source>
+          <target>%deviceType% {arg1}.</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

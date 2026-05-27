@@ -33,6 +33,7 @@ var XliffFactory = require("./lib/XliffFactory.js");
 var XliffMerge = require("./lib/XliffMerge.js");
 var XliffSplit = require("./lib/XliffSplit.js");
 var XliffSelect = require("./lib/XliffSelect.js");
+var XliffCompare = require("./lib/XliffCompare.js");
 var fileConvert = require("./lib/convert.js");
 
 // var Git = require("simple-git");
@@ -143,6 +144,18 @@ var commandOptionHelp = {
         "--segmentation\n" +
         "  Style of segmentation to use when writing out TMX files. Style can be 'sentence'\n" +
         "  or 'paragraph'. (Default is 'paragraph')",
+    compare:
+        "compare from_xliff to_xliff output_dir\n" +
+        "  Compare two xliff files logically by translation units (instead of line-by-line) and write the differences to the output directory.\n\n" +
+        "from_xliff\n" +
+        "  the path to the from xliff file\n" +
+        "to_xliff\n" +
+        "  the path to the to xliff file\n" +
+        "output_dir\n" +
+        "  the path to the directory where the output files will be written.\n" +
+        "  Output files: modified.xliff, added.xliff, deleted.xliff\n" +
+        "  added contains units only in to_xliff, deleted contains units only in from_xliff.\n" +
+        "  A file is only created if there are units of that type.",
     select:
         "select criteria outfile filename ...\n" +
         "  Select translation units from the input files using the given criteria and write them\n" +
@@ -257,7 +270,7 @@ function usage() {
         "  Do not allow duplicated strings in extracted xliff file. (Default is 'true') \n" +
         "command\n" +
         "  a command to execute. This is one of:\n" +
-        "    init, localize, split, merge, generate, convert, select\n" +
+        "    init, localize, split, merge, generate, convert, select, compare\n" +
         "    Use loctool [command] --help to see help for a particular command.\n"
         );
     process.exit(0);
@@ -564,6 +577,21 @@ case "convert":
     settings.infiles = options.slice(4);
     break;
 
+case "compare":
+    if (options.length < 6) {
+        console.log("Error: must specify a from xliff file, a to xliff file, and an output directory.");
+        usage();
+    }
+    settings.infiles = [options[3], options[4]];
+    settings.outfile = options[5];
+    settings.infiles.forEach(function (file) {
+        if (!fs.existsSync(file)) {
+            console.log("Error: could not access file " + file);
+            usage();
+        }
+    });
+    break;
+
 case "select":
     if (options.length < 5) {
         console.log("Error: must specify selection criteria, an output file, and at least one input file.");
@@ -821,6 +849,11 @@ try {
     case "select":
         var selected = XliffSelect(settings);
         XliffSelect.write(selected);
+        break;
+
+    case "compare":
+        var compareResult = XliffCompare(settings);
+        XliffCompare.write(compareResult, settings);
         break;
     }
 } catch (e) {
