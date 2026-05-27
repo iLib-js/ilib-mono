@@ -1,5 +1,11 @@
 # ilib-loctool-mdx
 
+## 1.1.3
+
+### Patch Changes
+
+- 6b7c237: Fix handling of non-translatable HTML tags inlined in translatable text. HTML tags that should not be translated (like `<code>`) inlined in translatable text were being extracted as translation units. Additionally, segmentation of text flows with these tags was inconsistent between extraction and localization, effectively making it impossible to localize. Now, these tags are treated as non-breaking elements (`<c0/>`).
+
 ## 1.1.2
 
 ### Patch Changes

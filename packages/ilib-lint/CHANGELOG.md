@@ -1,5 +1,13 @@
 # ilib-lint
 
+## 2.21.4
+
+### Patch Changes
+
+- 4401b91: - Fix false violations in ResourceSentenceEnding when source ends with call-out style quotes (e.g. `select 'Manual Zoom.'`).
+  The rule now correctly distinguishes call-out references from person quotations (`She said, "Hello!"`) and compares overall sentence endings instead of only the quoted content.
+- 6667268: Fix a crash in `ResourceQuoteStyle` when checking CJK target strings that use wrong-style quotes.
+
 ## 2.21.3
 
 ### Patch Changes
