@@ -1,0 +1,9 @@
+{
+    "name": "Valid With Warnings",
+    "id": "valid-with-warnings",
+    "projectType": "web",
+    "settings": {
+        "locales": ["de-DE"]
+    },
+    "unknownProperty": true
+}

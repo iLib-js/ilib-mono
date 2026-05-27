@@ -1,0 +1,8 @@
+{
+    "name": "All Foreign Extras",
+    "id": "invalid-all-foreign",
+    "projectType": "custom",
+    "plugins": ["javascript"],
+    "targets": {},
+    "sourceRoot": "src"
+}

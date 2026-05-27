@@ -1,0 +1,6 @@
+{
+    "name": "Nx Like",
+    "id": "invalid-project-type",
+    "projectType": "library",
+    "targets": {}
+}

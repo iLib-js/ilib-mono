@@ -1,7 +1,7 @@
 /*
  * ProjectFactory.js - factory object that creates project instances
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2016-2017, 2026, HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ var ObjectiveCProject = require("./ObjectiveCProject.js");
 var SwiftProject = require("./SwiftProject.js");
 
 var CustomProject = require("./CustomProject.js");
+var projectConfig = require("./projectConfig.js");
 
 var logger = log4js.getLogger("loctool.lib.ProjectFactory");
 
@@ -38,7 +39,6 @@ var projectTypes = {
 };
 
 var projectCache = {};
-var defaultConfigFile = "project.json";
 
 /**
  * Create a new project of the correct type based on
@@ -60,7 +60,26 @@ var ProjectFactory = function ProjectFactory(dir, settings) {
     if (fs.existsSync(pathName)) {
         var data = fs.readFileSync(pathName, 'utf8');
         if (data.length > 0) {
-            var projectProps = JSON.parse(data);
+            var projectProps;
+            try {
+                projectProps = JSON.parse(data);
+            } catch (e) {
+                logger.warn("Found " + configFile + " in " + dir + " but it is not valid JSON; ignoring.");
+                return undefined;
+            }
+
+            var validation = ProjectFactory.validateLoctoolConfig(projectProps);
+            if (!validation.valid) {
+                logger.warn("Found " + configFile + " in " + dir + " but it is not a valid loctool project config (" + validation.reason + "); ignoring.");
+                return undefined;
+            }
+
+            if (validation.unknownProperties && validation.unknownProperties.length > 0) {
+                validation.unknownProperties.forEach(function(prop) {
+                    logger.warn("Unknown property \"" + prop + "\" in " + pathName);
+                });
+            }
+
             projectProps.settings = _mergeSettings(projectProps.settings, settings);
             settings = settings || {locales:[""]};
             var project, projectType = projectTypes[projectProps.projectType];
@@ -78,17 +97,12 @@ var ProjectFactory = function ProjectFactory(dir, settings) {
     return undefined;
 };
 
-ProjectFactory.defaultConfigFile = defaultConfigFile;
-
-/**
- * Return the name of the project config file to use.
- *
- * @param {Object} settings an object containing the current settings
- * @returns {String} the config file name
- */
-ProjectFactory.getConfigFileName = function(settings) {
-    return (settings && settings.configFile) || defaultConfigFile;
-};
+ProjectFactory.defaultConfigFile = projectConfig.DEFAULT_CONFIG_FILE;
+ProjectFactory.LOCTOOL_SCHEMA = projectConfig.LOCTOOL_SCHEMA;
+ProjectFactory.KNOWN_PROJECT_TYPES = projectConfig.KNOWN_PROJECT_TYPES;
+ProjectFactory.ALLOWED_PROPERTIES = projectConfig.ALLOWED_PROPERTIES;
+ProjectFactory.validateLoctoolConfig = projectConfig.validateLoctoolConfig;
+ProjectFactory.getConfigFileName = projectConfig.getConfigFileName;
 
 /**
  * Return the project with the given name, or undefined if
