@@ -230,7 +230,29 @@ JavaScriptResourceFile.prototype.getResourceFilePath = function(locale, flavor) 
     var localeDir, dir, newPath, spec;
     locale = locale || this.locale;
 
-    var defaultSpec = this.getDefaultSpec();
+    // For delegated sources (eg. json plugin passing "dir/strings.json"), honor
+    // javascript.template when configured. This allows callers to preserve source
+    // directory structure or use other placeholders in output paths.
+    var jsSettings = this.project && this.project.settings && this.project.settings.javascript;
+    var template = jsSettings && jsSettings.template;
+    if (template && this.pathName && !/\.js$/i.test(this.pathName)) {
+        var localeSpec = (typeof locale === "string") ? locale :
+            ((locale && typeof locale.getSpec === "function") ? locale.getSpec() : this.locale.getSpec());
+        var relativePath = this.API.utils.formatPath(template, {
+            sourcepath: this.pathName,
+            locale: localeSpec
+        });
+        newPath = path.join(this.project.target, relativePath);
+
+        this.logger.trace("Getting resource file path from javascript.template for locale " + localeSpec + ": " + newPath);
+        return path.normalize(newPath);
+    }
+
+    var localeDefaults = this.project.settings && this.project.settings.localeDefaults;
+    var defaultSpec = localeDefaults ?
+        this.API.utils.getLocaleDefault(locale, flavor, localeDefaults) :
+        ((typeof locale === "string") ? locale :
+            ((locale && typeof locale.getSpec === "function") ? locale.getSpec() : this.locale.getSpec()));
 
     var filename = defaultSpec + ".js";
 
