@@ -55,13 +55,13 @@ function isNonEmptyString(value) {
 }
 
 /**
- * Return the name of the project config file to use.
+ * Return the base name of the project config file to search for during the tree walk.
  *
  * @param {Object} settings an object containing the current settings
- * @returns {String} the config file name
+ * @returns {String} the config file base name (not a path)
  */
-function getConfigFileName(settings) {
-    return (settings && settings.configFile) || DEFAULT_CONFIG_FILE;
+function getConfigFileBaseName(settings) {
+    return (settings && settings.configFileBaseName) || DEFAULT_CONFIG_FILE;
 }
 
 /**
@@ -147,6 +147,6 @@ module.exports = {
     DEFAULT_CONFIG_FILE: DEFAULT_CONFIG_FILE,
     KNOWN_PROJECT_TYPES: KNOWN_PROJECT_TYPES,
     ALLOWED_PROPERTIES: ALLOWED_PROPERTIES,
-    getConfigFileName: getConfigFileName,
+    getConfigFileBaseName: getConfigFileBaseName,
     validateLoctoolConfig: validateLoctoolConfig
 };

@@ -54,8 +54,8 @@ var projectCache = {};
  * of a project.
  */
 var ProjectFactory = function ProjectFactory(dir, settings) {
-    var configFile = ProjectFactory.getConfigFileName(settings);
-    var pathName = path.join(dir, configFile);
+    var configFileBaseName = ProjectFactory.getConfigFileBaseName(settings);
+    var pathName = path.join(dir, configFileBaseName);
     logger.debug("checking for the existence of " + pathName);
     if (fs.existsSync(pathName)) {
         var data = fs.readFileSync(pathName, 'utf8');
@@ -64,13 +64,13 @@ var ProjectFactory = function ProjectFactory(dir, settings) {
             try {
                 projectProps = JSON.parse(data);
             } catch (e) {
-                logger.warn("Found " + configFile + " in " + dir + " but it is not valid JSON; ignoring.");
+                logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not valid JSON; ignoring.");
                 return undefined;
             }
 
             var validation = ProjectFactory.validateLoctoolConfig(projectProps);
             if (!validation.valid) {
-                logger.warn("Found " + configFile + " in " + dir + " but it is not a valid loctool project config (" + validation.reason + "); ignoring.");
+                logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not a valid loctool project config (" + validation.reason + "); ignoring.");
                 return undefined;
             }
 
@@ -102,7 +102,7 @@ ProjectFactory.LOCTOOL_SCHEMA = projectConfig.LOCTOOL_SCHEMA;
 ProjectFactory.KNOWN_PROJECT_TYPES = projectConfig.KNOWN_PROJECT_TYPES;
 ProjectFactory.ALLOWED_PROPERTIES = projectConfig.ALLOWED_PROPERTIES;
 ProjectFactory.validateLoctoolConfig = projectConfig.validateLoctoolConfig;
-ProjectFactory.getConfigFileName = projectConfig.getConfigFileName;
+ProjectFactory.getConfigFileBaseName = projectConfig.getConfigFileBaseName;
 
 /**
  * Return the project with the given name, or undefined if

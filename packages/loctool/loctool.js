@@ -228,7 +228,7 @@ function usage() {
 //        "  Do a git pull first to update to the latest. (Assumes clean dirs.)\n" +
         "--projectId\n" +
         "  Specify the default name of the project if not specified otherwise.\n" +
-        "--configFile\n" +
+        "--configFileBaseName\n" +
         "  Specify the base name of the project config file to search for in any directory\n" +
         "  during the tree walk. This is a file name only, not a path. (Default is 'project.json')\n" +
         "--projectType\n" +
@@ -312,7 +312,7 @@ var settings = {
     localeInherit: {},
     onlyTranslated: false,
     convertPlurals: false,
-    configFile: "project.json"
+    configFileBaseName: "project.json"
 };
 
 var options = [];
@@ -381,11 +381,11 @@ for (var i = 0; i < argv.length; i++) {
         }
     } else if (val === "--projectId") {
         settings.id = argv[++i];
-    } else if (val === "--configFile") {
+    } else if (val === "--configFileBaseName") {
         if (i + 1 < argv.length && argv[i + 1] && argv[i + 1][0] !== "-") {
-            settings.configFile = argv[++i];
+            settings.configFileBaseName = argv[++i];
         } else {
-            console.error("Error: --configFile option requires a file name argument to follow it.");
+            console.error("Error: --configFileBaseName option requires a file name argument to follow it.");
             usage();
         }
     } else if (val === "--projectType") {
@@ -510,8 +510,8 @@ for (var i = 0; i < argv.length; i++) {
     }
 }
 
-if (settings.configFile && settings.exclude.indexOf(settings.configFile) === -1) {
-    settings.exclude.push(settings.configFile);
+if (settings.configFileBaseName && settings.exclude.indexOf(settings.configFileBaseName) === -1) {
+    settings.exclude.push(settings.configFileBaseName);
 }
 
 if (settings.help) {
@@ -792,7 +792,7 @@ try {
         var info = collectInfo();
         var project = ProjectFactory.newProject(info);
         var config = project.getConfig(settings);
-        var outputFile = path.join(settings.rootDir, settings.configFile);
+        var outputFile = path.join(settings.rootDir, settings.configFileBaseName);
         fs.writeFileSync(outputFile, JSON.stringify(config, undefined, 4) + '\n', "utf-8");
         logger.info("Wrote file " + outputFile);
         break;
