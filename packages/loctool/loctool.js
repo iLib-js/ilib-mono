@@ -146,7 +146,7 @@ var commandOptionHelp = {
         "  or 'paragraph'. (Default is 'paragraph')",
     compare:
         "compare from_xliff to_xliff output_dir\n" +
-        "  Compare two xliff files and write the differences to the output directory.\n\n" +
+        "  Compare two xliff files logically by translation units (instead of line-by-line) and write the differences to the output directory.\n\n" +
         "from_xliff\n" +
         "  the path to the from xliff file\n" +
         "to_xliff\n" +
