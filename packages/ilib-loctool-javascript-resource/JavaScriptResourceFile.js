@@ -147,6 +147,30 @@ function clean(str) {
 
 /**
  * @private
+ * JsonFile passes its source .json path as pathName for cache disambiguation; that is
+ * not the resource output path unless a javascript.template computes the target.
+ * @param {String} pathName
+ * @returns {boolean}
+ */
+function isDelegatingSourcePath(pathName) {
+    return !!(pathName && path.extname(pathName).toLowerCase() === ".json");
+}
+
+/**
+ * @private
+ * @param {Object|undefined} jsSettings project settings.javascript
+ * @returns {String} extension including leading dot
+ */
+function getOutputExtension(jsSettings) {
+    if (jsSettings && jsSettings.extension) {
+        var ext = jsSettings.extension;
+        return ext.charAt(0) === "." ? ext : "." + ext;
+    }
+    return ".js";
+}
+
+/**
+ * @private
  */
 JavaScriptResourceFile.prototype.getDefaultSpec = function() {
     if (!this.defaultSpec) {
@@ -221,21 +245,14 @@ JavaScriptResourceFile.prototype.getContent = function() {
  * given project, context, and locale.
  */
 JavaScriptResourceFile.prototype.getResourceFilePath = function(locale, flavor) {
-    // Only treat pathName as the output path when it is a JS file. Callers
-    // (e.g. JsonFile delegating localize) may pass a source path like
-    // "dir/strings.json" for cache disambiguation; output still uses the
-    // project javascript template under resourceDirs.
-    if (this.pathName && /\.js$/i.test(this.pathName)) return this.pathName;
-
     var localeDir, dir, newPath, spec;
     locale = locale || this.locale;
 
-    // For delegated sources (eg. json plugin passing "dir/strings.json"), honor
-    // javascript.template when configured. This allows callers to preserve source
-    // directory structure or use other placeholders in output paths.
     var jsSettings = this.project && this.project.settings && this.project.settings.javascript;
     var template = jsSettings && jsSettings.template;
-    if (template && this.pathName && !/\.js$/i.test(this.pathName)) {
+
+    // javascript.template maps a source path (often .json from JsonFile) to the output path.
+    if (template && this.pathName) {
         var localeSpec = (typeof locale === "string") ? locale :
             ((locale && typeof locale.getSpec === "function") ? locale.getSpec() : this.locale.getSpec());
         var relativePath = this.API.utils.formatPath(template, {
@@ -248,13 +265,18 @@ JavaScriptResourceFile.prototype.getResourceFilePath = function(locale, flavor) 
         return path.normalize(newPath);
     }
 
+    // Use pathName as the output path when the caller set one (any extension).
+    if (this.pathName && !isDelegatingSourcePath(this.pathName)) {
+        return this.pathName;
+    }
+
     var localeDefaults = this.project.settings && this.project.settings.localeDefaults;
     var defaultSpec = localeDefaults ?
         this.API.utils.getLocaleDefault(locale, flavor, localeDefaults) :
         ((typeof locale === "string") ? locale :
             ((locale && typeof locale.getSpec === "function") ? locale.getSpec() : this.locale.getSpec()));
 
-    var filename = defaultSpec + ".js";
+    var filename = defaultSpec + getOutputExtension(jsSettings);
 
     dir = path.join(this.project.target, this.project.getResourceDirs("js")[0] ||this.project.getResourceDirs("javascript")[0] || ".");
     newPath = path.join(dir, filename);
@@ -275,11 +297,13 @@ JavaScriptResourceFile.prototype.write = function() {
 
             // must be a new file, so create the name
             this.pathName = this.getResourceFilePath();
-        } else if (!/\.js$/i.test(this.pathName)) {
-            this.logger.trace("Non-JS pathName is a delegating source path; computing JS output path");
-            this.pathName = this.getResourceFilePath();
-            this.defaultSpec = this.locale.getSpec();
         } else {
+            var jsSettings = this.project && this.project.settings && this.project.settings.javascript;
+            var template = jsSettings && jsSettings.template;
+            if ((template && this.pathName) || isDelegatingSourcePath(this.pathName)) {
+                this.logger.trace("Computing resource output path from template or resourceDirs");
+                this.pathName = this.getResourceFilePath();
+            }
             this.defaultSpec = this.locale.getSpec();
         }
 

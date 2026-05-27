@@ -653,6 +653,45 @@ describe("javascriptresourcefile", function() {
         expect(jsrf.getResourceFilePath()).toBe("path/to/foo.js");
     });
 
+    test("JavaScriptResourceFileGetResourceFilePathAlreadyHasCustomExtensionPath", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p2,
+            locale: "de-DE",
+            pathName: "path/to/strings.mjs"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe("path/to/strings.mjs");
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathLegacyUsesJavascriptExtensionSetting", function() {
+        expect.assertions(2);
+
+        var pExt = new CustomProject({
+            id: "webapp",
+            sourceLocale: "en-US",
+            resourceDirs: {
+                "js": "localized_js"
+            }
+        }, "./testfiles", {
+            locales: ["de-DE"],
+            javascript: {
+                extension: "tsx"
+            },
+            identify: true
+        });
+
+        var jsrf = new JavaScriptResourceFile({
+            project: pExt,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de-DE.tsx");
+    });
+
     test("JavaScriptResourceFileGetResourceFilePathJsonDelegatingSourceUsesTemplate", function() {
         expect.assertions(2);
 
