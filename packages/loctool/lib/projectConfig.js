@@ -111,19 +111,7 @@ function validateLoctoolConfig(props) {
         };
     }
 
-    if (props.projectType === "custom") {
-        if (!Array.isArray(props.plugins) || props.plugins.length === 0) {
-            return {
-                valid: false,
-                reason: "custom projects require a non-empty plugins array"
-            };
-        }
-    }
-
     var requiredKeys = ["id", "name", "projectType"];
-    if (props.projectType === "custom") {
-        requiredKeys.push("plugins");
-    }
 
     var extraKeys = Object.keys(props).filter(function(key) {
         return requiredKeys.indexOf(key) === -1;

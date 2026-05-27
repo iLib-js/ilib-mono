@@ -231,14 +231,13 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
         expect(result.reason).toContain("projectType");
     });
 
-    test("rejects custom config without plugins", function() {
+    test("accepts custom config without plugins", function() {
         var result = ProjectFactory.validateLoctoolConfig({
             "name": "Test",
             "id": "test",
             "projectType": "custom"
         });
-        expect(result.valid).toBe(false);
-        expect(result.reason).toContain("plugins");
+        expect(result.valid).toBe(true);
     });
 
     test("rejects config when all extra properties are foreign", function() {
@@ -246,7 +245,6 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
             "name": "Test",
             "id": "test",
             "projectType": "custom",
-            "plugins": ["javascript"],
             "targets": {},
             "sourceRoot": "src"
         });
@@ -333,14 +331,14 @@ describe("ProjectFactory config file validation", function() {
         expect(project).toBeUndefined();
     });
 
-    test("ignores custom config without plugins from disk", function() {
-        var props = loadConfigFixture("invalid-custom-no-plugins");
+    test("loads custom config without plugins from disk", function() {
+        var props = loadConfigFixture("valid-custom-no-plugins");
         var validation = ProjectFactory.validateLoctoolConfig(props);
-        expect(validation.valid).toBe(false);
-        expect(validation.reason).toContain("plugins");
+        expect(validation.valid).toBe(true);
 
-        var project = ProjectFactory('./test/testfiles/config-validation/invalid-custom-no-plugins', {});
-        expect(project).toBeUndefined();
+        var project = ProjectFactory('./test/testfiles/config-validation/valid-custom-no-plugins', {});
+        expect(project).toBeTruthy();
+        expect(project.getProjectId()).toBe('valid-custom-no-plugins');
     });
 
     test("ignores config with only foreign extra properties from disk", function() {
