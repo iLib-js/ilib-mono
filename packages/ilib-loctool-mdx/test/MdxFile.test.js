@@ -22,7 +22,7 @@ var fs = require("fs");
 var MdxFile = require("../MdxFile.js");
 var MdxFileType = require("../MdxFileType.js");
 var CustomProject = require("loctool/lib/CustomProject.js");
-var ProjectFactory =  require("loctool/lib/ProjectFactory.js");
+var ProjectFactory = require("loctool/lib/ProjectFactory.js");
 var TranslationSet = require("loctool/lib/TranslationSet.js");
 var ResourceString = require("loctool/lib/ResourceString.js");
 
@@ -37,76 +37,88 @@ function diff(a, b) {
         }
     }
 }
-var p = new CustomProject({
-    name: "foo",
-    id: "foo",
-    plugins: ["../."],
-    sourceLocale: "en-US"
-}, "./test/testfiles", {
-    locales:["en-GB"],
-    targetDir: "./test/testfiles"
-});
+var p = new CustomProject(
+    {
+        name: "foo",
+        id: "foo",
+        plugins: ["../."],
+        sourceLocale: "en-US",
+    },
+    "./test/testfiles",
+    {
+        locales: ["en-GB"],
+        targetDir: "./test/testfiles",
+    },
+);
 
 var mdft = new MdxFileType(p);
 var base = path.dirname(module.id);
 
-var p2 = new CustomProject({
-    sourceLocale: "en-US",
-    id: "foo",
-    name: "foo",
-    plugins: ["../."]
-}, "./test/testfiles", {
-    locales:["en-GB"],
-    targetDir: "./test/testfiles",
-    identify: true
-});
+var p2 = new CustomProject(
+    {
+        sourceLocale: "en-US",
+        id: "foo",
+        name: "foo",
+        plugins: ["../."],
+    },
+    "./test/testfiles",
+    {
+        locales: ["en-GB"],
+        targetDir: "./test/testfiles",
+        identify: true,
+    },
+);
 
 var mdft2 = new MdxFileType(p2);
-var p3 = new CustomProject({
-    sourceLocale: "en-US",
-    id: "foo",
-    name: "foo",
-    plugins: ["../."]
-}, "./test/testfiles", {
-    locales:["en-GB"],
-    targetDir: "./test/testfiles",
-    nopseudo: true,
-    mdx: {
-        mappings: {
-            "**/simple.mdx": {
-                template: "[locale]/[dir]/[filename]"
+var p3 = new CustomProject(
+    {
+        sourceLocale: "en-US",
+        id: "foo",
+        name: "foo",
+        plugins: ["../."],
+    },
+    "./test/testfiles",
+    {
+        locales: ["en-GB"],
+        targetDir: "./test/testfiles",
+        nopseudo: true,
+        mdx: {
+            mappings: {
+                "**/simple.mdx": {
+                    template: "[locale]/[dir]/[filename]",
+                },
+                "**/asdf/bar/simple2.mdx": {
+                    template: "[locale]/asdf/bar/[filename]",
+                },
+                "**/bar/simple3.mdx": {
+                    template: "asdf/[locale]/bar/[filename]",
+                },
+                "**/simple4.mdx": {
+                    template: "[locale]/asdf/bar/[filename]",
+                    localeMap: {
+                        "fr-FR": "fr",
+                        "zh-Hans-CN": "zh-CN",
+                    },
+                },
+                "asdf/pen-USing/en-US/bar/asdf.mdx": {
+                    template: "[locale]/bar/[filename]",
+                },
+                "**/asdf.mdx": {
+                    template: "[dir]/[locale]/bar/[filename]",
+                    frontmatter: ["test"],
+                },
+                "**/x/*.mdx": {
+                    template: "[dir]/[base]_[locale].mdx",
+                    frontmatter: ["Title", "Description"],
+                },
+                "**/y/*.mdx": {
+                    template: "[dir]/[locale]/[base].mdx",
+                    frontmatter: true,
+                },
             },
-            "**/asdf/bar/simple2.mdx": {
-                template: "[locale]/asdf/bar/[filename]"
-            },
-            "**/bar/simple3.mdx": {
-                template: "asdf/[locale]/bar/[filename]"
-            },
-            "**/simple4.mdx": {
-                template: "[locale]/asdf/bar/[filename]",
-                localeMap: {
-                    "fr-FR": "fr",
-                    "zh-Hans-CN": "zh-CN"
-                }
-            },
-            "asdf/pen-USing/en-US/bar/asdf.mdx": {
-                template: "[locale]/bar/[filename]"
-            },
-            "**/asdf.mdx": {
-                template: "[dir]/[locale]/bar/[filename]",
-                frontmatter: ["test"]
-            },
-            "**/x/*.mdx": {
-                template: "[dir]/[base]_[locale].mdx",
-                frontmatter: ["Title", "Description"]
-            },
-            "**/y/*.mdx": {
-                template: "[dir]/[locale]/[base].mdx",
-                frontmatter: true
-            }
-        }
-    }
-});
+        },
+    },
+);
 
 var mdft3 = new MdxFileType(p3);
 
@@ -116,7 +128,7 @@ function rmrf(path) {
     }
 }
 
-afterEach(function() {
+afterEach(function () {
     [
         "test/testfiles/subproject/de-DE/notrans.mdx",
         "test/testfiles/subproject/de-DE/notrans2.mdx",
@@ -128,61 +140,61 @@ afterEach(function() {
         "test/testfiles/test/testfiles/fr-FR/md/nostrings.mdx",
         "test/testfiles/test/testfiles/fr-FR/md/test1.mdx",
         "test/testfiles/test/testfiles/fr-FR/md/test3.mdx",
-        "test/testfiles/subproject/de-DE/codesnippets.mdx"
+        "test/testfiles/subproject/de-DE/codesnippets.mdx",
     ].forEach(rmrf);
 });
 
-describe("mdx", function() {
+describe("mdx", function () {
     // Initialize the file types before running tests (required for remark-mdx ESM module)
     beforeAll(async () => {
         await Promise.all(
-            [mdft.init, mdft2.init, mdft3.init].map((initFn) => new Promise((resolve) => initFn(resolve)))
+            [mdft.init, mdft2.init, mdft3.init].map((initFn) => new Promise((resolve) => initFn(resolve))),
         );
     });
 
-    test("MdxFileConstructor", function() {
+    test("MdxFileConstructor", function () {
         expect.assertions(1);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
     });
 
-    test("MdxFileConstructorParams", function() {
+    test("MdxFileConstructorParams", function () {
         expect.assertions(1);
         var mf = new MdxFile({
             project: p,
             pathName: "./testfiles/md/test1.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
     });
 
-    test("MdxFileConstructorNoFile", function() {
+    test("MdxFileConstructorNoFile", function () {
         expect.assertions(1);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
     });
 
-    test("MdxFileMakeKey", function() {
+    test("MdxFileMakeKey", function () {
         expect.assertions(2);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("This is a test")).toBe("r654479252");
     });
 
-    test("MdxFileMakeKeySimpleTexts1", function() {
+    test("MdxFileMakeKeySimpleTexts1", function () {
         expect.assertions(5);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("Preferences in your profile")).toBe("r372802078");
@@ -191,11 +203,11 @@ describe("mdx", function() {
         expect(mdf.makeKey("Experts")).toBe("r343852585");
     });
 
-    test("MdxFileMakeKeyUnescaped", function() {
+    test("MdxFileMakeKeyUnescaped", function () {
         expect.assertions(5);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("foo \\n \\t bar")).toBe("r206710698");
@@ -204,11 +216,11 @@ describe("mdx", function() {
         expect(mdf.makeKey("\\'Dude\\'")).toBe("r6259609");
     });
 
-    test("MdxFileMakeKeySimpleTexts2", function() {
+    test("MdxFileMakeKeySimpleTexts2", function () {
         expect.assertions(6);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("Procedures")).toBe("r807691021");
@@ -218,11 +230,11 @@ describe("mdx", function() {
         expect(mdf.makeKey("Answers")).toBe("r221604632");
     });
 
-    test("MdxFileMakeKeySimpleTexts3", function() {
+    test("MdxFileMakeKeySimpleTexts3", function () {
         expect.assertions(9);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("Private Profile")).toBe("r314592735");
@@ -235,22 +247,22 @@ describe("mdx", function() {
         expect(mdf.makeKey("Questions")).toBe("r256277957");
     });
 
-    test("MdxFileMakeKeyEscapes", function() {
+    test("MdxFileMakeKeyEscapes", function () {
         expect.assertions(3);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("Can\'t find id")).toBe("r743945592");
         expect(mdf.makeKey("Can\'t find an application for SMS")).toBe("r909283218");
     });
 
-    test("MdxFileMakeKeyPunctuation", function() {
+    test("MdxFileMakeKeyPunctuation", function () {
         expect.assertions(8);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("{name}({generic_name})")).toBe("r300446104");
@@ -262,22 +274,22 @@ describe("mdx", function() {
         expect(mdf.makeKey("Connection link copied!")).toBe("r180897411");
     });
 
-    test("MdxFileMakeKeySameStringMeansSameKey", function() {
+    test("MdxFileMakeKeySameStringMeansSameKey", function () {
         expect.assertions(3);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("This is a test")).toBe("r654479252");
         expect(mdf.makeKey("This is a test")).toBe("r654479252");
     });
 
-    test("MdxFileMakeKeyCompressWhiteSpace", function() {
+    test("MdxFileMakeKeyCompressWhiteSpace", function () {
         expect.assertions(5);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("Can\'t find  id")).toBe("r743945592");
@@ -286,11 +298,11 @@ describe("mdx", function() {
         expect(mdf.makeKey("Can\'t   \t\n \t   find an    \t \n \r   application for SMS")).toBe("r909283218");
     });
 
-    test("MdxFileMakeKeyTrimWhiteSpace", function() {
+    test("MdxFileMakeKeyTrimWhiteSpace", function () {
         expect.assertions(5);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("Can\'t find  id")).toBe("r743945592");
@@ -299,87 +311,89 @@ describe("mdx", function() {
         expect(mdf.makeKey(" \t\t\n\r    Can\'t find an application for SMS   \n \t \r")).toBe("r909283218");
     });
 
-    test("MdxFileMakeKeyNewLines", function() {
+    test("MdxFileMakeKeyNewLines", function () {
         expect.assertions(2);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         // makeKey is used for double-quoted strings, which ruby interprets before it is used
         expect(mdf.makeKey("A \n B")).toBe("r191336864");
     });
 
-    test("MdxFileMakeKeyEscapeN", function() {
+    test("MdxFileMakeKeyEscapeN", function () {
         expect.assertions(2);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         // \n is not a return character in MD. It is just an escaped "n"
         expect(mdf.makeKey("A \\n B")).toBe("r968833504");
     });
 
-    test("MdxFileMakeKeyTabs", function() {
+    test("MdxFileMakeKeyTabs", function () {
         expect.assertions(2);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("A \t B")).toBe("r191336864");
     });
 
-    test("MdxFileMakeKeyEscapeT", function() {
+    test("MdxFileMakeKeyEscapeT", function () {
         expect.assertions(2);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         // \t is not a tab character in MD. It is just an escaped "t"
         expect(mdf.makeKey("A \\t B")).toBe("r215504705");
     });
 
-    test("MdxFileMakeKeyQuotes", function() {
+    test("MdxFileMakeKeyQuotes", function () {
         expect.assertions(2);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("A \\'B\\' C")).toBe("r935639115");
     });
 
-    test("MdxFileMakeKeyInterpretEscapedUnicodeChars", function() {
+    test("MdxFileMakeKeyInterpretEscapedUnicodeChars", function () {
         expect.assertions(2);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
         expect(mdf.makeKey("&#x00A0; &#x0023;")).toBe("r2293235");
     });
 
-    test("MdxFileMakeKeyInterpretEscapedSpecialChars2", function() {
+    test("MdxFileMakeKeyInterpretEscapedSpecialChars2", function () {
         expect.assertions(2);
         var mdf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mdf).toBeTruthy();
-        expect(mdf.makeKey("Talk to a support representative live 24/7 via video or &#x00a0; text&#x00a0;chat")).toBe("r969175354");
+        expect(mdf.makeKey("Talk to a support representative live 24/7 via video or &#x00a0; text&#x00a0;chat")).toBe(
+            "r969175354",
+        );
     });
 
-    test("MdxFileParseSimpleGetByKey", function() {
+    test("MdxFileParseSimpleGetByKey", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n\nThis is a test too\n');
+        mf.parse("This is a test\n\nThis is a test too\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.get(ResourceString.hashKey("foo", "en-US", "r654479252", "mdx"));
@@ -388,14 +402,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r654479252");
     });
 
-    test("MdxFileParseSimpleGetBySource", function() {
+    test("MdxFileParseSimpleGetBySource", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n\nThis is a test too\n');
+        mf.parse("This is a test\n\nThis is a test too\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
@@ -404,14 +418,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r654479252");
     });
 
-    test("MdxFileParseSimpleIgnoreWhitespace", function() {
+    test("MdxFileParseSimpleIgnoreWhitespace", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test            \t   \t     \n\nThis is a test too\n');
+        mf.parse("This is a test            \t   \t     \n\nThis is a test too\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
@@ -420,64 +434,64 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r654479252");
     });
 
-    test("MdxFileParseDontExtractUnicodeWhitespace", function() {
+    test("MdxFileParseDontExtractUnicodeWhitespace", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // contains U+00A0 non-breaking space and other Unicode space characters
-        mf.parse('            ​‌‍ \n');
+        mf.parse("            ​‌‍ \n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileParseDontExtractNbspEntity", function() {
+    test("MdxFileParseDontExtractNbspEntity", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('&nbsp; &#xA0; \n');
+        mf.parse("&nbsp; &#xA0; \n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileParseDoExtractOtherEntities", function() {
+    test("MdxFileParseDoExtractOtherEntities", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('&uuml;\n');
+        mf.parse("&uuml;\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
     });
 
-    test("MdxFileParseEmpty", function() {
+    test("MdxFileParseEmpty", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse(' \n');
+        mf.parse(" \n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileParseSkipHeader", function() {
+    test("MdxFileParseSkipHeader", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n');
@@ -486,11 +500,11 @@ describe("mdx", function() {
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileParseSkipHeaderAndParseRest", function() {
+    test("MdxFileParseSkipHeaderAndParseRest", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('---\ntitle: "foo"\nexcerpt: ""\n---\n\nThis is a test\n');
@@ -503,42 +517,41 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r654479252");
     });
 
-    test("MdxFileParseNoStrings", function() {
+    test("MdxFileParseNoStrings", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('\n     \n\t\t\t\n');
+        mf.parse("\n     \n\t\t\t\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileParseSimpleRightSize", function() {
+    test("MdxFileParseSimpleRightSize", function () {
         expect.assertions(4);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         var set = mf.getTranslationSet();
         expect(set.size()).toBe(0);
-        mf.parse('This is a test\n\n');
+        mf.parse("This is a test\n\n");
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
     });
 
-    test("MdxFileParseMultiple", function() {
+    test("MdxFileParseMultiple", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n\n' +
-                  'This is also a test\n');
+        mf.parse("This is a test\n\n" + "This is also a test\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
@@ -551,15 +564,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r999080996");
     });
 
-    test("MdxFileParseContinuedParagraph", function() {
+    test("MdxFileParseContinuedParagraph", function () {
         expect.assertions(7);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test.\n' +
-                  'This is also a test.\n');
+        mf.parse("This is a test.\n" + "This is also a test.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test.\nThis is also a test.");
@@ -572,16 +584,14 @@ describe("mdx", function() {
         expect(!r).toBeTruthy();
     });
 
-    test("MdxFileParseWithDups", function() {
+    test("MdxFileParseWithDups", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n\n' +
-                  'This is also a test\n\n' +
-                  'This is a test\n');
+        mf.parse("This is a test\n\n" + "This is also a test\n\n" + "This is a test\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
@@ -591,11 +601,11 @@ describe("mdx", function() {
         expect(set.size()).toBe(2);
     });
 
-    test("MdxFileParseEscapeInvalidChars", function() {
+    test("MdxFileParseEscapeInvalidChars", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // MDX/JSX doesn't allow control characters (except tab, newline, carriage return)
@@ -603,7 +613,7 @@ describe("mdx", function() {
         // This is correct behavior for JSX/XML parsers - control characters are not valid in XML/JSX
         // The replacement character may or may not be extracted depending on how containsActualText
         // handles it, but the parser behavior is correct
-        mf.parse('This is also a &#x3; test\n');
+        mf.parse("This is also a &#x3; test\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // should use html entities to represent the invalid control chars
@@ -613,14 +623,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r101012210");
     });
 
-    test("MdxFileParseDontEscapeWhitespaceChars", function() {
+    test("MdxFileParseDontEscapeWhitespaceChars", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is also a &#x000C; test\n');
+        mf.parse("This is also a &#x000C; test\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // leave the whitespace control chars alone
@@ -630,14 +640,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r999080996");
     });
 
-    test("MdxFileParseNonBreakingEmphasis", function() {
+    test("MdxFileParseNonBreakingEmphasis", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a *test* of the emergency parsing system.\n');
+        mf.parse("This is a *test* of the emergency parsing system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a <c0>test</c0> of the emergency parsing system.");
@@ -646,14 +656,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r306365966");
     });
 
-    test("MdxFileParseNestedNonBreakingEmphasis", function() {
+    test("MdxFileParseNestedNonBreakingEmphasis", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This _is a *test* of the emergency parsing_ system.\n');
+        mf.parse("This _is a *test* of the emergency parsing_ system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This <c0>is a <c1>test</c1> of the emergency parsing</c0> system.");
@@ -662,14 +672,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r96403243");
     });
 
-    test("MdxFileParseNestedAndSequentialNonBreakingEmphasis", function() {
+    test("MdxFileParseNestedAndSequentialNonBreakingEmphasis", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a *test* of the *emergency parsing* system.\n');
+        mf.parse("This is a *test* of the *emergency parsing* system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a <c0>test</c0> of the <c1>emergency parsing</c1> system.");
@@ -678,14 +688,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r871965137");
     });
 
-    test("MdxFileParseNonBreakingLinks", function() {
+    test("MdxFileParseNonBreakingLinks", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the [emergency parsing](http://foo.com/bar/asdf.html) system.\n');
+        mf.parse("This is a test of the [emergency parsing](http://foo.com/bar/asdf.html) system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the <c0>emergency parsing</c0> system.");
@@ -694,51 +704,54 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r848003676");
     });
 
-    test("MdxFileParseReferenceLinksWithTitle", function() {
+    test("MdxFileParseReferenceLinksWithTitle", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
-        });
-        expect(mf).toBeTruthy();
-        mf.parse('This is a test of the [emergency parsing][emer_sys] system.\n\n' +
-            '[emer_sys]: http://www.test.com/\n');
-        var set = mf.getTranslationSet();
-        expect(set).toBeTruthy();
-        var r = set.getBySource("This is a test of the <c0>emergency parsing</c0> system.");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
-        expect(r.getKey()).toBe("r848003676");
-    });
-
-    test("MdxFileParseReferenceLinksWithoutTitle", function() {
-        expect.assertions(5);
-        var mf = new MdxFile({
-            project: p,
-            type: mdft
-        });
-        expect(mf).toBeTruthy();
-        mf.parse('This is a test of the [emergency parsing] system.\n\n' +
-            '[emergency parsing]: http://www.test.com/\n');
-        var set = mf.getTranslationSet();
-        expect(set).toBeTruthy();
-        var r = set.getBySource("This is a test of the <c0>emergency parsing</c0> system.");
-        expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
-        expect(r.getKey()).toBe("r848003676");
-    });
-
-    test("MdxFileParseDontExtractURLOnlyLinks", function() {
-        expect.assertions(7);
-        var mf = new MdxFile({
-            project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'Here are some links:\n\n' +
-            '* [http://www.box.com/foobar](http://www.box.com/foobar)\n' +
-            '* [http://www.box.com/asdf](http://www.box.com/asdf)\n');
+            "This is a test of the [emergency parsing][emer_sys] system.\n\n" + "[emer_sys]: http://www.test.com/\n",
+        );
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a test of the <c0>emergency parsing</c0> system.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
+        expect(r.getKey()).toBe("r848003676");
+    });
+
+    test("MdxFileParseReferenceLinksWithoutTitle", function () {
+        expect.assertions(5);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse(
+            "This is a test of the [emergency parsing] system.\n\n" + "[emergency parsing]: http://www.test.com/\n",
+        );
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a test of the <c0>emergency parsing</c0> system.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0>emergency parsing</c0> system.");
+        expect(r.getKey()).toBe("r848003676");
+    });
+
+    test("MdxFileParseDontExtractURLOnlyLinks", function () {
+        expect.assertions(7);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse(
+            "Here are some links:\n\n" +
+                "* [http://www.box.com/foobar](http://www.box.com/foobar)\n" +
+                "* [http://www.box.com/asdf](http://www.box.com/asdf)\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -751,19 +764,20 @@ describe("mdx", function() {
         expect(!r).toBeTruthy();
     });
 
-    test("MdxFileParseTurnOnURLOnlyLinks", function() {
+    test("MdxFileParseTurnOnURLOnlyLinks", function () {
         expect.assertions(12);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'Here are some links:\n\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '* [http://www.box.com/foobar](http://www.box.com/foobar)\n' +
-            '* [http://www.box.com/asdf](http://www.box.com/asdf)\n' +
-            '{/* i18n-disable localize-links */}\n');
+            "Here are some links:\n\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                "* [http://www.box.com/foobar](http://www.box.com/foobar)\n" +
+                "* [http://www.box.com/asdf](http://www.box.com/asdf)\n" +
+                "{/* i18n-disable localize-links */}\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(3);
@@ -782,19 +796,20 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r247450278");
     });
 
-    test("MdxFileParseTurnOnDirectLinks", function() {
+    test("MdxFileParseTurnOnDirectLinks", function () {
         expect.assertions(18);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'Here are some links:\n\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '* This is [foobar](http://www.box.com/foobar)\n' +
-            '* And here is [asdf](http://www.box.com/asdf)\n' +
-            '{/* i18n-disable localize-links */}\n');
+            "Here are some links:\n\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                "* This is [foobar](http://www.box.com/foobar)\n" +
+                "* And here is [asdf](http://www.box.com/asdf)\n" +
+                "{/* i18n-disable localize-links */}\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(5);
@@ -821,31 +836,34 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r247450278");
     });
 
-    test("MdxFileParseDoExtractURLLinksMidString", function() {
+    test("MdxFileParseDoExtractURLLinksMidString", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing [http://www.box.com/foobar](http://www.box.com/foobar) system.\n');
+        mf.parse(
+            "This is a test of the emergency parsing [http://www.box.com/foobar](http://www.box.com/foobar) system.\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0>http://www.box.com/foobar</c0> system.");
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is a test of the emergency parsing <c0>http://www.box.com/foobar</c0> system.");
+        expect(r.getSource()).toBe(
+            "This is a test of the emergency parsing <c0>http://www.box.com/foobar</c0> system.",
+        );
         expect(r.getKey()).toBe("r598935364");
     });
 
-    test("MdxFileParseReferences", function() {
+    test("MdxFileParseReferences", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing [C1] system.\n\n' +
-                '[C1]: http://www.box.com/foobar\n');
+        mf.parse("This is a test of the emergency parsing [C1] system.\n\n" + "[C1]: http://www.box.com/foobar\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0>C1</c0> system.");
@@ -854,15 +872,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r475244008");
     });
 
-    test("MdxFileParseFootnotes", function() {
+    test("MdxFileParseFootnotes", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
-                '[^1]: well, not really\n');
+        mf.parse("This is a test of the emergency parsing [^1] system.\n\n" + "[^1]: well, not really\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
@@ -875,15 +892,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r472274968");
     });
 
-    test("MdxFileParseFootnotesLongname", function() {
+    test("MdxFileParseFootnotesLongname", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing [^longname] system.\n\n' +
-                '[^longname]: well, not really\n');
+        mf.parse("This is a test of the emergency parsing [^longname] system.\n\n" + "[^longname]: well, not really\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
@@ -896,16 +912,15 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r472274968");
     });
 
-    test("MdxFileParseFootnotesWithUrl", function() {
+    test("MdxFileParseFootnotesWithUrl", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // Footnote with URL should not be extracted unless localizeLinks is enabled
-        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
-                '[^1]: http://www.example.com/test\n');
+        mf.parse("This is a test of the emergency parsing [^1] system.\n\n" + "[^1]: http://www.example.com/test\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
@@ -917,18 +932,20 @@ describe("mdx", function() {
         expect(r2).toBeFalsy();
     });
 
-    test("MdxFileParseFootnotesWithUrlLocalized", function() {
+    test("MdxFileParseFootnotesWithUrlLocalized", function () {
         expect.assertions(7);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // Footnote with URL should be extracted when localizeLinks is enabled
-        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
-                '{/* i18n-enable localize-links */}\n' +
-                '[^1]: http://www.example.com/test\n' +
-                '{/* i18n-disable localize-links */}\n');
+        mf.parse(
+            "This is a test of the emergency parsing [^1] system.\n\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                "[^1]: http://www.example.com/test\n" +
+                "{/* i18n-disable localize-links */}\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing <c0/> system.");
@@ -941,54 +958,62 @@ describe("mdx", function() {
         expect(r2.getSource()).toBe("http://www.example.com/test");
     });
 
-    test("MdxFileLocalizeTextWithFootnotesUrl", function() {
+    test("MdxFileLocalizeTextWithFootnotesUrl", function () {
         expect.assertions(4);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '[^1]: http://www.example.com/test\n' +
-            '{/* i18n-disable localize-links */}\n');
+        mf.parse(
+            "This is a test of the emergency parsing [^1] system.\n\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                "[^1]: http://www.example.com/test\n" +
+                "{/* i18n-disable localize-links */}\n",
+        );
         var set = mf.getTranslationSet();
         var urlResource = set.getBySource("http://www.example.com/test");
         expect(urlResource).toBeTruthy();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r1010312382",
-            source: "This is a test of the emergency parsing <c0/> system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: urlResource.getKey(),
-            source: "http://www.example.com/test",
-            sourceLocale: "en-US",
-            target: "http://www.example.fr/test",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1010312382",
+                source: "This is a test of the emergency parsing <c0/> system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: urlResource.getKey(),
+                source: "http://www.example.com/test",
+                sourceLocale: "en-US",
+                target: "http://www.example.fr/test",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var result = mf.localizeText(translations, "fr-FR");
         expect(result).toContain("Ceci est un test du système d'analyse syntaxique [^1] de l'urgence.");
         // The URL in the footnote definition should be localized
         // It might be rendered as a link or plain text depending on the parser
-        expect(result).toMatch(/\[\^1\]:\s*(http:\/\/www\.example\.fr\/test|\[http:\/\/www\.example\.com\/test\]\(http:\/\/www\.example\.fr\/test\))/);
+        expect(result).toMatch(
+            /\[\^1\]:\s*(http:\/\/www\.example\.fr\/test|\[http:\/\/www\.example\.com\/test\]\(http:\/\/www\.example\.fr\/test\))/,
+        );
     });
 
-    test("MdxFileParseNonBreakingInlineCode", function() {
+    test("MdxFileParseNonBreakingInlineCode", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the `inline code` system.\n');
+        mf.parse("This is a test of the `inline code` system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the <c0/> system.");
@@ -998,36 +1023,33 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r405516144");
     });
 
-    test("MdxFileParseMultipleNonBreakingInlineCodes", function() {
+    test("MdxFileParseMultipleNonBreakingInlineCodes", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a `test` of the `inline code` system.\n');
+        mf.parse("This is a `test` of the `inline code` system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a <c0/> of the <c1/> system.");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is a <c0/> of the <c1/> system.");
-        expect(r.getComment()).toBe("c0 will be replaced with the inline code `test`. c1 will be replaced with the inline code `inline code`.");
+        expect(r.getComment()).toBe(
+            "c0 will be replaced with the inline code `test`. c1 will be replaced with the inline code `inline code`.",
+        );
         expect(r.getKey()).toBe("r960448365");
     });
 
-    test("MdxFileParseInlineCodeByItself", function() {
+    test("MdxFileParseInlineCodeByItself", function () {
         expect.assertions(9);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse(
-            'This is a test of the inline code system.\n' +
-            '\n' +
-            '`inline code`\n' +
-            '\n' +
-            'Sentence after.');
+        mf.parse("This is a test of the inline code system.\n" + "\n" + "`inline code`\n" + "\n" + "Sentence after.");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(2);
@@ -1042,14 +1064,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r16227039");
     });
 
-    test("MdxFileParseNonBreakingHTMLTags", function() {
+    test("MdxFileParseNonBreakingHTMLTags", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
+        mf.parse("This is a <em>test</em> of the emergency parsing system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a <c0>test</c0> of the emergency parsing system.");
@@ -1058,14 +1080,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r306365966");
     });
 
-    test("MdxFileParseNonBreakingHTMLTagsOutside", function() {
+    test("MdxFileParseNonBreakingHTMLTagsOutside", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('<em>This is a test of the emergency parsing system.</em>\n');
+        mf.parse("<em>This is a test of the emergency parsing system.</em>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
@@ -1076,15 +1098,15 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r699762575");
     });
 
-    test("MdxFileParseNonBreakingSelfClosingHTMLTags", function() {
+    test("MdxFileParseNonBreakingSelfClosingHTMLTags", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // MDX requires JSX syntax, so self-closing tags must use <br /> not <br>
-        mf.parse('<em>This is a test of the <br/> emergency parsing system.</em>\n');
+        mf.parse("<em>This is a test of the <br/> emergency parsing system.</em>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
@@ -1095,14 +1117,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r1070934855");
     });
 
-    test("MdxFileParseBreakingSelfClosedHTMLTags", function() {
+    test("MdxFileParseBreakingSelfClosedHTMLTags", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('<em>This is a test of the <p/> emergency parsing system.</em>\n');
+        mf.parse("<em>This is a test of the <p/> emergency parsing system.</em>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
@@ -1113,14 +1135,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r593084440");
     });
 
-    test("MdxFileParseBreakingNotClosedHTMLTags", function() {
+    test("MdxFileParseBreakingNotClosedHTMLTags", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('<em>This is a test of the <p/> emergency parsing system.</em>\n');
+        mf.parse("<em>This is a test of the <p/> emergency parsing system.</em>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
@@ -1131,14 +1153,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r593084440");
     });
 
-    test("MdxFileParseNonBreakingSelfClosedHTMLTags", function() {
+    test("MdxFileParseNonBreakingSelfClosedHTMLTags", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('<em>This is a test of the <br/> emergency parsing system.</em>\n');
+        mf.parse("<em>This is a test of the <br/> emergency parsing system.</em>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // should not pick up the emphasis marker because there is no localizable text
@@ -1149,14 +1171,16 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r1070934855");
     });
 
-    test("MdxFileParseNonBreakingIgnoreComplexIrrelevant", function() {
+    test("MdxFileParseNonBreakingIgnoreComplexIrrelevant", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('*<span class="test"> <span id="foo"></span></span>  This is a test of the emergency parsing system.*\n');
+        mf.parse(
+            '*<span class="test"> <span id="foo"></span></span>  This is a test of the emergency parsing system.*\n',
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // should not pick up any of the non-breaking tags because there is no localizable text
@@ -1167,11 +1191,11 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r699762575");
     });
 
-    test("MdxFileParseHTMLWithValuelessAttributes", function() {
+    test("MdxFileParseHTMLWithValuelessAttributes", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<span class="foo" checked>This is a test of the emergency parsing system.</span>\n');
@@ -1185,18 +1209,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r699762575");
     });
 
-    test("MdxFileParseWithFlowStyleHTMLTags", function() {
+    test("MdxFileParseWithFlowStyleHTMLTags", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse(
-            "<message a='b'>\n" +
-            "This is a string that should be extracted.\n" +
-            "</message>\n"
-        );
+        mf.parse("<message a='b'>\n" + "This is a string that should be extracted.\n" + "</message>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -1206,20 +1226,20 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r134469253");
     });
 
-    test("MdxFileParseWithFlowStyleHTMLTagsMultiple", function() {
+    test("MdxFileParseWithFlowStyleHTMLTagsMultiple", function () {
         expect.assertions(9);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             "<message a='b'>\n" +
-            "This is a string that should be extracted.\n" +
-            "</message>\n" +
-            "<asdf>\n" +
-            "This is another string that should be extracted.\n" +
-            "</asdf>\n"
+                "This is a string that should be extracted.\n" +
+                "</message>\n" +
+                "<asdf>\n" +
+                "This is another string that should be extracted.\n" +
+                "</asdf>\n",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -1234,21 +1254,21 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r142202207");
     });
 
-    test("MdxFileParseWithFlowStyleHTMLTagsMultipleWithTextInBetween", function() {
+    test("MdxFileParseWithFlowStyleHTMLTagsMultipleWithTextInBetween", function () {
         expect.assertions(12);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             "<message a='b'>\n" +
-            "This is a string that should be extracted.\n" +
-            "</message>\n" +
-            "ab\n" +
-            "<asdf>\n" +
-            "This is another string that should be extracted.\n" +
-            "</asdf>\n"
+                "This is a string that should be extracted.\n" +
+                "</message>\n" +
+                "ab\n" +
+                "<asdf>\n" +
+                "This is another string that should be extracted.\n" +
+                "</asdf>\n",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -1267,18 +1287,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r142202207");
     });
 
-    test("MdxFileParseWithFlowStyleHTMLTagsAndEmbeddedHTML", function() {
+    test("MdxFileParseWithFlowStyleHTMLTagsAndEmbeddedHTML", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse(
-            "<message a='b'>\n" +
-            "This is a <em>string</em> that should be extracted.\n" +
-            "</message>\n"
-        );
+        mf.parse("<message a='b'>\n" + "This is a <em>string</em> that should be extracted.\n" + "</message>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -1288,18 +1304,14 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r625837512");
     });
 
-    test("MdxFileParseWithFlowStyleHTMLTagsAndEmbeddedMarkdown", function() {
+    test("MdxFileParseWithFlowStyleHTMLTagsAndEmbeddedMarkdown", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse(
-            "<message a='b'>\n" +
-            "This is a `string` that *should be* extracted.\n" +
-            "</message>\n"
-        );
+        mf.parse("<message a='b'>\n" + "This is a `string` that *should be* extracted.\n" + "</message>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -1309,11 +1321,11 @@ describe("mdx", function() {
         expect(r.getKey()).toBe("r177384086");
     });
 
-    test("MdxFileParseWithIndentedHTMLTags", function() {
+    test("MdxFileParseWithIndentedHTMLTags", function () {
         expect.assertions(21);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(`
@@ -1355,8 +1367,7 @@ Follow these steps:
 }
 \`\`\`
 
-`
-        );
+`);
 
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -1393,17 +1404,18 @@ Follow these steps:
         expect(r.getKey()).toBe("r13589298");
     });
 
-    test("MdxFileParseLists", function() {
+    test("MdxFileParseLists", function () {
         expect.assertions(12);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '* This is a test of the emergency parsing system.\n' +
-            '* This is another test.\n' +
-            '* And finally, the last test.\n');
+            "* This is a test of the emergency parsing system.\n" +
+                "* This is another test.\n" +
+                "* And finally, the last test.\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(3);
@@ -1421,16 +1433,14 @@ Follow these steps:
         expect(r.getKey()).toBe("r177500258");
     });
 
-    test("MdxFileParseListWithTextBefore", function() {
+    test("MdxFileParseListWithTextBefore", function () {
         expect.assertions(9);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse(
-            'This is text before the list.\n' +
-            '* This is a test of the emergency parsing system.\n');
+        mf.parse("This is text before the list.\n" + "* This is a test of the emergency parsing system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(2);
@@ -1444,16 +1454,14 @@ Follow these steps:
         expect(r.getKey()).toBe("r254971181");
     });
 
-    test("MdxFileParseListWithTextAfter", function() {
+    test("MdxFileParseListWithTextAfter", function () {
         expect.assertions(9);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse(
-            '* This is a test of the emergency parsing system.\n\n' +
-            'This is text after the list.\n');
+        mf.parse("* This is a test of the emergency parsing system.\n\n" + "This is text after the list.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(2);
@@ -1467,35 +1475,42 @@ Follow these steps:
         expect(r.getKey()).toBe("r607073205");
     });
 
-    test("MdxFileParseListWithTextAfter2", function() {
+    test("MdxFileParseListWithTextAfter2", function () {
         expect.assertions(9);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:\n\n' +
-            '* **https://cloud.app.box.com/viewer/{FileID}?options**\n\n' +
-            'The File ID can be obtained from the API or from the web application user interface.\n');
+            "The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:\n\n" +
+                "* **https://cloud.app.box.com/viewer/{FileID}?options**\n\n" +
+                "The File ID can be obtained from the API or from the web application user interface.\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(2);
-        var r = set.getBySource("The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:");
+        var r = set.getBySource(
+            "The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:",
+        );
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:");
+        expect(r.getSource()).toBe(
+            "The viewer can be embedded in an IFrame, or linked directly. The URL pattern for the viewer is:",
+        );
         expect(r.getKey()).toBe("r220720707");
         var r = set.getBySource("The File ID can be obtained from the API or from the web application user interface.");
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("The File ID can be obtained from the API or from the web application user interface.");
+        expect(r.getSource()).toBe(
+            "The File ID can be obtained from the API or from the web application user interface.",
+        );
         expect(r.getKey()).toBe("r198589153");
     });
 
-    test("MdxFileParseOrderedLists", function() {
+    test("MdxFileParseOrderedLists", function () {
         expect.assertions(18);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(`
@@ -1508,8 +1523,7 @@ Follow these steps:
 1. Second point:
 
 1. Third point:
-`
-        );
+`);
 
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -1541,11 +1555,11 @@ Follow these steps:
         expect(r.getKey()).toBe("r924843090");
     });
 
-   test("MdxFileParseOrderedListsWithIndentedText", function() {
+    test("MdxFileParseOrderedListsWithIndentedText", function () {
         expect.assertions(18);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(`
@@ -1561,8 +1575,7 @@ Follow these steps:
 
 1. Third point:
    third
-`
-        );
+`);
 
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -1594,11 +1607,11 @@ Follow these steps:
         expect(r.getKey()).toBe("r284799174");
     });
 
-   test("MdxFileParseOrderedListsWithIndentedCodeBlocks", function() {
+    test("MdxFileParseOrderedListsWithIndentedCodeBlocks", function () {
         expect.assertions(18);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // MDX parser requires fenced code blocks to not be indented
@@ -1625,8 +1638,7 @@ code code code
 \`\`\`
 code code code
 \`\`\`
-`
-        );
+`);
 
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -1658,11 +1670,11 @@ code code code
         expect(r.getKey()).toBe("r924843090");
     });
 
-   test("MdxFileParseHTMLFollowedByCodeBlocks", function() {
+    test("MdxFileParseHTMLFollowedByCodeBlocks", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(`
@@ -1697,8 +1709,7 @@ Dictionary<string, object> metadata = await client.MetadataManager
 \`\`\`
 
 </Tab>
-`
-        );
+`);
 
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -1707,14 +1718,14 @@ Dictionary<string, object> metadata = await client.MetadataManager
         // no resources, but also it didn't crash while trying to parse that!
     });
 
-    test("MdxFileParseNonBreakingEmphasisOutside", function() {
+    test("MdxFileParseNonBreakingEmphasisOutside", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('*This is a test of the emergency parsing system.*\n');
+        mf.parse("*This is a test of the emergency parsing system.*\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // should pick up the emphasis markers
@@ -1724,11 +1735,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r699762575");
     });
 
-    test("MdxFileParseNonBreakingHTMLTagsInside", function() {
+    test("MdxFileParseNonBreakingHTMLTagsInside", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n');
@@ -1736,56 +1747,54 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set).toBeTruthy();
         // should pick up the span tag because there is localizable text
         // before it and after it
-        var r = set.getBySource('This is <c0> a test of the emergency parsing </c0> system.');
+        var r = set.getBySource("This is <c0> a test of the emergency parsing </c0> system.");
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe('This is <c0> a test of the emergency parsing </c0> system.');
-        expect(r.getKey()).toBe('r124733470');
+        expect(r.getSource()).toBe("This is <c0> a test of the emergency parsing </c0> system.");
+        expect(r.getKey()).toBe("r124733470");
     });
 
-    test("MdxFileParseNonBreakingHTMLTagsInsideMultiple", function() {
+    test("MdxFileParseNonBreakingHTMLTagsInsideMultiple", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n');
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // tags should be nestable
-        var r = set.getBySource('This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
+        var r = set.getBySource("This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.");
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe('This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.');
-        expect(r.getKey()).toBe('r772812508');
+        expect(r.getSource()).toBe("This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.");
+        expect(r.getKey()).toBe("r772812508");
     });
 
-    test("MdxFileParseNonBreakingTagsNotWellFormed", function() {
+    test("MdxFileParseNonBreakingTagsNotWellFormed", function () {
         expect.assertions(4);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        expect(function() {
+        expect(function () {
             mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency parsing </span> system.\n');
         }).toThrow();
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // the end span tag should automatically end the em tag
-        var r = set.getBySource('This is <c0> a test of the <c1>emergency parsing </c1></c0> system.');
+        var r = set.getBySource("This is <c0> a test of the <c1>emergency parsing </c1></c0> system.");
         expect(r).toBeFalsy();
     });
 
-    test("MdxFileParseLocalizableTitle", function() {
+    test("MdxFileParseLocalizableTitle", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('<div title="This value is localizable">\n\n' +
-                'This is a test\n\n' +
-                '</div>\n');
+        mf.parse('<div title="This value is localizable">\n\n' + "This is a test\n\n" + "</div>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
@@ -1798,16 +1807,14 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r922503175");
     });
 
-    test("MdxFileParseLocalizableTitleWithSingleQuotes", function() {
+    test("MdxFileParseLocalizableTitleWithSingleQuotes", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse("<div title='This value is localizable'>\n\n" +
-                'This is a test\n\n' +
-                '</div>\n');
+        mf.parse("<div title='This value is localizable'>\n\n" + "This is a test\n\n" + "</div>\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
@@ -1820,15 +1827,14 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r922503175");
     });
 
-    test("MdxFileParseLocalizableAttributes", function() {
+    test("MdxFileParseLocalizableAttributes", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n' +
-                '<input type="text" placeholder="localizable placeholder here"></input>\n');
+        mf.parse("This is a test\n" + '<input type="text" placeholder="localizable placeholder here"></input>\n');
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test");
@@ -1841,15 +1847,14 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r734414247");
     });
 
-    test("MdxFileParseLocalizableAttributesSkipEmpty", function() {
+    test("MdxFileParseLocalizableAttributesSkipEmpty", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n' +
-                '<input type="text" placeholder=""></input>\n');
+        mf.parse("This is a test\n" + '<input type="text" placeholder=""></input>\n');
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -1859,31 +1864,31 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r654479252");
     });
 
-    test("MdxFileParseLocalizableAttributesAndNonBreakingTags", function() {
+    test("MdxFileParseLocalizableAttributesAndNonBreakingTags", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n');
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
-        var r = set.getBySource('This is <c0>a test</c0> of non-breaking tags.');
+        var r = set.getBySource("This is <c0>a test</c0> of non-breaking tags.");
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe('This is <c0>a test</c0> of non-breaking tags.');
-        expect(r.getKey()).toBe('r1063253939');
+        expect(r.getSource()).toBe("This is <c0>a test</c0> of non-breaking tags.");
+        expect(r.getKey()).toBe("r1063253939");
         r = set.getBySource("localizable title");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("localizable title");
         expect(r.getKey()).toBe("r160369622");
     });
 
-    test("MdxFileParseImgJsxStringAltIsExtracted", function() {
+    test("MdxFileParseImgJsxStringAltIsExtracted", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<img alt="Test string" src="foo.png" />\n');
@@ -1895,11 +1900,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getSource()).toBe("Test string");
     });
 
-    test("MdxFileParseImgJsxExpressionAltIsNotExtracted", function() {
+    test("MdxFileParseImgJsxExpressionAltIsNotExtracted", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<img alt={translate("abc")} src="foo.png" />\n');
@@ -1908,11 +1913,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileParseImgJsxStringTitleIsExtracted", function() {
+    test("MdxFileParseImgJsxStringTitleIsExtracted", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<img title="Test string" src="foo.png" />\n');
@@ -1924,11 +1929,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getSource()).toBe("Test string");
     });
 
-    test("MdxFileParseImgJsxExpressionTitleIsNotExtracted", function() {
+    test("MdxFileParseImgJsxExpressionTitleIsNotExtracted", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<img title={translate("abc")} src="foo.png" />\n');
@@ -1937,14 +1942,14 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileParseMarkdownLinkStringUrlIsExtracted", function() {
+    test("MdxFileParseMarkdownLinkStringUrlIsExtracted", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('{/* i18n-enable localize-links */}\n[link text](http://example.com)\n');
+        mf.parse("{/* i18n-enable localize-links */}\n[link text](http://example.com)\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // link text + URL are both extracted when localize-links is enabled
@@ -1954,14 +1959,14 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getSource()).toBe("http://example.com");
     });
 
-    test("MdxFileParseMarkdownDefinitionStringUrlIsExtracted", function() {
+    test("MdxFileParseMarkdownDefinitionStringUrlIsExtracted", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('{/* i18n-enable localize-links */}\n[ref]: http://example.com\n');
+        mf.parse("{/* i18n-enable localize-links */}\n[ref]: http://example.com\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -1970,11 +1975,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getSource()).toBe("http://example.com");
     });
 
-    test("MdxFileParseJsxAStringTitleIsExtracted", function() {
+    test("MdxFileParseJsxAStringTitleIsExtracted", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<a href="http://example.com" title="My link title">link text</a>\n');
@@ -1987,11 +1992,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getSource()).toBe("My link title");
     });
 
-    test("MdxFileParseJsxAExpressionTitleIsNotExtracted", function() {
+    test("MdxFileParseJsxAExpressionTitleIsNotExtracted", function () {
         expect.assertions(4);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<a href="http://example.com" title={translate("abc")}>link text</a>\n');
@@ -2002,11 +2007,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.getBySource("link text")).toBeTruthy();
     });
 
-    test("MdxFileParseJsxStrongStringTitleIsExtracted", function() {
+    test("MdxFileParseJsxStrongStringTitleIsExtracted", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<strong title="My strong title">bold text</strong>\n');
@@ -2019,11 +2024,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getSource()).toBe("My strong title");
     });
 
-    test("MdxFileParseJsxStrongExpressionTitleIsNotExtracted", function() {
+    test("MdxFileParseJsxStrongExpressionTitleIsNotExtracted", function () {
         expect.assertions(4);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<strong title={translate("abc")}>bold text</strong>\n');
@@ -2034,16 +2039,18 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.getBySource("bold text")).toBeTruthy();
     });
 
-    test("MdxFileParseI18NComments", function() {
+    test("MdxFileParseI18NComments", function () {
         expect.assertions(10);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('{/* i18n this describes the text below */}\n' +
-                'This is a test of the emergency parsing system.\n\n' +
-                'But not this text\n');
+        mf.parse(
+            "{/* i18n this describes the text below */}\n" +
+                "This is a test of the emergency parsing system.\n\n" +
+                "But not this text\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing system.");
@@ -2058,28 +2065,29 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!r.getComment()).toBeTruthy();
     });
 
-    test("MdxFileParseIgnoreTags", function() {
+    test("MdxFileParseIgnoreTags", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             '<script type="javascript">{`\n' +
-            'if (window) {\n' +
-            '  $(".foo").class("asdf");\n' +
-            '}\n' +
-            '`}</script>\n' +
-            '<style>{`\n' +
-            '  .activity_title{\n' +
-            '    font-size: 18px;\n' +
-            '    font-weight: 300;\n' +
-            '    color: #777;\n' +
-            '    line-height: 40px;\n' +
-            '  }\n' +
-            '`}</style>\n' +
-            '<span class="foo">foo</span>\n');
+                "if (window) {\n" +
+                '  $(".foo").class("asdf");\n' +
+                "}\n" +
+                "`}</script>\n" +
+                "<style>{`\n" +
+                "  .activity_title{\n" +
+                "    font-size: 18px;\n" +
+                "    font-weight: 300;\n" +
+                "    color: #777;\n" +
+                "    line-height: 40px;\n" +
+                "  }\n" +
+                "`}</style>\n" +
+                '<span class="foo">foo</span>\n',
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -2089,21 +2097,63 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r941132140");
     });
 
-    test("MdxFileParseWithFrontMatterNotParsed", function() {
+    test("MdxFileParseIgnoreTagsInline", function () {
+        // Inline ignoreTags (<code>, <samp>, <output>) must be treated exactly like
+        // backtick inline code: an opaque <c0/> component with a translator comment,
+        // not a breaking tag that fragments the surrounding sentence.
+        expect.assertions(6);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse("This is a test of the <code>inline code</code> system.\n");
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a test of the <c0/> system.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a test of the <c0/> system.");
+        expect(r.getComment()).toBe("c0 will be replaced with the inline element <code>.");
+        expect(r.getKey()).toBe("r405516144");
+    });
+
+    test("MdxFileParseIgnoreTagsInlineMultiple", function () {
+        // Multiple inline ignoreTags in the same sentence produce multiple components
+        // (<c0/>, <c1/> …) and keep the whole sentence as one translation unit,
+        // just like multiple backtick inline codes do.
+        expect.assertions(6);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse("This is a <code>test</code> of the <samp>inline code</samp> system.\n");
+        var set = mf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("This is a <c0/> of the <c1/> system.");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("This is a <c0/> of the <c1/> system.");
+        expect(r.getComment()).toBe(
+            "c0 will be replaced with the inline element <code>. c1 will be replaced with the inline element <samp>.",
+        );
+        expect(r.getKey()).toBe("r960448365");
+    });
+
+    test("MdxFileParseWithFrontMatterNotParsed", function () {
         expect.assertions(10);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "foo/bar.mdx"  // no frontmatter config
+            pathName: "foo/bar.mdx", // no frontmatter config
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'test: This is a test of the front matter\n' +
-            'description: another front matter description\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n'
+            "---\n" +
+                "test: This is a test of the front matter\n" +
+                "description: another front matter description\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -2122,23 +2172,24 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!r).toBeTruthy();
     });
 
-    test("MdxFileParseWithFrontMatterExtracted", function() {
+    test("MdxFileParseWithFrontMatterExtracted", function () {
         expect.assertions(14);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "foo/bar/x/foo.mdx"
+            pathName: "foo/bar/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
+            "---\n" +
+                "Title: This is a test of the front matter\n" +
+                "Description: |\n" +
+                "  another front matter description\n" +
+                "  with extended text\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // the front matter should be extracted because p3 has fm settings
@@ -2159,24 +2210,25 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getPath()).toBe("foo/bar/x/foo.mdx"); // should come from this file
     });
 
-    test("MdxFileParseWithFrontMatterExtractAll", function() {
+    test("MdxFileParseWithFrontMatterExtractAll", function () {
         expect.assertions(11);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "foo/bar/y/foo.mdx" // extracts all front matter fields
+            pathName: "foo/bar/y/foo.mdx", // extracts all front matter fields
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            'Foobar: asdf asdf asdf\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
+            "---\n" +
+                "Title: This is a test of the front matter\n" +
+                "Description: |\n" +
+                "  another front matter description\n" +
+                "  with extended text\n" +
+                "Foobar: asdf asdf asdf\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
+        );
         set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // the front matter should be extracted because p3 has fm settings.
@@ -2195,41 +2247,43 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r942384758.Foobar");
     });
 
-    test("MdxFileParseWithFrontMatterExtractedTwoFiles", function() {
+    test("MdxFileParseWithFrontMatterExtractedTwoFiles", function () {
         expect.assertions(21);
         mdft3.getExtracted().clear();
         expect(mdft3.getExtracted().size()).toBe(0);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "foo/bar/x/foo.mdx"
+            pathName: "foo/bar/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
+            "---\n" +
+                "Title: This is a test of the front matter\n" +
+                "Description: |\n" +
+                "  another front matter description\n" +
+                "  with extended text\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
+        );
         mdft3.addSet(mf.getTranslationSet());
         mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "foo/bar/x/foobar.mdx"
+            pathName: "foo/bar/x/foobar.mdx",
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'Title: This is another test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
+            "---\n" +
+                "Title: This is another test of the front matter\n" +
+                "Description: |\n" +
+                "  another front matter description\n" +
+                "  with extended text\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
+        );
         mdft3.addSet(mf.getTranslationSet());
         var set = mdft3.getExtracted();
         expect(set).toBeTruthy();
@@ -2256,19 +2310,20 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getType()).toBe("string");
     });
 
-    test("MdxFileParseTable", function() {
+    test("MdxFileParseTable", function () {
         expect.assertions(21);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| asdf              | fdsa            |\n" +
-            "| foo               | bar             |\n");
+                "|-------------------|-----------------|\n" +
+                "| Query description | Returns column  |\n" +
+                "| asdf              | fdsa            |\n" +
+                "| foo               | bar             |\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(6);
@@ -2298,19 +2353,20 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r755240053");
     });
 
-    test("MdxFileParseTableWithInlineCode", function() {
+    test("MdxFileParseTableWithInlineCode", function () {
         expect.assertions(15);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| `asdf`            | `fdsa`          |\n" +
-            "| foo               | bar             |\n");
+                "|-------------------|-----------------|\n" +
+                "| Query description | Returns column  |\n" +
+                "| `asdf`            | `fdsa`          |\n" +
+                "| foo               | bar             |\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(4);
@@ -2332,22 +2388,23 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r755240053");
     });
 
-    test("MdxFileParseTableWithInlineCodeAndTextAfterwards", function() {
+    test("MdxFileParseTableWithInlineCodeAndTextAfterwards", function () {
         expect.assertions(15);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| `order_by`        | `field_key`     |\n" +
-            "\n" +
-            "## Heading Title\n" +
-            "\n" +
-            "Text body.\n");
+                "|-------------------|-----------------|\n" +
+                "| Query description | Returns column  |\n" +
+                "| `order_by`        | `field_key`     |\n" +
+                "\n" +
+                "## Heading Title\n" +
+                "\n" +
+                "Text body.\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(4);
@@ -2369,30 +2426,38 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r443039973");
     });
 
-    test("MdxFileExtractFile", function() {
+    test("MdxFileExtractFile", function () {
         expect.assertions(14);
         var base = path.dirname(module.id);
         var mf = new MdxFile({
             project: p,
             pathName: "./md/test1.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var set = mf.getTranslationSet();
         expect(set.size()).toBe(4);
-        var r = set.getBySource("This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        var r = set.getBySource(
+            "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+        );
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        expect(r.getSource()).toBe(
+            "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+        );
         expect(r.getKey()).toBe("r548615397");
         r = set.getBySource("This is some text. This is more text. Pretty, pretty text.");
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is some text. This is more text. Pretty, pretty text.");
         expect(r.getKey()).toBe("r777006502");
-        r = set.getBySource("This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        r = set.getBySource(
+            "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+        );
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        expect(r.getSource()).toBe(
+            "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+        );
         expect(r.getKey()).toBe("r112215756");
         r = set.getBySource("This is the last bit of localizable text.");
         expect(r).toBeTruthy();
@@ -2400,13 +2465,13 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r260813817");
     });
 
-    test("MdxFileExtractFile2", function() {
+    test("MdxFileExtractFile2", function () {
         expect.assertions(11);
         var base = path.dirname(module.id);
         var mf = new MdxFile({
             project: p,
             pathName: "./md/test2.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // should read the file
@@ -2417,9 +2482,13 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("This is text with a <c0>link</c0> in it.");
         expect(r.getKey()).toBe("r717941707");
-        r = set.getBySource("This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        r = set.getBySource(
+            "This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+        );
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.");
+        expect(r.getSource()).toBe(
+            "This is text with <c0>some emphasis <c1>on the wrong</c1> syllable</c0>. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+        );
         expect(r.getKey()).toBe("r736057533");
         r = set.getBySource("This is a Heading");
         expect(r).toBeTruthy();
@@ -2427,12 +2496,12 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r728092714");
     });
 
-    test("MdxFileExtractUndefinedFile", function() {
+    test("MdxFileExtractUndefinedFile", function () {
         expect.assertions(2);
         var base = path.dirname(module.id);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // should attempt to read the file and not fail
@@ -2441,13 +2510,13 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileExtractBogusFile", function() {
+    test("MdxFileExtractBogusFile", function () {
         expect.assertions(2);
         var base = path.dirname(module.id);
         var mf = new MdxFile({
             project: p,
             pathName: "./md/bogus.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // should attempt to read the file and not fail
@@ -2456,211 +2525,232 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(0);
     });
 
-    test("MdxFileLocalizeText", function() {
+    test("MdxFileLocalizeText", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n');
+        mf.parse("This is a test\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "fr-FR");
-        var expected = 'Ceci est un essai\n';
+        var expected = "Ceci est un essai\n";
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeTextPreserveWhitespace", function() {
+    test("MdxFileLocalizeTextPreserveWhitespace", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test    \n');
+        mf.parse("This is a test    \n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         // unlike markdown files, the mdx parser does not preserve whitespace
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe("Ceci est un essai\n");
     });
 
-    test("MdxFileLocalizeTextMultiple", function() {
+    test("MdxFileLocalizeTextMultiple", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n\n' +
-                'This is also a test\n');
+        mf.parse("This is a test\n\n" + "This is also a test\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai\n\n' +
-                'Ceci est aussi un essai\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r999080996",
+                source: "This is also a test",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe("Ceci est un essai\n\n" + "Ceci est aussi un essai\n");
     });
 
-    test("MdxFileLocalizeTextWithDups", function() {
+    test("MdxFileLocalizeTextWithDups", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n\n' +
-                'This is also a test\n\n' +
-                'This is a test\n');
+        mf.parse("This is a test\n\n" + "This is also a test\n\n" + "This is a test\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un essai\n\n' +
-                'Ceci est aussi un essai\n\n' +
-                'Ceci est un essai\n');
-    });
-
-    test("MdxFileLocalizeTextSkipScript", function() {
-        expect.assertions(2);
-        var mf = new MdxFile({
-            project: p,
-            type: mdft
-        });
-        expect(mf).toBeTruthy();
-        mf.parse('<script>{`\n' +
-                '// comment text\n' +
-                'if (locales.contains[thisLocale]) {\n' +
-                '    document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
-                '}\n' +
-                '`}</script>\n' +
-                '\n' +
-                'This is a test\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r999080996",
+                source: "This is also a test",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         expect(mf.localizeText(translations, "fr-FR")).toBe(
-            '<script>\n' +
-            '  {`\n' +
-            '    // comment text\n' +
-            '    if (locales.contains[thisLocale]) {\n' +
-            '      document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
-            '    }\n' +
-            '    `}\n' +
-            '</script>\n' +
-            '\n' +
-            'Ceci est un essai\n');
+            "Ceci est un essai\n\n" + "Ceci est aussi un essai\n\n" + "Ceci est un essai\n",
+        );
     });
 
-    test("MdxFileLocalizeTextWithLinks", function() {
+    test("MdxFileLocalizeTextSkipScript", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a [test](http://www.test.com/) of the emergency parsing system.\n');
+        mf.parse(
+            "<script>{`\n" +
+                "// comment text\n" +
+                "if (locales.contains[thisLocale]) {\n" +
+                '    document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
+                "}\n" +
+                "`}</script>\n" +
+                "\n" +
+                "This is a test\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "<script>\n" +
+                "  {`\n" +
+                "    // comment text\n" +
+                "    if (locales.contains[thisLocale]) {\n" +
+                '      document.write("<input id=\"locale\" class=\"foo\" title=\"bar\"></input>");\n' +
+                "    }\n" +
+                "    `}\n" +
+                "</script>\n" +
+                "\n" +
+                "Ceci est un essai\n",
+        );
     });
 
-    test("MdxFileLocalizeTextWithLinksNotTranslated", function() {
+    test("MdxFileLocalizeTextWithLinks", function () {
+        expect.assertions(2);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse("This is a [test](http://www.test.com/) of the emergency parsing system.\n");
+        var translations = new TranslationSet();
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r306365966",
+                source: "This is a <c0>test</c0> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un [essai](http://www.test.com/) du système d'analyse syntaxique de l'urgence.\n",
+        );
+    });
+
+    test("MdxFileLocalizeTextWithLinksNotTranslated", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // make sure there are no new strings before we start
         mdft.newres.clear();
         expect(mdft.newres.size()).toBe(0);
         expect(mf.getTranslationSet().size()).toBe(0);
-        mf.parse('This is a [test](http://www.test.com/) of the emergency parsing system.\n');
+        mf.parse("This is a [test](http://www.test.com/) of the emergency parsing system.\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r306365966",
+                source: "This is a <c0>test</c0> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un [essai](http://www.test.com/) du système d'analyse syntaxique de l'urgence.\n",
+        );
         // the set of new translations should be empty because we did not extract the link
         var newSet = mdft.getNew();
         expect(newSet.size()).toBe(0);
         expect(mf.getTranslationSet().size()).toBe(1);
     });
 
-    test("MdxFileLocalizeTextWithLinksTranslatedNew", function() {
+    test("MdxFileLocalizeTextWithLinksTranslatedNew", function () {
         expect.assertions(7);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // make sure there are no new strings before we start
@@ -2668,24 +2758,27 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(mdft.newres.size()).toBe(0);
         expect(mf.getTranslationSet().size()).toBe(0);
         mf.parse(
-            '{/* i18n-enable localize-links */}\n' +
-            'This is a [test](http://www.test.com/) of the emergency parsing system.\n' +
-            '{/* i18n-disable localize-links */}\n'
+            "{/* i18n-enable localize-links */}\n" +
+                "This is a [test](http://www.test.com/) of the emergency parsing system.\n" +
+                "{/* i18n-disable localize-links */}\n",
         );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r306365966",
+                source: "This is a <c0>test</c0> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         // no translation available for the link itself
-        expect(mf.localizeText(translations, "fr-FR")).toBe('{/* i18n-enable localize-links */}\n\n' +
-            'Ceci est un [essai](http://www.test.com/) du système d\'analyse syntaxique de l\'urgence.\n\n' +
-            '{/* i18n-disable localize-links */}\n'
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "{/* i18n-enable localize-links */}\n\n" +
+                "Ceci est un [essai](http://www.test.com/) du système d'analyse syntaxique de l'urgence.\n\n" +
+                "{/* i18n-disable localize-links */}\n",
         );
         // the set of new translations should now contain the link
         var newSet = mdft.getNew();
@@ -2695,11 +2788,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(mf.getTranslationSet().size()).toBe(2);
     });
 
-    test("MdxFileLocalizeTextWithLinksTranslated", function() {
+    test("MdxFileLocalizeTextWithLinksTranslated", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // make sure there are no new strings before we start
@@ -2707,33 +2800,38 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(mdft.newres.size()).toBe(0);
         expect(mf.getTranslationSet().size()).toBe(0);
         mf.parse(
-            '{/* i18n-enable localize-links */}\n' +
-            'This is a [test](http://www.test.com/) of the emergency parsing system.\n' +
-            '{/* i18n-disable localize-links */}\n'
+            "{/* i18n-enable localize-links */}\n" +
+                "This is a [test](http://www.test.com/) of the emergency parsing system.\n" +
+                "{/* i18n-disable localize-links */}\n",
         );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r474012543",
-            source: "http://www.test.com/",
-            sourceLocale: "en-US",
-            target: "http://www.test.com/fr",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r306365966",
+                source: "This is a <c0>test</c0> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r474012543",
+                source: "http://www.test.com/",
+                sourceLocale: "en-US",
+                target: "http://www.test.com/fr",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         // no translation available for the link itself
-        expect(mf.localizeText(translations, "fr-FR")).toBe('{/* i18n-enable localize-links */}\n\n' +
-            'Ceci est un [essai](http://www.test.com/fr) du système d\'analyse syntaxique de l\'urgence.\n\n' +
-            '{/* i18n-disable localize-links */}\n'
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "{/* i18n-enable localize-links */}\n\n" +
+                "Ceci est un [essai](http://www.test.com/fr) du système d'analyse syntaxique de l'urgence.\n\n" +
+                "{/* i18n-disable localize-links */}\n",
         );
         // the set of new translations should not contain the link because it was already translated
         var newSet = mdft.getNew();
@@ -2741,707 +2839,836 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(mf.getTranslationSet().size()).toBe(2);
     });
 
-    test("MdxFileLocalizeTextWithInlineCode", function() {
+    test("MdxFileLocalizeTextWithInlineCode", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a `test` of the emergency parsing system.\n');
+        mf.parse("This is a `test` of the emergency parsing system.\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r879023644",
-            source: "This is a <c0/> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0/> du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un `test` du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r879023644",
+                source: "This is a <c0/> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0/> du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un `test` du système d'analyse syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextWithInlineCodeAtTheEnd", function() {
+    test("MdxFileLocalizeTextWithInlineCodeAtTheEnd", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('Delete the file with this command: `git rm filename`\n');
+        mf.parse("Delete the file with this command: `git rm filename`\n");
         // should not optimize out inline code at the end of strings so that it can be
         // part of the text that is translated
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r66239583",
-            source: "Delete the file with this command: <c0/>",
-            sourceLocale: "en-US",
-            target: "Avec cette commande <c0/>, vous pouvez supprimer le fichier.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Avec cette commande `git rm filename`, vous pouvez supprimer le fichier.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r66239583",
+                source: "Delete the file with this command: <c0/>",
+                sourceLocale: "en-US",
+                target: "Avec cette commande <c0/>, vous pouvez supprimer le fichier.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Avec cette commande `git rm filename`, vous pouvez supprimer le fichier.\n",
+        );
     });
 
-    test("MdxFileLocalizeInlineCodeByItself", function() {
+    test("MdxFileLocalizeInlineCodeByItself", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse("This is a test of the inline code system.\n" + "\n" + "`inline code`\n" + "\n" + "Sentence after.\n");
+        // should not optimize out inline code at the end of strings so that it can be
+        // part of the text that is translated
+        var translations = new TranslationSet();
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r41637229",
+                source: "This is a test of the inline code system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un teste de la systeme 'inline code'.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r16227039",
+                source: "Sentence after.",
+                sourceLocale: "en-US",
+                target: "La phrase denier.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un teste de la systeme 'inline code'.\n" +
+                "\n" +
+                "`inline code`\n" +
+                "\n" +
+                "La phrase denier.\n",
+        );
+    });
+
+    test("MdxFileLocalizeTextWithLinkReference", function () {
+        expect.assertions(2);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
+        });
+        expect(mf).toBeTruthy();
+        mf.parse("This is a test of the emergency [C1] parsing system.\n\n[C1]: http://example.com\n");
+        var translations = new TranslationSet();
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1017266258",
+                source: "This is a test of the emergency <c0>C1</c0> parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse syntaxique de l'urgence <c0>C1</c0>.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un test du système d'analyse syntaxique de l'urgence [C1][C1].\n\n[C1]: http://example.com\n",
+        );
+    });
+
+    test("MdxFileLocalizeTextWithMultipleLinkReferences", function () {
+        expect.assertions(2);
+        var mf = new MdxFile({
+            project: p,
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'This is a test of the inline code system.\n' +
-            '\n' +
-            '`inline code`\n' +
-            '\n' +
-            'Sentence after.\n');
-        // should not optimize out inline code at the end of strings so that it can be
-        // part of the text that is translated
+            "This is a test of the emergency [C1] parsing system [R1].\n\n[C1]: https://www.box.com/test1\n[R1]: http://www.box.com/about.html\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r41637229",
-            source: "This is a test of the inline code system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un teste de la systeme 'inline code'.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r16227039",
-            source: "Sentence after.",
-            sourceLocale: "en-US",
-            target: "La phrase denier.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe("Ceci est un teste de la systeme 'inline code'.\n" +
-            '\n' +
-            '`inline code`\n' +
-            '\n' +
-            'La phrase denier.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r817759238",
+                source: "This is a test of the emergency <c0>C1</c0> parsing system <c1>R1</c1>.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse syntaxique <c1>Reponse1</c1> de l'urgence <c0>teste</c0>.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un test du système d'analyse syntaxique [Reponse1][R1] de l'urgence [teste][C1].\n\n[C1]: https://www.box.com/test1\n\n[R1]: http://www.box.com/about.html\n",
+        );
     });
 
-    test("MdxFileLocalizeTextWithLinkReference", function() {
+    test("MdxFileLocalizeTextWithMultipleLocalizableLinkReferences", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency [C1] parsing system.\n\n[C1]: http://example.com\n');
+        mf.parse(
+            "This is a test of the emergency [C1] parsing system [R1].\n\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                "[C1]: https://www.box.com/test1\n" +
+                "[R1]: http://www.box.com/about.html\n" +
+                "{/* i18n-disable localize-links */}\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r1017266258",
-            source: "This is a test of the emergency <c0>C1</c0> parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse syntaxique de l'urgence <c0>C1</c0>.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique de l\'urgence [C1][C1].\n\n[C1]: http://example.com\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r817759238",
+                source: "This is a test of the emergency <c0>C1</c0> parsing system <c1>R1</c1>.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse syntaxique <c1>Reponse1</c1> de l'urgence <c0>teste</c0>.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r647537837",
+                source: "https://www.box.com/test1",
+                sourceLocale: "en-US",
+                target: "https://www.box.com/fr/test1",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r448858983",
+                source: "http://www.box.com/about.html",
+                sourceLocale: "en-US",
+                target: "http://www.box.com/fr/about.html",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un test du système d'analyse syntaxique [Reponse1][R1] de l'urgence [teste][C1].\n\n" +
+                "{/* i18n-enable localize-links */}\n\n" +
+                "[C1]: https://www.box.com/fr/test1\n\n" +
+                "[R1]: http://www.box.com/fr/about.html\n\n" +
+                "{/* i18n-disable localize-links */}\n",
+        );
     });
 
-    test("MdxFileLocalizeTextWithMultipleLinkReferences", function() {
+    test("MdxFileLocalizeTextWithFootnotes", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency [C1] parsing system [R1].\n\n[C1]: https://www.box.com/test1\n[R1]: http://www.box.com/about.html\n');
+        mf.parse("This is a test of the emergency parsing [^1] system.\n\n" + "[^1]: well, not really\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r817759238",
-            source: "This is a test of the emergency <c0>C1</c0> parsing system <c1>R1</c1>.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse syntaxique <c1>Reponse1</c1> de l'urgence <c0>teste</c0>.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [Reponse1][R1] de l\'urgence [teste][C1].\n\n[C1]: https://www.box.com/test1\n\n[R1]: http://www.box.com/about.html\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1010312382",
+                source: "This is a test of the emergency parsing <c0/> system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r472274968",
+                source: "well, not really",
+                sourceLocale: "en-US",
+                target: "normalement, c'est pas vrai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un test du système d'analyse syntaxique [^1] de l'urgence.\n\n" +
+                "[^1]: normalement, c'est pas vrai\n",
+        );
     });
 
-    test("MdxFileLocalizeTextWithMultipleLocalizableLinkReferences", function() {
+    test("MdxFileLocalizeTextWithFootnotesLongName", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency [C1] parsing system [R1].\n\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '[C1]: https://www.box.com/test1\n' +
-            '[R1]: http://www.box.com/about.html\n' +
-            '{/* i18n-disable localize-links */}\n');
+        mf.parse("This is a test of the emergency parsing [^longname] system.\n\n" + "[^longname]: well, not really\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r817759238",
-            source: "This is a test of the emergency <c0>C1</c0> parsing system <c1>R1</c1>.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse syntaxique <c1>Reponse1</c1> de l'urgence <c0>teste</c0>.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r647537837",
-            source: "https://www.box.com/test1",
-            sourceLocale: "en-US",
-            target: "https://www.box.com/fr/test1",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r448858983",
-            source: "http://www.box.com/about.html",
-            sourceLocale: "en-US",
-            target: "http://www.box.com/fr/about.html",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [Reponse1][R1] de l\'urgence [teste][C1].\n\n' +
-            '{/* i18n-enable localize-links */}\n\n' +
-            '[C1]: https://www.box.com/fr/test1\n\n' +
-            '[R1]: http://www.box.com/fr/about.html\n\n' +
-            '{/* i18n-disable localize-links */}\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1010312382",
+                source: "This is a test of the emergency parsing <c0/> system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r472274968",
+                source: "well, not really",
+                sourceLocale: "en-US",
+                target: "normalement, c'est pas vrai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un test du système d'analyse syntaxique [^longname] de l'urgence.\n\n" +
+                "[^longname]: normalement, c'est pas vrai\n",
+        );
     });
 
-    test("MdxFileLocalizeTextWithFootnotes", function() {
+    test("MdxFileLocalizeTextNonBreakingTags", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing [^1] system.\n\n' +
-            '[^1]: well, not really\n');
+        mf.parse("This is a <em>test</em> of the emergency parsing system.\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r1010312382",
-            source: "This is a test of the emergency parsing <c0/> system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r472274968",
-            source: "well, not really",
-            sourceLocale: "en-US",
-            target: "normalement, c'est pas vrai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [^1] de l\'urgence.\n\n' +
-            '[^1]: normalement, c\'est pas vrai\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r306365966",
+                source: "This is a <c0>test</c0> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un <em>essai</em> du système d'analyse syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextWithFootnotesLongName", function() {
+    test("MdxFileLocalizeTextNonBreakingTagsOutside", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing [^longname] system.\n\n' +
-            '[^longname]: well, not really\n');
+        mf.parse("*This is a test of the emergency parsing system.*\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r1010312382",
-            source: "This is a test of the emergency parsing <c0/> system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse syntaxique <c0/> de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r472274968",
-            source: "well, not really",
-            sourceLocale: "en-US",
-            target: "normalement, c'est pas vrai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un test du système d\'analyse syntaxique [^longname] de l\'urgence.\n\n' +
-            '[^longname]: normalement, c\'est pas vrai\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r699762575",
+                source: "This is a test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "*Ceci est un essai du système d'analyse syntaxique de l'urgence.*\n",
+        );
     });
 
-    test("MdxFileLocalizeTextNonBreakingTags", function() {
+    test("MdxFileLocalizeTextNonBreakingTagsBeforeAndAfter", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
+        mf.parse(
+            '<span class="test"> <span id="foo"> </span></span> *This is a test of the emergency parsing system.*   \n',
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>essai</c0> du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r699762575",
+                source: "This is a test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            '<span class="test"> <span id="foo"> </span></span> *Ceci est un essai du système d\'analyse syntaxique de l\'urgence.*\n',
+        );
     });
 
-    test("MdxFileLocalizeTextNonBreakingTagsOutside", function() {
+    test("MdxFileLocalizeTextNonBreakingTagsInside", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
-        });
-        expect(mf).toBeTruthy();
-        mf.parse('*This is a test of the emergency parsing system.*\n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('*Ceci est un essai du système d\'analyse syntaxique de l\'urgence.*\n');
-    });
-
-    test("MdxFileLocalizeTextNonBreakingTagsBeforeAndAfter", function() {
-        expect.assertions(2);
-        var mf = new MdxFile({
-            project: p,
-            type: mdft
-        });
-        expect(mf).toBeTruthy();
-        mf.parse('<span class="test"> <span id="foo"> </span></span> *This is a test of the emergency parsing system.*   \n');
-        var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('<span class="test"> <span id="foo"> </span></span> *Ceci est un essai du système d\'analyse syntaxique de l\'urgence.*\n');
-    });
-
-    test("MdxFileLocalizeTextNonBreakingTagsInside", function() {
-        expect.assertions(2);
-        var mf = new MdxFile({
-            project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the emergency parsing </span> system.\n');
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r124733470',
-            source: 'This is <c0> a test of the emergency parsing </c0> system.',
-            target: 'Ceci est <c0> un essai du système d\'analyse syntaxique de l\'urgence. </c0>',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de l\'urgence. </span>\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r124733470",
+                source: "This is <c0> a test of the emergency parsing </c0> system.",
+                target: "Ceci est <c0> un essai du système d'analyse syntaxique de l'urgence. </c0>",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            'Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de l\'urgence. </span>\n',
+        );
     });
 
-    test("MdxFileLocalizeTextNonBreakingTagsInsideMultiple", function() {
+    test("MdxFileLocalizeTextNonBreakingTagsInsideMultiple", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('This is <span id="foo" class="bar"> a test of the <em>emergency</em> parsing </span> system.\n');
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r772812508',
-            source: 'This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.',
-            target: 'Ceci est <c0> un essai du système d\'analyse syntaxique de <c1>l\'urgence</c1>.</c0>',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence</em>.</span>\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r772812508",
+                source: "This is <c0> a test of the <c1>emergency</c1> parsing </c0> system.",
+                target: "Ceci est <c0> un essai du système d'analyse syntaxique de <c1>l'urgence</c1>.</c0>",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            'Ceci est <span id="foo" class="bar"> un essai du système d\'analyse syntaxique de <em>l\'urgence</em>.</span>\n',
+        );
     });
 
-
-    test("MdxFileLocalizeTextBreakingTags", function() {
+    test("MdxFileLocalizeTextBreakingTags", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a <p/>test of the emergency parsing system.\n');
+        mf.parse("This is a <p/>test of the emergency parsing system.\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r21364457",
-            source: "This is a",
-            sourceLocale: "en-US",
-            target: "Ceci est un",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r787549036",
-            source: "test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "essai du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p />essai du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r21364457",
+                source: "This is a",
+                sourceLocale: "en-US",
+                target: "Ceci est un",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r787549036",
+                source: "test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "essai du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un <p />essai du système d'analyse syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextSelfClosedBreakingTags", function() {
+    test("MdxFileLocalizeTextSelfClosedBreakingTags", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a <p/>test of the emergency parsing system.\n');
+        mf.parse("This is a <p/>test of the emergency parsing system.\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r21364457",
-            source: "This is a",
-            sourceLocale: "en-US",
-            target: "Ceci est un",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r787549036",
-            source: "test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "essai du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <p />essai du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r21364457",
+                source: "This is a",
+                sourceLocale: "en-US",
+                target: "Ceci est un",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r787549036",
+                source: "test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "essai du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un <p />essai du système d'analyse syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextSelfClosingNonBreakingTags", function() {
+    test("MdxFileLocalizeTextSelfClosingNonBreakingTags", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a <br/>test of the emergency parsing system.\n');
+        mf.parse("This is a <br/>test of the emergency parsing system.\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r292870472",
-            source: "This is a <c0/>test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0/>essai du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br />essai du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r292870472",
+                source: "This is a <c0/>test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0/>essai du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un <br />essai du système d'analyse syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextSelfClosedNonBreakingTags", function() {
+    test("MdxFileLocalizeTextSelfClosedNonBreakingTags", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a <br/>test of the emergency parsing system.\n');
+        mf.parse("This is a <br/>test of the emergency parsing system.\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r292870472",
-            source: "This is a <c0/>test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0/>essai du système d'analyse syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <br />essai du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r292870472",
+                source: "This is a <c0/>test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0/>essai du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un <br />essai du système d'analyse syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextMismatchedNumberOfComponents", function() {
+    test("MdxFileLocalizeTextMismatchedNumberOfComponents", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
+        mf.parse("This is a <em>test</em> of the emergency parsing system.\n");
         var translations = new TranslationSet();
         // there is no c1 in the source, so this better not throw an exception
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>essai</c0> du système d'analyse <c1>syntaxique</c1> de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r306365966",
+                source: "This is a <c0>test</c0> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0>essai</c0> du système d'analyse <c1>syntaxique</c1> de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         // Should ignore the c1 as if it weren't there
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse syntaxique de l\'urgence.\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un <em>essai</em> du système d'analyse syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextMismatchedNumberOfComponentsSelfClosing", function() {
+    test("MdxFileLocalizeTextMismatchedNumberOfComponentsSelfClosing", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a <em>test</em> of the emergency parsing system.\n');
+        mf.parse("This is a <em>test</em> of the emergency parsing system.\n");
         var translations = new TranslationSet();
         // there is no c1 in the source, so this better not throw an exception
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>essai</c0> du système d'analyse <c1/> syntaxique de l'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r306365966",
+                source: "This is a <c0>test</c0> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0>essai</c0> du système d'analyse <c1/> syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         // Should ignore the c1 as if it weren't there
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est un <em>essai</em> du système d\'analyse  syntaxique de l\'urgence.\n');
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "Ceci est un <em>essai</em> du système d'analyse  syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextLocalizableTitle", function() {
+    test("MdxFileLocalizeTextLocalizableTitle", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('Markdown text <div title="This value is localizable">This is a test</div>\n');
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r922503175',
-            source: 'This value is localizable',
-            target: 'Cette valeur est localisable',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r922503175",
+                source: "This value is localizable",
+                target: "Cette valeur est localisable",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            '\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n',
+        );
     });
 
-    test("MdxFileLocalizeTextLocalizableTitleSingleQuotes", function() {
+    test("MdxFileLocalizeTextLocalizableTitleSingleQuotes", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse("Markdown text <div title='This value is localizable'>This is a test</div>\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            key: 'r922503175',
-            project: "foo",
-            source: 'This value is localizable',
-            target: 'Cette valeur est localisable',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n');
+        translations.add(
+            new ResourceString({
+                key: "r922503175",
+                project: "foo",
+                source: "This value is localizable",
+                target: "Cette valeur est localisable",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            '\\[Màŕķðõŵñ ţëxţ6543210] <div title="Cette valeur est localisable">Ceci est un essai</div>\n',
+        );
     });
 
-    test("MdxFileLocalizeTextLocalizableAttributes", function() {
+    test("MdxFileLocalizeTextLocalizableAttributes", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('![Alternate text](http://www.test.test/foo.png "title here")\n' +
-                'This is a test\n' +
-                '<input type="text" placeholder="localizable placeholder here" />\n');
+        mf.parse(
+            '![Alternate text](http://www.test.test/foo.png "title here")\n' +
+                "This is a test\n" +
+                '<input type="text" placeholder="localizable placeholder here" />\n',
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1051764073',
-            source: 'Alternate text',
-            target: 'Texte alternative',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r625153591',
-            source: 'title here',
-            target: 'titre ici',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r654479252',
-            source: 'This is a test',
-            target: 'Ceci est un essai',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r734414247',
-            source: 'localizable placeholder here',
-            target: 'espace réservé localisable ici',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('![Texte alternative](http://www.test.test/foo.png "titre ici")\n' +
-            'Ceci est un essai\n\n' +
-            '<input type="text" placeholder="espace réservé localisable ici" />\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1051764073",
+                source: "Alternate text",
+                target: "Texte alternative",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r625153591",
+                source: "title here",
+                target: "titre ici",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r734414247",
+                source: "localizable placeholder here",
+                target: "espace réservé localisable ici",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            '![Texte alternative](http://www.test.test/foo.png "titre ici")\n' +
+                "Ceci est un essai\n\n" +
+                '<input type="text" placeholder="espace réservé localisable ici" />\n',
+        );
     });
 
-    test("MdxFileLocalizeTextLocalizableAttributesAndNonBreakingTags", function() {
+    test("MdxFileLocalizeTextLocalizableAttributesAndNonBreakingTags", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('This is <a href="foo.html" title="localizable title">a test</a> of non-breaking tags.\n');
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1063253939',
-            source: 'This is <c0>a test</c0> of non-breaking tags.',
-            target: 'Ceci est <c0>un essai</c0> des balises non-ruptures.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r160369622',
-            source: 'localizable title',
-            target: 'titre localisable',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <a href="foo.html" title="titre localisable">un essai</a> des balises non-ruptures.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1063253939",
+                source: "This is <c0>a test</c0> of non-breaking tags.",
+                target: "Ceci est <c0>un essai</c0> des balises non-ruptures.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r160369622",
+                source: "localizable title",
+                target: "titre localisable",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            'Ceci est <a href="foo.html" title="titre localisable">un essai</a> des balises non-ruptures.\n',
+        );
     });
 
-    test("MdxFileLocalizeTextLocalizableValuelessAttributes", function() {
+    test("MdxFileLocalizeTextLocalizableValuelessAttributes", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('This is <a href="foo.html" checked title="localizable title">a test</a> of non-breaking tags.\n');
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1063253939',
-            source: 'This is <c0>a test</c0> of non-breaking tags.',
-            target: 'Ceci est <c0>un essai</c0> des balises non-ruptures.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r160369622',
-            source: 'localizable title',
-            target: 'titre localisable',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('Ceci est <a href="foo.html" checked title="titre localisable">un essai</a> des balises non-ruptures.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1063253939",
+                source: "This is <c0>a test</c0> of non-breaking tags.",
+                target: "Ceci est <c0>un essai</c0> des balises non-ruptures.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r160369622",
+                source: "localizable title",
+                target: "titre localisable",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            'Ceci est <a href="foo.html" checked title="titre localisable">un essai</a> des balises non-ruptures.\n',
+        );
     });
 
-    test("MdxFileLocalizeTextI18NComments", function() {
+    test("MdxFileLocalizeTextI18NComments", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('{/* i18n: this describes the text below */}\n' +
-                'This is a test of the emergency parsing system.\n');
+        mf.parse("{/* i18n: this describes the text below */}\n" + "This is a test of the emergency parsing system.\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r699762575',
-            source: 'This is a test of the emergency parsing system.',
-            target: 'Ceci est un essai du système d\'analyse syntaxique de l\'urgence.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('{/* i18n: this describes the text below */}\n\n' +
-            'Ceci est un essai du système d\'analyse syntaxique de l\'urgence.\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r699762575",
+                source: "This is a test of the emergency parsing system.",
+                target: "Ceci est un essai du système d'analyse syntaxique de l'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "{/* i18n: this describes the text below */}\n\n" +
+                "Ceci est un essai du système d'analyse syntaxique de l'urgence.\n",
+        );
     });
 
-    test("MdxFileLocalizeTextIdentifyResourceIds", function() {
+    test("MdxFileLocalizeTextIdentifyResourceIds", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p2,
-            type: mdft2
+            type: mdft2,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test\n\n' +
-                'This is also a test\n\n' +
-                'This is a test\n');
+        mf.parse("This is a test\n\n" + "This is also a test\n\n" + "This is a test\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r999080996",
+                source: "This is also a test",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var expected =
             '<span x-locid="r654479252">Ceci est un essai</span>\n\n' +
             '<span x-locid="r999080996">Ceci est aussi un essai</span>\n\n' +
@@ -3451,383 +3678,408 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeHTMLWithValuelessAttributes", function() {
+    test("MdxFileLocalizeHTMLWithValuelessAttributes", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse('<span class="foo" checked>This is a test of the emergency parsing system.</span>\n');
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        var expected =
-            '<span class="foo" checked>Ceci est un test du système d\'analyse d\'urgence.</span>\n';
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r699762575",
+                source: "This is a test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse d'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        var expected = "<span class=\"foo\" checked>Ceci est un test du système d'analyse d'urgence.</span>\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeFlowStyleHTML", function() {
+    test("MdxFileLocalizeFlowStyleHTML", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse(
-            '<span class="foo" checked>\n' +
-            'This is a test of the emergency parsing system.\n' +
-            '</span>\n');
+        mf.parse('<span class="foo" checked>\n' + "This is a test of the emergency parsing system.\n" + "</span>\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r699762575",
+                source: "This is a test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse d'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var expected =
-            '<span class="foo" checked>\n' +
-            '  Ceci est un test du système d\'analyse d\'urgence.\n' +
-            '</span>\n';
+            '<span class="foo" checked>\n' + "  Ceci est un test du système d'analyse d'urgence.\n" + "</span>\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeFlowStyleHTMLMultiple", function() {
+    test("MdxFileLocalizeFlowStyleHTMLMultiple", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             '<span class="foo" checked>\n' +
-            'This is a test of the emergency parsing system.\n' +
-            '</span>\n' +
-            '<message>\n' +
-            'This is translatable.\n' +
-            '</message>\n'
-            );
+                "This is a test of the emergency parsing system.\n" +
+                "</span>\n" +
+                "<message>\n" +
+                "This is translatable.\n" +
+                "</message>\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r299977686",
-            source: "This is translatable.",
-            sourceLocale: "en-US",
-            target: "Ceci est traduitable.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r699762575",
+                source: "This is a test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse d'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r299977686",
+                source: "This is translatable.",
+                sourceLocale: "en-US",
+                target: "Ceci est traduitable.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var expected =
             '<span class="foo" checked>\n' +
-            '  Ceci est un test du système d\'analyse d\'urgence.\n' +
-            '</span>\n\n' +
-            '<message>\n' +
-            '  Ceci est traduitable.\n' +
-            '</message>\n';
+            "  Ceci est un test du système d'analyse d'urgence.\n" +
+            "</span>\n\n" +
+            "<message>\n" +
+            "  Ceci est traduitable.\n" +
+            "</message>\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeFlowStyleHTMLMultipleWithTextInBetween", function() {
+    test("MdxFileLocalizeFlowStyleHTMLMultipleWithTextInBetween", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             '<span class="foo" checked>\n' +
-            'This is a test of the emergency parsing system.\n' +
-            '</span>\n' +
-            '\n' +
-            'This is translatable.\n' +
-            '\n' +
-            '<message>\n' +
-            'This is translatable.\n' +
-            '</message>\n'
-            );
+                "This is a test of the emergency parsing system.\n" +
+                "</span>\n" +
+                "\n" +
+                "This is translatable.\n" +
+                "\n" +
+                "<message>\n" +
+                "This is translatable.\n" +
+                "</message>\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r699762575",
-            source: "This is a test of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un test du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r299977686",
-            source: "This is translatable.",
-            sourceLocale: "en-US",
-            target: "Ceci est traduitable.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r699762575",
+                source: "This is a test of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un test du système d'analyse d'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r299977686",
+                source: "This is translatable.",
+                sourceLocale: "en-US",
+                target: "Ceci est traduitable.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var expected =
             '<span class="foo" checked>\n' +
-            '  Ceci est un test du système d\'analyse d\'urgence.\n' +
-            '</span>\n' +
-            '\n' +
-            'Ceci est traduitable.\n' +
-            '\n' +
-            '<message>\n' +
-            '  Ceci est traduitable.\n' +
-            '</message>\n';
+            "  Ceci est un test du système d'analyse d'urgence.\n" +
+            "</span>\n" +
+            "\n" +
+            "Ceci est traduitable.\n" +
+            "\n" +
+            "<message>\n" +
+            "  Ceci est traduitable.\n" +
+            "</message>\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeFlowStyleHTMLWithEmbeddedHTML", function() {
+    test("MdxFileLocalizeFlowStyleHTMLWithEmbeddedHTML", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '<span class="foo" checked>\n' +
-            'This is a <b>test</b> of the emergency parsing system.\n' +
-            '</span>\n');
+            '<span class="foo" checked>\n' + "This is a <b>test</b> of the emergency parsing system.\n" + "</span>\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r306365966",
-            source: "This is a <c0>test</c0> of the emergency parsing system.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0>test</c0> du système d'analyse d'urgence.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r306365966",
+                source: "This is a <c0>test</c0> of the emergency parsing system.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0>test</c0> du système d'analyse d'urgence.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var expected =
             '<span class="foo" checked>\n' +
-            '  Ceci est un <b>test</b> du système d\'analyse d\'urgence.\n' +
-            '</span>\n';
+            "  Ceci est un <b>test</b> du système d'analyse d'urgence.\n" +
+            "</span>\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeFlowStyleHTMLWithEmbeddedMarkdown", function() {
+    test("MdxFileLocalizeFlowStyleHTMLWithEmbeddedMarkdown", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '<span class="foo" checked>\n' +
-            'This is a `test` of the *emergency parsing system*.\n' +
-            '</span>\n');
+            '<span class="foo" checked>\n' + "This is a `test` of the *emergency parsing system*.\n" + "</span>\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r456781746",
-            source: "This is a <c0/> of the <c1>emergency parsing system</c1>.",
-            sourceLocale: "en-US",
-            target: "Ceci est un <c0/> du <c1>système d'analyse d'urgence</c1>.",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r456781746",
+                source: "This is a <c0/> of the <c1>emergency parsing system</c1>.",
+                sourceLocale: "en-US",
+                target: "Ceci est un <c0/> du <c1>système d'analyse d'urgence</c1>.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var expected =
-            '<span class="foo" checked>\n' +
-            '  Ceci est un `test` du *système d\'analyse d\'urgence*.\n' +
-            '</span>\n';
+            '<span class="foo" checked>\n' + "  Ceci est un `test` du *système d'analyse d'urgence*.\n" + "</span>\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeTextIgnoreFrontMatter", function() {
+    test("MdxFileLocalizeTextIgnoreFrontMatter", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'test: This is a test\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n\n' +
-            'This is a test\n');
+            "---\n" +
+                "test: This is a test\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n\n" +
+                "This is a test\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r999080996",
+                source: "This is also a test",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         // should ignore the front matter and leave it unlocalized
         var expected =
-            '---\n' +
-            'test: This is a test\n' +
-            '---\n\n' +
-            'Ceci est un essai\n\n' +
-            'Ceci est aussi un essai\n\n' +
-            'Ceci est un essai\n';
+            "---\n" +
+            "test: This is a test\n" +
+            "---\n\n" +
+            "Ceci est un essai\n\n" +
+            "Ceci est aussi un essai\n\n" +
+            "Ceci est un essai\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeTextProcessFrontMatter", function() {
+    test("MdxFileLocalizeTextProcessFrontMatter", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "a/b/x/foo.mdx"
+            pathName: "a/b/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
+            "---\n" +
+                "Title: This is a test of the front matter\n" +
+                "Description: |\n" +
+                "  another front matter description\n" +
+                "  with extended text\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r679920659.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r679920659.Description",
-            source: "another front matter description\nwith extended text\n",
-            sourceLocale: "en-US",
-            target: "aussi une description de la question en face\navec texte étendu\n",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r999080996",
+                source: "This is also a test",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r679920659.Title",
+                source: "This is a test of the front matter",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai de la question en face",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r679920659.Description",
+                source: "another front matter description\nwith extended text\n",
+                sourceLocale: "en-US",
+                target: "aussi une description de la question en face\navec texte étendu\n",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
         // should localize the front matter because the mapping includes Title and Description
         var expected =
-            '---\n' +
-            'Description: |\n' +
-            '  aussi une description de la question en face\n' +
-            '  avec texte étendu\n' +
-            'Title: Ceci est aussi un essai de la question en face\n' +
-            '\n' +
-            '---\n\n' +
-            'Ceci est un essai\n\n' +
-            'Ceci est aussi un essai\n';
+            "---\n" +
+            "Description: |\n" +
+            "  aussi une description de la question en face\n" +
+            "  avec texte étendu\n" +
+            "Title: Ceci est aussi un essai de la question en face\n" +
+            "\n" +
+            "---\n\n" +
+            "Ceci est un essai\n\n" +
+            "Ceci est aussi un essai\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeTextProcessFrontMatterProcessNewStrings", function() {
+    test("MdxFileLocalizeTextProcessFrontMatterProcessNewStrings", function () {
         expect.assertions(12);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "a/b/x/foo.mdx"
+            pathName: "a/b/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         mdft3.newres.clear();
         mf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
+            "---\n" +
+                "Title: This is a test of the front matter\n" +
+                "Description: |\n" +
+                "  another front matter description\n" +
+                "  with extended text\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r679920659.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r679920659.Title",
+                source: "This is a test of the front matter",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai de la question en face",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
         // should localize the front matter because the mapping includes Title and Description
         var expected =
-            '---\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            'Title: Ceci est aussi un essai de la question en face\n' +
-            '\n' +
-            '---\n\n' +
-            'Ceci est un essai\n\n' +
-            'This is also a test\n';
+            "---\n" +
+            "Description: |\n" +
+            "  another front matter description\n" +
+            "  with extended text\n" +
+            "Title: Ceci est aussi un essai de la question en face\n" +
+            "\n" +
+            "---\n\n" +
+            "Ceci est un essai\n\n" +
+            "This is also a test\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
@@ -3845,84 +4097,93 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(resources[1].getPath()).toBe("a/b/x/foo.mdx");
     });
 
-    test("MdxFileLocalizeTextProcessFrontMatterSkipUnknownFields", function() {
+    test("MdxFileLocalizeTextProcessFrontMatterSkipUnknownFields", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "a/b/x/foo.mdx"
+            pathName: "a/b/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            'Foobar: foo asdf asdf asdf\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
+            "---\n" +
+                "Title: This is a test of the front matter\n" +
+                "Description: |\n" +
+                "  another front matter description\n" +
+                "  with extended text\n" +
+                "Foobar: foo asdf asdf asdf\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r679920659.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r679920659.Description",
-            source: "another front matter description\nwith extended text\n",
-            sourceLocale: "en-US",
-            target: "aussi une description de la question en face\navec texte étendu\n",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r999080996",
+                source: "This is also a test",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r679920659.Title",
+                source: "This is a test of the front matter",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai de la question en face",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r679920659.Description",
+                source: "another front matter description\nwith extended text\n",
+                sourceLocale: "en-US",
+                target: "aussi une description de la question en face\navec texte étendu\n",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
         // should ignore the front matter it doesn't recognize and leave it unlocalized
         var expected =
-            '---\n' +
-            'Description: |\n' +
-            '  aussi une description de la question en face\n' +
-            '  avec texte étendu\n' +
-            'Foobar: foo asdf asdf asdf\n' +
-            'Title: Ceci est aussi un essai de la question en face\n' +
-            '\n' +
-            '---\n\n' +
-            'Ceci est un essai\n\n' +
-            'Ceci est aussi un essai\n';
+            "---\n" +
+            "Description: |\n" +
+            "  aussi une description de la question en face\n" +
+            "  avec texte étendu\n" +
+            "Foobar: foo asdf asdf asdf\n" +
+            "Title: Ceci est aussi un essai de la question en face\n" +
+            "\n" +
+            "---\n\n" +
+            "Ceci est un essai\n\n" +
+            "Ceci est aussi un essai\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeTextProcessFrontMatterSkipUnknownFieldsNotInNewSet", function() {
+    test("MdxFileLocalizeTextProcessFrontMatterSkipUnknownFieldsNotInNewSet", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "a/b/x/foo.mdx"
+            pathName: "a/b/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         mdft3.newres.clear();
@@ -3930,33 +4191,38 @@ Dictionary<string, object> metadata = await client.MetadataManager
         // Frontmatter allowlist for **/x/*.mdx is ["Title", "Description"].
         // "type", "mode", and "related_pages" are NOT in the allowlist.
         mf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'type: quick-start\n' +
-            'mode: wide\n' +
-            'related_pages:\n' +
-            '  - sdks-and-tools\n' +
-            '---\n\n' +
-            'This is a test\n');
+            "---\n" +
+                "Title: This is a test of the front matter\n" +
+                "type: quick-start\n" +
+                "mode: wide\n" +
+                "related_pages:\n" +
+                "  - sdks-and-tools\n" +
+                "---\n\n" +
+                "This is a test\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r679920659.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r679920659.Title",
+                source: "This is a test of the front matter",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai de la question en face",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
         mf.localizeText(translations, "fr-FR");
 
         // All body text and allowlisted frontmatter keys have translations,
@@ -3967,802 +4233,895 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(newset.size()).toBe(0);
     });
 
-    test("MdxFileLocalizeTextProcessFrontMatterLocalizeAll", function() {
+    test("MdxFileLocalizeTextProcessFrontMatterLocalizeAll", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "a/b/y/foo.mdx" // localizes all frontmatter fields
+            pathName: "a/b/y/foo.mdx", // localizes all frontmatter fields
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '---\n' +
-            'Title: This is a test of the front matter\n' +
-            'Description: |\n' +
-            '  another front matter description\n' +
-            '  with extended text\n' +
-            'Foobar: asdf asdf asdf\n' +
-            '---\n\n' +
-            'This is a test\n\n' +
-            'This is also a test\n');
+            "---\n" +
+                "Title: This is a test of the front matter\n" +
+                "Description: |\n" +
+                "  another front matter description\n" +
+                "  with extended text\n" +
+                "Foobar: asdf asdf asdf\n" +
+                "---\n\n" +
+                "This is a test\n\n" +
+                "This is also a test\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r654479252",
-            source: "This is a test",
-            sourceLocale: "en-US",
-            target: "Ceci est un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r999080996",
-            source: "This is also a test",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r1007268291.Title",
-            source: "This is a test of the front matter",
-            sourceLocale: "en-US",
-            target: "Ceci est aussi un essai de la question en face",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r1007268291.Description",
-            source: "another front matter description\nwith extended text\n",
-            sourceLocale: "en-US",
-            target: "aussi une description de la question en face\navec texte étendu\n",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r1007268291.Foobar",
-            source: "asdf asdf asdf",
-            sourceLocale: "en-US",
-            target: "fdsa fdsa fdsa",
-            targetLocale: "fr-FR",
-            datatype: "x-yaml"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r654479252",
+                source: "This is a test",
+                sourceLocale: "en-US",
+                target: "Ceci est un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r999080996",
+                source: "This is also a test",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1007268291.Title",
+                source: "This is a test of the front matter",
+                sourceLocale: "en-US",
+                target: "Ceci est aussi un essai de la question en face",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1007268291.Description",
+                source: "another front matter description\nwith extended text\n",
+                sourceLocale: "en-US",
+                target: "aussi une description de la question en face\navec texte étendu\n",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1007268291.Foobar",
+                source: "asdf asdf asdf",
+                sourceLocale: "en-US",
+                target: "fdsa fdsa fdsa",
+                targetLocale: "fr-FR",
+                datatype: "x-yaml",
+            }),
+        );
         // should localize all the front matter
         var expected =
-            '---\n' +
-            'Description: |\n' +
-            '  aussi une description de la question en face\n' +
-            '  avec texte étendu\n' +
-            'Foobar: fdsa fdsa fdsa\n' +
-            'Title: Ceci est aussi un essai de la question en face\n' +
-            '\n' +
-            '---\n\n' +
-            'Ceci est un essai\n\n' +
-            'Ceci est aussi un essai\n';
+            "---\n" +
+            "Description: |\n" +
+            "  aussi une description de la question en face\n" +
+            "  avec texte étendu\n" +
+            "Foobar: fdsa fdsa fdsa\n" +
+            "Title: Ceci est aussi un essai de la question en face\n" +
+            "\n" +
+            "---\n\n" +
+            "Ceci est un essai\n\n" +
+            "Ceci est aussi un essai\n";
         var actual = mf.localizeText(translations, "fr-FR");
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileGetLocalizedPathSimple", function() {
+    test("MdxFileGetLocalizedPathSimple", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
             pathName: "simple.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/simple.mdx");
     });
 
-    test("MdxFileGetLocalizedPathComplex", function() {
+    test("MdxFileGetLocalizedPathComplex", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
             pathName: "./asdf/bar/simple2.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.mdx");
     });
 
-    test("MdxFileGetLocalizedPathRegularMarkdownFileName", function() {
+    test("MdxFileGetLocalizedPathRegularMarkdownFileName", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
             pathName: "./asdf/bar/simple2.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.mdx");
     });
 
-    test("MdxFileGetLocalizedPathNotEnoughParts", function() {
+    test("MdxFileGetLocalizedPathNotEnoughParts", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
             pathName: "./asdf/bar/simple",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple");
     });
 
-    test("MdxFileGetLocalizedPathAlreadyHasSourceLocale", function() {
+    test("MdxFileGetLocalizedPathAlreadyHasSourceLocale", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p3,
             pathName: "./en-US/asdf/bar/simple2.mdx",
-            type: mdft3
+            type: mdft3,
         });
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.mdx");
     });
 
-    test("MdxFileGetLocalizedPathSourceLocaleInMidPath", function() {
+    test("MdxFileGetLocalizedPathSourceLocaleInMidPath", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p3,
             pathName: "./asdf/en-US/bar/simple3.mdx",
-            type: mdft3
+            type: mdft3,
         });
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("asdf/fr-FR/bar/simple3.mdx");
     });
 
-    test("MdxFileGetLocalizedPathSourceLocaleInBeginningPath", function() {
+    test("MdxFileGetLocalizedPathSourceLocaleInBeginningPath", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p3,
             pathName: "en-US/asdf/bar/simple2.mdx",
-            type: mdft3
+            type: mdft3,
         });
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/asdf/bar/simple2.mdx");
     });
 
-    test("MdxFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale", function() {
+    test("MdxFileGetLocalizedPathSourceLocaleInMidPathOnlyWholeLocale", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p3,
             pathName: "./asdf/pen-USing/en-US/bar/asdf.mdx",
-            type: mdft3
+            type: mdft3,
         });
         expect(mf).toBeTruthy();
         // should leave "pen-USing" alone and only get the "en-US" path component
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr-FR/bar/asdf.mdx");
     });
 
-    test("MdxFileGetLocalizedPathWithLocaleMap", function() {
+    test("MdxFileGetLocalizedPathWithLocaleMap", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p3,
             pathName: "simple4.mdx",
-            type: mdft3
+            type: mdft3,
         });
         expect(mf).toBeTruthy();
         expect(mf.getLocalizedPath("fr-FR")).toBe("fr/asdf/bar/simple4.mdx");
         expect(mf.getLocalizedPath("zh-Hans-CN")).toBe("zh-CN/asdf/bar/simple4.mdx");
     });
 
-    test("MdxFileLocalizeFile", function() {
+    test("MdxFileLocalizeFile", function () {
         expect.assertions(5);
         var base = path.dirname(module.id);
         var mf = new MdxFile({
             project: p,
             pathName: "./md/test1.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Ceci est du texte. C'est plus de texte. Joli, joli texte.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "C'est le dernier morceau de texte localisable.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "Dies ist der letzte Teil des lokalisierbaren Textes.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["fr-FR", "de-DE"]);
         expect(fs.existsSync(path.join(p.target, "fr-FR/md/test1.mdx"))).toBeTruthy();
         expect(fs.existsSync(path.join(p.target, "de-DE/md/test1.mdx"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p.target, "fr-FR/md/test1.mdx"), "utf-8");
         var expected =
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n' +
-            '\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+            "# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n" +
+            "\n" +
+            "Ceci est du texte. C'est plus de texte. Joli, joli texte.\n\n" +
+            "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n" +
+            "C'est le dernier morceau de texte localisable.\n" +
+            "\n" +
+            "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n";
         diff(content, expected);
         expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p.target, "de-DE/md/test1.mdx"), "utf-8");
         var expected =
-            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
-            '\n' +
-            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
-            '\n' +
-            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
+            "# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n" +
+            "\n" +
+            "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n" +
+            "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n" +
+            "Dies ist der letzte Teil des lokalisierbaren Textes.\n" +
+            "\n" +
+            "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
-    test("MdxFileLocalizeFileWithFrontMatter", function() {
+    test("MdxFileLocalizeFileWithFrontMatter", function () {
         expect.assertions(5);
         var base = path.dirname(module.id);
         var mf = new MdxFile({
             project: p,
             pathName: "./md/test3.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Ceci est du texte. C'est plus de texte. Joli, joli texte.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "C'est le dernier morceau de texte localisable.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "Dies ist der letzte Teil des lokalisierbaren Textes.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["fr-FR", "de-DE"]);
         expect(fs.existsSync(path.join(p.target, "fr-FR/md/test3.mdx"))).toBeTruthy();
         expect(fs.existsSync(path.join(p.target, "de-DE/md/test3.mdx"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p.target, "fr-FR/md/test3.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            'status: this front matter should remain unlocalized\n' +
-            '---\n\n' +
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n' +
-            '\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+            "---\n" +
+            "title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n" +
+            "status: this front matter should remain unlocalized\n" +
+            "---\n\n" +
+            "# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n" +
+            "\n" +
+            "Ceci est du texte. C'est plus de texte. Joli, joli texte.\n\n" +
+            "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n" +
+            "C'est le dernier morceau de texte localisable.\n" +
+            "\n" +
+            "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n";
         diff(content, expected);
         expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p.target, "de-DE/md/test3.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            'status: this front matter should remain unlocalized\n' +
-            '---\n\n' +
-            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
-            '\n' +
-            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
-            '\n' +
-            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
+            "---\n" +
+            "title: This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n" +
+            "status: this front matter should remain unlocalized\n" +
+            "---\n\n" +
+            "# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n" +
+            "\n" +
+            "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n" +
+            "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n" +
+            "Dies ist der letzte Teil des lokalisierbaren Textes.\n" +
+            "\n" +
+            "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
-    test("MdxFileLocalizeFileWithFrontMatterNotFullyTranslated", function() {
+    test("MdxFileLocalizeFileWithFrontMatterNotFullyTranslated", function () {
         expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             mdx: {
-                fullyTranslated: true
-            }
+                fullyTranslated: true,
+            },
         });
         var mdft2 = new MdxFileType(p2);
         var mf = new MdxFile({
             project: p2,
             pathName: "./notrans2.mdx",
-            type: mdft2
+            type: mdft2,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "C'est le dernier morceau de texte localisable.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "Dies ist der letzte Teil des lokalisierbaren Textes.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["fr-FR", "de-DE"]);
         expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.mdx"))).toBeTruthy();
         expect(fs.existsSync(path.join(p2.target, "de-DE/notrans2.mdx"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'frontmatter: true\n' +
+            "---\n" +
+            "frontmatter: true\n" +
             'other: "asdf"\n' +
-            '---\n\n' +
-            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            '\n' +
-            'This is some text. This is more text. Pretty, pretty text.\n' +
-            '\n' +
-            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            '\n' +
-            'This is the last bit of localizable text.\n' +
-            '\n' +
-            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+            "---\n\n" +
+            "# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n" +
+            "\n" +
+            "This is some text. This is more text. Pretty, pretty text.\n" +
+            "\n" +
+            "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n" +
+            "\n" +
+            "This is the last bit of localizable text.\n" +
+            "\n" +
+            "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n";
         diff(content, expected);
         expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans2.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'frontmatter: true\n' +
+            "---\n" +
+            "frontmatter: true\n" +
             'other: "asdf"\n' +
-            '---\n\n' +
-            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            '\n' +
-            'This is some text. This is more text. Pretty, pretty text.\n' +
-            '\n' +
-            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n' +
-            '\n' +
-            'This is the last bit of localizable text.\n' +
-            '\n' +
-            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+            "---\n\n" +
+            "# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n" +
+            "\n" +
+            "This is some text. This is more text. Pretty, pretty text.\n" +
+            "\n" +
+            "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n" +
+            "\n" +
+            "This is the last bit of localizable text.\n" +
+            "\n" +
+            "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
-    test("MdxFileLocalizeFileWithFrontMatterFullyTranslated", function() {
+    test("MdxFileLocalizeFileWithFrontMatterFullyTranslated", function () {
         expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             mdx: {
-                fullyTranslated: true
-            }
+                fullyTranslated: true,
+            },
         });
         var mdft2 = new MdxFileType(p2);
         var mf = new MdxFile({
             project: p2,
             pathName: "./notrans2.mdx",
-            type: mdft2
+            type: mdft2,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Ceci est du texte. C'est plus de texte. Joli, joli texte.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "C'est le dernier morceau de texte localisable.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "Dies ist der letzte Teil des lokalisierbaren Textes.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["fr-FR", "de-DE"]);
         expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans2.mdx"))).toBeTruthy();
         expect(fs.existsSync(path.join(p2.target, "de-DE/notrans2.mdx"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans2.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'frontmatter: true\n' +
+            "---\n" +
+            "frontmatter: true\n" +
             'other: "asdf"\n' +
-            'fullyTranslated: true\n' +
-            '---\n\n' +
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n' +
-            '\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+            "fullyTranslated: true\n" +
+            "---\n\n" +
+            "# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n" +
+            "\n" +
+            "Ceci est du texte. C'est plus de texte. Joli, joli texte.\n\n" +
+            "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n" +
+            "C'est le dernier morceau de texte localisable.\n" +
+            "\n" +
+            "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n";
         diff(content, expected);
         expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans2.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'frontmatter: true\n' +
+            "---\n" +
+            "frontmatter: true\n" +
             'other: "asdf"\n' +
-            'fullyTranslated: true\n' +
-            '---\n\n' +
-            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
-            '\n' +
-            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
-            '\n' +
-            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
+            "fullyTranslated: true\n" +
+            "---\n\n" +
+            "# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n" +
+            "\n" +
+            "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n" +
+            "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n" +
+            "Dies ist der letzte Teil des lokalisierbaren Textes.\n" +
+            "\n" +
+            "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
-    test("MdxFileLocalizeFileWithNoFrontMatterAlreadyFullyTranslated", function() {
+    test("MdxFileLocalizeFileWithNoFrontMatterAlreadyFullyTranslated", function () {
         expect.assertions(5);
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             mdx: {
-                fullyTranslated: true
-            }
+                fullyTranslated: true,
+            },
         });
         var mdft2 = new MdxFileType(p2);
         var mf = new MdxFile({
             project: p2,
             pathName: "./notrans.mdx",
-            type: mdft2
+            type: mdft2,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-           project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'Dies ist der letzte Teil des lokalisierbaren Textes.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Ceci est du texte. C'est plus de texte. Joli, joli texte.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "C'est le dernier morceau de texte localisable.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "Dies ist der letzte Teil des lokalisierbaren Textes.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["fr-FR", "de-DE"]);
         expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.mdx"))).toBeTruthy();
         expect(fs.existsSync(path.join(p2.target, "de-DE/notrans.mdx"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'fullyTranslated: true\n' +
-            '---\n\n' +
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n' +
-            '\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+            "---\n" +
+            "fullyTranslated: true\n" +
+            "---\n\n" +
+            "# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n" +
+            "\n" +
+            "Ceci est du texte. C'est plus de texte. Joli, joli texte.\n\n" +
+            "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n" +
+            "C'est le dernier morceau de texte localisable.\n" +
+            "\n" +
+            "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n";
         diff(content, expected);
         expect(content).toBe(expected);
         var content = fs.readFileSync(path.join(p2.target, "de-DE/notrans.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'fullyTranslated: true\n' +
-            '---\n\n' +
-            '# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n' +
-            '\n' +
-            'Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n' +
-            'Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n' +
-            'Dies ist der letzte Teil des lokalisierbaren Textes.\n' +
-            '\n' +
-            'Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n';
+            "---\n" +
+            "fullyTranslated: true\n" +
+            "---\n\n" +
+            "# Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n" +
+            "\n" +
+            "Dies ist ein Text. Dies ist mehr Text. Hübscher, hübscher Text.\n\n" +
+            "Dies ist ein lokalisierbarer Text. Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n\n" +
+            "Dies ist der letzte Teil des lokalisierbaren Textes.\n" +
+            "\n" +
+            "Dies ist der Titel dieses Testdokumentes, das mehrmals im Dokument selbst erscheint.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
-    test("MdxFileLocalizeNoStrings", function() {
+    test("MdxFileLocalizeNoStrings", function () {
         expect.assertions(3);
         var base = path.dirname(module.id);
         var mf = new MdxFile({
             project: p,
             pathName: "./md/nostrings.mdx",
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r308704783',
-            source: 'Get insurance quotes for free!',
-            target: 'Obtenez des devis d\'assurance gratuitement!',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r308704783',
-            source: 'Get insurance quotes for free!',
-            target: 'Kostenlosen Versicherungs-Angebote erhalten!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r308704783",
+                source: "Get insurance quotes for free!",
+                target: "Obtenez des devis d'assurance gratuitement!",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r308704783",
+                source: "Get insurance quotes for free!",
+                target: "Kostenlosen Versicherungs-Angebote erhalten!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["fr-FR", "de-DE"]);
         // should produce the files, even if there is nothing to localize in them
         expect(fs.existsSync(path.join(p.target, "fr-FR/md/nostrings.mdx"))).toBeTruthy();
         expect(fs.existsSync(path.join(p.target, "de-DE/md/nostrings.mdx"))).toBeTruthy();
     });
 
-    test("MdxFileExtractFileNewResources", function() {
+    test("MdxFileExtractFileNewResources", function () {
         expect.assertions(16);
         var base = path.dirname(module.id);
         var t = new MdxFileType(p);
         var mf = new MdxFile({
             project: p,
             pathName: "./md/mode.mdx",
-            type: t
+            type: t,
         });
         expect(mf).toBeTruthy();
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: "r950833718",
-            source: "Choose a meeting method",
-            sourceLocale: "en-US",
-            target: "Choisissez une méthode de réunion d'affaires",
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r950833718",
+                source: "Choose a meeting method",
+                sourceLocale: "en-US",
+                target: "Choisissez une méthode de réunion d'affaires",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "fr-FR");
         var expected =
-            '## Choisissez une méthode de réunion d\'affaires\n' +
-            '\n' +
+            "## Choisissez une méthode de réunion d'affaires\n" +
+            "\n" +
             '<img src="http://foo.com/photo.png" height="86px" width="86px" />\n' +
-            '\n' +
-            '\\[Ťëšţ þĥŕàšë543210]\n' +
-            '\n' +
-            '## \\[Ïñ Pëŕšõñ Mõðë6543210]\n';
+            "\n" +
+            "\\[Ťëšţ þĥŕàšë543210]\n" +
+            "\n" +
+            "## \\[Ïñ Pëŕšõñ Mõðë6543210]\n";
         diff(actual, expected);
         expect(actual).toBe(expected);
         var set = t.newres;
@@ -4786,51 +5145,53 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(resources[1].getTargetLocale()).toBe("fr-FR");
     });
 
-    test("MdxFileLocalizeTextHeaderWithNoSpace", function() {
+    test("MdxFileLocalizeTextHeaderWithNoSpace", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // MDX parser requires proper markdown syntax with spaces after #
         // Update test to use valid syntax
-        mf.parse(
-            '# Bad Header\n' +
-            '## Other Bad Header\n' +
-            '# Bad Header\n');
+        mf.parse("# Bad Header\n" + "## Other Bad Header\n" + "# Bad Header\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r868915655',
-            source: 'Bad Header',
-            target: 'Entête mal',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r836504731',
-            source: 'Other Bad Header',
-            target: 'Autre entête mal',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        expect(mf.localizeText(translations, "fr-FR")).toBe('# Entête mal\n\n' +
-            '## Autre entête mal\n\n' +
-            '# Entête mal\n');
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r868915655",
+                source: "Bad Header",
+                target: "Entête mal",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r836504731",
+                source: "Other Bad Header",
+                target: "Autre entête mal",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        expect(mf.localizeText(translations, "fr-FR")).toBe(
+            "# Entête mal\n\n" + "## Autre entête mal\n\n" + "# Entête mal\n",
+        );
     });
 
-    test("MdxFileParseMultipleMDComponents", function() {
+    test("MdxFileParseMultipleMDComponents", function () {
         expect.assertions(9);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'Integration samples include: \n' +
-            '* **[File Workflow with Webhooks](/docs/file-workflow-with-webhooks)**: Creating file task automation with webhooks.\n');
+            "Integration samples include: \n" +
+                "* **[File Workflow with Webhooks](/docs/file-workflow-with-webhooks)**: Creating file task automation with webhooks.\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(2);
@@ -4838,20 +5199,24 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("Integration samples include:");
         expect(r.getKey()).toBe("r537538527");
-        r = set.getBySource("<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.");
+        r = set.getBySource(
+            "<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.",
+        );
         expect(r).toBeTruthy();
-        expect(r.getSource()).toBe("<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.");
+        expect(r.getSource()).toBe(
+            "<c0><c1>File Workflow with Webhooks</c1></c0>: Creating file task automation with webhooks.",
+        );
         expect(r.getKey()).toBe("r663481768");
     });
 
-    test("MdxFileParseCodeSnippetsInBulletList", function() {
+    test("MdxFileParseCodeSnippetsInBulletList", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('* `action (str):` `create`, `delete`, or `update`.\n');
+        mf.parse("* `action (str):` `create`, `delete`, or `update`.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         expect(set.size()).toBe(1);
@@ -4861,19 +5226,19 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r852531755");
     });
 
-    test("MdxFileParseWithLinkReferenceWithText", function() {
+    test("MdxFileParseWithLinkReferenceWithText", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n'
+            "For developer support, please reach out to us via one of our channels:\n" +
+                "\n" +
+                "- [Ask on Twitter][twitter]: For general questions and support.\n" +
+                "\n" +
+                "[twitter]: https://twitter.com/OurPlatform\n",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -4884,21 +5249,21 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(resources[1].getSource()).toBe("<c0>Ask on Twitter</c0>: For general questions and support.");
     });
 
-    test("MdxFileParseWithLinkReferenceToExtractedURL", function() {
+    test("MdxFileParseWithLinkReferenceToExtractedURL", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '- [Ask on Facebook][facebook]: For general questions and support.\n' +
-            '\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n' +
-            '[facebook]: http://www.facebook.com/OurPlatform\n' +
-            '{/* i18n-disable localize-links */}'
+            "- [Ask on Twitter][twitter]: For general questions and support.\n" +
+                "- [Ask on Facebook][facebook]: For general questions and support.\n" +
+                "\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                "[twitter]: https://twitter.com/OurPlatform\n" +
+                "[facebook]: http://www.facebook.com/OurPlatform\n" +
+                "{/* i18n-disable localize-links */}",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -4911,19 +5276,19 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(resources[3].getSource()).toBe("http://www.facebook.com/OurPlatform");
     });
 
-    test("MdxFileParseWithLinkReferenceWithLinkTitle", function() {
+    test("MdxFileParseWithLinkReferenceWithLinkTitle", function () {
         expect.assertions(7);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'Regular service will be [available][exception].\n' +
-            '\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '[exception]: http://a.com/ "link title"\n' +
-            '{/* i18n-disable localize-links */}'
+            "Regular service will be [available][exception].\n" +
+                "\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                '[exception]: http://a.com/ "link title"\n' +
+                "{/* i18n-disable localize-links */}",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -4935,21 +5300,21 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(resources[2].getSource()).toBe("link title");
     });
 
-    test("MdxFileParseWithLinkReferenceToExtractedURLNotAfterTurnedOff", function() {
+    test("MdxFileParseWithLinkReferenceToExtractedURLNotAfterTurnedOff", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '- [Ask on Facebook][facebook]: For general questions and support.\n' +
-            '\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n' +
-            '{/* i18n-disable localize-links */}\n' +
-            '[facebook]: http://www.facebook.com/OurPlatform\n'
+            "- [Ask on Twitter][twitter]: For general questions and support.\n" +
+                "- [Ask on Facebook][facebook]: For general questions and support.\n" +
+                "\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                "[twitter]: https://twitter.com/OurPlatform\n" +
+                "{/* i18n-disable localize-links */}\n" +
+                "[facebook]: http://www.facebook.com/OurPlatform\n",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -4958,32 +5323,36 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var resources = set.getAll();
         // Should have at least the two list items and the twitter URL
         expect(resources.length).toBeGreaterThanOrEqual(3);
-        var twitterUrl = resources.find(r => r.getSource() === "https://twitter.com/OurPlatform");
+        var twitterUrl = resources.find((r) => r.getSource() === "https://twitter.com/OurPlatform");
         expect(twitterUrl).toBeTruthy();
         // Check that the list items are extracted
-        var twitterItem = resources.find(r => r.getSource() === "<c0>Ask on Twitter</c0>: For general questions and support.");
+        var twitterItem = resources.find(
+            (r) => r.getSource() === "<c0>Ask on Twitter</c0>: For general questions and support.",
+        );
         expect(twitterItem).toBeTruthy();
-        var facebookItem = resources.find(r => r.getSource() === "<c0>Ask on Facebook</c0>: For general questions and support.");
+        var facebookItem = resources.find(
+            (r) => r.getSource() === "<c0>Ask on Facebook</c0>: For general questions and support.",
+        );
         expect(facebookItem).toBeTruthy();
     });
 
-    test("MdxFileParseWithMultipleLinkReferenceWithText", function() {
+    test("MdxFileParseWithMultipleLinkReferenceWithText", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '- [Ask in email][email]: For specific questions and support.\n' +
-            '- [Ask on stack overflow][so]: For community answers and support.\n' +
-            '\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n' +
-            '[email]: mailto:support@ourplatform\n' +
-            '[so]: http://ourplatform.stackoverflow.com/'
+            "For developer support, please reach out to us via one of our channels:\n" +
+                "\n" +
+                "- [Ask on Twitter][twitter]: For general questions and support.\n" +
+                "- [Ask in email][email]: For specific questions and support.\n" +
+                "- [Ask on stack overflow][so]: For community answers and support.\n" +
+                "\n" +
+                "[twitter]: https://twitter.com/OurPlatform\n" +
+                "[email]: mailto:support@ourplatform\n" +
+                "[so]: http://ourplatform.stackoverflow.com/",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -4996,270 +5365,298 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(resources[3].getSource()).toBe("<c0>Ask on stack overflow</c0>: For community answers and support.");
     });
 
-    test("MdxFileLocalizeReferenceLinksWithLinkId", function() {
+    test("MdxFileLocalizeReferenceLinksWithLinkId", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter][twitter]: For general questions and support.\n' +
-            '\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n'
+            "For developer support, please reach out to us via one of our channels:\n" +
+                "\n" +
+                "- [Ask on Twitter][twitter]: For general questions and support.\n" +
+                "\n" +
+                "[twitter]: https://twitter.com/OurPlatform\n",
         );
         expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r293599939',
-            source: '<c0>Ask on Twitter</c0>: For general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0>: Für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r816306377",
+                source: "For developer support, please reach out to us via one of our channels:",
+                target: "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r293599939",
+                source: "<c0>Ask on Twitter</c0>: For general questions and support.",
+                target: "<c0>Auf Twitter stellen</c0>: Für allgemeine Fragen und Unterstützung.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '* [Auf Twitter stellen][twitter]: Für allgemeine Fragen und Unterstützung.\n' +
-            '\n' +
-            '[twitter]: https://twitter.com/OurPlatform\n';
+            "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n" +
+            "\n" +
+            "* [Auf Twitter stellen][twitter]: Für allgemeine Fragen und Unterstützung.\n" +
+            "\n" +
+            "[twitter]: https://twitter.com/OurPlatform\n";
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeReferenceLinksWithoutLinkId", function() {
+    test("MdxFileLocalizeReferenceLinksWithoutLinkId", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter] For general questions and support.\n' +
-            '\n' +
-            '[Ask on Twitter]: https://twitter.com/OurPlatform\n'
+            "For developer support, please reach out to us via one of our channels:\n" +
+                "\n" +
+                "- [Ask on Twitter] For general questions and support.\n" +
+                "\n" +
+                "[Ask on Twitter]: https://twitter.com/OurPlatform\n",
         );
         expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1030328207',
-            source: '<c0>Ask on Twitter</c0> For general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r816306377",
+                source: "For developer support, please reach out to us via one of our channels:",
+                target: "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1030328207",
+                source: "<c0>Ask on Twitter</c0> For general questions and support.",
+                target: "<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         // DON'T localize the label. Instead, add a title that is translated
         var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '* [Auf Twitter stellen][Ask on Twitter] für allgemeine Fragen und Unterstützung.\n' +
-            '\n' +
-            '[Ask on Twitter]: https://twitter.com/OurPlatform\n';
+            "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n" +
+            "\n" +
+            "* [Auf Twitter stellen][Ask on Twitter] für allgemeine Fragen und Unterstützung.\n" +
+            "\n" +
+            "[Ask on Twitter]: https://twitter.com/OurPlatform\n";
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeReferenceLinksWithLinkTitle", function() {
+    test("MdxFileLocalizeReferenceLinksWithLinkTitle", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '- [Ask on Twitter][twitter] For general questions and support.\n' +
-            '\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '[twitter]: https://twitter.com/OurPlatform "Our Platform"\n' +
-            '{/* i18n-disable localize-links */}\n'
+            "For developer support, please reach out to us via one of our channels:\n" +
+                "\n" +
+                "- [Ask on Twitter][twitter] For general questions and support.\n" +
+                "\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                '[twitter]: https://twitter.com/OurPlatform "Our Platform"\n' +
+                "{/* i18n-disable localize-links */}\n",
         );
         expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1030328207',
-            source: '<c0>Ask on Twitter</c0> For general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r85880207',
-            source: 'https://twitter.com/OurPlatform',
-            target: 'https://de.twitter.com/OurPlatform',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r504251007',
-            source: 'Our Platform',
-            target: 'Unsere Platformen',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r816306377",
+                source: "For developer support, please reach out to us via one of our channels:",
+                target: "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1030328207",
+                source: "<c0>Ask on Twitter</c0> For general questions and support.",
+                target: "<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r85880207",
+                source: "https://twitter.com/OurPlatform",
+                target: "https://de.twitter.com/OurPlatform",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r504251007",
+                source: "Our Platform",
+                target: "Unsere Platformen",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '* [Auf Twitter stellen][twitter] für allgemeine Fragen und Unterstützung.\n' +
-            '\n' +
-            '{/* i18n-enable localize-links */}\n\n' +
+            "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n" +
+            "\n" +
+            "* [Auf Twitter stellen][twitter] für allgemeine Fragen und Unterstützung.\n" +
+            "\n" +
+            "{/* i18n-enable localize-links */}\n\n" +
             '[twitter]: https://de.twitter.com/OurPlatform "Unsere Platformen"\n\n' +
-            '{/* i18n-disable localize-links */}\n';
+            "{/* i18n-disable localize-links */}\n";
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeDirectLinksTurnedOff", function() {
+    test("MdxFileLocalizeDirectLinksTurnedOff", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '{/* i18n-disable localize-links */}\n' +
-            '\n' +
-            '- [Ask on Twitter](https://twitter.com/OurPlatform) for general questions and support.\n'
+            "For developer support, please reach out to us via one of our channels:\n" +
+                "\n" +
+                "{/* i18n-disable localize-links */}\n" +
+                "\n" +
+                "- [Ask on Twitter](https://twitter.com/OurPlatform) for general questions and support.\n",
         );
         expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r629827996',
-            source: '<c0>Ask on Twitter</c0> for general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r85880207',
-            source: 'https://twitter.com/OurPlatform',
-            target: 'https://de.twitter.com/OurPlatform',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r816306377",
+                source: "For developer support, please reach out to us via one of our channels:",
+                target: "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r629827996",
+                source: "<c0>Ask on Twitter</c0> for general questions and support.",
+                target: "<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r85880207",
+                source: "https://twitter.com/OurPlatform",
+                target: "https://de.twitter.com/OurPlatform",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '{/* i18n-disable localize-links */}\n' +
-            '\n' +
-            '* [Auf Twitter stellen](https://twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n';
+            "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n" +
+            "\n" +
+            "{/* i18n-disable localize-links */}\n" +
+            "\n" +
+            "* [Auf Twitter stellen](https://twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n";
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeDirectLinksTurnedOn", function() {
+    test("MdxFileLocalizeDirectLinksTurnedOn", function () {
         expect.assertions(3);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
-            'For developer support, please reach out to us via one of our channels:\n' +
-            '\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '\n' +
-            '- [Ask on Twitter](https://twitter.com/OurPlatform) for general questions and support.\n' +
-            '\n' +
-            '{/* i18n-disable localize-links */}\n'
+            "For developer support, please reach out to us via one of our channels:\n" +
+                "\n" +
+                "{/* i18n-enable localize-links */}\n" +
+                "\n" +
+                "- [Ask on Twitter](https://twitter.com/OurPlatform) for general questions and support.\n" +
+                "\n" +
+                "{/* i18n-disable localize-links */}\n",
         );
         expect(mf).toBeTruthy();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r816306377',
-            source: 'For developer support, please reach out to us via one of our channels:',
-            target: 'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r629827996',
-            source: '<c0>Ask on Twitter</c0> for general questions and support.',
-            target: '<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r85880207',
-            source: 'https://twitter.com/OurPlatform',
-            target: 'https://de.twitter.com/OurPlatform',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r816306377",
+                source: "For developer support, please reach out to us via one of our channels:",
+                target: "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r629827996",
+                source: "<c0>Ask on Twitter</c0> for general questions and support.",
+                target: "<c0>Auf Twitter stellen</c0> für allgemeine Fragen und Unterstützung.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r85880207",
+                source: "https://twitter.com/OurPlatform",
+                target: "https://de.twitter.com/OurPlatform",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
-            'Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n' +
-            '\n' +
-            '{/* i18n-enable localize-links */}\n' +
-            '\n' +
-            '* [Auf Twitter stellen](https://de.twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n' +
-            '\n' +
-            '{/* i18n-disable localize-links */}\n';
+            "Wenn Sie Entwicklerunterstützung benötigen, wenden Sie sich bitte über einen unserer Kanäle an uns:\n" +
+            "\n" +
+            "{/* i18n-enable localize-links */}\n" +
+            "\n" +
+            "* [Auf Twitter stellen](https://de.twitter.com/OurPlatform) für allgemeine Fragen und Unterstützung.\n" +
+            "\n" +
+            "{/* i18n-disable localize-links */}\n";
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileParseHTMLComments", function() {
+    test("MdxFileParseHTMLComments", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a {/* comment */}test of the emergency parsing system.\n');
+        mf.parse("This is a {/* comment */}test of the emergency parsing system.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing system.");
@@ -5268,14 +5665,14 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r699762575");
     });
 
-    test("MdxFileParseHTMLCommentsWithIndent", function() {
+    test("MdxFileParseHTMLCommentsWithIndent", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing system.\n  {/* comment */}\nA second string\n');
+        mf.parse("This is a test of the emergency parsing system.\n  {/* comment */}\nA second string\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         var r = set.getBySource("This is a test of the emergency parsing system.");
@@ -5288,83 +5685,96 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r.getKey()).toBe("r772298159");
     });
 
-    test("MdxFileLocalizeHTMLCommentsWithIndent", function() {
+    test("MdxFileLocalizeHTMLCommentsWithIndent", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
-        mf.parse('This is a test of the emergency parsing system.\n  {/* comment */}\nA second string\n');
+        mf.parse("This is a test of the emergency parsing system.\n  {/* comment */}\nA second string\n");
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r699762575',
-            source: 'This is a test of the emergency parsing system.',
-            target: 'This is a test of the emergency parsing system... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r772298159',
-            source: 'A second string',
-            target: 'A second string... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r699762575",
+                source: "This is a test of the emergency parsing system.",
+                target: "This is a test of the emergency parsing system... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r772298159",
+                source: "A second string",
+                target: "A second string... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
-            'This is a test of the emergency parsing system... in GERMAN!\n\n{/* comment */}\n\nA second string... in GERMAN!\n';
+            "This is a test of the emergency parsing system... in GERMAN!\n\n{/* comment */}\n\nA second string... in GERMAN!\n";
         diff(actual, expected);
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeTable", function() {
+    test("MdxFileLocalizeTable", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| foo               | bar             |\n");
+                "|-------------------|-----------------|\n" +
+                "| Query description | Returns column  |\n" +
+                "| foo               | bar             |\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r744039504',
-            source: 'Query description',
-            target: 'Query description... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r595024848',
-            source: 'Returns column',
-            target: 'Returns column... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r941132140',
-            source: 'foo',
-            target: 'foo... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r755240053',
-            source: 'bar',
-            target: 'bar... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r744039504",
+                source: "Query description",
+                target: "Query description... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r595024848",
+                source: "Returns column",
+                target: "Returns column... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r941132140",
+                source: "foo",
+                target: "foo... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r755240053",
+                source: "bar",
+                target: "bar... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
             "|                                 |                              |\n" +
@@ -5375,52 +5785,61 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeTableWithInlineCode", function() {
+    test("MdxFileLocalizeTableWithInlineCode", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| `code`            | `more code`     |\n" +
-            "| foo               | bar             |\n");
+                "|-------------------|-----------------|\n" +
+                "| Query description | Returns column  |\n" +
+                "| `code`            | `more code`     |\n" +
+                "| foo               | bar             |\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r744039504',
-            source: 'Query description',
-            target: 'Query description... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r595024848',
-            source: 'Returns column',
-            target: 'Returns column... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r941132140',
-            source: 'foo',
-            target: 'foo... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r755240053',
-            source: 'bar',
-            target: 'bar... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r744039504",
+                source: "Query description",
+                target: "Query description... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r595024848",
+                source: "Returns column",
+                target: "Returns column... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r941132140",
+                source: "foo",
+                target: "foo... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r755240053",
+                source: "bar",
+                target: "bar... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
             "|                                 |                              |\n" +
@@ -5432,55 +5851,64 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeTableWithInlineCodeAndTextAfter", function() {
+    test("MdxFileLocalizeTableWithInlineCodeAndTextAfter", function () {
         expect.assertions(2);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         mf.parse(
             "|                   |                 |\n" +
-            "|-------------------|-----------------|\n" +
-            "| Query description | Returns column  |\n" +
-            "| `code`            | `more code`     |\n" +
-            "\n" +
-            "## Header Title\n" +
-            "\n" +
-            "Body text.\n");
+                "|-------------------|-----------------|\n" +
+                "| Query description | Returns column  |\n" +
+                "| `code`            | `more code`     |\n" +
+                "\n" +
+                "## Header Title\n" +
+                "\n" +
+                "Body text.\n",
+        );
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r744039504',
-            source: 'Query description',
-            target: 'Query description... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r595024848',
-            source: 'Returns column',
-            target: 'Returns column... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r1037333769',
-            source: 'Header Title',
-            target: 'Header Title... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "foo",
-            key: 'r521829558',
-            source: 'Body text.',
-            target: 'Body text... in GERMAN!',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r744039504",
+                source: "Query description",
+                target: "Query description... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r595024848",
+                source: "Returns column",
+                target: "Returns column... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r1037333769",
+                source: "Header Title",
+                target: "Header Title... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "foo",
+                key: "r521829558",
+                source: "Body text.",
+                target: "Body text... in GERMAN!",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         var actual = mf.localizeText(translations, "de-DE");
         var expected =
             "|                                 |                              |\n" +
@@ -5495,86 +5923,94 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(actual).toBe(expected);
     });
 
-    test("MdxFileLocalizeFileFullyTranslatedFlag", function() {
+    test("MdxFileLocalizeFileFullyTranslatedFlag", function () {
         expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             mdx: {
-                fullyTranslated: true
-            }
+                fullyTranslated: true,
+            },
         });
         var mdft2 = new MdxFileType(p2);
         var mf = new MdxFile({
             project: p2,
             pathName: "./notrans.mdx",
-            type: mdft2
+            type: mdft2,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r112215756',
-            source: 'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r260813817',
-            source: 'This is the last bit of localizable text.',
-            target: 'C\'est le dernier morceau de texte localisable.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Ceci est du texte. C'est plus de texte. Joli, joli texte.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r112215756",
+                source: "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r260813817",
+                source: "This is the last bit of localizable text.",
+                target: "C'est le dernier morceau de texte localisable.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["fr-FR"]);
         expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.mdx"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.mdx"), "utf-8");
         var expected =
-            '---\n' +
-            'fullyTranslated: true\n' +
-            '---\n\n' +
-            '# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n' +
-            '\n' +
-            'Ceci est du texte. C\'est plus de texte. Joli, joli texte.\n\n' +
-            'Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n' +
-            'C\'est le dernier morceau de texte localisable.\n\n' +
-            'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n';
+            "---\n" +
+            "fullyTranslated: true\n" +
+            "---\n\n" +
+            "# Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n" +
+            "\n" +
+            "Ceci est du texte. C'est plus de texte. Joli, joli texte.\n\n" +
+            "Ceci est de la texte localisable. Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n\n" +
+            "C'est le dernier morceau de texte localisable.\n\n" +
+            "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
-    test("MdxFileLocalizeFileFullyTranslatedFlagNoTranslations", function() {
+    test("MdxFileLocalizeFileFullyTranslatedFlagNoTranslations", function () {
         expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             mdx: {
-                fullyTranslated: true
-            }
+                fullyTranslated: true,
+            },
         });
         var mdft2 = new MdxFileType(p2);
         var mf = new MdxFile({
             project: p2,
             pathName: "./notrans.mdx",
-            type: mdft2
+            type: mdft2,
         });
         expect(mf).toBeTruthy();
         // should read the file
@@ -5585,111 +6021,113 @@ Dictionary<string, object> metadata = await client.MetadataManager
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.mdx"), "utf-8");
         // should not be translated because we didn't have translations for any strings
         var expected =
-            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
-            'This is some text. This is more text. Pretty, pretty text.\n\n' +
-            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
-            'This is the last bit of localizable text.\n\n' +
-            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+            "# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n" +
+            "This is some text. This is more text. Pretty, pretty text.\n\n" +
+            "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n" +
+            "This is the last bit of localizable text.\n\n" +
+            "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
-    test("MdxFileLocalizeFileFullyTranslatedFlagNotFullyTranslated", function() {
+    test("MdxFileLocalizeFileFullyTranslatedFlagNotFullyTranslated", function () {
         expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             mdx: {
-                fullyTranslated: true
-            }
+                fullyTranslated: true,
+            },
         });
         var mdft2 = new MdxFileType(p2);
         var mf = new MdxFile({
             project: p2,
             pathName: "./notrans.mdx",
-            type: mdft2
+            type: mdft2,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r548615397',
-            source: 'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.',
-            target: 'Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r777006502',
-            source: 'This is some text. This is more text. Pretty, pretty text.',
-            target: 'Ceci est du texte. C\'est plus de texte. Joli, joli texte.',
-            targetLocale: "fr-FR",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r548615397",
+                source: "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.",
+                target: "Ceci est le titre de ce document de teste qui apparaît plusiers fois dans le document lui-même.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r777006502",
+                source: "This is some text. This is more text. Pretty, pretty text.",
+                target: "Ceci est du texte. C'est plus de texte. Joli, joli texte.",
+                targetLocale: "fr-FR",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["fr-FR"]);
         expect(fs.existsSync(path.join(p2.target, "fr-FR/notrans.mdx"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "fr-FR/notrans.mdx"), "utf-8");
         // should not be translated because we didn't have translations for all strings
         var expected =
-            '# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
-            'This is some text. This is more text. Pretty, pretty text.\n\n' +
-            'This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n' +
-            'This is the last bit of localizable text.\n\n' +
-            'This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n';
+            "# This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n" +
+            "This is some text. This is more text. Pretty, pretty text.\n\n" +
+            "This is localizable text. This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n\n" +
+            "This is the last bit of localizable text.\n\n" +
+            "This is the TITLE of this Test Document Which Appears Several Times Within the Document Itself.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
-    test("MdxFileLocalizeCodeSnippetsInBulletList", function() {
+    test("MdxFileLocalizeCodeSnippetsInBulletList", function () {
         expect.assertions(3);
         // this subproject has the "fullyTranslated" flag set to true
         var p2 = ProjectFactory("./test/testfiles/subproject", {
             mdx: {
-                fullyTranslated: true
-            }
+                fullyTranslated: true,
+            },
         });
         var mdft2 = new MdxFileType(p2);
         var mf = new MdxFile({
             project: p2,
             pathName: "./codesnippets.mdx",
-            type: mdft2
+            type: mdft2,
         });
         expect(mf).toBeTruthy();
         // should read the file
         mf.extract();
         var translations = new TranslationSet();
-        translations.add(new ResourceString({
-            project: "loctest2",
-            key: 'r852531755',
-            source: '<c0/> <c1/>, <c2/>, or <c3/>.',
-            target: '<c0/> <c1/>, <c2/>, oder <c3/>.',
-            targetLocale: "de-DE",
-            datatype: "mdx"
-        }));
+        translations.add(
+            new ResourceString({
+                project: "loctest2",
+                key: "r852531755",
+                source: "<c0/> <c1/>, <c2/>, or <c3/>.",
+                target: "<c0/> <c1/>, <c2/>, oder <c3/>.",
+                targetLocale: "de-DE",
+                datatype: "mdx",
+            }),
+        );
         mf.localize(translations, ["de-DE"]);
         expect(fs.existsSync(path.join(p2.target, "de-DE/codesnippets.mdx"))).toBeTruthy();
         var content = fs.readFileSync(path.join(p2.target, "de-DE/codesnippets.mdx"), "utf-8");
-        var expected =
-            '---\n' +
-            'fullyTranslated: true\n' +
-            '---\n\n' +
-            '* `a:` `b`, `c`, oder `d`.\n';
+        var expected = "---\n" + "fullyTranslated: true\n" + "---\n\n" + "* `a:` `b`, `c`, oder `d`.\n";
         diff(content, expected);
         expect(content).toBe(expected);
     });
 
     // MDX-specific syntax tests
-    test("MdxFileParseWithImportStatement", function() {
+    test("MdxFileParseWithImportStatement", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // Import statements should be ignored (not extracted as translatable strings)
-        mf.parse('import {Chart} from \'./snowfall.js\';\n\n# Last year\'s snowfall\n\nThis is translatable text.\n');
+        mf.parse("import {Chart} from './snowfall.js';\n\n# Last year's snowfall\n\nThis is translatable text.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should only extract the translatable markdown text, not the import
@@ -5702,15 +6140,15 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!importRes).toBeTruthy();
     });
 
-    test("MdxFileParseWithExportStatement", function() {
+    test("MdxFileParseWithExportStatement", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // Export statements should be ignored (not extracted as translatable strings)
-        mf.parse('export const year = 2023;\n\n# Last year\'s snowfall\n\nIn {year}, the snowfall was above average.\n');
+        mf.parse("export const year = 2023;\n\n# Last year's snowfall\n\nIn {year}, the snowfall was above average.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should extract the translatable markdown text
@@ -5723,15 +6161,17 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!exportRes).toBeTruthy();
     });
 
-    test("MdxFileParseWithJSXComponentSelfClosing", function() {
+    test("MdxFileParseWithJSXComponentSelfClosing", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // JSX self-closing component should be preserved but not extracted
-        mf.parse('# Last year\'s snowfall\n\nIn 2023, the snowfall was above average.\n\n<Chart color="#fcb32c" year={2023} />\n');
+        mf.parse(
+            '# Last year\'s snowfall\n\nIn 2023, the snowfall was above average.\n\n<Chart color="#fcb32c" year={2023} />\n',
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should extract the translatable markdown text
@@ -5745,11 +6185,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(2);
     });
 
-    test("MdxFileParseWithJSXComponentWithChildren", function() {
+    test("MdxFileParseWithJSXComponentWithChildren", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // JSX component with children containing translatable text
@@ -5768,11 +6208,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(2);
     });
 
-    test("MdxFileParseWithJSXComponentProps", function() {
+    test("MdxFileParseWithJSXComponentProps", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // JSX component with string props should extract prop values
@@ -5789,16 +6229,18 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
     });
 
-    test("MdxFileParseWithJSXComponentNonLocalizableProps", function() {
+    test("MdxFileParseWithJSXComponentNonLocalizableProps", function () {
         expect.assertions(7);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // JSX component with both localizable and non-localizable props
         // Only title, placeholder, and label should be extracted
-        mf.parse('<Input type="text" name="username" placeholder="Enter username" id="user-input" label="Username" />\n');
+        mf.parse(
+            '<Input type="text" name="username" placeholder="Enter username" id="user-input" label="Username" />\n',
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should extract localizable props: placeholder and label
@@ -5815,15 +6257,17 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!nonLocalizable).toBeTruthy();
     });
 
-    test("MdxFileParseWithJavaScriptExpression", function() {
+    test("MdxFileParseWithJavaScriptExpression", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // JavaScript expressions in markdown should be converted to component placeholders like <c0/>
-        mf.parse('# Last year\'s snowfall\n\nIn {year}, the snowfall was above average.\n\nIt was followed by a warm spring.\n');
+        mf.parse(
+            "# Last year's snowfall\n\nIn {year}, the snowfall was above average.\n\nIt was followed by a warm spring.\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should extract the text with the expression converted to a component placeholder
@@ -5836,15 +6280,17 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
     });
 
-    test("MdxFileParseWithMultipleJSXComponents", function() {
+    test("MdxFileParseWithMultipleJSXComponents", function () {
         expect.assertions(7);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // Multiple JSX components mixed with markdown
-        mf.parse('# Article Title\n\nThis is the introduction.\n\n<Chart data={chartData} />\n\nThis is the conclusion.\n\n<Button>Click me</Button>\n');
+        mf.parse(
+            "# Article Title\n\nThis is the introduction.\n\n<Chart data={chartData} />\n\nThis is the conclusion.\n\n<Button>Click me</Button>\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should extract all translatable markdown text
@@ -5859,15 +6305,17 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(4);
     });
 
-    test("MdxFileParseWithNestedJSXComponents", function() {
+    test("MdxFileParseWithNestedJSXComponents", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // Nested JSX components
-        mf.parse('<Card>\n<CardHeader>Card Title</CardHeader>\n<CardBody>\nThis is the card content.\n</CardBody>\n</Card>\n');
+        mf.parse(
+            "<Card>\n<CardHeader>Card Title</CardHeader>\n<CardBody>\nThis is the card content.\n</CardBody>\n</Card>\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should extract text from nested components
@@ -5876,20 +6324,20 @@ Dictionary<string, object> metadata = await client.MetadataManager
         r = set.getBySource("This is the card content.");
         expect(r).toBeTruthy();
         // Should not extract the component tags themselves
-        var jsxRes = set.getBySource('<Card>');
+        var jsxRes = set.getBySource("<Card>");
         expect(!jsxRes).toBeTruthy();
         expect(set.size()).toBe(2);
     });
 
-    test("MdxFileParseWithJSXAndMarkdownMixed", function() {
+    test("MdxFileParseWithJSXAndMarkdownMixed", function () {
         expect.assertions(5);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // JSX components mixed with markdown formatting
-        mf.parse('# Heading\n\nThis paragraph has *bold text* and a <Button>component</Button>.\n');
+        mf.parse("# Heading\n\nThis paragraph has *bold text* and a <Button>component</Button>.\n");
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should extract the heading
@@ -5902,11 +6350,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBe(2);
     });
 
-    test("MdxFileParseWithJSXExpressionProps", function() {
+    test("MdxFileParseWithJSXExpressionProps", function () {
         expect.assertions(4);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // JSX with expression props (not string literals) should not extract the expression
@@ -5921,11 +6369,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!exprRes).toBeTruthy();
     });
 
-    test("MdxFileParseWithJSXObjectExpressionProps", function() {
+    test("MdxFileParseWithJSXObjectExpressionProps", function () {
         expect.assertions(4);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // JSX with object expression props (no quotes) should not extract the expression
@@ -5940,15 +6388,17 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!exprRes).toBeTruthy();
     });
 
-    test("MdxFileParseWithImportAndExportTogether", function() {
+    test("MdxFileParseWithImportAndExportTogether", function () {
         expect.assertions(6);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         // Both import and export statements should be ignored
-        mf.parse('import {Chart} from \'./snowfall.js\';\nexport const year = 2023;\n\n# Last year\'s snowfall\n\nIn {year}, the snowfall was above average.\n');
+        mf.parse(
+            "import {Chart} from './snowfall.js';\nexport const year = 2023;\n\n# Last year's snowfall\n\nIn {year}, the snowfall was above average.\n",
+        );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
         // Should extract translatable markdown text
@@ -5964,24 +6414,24 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!exportRes).toBeTruthy();
     });
 
-    test("MdxFileParseWithFrontmatterAndImport", function() {
+    test("MdxFileParseWithFrontmatterAndImport", function () {
         expect.assertions(8);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "foo/bar/x/foo.mdx"
+            pathName: "foo/bar/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         // Frontmatter with import statement and JSX components
         mf.parse(
-            '---\n' +
-            'Title: Article Title\n' +
-            'Description: This is the article description\n' +
-            '---\n\n' +
-            'import {Chart} from \'./chart.js\';\n\n' +
-            '# Introduction\n\n' +
-            'This is the introduction text.\n\n' +
-            '<Chart data={chartData} />\n'
+            "---\n" +
+                "Title: Article Title\n" +
+                "Description: This is the article description\n" +
+                "---\n\n" +
+                "import {Chart} from './chart.js';\n\n" +
+                "# Introduction\n\n" +
+                "This is the introduction text.\n\n" +
+                "<Chart data={chartData} />\n",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -6001,28 +6451,28 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(set.size()).toBeGreaterThan(3);
     });
 
-    test("MdxFileParseWithFrontmatterAndJSXComponents", function() {
+    test("MdxFileParseWithFrontmatterAndJSXComponents", function () {
         expect.assertions(9);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "foo/bar/x/foo.mdx"
+            pathName: "foo/bar/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         // Frontmatter with JSX components and JavaScript expressions
         mf.parse(
-            '---\n' +
-            'Title: Last Year\'s Weather\n' +
-            'Description: Weather data from last year\n' +
-            '---\n\n' +
-            'import {Chart} from \'./chart.js\';\n' +
-            'export const year = 2023;\n\n' +
-            '# Last year\'s snowfall\n\n' +
-            'In {year}, the snowfall was above average.\n\n' +
-            '<Chart year={year} title="Snowfall Chart" />\n\n' +
-            '<Alert type="warning">\n' +
-            'This is a warning message.\n' +
-            '</Alert>\n'
+            "---\n" +
+                "Title: Last Year's Weather\n" +
+                "Description: Weather data from last year\n" +
+                "---\n\n" +
+                "import {Chart} from './chart.js';\n" +
+                "export const year = 2023;\n\n" +
+                "# Last year's snowfall\n\n" +
+                "In {year}, the snowfall was above average.\n\n" +
+                '<Chart year={year} title="Snowfall Chart" />\n\n' +
+                '<Alert type="warning">\n' +
+                "This is a warning message.\n" +
+                "</Alert>\n",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -6048,25 +6498,25 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!importRes).toBeTruthy();
     });
 
-    test("MdxFileParseWithFrontmatterExportAndJSX", function() {
+    test("MdxFileParseWithFrontmatterExportAndJSX", function () {
         expect.assertions(7);
         var mf = new MdxFile({
             project: p3,
             type: mdft3,
-            pathName: "foo/bar/x/foo.mdx"
+            pathName: "foo/bar/x/foo.mdx",
         });
         expect(mf).toBeTruthy();
         // Frontmatter with export and JSX components
         mf.parse(
-            '---\n' +
-            'Title: Component Documentation\n' +
-            '---\n\n' +
-            'export const components = { Button, Alert };\n\n' +
-            '# Using Components\n\n' +
-            'Here is how to use the <Button>Button</Button> component.\n\n' +
-            '<Alert type="info">\n' +
-            'Component usage example\n' +
-            '</Alert>\n'
+            "---\n" +
+                "Title: Component Documentation\n" +
+                "---\n\n" +
+                "export const components = { Button, Alert };\n\n" +
+                "# Using Components\n\n" +
+                "Here is how to use the <Button>Button</Button> component.\n\n" +
+                '<Alert type="info">\n' +
+                "Component usage example\n" +
+                "</Alert>\n",
         );
         var set = mf.getTranslationSet();
         expect(set).toBeTruthy();
@@ -6086,11 +6536,11 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(!exportRes).toBeTruthy();
     });
 
-    test("MdxFileParseWithTable", function() {
+    test("MdxFileParseWithTable", function () {
         expect.assertions(21);
         var mf = new MdxFile({
             project: p,
-            type: mdft
+            type: mdft,
         });
         expect(mf).toBeTruthy();
         var source =
@@ -6141,5 +6591,63 @@ Dictionary<string, object> metadata = await client.MetadataManager
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe("List of groups in JSON format");
         expect(r.getKey()).toBe("r903819442");
+    });
+
+    it("should segment lists with inline code elements consistently between extraction and localization", () => {
+        // test prep:
+        // suppress writing to disk during this test
+        // (called by `MdFile#localize`)
+        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => {});
+
+        // setup:
+        // parse test content (use fake file type, path and project as they don't matter for this test)
+        const file = new MdxFile({
+            project: p,
+            type: mdft,
+            pathName: "./md/not-a-real-file.mdx",
+        });
+
+        const content =
+            "1. List item 1\n" +
+            "2. List item 2 line 1.\n" +
+            "   List item 2 line 2 sentence 1 <code>POST /api/endpoint some-variable</code> line 2 sentence 1 continued; line 2 sentence 2 <code>another_variable</code> line 2 sentence 2 continued.";
+
+        file.parse(content);
+
+        // get all extracted strings
+        const extracted = file.getTranslationSet().getAll();
+
+        // The two <code> elements become <c0/> and <c1/> placeholders — the whole
+        // sentence is one translation unit.
+        expect(extracted).toContainEqual(
+            expect.objectContaining({
+                source:
+                    "List item 2 line 1.\n" +
+                    "List item 2 line 2 sentence 1 <c0/> line 2 sentence 1 continued; line 2 sentence 2 <c1/> line 2 sentence 2 continued.",
+            }),
+        );
+
+        // set a spy on `TranslationSet#get` to track which translation strings are being requested
+        const locale = "xx-YY";
+        const translationSet = new TranslationSet();
+        const getTranslationSpy = jest.spyOn(translationSet, "get");
+
+        // test:
+        // trigger localization
+        file.localize(translationSet, [locale]);
+
+        // assert:
+        // confirm that for each extracted string,
+        // the `MdxFile#localize` call requested translation for that exact same string
+        for (const resource of extracted) {
+            // `MdxFile#_localizeString` internally requests applicable translation by hash key
+            // (generated by `Resource#hashKeyForTranslation`) - so we do the same here
+            const hashKey = resource.hashKeyForTranslation(locale);
+            expect(getTranslationSpy).toHaveBeenCalledWith(hashKey);
+        }
+
+        // cleanup:
+        // unmock writeFileSync
+        writeFileSyncSpy.mockRestore();
     });
 });
