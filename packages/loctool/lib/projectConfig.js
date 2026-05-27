@@ -22,7 +22,17 @@ var path = require("path");
 /** @type {string} JSON Schema URI written by loctool init and required when $schema is present */
 var LOCTOOL_SCHEMA = "https://github.com/iLib-js/ilib-mono/packages/loctool/loctool-project-v1.schema.json";
 
-var DEFAULT_CONFIG_FILE = "project.json";
+/** @type {string} legacy config file name still recognized during the tree walk */
+var LEGACY_CONFIG_FILE = "project.json";
+
+/** @type {string} default config file name written by loctool init */
+var INIT_DEFAULT_CONFIG_FILE = "loctool-config.json";
+
+/** @type {string[]} config file base names searched during the tree walk when --configFileBaseName is not set */
+var DEFAULT_CONFIG_FILES = [INIT_DEFAULT_CONFIG_FILE, LEGACY_CONFIG_FILE];
+
+/** @deprecated use INIT_DEFAULT_CONFIG_FILE or LEGACY_CONFIG_FILE */
+var DEFAULT_CONFIG_FILE = LEGACY_CONFIG_FILE;
 
 /** @type {string[]} loctool projectType values */
 var KNOWN_PROJECT_TYPES = ["android", "iosobjc", "swift", "web", "custom"];
@@ -57,13 +67,41 @@ function isNonEmptyString(value) {
 }
 
 /**
- * Return the base name of the project config file to search for during the tree walk.
+ * Return true when the caller set an explicit config file base name.
+ *
+ * @private
+ * @param {Object} settings
+ * @returns {boolean}
+ */
+function hasExplicitConfigFileBaseName(settings) {
+    return !!(settings && settings.configFileBaseName);
+}
+
+/**
+ * Return the base names of project config files to search for during the tree walk.
+ * When --configFileBaseName is not set, both loctool-config.json and project.json
+ * are tried (in that order).
+ *
+ * @param {Object} settings an object containing the current settings
+ * @returns {String[]} config file base names (not paths)
+ */
+function getConfigFileBaseNames(settings) {
+    if (hasExplicitConfigFileBaseName(settings)) {
+        return [settings.configFileBaseName];
+    }
+    return DEFAULT_CONFIG_FILES.slice();
+}
+
+/**
+ * Return the base name of the project config file for loctool init output and
+ * generated excludes. Defaults to loctool-config.json unless --configFileBaseName
+ * is set.
  *
  * @param {Object} settings an object containing the current settings
  * @returns {String} the config file base name (not a path)
  */
 function getConfigFileBaseName(settings) {
-    return (settings && settings.configFileBaseName) || DEFAULT_CONFIG_FILE;
+    return (settings && settings.configFileBaseName) || INIT_DEFAULT_CONFIG_FILE;
 }
 
 /**
@@ -157,9 +195,13 @@ function validateLoctoolConfig(props) {
 
 module.exports = {
     LOCTOOL_SCHEMA: LOCTOOL_SCHEMA,
+    LEGACY_CONFIG_FILE: LEGACY_CONFIG_FILE,
+    INIT_DEFAULT_CONFIG_FILE: INIT_DEFAULT_CONFIG_FILE,
+    DEFAULT_CONFIG_FILES: DEFAULT_CONFIG_FILES,
     DEFAULT_CONFIG_FILE: DEFAULT_CONFIG_FILE,
     KNOWN_PROJECT_TYPES: KNOWN_PROJECT_TYPES,
     ALLOWED_PROPERTIES: ALLOWED_PROPERTIES,
+    getConfigFileBaseNames: getConfigFileBaseNames,
     getConfigFileBaseName: getConfigFileBaseName,
     getInitOutputPath: getInitOutputPath,
     validateLoctoolConfig: validateLoctoolConfig

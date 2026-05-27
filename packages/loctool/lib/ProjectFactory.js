@@ -54,56 +54,54 @@ var projectCache = {};
  * of a project.
  */
 var ProjectFactory = function ProjectFactory(dir, settings) {
-    var configFileBaseName = ProjectFactory.getConfigFileBaseName(settings);
-    var pathName = path.join(dir, configFileBaseName);
-    logger.debug("checking for the existence of " + pathName);
-    if (fs.existsSync(pathName)) {
-        var data = fs.readFileSync(pathName, 'utf8');
-        if (data.length > 0) {
-            var projectProps;
-            try {
-                projectProps = JSON.parse(data);
-            } catch (e) {
-                logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not valid JSON; ignoring.");
-                return undefined;
-            }
-
-            var validation = ProjectFactory.validateLoctoolConfig(projectProps);
-            if (!validation.valid) {
-                logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not a valid loctool project config (" + validation.reason + "); ignoring.");
-                return undefined;
-            }
-
-            if (validation.unknownProperties && validation.unknownProperties.length > 0) {
-                validation.unknownProperties.forEach(function(prop) {
-                    logger.warn("Unknown property \"" + prop + "\" in " + pathName);
-                });
-            }
-
-            projectProps.settings = _mergeSettings(projectProps.settings, settings);
-            settings = settings || {locales:[""]};
-            var project, projectType = projectTypes[projectProps.projectType];
-            if (!projectProps.projectType || !projectType) {
-                project = new CustomProject(projectProps, dir, settings);
-            } else {
-                project = new projectType(projectProps, dir, settings);
-            }
-            projectCache[project.getProjectId()] = project;
-            return project;
+    var configFileBaseNames = ProjectFactory.getConfigFileBaseNames(settings);
+    for (var i = 0; i < configFileBaseNames.length; i++) {
+        var configFileBaseName = configFileBaseNames[i];
+        var pathName = path.join(dir, configFileBaseName);
+        logger.debug("checking for the existence of " + pathName);
+        if (!fs.existsSync(pathName)) {
+            logger.debug("not there");
+            continue;
         }
-    } else {
-        logger.debug("not there");
+
+        var data = fs.readFileSync(pathName, 'utf8');
+        if (data.length === 0) {
+            continue;
+        }
+
+        var projectProps;
+        try {
+            projectProps = JSON.parse(data);
+        } catch (e) {
+            logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not valid JSON; ignoring.");
+            continue;
+        }
+
+        var validation = ProjectFactory.validateLoctoolConfig(projectProps);
+        if (!validation.valid) {
+            logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not a valid loctool project config (" + validation.reason + "); ignoring.");
+            continue;
+        }
+
+        if (validation.unknownProperties && validation.unknownProperties.length > 0) {
+            validation.unknownProperties.forEach(function(prop) {
+                logger.warn("Unknown property \"" + prop + "\" in " + pathName);
+            });
+        }
+
+        projectProps.settings = _mergeSettings(projectProps.settings, settings);
+        settings = settings || {locales:[""]};
+        var project, projectType = projectTypes[projectProps.projectType];
+        if (!projectProps.projectType || !projectType) {
+            project = new CustomProject(projectProps, dir, settings);
+        } else {
+            project = new projectType(projectProps, dir, settings);
+        }
+        projectCache[project.getProjectId()] = project;
+        return project;
     }
     return undefined;
 };
-
-ProjectFactory.defaultConfigFile = projectConfig.DEFAULT_CONFIG_FILE;
-ProjectFactory.LOCTOOL_SCHEMA = projectConfig.LOCTOOL_SCHEMA;
-ProjectFactory.KNOWN_PROJECT_TYPES = projectConfig.KNOWN_PROJECT_TYPES;
-ProjectFactory.ALLOWED_PROPERTIES = projectConfig.ALLOWED_PROPERTIES;
-ProjectFactory.validateLoctoolConfig = projectConfig.validateLoctoolConfig;
-ProjectFactory.getConfigFileBaseName = projectConfig.getConfigFileBaseName;
-ProjectFactory.getInitOutputPath = projectConfig.getInitOutputPath;
 
 /**
  * Return the project with the given name, or undefined if

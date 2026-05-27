@@ -152,9 +152,11 @@ describe("projectfactory", function() {
     });
 
     test("ProjectFactoryDefaultConfigFileBaseName", function() {
-        expect.assertions(2);
-        expect(ProjectFactory.getConfigFileBaseName({})).toBe("project.json");
-        expect(ProjectFactory.getConfigFileBaseName(undefined)).toBe("project.json");
+        expect.assertions(4);
+        expect(ProjectFactory.getConfigFileBaseName({})).toBe("loctool-config.json");
+        expect(ProjectFactory.getConfigFileBaseName(undefined)).toBe("loctool-config.json");
+        expect(ProjectFactory.getConfigFileBaseNames({})).toEqual(["loctool-config.json", "project.json"]);
+        expect(ProjectFactory.getConfigFileBaseNames({configFileBaseName: "loctool.json"})).toEqual(["loctool.json"]);
     });
 
     test("ProjectFactoryDefaultConfigFileBaseNameLoadsProjectJson", function() {
@@ -163,6 +165,27 @@ describe("projectfactory", function() {
         expect(project).not.toBeUndefined();
         // make sure it loaded the default project.json file instead of the loctool.json file
         expect(project.getProjectId()).toBe('loctest');
+    });
+
+    test("ProjectFactoryDefaultConfigFileBaseNameLoadsLoctoolConfigJson", function() {
+        expect.assertions(2);
+        var project = ProjectFactory('./test/testfiles/loctool-config-only', {});
+        expect(project).not.toBeUndefined();
+        expect(project.getProjectId()).toBe('loctest-loctool-config-only');
+    });
+
+    test("ProjectFactoryPrefersLoctoolConfigJsonOverProjectJson", function() {
+        expect.assertions(2);
+        var project = ProjectFactory('./test/testfiles/dual-config', {});
+        expect(project).not.toBeUndefined();
+        expect(project.getProjectId()).toBe('loctest-loctool-config');
+    });
+
+    test("ProjectFactoryIgnoresInvalidProjectJsonWhenLoctoolConfigIsValid", function() {
+        expect.assertions(2);
+        var project = ProjectFactory('./test/testfiles/nx-and-loctool', {});
+        expect(project).not.toBeUndefined();
+        expect(project.getProjectId()).toBe('loctest-nx-and-loctool');
     });
 
     test("ProjectFactoryCustomConfigFileBaseName", function() {
@@ -398,7 +421,18 @@ describe("ProjectFactory config file validation", function() {
         }, {});
         var config = project.getConfig({configFileBaseName: "loctool.json"});
         expect(config.excludes).toContain("loctool.json");
-        expect(config.excludes).not.toContain("project.json");
+        expect(config.excludes).not.toContain("loctool-config.json");
+    });
+
+    test("init getConfig excludes uses default loctool-config.json", function() {
+        var project = ProjectFactory.newProject({
+            name: "Init Test",
+            id: "init-test",
+            projectType: "web",
+            rootDir: "."
+        }, {});
+        var config = project.getConfig({});
+        expect(config.excludes).toContain("loctool-config.json");
     });
 
     test("init output path uses configFileBaseName and rootDir from settings", function() {
@@ -410,7 +444,7 @@ describe("ProjectFactory config file validation", function() {
             rootDir: ".",
             configFileBaseName: "project.json"
         })).toBe("project.json");
-        expect(ProjectFactory.getInitOutputPath({})).toBe("project.json");
+        expect(ProjectFactory.getInitOutputPath({})).toBe("loctool-config.json");
     });
 });
 

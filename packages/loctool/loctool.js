@@ -28,6 +28,7 @@ var Queue = require("js-stl").Queue;
 var mm = require("micromatch");
 
 var ProjectFactory = require("./lib/ProjectFactory.js");
+var projectConfig = require("./lib/projectConfig.js");
 var GenerateModeProcess = require("./lib/GenerateModeProcess.js");
 var XliffFactory = require("./lib/XliffFactory.js");
 var XliffMerge = require("./lib/XliffMerge.js");
@@ -55,7 +56,7 @@ var commandOptionHelp = {
         "root-dir-name (optional)\n" +
         "  the directory where the config file should be written. Default is '.'\n" +
         "--configFileBaseName name\n" +
-        "  base name of the config file to write (default: project.json)\n",
+        "  base name of the config file to write (default: loctool-config.json)\n",
     localize:
         "localize [root-dir-name]\n" +
         "  Extract strings and generate localized resource files. This is the default command.\n\n" + 
@@ -232,7 +233,9 @@ function usage() {
         "  Specify the default name of the project if not specified otherwise.\n" +
         "--configFileBaseName\n" +
         "  Specify the base name of the project config file to search for in any directory\n" +
-        "  during the tree walk. This is a file name only, not a path. (Default is 'project.json')\n" +
+        "  during the tree walk. This is a file name only, not a path.\n" +
+        "  When not set, loctool searches for loctool-config.json or project.json.\n" +
+        "  (loctool init writes loctool-config.json by default.)\n" +
         "--projectType\n" +
         "  The type of project, which affects how source files are read and resource files are written. Default: web \n" +
         "--plugins\n" +
@@ -297,6 +300,7 @@ var settings = {
         "package.json",
         "package-lock.json",
         "project.json",
+        "loctool-config.json",
         "log4js.json",
         "yarn.lock",
         ".gitignore",
@@ -313,8 +317,7 @@ var settings = {
     localeMap: {},
     localeInherit: {},
     onlyTranslated: false,
-    convertPlurals: false,
-    configFileBaseName: "project.json"
+    convertPlurals: false
 };
 
 var options = [];
@@ -519,9 +522,11 @@ for (var i = 0; i < argv.length; i++) {
     }
 }
 
-if (settings.configFileBaseName && settings.exclude.indexOf(settings.configFileBaseName) === -1) {
-    settings.exclude.push(settings.configFileBaseName);
-}
+projectConfig.getConfigFileBaseNames(settings).forEach(function(configFileBaseName) {
+    if (settings.exclude.indexOf(configFileBaseName) === -1) {
+        settings.exclude.push(configFileBaseName);
+    }
+});
 
 if (settings.help) {
     if (options.length > 2 && options[2] && commandOptionHelp[options[2]]) {
