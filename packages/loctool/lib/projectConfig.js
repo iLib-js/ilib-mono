@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+var path = require("path");
+
 /** @type {string} JSON Schema URI written by loctool init and required when $schema is present */
 var LOCTOOL_SCHEMA = "https://github.com/iLib-js/ilib-mono/packages/loctool/loctool-project-v1.schema.json";
 
@@ -62,6 +64,17 @@ function isNonEmptyString(value) {
  */
 function getConfigFileBaseName(settings) {
     return (settings && settings.configFileBaseName) || DEFAULT_CONFIG_FILE;
+}
+
+/**
+ * Return the path where loctool init should write the project config file.
+ *
+ * @param {Object} settings CLI settings (rootDir, configFileBaseName)
+ * @returns {String} output file path
+ */
+function getInitOutputPath(settings) {
+    var rootDir = (settings && settings.rootDir) || ".";
+    return path.join(rootDir, getConfigFileBaseName(settings));
 }
 
 /**
@@ -148,5 +161,6 @@ module.exports = {
     KNOWN_PROJECT_TYPES: KNOWN_PROJECT_TYPES,
     ALLOWED_PROPERTIES: ALLOWED_PROPERTIES,
     getConfigFileBaseName: getConfigFileBaseName,
+    getInitOutputPath: getInitOutputPath,
     validateLoctoolConfig: validateLoctoolConfig
 };

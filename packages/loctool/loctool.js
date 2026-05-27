@@ -50,10 +50,12 @@ function getVersion() {
 
 var commandOptionHelp = {
     init:
-        "init  [project-name]\n" +
-        "  Initialize the current directory as a loctool project and write out a project config file.\n\n" +
-        "project-name (optional)\n" +
-        "  the name of the project to initialize",
+        "init  [root-dir-name]\n" +
+        "  Initialize a directory as a loctool project and write out a project config file.\n\n" +
+        "root-dir-name (optional)\n" +
+        "  the directory where the config file should be written. Default is '.'\n" +
+        "--configFileBaseName name\n" +
+        "  base name of the config file to write (default: project.json)\n",
     localize:
         "localize [root-dir-name]\n" +
         "  Extract strings and generate localized resource files. This is the default command.\n\n" + 
@@ -381,6 +383,13 @@ for (var i = 0; i < argv.length; i++) {
         }
     } else if (val === "--projectId") {
         settings.id = argv[++i];
+    } else if (val === "--root") {
+        if (i + 1 < argv.length && argv[i + 1] && argv[i + 1][0] !== "-") {
+            settings.rootDir = argv[++i];
+        } else {
+            console.error("Error: --root option requires a directory name argument to follow it.");
+            usage();
+        }
     } else if (val === "--configFileBaseName") {
         if (i + 1 < argv.length && argv[i + 1] && argv[i + 1][0] !== "-") {
             settings.configFileBaseName = argv[++i];
@@ -527,6 +536,12 @@ settings.mode = command;
 switch (command) {
 default:
 case "localize":
+    if (options.length > 3) {
+        settings.rootDir = options[3];
+    }
+    break;
+
+case "init":
     if (options.length > 3) {
         settings.rootDir = options[3];
     }
@@ -790,9 +805,10 @@ try {
     switch (command) {
     case "init":
         var info = collectInfo();
-        var project = ProjectFactory.newProject(info);
+        info.rootDir = settings.rootDir;
+        var project = ProjectFactory.newProject(info, settings);
         var config = project.getConfig(settings);
-        var outputFile = path.join(settings.rootDir, settings.configFileBaseName);
+        var outputFile = ProjectFactory.getInitOutputPath(settings);
         fs.writeFileSync(outputFile, JSON.stringify(config, undefined, 4) + '\n', "utf-8");
         logger.info("Wrote file " + outputFile);
         break;

@@ -103,6 +103,7 @@ ProjectFactory.KNOWN_PROJECT_TYPES = projectConfig.KNOWN_PROJECT_TYPES;
 ProjectFactory.ALLOWED_PROPERTIES = projectConfig.ALLOWED_PROPERTIES;
 ProjectFactory.validateLoctoolConfig = projectConfig.validateLoctoolConfig;
 ProjectFactory.getConfigFileBaseName = projectConfig.getConfigFileBaseName;
+ProjectFactory.getInitOutputPath = projectConfig.getInitOutputPath;
 
 /**
  * Return the project with the given name, or undefined if

@@ -388,5 +388,29 @@ describe("ProjectFactory config file validation", function() {
         expect(config.$schema).toBe(ProjectFactory.LOCTOOL_SCHEMA);
         expect(config.projectType).toBe("web");
     });
+
+    test("init getConfig excludes uses configFileBaseName from settings", function() {
+        var project = ProjectFactory.newProject({
+            name: "Init Test",
+            id: "init-test",
+            projectType: "web",
+            rootDir: "."
+        }, {});
+        var config = project.getConfig({configFileBaseName: "loctool.json"});
+        expect(config.excludes).toContain("loctool.json");
+        expect(config.excludes).not.toContain("project.json");
+    });
+
+    test("init output path uses configFileBaseName and rootDir from settings", function() {
+        expect(ProjectFactory.getInitOutputPath({
+            rootDir: "./test/testfiles",
+            configFileBaseName: "loctool.json"
+        })).toBe("test/testfiles/loctool.json");
+        expect(ProjectFactory.getInitOutputPath({
+            rootDir: ".",
+            configFileBaseName: "project.json"
+        })).toBe("project.json");
+        expect(ProjectFactory.getInitOutputPath({})).toBe("project.json");
+    });
 });
 
