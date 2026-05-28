@@ -813,7 +813,7 @@ try {
         info.rootDir = settings.rootDir;
         var project = ProjectFactory.newProject(info, settings);
         var config = project.getConfig(settings);
-        var outputFile = ProjectFactory.getInitOutputPath(settings);
+        var outputFile = projectConfig.getInitOutputPath(settings);
         fs.writeFileSync(outputFile, JSON.stringify(config, undefined, 4) + '\n', "utf-8");
         logger.info("Wrote file " + outputFile);
         break;

@@ -20,6 +20,7 @@
 if (!ProjectFactory) {
     var ProjectFactory= require("../lib/ProjectFactory.js");
 }
+var projectConfig = require("../lib/projectConfig.js");
 var fs = require("fs");
 var path = require("path");
 
@@ -153,10 +154,10 @@ describe("projectfactory", function() {
 
     test("ProjectFactoryDefaultConfigFileBaseName", function() {
         expect.assertions(4);
-        expect(ProjectFactory.getConfigFileBaseName({})).toBe("loctool-config.json");
-        expect(ProjectFactory.getConfigFileBaseName(undefined)).toBe("loctool-config.json");
-        expect(ProjectFactory.getConfigFileBaseNames({})).toEqual(["loctool-config.json", "project.json"]);
-        expect(ProjectFactory.getConfigFileBaseNames({configFileBaseName: "loctool.json"})).toEqual(["loctool.json"]);
+        expect(projectConfig.getConfigFileBaseName({})).toBe("loctool-config.json");
+        expect(projectConfig.getConfigFileBaseName(undefined)).toBe("loctool-config.json");
+        expect(projectConfig.getConfigFileBaseNames({})).toEqual(["loctool-config.json", "project.json"]);
+        expect(projectConfig.getConfigFileBaseNames({configFileBaseName: "loctool.json"})).toEqual(["loctool.json"]);
     });
 
     test("ProjectFactoryDefaultConfigFileBaseNameLoadsProjectJson", function() {
@@ -190,7 +191,7 @@ describe("projectfactory", function() {
 
     test("ProjectFactoryCustomConfigFileBaseName", function() {
         expect.assertions(3);
-        expect(ProjectFactory.getConfigFileBaseName({configFileBaseName: "loctool.json"})).toBe("loctool.json");
+        expect(projectConfig.getConfigFileBaseName({configFileBaseName: "loctool.json"})).toBe("loctool.json");
 
         var project = ProjectFactory('./test/testfiles', {configFileBaseName: "loctool.json"});
         expect(project).not.toBeUndefined();
@@ -213,10 +214,10 @@ describe("projectfactory", function() {
 
 });
 
-describe("ProjectFactory.validateLoctoolConfig", function() {
+describe("projectConfig.validateLoctoolConfig", function() {
     test("accepts config with valid $schema", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
-            "$schema": ProjectFactory.LOCTOOL_SCHEMA,
+        var result = projectConfig.validateLoctoolConfig({
+            "$schema": projectConfig.LOCTOOL_SCHEMA,
             "name": "Test",
             "id": "test",
             "projectType": "web"
@@ -225,7 +226,7 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
     });
 
     test("rejects config with wrong $schema", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
+        var result = projectConfig.validateLoctoolConfig({
             "$schema": "https://nx.dev/schemas/project-schema.json",
             "name": "Test",
             "id": "test",
@@ -236,7 +237,7 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
     });
 
     test("rejects config missing required id", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
+        var result = projectConfig.validateLoctoolConfig({
             "name": "Test",
             "projectType": "web"
         });
@@ -245,7 +246,7 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
     });
 
     test("rejects config with invalid projectType", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
+        var result = projectConfig.validateLoctoolConfig({
             "name": "Test",
             "id": "test",
             "projectType": "library"
@@ -255,7 +256,7 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
     });
 
     test("accepts custom config without plugins", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
+        var result = projectConfig.validateLoctoolConfig({
             "name": "Test",
             "id": "test",
             "projectType": "custom"
@@ -264,7 +265,7 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
     });
 
     test("rejects config when all extra properties are foreign", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
+        var result = projectConfig.validateLoctoolConfig({
             "name": "Test",
             "id": "test",
             "projectType": "custom",
@@ -276,7 +277,7 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
     });
 
     test("accepts legacy config without $schema when properties are valid", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
+        var result = projectConfig.validateLoctoolConfig({
             "name": "Loctool Test",
             "id": "loctest",
             "projectType": "web",
@@ -288,7 +289,7 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
     });
 
     test("accepts config with unknown properties when at least one extra is allowed", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
+        var result = projectConfig.validateLoctoolConfig({
             "name": "Test",
             "id": "test",
             "projectType": "web",
@@ -300,7 +301,7 @@ describe("ProjectFactory.validateLoctoolConfig", function() {
     });
 
     test("accepts minimal config with only required properties", function() {
-        var result = ProjectFactory.validateLoctoolConfig({
+        var result = projectConfig.validateLoctoolConfig({
             "name": "Test",
             "id": "test",
             "projectType": "web"
@@ -317,7 +318,7 @@ describe("ProjectFactory config file validation", function() {
 
     test("loads valid config with $schema from disk", function() {
         var props = loadConfigFixture("valid-with-schema");
-        expect(ProjectFactory.validateLoctoolConfig(props).valid).toBe(true);
+        expect(projectConfig.validateLoctoolConfig(props).valid).toBe(true);
 
         var project = ProjectFactory('./test/testfiles/config-validation/valid-with-schema', {});
         expect(project).toBeTruthy();
@@ -326,7 +327,7 @@ describe("ProjectFactory config file validation", function() {
 
     test("ignores config with wrong $schema from disk", function() {
         var props = loadConfigFixture("invalid-wrong-schema");
-        var validation = ProjectFactory.validateLoctoolConfig(props);
+        var validation = projectConfig.validateLoctoolConfig(props);
         expect(validation.valid).toBe(false);
         expect(validation.reason).toContain("$schema");
 
@@ -336,7 +337,7 @@ describe("ProjectFactory config file validation", function() {
 
     test("ignores config missing required properties from disk", function() {
         var props = loadConfigFixture("invalid-missing-id");
-        var validation = ProjectFactory.validateLoctoolConfig(props);
+        var validation = projectConfig.validateLoctoolConfig(props);
         expect(validation.valid).toBe(false);
         expect(validation.reason).toContain("id");
 
@@ -346,7 +347,7 @@ describe("ProjectFactory config file validation", function() {
 
     test("ignores config with invalid projectType from disk", function() {
         var props = loadConfigFixture("invalid-project-type");
-        var validation = ProjectFactory.validateLoctoolConfig(props);
+        var validation = projectConfig.validateLoctoolConfig(props);
         expect(validation.valid).toBe(false);
         expect(validation.reason).toContain("projectType");
 
@@ -356,7 +357,7 @@ describe("ProjectFactory config file validation", function() {
 
     test("loads custom config without plugins from disk", function() {
         var props = loadConfigFixture("valid-custom-no-plugins");
-        var validation = ProjectFactory.validateLoctoolConfig(props);
+        var validation = projectConfig.validateLoctoolConfig(props);
         expect(validation.valid).toBe(true);
 
         var project = ProjectFactory('./test/testfiles/config-validation/valid-custom-no-plugins', {});
@@ -366,7 +367,7 @@ describe("ProjectFactory config file validation", function() {
 
     test("ignores config with only foreign extra properties from disk", function() {
         var props = loadConfigFixture("invalid-all-foreign");
-        var validation = ProjectFactory.validateLoctoolConfig(props);
+        var validation = projectConfig.validateLoctoolConfig(props);
         expect(validation.valid).toBe(false);
         expect(validation.reason).toContain("unrecognized properties");
 
@@ -376,7 +377,7 @@ describe("ProjectFactory config file validation", function() {
 
     test("loads valid minimal config without $schema from disk", function() {
         var props = loadConfigFixture("valid-minimal");
-        expect(ProjectFactory.validateLoctoolConfig(props).valid).toBe(true);
+        expect(projectConfig.validateLoctoolConfig(props).valid).toBe(true);
 
         var project = ProjectFactory('./test/testfiles/config-validation/valid-minimal', {});
         expect(project).toBeTruthy();
@@ -385,7 +386,7 @@ describe("ProjectFactory config file validation", function() {
 
     test("loads config with unknown properties and reports them for warnings from disk", function() {
         var props = loadConfigFixture("valid-with-warnings");
-        var validation = ProjectFactory.validateLoctoolConfig(props);
+        var validation = projectConfig.validateLoctoolConfig(props);
         expect(validation.valid).toBe(true);
         expect(validation.unknownProperties).toStrictEqual(["unknownProperty"]);
 
@@ -408,7 +409,7 @@ describe("ProjectFactory config file validation", function() {
             rootDir: "."
         }, {});
         var config = project.getConfig({configFileBaseName: "project.json"});
-        expect(config.$schema).toBe(ProjectFactory.LOCTOOL_SCHEMA);
+        expect(config.$schema).toBe(projectConfig.LOCTOOL_SCHEMA);
         expect(config.projectType).toBe("web");
     });
 
@@ -436,15 +437,15 @@ describe("ProjectFactory config file validation", function() {
     });
 
     test("init output path uses configFileBaseName and rootDir from settings", function() {
-        expect(ProjectFactory.getInitOutputPath({
+        expect(projectConfig.getInitOutputPath({
             rootDir: "./test/testfiles",
             configFileBaseName: "loctool.json"
         })).toBe("test/testfiles/loctool.json");
-        expect(ProjectFactory.getInitOutputPath({
+        expect(projectConfig.getInitOutputPath({
             rootDir: ".",
             configFileBaseName: "project.json"
         })).toBe("project.json");
-        expect(ProjectFactory.getInitOutputPath({})).toBe("loctool-config.json");
+        expect(projectConfig.getInitOutputPath({})).toBe("loctool-config.json");
     });
 });
 

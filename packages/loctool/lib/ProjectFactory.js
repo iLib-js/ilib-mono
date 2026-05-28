@@ -54,7 +54,7 @@ var projectCache = {};
  * of a project.
  */
 var ProjectFactory = function ProjectFactory(dir, settings) {
-    var configFileBaseNames = ProjectFactory.getConfigFileBaseNames(settings);
+    var configFileBaseNames = projectConfig.getConfigFileBaseNames(settings);
     for (var i = 0; i < configFileBaseNames.length; i++) {
         var configFileBaseName = configFileBaseNames[i];
         var pathName = path.join(dir, configFileBaseName);
@@ -77,7 +77,7 @@ var ProjectFactory = function ProjectFactory(dir, settings) {
             continue;
         }
 
-        var validation = ProjectFactory.validateLoctoolConfig(projectProps);
+        var validation = projectConfig.validateLoctoolConfig(projectProps);
         if (!validation.valid) {
             logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not a valid loctool project config (" + validation.reason + "); ignoring.");
             continue;
