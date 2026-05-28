@@ -1,0 +1,5 @@
+{
+    "$schema": "https://nx.dev/schemas/project-schema.json",
+    "name": "nx-app",
+    "sourceRoot": "src"
+}
