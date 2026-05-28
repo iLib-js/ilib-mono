@@ -1,0 +1,12 @@
+{
+    "HKD": {
+        "name": "Hong Kong Dollar",
+        "decimals": 2,
+        "sign": "HK$"
+    },
+    "TWD": {
+        "name": "New Taiwan Dollar",
+        "decimals": 2,
+        "sign": "NT$"
+    }
+}
