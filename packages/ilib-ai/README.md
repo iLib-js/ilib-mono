@@ -24,6 +24,10 @@ yarn add ilib-ai
 
 **Requirements:** Node.js version range in `engines` in [package.json](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-ai/package.json).
 
+### Try it with real APIs (monorepo developers)
+
+If you cloned this repo and want to exercise **OpenAI** or **Box AI** against live provider APIs (optional; uses your own credentials, not shipped on npm), see **[test-integration/README.md](./test-integration/README.md)** for step-by-step configuration and **`pnpm test:integration`** commands.
+
 ---
 
 ## What you get

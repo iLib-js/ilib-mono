@@ -1,114 +1,247 @@
-# ilib-ai — integration tests (Box)
+# ilib-ai — integration tests (Box & OpenAI)
 
-These tests call the **real Box API**. They are **not** part of the default unit test suite because they
-require actual account information that you have to download/configure before you can run these tests,
-which of course should never be committed to git.
+These tests call **real provider APIs**. They are **not** part of the default unit test suite because they require credentials you configure locally — **never commit** those files.
 
-## What Files are Needed
+Credential-mapping tests (static, no network) **always run**. **Box** and **OpenAI** live-API suites are **skipped** when that provider’s credentials are missing or invalid, so developers without secrets are not blocked.
 
-1. The Box JWT Config File downloaded from your Box developer console
-2. The integration-only settings
+---
 
-## How to Get the JWT Config File
+## Prerequisites
 
-1. Log in to your **Box** account in the browser.
-2. Open the **Developer Console** (link in the **bottom left** of the Box UI).
-3. Go to the **My Platform Apps** tab.
-4. Click **New App +** (top right) to create a new Box application (or select an existing app).
-5. Open your app and go to the **Configuration** tab.
-6. Under **Manage Signature Keys**, click **Generate Keypair**. Box downloads a JSON file whose name matches **`<enterpriseID>_<publicKeyID>_config.json`** (labels can vary slightly by Box console version).
+1. **Node.js 18+** — required for OpenAI tests (`OpenAIModelAdapter` uses global `fetch`).
+2. **Dependencies installed** — from the monorepo root or the package directory:
 
-That download is the **`boxAppSettings`** JWT file this document refers to. **Never commit** it; see `.gitignore` (patterns under `test-integration/` ignore typical download names).
+   ```bash
+   cd packages/ilib-ai
+   pnpm install
+   ```
 
-## Integration-only Settings
+   (If you work from the repo root: `pnpm install --filter ilib-ai`.)
 
-Keep the **Box JWT export** separate from **integration-only** settings. Both live under **`packages/ilib-ai/test-integration/`**.
+3. **Working directory** — all commands below assume you are in **`packages/ilib-ai`** (the ilib-ai package root).
 
-| File | Role |
-|------|------|
-| **`<enterpriseID>_<publicKeyID>_config.json`** | The file Box downloads when you generate a keypair (see above). The filename uses your real enterprise id and public key id—for illustration only, a fake example would be **`9999999_xxxxxxx_config.json`**. Do not edit its internal shape. |
-| **`box-integration-credentials.json`** | Local overlay: a **path** to that JWT file, optional **`userId`** (only in the case described below), and **`contextFileId`** / **`rootFolderId`** for tests that call Box AI text generation. |
+---
 
-### Shape of the `box-integration-credentials.json` File
+## Step-by-step: OpenAI (ChatGPT / Chat Completions)
 
-Minimal shape (JWT path + test context only):
+### 1. Get an API key
+
+1. Sign in at [platform.openai.com](https://platform.openai.com).
+2. Open **API keys** and create a key (this is **not** your chat.openai.com password).
+3. Ensure your account has API access and billing/quota for the model you will test (default: **`gpt-4o-mini`**).
+
+### 2. Create the local credentials file
+
+From **`packages/ilib-ai`**:
+
+```bash
+cp test-integration/openai-integration-credentials.example.json \
+   test-integration/openai-integration-credentials.json
+```
+
+### 3. Add your key
+
+Edit **`test-integration/openai-integration-credentials.json`**. Minimal example:
 
 ```json
 {
-  "jwtConfigPath": "9999999_xxxxxxx_config.json",
+  "apiKey": "sk-your-key-here",
+  "integrationTestModel": "gpt-4o-mini"
+}
+```
+
+**Alternative:** leave **`apiKey`** empty and export the key when you run tests:
+
+```bash
+export OPENAI_API_KEY=sk-your-key-here
+```
+
+The file wins over the environment variable when both are set.
+
+### 4. Run OpenAI integration tests
+
+```bash
+pnpm test:integration --testPathPattern=openai
+```
+
+Expected: **`openaiCredentialsMapping`** passes; **`openai-adapter-connection`** and **`openai-prompts`** run against the live API (not skipped).
+
+### 5. What those tests do
+
+| Test file | What it checks |
+|-----------|----------------|
+| `openaiCredentialsMapping.test.ts` | Credential loader (no API call). Always runs. |
+| `openai-adapter-connection.integration.test.ts` | `connect()` / `disconnect()`, `listAvailableModels()`. |
+| `openai-prompts.integration.test.ts` | `OpenAIModelAdapter.complete()` — minimal deterministic JSON ping (see **`fixtures/minimal-ping-expected.json`**) plus structured JSON prompts. |
+
+---
+
+## Step-by-step: Box AI
+
+### 1. Download the JWT config from Box
+
+1. Log in to **Box** in the browser.
+2. Open the **Developer Console** (bottom left of the Box UI).
+3. Go to **My Platform Apps** → select or create an app.
+4. Open the **Configuration** tab.
+5. Under **Manage Signature Keys**, click **Generate Keypair**.
+
+Box downloads a JSON file named like **`<enterpriseID>_<publicKeyID>_config.json`**. **Do not edit** its internal shape.
+
+### 2. Place the JWT file in `test-integration/`
+
+Move the download into **`packages/ilib-ai/test-integration/`** (same folder as this README). Example filename: **`27335_abc123_config.json`**.
+
+This file is **gitignored** — it must stay on your machine only.
+
+### 3. Create the integration overlay file
+
+From **`packages/ilib-ai`**:
+
+```bash
+cp test-integration/box-integration-credentials.example.json \
+   test-integration/box-integration-credentials.json
+```
+
+Edit **`test-integration/box-integration-credentials.json`**. Point **`jwtConfigPath`** at your download (relative to **`test-integration/`**):
+
+```json
+{
+  "jwtConfigPath": "27335_abc123_config.json",
   "contextFileId": "",
   "rootFolderId": ""
 }
 ```
 
-Use placeholder names like **`9999999_xxxxxxx_config.json`** only in docs; your real file will use your actual **enterprise id** and **public key id**.
+Replace **`27335_abc123_config.json`** with your real filename.
 
-| Field | Purpose |
-|-------|---------|
-| **`jwtConfigPath`** | Relative path (from **`test-integration/`**) to the downloaded **`<enterpriseID>_<publicKeyID>_config.json`** file. Same meaning as **`configPath`** in **`BoxAIModelInitOptions`**; use whichever name you prefer. If both are present, **`configPath`** wins. |
-| **`configPath`** | Alternative to **`jwtConfigPath`** (Box SDK / `box-node-sdk` name). |
-| **`userId`** | **Usually omit this.** The JWT file already contains **`enterpriseID`** (and Box may include a top-level **`userID`** in some exports). Our loader passes those into the Box SDK. Add **`userId`** in this overlay **only** if you authenticate **as an app user** and you need to supply the app user’s id here because it is **not** present in the downloaded JSON as **`userID`**. Enterprise-only JWT using the file’s **`enterpriseID`** does not need **`userId`** in the overlay. |
-| **`contextFileId`** | Box **file** id for **`createAiTextGen`** `items`. Prefer this when you know the file id. |
-| **`rootFolderId`** | If **`contextFileId`** is empty, the tests list this folder and use the **first** direct child with **`type === "file"`**. |
+### 4. (Optional) Configure file context for Box AI prompt tests
 
-### Shape of the Box JWT file (`<enterpriseID>_<publicKeyID>_config.json`)
+Box **`createAiTextGen`** requires a **file** in the request. Connection-only tests do **not** need this step.
 
-Always the same structure Box exports, for example (values are illustrative placeholders only):
+For **`box-ai-prompts.integration.test.ts`**, set **one** of:
+
+| Field | When to use |
+|-------|-------------|
+| **`contextFileId`** | You know a Box **file id** the app can read. |
+| **`rootFolderId`** | Leave **`contextFileId`** empty; tests use the **first file** in that folder. |
+
+Example with a folder:
 
 ```json
 {
-  "boxAppSettings": {
-    "clientID": "…",
-    "clientSecret": "…",
-    "appAuth": {
-      "publicKeyID": "xxxxxxx",
-      "privateKey": "-----BEGIN ENCRYPTED PRIVATE KEY-----\n…\n-----END ENCRYPTED PRIVATE KEY-----\n",
-      "passphrase": "…"
-    }
-  },
-  "enterpriseID": "9999999"
+  "jwtConfigPath": "27335_abc123_config.json",
+  "contextFileId": "",
+  "rootFolderId": "123456789012"
 }
 ```
 
-See **`box-jwt-download.example.json`** in this folder for a full placeholder example (that filename is committed; real downloads use the `*_config.json` pattern and should stay local / gitignored).
+Upload at least one file to that folder if you use **`rootFolderId`**.
 
-### `contextFileId` and `rootFolderId`
+### 5. Run Box integration tests
 
-These are **not** from Box; they are only for this repo’s tests.
+**Connection only** (JWT + `connect()`):
 
-| Suite | Needs file context? |
-|-------|---------------------|
-| **`box-adapter-connection`** | **No.** JWT + **`connect()`** is enough. |
-| **`box-ai-prompts`** | **Yes.** Box **`createAiTextGen`** requires a **`file`** in **`items`**. Set **`contextFileId`** and/or **`rootFolderId`** as above. |
+```bash
+pnpm test:integration --testPathPattern='integrationCredentialsMapping|box-adapter-connection'
+```
 
-## Single-file Alternative
+**All Box tests** (includes live Box AI prompts if file context is configured):
 
-You may instead put **`boxAppSettings`** (and **`enterpriseID`** / **`userID`**) **inside** **`box-integration-credentials.json`** without a separate Box download file; **`loadBoxInit`** still supports that. The two-file layout is recommended so the console export stays untouched.
+```bash
+pnpm test:integration --testPathPattern=box
+```
 
-## Run (from the **ilib-ai package root**, i.e. `packages/ilib-ai`)
-
-| Command | What runs |
-|---------|-----------|
-| **`pnpm test`** | **Unit tests only** (`tests/`, `jest.config.js`). Does **not** run integration tests. |
-| **`pnpm test:unit`** | Same as **`pnpm test`**. |
-| **`pnpm test:integration`** | **Integration tests only** (`test-integration/`, `jest.integration.config.cjs`). Does **not** run unit tests. |
-
-## What Runs
+### 6. What those tests do
 
 | Test file | What it checks |
 |-----------|----------------|
-| `integrationCredentialsMapping.test.ts` | **Static:** `stripIntegrationOnlyFields` / `normalizeIntegrationCredentialPaths` (no Box API). Always runs. |
-| `box-adapter-connection.integration.test.ts` | **`BoxAIModelAdapter`**: `connect()` / `disconnect()` via `users.getUserMe`. |
-| `box-ai-prompts.integration.test.ts` | **`createBoxClientFromInit`** + **`createAiTextGen`** with JSON-shaped prompts. |
+| `integrationCredentialsMapping.test.ts` | Credential mapping (no API call). Always runs. |
+| `box-adapter-connection.integration.test.ts` | `BoxAIModelAdapter` `connect()` / `disconnect()`. |
+| `box-ai-prompts.integration.test.ts` | `createAiTextGen` with JSON-shaped prompts. |
 
-If **`box-integration-credentials.json`** is missing or invalid, the **Box API** suites are **skipped** (they do not fail the job for developers without secrets). The credential-mapping tests do not require credentials.
+---
+
+## Run commands (reference)
+
+All commands from **`packages/ilib-ai`**:
+
+| Command | What runs |
+|---------|-----------|
+| **`pnpm test`** | **Unit tests only** — does **not** run integration tests. |
+| **`pnpm test:unit`** | Same as **`pnpm test`**. |
+| **`pnpm test:integration`** | **All** integration tests (OpenAI + Box + static mapping tests). |
+| **`pnpm test:integration --testPathPattern=openai`** | OpenAI suites only. |
+| **`pnpm test:integration --testPathPattern=box`** | Box suites (+ Box credential mapping). |
+
+Default per-test timeout is **120 seconds**. Tests run **serially** (`--runInBand`).
+
+---
+
+## Credentials reference
+
+### OpenAI — `openai-integration-credentials.json`
+
+Copy from **`openai-integration-credentials.example.json`**. Gitignored when real.
+
+| Field | Purpose |
+|-------|---------|
+| **`apiKey`** | OpenAI API key. Or empty + **`OPENAI_API_KEY`** env var. |
+| **`baseUrl`** | Optional. Default `https://api.openai.com`. |
+| **`defaultModel`** | Optional; passed through to **`OpenAIModelInitOptions`**. |
+| **`integrationTestModel`** | Model for prompt tests. Default **`gpt-4o-mini`**. |
+
+### Box — `box-integration-credentials.json`
+
+Copy from **`box-integration-credentials.example.json`**. Gitignored when real.
+
+| Field | Purpose |
+|-------|---------|
+| **`jwtConfigPath`** | Relative path to the Box JWT download in **`test-integration/`**. Same as **`configPath`**; if both are set, **`configPath`** wins. |
+| **`configPath`** | Alternative name for the JWT file path. |
+| **`userId`** | **Usually omit.** Only for app-user JWT when **`userID`** is not in the Box export. |
+| **`contextFileId`** | Box file id for AI prompt tests. |
+| **`rootFolderId`** | Folder id; first child file is used when **`contextFileId`** is empty. |
+
+**Single-file alternative:** embed **`boxAppSettings`** + **`enterpriseID`** directly in **`box-integration-credentials.json`** instead of a separate JWT download. See **`box-jwt-download.example.json`** for the JWT file shape.
+
+### Which Box suites need file context?
+
+| Suite | Needs `contextFileId` or `rootFolderId`? |
+|-------|------------------------------------------|
+| **`box-adapter-connection`** | **No** |
+| **`box-ai-prompts`** | **Yes** |
+
+---
 
 ## Troubleshooting
 
-- **401 / JWT**: Verify app credentials and that the private key matches the public key in the Box Developer Console.
-- **403 `insufficient_scope`**: If you see something like:  
-  `BoxApiError: 403 "insufficient_scope" "The request requires higher privileges than provided by the access token."; Request ID: "…"`  
-  then you do not have permission in Box to run **Box AI** in that account for the token in use (often when **`box-ai-prompts`** runs). Adjust **application scopes** and enterprise **Box AI** settings in the Developer Console if you can; otherwise talk to your **Box administrator** to get access to Box AI so your app or user receives the required privileges.
-- **“Add contextFileId or rootFolderId”**: Add one or both optional fields to `box-integration-credentials.json`.
-- **Missing JWT file**: Ensure **`jwtConfigPath`** / **`configPath`** points to a file that exists next to **`box-integration-credentials.json`** (or use an absolute path).
-- **Timeouts**: Default test timeout is 120s; slow networks may need a re-run.
+### OpenAI
+
+- **401 / invalid API key** — Verify the key at platform.openai.com; ensure billing is active.
+- **429 rate limit** — Retry later or set a smaller model in **`integrationTestModel`**.
+- **`fetch is not defined`** — Use Node.js **18+**.
+- **OpenAI suites skipped** — No valid key in the credentials file or **`OPENAI_API_KEY`**.
+- **Timeouts** — Re-run; default timeout is 120s per test.
+
+### Box
+
+- **401 / JWT** — Verify app credentials; private key must match the public key in the Developer Console.
+- **403 `insufficient_scope`** — Your token lacks Box AI privileges. Adjust app scopes / enterprise Box AI settings, or ask your Box admin.
+- **“Add contextFileId or rootFolderId”** — Required for **`box-ai-prompts`**; add one to **`box-integration-credentials.json`**.
+- **Missing JWT file** — **`jwtConfigPath`** must point to a file that exists under **`test-integration/`** (or use an absolute path).
+- **Box suites skipped** — Missing or invalid **`box-integration-credentials.json`** or JWT file.
+- **Timeouts** — Re-run; default timeout is 120s per test.
+
+---
+
+## Security
+
+Never commit:
+
+- **`openai-integration-credentials.json`** (with a real key)
+- **`box-integration-credentials.json`** (with real paths/settings)
+- **`*_config.json`** (Box JWT downloads)
+- **`*.pvk`**, **`*.pem`**
+
+Patterns are listed in **`packages/ilib-ai/.gitignore`**.
