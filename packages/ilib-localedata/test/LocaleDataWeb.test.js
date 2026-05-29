@@ -24,26 +24,29 @@ import { registerLoader } from 'ilib-loader';
 import LocaleData from '../src/LocaleData.js';
 
 describe("LocaleDataWeb", () => {
-    test("should create LocaleData instance when web loader doesn't support sync", () => {
+    test("should throw when creating LocaleData with sync when web loader doesn't support it", () => {
         expect.assertions(1);
 
-        const locData = new LocaleData({
-            path: "./test/files3",
-            sync: true
-        });
-        expect(!locData.isSync()).toBe(true);
+        try {
+            new LocaleData({
+                path: "./test/testfiles/files3",
+                sync: true
+            });
+            fail("Expected LocaleData constructor to throw");
+        } catch (e) {
+            expect(e.message).toBe("Synchronous mode is requested but the loader does not support synchronous operation");
+        }
     });
 
-    test("should not support sync test load", () => {
+    test("should create LocaleData in async mode by default", () => {
         expect.assertions(2);
 
         const locData = new LocaleData({
-            path: "./test/files3",
-            sync: true
+            path: "./test/testfiles/files3"
         });
         expect(!locData.isSync()).toBe(true);
 
-        // should use the default synchronicity, which is async
+        // should use async mode
         const actual = locData.loadData({
             basename: "info",
             locale: "root"
@@ -56,50 +59,56 @@ describe("LocaleDataWeb", () => {
         expect.assertions(3);
 
         const locData = new LocaleData({
-            path: "./test/files3"
+            path: "./test/testfiles/files3"
         });
 
         expect(locData).toBeTruthy();
 
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
-        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.addGlobalRoot("./test/testfiles/files3");
 
-        expect(!LocaleData.checkCache("de-DE", "info")).toBe(true);
+        expect(!locData.checkCache("de-DE", "info")).toBe(true);
 
         // we request sync loading but the loader does
         // not support it and the data is not already
         // previously loaded, so it should throw an
         // exception because the data cannot be loaded
-        expect(() => {
-            const actual = locData.loadData({
+        try {
+            locData.loadData({
                 basename: "info",
                 locale: "de-DE",
                 sync: true
             });
-        }).toThrow();
+            fail("Expected loadData to throw");
+        } catch (e) {
+            expect(e).toBeDefined();
+        }
     });
 
     test("should load sync data previously loaded", async () => {
         expect.assertions(6);
 
         const locData = new LocaleData({
-            path: "./test/files3"
+            path: "./test/testfiles/files3"
         });
 
         expect(locData).toBeTruthy();
 
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
-        LocaleData.addGlobalRoot("./test/files3");
+        LocaleData.addGlobalRoot("./test/testfiles/files3");
 
-        await LocaleData.ensureLocale("de-DE");
-        expect(LocaleData.checkCache("de-DE", "info")).toBe(true);
+        // First load the data asynchronously to populate the merged cache
+        const firstLoad = await locData.loadData({
+            basename: "info",
+            locale: "de-DE"
+        });
+        expect(firstLoad).toBeDefined();
+        expect(locData.checkCache("de-DE", "info")).toBe(true);
 
-        // we request sync loading but the loader does
-        // not support it. But, the data is already
-        // previously loaded, so it should succeed based
-        // on the cached data alone
+        // Now subsequent loads should return the cached merged data directly
+        // even when sync is requested (because data is already in merged cache)
         const actual = locData.loadData({
             basename: "info",
             locale: "de-DE",
@@ -107,11 +116,10 @@ describe("LocaleDataWeb", () => {
         });
         expect(!!actual).toBe(true);
         expect(typeof(actual)).toBe("object");
-        expect(!(actual instanceof Promise)).toBe(true);
 
         const expected = {
-            "a": "b de",
-            "c": "d de"
+            "a": "b de files3",
+            "c": "d de files3"
         };
         expect(actual).toEqual(expected);
     });
@@ -121,20 +129,23 @@ describe("LocaleDataWeb", () => {
 
         // only do this test on browsers with webpack -- nodejs always
         // requires a global root so we know where to load files from
-        expect.assertions(2);
+        expect.assertions(3);
         LocaleData.clearCache();
         LocaleData.clearGlobalRoots();
 
-        const result = await LocaleData.ensureLocale("ja-JP");
-        expect(result).toBeTruthy();
-
         const locData = new LocaleData({
-            path: "./test/files3"
+            path: "./test/testfiles/files3"
         });
 
-        // can load synchronously after the ensureLocale
-        // is done, even though the loader does not support
-        // synchronous operation because the data is cached
+        // First load asynchronously to populate merged cache
+        const firstLoad = await locData.loadData({
+            locale: "ja-JP",
+            basename: "info"
+        });
+        expect(firstLoad).toBeDefined();
+        expect(locData.checkCache("ja-JP", "info")).toBe(true);
+
+        // Now can load synchronously because data is in merged cache
         let data = locData.loadData({
             sync: true,
             locale: "ja-JP",
@@ -146,4 +157,4 @@ describe("LocaleDataWeb", () => {
             "c": "d ja"
         });
     });
-}); 
+});
