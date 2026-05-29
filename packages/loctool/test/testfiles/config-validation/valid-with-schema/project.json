@@ -1,0 +1,6 @@
+{
+    "$schema": "https://github.com/iLib-js/ilib-mono/packages/loctool/loctool-project-v1.schema.json",
+    "name": "Valid With Schema",
+    "id": "valid-with-schema",
+    "projectType": "web"
+}

@@ -35,6 +35,7 @@ var conversions = require("./ResourceConvert.js");
 var pluralCategories = require("../db/pluralCategories.json");
 var log4js = require("log4js");
 var iff = require("./IntermediateFileFactory.js");
+var projectConfig = require("./projectConfig.js");
 
 var getIntermediateFile = iff.getIntermediateFile;
 var getIntermediateFileExtension = iff.getIntermediateFileExtension;
@@ -903,6 +904,7 @@ Project.prototype.getConfig = function(settings) {
     logger.trace("Project get config");
 
     return {
+        "$schema": projectConfig.LOCTOOL_SCHEMA,
         name: this.options.name,
         id: this.options.id || this.options.name,
         sourceLocale: this.sourceLocale,
@@ -915,7 +917,7 @@ Project.prototype.getConfig = function(settings) {
             "test",
             "node_modules",
             "package.json",
-            "project.json"
+            projectConfig.getConfigFileBaseName(settings)
         ],
         settings: {
             locales: ["en-GB", "de-DE", "fr-FR", "it-IT", "es-ES", "pt-BR", "ja-JP", "zh-Hans-CN", "ko-KR"]

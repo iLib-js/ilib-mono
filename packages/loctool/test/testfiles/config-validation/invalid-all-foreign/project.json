@@ -1,0 +1,7 @@
+{
+    "name": "All Foreign Extras",
+    "id": "invalid-all-foreign",
+    "projectType": "custom",
+    "targets": {},
+    "sourceRoot": "src"
+}

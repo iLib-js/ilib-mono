@@ -1,0 +1,12 @@
+{
+    "name": "Nested Loctool Test",
+    "id": "loctest-nested",
+    "projectType": "web",
+    "pseudoLocale": "de-DE",
+    "resourceDirs": {
+        "yml": "config/locales"
+    },
+    "settings": {
+        "locales": ["en-GB", "de-DE"]
+    }
+}
