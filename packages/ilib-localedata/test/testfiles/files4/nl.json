@@ -1,0 +1,19 @@
+{
+    "root": {
+        "info": {
+            "a": "b root",
+            "c": "d root"
+        },
+        "foo": {
+            "m": "n root",
+            "o": "p root"
+        }
+    },
+    "nl": {
+        "foo": {
+            "m": "n nl",
+            "o": "p nl",
+            "q": "r nl"
+        }
+    }
+}
