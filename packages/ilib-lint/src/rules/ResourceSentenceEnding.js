@@ -102,9 +102,11 @@ const punctuationMap = {
 
 /**
  * @ignore
- * @typedef {{minimumLength?: number}} ResourceSentenceEndingFixedOptions
+ * @typedef {{minimumLength?: number, exceptions?: string[]}} ResourceSentenceEndingFixedOptions
  * @property {number} [minimumLength=10] - Minimum length of source string before the rule is applied.
  *   Strings shorter than this length will be skipped (useful for avoiding false positives on abbreviations).
+ * @property {string[]} [exceptions] - Array of source strings to skip checking for ALL locales.
+ *   Useful for handling special cases that should be globally excluded from sentence-ending punctuation checks.
  */
 
 /**
@@ -120,7 +122,7 @@ class ResourceSentenceEnding extends ResourceRule {
     /**
      * Constructs a new ResourceSentenceEnding rule instance.
      *
-     * @param {ResourceSentenceEndingOptions} [options] - Configuration options for the rule
+     * @param {{ param?: ResourceSentenceEndingOptions, sourceLocale?: string, getLogger?: Function }} [options] - Configuration options for the rule
      *
      * @example
      * // Basic usage with default settings
@@ -181,9 +183,16 @@ class ResourceSentenceEnding extends ResourceRule {
         // Initialize minimum length configuration
         this.minimumLength = Math.max(0, param?.minimumLength ?? 10);
 
+        // Initialize global exceptions (apply to all locales), deduplicated via Set
+        this.globalExceptions = new Set(
+            Array.isArray(param?.exceptions)
+                ? param.exceptions.map((/** @type {string} */ e) => e.toLowerCase().trim())
+                : []
+        );
+
         // Initialize custom punctuation mappings from configuration
         this.customPunctuationMap = {};
-        // Initialize exception lists from configuration
+        // Initialize locale-specific exception lists from configuration
         this.exceptionsMap = {};
 
         if (param && typeof param === 'object' && !Array.isArray(param)) {
@@ -211,9 +220,11 @@ class ResourceSentenceEnding extends ResourceRule {
                         ...punctuationMappings
                     };
 
-                    // Store exceptions separately
+                    // Store exceptions as a Set to deduplicate
                     if (exceptions && Array.isArray(exceptions)) {
-                        this.exceptionsMap[language] = exceptions;
+                        this.exceptionsMap[language] = new Set(
+                            exceptions.map((/** @type {string} */ e) => e.toLowerCase().trim())
+                        );
                     }
                 }
             }
@@ -982,12 +993,17 @@ class ResourceSentenceEnding extends ResourceRule {
             }
         }
 
-        // Exception 3: Check if source is in exception list
+        const normalizedSource = source.toLowerCase().trim();
+
+        // Exception 3: Check if source is in global exception list (all locales)
+        if (this.globalExceptions.has(normalizedSource)) {
+            return undefined;
+        }
+
+        // Exception 4: Check if source is in locale-specific exception list
         const exceptions = this.exceptionsMap[targetLanguage];
-        if (exceptions) {
-            if (exceptions.some(exception => exception.toLowerCase().trim() === source.toLowerCase().trim())) {
-                return undefined;
-            }
+        if (exceptions?.has(normalizedSource)) {
+            return undefined;
         }
 
         const optionalPunctuationLanguages = ['th', 'lo', 'my', 'km', 'vi', 'id', 'ms', 'tl', 'jv', 'su'];

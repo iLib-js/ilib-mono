@@ -81,7 +81,26 @@ The rule automatically skips checking strings that:
 - Are shorter than the minimum length threshold
 
 #### Exception Lists
-You can specify exact source strings to skip checking for specific locales:
+
+**Global exceptions** — skip checking for ALL locales by specifying `exceptions` at the top level:
+
+```json
+{
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "exceptions": [
+          "Please see the Dr.",
+          "Visit the Prof.",
+          "Check with Mr."
+        ]
+      }
+    }
+  }
+}
+```
+
+**Locale-specific exceptions** — skip checking only for a particular locale:
 
 ```json
 {
@@ -100,6 +119,8 @@ You can specify exact source strings to skip checking for specific locales:
   }
 }
 ```
+
+Both can be combined. Global exceptions are checked first, then locale-specific ones.
 
 ### Custom Punctuation Configuration
 
@@ -219,6 +240,10 @@ Here's a comprehensive example showing all configuration options together:
     "myset": {
       "resource-sentence-ending": {
         "minimumLength": 8,
+        "exceptions": [
+          "Please see the Dr.",
+          "Visit the Prof."
+        ],
         "ja-JP": {
           "period": "。",
           "question": "？",
@@ -231,7 +256,6 @@ Here's a comprehensive example showing all configuration options together:
         "de-DE": {
           "exceptions": [
             "See the Dr.",
-            "Visit the Prof.",
             "Check with Mr."
           ]
         },
@@ -251,8 +275,9 @@ Here's a comprehensive example showing all configuration options together:
 
 This configuration:
 - Sets minimum length to 8 characters
-- Configures Japanese punctuation and exceptions (note: exclamation marks are disabled by default for Japanese, but this example explicitly enables them with `"exclamation": "！"`)
-- Adds German exceptions for common abbreviations
+- Skips `"Please see the Dr."` and `"Visit the Prof."` for **all locales** (global exceptions)
+- Configures Japanese punctuation and adds Japanese-specific exceptions
+- Adds German-specific exceptions for common abbreviations
 - Overrides French ellipsis behavior
 
 ### Supported Punctuation Types
@@ -274,7 +299,7 @@ The following punctuation types can be customized:
 - **Merging**: Custom configurations merge with the default locale-specific rules, so you only need to specify the punctuation types you want to override.
 - **Fallback**: If a punctuation type is not specified in the custom configuration, the rule uses the default punctuation for that language.
 - **Null Values**: Setting a punctuation type to `null` disables checking for that type. For Japanese, exclamation marks are disabled by default (`exclamation: null`).
-- **Exception Processing**: Exception lists are processed before punctuation checking, so strings in the exception list will never trigger warnings regardless of punctuation mismatches.
+- **Exception Processing**: Exception lists are processed before punctuation checking. Global exceptions (top-level `exceptions`) apply to all locales; locale-specific exceptions apply only to that locale. Global exceptions are checked first.
 - **Automatic Skipping**: The rule automatically skips strings that are shorter than `minimumLength` or have no spaces (unless they end with sentence-ending punctuation).
 
 ## Exception Behaviors
@@ -305,9 +330,16 @@ Strings with no spaces are automatically skipped:
 - `"Loading..."` (no spaces but ends with ellipsis)
 
 ### Exception Lists
-Strings in locale-specific exception lists are always skipped:
+Strings in exception lists are always skipped. Exceptions can be global (all locales) or locale-specific:
 
-**Example:**
+**Global exceptions** (top-level `exceptions` — apply to all locales):
+```json
+{
+  "exceptions": ["See the Dr.", "Visit the Prof."]
+}
+```
+
+**Locale-specific exceptions** (inside a locale key — apply only to that locale):
 ```json
 {
   "de-DE": {
@@ -316,7 +348,7 @@ Strings in locale-specific exception lists are always skipped:
 }
 ```
 
-Even if the target lacks punctuation, these source strings will never trigger warnings.
+Global exceptions are checked first. Even if the target lacks punctuation, these source strings will never trigger warnings for any locale.
 
 ## Common Scenarios
 

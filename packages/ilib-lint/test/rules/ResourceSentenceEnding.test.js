@@ -4407,6 +4407,160 @@ describe("ResourceSentenceEnding rule", function() {
 
                 expect(actual).toBeUndefined();
             });
+
+            test("should not check sentence-ending punctuation for zh-Hans-CN string in exception list", () => {
+                expect.assertions(1);
+
+                const zhHansCNConfig = {
+                    "zh-Hans-CN": {
+                        exceptions: ["This is a sentence."]
+                    }
+                };
+                const rule = new ResourceSentenceEnding({ param: zhHansCNConfig });
+
+                const resource = new ResourceString({
+                    key: "test.zhhanscn.exception",
+                    source: "This is a sentence.",
+                    target: "这是一个句子",
+                    sourceLocale: "en-US",
+                    targetLocale: "zh-Hans-CN"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeUndefined();
+            });
+        });
+
+        describe("Global exception list", () => {
+            test("should skip check for all locales when source is in global exception list", () => {
+                expect.assertions(4);
+
+                const globalConfig = {
+                    exceptions: ["Please see the Dr."]
+                };
+                const rule = new ResourceSentenceEnding({ param: globalConfig });
+                expect(rule).toBeTruthy();
+
+                for (const targetLocale of ["ja-JP", "zh-Hans-CN", "de-DE"]) {
+                    const resource = new ResourceString({
+                        key: `test.global.exception.${targetLocale}`,
+                        source: "Please see the Dr.",
+                        target: "translated without punctuation",
+                        sourceLocale: "en-US",
+                        targetLocale
+                    });
+
+                    const actual = rule.matchString({
+                        source: resource.getSource(),
+                        target: resource.getTarget(),
+                        resource,
+                        file: "a/b/c.xliff"
+                    });
+
+                    expect(actual).toBeUndefined();
+                }
+            });
+
+            test("should still check strings not in global exception list", () => {
+                expect.assertions(1);
+
+                const globalConfig = {
+                    exceptions: ["Please see the Dr."]
+                };
+                const rule = new ResourceSentenceEnding({ param: globalConfig });
+
+                const resource = new ResourceString({
+                    key: "test.global.noexception",
+                    source: "This is a sentence.",
+                    target: "これは文です",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP"
+                });
+
+                const actual = rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+
+                expect(actual).toBeTruthy();
+            });
+
+            test("should skip check for company name with multiple periods like ABC.Corp.", () => {
+                expect.assertions(4);
+
+                const globalConfig = {
+                    exceptions: ["ABC.Corp."]
+                };
+                const rule = new ResourceSentenceEnding({ param: globalConfig });
+                expect(rule).toBeTruthy();
+
+                for (const targetLocale of ["ja-JP", "zh-Hans-CN", "de-DE"]) {
+                    const resource = new ResourceString({
+                        key: `test.global.company.${targetLocale}`,
+                        source: "ABC.Corp.",
+                        target: "translated without punctuation",
+                        sourceLocale: "en-US",
+                        targetLocale
+                    });
+
+                    const actual = rule.matchString({
+                        source: resource.getSource(),
+                        target: resource.getTarget(),
+                        resource,
+                        file: "a/b/c.xliff"
+                    });
+
+                    expect(actual).toBeUndefined();
+                }
+            });
+
+            test("should combine global and locale-specific exceptions", () => {
+                expect.assertions(2);
+
+                const combinedConfig = {
+                    exceptions: ["Global exception string."],
+                    "ja-JP": {
+                        exceptions: ["Japanese only exception."]
+                    }
+                };
+                const rule = new ResourceSentenceEnding({ param: combinedConfig });
+
+                const globalResource = new ResourceString({
+                    key: "test.combined.global",
+                    source: "Global exception string.",
+                    target: "translated without punctuation",
+                    sourceLocale: "en-US",
+                    targetLocale: "de-DE"
+                });
+                expect(rule.matchString({
+                    source: globalResource.getSource(),
+                    target: globalResource.getTarget(),
+                    resource: globalResource,
+                    file: "a/b/c.xliff"
+                })).toBeUndefined();
+
+                const localeResource = new ResourceString({
+                    key: "test.combined.locale",
+                    source: "Japanese only exception.",
+                    target: "translated without punctuation",
+                    sourceLocale: "en-US",
+                    targetLocale: "ja-JP"
+                });
+                expect(rule.matchString({
+                    source: localeResource.getSource(),
+                    target: localeResource.getTarget(),
+                    resource: localeResource,
+                    file: "a/b/c.xliff"
+                })).toBeUndefined();
+            });
         });
     });
 
