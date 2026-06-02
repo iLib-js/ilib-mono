@@ -355,6 +355,84 @@ describe("openapifile", function() {
 
         });
 
+        test("ParseRequestBodyDescription", function() {
+            expect.assertions(5);
+
+            var oaf = new OpenAPIFile({
+                project: p,
+                type: t,
+                pathName: 'i18n/openapi.json'
+            });
+            expect(oaf).toBeTruthy();
+
+            var jsonToParse = '{\n' +
+                '  "paths": {\n' +
+                '    "/resources/{id}/template": {\n' +
+                '      "post": {\n' +
+                '        "summary": "Create template",\n' +
+                '        "requestBody": {\n' +
+                '          "description": "The request body for creating a template.",\n' +
+                '          "required": true,\n' +
+                '          "content": {\n' +
+                '            "application/json": {\n' +
+                '              "schema": {\n' +
+                '                "type": "object"\n' +
+                '              }\n' +
+                '            }\n' +
+                '          }\n' +
+                '        },\n' +
+                '        "responses": {\n' +
+                '          "201": {\n' +
+                '            "description": "Created"\n' +
+                '          }\n' +
+                '        }\n' +
+                '      }\n' +
+                '    }\n' +
+                '  }\n' +
+                '}';
+
+            oaf.parse(jsonToParse);
+
+            var set = oaf.getTranslationSet();
+            expect(set).toBeTruthy();
+
+            var resources = set.getAll();
+            expect(resources.length).toBe(3);
+            expect(resources[1].getSource()).toBe('The request body for creating a template.');
+            expect(resources[1].getDataType()).toBe('markdown');
+        });
+
+        test("ParseTagDescription", function() {
+            expect.assertions(6);
+
+            var oaf = new OpenAPIFile({
+                project: p,
+                type: t,
+                pathName: 'i18n/openapi.json'
+            });
+            expect(oaf).toBeTruthy();
+
+            var jsonToParse = '{\n' +
+                '  "tags": [\n' +
+                '    {\n' +
+                '      "name": "Resources",\n' +
+                '      "description": "Endpoints used to manage resources."\n' +
+                '    }\n' +
+                '  ]\n' +
+                '}';
+
+            oaf.parse(jsonToParse);
+
+            var set = oaf.getTranslationSet();
+            expect(set).toBeTruthy();
+
+            var resources = set.getAll();
+            expect(resources.length).toBe(2);
+            expect(resources[0].getSource()).toBe('Resources');
+            expect(resources[1].getSource()).toBe('Endpoints used to manage resources.');
+            expect(resources[1].getDataType()).toBe('markdown');
+        });
+
         test("ParsePluralJson", function() {
             expect.assertions(16);
 

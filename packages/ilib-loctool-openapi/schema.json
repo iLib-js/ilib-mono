@@ -237,6 +237,9 @@
     "requestBody": {
       "type": "object",
       "properties": {
+        "description": {
+          "$ref": "#/refs/common/localizableString"
+        },
         "content": {
           "$ref": "#/refs/requestContent"
         }
@@ -347,6 +350,9 @@
         "name": {
           "type": "string",
           "localizable": true
+        },
+        "description": {
+          "$ref": "#/refs/common/localizableString"
         }
       }
     }
