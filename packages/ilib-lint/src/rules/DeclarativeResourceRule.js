@@ -162,7 +162,7 @@ class DeclarativeResourceRule extends ResourceRule {
         this.severity = this.severity || "error";
         this.useStripped = typeof(this.useStripped) !== "boolean" ? true : this.useStripped;
 
-        // this may throw if you got to the regexp syntax wrong:
+        // this may throw if you got the regexp syntax wrong:
         this.re = options.regexps.map(regexp => new RegExp(regexp, regexFlags));
         if (options.locales) {
             if (typeof(options.locales) === "string") {

@@ -30,7 +30,7 @@ export function registerLoader(loaderClass) {
     if (!loaderClass) return;
 
     const globalScope = top();
-    
+
     if (!globalScope.ilib) {
         globalScope.ilib = {};
     }
@@ -76,4 +76,4 @@ export function LoaderFactory() {
     return undefined;
 }
 
-export { Loader }; 
+export { Loader };
