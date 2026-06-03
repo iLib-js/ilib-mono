@@ -1,5 +1,11 @@
 ## Release Notes
 
+## 1.0.10
+
+### Patch Changes
+
+- 1e133e4: Updated extraction schema to include missing fields
+
 ### 1.0.9
 
 - update dependencies
@@ -32,6 +38,7 @@
 - minimum node version is now v10
 
 ### 1.0.3
+
 - Add missing `tags` section to the defaults schema
 
 ### 1.0.2
@@ -41,7 +48,7 @@
 ### 1.0.1
 
 - Fix errors while loading default schema, relative path was replaced
-with an absolute.
+  with an absolute.
 
 ### 1.0.0
 
