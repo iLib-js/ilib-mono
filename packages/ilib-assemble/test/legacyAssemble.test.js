@@ -19,6 +19,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import assembleilib from '../src/legacyilibassemble.js';
 
 const OUTPUT_DIR = "test/testfiles/output/legacy";
 const ILIB_PATH = "test/testfiles/legacy-ilib";
@@ -37,7 +38,6 @@ describe("legacyAssemble with customPath", () => {
             fs.mkdirSync(OUTPUT_DIR, { recursive: true });
         }
 
-        const { default: assembleilib } = await import('../src/legacyilibassemble.js');
         assembleilib({
             opt: {
                 ilibPath: ILIB_PATH,
