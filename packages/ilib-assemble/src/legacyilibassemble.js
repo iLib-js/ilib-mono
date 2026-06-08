@@ -131,7 +131,21 @@ function assembleLocaleRootData() {
     dependentData.forEach(function(data){
         let dataPath = path.join(ilibPath, "js/data/locale", data + ".json" );
         readData = readFile(dataPath);
-        allData += "ilib.data." + data + " = " + readData + ";\n";
+        if (customPath) {
+            let customDataPath = path.join(customPath, data + ".json");
+            let customReadData = readFile(customDataPath);
+            if (customReadData) {
+                if (readData) {
+                    let parsed = JSUtils.merge(JSON.parse(readData), JSON.parse(customReadData), true);
+                    readData = JSON.stringify(parsed, undefined, 4);
+                } else {
+                    readData = customReadData;
+                }
+            }
+        }
+        if (readData) {
+            allData += "ilib.data." + data + " = " + readData + ";\n";
+        }
     });
     return allData;
 }
