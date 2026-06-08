@@ -1,5 +1,12 @@
 # ilib-assemble
 
+## 1.4.1
+
+### Patch Changes
+
+- d7b15b0: \* Enable `assembleLocaleRootData()` to merge root-level JSON files from `customLocalePath` with the default ilib locale data
+  - When `customLocalePath` is specified and a matching JSON file exists at its root (e.g., `currency.json`), it is deep-merged with the ilib default data using JSUtils.merge(), with custom data taking precedence
+
 ## 1.4.0
 
 ### Minor Changes
