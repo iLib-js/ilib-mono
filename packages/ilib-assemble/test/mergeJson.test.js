@@ -37,7 +37,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"]
             }
         };
@@ -51,7 +51,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en", "de"]
             }
         };
@@ -66,7 +66,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"]
             }
         };
@@ -83,7 +83,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"]
             }
         };
@@ -100,7 +100,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"]
             }
         };
@@ -115,7 +115,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"],
                 compressed: true
             }
@@ -131,7 +131,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"],
                 compressed: false
             }
@@ -147,7 +147,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["fr"]
             }
         };
@@ -163,7 +163,7 @@ describe("testMergeJson", () => {
             args: [nestedOutDir],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"]
             }
         };
@@ -177,7 +177,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en", "de", "fr", "ko"]
             }
         };
@@ -189,17 +189,40 @@ describe("testMergeJson", () => {
     });
 
     test("MergeJsonExplicitIlibPath", async () => {
-        expect.assertions(1);
+        expect.assertions(2);
         const options = {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: path.join(process.cwd(), "test"),
+                ilibPath: path.join(process.cwd(), "test", "defaultilib"),
                 locales: ["en"]
             }
         };
         await mergeJson(options);
-        expect(fs.existsSync(path.join(OUTPUT_DIR, "en.json"))).toBeTruthy();
+        const outputPath = path.join(OUTPUT_DIR, "en.json");
+        expect(fs.existsSync(outputPath)).toBeTruthy();
+        const content = fs.readFileSync(outputPath, "utf-8");
+        expect(JSON.parse(content).assembleUrl).toContain("/test/defaultilib/js/assembleData/assemble.mjs");
+    });
+
+    test("MergeJsonDoesNotChangeCallerCwd", async () => {
+        expect.assertions(2);
+        const altIlibPath = path.join(process.cwd(), "test", "altilib");
+        const options = {
+            args: [OUTPUT_DIR],
+            opt: {
+                ilibincPath: "test/testfiles/ilib-all-inc.js",
+                ilibPath: altIlibPath,
+                locales: ["en"]
+            }
+        };
+
+        await mergeJson(options);
+
+        const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
+        const parsed = JSON.parse(content);
+        expect(parsed.assembleUrl).toContain("/test/altilib/js/assembleData/assemble.mjs");
+        expect(parsed.cwd).toBe(process.cwd());
     });
 
     test("MergeJsonInvalidIlibPathRejects", async () => {
@@ -215,13 +238,47 @@ describe("testMergeJson", () => {
         await expect(mergeJson(options)).rejects.toThrow("mergeJson failed:");
     });
 
+    test("MergeJsonSurfacesAssembleLayoutErrors", async () => {
+        expect.assertions(1);
+        const options = {
+            args: [OUTPUT_DIR],
+            opt: {
+                ilibincPath: "test/testfiles/ilib-all-inc.js",
+                ilibPath: path.join(process.cwd(), "test", "brokenilib"),
+                locales: ["en"]
+            }
+        };
+
+        await expect(mergeJson(options)).rejects.toThrow(
+            "mergeJson failed: iLib locale data directory not found: /broken/js/data/locale"
+        );
+    });
+
+    test("MergeJsonRejectsEmptyAssembleResult", async () => {
+        expect.assertions(2);
+        const emptyIlibPath = path.join(process.cwd(), "test", "emptyilib");
+        const options = {
+            args: [OUTPUT_DIR],
+            opt: {
+                ilibincPath: "test/testfiles/ilib-all-inc.js",
+                ilibPath: emptyIlibPath,
+                locales: ["en"]
+            }
+        };
+
+        await expect(mergeJson(options)).rejects.toThrow(
+            `mergeJson failed: assemble.mjs returned no locale data for ilib path "${emptyIlibPath}"`
+        );
+        expect(fs.existsSync(OUTPUT_DIR)).toBeFalsy();
+    });
+
     test("MergeJsonInvalidIncludePathRejects", async () => {
         expect.assertions(1);
         const options = {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/nonexistent-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"]
             }
         };
@@ -236,7 +293,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"],
                 splitByLocale: true,
                 mergeJson: false
@@ -251,7 +308,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/ilib-all-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"],
                 splitByLocale: true,
                 mergeJson: false
@@ -267,7 +324,7 @@ describe("testMergeJson", () => {
             args: [OUTPUT_DIR],
             opt: {
                 ilibincPath: "test/testfiles/nonexistent-inc.js",
-                ilibPath: "test/",
+                ilibPath: "test/defaultilib/",
                 locales: ["en"]
             }
         };
