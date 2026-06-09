@@ -29,7 +29,6 @@ export function assemble(modules, options) {
     const result = {};
     locales.forEach(locale => {
         result[locale] = {
-            assembleUrl: import.meta.url,
             modules: modules,
             locale: locale
         };
