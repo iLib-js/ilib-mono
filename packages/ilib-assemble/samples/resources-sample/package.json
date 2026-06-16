@@ -1,16 +1,13 @@
 {
-    "name": "legacy-ilib-sample",
+    "name": "resources-sample",
     "private": true,
     "version": "0.0.0",
     "type": "module",
-    "dependencies": {
-        "ilib": "^14.21.0"
-    },
     "devDependencies": {
         "ilib-assemble": "workspace:^"
     },
     "scripts": {
-        "assemble": "ilib-assemble --legacyilib -l en-US,de-DE -i ./node_modules/ilib -f ./ilib-inc.js ./locale",
+        "assemble": "ilib-assemble -l en-US,de-DE,fr-FR -r ./resources ./locale ./src",
         "start": "node src/index.js",
         "clean": "rm -rf locale node_modules"
     }

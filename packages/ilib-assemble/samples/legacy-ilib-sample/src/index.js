@@ -11,3 +11,4 @@
 console.log("Legacy ilib sample");
 console.log("Run 'pnpm assemble' to assemble the legacy ilib code and locale data.");
 console.log("The output will be in the ./locale directory.");
+

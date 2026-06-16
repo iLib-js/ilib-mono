@@ -1,7 +1,7 @@
 /*
  * scanmodule.js - scan an ilib module for locale data
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,8 @@ function scanModule(moduleName, options) {
         return Promise.resolve(true);
     }
 
-    return import(`${moduleName}/assemble.mjs`).then(module => {
+    // Use the resolved path for the import to handle workspace dependencies correctly
+    return import(path.join(resolved, "assemble.mjs")).then(module => {
         if (!options || !options.quiet) console.log(`    Returning data for module ${moduleName}`);
         const assemble = module && module.default;
         if (assemble && typeof(assemble) === 'function') {
