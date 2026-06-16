@@ -1,6 +1,5 @@
 /*
- * LoaderFactory.js - create new loader objects or return existing
- * ones
+ * jest.config.cjs - Jest configuration for ilib-loader
  *
  * Copyright © 2022, 2025 JEDLSoft
  *
@@ -17,20 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const { jestConfig } = require("ilib-internal");
 
-import { getPlatform } from 'ilib-env';
-import { Loader, registerLoader, LoaderFactory } from './LoaderFactory.js';
-import NodeLoader from './NodeLoader.js';
-import WebpackLoader from './WebpackLoader.js';
+const config = {
+    ...jestConfig,
+    testPathIgnorePatterns: [
+        '.*/test/WebpackLoader\\.test\\.js$'
+    ],
+    displayName: {
+        name: "ilib-common",
+        color: "blackBright",
+    },
+};
 
-switch (getPlatform()) {
-    case 'nodejs':
-        registerLoader(NodeLoader);
-        break;
-    case 'browser':
-        registerLoader(WebpackLoader);
-        break;
-}
+module.exports = config;
 
-export { Loader, registerLoader };
-export default LoaderFactory;
