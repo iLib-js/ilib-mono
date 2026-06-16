@@ -233,7 +233,7 @@ only the locale data needed for the locales that are being used.
 
 ## License
 
-Copyright © 2022-2023, 2026, JEDLSoft
+Copyright © 2022-2023, 2025-2026 JEDLSoft
 
 This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loader/LICENSE) file in the ilib-mono repository on GitHub.
 
