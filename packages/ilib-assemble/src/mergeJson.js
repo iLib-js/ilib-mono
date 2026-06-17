@@ -46,7 +46,7 @@ function mergeJson(options) {
     }
 
     const incPath = options.opt.ilibincPath || "./ilib-all-inc.js";
-    const outDir = options.args[0];
+    const outDir = path.resolve(options.args[0]);
     const isCompressed = options.opt.compressed || false;
 
     const ilibModules = new Set();
@@ -56,11 +56,18 @@ function mergeJson(options) {
         return Promise.reject(new Error(`Failed to read include file "${incPath}": ${e.message}`));
     }
 
-    const ilibPath = options.opt.ilibPath || "./";
+    const ilibPath = path.resolve(options.opt.ilibPath || "./");
     const assemblePath = path.resolve(ilibPath, "js/assembleData", "assemble.mjs");
     return import(pathToFileURL(assemblePath).href)
         .then(({ assemble }) => {
             const result_data = assemble([...ilibModules], options);
+
+            if (!result_data || Object.keys(result_data).length === 0) {
+                throw new Error(
+                    `assemble.mjs returned no locale data for ilib path "${ilibPath}"`
+                );
+            }
+
             write(result_data, outDir, isCompressed);
         })
         .catch(e => {

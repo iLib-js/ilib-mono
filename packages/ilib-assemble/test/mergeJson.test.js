@@ -215,6 +215,32 @@ describe("testMergeJson", () => {
         await expect(mergeJson(options)).rejects.toThrow("mergeJson failed:");
     });
 
+    test("MergeJsonRejectsEmptyAssembleResult", async () => {
+        expect.assertions(1);
+
+        // Create temporary structure with empty assemble.mjs
+        const tempAssembleDir = path.join(OUTPUT_DIR, "temp", "js", "assembleData");
+        fs.mkdirSync(tempAssembleDir, { recursive: true });
+        fs.writeFileSync(
+            path.join(tempAssembleDir, "assemble.mjs"),
+            `export function assemble(modules, options) { return {}; }`
+        );
+
+        const emptyResultPath = path.resolve(path.join(OUTPUT_DIR, "temp"));
+        const options = {
+            args: [OUTPUT_DIR],
+            opt: {
+                ilibincPath: "test/testfiles/ilib-all-inc.js",
+                ilibPath: emptyResultPath,
+                locales: ["en"]
+            }
+        };
+
+        await expect(mergeJson(options)).rejects.toThrow(
+            `mergeJson failed: assemble.mjs returned no locale data for ilib path "${emptyResultPath}"`
+        );
+    });
+
     test("MergeJsonInvalidIncludePathRejects", async () => {
         expect.assertions(1);
         const options = {
