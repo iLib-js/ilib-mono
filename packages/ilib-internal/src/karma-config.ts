@@ -115,9 +115,22 @@ function isBrowserInstalled(browserName: string): boolean {
 
             case "linux":
                 // Linux - check if executable is in PATH
+                // Some browsers have different binary names on Linux
+                const linuxAliases: { [key: string]: string[] } = {
+                    chrome: ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser"],
+                    firefox: ["firefox"],
+                    opera: ["opera"],
+                };
+                const candidates = linuxAliases[browserName] || [browserName];
                 try {
-                    execSync(`which ${browserName}`, { stdio: "ignore" });
-                    return true;
+                    return candidates.some(cmd => {
+                        try {
+                            execSync(`which ${cmd}`, { stdio: "ignore" });
+                            return true;
+                        } catch {
+                            return false;
+                        }
+                    });
                 } catch {
                     return false;
                 }
@@ -244,6 +257,10 @@ export function createKarmaConfig(options: SharedKarmaConfigOptions = {} as Shar
 
         // Default browsers - can be overridden
         browsers: options.browsers || browsers,
+
+        // Timeout settings for browser capture
+        captureTimeout: 30000,
+        browserNoActivityTimeout: 30000,
 
         // Default webpack configuration
         webpack: {
