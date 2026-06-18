@@ -102,7 +102,7 @@ describe("testnamefmtpromise", () => {
         });
     });
 
-    test("NameFmtAsyncZHFormalLong", () => {
+    test("NameFmtAsyncKOFormalLong", () => {
         expect.assertions(1);
         return Name.create({
             honorific: "닥터",

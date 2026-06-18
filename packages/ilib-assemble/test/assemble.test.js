@@ -185,15 +185,6 @@ describe("testAssemble", () => {
         expect(object1).toStrictEqual({"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}});
     });
 
-    test("ExtendSubobjectsAddProps", () => {
-        expect.assertions(1);
-        var object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
-            object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
-
-        JSUtils.extend(object1, object2);
-        expect(object1).toStrictEqual({"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}});
-    });
-
     test("ExtendBooleans", () => {
         expect.assertions(1);
         var object1 = {"a": true, "b": true},

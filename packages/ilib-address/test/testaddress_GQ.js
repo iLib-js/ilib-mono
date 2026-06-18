@@ -52,20 +52,6 @@ export const testaddress_GQ = {
         test.done();
     },
 
-    testParseAddressGQNormal: function(test) {
-        test.expect(7);
-        var parsedAddress = new Address("Mr. Ignacio Nguema Apartado 36\nMALABO\nGuinea Ecuatorial", {locale: 'es-GQ'});
-
-        test.ok(typeof(parsedAddress) !== "undefined");
-        test.equal(parsedAddress.streetAddress, "Mr. Ignacio Nguema Apartado 36");
-        test.equal(parsedAddress.locality, "MALABO");
-        test.ok(typeof(parsedAddress.region) === "undefined");
-        test.ok(typeof(parsedAddress.postalCode) === "undefined");
-        test.equal(parsedAddress.country, "Guinea Ecuatorial");
-        test.equal(parsedAddress.countryCode, "GQ");
-        test.done();
-    },
-
     testParseAddressGQNoZip: function(test) {
         test.expect(7);
         var parsedAddress = new Address("Mr. Ignacio Nguema Apartado 36\nMALABO\nGuinea Ecuatorial", {locale: 'es-GQ'});
@@ -196,20 +182,6 @@ export const testaddress_GQ = {
         test.done();
     },
 
-
-    testFRParseAddressNormal: function(test) {
-        test.expect(7);
-        var parsedAddress = new Address("Mr. Ignacio Nguema Apartado 36\nMALABO\nguinée équatoriale", {locale: 'fr-GQ'});
-
-        test.ok(typeof(parsedAddress) !== "undefined");
-        test.equal(parsedAddress.streetAddress, "Mr. Ignacio Nguema Apartado 36");
-        test.equal(parsedAddress.locality, "MALABO");
-        test.ok(typeof(parsedAddress.region) === "undefined");
-        test.ok(typeof(parsedAddress.postalCode) === "undefined");
-        test.equal(parsedAddress.country, "guinée équatoriale");
-        test.equal(parsedAddress.countryCode, "GQ");
-        test.done();
-    },
 
     testFRParseAddressNormal: function(test) {
         test.expect(7);
@@ -356,20 +328,6 @@ export const testaddress_GQ = {
     },
 
 
-
-    testPTParseAddressNormal: function(test) {
-        test.expect(7);
-        var parsedAddress = new Address("Mr. Ignacio Nguema Apartado 36\nMALABO\nGuiné Equatorial", {locale: 'pt-GQ'});
-
-        test.ok(typeof(parsedAddress) !== "undefined");
-        test.equal(parsedAddress.streetAddress, "Mr. Ignacio Nguema Apartado 36");
-        test.equal(parsedAddress.locality, "MALABO");
-        test.ok(typeof(parsedAddress.region) === "undefined");
-        test.ok(typeof(parsedAddress.postalCode) === "undefined");
-        test.equal(parsedAddress.country, "Guiné Equatorial");
-        test.equal(parsedAddress.countryCode, "GQ");
-        test.done();
-    },
 
     testPTParseAddressNormal: function(test) {
         test.expect(7);

@@ -177,7 +177,7 @@ describe("testMathUtils", () => {
         expect(MathUtils.significant(0.000123456, 2)).toBe(0.00012);
     });
 
-    test("SignificantZero", () => {
+    test("SignificantZeroInput", () => {
         expect.assertions(1);
         expect(MathUtils.significant(0, 2)).toBe(0);
     });
@@ -197,7 +197,7 @@ describe("testMathUtils", () => {
         expect(MathUtils.signum(-1)).toBe(-1);
     });
 
-    test("SignumPositiveLarge", () => {
+    test("SignumNegativeLarge", () => {
         expect.assertions(1);
         expect(MathUtils.signum(-13234)).toBe(-1);
     });

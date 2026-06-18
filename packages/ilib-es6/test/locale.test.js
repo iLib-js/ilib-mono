@@ -283,7 +283,7 @@ describe("testlocale", () => {
         expect(!loc.isPseudo(loc)).toBeTruthy();
     });
 
-    test("LocaleIsPseudoFalse", () => {
+    test("LocaleIsPseudoFalseButCloseRegion", () => {
         expect.assertions(2);
         const loc = new Locale("en-XX");
 

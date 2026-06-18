@@ -392,7 +392,7 @@ describe("testLocaleMatch", () => {
         expect(locale.getSpec()).toBe("af-Latn-ZA");
     });
 
-    test("LocaleMatcherGetLikelyLocaleByLocaleRegionCodeAF", () => {
+    test("LocaleMatcherGetLikelyLocaleByLocaleRegionCodeAFNA", () => {
         expect.assertions(3);
         var lm = new LocaleMatcher({
             locale: "af-NA"
@@ -1494,7 +1494,7 @@ describe("testLocaleMatch", () => {
         expect(lm.match("zh-CN")).toBe(100);
     });
 
-    test("LocaleMatcherMatchExactDefaultScript", () => {
+    test("LocaleMatcherMatchExactDefaultScriptEN", () => {
         expect.assertions(2);
         var lm = new LocaleMatcher({
             locale: "en-Latn-US"
@@ -1653,16 +1653,6 @@ describe("testLocaleMatch", () => {
         expect(typeof(lm) !== "undefined").toBeTruthy();
 
         expect(lm.match("cmn-Hans-CN")).toBe(95);
-    });
-
-    test("LocaleMatcherGetMacroLanguageNO", () => {
-        expect.assertions(2);
-        var lm = new LocaleMatcher({
-            locale: "nn-NO"
-        });
-        expect(typeof(lm) !== "undefined").toBeTruthy();
-
-        expect(lm.getMacroLanguage()).toBe("no");
     });
 
     test("LocaleMatcherGetRegionContainmentNO", () => {
@@ -1828,7 +1818,7 @@ describe("testLocaleMatch", () => {
         expect(typeof(locale) !== "undefined").toBeTruthy();
         expect(locale.getSpec()).toBe("ka-GE");
     });
-    test("LocaleMatcherGetLikelyLocaleMinimalByLanguage4", () => {
+    test("LocaleMatcherGetLikelyLocaleMinimalByLanguage5", () => {
         expect.assertions(3);
         var lm = new LocaleMatcher({
             locale: "be"
@@ -1858,7 +1848,7 @@ describe("testLocaleMatch", () => {
         expect(typeof(locale) !== "undefined").toBeTruthy();
         expect(locale.getSpec()).toBe("gl-ES");
     });
-    test("LocaleMatcherGetLikelyLocaleMinimalByLanguage5", () => {
+    test("LocaleMatcherGetLikelyLocaleMinimalByLanguage7", () => {
         expect.assertions(3);
         var lm = new LocaleMatcher({
             locale: "eu"

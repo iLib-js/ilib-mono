@@ -189,7 +189,7 @@ describe("testEnv", () => {
         expect(ilibEnv.getTimeZone()).toBe(tz);
     });
 
-    test("SetTimeZoneNonString1", () => {
+    test("SetTimeZoneNonString2", () => {
         ilibEnv.clearCache();
 
         expect.assertions(1);
