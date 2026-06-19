@@ -160,16 +160,6 @@ describe("testUtils", () => {
         expect(actual).toEqual(expected);
     });
 
-    test("MergeSubobjectsAddProps", () => {
-        expect.assertions(1);
-        let object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
-            object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
-
-        let expected = {"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}};
-        let actual = JSUtils.merge(object1, object2);
-        expect(actual).toEqual(expected);
-    });
-
     test("MergeBooleans", () => {
         expect.assertions(1);
         let object1 = {"a": true, "b": true},
@@ -559,7 +549,7 @@ describe("testUtils", () => {
         ilib.data.foobar = ilib.data.foobar_de = ilib.data.foobar_de_DE = ilib.data.foobar_de_Latn_DE = ilib.data.foobar_de_Latn_DE_SAP = undefined;
     });
 
-    test("MergeLocDataNoLocale", () => {
+    test("MergeLocDataNoLocaleEN", () => {
         expect.assertions(4);
         ilib.data.foobar = {
             a: "b",

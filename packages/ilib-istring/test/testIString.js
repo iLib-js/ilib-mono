@@ -1002,7 +1002,7 @@ export const testIString = {
         test.done();
     },
 
-    testStringDelegateIndexOf: function(test) {
+    testStringDelegateLastIndexOf: function(test) {
         test.expect(2);
         var str = new IString("abcdefghijklmnopqrstuvwxyzlmnopqrstuv");
 
