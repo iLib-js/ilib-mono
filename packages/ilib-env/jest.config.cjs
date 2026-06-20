@@ -6,6 +6,10 @@ const config = {
         name: "ilib-env",
         color: "yellowBright",
     },
-};
+    testPathIgnorePatterns: [
+        "/node_modules/",
+        "env-browser.test.js"
+    ]
+}
 
 module.exports = config;

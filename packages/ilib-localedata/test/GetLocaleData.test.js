@@ -1,7 +1,7 @@
 /*
- * testGetLocaleData.js - test the locale data factory method
+ * GetLocaleData.test.js - test the locale data factory method
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,64 +17,58 @@
  * limitations under the License.
  */
 
-import { setPlatform, getPlatform } from 'ilib-env';
-import { registerLoader } from 'ilib-loader';
+import { getPlatform, setPlatform, clearCache } from "ilib-env";
 
 import MockLoader from './MockLoader.js';
 import getLocaleData, { clearLocaleData } from '../src/index.js';
 
-export const testGetLocaleData = {
-    testGetLocaleData: function(test) {
-        test.expect(1);
+describe("GetLocaleData", () => {
+    test("should get locale data", () => {
+        expect.assertions(1);
         const locData = getLocaleData({
             path: "./test/files"
         });
-        test.ok(locData);
-        test.done();
-    },
+        expect(locData).toBeTruthy();
+    });
 
-    testGetLocaleDataNoPath: function(test) {
-        test.expect(1);
-        test.throws((test) => {
+    test("should throw error when get locale data called without path", () => {
+        expect.assertions(1);
+        expect(() => {
             getLocaleData({
                 name: "test"
             });
-        });
-        test.done();
-    },
+        }).toThrow();
+    });
 
-    testGetLocaleDataNoOptions: function(test) {
-        test.expect(1);
-        test.throws(() => {
+    test("should throw error when get locale data called without options", () => {
+        expect.assertions(1);
+        expect(() => {
             getLocaleData();
-        });
-        test.done();
-    },
+        }).toThrow();
+    });
 
-    testGetLocaleDataEmptyPath: function(test) {
-        test.expect(1);
-        test.throws((test) => {
+    test("should throw error when get locale data called with empty path", () => {
+        expect.assertions(1);
+        expect(() => {
             getLocaleData({
                 path: "",
                 name: "test"
             });
-        });
-        test.done();
-    },
+        }).toThrow();
+    });
 
-    testGetLocaleDataNullPath: function(test) {
-        test.expect(1);
-        test.throws((test) => {
+    test("should throw error when get locale data called with null path", () => {
+        expect.assertions(1);
+        expect(() => {
             getLocaleData({
                 path: null,
                 name: "test"
             });
-        });
-        test.done();
-    },
+        }).toThrow();
+    });
 
-    testGetLocaleDataNoSync: function(test) {
-        test.expect(1);
+    test("should get locale data without sync", () => {
+        expect.assertions(1);
 
         clearLocaleData();
 
@@ -82,12 +76,11 @@ export const testGetLocaleData = {
             path: "./test/files",
         });
 
-        test.ok(!locData.isSync());
-        test.done();
-    },
+        expect(!locData.isSync()).toBe(true);
+    });
 
-    testGetLocaleDataSync: function(test) {
-        test.expect(2);
+    test("should get locale data with sync", () => {
+        expect.assertions(2);
 
         setPlatform("nodejs");
         clearLocaleData();
@@ -97,54 +90,51 @@ export const testGetLocaleData = {
             sync: true
         });
 
-        test.ok(locData);
-        test.ok(locData.isSync());
+        expect(locData).toBeTruthy();
+        expect(locData.isSync()).toBe(true);
 
         setPlatform(undefined);
-        test.done();
-    },
+    });
 
-    testLocaleDataSingleton: function(test) {
-        test.expect(3);
+    test("should return singleton locale data", () => {
+        expect.assertions(3);
         clearLocaleData();
 
         const locData1 = getLocaleData({
             path: "./test/files",
             sync: false
         });
-        test.ok(locData1);
+        expect(locData1).toBeTruthy();
 
         // same params means same instance
         const locData2 = getLocaleData({
             path: "./test/files",
             sync: false
         });
-        test.ok(locData2);
+        expect(locData2).toBeTruthy();
 
-        test.equal(locData1, locData2);
-        test.done();
-    },
+        expect(locData1).toBe(locData2);
+    });
 
-    testLocaleDataSingletonPerPath: function(test) {
-        test.expect(5);
+    test("should return different instances for different paths", () => {
+        expect.assertions(5);
         clearLocaleData();
 
         const locData1 = getLocaleData({
             path: "./test/files",
             sync: false
         });
-        test.ok(locData1);
+        expect(locData1).toBeTruthy();
 
         // different params means different instance
         const locData2 = getLocaleData({
             path: "./test/files2",
             sync: false
         });
-        test.ok(locData2);
+        expect(locData2).toBeTruthy();
 
-        test.equal(locData1.getPath(), "./test/files");
-        test.equal(locData2.getPath(), "./test/files2");
-        test.notEqual(locData1, locData2);
-        test.done();
-    }
-};
+        expect(locData1.getPath()).toBe("./test/files");
+        expect(locData2.getPath()).toBe("./test/files2");
+        expect(locData1).not.toBe(locData2);
+    });
+}); 

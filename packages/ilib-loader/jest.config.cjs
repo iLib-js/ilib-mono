@@ -1,7 +1,7 @@
 /*
- * testSuiteFiles.js - list the test files in this directory
+ * jest.config.cjs - Jest configuration for ilib-loader
  *
- * Copyright © 2022, JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const { jestConfig } = require("ilib-internal");
 
-export const files = [
-    "testDataCache.js",
-    "testLocaleData.js",
-    "testGetLocaleData.js",
-    "testLocaleDataNode.js"
-];
+const config = {
+    ...jestConfig,
+    testPathIgnorePatterns: [
+        '.*/test/WebpackLoader\\.test\\.js$'
+    ],
+    displayName: {
+        name: "ilib-common",
+        color: "blackBright",
+    },
+};
+
+module.exports = config;
+
