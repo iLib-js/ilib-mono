@@ -30,6 +30,8 @@ let locales;
 let outFileName;
 let isCompressed;
 let customPath;
+let libDir;
+let localeDir;
 let jsFileList = [];
 let allJSList = [];
 
@@ -44,6 +46,10 @@ function assembleilib(options) {
     outFileName = options.opt.outjsFileName || "ilib-all.js";
     isCompressed = options.opt.compressed || false;
     customPath = options.opt.customLocalePath;
+
+    libDir = fs.existsSync(path.join(ilibPath, "js/lib")) ? "js/lib" : "lib";
+    localeDir = fs.existsSync(path.join(ilibPath, "js/data/locale")) ? "js/data/locale" : "locale";
+
     readIncFile(incPath);
     readJSFiles();
 }
@@ -81,7 +87,7 @@ function readJSFiles() {
     let matchedJS;
     let matchedData;
     jsFileList.forEach(function(file){
-        let jsPath = path.join(ilibPath, "js/lib", file);
+        let jsPath = path.join(ilibPath, libDir, file);
         readData = readFile(jsPath);
         if (readData) {
             matchedJS = [...readData.matchAll(reDependentPattern)];
@@ -129,7 +135,7 @@ function assembleLocaleRootData() {
     dependentData.push(... rootJsonFiles);
 
     dependentData.forEach(function(data){
-        let dataPath = path.join(ilibPath, "js/data/locale", data + ".json" );
+        let dataPath = path.join(ilibPath, localeDir, data + ".json" );
         readData = readFile(dataPath);
         if (customPath) {
             let customDataPath = path.join(customPath, data + ".json");
@@ -152,7 +158,7 @@ function assembleLocaleRootData() {
 
 function assembleZoneinfo() {
     let readData;
-    let zoneinfoPath = path.join(ilibPath, "js/data/locale/zoneinfo");
+    let zoneinfoPath = path.join(ilibPath, localeDir, "zoneinfo");
     readData = zoneinfoWalk(zoneinfoPath);
     return readData;
 }
@@ -170,7 +176,7 @@ function zoneinfoWalk(zoneinfoPath) {
             if (stat && stat.isDirectory()) {
                 zoneinfoWalk(filePath);
             } else {
-                let timezoneID = filePath.replace(path.join(ilibPath, "js/data/locale/zoneinfo/"), "").replace(".json", "");
+                let timezoneID = filePath.replace(path.join(ilibPath, localeDir, "zoneinfo/"), "").replace(".json", "");
                 let readData = readFile(filePath);
                 allTimeZoneData += 'ilib.data.zoneinfo["' + timezoneID + '"] = ' + readData + ';\n';
             }
@@ -184,7 +190,7 @@ function assemblejs() {
     allJSList
     .filter(file => file !== "index.js")
     .forEach(file => {
-        const filePath = path.join(ilibPath, "js/lib", file);
+        const filePath = path.join(ilibPath, libDir, file);
         const readData = readFile(filePath);
         if (readData) {
             assembleJSAll += readData;
@@ -310,7 +316,7 @@ function assembleData(dataPath, allData){
 
 function assembleLocale() {
     let result = {};
-    result = assembleData(path.join(ilibPath, "js/data/locale"), result);
+    result = assembleData(path.join(ilibPath, localeDir), result);
 
     if (customPath) {
         result = assembleData(customPath, result);
