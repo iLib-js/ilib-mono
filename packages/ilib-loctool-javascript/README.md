@@ -22,6 +22,12 @@ used within the json property:
 
 - wrapper: specify a regular expression that matches the wrapper function
   that contains strings to extract and unique ids
+- outputSourceLocale: when `true`, write out a resource file for the source
+  locale using the extracted source strings. This is useful when strings are
+  extracted from source code and the source locale resource file must exist at
+  runtime. The output is sent to whatever resource file type is configured in
+  `resourceFileTypes.javascript`, such as this plugin or the json plugin.
+  Default is `false`.
 - mappings: a mapping between file matchers and an object that gives
   info used to localize the files that match it. This allows different
   json files within the project to be processed with different schema.

@@ -12,4 +12,3 @@ This package is released under the [Apache License, Version 2.0](https://www.apa
 ## Release Notes
 
 See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loctool-javascript-resource/CHANGELOG.md).
-
