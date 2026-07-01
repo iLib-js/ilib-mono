@@ -32,6 +32,6 @@ which will reduce the bundle size.
 
 After running `pnpm assemble`, you will have:
 - `./locale/ilib-all.js` - The assembled ilib JavaScript code
-- `./locale/en-US.js` - Locale data for en-US
-- `./locale/de-DE.js` - Locale data for de-DE
+- `./locale/en.js` - Locale data for en-US
+- `./locale/de.js` - Locale data for de-DE
 
