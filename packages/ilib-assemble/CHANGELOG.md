@@ -1,5 +1,14 @@
 # ilib-assemble
 
+## 1.4.1
+
+### Patch Changes
+
+- 793c79a: Support the flat lib/ and locale/ directory layout that ilib uses when published to npm, in addition to the js/lib and js/data/locale layout of the ilib source repository
+- 7a89d52: Throw error when assemble returns empty for mergeJson
+- d7b15b0: \* Enable `assembleLocaleRootData()` to merge root-level JSON files from `customLocalePath` with the default ilib locale data
+  - When `customLocalePath` is specified and a matching JSON file exists at its root (e.g., `currency.json`), it is deep-merged with the ilib default data using JSUtils.merge(), with custom data taking precedence
+
 ## 1.4.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # ilib-env
 
+## 1.4.3
+
+### Patch Changes
+
+- 116118e: - Fixed the way the top scope is calculated with top()
+  - Make sure to catch exceptions when trying
+    to reference "global" which throws on some strict
+    platforms
+  - Better default path using the ESM "globalThis" if
+    everything else fails
+
 ## 1.4.2
 
 ### Patch Changes
