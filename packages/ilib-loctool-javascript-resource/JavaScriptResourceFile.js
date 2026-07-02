@@ -199,20 +199,30 @@ JavaScriptResourceFile.prototype.getContent = function() {
             return (left.getKey() < right.getKey()) ? -1 : (left.getKey() > right.getKey() ? 1 : 0);
         });
 
+        var isSourceLocaleFile = this.project.isSourceLocale(this.locale.getSpec());
+
         for (var j = 0; j < resources.length; j++) {
             var resource = resources[j];
-            if (resource.getSource() && resource.getTarget()) {
-                if (clean(resource.getSource()) !== clean(resource.getTarget())) {
-                    this.logger.trace("writing translation for " + resource.getKey() + " as " + resource.getTarget());
-                    json[resource.getKey()] = this.project.settings.identify ?
-                        '<span loclang="javascript" locid="' + resource.getKey() + '">' + resource.getTarget() + '</span>' :
-                        resource.getTarget();
-                } else {
-                    this.logger.trace("skipping translation with no change");
-                }
-            } else {
+            if (!resource.getSource()) {
                 this.logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
+                continue;
             }
+
+            var value;
+            if (isSourceLocaleFile) {
+                value = resource.getSource();
+                this.logger.trace("writing source locale string for " + resource.getKey() + " as " + value);
+            } else if (resource.getTarget() && clean(resource.getSource()) !== clean(resource.getTarget())) {
+                value = resource.getTarget();
+                this.logger.trace("writing translation for " + resource.getKey() + " as " + value);
+            } else {
+                this.logger.trace("skipping translation with no change");
+                continue;
+            }
+
+            json[resource.getKey()] = (!isSourceLocaleFile && this.project.settings.identify) ?
+                '<span loclang="javascript" locid="' + resource.getKey() + '">' + value + '</span>' :
+                value;
         }
     }
 

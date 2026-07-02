@@ -26,6 +26,31 @@ var mm = require("micromatch");
 var JavaScriptFile = require("./JavaScriptFile.js");
 var JavaScriptResourceFileType = require("ilib-loctool-javascript-resource");
 
+function shouldOutputSourceLocale(project) {
+    var settings = project.settings && project.settings.javascript;
+    return !!(settings && settings.outputSourceLocale);
+}
+
+function writeSourceLocaleResources(fileType, resFileType, resources) {
+    if (!shouldOutputSourceLocale(fileType.project) || !resFileType) {
+        return;
+    }
+
+    var sourceLocale = fileType.project.sourceLocale;
+    for (var i = 0; i < resources.length; i++) {
+        var res = resources[i];
+        var srcRes = res.clone();
+        srcRes.setTargetLocale(sourceLocale);
+        srcRes.setTarget(res.getSource());
+        var file = resFileType.getResourceFile(
+            sourceLocale,
+            fileType.getLocalizedPath(res.mapping, res.getPath(), sourceLocale)
+        );
+        file.addResource(srcRes);
+        fileType.logger.trace("Added " + srcRes.reskey + " to source locale file " + file.pathName);
+    }
+}
+
 var JavaScriptFileType = function(project) {
     this.type = "javascript";
     this.datatype = "javascript";
@@ -218,6 +243,8 @@ JavaScriptFileType.prototype.write = function(translations, locales) {
         translationLocales = locales.filter(function(locale) {
             return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale;
         }.bind(this));
+
+    writeSourceLocaleResources(this, resFileType, resources);
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];

@@ -360,6 +360,92 @@ describe("javascriptresourcefile", function() {
         );
     });
 
+    test("JavaScriptResourceFileOutputSourceLocale", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p,
+            pathName: "localized_js/en-US.js",
+            locale: "en-US"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        [
+            p.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "en-US",
+                key: "Hello",
+                sourceLocale: "en-US",
+                source: "Hello",
+                target: "Hello"
+            }),
+            p.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "en-US",
+                key: "Goodbye",
+                sourceLocale: "en-US",
+                source: "Goodbye",
+                target: "Goodbye"
+            })
+        ].forEach(function(res) {
+            jsrf.addResource(res);
+        });
+
+        expect(jsrf.getContent()).toBe('ilib.data.strings_en_US = {\n' +
+            '    "Goodbye": "Goodbye",\n' +
+            '    "Hello": "Hello"\n' +
+            '};\n'
+        );
+    });
+
+    test("JavaScriptResourceFileOutputSourceLocaleWithHeaderAndFooter", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p3,
+            pathName: "localized_js/en-US.js",
+            locale: "en-US"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        [
+            p3.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "en-US",
+                key: "Hello",
+                sourceLocale: "en-US",
+                source: "Hello",
+                target: "Hello"
+            }),
+            p3.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "en-US",
+                key: "Goodbye",
+                sourceLocale: "en-US",
+                source: "Goodbye",
+                target: "Goodbye"
+            })
+        ].forEach(function(res) {
+            jsrf.addResource(res);
+        });
+
+        expect(jsrf.getContent()).toBe(
+            '/* This is a generated file. DO NOT EDIT THIS. */\n\n' +
+            "import type ReactString from './types.d.ts';\n\n" +
+            'const strings_en_US = {\n' +
+            '    "Goodbye": "Goodbye",\n' +
+            '    "Hello": "Hello"\n' +
+            '};\n\n' +
+            'export default strings_en_US;\n'
+        );
+    });
+
     test("JavaScriptResourceFileEscapeDoubleQuotes", function() {
         expect.assertions(2);
 
