@@ -23,37 +23,6 @@ var mm = require("micromatch");
 
 var RegexFile = require("./RegexFile.js");
 
-function shouldOutputSourceLocale(project) {
-    var settings = project.settings && project.settings.regex;
-    return !!(settings && settings.outputSourceLocale);
-}
-
-function writeSourceLocaleResources(fileType, resources) {
-    if (!shouldOutputSourceLocale(fileType.project)) {
-        return;
-    }
-
-    var sourceLocale = fileType.project.sourceLocale;
-    for (var i = 0; i < resources.length; i++) {
-        var res = resources[i];
-        var mapping = fileType.getMapping(res.getPath());
-        var resFileType = mapping && fileType.project.getResourceFileType(mapping.resourceFileType);
-        if (!resFileType) {
-            continue;
-        }
-
-        var srcRes = res.clone();
-        srcRes.setTargetLocale(sourceLocale);
-        srcRes.setTarget(res.getSource());
-        var file = resFileType.getResourceFile(
-            sourceLocale,
-            fileType.getLocalizedPath(mapping, res.getPath(), sourceLocale)
-        );
-        file.addResource(srcRes);
-        fileType.logger.trace("Added " + srcRes.reskey + " to source locale file " + file.pathName);
-    }
-}
-
 var defaultMappings = {
     "**/*.js": {
         "template": "resources/strings_[locale].json"
@@ -245,8 +214,6 @@ RegexFileType.prototype.write = function(translations, locales) {
         translationLocales = locales.filter(function(locale) {
             return locale !== this.project.sourceLocale && locale !== this.project.pseudoLocale;
         }.bind(this));
-
-    writeSourceLocaleResources(this, resources);
 
     for (var i = 0; i < resources.length; i++) {
         res = resources[i];
