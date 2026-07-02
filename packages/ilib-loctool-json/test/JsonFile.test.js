@@ -2966,10 +2966,13 @@ describe("resourceFileTypes delegation", () => {
                         method: "copy",
                         template: "resources/[localeDir]/strings.json"
                     }
-                }
+                },
+                outputSourceLocale: !!options.outputSourceLocale
             },
+            // ilib-loctool-javascript-resource reads header/footer/template from here
             javascript: {
                 template: "resources/[locale].js",
+                outputSourceLocale: !!options.outputSourceLocale,
                 header: "// HEADER: AUTO-GENERATED\n",
                 footer: "\n// FOOTER: END OF FILE\n"
             }
@@ -3197,5 +3200,71 @@ describe("resourceFileTypes delegation", () => {
 
         expect(frContent).toMatchSnapshot();
         expect(deContent).toMatchSnapshot();
+    });
+
+    test("JsonFile localize writes source locale JSON when outputSourceLocale is enabled", function () {
+        expect.assertions(2);
+
+        var { jsonFile } = setupTestWithResourceFileType({
+            pathName: "json/strings.json",
+            useResourceFileType: false,
+            outputSourceLocale: true,
+            mappings: {
+                "**/strings.json": {
+                    schema: "strings-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/strings.json"
+                }
+            }
+        });
+
+        jsonFile.parse('{\n' +
+            '    "greeting": "Hello"\n' +
+            '}');
+
+        jsonFile.localize(new TranslationSet(), ["en-US", "fr-FR"]);
+
+        var enPath = path.join(base, "testfiles/resources/en/US/strings.json");
+        outputPaths.push(enPath);
+        expect(fs.existsSync(enPath)).toBe(true);
+
+        var content = fs.readFileSync(enPath, "utf-8");
+        expect(content).toBe('{\n    "greeting": "Hello"\n}\n');
+    });
+
+    test("JsonFile localize writes source locale when outputSourceLocale is enabled with resourceFileType", function () {
+        expect.assertions(2);
+
+        var { jsonFile, resFileType } = setupTestWithResourceFileType({
+            pathName: "json/strings.json",
+            useResourceFileType: true,
+            outputSourceLocale: true,
+            mappings: {
+                "**/strings.json": {
+                    schema: "strings-schema",
+                    method: "copy",
+                    template: "resources/[localeDir]/strings.json"
+                }
+            }
+        });
+
+        jsonFile.parse('{\n' +
+            '    "greeting": "Hello"\n' +
+            '}');
+
+        jsonFile.localize(new TranslationSet(), ["en-US", "fr-FR"]);
+
+        resFileType.write();
+
+        var enPath = path.join(base, "testfiles/resources/en-US.js");
+        outputPaths.push(enPath);
+        expect(fs.existsSync(enPath)).toBe(true);
+
+        var content = fs.readFileSync(enPath, "utf-8");
+        expect(content).toBe('// HEADER: AUTO-GENERATED\n' +
+            '{\n' +
+            '    "greeting": "Hello"\n' +
+            '}\n' +
+            '// FOOTER: END OF FILE\n');
     });
 });

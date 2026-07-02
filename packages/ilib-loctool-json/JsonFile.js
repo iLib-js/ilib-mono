@@ -973,6 +973,45 @@ JsonFile.prototype.localizeText = function (translations, locale) {
 };
 
 /**
+ * @private
+ * @param {Project} project
+ * @param {String} locale
+ * @returns {boolean}
+ */
+function shouldLocalizeLocale(project, locale) {
+    if (project.isSourceLocale(locale)) {
+        var settings = project.settings && project.settings.json;
+        return !!(settings && settings.outputSourceLocale);
+    }
+    return true;
+}
+
+/**
+ * @private
+ * @param {Resource} res
+ * @param {String} locale
+ * @param {Object} resFile
+ */
+function addSourceLocaleResource(res, locale, resFile) {
+    var newRes = res.clone();
+    newRes.setTargetLocale(locale);
+
+    switch (res.getType()) {
+    case "plural":
+        newRes.setTargetPlurals(res.getSourcePlurals());
+        break;
+    case "array":
+        newRes.setTargetArray(res.getSourceArray());
+        break;
+    default:
+        newRes.setTarget(res.getSource());
+        break;
+    }
+
+    resFile.addResource(newRes);
+}
+
+/**
  * Localize the contents of this Json file and write out the
  * localized Json file to a different file path.
  *
@@ -993,58 +1032,52 @@ JsonFile.prototype.localize = function (translations, locales) {
         var resources = this.set.getAll();
 
         for (var i = 0; i < locales.length; i++) {
-            if (!this.project.isSourceLocale(locales[i])) {
-                var locale = locales[i];
-                // Don't pass pathName - let the resource file type use its own template
-                this.logger.debug("Delegating output to resourceFileType for locale " + locale);
-                var resFile = resFileType.getResourceFile(locale, this.pathName);
+            var locale = locales[i];
+            if (!shouldLocalizeLocale(this.project, locale)) {
+                continue;
+            }
 
-                // For each extracted resource, look up its translation and add to the resource file
-                for (var j = 0; j < resources.length; j++) {
-                    var res = resources[j];
-                    var hashKey = res.hashKeyForTranslation(locale);
-                    var translated = translations.getClean(hashKey);
+            // Don't pass pathName - let the resource file type use its own template
+            this.logger.debug("Delegating output to resourceFileType for locale " + locale);
+            var resFile = resFileType.getResourceFile(locale, this.pathName);
 
-                    if (translated) {
-                        resFile.addResource(translated);
-                    } else {
-                        // No translation found - create a resource with the source as target
-                        var newRes = res.clone();
-                        newRes.setTargetLocale(locale);
+            // For each extracted resource, look up its translation and add to the resource file
+            for (var j = 0; j < resources.length; j++) {
+                var res = resources[j];
 
-                        // Handle different resource types appropriately
-                        switch (res.getType()) {
-                            case "plural":
-                                newRes.setTargetPlurals(res.getSourcePlurals());
-                                break;
-                            case "array":
-                                newRes.setTargetArray(res.getSourceArray());
-                                break;
-                            default:
-                                newRes.setTarget(res.getSource());
-                                break;
-                        }
+                if (this.project.isSourceLocale(locale)) {
+                    addSourceLocaleResource(res, locale, resFile);
+                    continue;
+                }
 
-                        resFile.addResource(newRes);
-                    }
+                var hashKey = res.hashKeyForTranslation(locale);
+                var translated = translations.getClean(hashKey);
+
+                if (translated) {
+                    resFile.addResource(translated);
+                } else {
+                    // No translation found - create a resource with the source as target
+                    addSourceLocaleResource(res, locale, resFile);
                 }
             }
         }
     } else {
         // Original behavior - write JSON directly
         for (var i = 0; i < locales.length; i++) {
-            if (!this.project.isSourceLocale(locales[i])) {
-                // skip variants for now until we can handle them properly
-                var l = new Locale(locales[i]);
-                if (!l.getVariant()) {
-                    var pathName = this.getLocalizedPath(locales[i]);
-                    this.logger.debug("Writing file " + pathName);
-                    var p = path.join(this.project.target, pathName);
-                    var d = path.dirname(p);
-                    this.API.utils.makeDirs(d);
+            if (!shouldLocalizeLocale(this.project, locales[i])) {
+                continue;
+            }
 
-                    fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
-                }
+            // skip variants for now until we can handle them properly
+            var l = new Locale(locales[i]);
+            if (!l.getVariant()) {
+                var pathName = this.getLocalizedPath(locales[i]);
+                this.logger.debug("Writing file " + pathName);
+                var p = path.join(this.project.target, pathName);
+                var d = path.dirname(p);
+                this.API.utils.makeDirs(d);
+
+                fs.writeFileSync(p, this.localizeText(translations, locales[i]), "utf-8");
             }
         }
     }
