@@ -1,5 +1,6 @@
 ---
 "ilib-loader": minor
+"ilib-localedata": patch
 ---
 
 - Added the ability to have browser-only loaders
@@ -13,3 +14,6 @@
   - Loaders now check if the mode is async but the caller
     requests a sync call. In this case, it now throws
     because sync calls are not supported.
+- Updated ilib-localedata to set the shared loader mode for sync and async
+  calls, and to use already-loaded assembled locale data when sync loading is
+  requested from an async-only loader.
