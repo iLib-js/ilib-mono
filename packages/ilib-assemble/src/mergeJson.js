@@ -18,6 +18,7 @@
  */
 
 import { pathToFileURL } from 'url';
+import { existsSync } from 'node:fs';
 import path from 'path';
 import readLines from './readLines.js';
 import write from './write.js';
@@ -57,7 +58,18 @@ function mergeJson(options) {
     }
 
     const ilibPath = path.resolve(options.opt.ilibPath || "./");
-    const assemblePath = path.resolve(ilibPath, "js/assembleData", "assemble.mjs");
+    // In the source tree assemble.mjs lives at js/assembleData/; in a published
+    // package it is copied to the package root next to the lib/ and locale/ dirs.
+    const candidates = [
+        path.resolve(ilibPath, "js/assembleData", "assemble.mjs"),
+        path.resolve(ilibPath, "assemble.mjs"),
+    ];
+    const assemblePath = candidates.find(existsSync);
+    if (!assemblePath) {
+        return Promise.reject(new Error(
+            `Could not find assemble.mjs under ilib path "${ilibPath}" (looked in: ${candidates.join(", ")})`
+        ));
+    }
     return import(pathToFileURL(assemblePath).href)
         .then(({ assemble }) => {
             const result_data = assemble([...ilibModules], options);
