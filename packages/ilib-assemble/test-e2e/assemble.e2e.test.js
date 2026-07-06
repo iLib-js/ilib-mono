@@ -33,14 +33,7 @@ async function runAssemble(testDir) {
     const testPath = path.resolve(__dirname, testDir);
 
     try {
-        // First install dependencies
-        await execFileAsync("pnpm", ["install", "--silent"], {
-            cwd: testPath,
-            env: { ...process.env },
-        });
-
-        // Then run assemble
-        const { stdout, stderr } = await execFileAsync("pnpm", ["--silent", "assemble"], {
+        const { stdout, stderr } = await execFileAsync("pnpm", ["assemble"], {
             cwd: testPath,
             env: { ...process.env },
         });
@@ -52,6 +45,48 @@ async function runAssemble(testDir) {
             stderr: error.stderr || "",
             code: error.code || 1,
         };
+    }
+}
+
+function describeDirectory(dir) {
+    if (!fs.existsSync(dir)) {
+        return `${dir}: does not exist`;
+    }
+
+    const entries = fs.readdirSync(dir).sort();
+    if (entries.length === 0) {
+        return `${dir}: exists but is empty`;
+    }
+
+    return `${dir}: ${entries.join(", ")}`;
+}
+
+function getAssembleDiagnostics(testDir, result, localeDir) {
+    const testPath = path.resolve(__dirname, testDir);
+    return [
+        `pnpm assemble exited with code ${result.code}`,
+        "stdout:",
+        result.stdout || "<empty>",
+        "stderr:",
+        result.stderr || "<empty>",
+        "directories:",
+        describeDirectory(testPath),
+        describeDirectory(localeDir),
+        describeDirectory(path.join(testPath, "node_modules")),
+    ].join("\n");
+}
+
+function assertAssembleSucceeded(testDir, result, localeDir, localeFiles) {
+    const diagnostics = getAssembleDiagnostics(testDir, result, localeDir);
+
+    if (result.code !== 0) {
+        throw new Error(diagnostics);
+    }
+    if (result.stderr !== "") {
+        throw new Error(diagnostics);
+    }
+    if (Object.keys(localeFiles).length === 0) {
+        throw new Error(diagnostics);
     }
 }
 
@@ -99,15 +134,12 @@ describe("ilib-assemble E2E tests", () => {
         test("assembles locale data from ilib-istring", async () => {
             const result = await runAssemble(testDir);
 
-            expect(result.code).toBe(0);
-            expect(result.stderr).toBe("");
-
             // Read and snapshot the locale files
             const localeDir = path.resolve(__dirname, testDir, "locale");
             const localeFiles = readLocaleFiles(localeDir);
 
             // Should have created locale files
-            expect(Object.keys(localeFiles).length).toBeGreaterThan(0);
+            assertAssembleSucceeded(testDir, result, localeDir, localeFiles);
 
             // Snapshot each locale file
             for (const [filename, content] of Object.entries(localeFiles)) {
@@ -130,15 +162,12 @@ describe("ilib-assemble E2E tests", () => {
         test("assembles locale data using custom assemble.mjs", async () => {
             const result = await runAssemble(testDir);
 
-            expect(result.code).toBe(0);
-            expect(result.stderr).toBe("");
-
             // Read and snapshot the locale files
             const localeDir = path.resolve(__dirname, testDir, "locale");
             const localeFiles = readLocaleFiles(localeDir);
 
             // Should have created locale files
-            expect(Object.keys(localeFiles).length).toBeGreaterThan(0);
+            assertAssembleSucceeded(testDir, result, localeDir, localeFiles);
 
             // Snapshot each locale file
             for (const [filename, content] of Object.entries(localeFiles)) {
@@ -161,15 +190,12 @@ describe("ilib-assemble E2E tests", () => {
         test("assembles resource files into locale data", async () => {
             const result = await runAssemble(testDir);
 
-            expect(result.code).toBe(0);
-            expect(result.stderr).toBe("");
-
             // Read and snapshot the locale files
             const localeDir = path.resolve(__dirname, testDir, "locale");
             const localeFiles = readLocaleFiles(localeDir);
 
             // Should have created locale files
-            expect(Object.keys(localeFiles).length).toBeGreaterThan(0);
+            assertAssembleSucceeded(testDir, result, localeDir, localeFiles);
 
             // Snapshot each locale file
             for (const [filename, content] of Object.entries(localeFiles)) {

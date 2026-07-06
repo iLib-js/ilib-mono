@@ -295,7 +295,7 @@ if (options.opt.legacyilib) {
         }).join("\n");
     };
 
-    promise.then(result => {
+    await promise.then(result => {
         // console.log(`localeData is: ${JSON.stringify(localeData, undefined, 4)}`);
 
         let hadOutput = false;

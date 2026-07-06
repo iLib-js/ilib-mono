@@ -20,6 +20,7 @@
 import { createRequire } from 'module';
 import { existsSync } from 'node:fs';
 import path from 'path';
+import { pathToFileURL } from 'url';
 
 const require = createRequire(import.meta.url);
 
@@ -91,24 +92,29 @@ const require = createRequire(import.meta.url);
  */
 function scanModule(moduleName, options) {
     let resolved = moduleName;
-    if ( moduleName[0] !== '.' && moduleName[0] !== '/') {
+    let assemblePath;
+    if (moduleName[0] === '.') {
+        resolved = path.resolve(process.cwd(), moduleName);
+        assemblePath = path.join(resolved, "assemble.mjs");
+    } else if (moduleName[0] !== '/') {
         try {
-            resolved = require.resolve(moduleName);
-            const i = resolved.indexOf(moduleName);
-            resolved = resolved.substring(0, i + moduleName.length);
+            assemblePath = require.resolve(`${moduleName}/assemble.mjs`, { paths: [process.cwd()] });
+            resolved = path.dirname(assemblePath);
         } catch (e) {
             console.log(`    Error: could not find module ${moduleName}`);
             return Promise.resolve(null);
         }
+    } else {
+        assemblePath = path.join(resolved, "assemble.mjs");
     }
 
-    if (!existsSync(path.join(resolved, "assemble.mjs")) || !existsSync(path.join(resolved, "locale"))) {
+    if (!existsSync(assemblePath) || !existsSync(path.join(resolved, "locale"))) {
         if (!options || !options.quiet) console.log(`    No locale data available for module ${moduleName}`);
         return Promise.resolve(true);
     }
 
     // Use the resolved path for the import to handle workspace dependencies correctly
-    return import(path.join(resolved, "assemble.mjs")).then(module => {
+    return import(pathToFileURL(assemblePath).href).then(module => {
         if (!options || !options.quiet) console.log(`    Returning data for module ${moduleName}`);
         const assemble = module && module.default;
         if (assemble && typeof(assemble) === 'function') {
