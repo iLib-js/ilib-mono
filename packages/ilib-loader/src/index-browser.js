@@ -1,7 +1,7 @@
 /*
- * index.js - create new loader objects or return existing ones
+ * index-browser.js - Browser specific entry point for ilib-loader
  *
- * Copyright © 2022, 2025-2026 JEDLSoft
+ * Copyright © 2022, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,10 @@
  * limitations under the License.
  */
 
-import { getPlatform } from 'ilib-env';
 import { Loader, registerLoader, LoaderFactory } from './LoaderFactory.js';
-import NodeLoader from './NodeLoader.js';
 import WebpackLoader from './WebpackLoader.js';
 
-switch (getPlatform()) {
-    case 'nodejs':
-        registerLoader(NodeLoader);
-        break;
-    case 'browser':
-        registerLoader(WebpackLoader);
-        break;
-}
+registerLoader(WebpackLoader);
 
 export { Loader, registerLoader };
 export default LoaderFactory;
