@@ -290,4 +290,32 @@ describe("mdxfiletype", function() {
         expect(mdft).toBeTruthy();
         expect(mdft.handles("foo.mdoc")).toBeFalsy();
     });
+
+    test("should handle source paths that look like locale prefixes", function() {
+        expect.assertions(4);
+        var devDocsProject = new CustomProject({
+            sourceLocale: "en-US",
+            plugins: ["../."]
+        }, "./test/testfiles", {
+            locales: ["ja-JP"],
+            mdx: {
+                mappings: {
+                    "ai/**/*.mdx": {
+                        "template": "[language]/[dir]/[filename]"
+                    },
+                    "guides/**/*.mdx": {
+                        "template": "[language]/[dir]/[filename]"
+                    },
+                    "*.mdx": {
+                        "template": "[language]/[filename]"
+                    }
+                }
+            }
+        });
+        var mdft = new MdxFileType(devDocsProject);
+        expect(mdft.handles("ai/agent-skills.mdx")).toBeTruthy();
+        expect(mdft.handles("ai/vector-databases/pinecone.mdx")).toBeTruthy();
+        expect(mdft.handles("guides/getting-started/index.mdx")).toBeTruthy();
+        expect(!mdft.handles("ja/guides/getting-started/index.mdx")).toBeTruthy();
+    });
 });
