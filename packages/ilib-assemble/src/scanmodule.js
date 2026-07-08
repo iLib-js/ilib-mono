@@ -1,7 +1,7 @@
 /*
  * scanmodule.js - scan an ilib module for locale data
  *
- * Copyright © 2022 JEDLSoft
+ * Copyright © 2022, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 import { createRequire } from 'module';
 import { existsSync } from 'node:fs';
 import path from 'path';
+import { pathToFileURL } from 'url';
 
 const require = createRequire(import.meta.url);
 
@@ -91,23 +92,29 @@ const require = createRequire(import.meta.url);
  */
 function scanModule(moduleName, options) {
     let resolved = moduleName;
-    if ( moduleName[0] !== '.' && moduleName[0] !== '/') {
+    let assemblePath;
+    if (moduleName[0] === '.') {
+        resolved = path.resolve(process.cwd(), moduleName);
+        assemblePath = path.join(resolved, "assemble.mjs");
+    } else if (moduleName[0] !== '/') {
         try {
-            resolved = require.resolve(moduleName);
-            const i = resolved.indexOf(moduleName);
-            resolved = resolved.substring(0, i + moduleName.length);
+            assemblePath = require.resolve(`${moduleName}/assemble.mjs`, { paths: [process.cwd()] });
+            resolved = path.dirname(assemblePath);
         } catch (e) {
             console.log(`    Error: could not find module ${moduleName}`);
             return Promise.resolve(null);
         }
+    } else {
+        assemblePath = path.join(resolved, "assemble.mjs");
     }
 
-    if (!existsSync(path.join(resolved, "assemble.mjs")) || !existsSync(path.join(resolved, "locale"))) {
+    if (!existsSync(assemblePath) || !existsSync(path.join(resolved, "locale"))) {
         if (!options || !options.quiet) console.log(`    No locale data available for module ${moduleName}`);
         return Promise.resolve(true);
     }
 
-    return import(`${moduleName}/assemble.mjs`).then(module => {
+    // Use the resolved path for the import to handle workspace dependencies correctly
+    return import(pathToFileURL(assemblePath).href).then(module => {
         if (!options || !options.quiet) console.log(`    Returning data for module ${moduleName}`);
         const assemble = module && module.default;
         if (assemble && typeof(assemble) === 'function') {
