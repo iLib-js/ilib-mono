@@ -26,7 +26,7 @@
  * @returns {object} locale-keyed merged data map
  */
 export function assemble(modules, options) {
-    const locales = (options && options.opt && options.opt.locales) || ["en", "de"];
+    const locales = (options?.opt?.locales) || ["en", "de"];
     const result = {};
     locales.forEach(locale => {
         result[locale] = {
