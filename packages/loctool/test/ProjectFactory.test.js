@@ -245,14 +245,13 @@ describe("projectConfig.validateLoctoolConfig", function() {
         expect(result.reason).toContain("id");
     });
 
-    test("rejects config with invalid projectType", function() {
+    test("accepts config with unknown projectType as custom", function() {
         var result = projectConfig.validateLoctoolConfig({
             "name": "Test",
             "id": "test",
             "projectType": "library"
         });
-        expect(result.valid).toBe(false);
-        expect(result.reason).toContain("projectType");
+        expect(result.valid).toBe(true);
     });
 
     test("accepts custom config without plugins", function() {
@@ -345,14 +344,14 @@ describe("ProjectFactory config file validation", function() {
         expect(project).toBeUndefined();
     });
 
-    test("ignores config with invalid projectType from disk", function() {
-        var props = loadConfigFixture("invalid-project-type");
+    test("loads config with unknown projectType from disk", function() {
+        var props = loadConfigFixture("unknown-project-type");
         var validation = projectConfig.validateLoctoolConfig(props);
-        expect(validation.valid).toBe(false);
-        expect(validation.reason).toContain("projectType");
+        expect(validation.valid).toBe(true);
 
-        var project = ProjectFactory('./test/testfiles/config-validation/invalid-project-type', {});
-        expect(project).toBeUndefined();
+        var project = ProjectFactory('./test/testfiles/config-validation/unknown-project-type', {});
+        expect(project).toBeTruthy();
+        expect(project.getProjectId()).toBe('unknown-project-type');
     });
 
     test("loads custom config without plugins from disk", function() {

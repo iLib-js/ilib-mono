@@ -34,9 +34,6 @@ var DEFAULT_CONFIG_FILES = [INIT_DEFAULT_CONFIG_FILE, LEGACY_CONFIG_FILE];
 /** @deprecated use INIT_DEFAULT_CONFIG_FILE or LEGACY_CONFIG_FILE */
 var DEFAULT_CONFIG_FILE = LEGACY_CONFIG_FILE;
 
-/** @type {string[]} loctool projectType values */
-var KNOWN_PROJECT_TYPES = ["android", "iosobjc", "swift", "web", "custom"];
-
 /** @type {string[]} top-level properties recognized by loctool project configs */
 var ALLOWED_PROPERTIES = [
     "$schema",
@@ -155,13 +152,6 @@ function validateLoctoolConfig(props) {
         };
     }
 
-    if (KNOWN_PROJECT_TYPES.indexOf(props.projectType) === -1) {
-        return {
-            valid: false,
-            reason: "projectType must be one of: " + KNOWN_PROJECT_TYPES.join(", ")
-        };
-    }
-
     var requiredKeys = ["id", "name", "projectType"];
 
     var extraKeys = Object.keys(props).filter(function(key) {
@@ -199,7 +189,6 @@ module.exports = {
     INIT_DEFAULT_CONFIG_FILE: INIT_DEFAULT_CONFIG_FILE,
     DEFAULT_CONFIG_FILES: DEFAULT_CONFIG_FILES,
     DEFAULT_CONFIG_FILE: DEFAULT_CONFIG_FILE,
-    KNOWN_PROJECT_TYPES: KNOWN_PROJECT_TYPES,
     ALLOWED_PROPERTIES: ALLOWED_PROPERTIES,
     getConfigFileBaseNames: getConfigFileBaseNames,
     getConfigFileBaseName: getConfigFileBaseName,
