@@ -202,6 +202,25 @@ describe("testMergeJson", () => {
         expect(fs.existsSync(path.join(OUTPUT_DIR, "en.json"))).toBeTruthy();
     });
 
+    test("MergeJsonResolvesPackageRootAssemble", async () => {
+        expect.assertions(2);
+        // ilibPath points at a package-root layout where assemble.mjs sits at
+        // the root rather than under js/assembleData/ (the published-package case).
+        const options = {
+            args: [OUTPUT_DIR],
+            opt: {
+                ilibincPath: "test/testfiles/ilib-all-inc.js",
+                ilibPath: "test/pkg-root",
+                locales: ["en"]
+            }
+        };
+        await mergeJson(options);
+        const content = fs.readFileSync(path.join(OUTPUT_DIR, "en.json"), "utf-8");
+        const parsed = JSON.parse(content);
+        expect(parsed.locale).toBe("en");
+        expect(parsed.layout).toBe("package-root");
+    });
+
     test("MergeJsonInvalidIlibPathRejects", async () => {
         expect.assertions(1);
         const options = {
@@ -212,7 +231,7 @@ describe("testMergeJson", () => {
                 locales: ["en"]
             }
         };
-        await expect(mergeJson(options)).rejects.toThrow("mergeJson failed:");
+        await expect(mergeJson(options)).rejects.toThrow("Could not find assemble.mjs");
     });
 
     test("MergeJsonRejectsEmptyAssembleResult", async () => {
