@@ -350,4 +350,19 @@ describe("customproject", function() {
             expect(p.flavors.getFlavorForPath("flavors/bproj/res")).toBe("b");
         });
     });
+
+    test("CustomProjectUnknownProjectTypePreservesValue", function() {
+        expect.assertions(2);
+
+        var p = new CustomProject({
+            id: "custom",
+            sourceLocale: "en-US",
+            projectType: "library"
+        }, "./test/testfiles", {
+            locales:["en-GB"]
+        });
+
+        expect(p).toBeTruthy();
+        expect(p.getProjectType()).toBe("library");
+    });
 });
