@@ -1,5 +1,21 @@
 # ilib-assemble
 
+## 1.5.0
+
+### Minor Changes
+
+- fb0a4c3: - Add the --assemble flag to bypass all of the directory
+  walking and searching and just point the tool directly
+  to the assemble.mjs file that needs to be used to generate
+  the locale data that is required
+  - mostly used for unit or e2e testing
+
+### Patch Changes
+
+- 37fb176: Fix `--mergeJson` to also resolve `assemble.mjs` from the package root
+  (`<ilibPath>/assemble.mjs`), so it works against installed ilib packages and
+  not just the source-tree layout (`<ilibPath>/js/assembleData/assemble.mjs`).
+
 ## 1.4.1
 
 ### Patch Changes
