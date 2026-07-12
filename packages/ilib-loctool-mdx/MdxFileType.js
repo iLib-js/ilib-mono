@@ -20,6 +20,7 @@
 var fs = require("fs");
 var path = require("path");
 var mm = require("micromatch");
+var Locale = require("ilib/lib/Locale.js");
 var MdxFile = require("./MdxFile.js");
 var YamlFileType = require('ilib-loctool-yaml');
 
@@ -165,8 +166,13 @@ MdxFileType.prototype.handles = function(pathName) {
                 // source locale, then we don't need to extract those strings
                 if (ret) {
                     for (var i = 0; i < patterns.length; i++) {
+                        if (!mm.isMatch(pathName, patterns[i]) && !mm.isMatch(normalized, patterns[i])) {
+                            continue;
+                        }
                         var locale = this.API.utils.getLocaleFromPath(mappings[patterns[i]].template, pathName);
-                        if (locale && locale !== this.project.sourceLocale) {
+                        var language = locale && new Locale(locale).getLanguage();
+                        if (locale && locale !== this.project.sourceLocale &&
+                            this.API.utils.iso639[language]) {
                             ret = false;
                             break;
                         }
