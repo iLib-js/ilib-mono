@@ -352,9 +352,9 @@ class ResBundle {
      * @returns {Promise} a promise to load a ResBundle instance. The resolved
      * value of the promise is the new instance of ResBundle,
      */
-    static create(options) {
+    static async create(options) {
         const n = new ResBundle({ ...options, _noinit: true });
-        return n.init(options, false);
+        return await n.init(options, false);
     }
 
     /**

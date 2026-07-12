@@ -7,7 +7,8 @@
         ".": {
             "import": "./src/index.js",
             "require": "./lib/index.js"
-        }
+        },
+        "./assemble.mjs": "./assemble.mjs"
     },
     "description": "Classes to parse and format person names",
     "keywords": [
@@ -24,8 +25,8 @@
         "translation",
         "name"
     ],
-    "homepage": "https://github.com/iLib-js/ilib-resbundle",
-    "bugs": "https://github.com/iLib-js/ilib-resbundle/issues",
+    "homepage": "https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-resbundle",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
     "email": "marketing@translationcircle.com",
     "license": "Apache-2.0",
     "author": {
@@ -44,33 +45,37 @@
         }
     ],
     "files": [
+        "assemble.mjs",
         "src",
+        "locale",
         "lib",
-        "docs",
         "README.md",
         "LICENSE"
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-resbundle.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
+    },
+    "engines": {
+        "node": ">=14 <23"
     },
     "scripts": {
-        "build": "npm run build:prod",
-        "build:prod": "grunt babel --mode=prod",
-        "build:dev": "grunt babel --mode=dev",
+        "build": "pnpm build:prod",
+        "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
+        "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
         "build:webtest": "webpack-cli --config webpack-test.config.js",
         "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
         "build:locales": "echo '{\"locales\":[' $(cat locales.txt) ']}' > locales.json ; echo 'export const localeList = ' > test/locales.js ; cat locales.json >> test/locales.js",
-        "build:assemble": "npm-run-all build:locales ; ilib-assemble -m .  --localefile ./locales.json --resources ./test/resources --resources ./test/resources2 --resources ./test/resources3 --resources ./test/resources4 assembled src",
-        "build:test": "npm-run-all build:locales build:dev build:assemble build:webtest",
-        "dist": "npm-run-all doc build:prod build:pkg; npm pack",
-        "test": "npm-run-all build:dev test:cli",
-        "test:cli": "LANG=en_US.UTF8 npm run build:dev ; bash test/testSuite.sh",
-        "test:web": "LANG=en_US.UTF8 npm run build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
-        "test:all": "npm-run-all test:cli test:web",
-        "debug": "npm run build:dev ; node --inspect-brk test/testSuite.js",
+        "build:assemble": "npm-run-all --npm-path pnpm build:locales ; ilib-assemble -m . --localefile ./locales.json --resources ./test/resources --resources ./test/resources2 --resources ./test/resources3 --resources ./test/resources4 assembled src",
+        "build:test": "npm-run-all --npm-path pnpm build:locales build:dev build:assemble build:webtest",
+        "dist": "npm-run-all --npm-path pnpm doc build:prod build:pkg; pnpm pack",
+        "test": "npm-run-all --npm-path pnpm build:locales build:dev test:cli",
+        "test:cli": "LANG=en_US.UTF8 pnpm bash test/testSuite.sh",
+        "test:web": "LANG=en_US.UTF8 pnpm build:test ; open-cli ./test/testSuite.html ; open-cli ./test/testSuite.html -- firefox",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:web",
+        "debug": "npm-run-all --npm-path pnpm build:locales build:dev ; node --inspect-brk test/testSuite.js",
         "clean": "git clean -f -d src test; rm -rf lib assembled *.tgz assembled locales.json",
-        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibResBundle.md ; npm run doc:html",
+        "doc": "mkdir -p docs ; jsdoc2md -c jsdoc.json --separators --source src/* -m table > docs/ilibResBundle.md ; pnpm doc:html",
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
@@ -90,9 +95,9 @@
         "grunt-cli": "^1.4.3",
         "grunt-contrib-clean": "^2.0.1",
         "grunt-contrib-uglify": "^5.2.2",
-        "ilib-assemble": "^1.2.0",
-        "ilib-env": "^1.3.2",
-        "ilib-loader": "^1.3.2",
+        "ilib-assemble": "workspace:^",
+        "ilib-env": "workspace:^",
+        "ilib-loader": "workspace:^",
         "jsdoc": "^4.0.2",
         "jsdoc-to-markdown": "^8.0.0",
         "json-stable-stringify": "^1.1.0",
@@ -104,11 +109,12 @@
         "webpack-cli": "^5.1.4"
     },
     "dependencies": {
-        "ilib-common": "^1.1.3",
-        "ilib-ctype": "^1.2.0",
-        "ilib-istring": "^1.0.1",
-        "ilib-locale": "^1.2.2",
-        "ilib-localedata": "^1.5.0",
-        "ilib-localeinfo": "^1.0.5"
+        "ilib-common": "workspace:^",
+        "ilib-ctype": "workspace:^",
+        "ilib-istring": "workspace:^",
+        "ilib-locale": "workspace:^",
+        "ilib-localedata": "workspace:^",
+        "ilib-localeinfo": "^1.1.0",
+        "json5": "^2.2.3"
     }
 }
