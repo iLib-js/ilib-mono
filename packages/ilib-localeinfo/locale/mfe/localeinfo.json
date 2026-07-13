@@ -1,0 +1,10 @@
+{
+    "language.name": "Morisyen",
+    "locale": "mfe",
+    "numfmt": {
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

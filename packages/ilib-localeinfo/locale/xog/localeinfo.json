@@ -1,0 +1,13 @@
+{
+    "language.name": "Soga",
+    "locale": "xog",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Mundang",
+    "locale": "mua",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

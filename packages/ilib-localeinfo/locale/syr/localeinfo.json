@@ -1,0 +1,13 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "alternateQuotationStart": "’",
+        "quotationEnd": "“",
+        "quotationStart": "”"
+    },
+    "language.name": "Syriac",
+    "locale": "syr",
+    "scripts": [
+        "Syrc"
+    ]
+}

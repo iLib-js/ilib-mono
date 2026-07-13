@@ -1,0 +1,16 @@
+{
+    "clock": "12",
+    "language.name": "English",
+    "locale": "en",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn",
+        "Dsrt",
+        "Shaw"
+    ]
+}

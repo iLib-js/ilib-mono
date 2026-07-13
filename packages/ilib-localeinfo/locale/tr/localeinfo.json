@@ -1,0 +1,18 @@
+{
+    "language.name": "Turkish",
+    "locale": "tr",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": ".",
+        "negativepctFmt": "-%{n}",
+        "pctFmt": "%{n}"
+    },
+    "scripts": [
+        "Latn",
+        "Arab"
+    ]
+}

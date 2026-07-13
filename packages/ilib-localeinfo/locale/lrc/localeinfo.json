@@ -1,0 +1,22 @@
+{
+    "language.name": "Northern Luri",
+    "locale": "lrc",
+    "numfmt": {
+        "currencyFormats": {
+            "commonNegative": "‎-‎{s} {n}"
+        },
+        "decimalChar": "٫",
+        "digits": "۰۱۲۳۴۵۶۷۸۹",
+        "exponential": "×۱۰^",
+        "groupChar": "٬",
+        "negativenumFmt": "‎-‎{n}",
+        "negativepctFmt": "‎-‎{n}٪",
+        "pctChar": "٪",
+        "pctFmt": "{n}٪",
+        "script": "Arab",
+        "useNative": true
+    },
+    "scripts": [
+        "Arab"
+    ]
+}

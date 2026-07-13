@@ -1,0 +1,9 @@
+{
+    "locale": "en-MV",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        }
+    }
+}

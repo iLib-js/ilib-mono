@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "KWD",
+    "firstDayOfWeek": 6,
+    "locale": "und-KW",
+    "region.name": "Kuwait",
+    "timezone": "Asia/Kuwait",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

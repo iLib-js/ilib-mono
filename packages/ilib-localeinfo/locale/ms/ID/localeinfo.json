@@ -1,0 +1,7 @@
+{
+    "locale": "ms-ID",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    }
+}

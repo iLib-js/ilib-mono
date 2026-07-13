@@ -1,0 +1,11 @@
+{
+    "locale": "ms-Arab-BN",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s} {n}",
+            "commonNegative": "-{s} {n}"
+        },
+        "decimalChar": ",",
+        "groupChar": "."
+    }
+}

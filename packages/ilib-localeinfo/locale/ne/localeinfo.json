@@ -1,0 +1,13 @@
+{
+    "language.name": "Nepali",
+    "locale": "ne",
+    "numfmt": {
+        "digits": "०१२३४५६७८९",
+        "script": "Deva",
+        "secgroupSize": 2,
+        "useNative": true
+    },
+    "scripts": [
+        "Deva"
+    ]
+}

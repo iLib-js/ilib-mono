@@ -1,0 +1,13 @@
+{
+    "language.name": "Taita",
+    "locale": "dav",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}
