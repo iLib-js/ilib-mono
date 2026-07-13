@@ -158,6 +158,19 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
+  packages/ilib-ai/samples/cli:
+    dependencies:
+      ilib-ai:
+        specifier: workspace:^
+        version: link:../..
+    devDependencies:
+      tsx:
+        specifier: ^4.0.0
+        version: 4.20.5
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
   packages/ilib-assemble:
     dependencies:
       ilib-common:

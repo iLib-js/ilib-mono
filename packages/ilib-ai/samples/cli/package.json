@@ -1,0 +1,20 @@
+{
+    "name": "ilib-ai-cli-sample",
+    "private": true,
+    "version": "0.0.0",
+    "description": "Minimal interactive CLI sample for ilib-ai",
+    "main": "index.ts",
+    "scripts": {
+        "run:sample": "tsx index.ts"
+    },
+    "dependencies": {
+        "ilib-ai": "workspace:^"
+    },
+    "devDependencies": {
+        "tsx": "^4.0.0",
+        "typescript": "^5.9.2"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

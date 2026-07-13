@@ -48,6 +48,8 @@
         "test": "node node_modules/jest/bin/jest.js --config jest.config.js",
         "test:unit": "pnpm test",
         "test:integration": "node node_modules/jest/bin/jest.js --config jest.integration.config.cjs --runInBand",
+        "test:e2e": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js --runInBand",
+        "test:e2e:watch": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js --runInBand --watch",
         "test:watch": "pnpm test --watch",
         "debug": "node --inspect-brk node_modules/jest/bin/jest.js --config jest.config.js --runInBand",
         "clean": "git clean -f -d src tests; rm -rf lib",
