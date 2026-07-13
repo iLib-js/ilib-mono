@@ -1,0 +1,19 @@
+{
+    "delimiter": {
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Bafia",
+    "locale": "ksf",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

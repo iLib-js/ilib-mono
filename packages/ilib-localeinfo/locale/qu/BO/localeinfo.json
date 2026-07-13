@@ -1,0 +1,7 @@
+{
+    "locale": "qu-BO",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    }
+}

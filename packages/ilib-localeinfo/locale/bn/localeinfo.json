@@ -1,0 +1,17 @@
+{
+    "language.name": "Bangla",
+    "locale": "bn",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        },
+        "digits": "০১২৩৪৫৬৭৮৯",
+        "script": "Beng",
+        "secgroupSize": 2,
+        "useNative": true
+    },
+    "scripts": [
+        "Beng"
+    ]
+}

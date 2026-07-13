@@ -1,0 +1,13 @@
+{
+    "language.name": "Masai",
+    "locale": "mas",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

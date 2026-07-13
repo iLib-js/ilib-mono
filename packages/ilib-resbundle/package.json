@@ -114,7 +114,7 @@
         "ilib-istring": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-localedata": "workspace:^",
-        "ilib-localeinfo": "^1.1.0",
+        "ilib-localeinfo": "workspace:^",
         "json5": "^2.2.3"
     }
 }

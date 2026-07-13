@@ -1,0 +1,17 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "›",
+        "alternateQuotationStart": "‹",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Kako",
+    "locale": "kkj",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "."
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

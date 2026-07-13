@@ -1,0 +1,38 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "』",
+        "alternateQuotationStart": "『",
+        "quotationEnd": "」",
+        "quotationStart": "「"
+    },
+    "language.name": "Cantonese",
+    "locale": "yue",
+    "native_numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        },
+        "decimalChar": ".",
+        "digits": "〇一二三四五六七八九",
+        "exponential": "E",
+        "groupChar": ",",
+        "negativenumFmt": "-{n}",
+        "negativepctFmt": "-{n}%",
+        "pctChar": "%",
+        "pctFmt": "{n}%",
+        "prigroupSize": 3,
+        "roundingMode": "halfdown",
+        "script": "Hani",
+        "useNative": true
+    },
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Hans",
+        "Hant"
+    ]
+}

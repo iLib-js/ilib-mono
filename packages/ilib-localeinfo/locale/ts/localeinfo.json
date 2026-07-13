@@ -1,0 +1,11 @@
+{
+    "language.name": "Tsonga",
+    "locale": "ts",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

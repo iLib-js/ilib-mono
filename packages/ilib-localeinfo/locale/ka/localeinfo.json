@@ -1,0 +1,21 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "»",
+        "alternateQuotationStart": "«",
+        "quotationEnd": "“",
+        "quotationStart": "„"
+    },
+    "language.name": "Georgian",
+    "locale": "ka",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "-{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Geor"
+    ]
+}

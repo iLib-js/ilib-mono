@@ -1,0 +1,9 @@
+{
+    "language.name": "Pontic",
+    "locale": "pnt",
+    "scripts": [
+        "Cyrl",
+        "Grek",
+        "Latn"
+    ]
+}

@@ -18,6 +18,10 @@ ilib-mono.iml
 # Logs
 .pnpm-debug.log*
 
+# Grunt intermediate storage
+.grunt
+packages/*/.grunt
+
 # Misc
 .DS_store
 
@@ -37,10 +41,9 @@ coverage*.txt
 
 # Build Outputs
 !packages/loctool/lib/
-packages/ilib-address/assembled
-packages/ilib-istring/assembled
-packages/ilib-resbundle/assembled
-packages/ilib-resbundle/locales.json
+packages/*/assembled
+packages/*/locales.json
+packages/*/tz
 
 # Misc
 packages/loctool/java/bin/
@@ -49,11 +52,9 @@ packages/loctool/build.properties
 # Testing
 
 # Generated test suites for running in a browser
-packages/ilib-address/test-web
-packages/ilib-istring/test-web
-packages/ilib-resbundle/test/ilib-resbundle-test.js
-packages/ilib-resbundle/test/ilib.*-js.ilib-resbundle-test.js
-packages/ilib-resbundle/test/locales.js
+packages/*/test-web
+packages/*/test/locales.js
+packages/*/test/ilib*-test.js
 
 # Those files are used for testing purposes and should not be removed from .gitignore.
 !packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz

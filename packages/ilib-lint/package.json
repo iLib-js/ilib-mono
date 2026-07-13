@@ -88,7 +88,7 @@
         "ilib-ctype": "workspace:^",
         "ilib-lint-common": "workspace:^",
         "ilib-locale": "workspace:^",
-        "ilib-localeinfo": "^1.1.0",
+        "ilib-localeinfo": "workspace:^",
         "ilib-localematcher": "workspace:^",
         "ilib-scriptinfo": "workspace:^",
         "ilib-tools-common": "workspace:^",
