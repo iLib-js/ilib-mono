@@ -12,4 +12,3 @@
         "clean": "rm -rf locale node_modules"
     }
 }
-
