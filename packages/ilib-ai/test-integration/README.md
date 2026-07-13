@@ -176,6 +176,10 @@ All commands from **`packages/ilib-ai`**:
 
 Default per-test timeout is **120 seconds**. Tests run **serially** (`--runInBand`).
 
+### E2E tests (CLI sample)
+
+The **`samples/cli`** app is tested end-to-end under **`test-e2e/`** via **`pnpm test:e2e`**. See **[test-e2e/README.md](../test-e2e/README.md)**. E2E uses **`test-e2e/__testfiles__/cli/credentials.json`** or **`OPENAI_API_KEY`** — not the integration-test credentials file.
+
 ---
 
 ## Credentials reference

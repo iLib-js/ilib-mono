@@ -52,6 +52,15 @@ packages/*/test-web
 packages/*/test/locales.js
 packages/*/test/ilib*-test.js
 
+# ilib-ai — local credentials (never commit)
+packages/ilib-ai/test-integration/box-integration-credentials.json
+packages/ilib-ai/test-integration/openai-integration-credentials.json
+packages/ilib-ai/test-integration/*_config.json
+packages/ilib-ai/test-integration/*.pvk
+packages/ilib-ai/test-integration/*.pem
+packages/ilib-ai/test-e2e/__testfiles__/cli/credentials.json
+packages/ilib-ai/samples/cli/credentials.json
+
 # Those files are used for testing purposes and should not be removed from .gitignore.
 !packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz
 !packages/ilib-lint/test/ilib-mock/ilib-mock-1.0.0.tgz

@@ -10,6 +10,7 @@ module.exports = {
     testMatch: ["<rootDir>/tests/**/*.test.?(c|m)(j|t)s"],
     testPathIgnorePatterns: [
         "<rootDir>/test-integration/",
+        "<rootDir>/test-e2e/",
         "<rootDir>/node_modules/",
         "<rootDir>/lib/",
     ],
