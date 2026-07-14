@@ -19,6 +19,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import vm from 'vm';
 import assembleilib from '../src/legacyilibassemble.js';
 
 const OUTPUT_DIR = "test/testfiles/output/legacy";
@@ -28,6 +29,10 @@ const CUSTOM_PATH = "test/testfiles/legacy-custom";
 
 const FLAT_OUTPUT_DIR = "test/testfiles/output/legacy-flat";
 const FLAT_ILIB_PATH = "test/testfiles/legacy-ilib-flat";
+
+const MIN_OUTPUT_DIR = "test/testfiles/output/legacy-minified";
+const MIN_ILIB_PATH = "test/testfiles/legacy-ilib-minified";
+const MIN_INC_PATH = "test/testfiles/legacy-ilib-minified-inc.js";
 
 describe("legacyAssemble with customPath", () => {
     afterEach(() => {
@@ -127,5 +132,68 @@ describe("legacyAssemble with flat directory layout (lib/ and locale/)", () => {
         expect(koOutput).toContain("ilib.data.currency_ko");
         expect(koOutput).toContain('"KRW"');
         expect(koOutput).toContain("South Korean Won");
+    });
+});
+
+describe("legacyAssemble with minified/compiled ilib sources", () => {
+    afterEach(() => {
+        if (fs.existsSync(MIN_OUTPUT_DIR)) {
+            fs.rmSync(MIN_OUTPUT_DIR, { recursive: true, force: true });
+        }
+    });
+
+    function assembleMinified() {
+        if (!fs.existsSync(MIN_OUTPUT_DIR)) {
+            fs.mkdirSync(MIN_OUTPUT_DIR, { recursive: true });
+        }
+        assembleilib({
+            opt: {
+                ilibPath: MIN_ILIB_PATH,
+                ilibincPath: MIN_INC_PATH,
+                locales: ["en-US"],
+                outjsFileName: "ilib-all.js"
+            },
+            args: [MIN_OUTPUT_DIR]
+        });
+        return fs.readFileSync(path.join(MIN_OUTPUT_DIR, "ilib-all.js"), "utf-8");
+    }
+
+    test("produces syntactically valid JS from minified sources", () => {
+        const output = assembleMinified();
+
+        // The whole point of the fix: minified modules must assemble into a
+        // bundle that actually parses. Prior to the fix, stripping the require
+        // imports and the comma-tail module.exports left dangling commas and
+        // raw require() calls, producing invalid JS.
+        expect(() => new vm.Script(output)).not.toThrow();
+    });
+
+    test("strips string-literal require() imports (minified and un-minified)", () => {
+        const output = assembleMinified();
+
+        // No leftover `= require("...")` bindings from either the minified
+        // (MinFmt: `var A=require("x"),B=require("y"),...`) or the un-minified
+        // (PlainFmt: `var A = require("x");`) module.
+        expect(output).not.toMatch(/=\s*require\(\s*["']/);
+    });
+
+    test("keeps the real definitions that shared a var with require imports", () => {
+        const output = assembleMinified();
+
+        // MinFmt was declared in the same minified `var` as the require imports;
+        // it must survive after the imports are stripped.
+        expect(output).toContain("MinFmt=function");
+        expect(output).toContain("PlainFmt = function");
+    });
+
+    test("removes non-ilib module.exports but preserves the ilib global export", () => {
+        const output = assembleMinified();
+
+        // module.exports that is the tail of a comma-expression must be removed
+        // without breaking the statement...
+        expect(output).not.toMatch(/module\.exports\s*=\s*MinFmt/);
+        expect(output).not.toMatch(/module\.exports\s*=\s*PlainFmt/);
+        // ...but the core `module.exports = ilib;` must be kept.
+        expect(output).toMatch(/module\.exports\s*=\s*ilib/);
     });
 });
