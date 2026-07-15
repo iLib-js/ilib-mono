@@ -373,7 +373,11 @@ JsonFileType.prototype.newFile = function(pathName, options) {
  *
  * @param {String} locale the name of the locale in which the resource
  * file will reside
- * @param {String} pathName path to the resource file, if known, or undefined otherwise
+ * @param {String} pathName path to the resource file, if known, or undefined otherwise.
+ * When given, it is used as-is because the caller (e.g. another plugin
+ * delegating output to this one, such as ilib-loctool-regex) has already
+ * computed the final localized path using its own mapping/template. When
+ * not given, this type computes the path itself from its own mapping.
  * @return {JavaScriptResourceFile} the Android resource file that serves the
  * given project, context, and locale.
  */
@@ -383,9 +387,12 @@ JsonFileType.prototype.getResourceFile = function(locale, pathName) {
     var resfile = this.resourceFiles && this.resourceFiles[key];
 
     if (!resfile) {
-        var mapping = this.getMapping(pathName);
-        var localizedPath = this.getLocalizedPath(mapping, pathName, key);
-        resfile = this.resourceFiles[key] = this.newFile(localizedPath, {
+        var newPathName = pathName;
+        if (!newPathName) {
+            var mapping = this.getMapping(pathName);
+            newPathName = this.getLocalizedPath(mapping, pathName, key);
+        }
+        resfile = this.resourceFiles[key] = this.newFile(newPathName, {
             project: this.project,
             locale: key
         });
