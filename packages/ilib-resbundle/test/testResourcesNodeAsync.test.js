@@ -1,7 +1,7 @@
 /*
  * testresourcesasync.js - test the Resources object
  *
- * Copyright © 2018-2019, 2022 JEDLSoft
+ * Copyright © 2018-2019, 2022, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,90 +23,84 @@ import IString from "ilib-istring";
 import Locale from "ilib-locale";
 import { Path } from "ilib-common";
 import { LocaleData } from 'ilib-localedata';
+import path from 'node:path';
 
-export const testResourcesAsync = {
-    testResBundleAsyncLocaleformatChoice_de_DE: function(test) {
-        test.expect(2);
+const __dirname = Path.dirname(Path.fileUriToPath(import.meta.url));
+
+describe("testResourcesNodeAsync", () => {
+    test("ResBundleAsyncLocaleformatChoice_de_DE", async () => {
+        expect.assertions(2);
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
 
         var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
-        ResBundle.create({
+        return ResBundle.create({
             locale: "de-DE",
             basePath: base
         }).then((rb) => {
             var loc = rb.getLocale();
-            test.equal(loc.toString(), "de-DE");
+            expect(loc.toString()).toBe("de-DE");
 
             var str = new IString("one#({N}) file selected|#({N}) files selected");
             var temp = rb.getString(str);
-            test.equal(temp.formatChoice(2, {N:2}), "(2) Dateien ausgewählt");
-
-            test.done();
+            expect(temp.formatChoice(2, {N:2})).toBe("(2) Dateien ausgewählt");
         });
-    },
+    });
 
-    testResBundleAsyncLocaleformatChoice_ko_KR: function(test) {
-        test.expect(2);
+    test("ResBundleAsyncLocaleformatChoice_ko_KR", async () => {
+        expect.assertions(2);
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
         var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
-        ResBundle.create({
+        const rb = await ResBundle.create({
             locale: "ko-KR",
             basePath: base
-        }).then((rb) => {
-            var loc = rb.getLocale();
-            test.equal(loc.toString(), "ko-KR");
-
-            var str = new IString("one#({N}) file selected|#({N}) files selected");
-            var temp = rb.getString(str);
-            test.equal(temp.formatChoice(1, {N:1}), "(1)개 파일 선택됨(other)");
-
-            test.done();
         });
-    },
+        var loc = rb.getLocale();
+        expect(loc.toString()).toBe("ko-KR");
 
-    testResBundleAsyncGetStringOtherBundleesMX: function(test) {
-        test.expect(4);
+        var str = new IString("one#({N}) file selected|#({N}) files selected");
+        var temp = rb.getString(str);
+        expect(temp.formatChoice(1, {N:1})).toBe("(1)개 파일 선택됨(other)");
+    });
+
+    test("ResBundleAsyncGetStringOtherBundleesMX", async () => {
+        expect.assertions(4);
 
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
 
         var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
 
-        ResBundle.create({
-            locale: "es-MX",
-            loadParams: {
-                base: base
-            }
-        }).then((rb) => {
-            test.ok(rb !== null);
-
-            test.equal(rb.getString("Hello from {country}").toString(), "Que tal de {country}");
-            test.equal(rb.getString("Hello from {city}").toString(), "Que tal de {city}");
-            test.equal(rb.getString("Greetings from {city} in {country}").toString(), "Hola de {city} en {country}");
-            test.done();
-        });
-    },
-
-    testResBundleAsyncGetStringWithPathesMX: function(test) {
-        test.expect(4);
-
-        // clear this to be sure it is actually loading something
-        LocaleData.clearCache();
-
-        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
-
-        ResBundle.create({
+        return ResBundle.create({
             locale: "es-MX",
             basePath: base
         }).then((rb) => {
-            test.ok(rb !== null);
+            expect(rb !== null).toBeTruthy();
 
-            test.equal(rb.getString("Hello from {country}").toString(), "Que tal de {country}");
-            test.equal(rb.getString("Hello from {city}").toString(), "Que tal de {city}");
-            test.equal(rb.getString("Greetings from {city} in {country}").toString(), "Hola de {city} en {country}");
-            test.done();
+            expect(rb.getString("Hello from {country}").toString()).toBe("Que tal de {country}");
+            expect(rb.getString("Hello from {city}").toString()).toBe("Que tal de {city}");
+            expect(rb.getString("Greetings from {city} in {country}").toString()).toBe("Hola de {city} en {country}");
         });
-    },
-};
+    });
+
+    test("ResBundleAsyncGetStringWithPathesMX", async () => {
+        expect.assertions(4);
+
+        // clear this to be sure it is actually loading something
+        LocaleData.clearCache();
+
+        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+
+        return ResBundle.create({
+            locale: "es-MX",
+            basePath: base
+        }).then((rb) => {
+            expect(rb !== null).toBeTruthy();
+
+            expect(rb.getString("Hello from {country}").toString()).toBe("Que tal de {country}");
+            expect(rb.getString("Hello from {city}").toString()).toBe("Que tal de {city}");
+            expect(rb.getString("Greetings from {city} in {country}").toString()).toBe("Hola de {city} en {country}");
+        });
+    });
+});
