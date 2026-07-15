@@ -31,9 +31,16 @@ export const testIString = {
     setUp: function(callback) {
         setLocale("en-US");
         if (getPlatform() === "browser" && !setUpPerformed) {
-            // does not support sync, so we have to ensure the locale
-            // data is loaded before we can do all these sync tests
+            // The webpack loader cannot load synchronously, so we have to
+            // pre-load the locale data before running these sync tests. The
+            // browser build stores its assembled data under the "../assembled"
+            // root (the same path IString uses in the browser), so we must
+            // register that as a global root. Otherwise ensureLocale caches
+            // the data under a root that the synchronous loadData/checkCache
+            // path never inspects, and IString silently falls back to the
+            // default (English) plural rules, breaking every formatChoice test.
             setUpPerformed = true;
+            LocaleData.addGlobalRoot("../assembled");
             let promise = Promise.resolve(true);
             localeList.locales.forEach(locale => {
                 promise = promise.then(() => {
