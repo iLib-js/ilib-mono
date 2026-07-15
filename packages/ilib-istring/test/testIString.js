@@ -3304,7 +3304,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClasses_my_MM2: function(test) {
@@ -3322,7 +3322,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClasses_zu_ZA2: function(test) {
@@ -3349,7 +3349,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClasses_ig_NG2: function(test) {
@@ -3384,7 +3384,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClasses_yo_BJ: function(test) {
@@ -3566,7 +3566,7 @@ export const testIString = {
         var str = new IString("0#There are no items.|one#The item is one|few#The items are few|many#The items are many|#Default items", { locale: "lo-LA" });
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClassesComplex_lo_LA2: function(test) {
@@ -4089,7 +4089,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1.0), "The item is one");
+        test.equal(str.formatChoice(1.0), "Default items");
         test.done();
     },
     testStringFormatChoiceDecimal_my_MM2: function(test) {
@@ -4269,7 +4269,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1.0), "The item is one");
+        test.equal(str.formatChoice(1.0), "Default items");
         test.done();
     },
     testStringFormatChoiceDecimal_ig_NG2: function(test) {
@@ -4305,7 +4305,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1.0), "The item is one");
+        test.equal(str.formatChoice(1.0), "Default items");
         test.done();
     },
     testStringFormatChoiceDecimal_yo_BJ: function(test) {

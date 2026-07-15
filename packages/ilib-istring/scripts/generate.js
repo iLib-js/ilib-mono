@@ -278,9 +278,14 @@ for (let language in pluralsObject) {
     if (language && pluralsObject[language]) {
         pluralsData = create_rule(pluralsObject[language]);
 
-        if (anyProperties(pluralsData)) {
-            const locale = new Locale(language);
-            writePluralsData(locale, pluralsData);
-        }
+        // Note: languages that CLDR defines with only the "other" category
+        // (e.g. ko, ja, zh, my, lo) produce an empty rule set here. We still
+        // write an explicit empty plurals.json for them so that they override
+        // the root plurals.json fallback (which carries the English "one"
+        // rule as a sensible default for unknown/western locales). Without
+        // this, those languages would incorrectly inherit an "one" category
+        // they do not have.
+        const locale = new Locale(language);
+        writePluralsData(locale, pluralsData);
     }
 }

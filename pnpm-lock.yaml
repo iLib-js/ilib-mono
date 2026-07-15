@@ -782,8 +782,8 @@ importers:
         specifier: ^2.2.1
         version: 2.3.3(@babel/core@7.29.0)
       cldr-core:
-        specifier: ^44.0.1
-        version: 44.1.0
+        specifier: ^48.2.0
+        version: 48.2.0
       docdash:
         specifier: ^2.0.2
         version: 2.0.2
@@ -5874,6 +5874,9 @@ packages:
 
   cldr-core@47.0.0:
     resolution: {integrity: sha512-tdYRy66DMgpjEwVOWCTN0zhNr+zh1+d4A6MCNgJKU7voFDGsrwcWHor6jcqudHDmElCgyVNqWBKAB1JeNdSOKg==}
+
+  cldr-core@48.2.0:
+    resolution: {integrity: sha512-zfmLothncSwfv2jlevoSrgI2VGgH8SDGHXst6jUEotHA8nq9Igeg9jzdJDFtBso9pgJuG89DK16TzrmZDdo2Bg==}
 
   cldr-localenames-full@44.1.0:
     resolution: {integrity: sha512-oD7rQKpOQdj9x7Vd/5JJiAcUJ+65dFMGD1WT0DnyVQ8CYTjQhElrm9wGHa20uWTDOMNt9ilGh0lYG22iplEzgA==}
@@ -13681,6 +13684,8 @@ snapshots:
   cldr-core@46.1.0: {}
 
   cldr-core@47.0.0: {}
+
+  cldr-core@48.2.0: {}
 
   cldr-localenames-full@44.1.0(cldr-core@44.1.0):
     dependencies:
