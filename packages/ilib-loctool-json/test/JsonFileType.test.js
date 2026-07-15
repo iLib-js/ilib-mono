@@ -494,43 +494,53 @@ describe("jsonfiletype", function() {
         expect(jft.handles("resources/en/US/messages.json")).toBeTruthy();
     });
 
-    test("JsonFileTypeGetResourceFileUsesLocalizedPath", function() {
+    test("JsonFileTypeGetResourceFileUsesGivenPathAsIs", function() {
+        // When a pathName is given, it is used verbatim because the caller (e.g. a
+        // delegating plugin like ilib-loctool-regex, or JsonFile itself which computes
+        // its own localized path before delegating) has already computed the final path.
         expect.assertions(2);
 
         var jft = new JsonFileType(p);
-        var rf = jft.getResourceFile("de-DE", "x/y/z/messages.json");
+        var rf = jft.getResourceFile("de-DE", "resources/de/DE/messages.json");
 
         expect(rf.pathName).toBe(path.normalize("resources/de/DE/messages.json"));
         expect(rf.localeSpec).toBe("de-DE");
     });
 
-    test("JsonFileTypeGetResourceFileUsesLocalizedPathAlternateExtension", function() {
+    test("JsonFileTypeGetResourceFileComputesLocalizedPathWhenPathOmitted", function() {
+        // With no pathName given, getMapping(undefined) falls back to this type's
+        // own default mapping ("**/*.json" -> "resources/[localeDir]/[filename]"),
+        // and there is no source filename to plug into [filename] since none was given.
         expect.assertions(1);
 
         var jft = new JsonFileType(p);
-        var rf = jft.getResourceFile("de-DE", "x/y/z/test/str.jsn");
+        var rf = jft.getResourceFile("de-DE");
 
-        expect(rf.pathName).toBe(path.normalize("x/y/z/test/de/DE/str.json"));
+        expect(rf.pathName).toBe(path.normalize("resources/de/DE/"));
     });
 
     test("JsonFileTypeGetResourceFileCachesPerLocale", function() {
         expect.assertions(2);
 
         var jft = new JsonFileType(p);
-        var rf1 = jft.getResourceFile("de-DE", "x/y/z/messages.json");
-        var rf2 = jft.getResourceFile("de-DE", "a/b/messages.json");
+        var rf1 = jft.getResourceFile("de-DE", "resources/de/DE/messages.json");
+        var rf2 = jft.getResourceFile("de-DE", "resources/de/DE/other.json");
 
         expect(rf1).toBe(rf2);
         expect(rf1.pathName).toBe(path.normalize("resources/de/DE/messages.json"));
     });
 
     test("JsonFileTypeGetResourceFileUsesSourceLocaleWhenLocaleOmitted", function() {
+        // Locale defaults to the project's source locale, which is used when computing
+        // the localized path. Path is also omitted here so that path computation
+        // actually happens (an explicit path is otherwise used as-is - see
+        // JsonFileTypeGetResourceFileUsesGivenPathAsIs).
         expect.assertions(1);
 
         var jft = new JsonFileType(p);
-        var rf = jft.getResourceFile(undefined, "x/y/z/messages.json");
+        var rf = jft.getResourceFile(undefined);
 
-        expect(rf.pathName).toBe(path.normalize("resources/en/US/messages.json"));
+        expect(rf.pathName).toBe(path.normalize("resources/en/US/"));
     });
 
     test("JsonFileTypeRejectInvalidSchema", function() {

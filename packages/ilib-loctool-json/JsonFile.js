@@ -1037,9 +1037,11 @@ JsonFile.prototype.localize = function (translations, locales) {
                 continue;
             }
 
-            // Don't pass pathName - let the resource file type use its own template
+            // Pass this file's own localized path (computed from this plugin's mapping),
+            // not the raw source pathName - the delegate resource file type uses
+            // whatever path it is given as-is rather than re-templating it.
             this.logger.debug("Delegating output to resourceFileType for locale " + locale);
-            var resFile = resFileType.getResourceFile(locale, this.pathName);
+            var resFile = resFileType.getResourceFile(locale, this.getLocalizedPath(locale));
 
             // For each extracted resource, look up its translation and add to the resource file
             for (var j = 0; j < resources.length; j++) {
