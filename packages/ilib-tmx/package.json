@@ -65,7 +65,9 @@
         "doc:html": "jsdoc -c jsdoc.json"
     },
     "devDependencies": {
-        "@babel/preset-env": "^7.24.4",
+        "@babel/core": "^7.0.0",
+        "@babel/preset-env": "^7.0.0",
+        "@babel/runtime": "^7.0.0",
         "docdash": "^2.0.2",
         "grunt": "^1.6.1",
         "grunt-babel": "^8.0.0",
