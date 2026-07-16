@@ -1,5 +1,12 @@
 # ilib-lint
 
+## 2.21.6
+
+### Patch Changes
+
+- 04ca0dc: - Migrate ilib-localeinfo package into the ilib-mono monorepo
+  - Link ilib-lint and ilib-resbundle to the workspace version of ilib-localeinfo
+
 ## 2.21.5
 
 ### Patch Changes

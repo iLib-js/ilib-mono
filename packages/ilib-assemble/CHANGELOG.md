@@ -1,5 +1,11 @@
 # ilib-assemble
 
+## 1.5.1
+
+### Patch Changes
+
+- 514b05c: Fixed legacy assemble to strip require imports and non-ilib module.exports from minified/compiled ilib sources, so the assembled bundle is valid JS.
+
 ## 1.5.0
 
 ### Minor Changes
