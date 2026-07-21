@@ -1,5 +1,5 @@
 /*
- * GlyphString.test.js - test the glyph iteration routines
+ * GlyphString.test.ts - test the glyph iteration routines
  *
  * Copyright © 2014-2015, 2017, 2024 JEDLSoft
  *
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import GlyphString from "../src/index.js";
+import GlyphString from "../src/index";
 
 describe("testglyphstr", () => {
     test("CharIteratorNormal", () => {
@@ -137,9 +137,9 @@ describe("testglyphstr", () => {
     test("ForEachEmpty", () => {
         const s = new GlyphString("");
 
-        s.forEach(ch => {
+        s.forEach(() => {
             // should never call this callback
-            test.fail();
+            throw new Error("forEach callback should not be called for empty string");
         });
     });
     test("ForEachWithSurrogates", () => {
@@ -395,7 +395,7 @@ describe("testglyphstr", () => {
         expect.assertions(1);
         const s = new GlyphString("हैलो, आप कैसे हैं?");
 
-        expect(s.ellipsize(8), "हैलो).toBe(आप …");
+        expect(s.ellipsize(8)).toBe("हैलो, आप …");
     });
     test("GlyphStrEllipsizeJapanese", () => {
         expect.assertions(1);
