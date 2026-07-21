@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-US" trgLang="de-DE" version="2.0">
+  <file id="sample-webos-dart_f1" original="sample-webos-dart">
+    <group id="sample-webos-dart_g1" name="x-dart">
+      <unit id="1">
+        <segment>
+          <source>Hello</source>
+          <target>Hallo</target>
+        </segment>
+      </unit>
+      <unit id="2">
+        <segment>
+          <source>Thank you</source>
+          <target>Danke</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
