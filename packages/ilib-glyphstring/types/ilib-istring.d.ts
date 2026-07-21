@@ -11,6 +11,10 @@ declare module "ilib-istring" {
             options?: object,
             sync?: boolean
         ): void | Promise<IString>;
+        static create(
+            string?: string | IString,
+            options?: object
+        ): Promise<IString>;
         charIterator(): CharIterator;
         forEach(callback: (ch: string) => void): void;
         static fromCodePoint(codepoint: number): string;

@@ -27,11 +27,8 @@ export interface GlyphStringOptions {
     /** Locale of this string (passed through to IString). */
     locale?: string;
     /**
-     * Callback invoked when the instance is ready. With static ccc/nfc
-     * data this fires synchronously from the constructor.
+     * @internal Skip IString initialization (used by {@link GlyphString.create}).
      */
-    onLoad?: (gstr: GlyphString) => void;
-    /** @internal Skip IString initialization (used by {@link GlyphString.create}). */
     _noinit?: boolean;
 }
 
@@ -93,39 +90,37 @@ export interface GlyphCharIterator {
  */
 export class GlyphString extends IString {
     /**
-     * Create a new ilib glyph string instance.
+     * Create a new GlyphString synchronously.
+     *
+     * As with other ilib classes that support asynchronous operation, if the
+     * platform does not support synchronous loading of locale data (here:
+     * IString plural data), this constructor can still succeed when that data
+     * is already cached. Prefer {@link GlyphString.create} for async loading.
+     *
+     * Glyph combining-class and composition tables are static modules, so
+     * they do not require an async load.
      *
      * @param string initialize this instance with this string
      * @param options options governing the construction of this instance
      */
     constructor(string?: string | IString, options?: GlyphStringOptions) {
         super(string, options);
-
-        // ccc and nfc are imported statically — no async locale load needed.
-        if (options && typeof options.onLoad === "function") {
-            options.onLoad(this);
-        }
     }
 
     /**
-     * Factory method to create a new instance of GlyphString asynchronously.
-     * Awaits IString's plural-data initialization, then resolves with the
-     * ready instance. (Glyph ccc/nfc data is already static.)
+     * Factory method to create a new GlyphString asynchronously.
+     * Parameters match the constructor; returns a Promise that resolves to
+     * the ready instance after IString plural data has loaded.
      *
      * @param string initialize this instance with this string
-     * @param options the same objects you would send to a constructor
+     * @param options the same options you would pass to the constructor
      */
-    static create(
+    static override async create(
         string?: string | IString,
         options?: GlyphStringOptions
     ): Promise<GlyphString> {
         const gstr = new GlyphString(undefined, { ...options, _noinit: true });
-        return Promise.resolve(gstr.init(string, options, false)).then(() => {
-            if (options && typeof options.onLoad === "function") {
-                options.onLoad(gstr);
-            }
-            return gstr;
-        });
+        return (await gstr.init(string, options, false)) as GlyphString;
     }
 
     /**

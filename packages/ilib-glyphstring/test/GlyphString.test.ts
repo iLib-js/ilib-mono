@@ -407,13 +407,14 @@ describe("testglyphstr", () => {
         expect.assertions(1);
         const s = new GlyphString("ಭೆನಿಬೇನಿೇ");
 
-        expect(s.ellipsize(4)).toBe("ಭೆನಿ…");
+        expect(s.ellipsize(3)).toBe("ಭೆನಿ…");
     });
-    test("GlyphStrEllipsizeKannadaSkipSpacing5", () => {
+    test("GlyphStrEllipsizeKannadaSkipSpacing4", () => {
         expect.assertions(1);
         const s = new GlyphString("ಭೆನಿಬೇನಿೇ");
 
-        expect(s.ellipsize(5)).toBe("ಭೆನಿ…");
+        // length 4 would land on the Mc glyph ಬೇ, so truncate skips it
+        expect(s.ellipsize(4)).toBe("ಭೆನಿ…");
     });
     test("GlyphStrEllipsizeKannadaSkipSpacing5", () => {
         expect.assertions(1);

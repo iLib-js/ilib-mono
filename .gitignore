@@ -18,10 +18,6 @@ ilib-mono.iml
 # Logs
 .pnpm-debug.log*
 
-# Grunt intermediate storage
-.grunt
-packages/*/.grunt
-
 # Misc
 .DS_store
 
