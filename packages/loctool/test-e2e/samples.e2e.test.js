@@ -29,8 +29,16 @@ describe("samples", () => {
         const xliffPath = path.resolve(projectPath, "sample-webos-js-extracted.xliff");
         const newKoXliffPath = path.resolve(projectPath, "sample-webos-js-new-ko-KR.xliff");
         const newDeXliffPath = path.resolve(projectPath, "sample-webos-js-new-de-DE.xliff");
+        const newFrXliffPath = path.resolve(projectPath, "sample-webos-js-new-fr-CA.xliff");
+        const newEnGbXliffPath = path.resolve(projectPath, "sample-webos-js-new-en-GB.xliff");
+        const newEnAuXliffPath = path.resolve(projectPath, "sample-webos-js-new-en-AU.xliff");
         const koResourcePath = path.resolve(projectPath, "resources", "ko", "strings.json");
         const deResourcePath = path.resolve(projectPath, "resources", "de", "strings.json");
+        // localeMap maps fr-CA to the "fr" resource directory
+        const frResourcePath = path.resolve(projectPath, "resources", "fr", "strings.json");
+        const enGbResourcePath = path.resolve(projectPath, "resources", "en", "GB", "strings.json");
+        // en-AU has no xliff of its own; localeInherit falls back to en-GB's translations
+        const enAuResourcePath = path.resolve(projectPath, "resources", "en", "AU", "strings.json");
 
         beforeAll(async () => {
             fsSnapshot = FSSnapshot.create(
@@ -38,6 +46,9 @@ describe("samples", () => {
                     "sample-webos-js-extracted.xliff",
                     "sample-webos-js-new-de-DE.xliff",
                     "sample-webos-js-new-ko-KR.xliff",
+                    "sample-webos-js-new-fr-CA.xliff",
+                    "sample-webos-js-new-en-GB.xliff",
+                    "sample-webos-js-new-en-AU.xliff",
                     "resources",
                 ].map((p) => path.resolve(projectPath, p))
             );
@@ -61,12 +72,36 @@ describe("samples", () => {
             expectFileToMatchSnapshot(newDeXliffPath);
         });
 
+        it("should produce a new-strings XLIFF file for fr-CA", () => {
+            expectFileToMatchSnapshot(newFrXliffPath);
+        });
+
+        it("should produce a new-strings XLIFF file for en-GB", () => {
+            expectFileToMatchSnapshot(newEnGbXliffPath);
+        });
+
+        it("should produce a new-strings XLIFF file for en-AU", () => {
+            expectFileToMatchSnapshot(newEnAuXliffPath);
+        });
+
         it("should produce localized ko-KR resources", () => {
             expectFileToMatchSnapshot(koResourcePath);
         });
 
         it("should produce localized de-DE resources", () => {
             expectFileToMatchSnapshot(deResourcePath);
+        });
+
+        it("should apply localeMap and write fr-CA resources under the fr resource directory", () => {
+            expectFileToMatchSnapshot(frResourcePath);
+        });
+
+        it("should produce localized en-GB resources", () => {
+            expectFileToMatchSnapshot(enGbResourcePath);
+        });
+
+        it("should apply localeInherit and write en-AU resources inherited from en-GB", () => {
+            expectFileToMatchSnapshot(enAuResourcePath);
         });
     });
 
