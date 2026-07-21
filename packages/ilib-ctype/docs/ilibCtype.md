@@ -1,53 +1,64 @@
-<a name="inRange"></a>
+## Constants
 
-## inRange(num, rangeName, obj) ⇒ <code>boolean</code>
-Actual implementation for withinRange. Searches the given object for ranges.
-The range names are taken from the Unicode range names in
-http://www.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt
+<dl>
+<dt><a href="#propertyAliases">propertyAliases</a></dt>
+<dd><p>Map from general-category aliases (lower-cased) to the short property
+codes used as keys inside the ctype_* data tables.</p>
+<p>Callers may pass either the short code (&quot;Mn&quot;) or the long Unicode name
+(&quot;Nonspacing_Mark&quot;); both resolve to the same internal lookup.</p>
+</dd>
+<dt><a href="#categoryTables">categoryTables</a></dt>
+<dd><p>General-category data tables keyed by the first letter of the short
+property code (L, M, N, Z, C, P, S). Kept private so the on-disk /
+in-memory format can change without breaking callers.</p>
+</dd>
+</dl>
 
-<ul>
-<li>Cn - Unassigned
-<li>Lu - Uppercase_Letter
-<li>Ll - Lowercase_Letter
-<li>Lt - Titlecase_Letter
-<li>Lm - Modifier_Letter
-<li>Lo - Other_Letter
-<li>Mn - Nonspacing_Mark
-<li>Me - Enclosing_Mark
-<li>Mc - Spacing_Mark
-<li>Nd - Decimal_Number
-<li>Nl - Letter_Number
-<li>No - Other_Number
-<li>Zs - Space_Separator
-<li>Zl - Line_Separator
-<li>Zp - Paragraph_Separator
-<li>Cc - Control
-<li>Cf - Format
-<li>Co - Private_Use
-<li>Cs - Surrogate
-<li>Pd - Dash_Punctuation
-<li>Ps - Open_Punctuation
-<li>Pe - Close_Punctuation
-<li>Pc - Connector_Punctuation
-<li>Po - Other_Punctuation
-<li>Sm - Math_Symbol
-<li>Sc - Currency_Symbol
-<li>Sk - Modifier_Symbol
-<li>So - Other_Symbol
-<li>Pi - Initial_Punctuation
-<li>Pf - Final_Punctuation
-</ul>
+## Functions
+
+<dl>
+<dt><a href="#resolvePropertyCode">resolvePropertyCode(propertyType)</a> ⇒ <code>string</code> | <code>undefined</code></dt>
+<dd><p>Resolve a user-supplied property name to the short general-category
+code used as a key in the ctype_* tables.</p>
+</dd>
+</dl>
+
+<a name="propertyAliases"></a>
+
+## propertyAliases
+Map from general-category aliases (lower-cased) to the short property
+codes used as keys inside the ctype_* data tables.
+
+Callers may pass either the short code ("Mn") or the long Unicode name
+("Nonspacing_Mark"); both resolve to the same internal lookup.
+
+**Kind**: global constant  
+
+* * *
+
+<a name="categoryTables"></a>
+
+## categoryTables
+General-category data tables keyed by the first letter of the short
+property code (L, M, N, Z, C, P, S). Kept private so the on-disk /
+in-memory format can change without breaking callers.
+
+**Kind**: global constant  
+
+* * *
+
+<a name="resolvePropertyCode"></a>
+
+## resolvePropertyCode(propertyType) ⇒ <code>string</code> \| <code>undefined</code>
+Resolve a user-supplied property name to the short general-category
+code used as a key in the ctype_* tables.
 
 **Kind**: global function  
-**Returns**: <code>boolean</code> - true if the first character is within the named
-range  
-**Access**: protected  
+**Returns**: <code>string</code> \| <code>undefined</code> - short code such as "Mn", or undefined if unknown  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| num | <code>number</code> | code point of the character to examine |
-| rangeName | <code>string</code> | the name of the range to check |
-| obj | <code>Object</code> | object containing the character range data |
+| propertyType | <code>string</code> | short code or long Unicode name |
 
 
 * * *

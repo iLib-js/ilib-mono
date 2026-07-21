@@ -24,49 +24,20 @@ import { SearchUtils, JSUtils } from 'ilib-common';
 import { ctype_ranges as ctype } from './ctype_ranges.js';
 
 /**
- * Actual implementation for withinRange. Searches the given object for ranges.
- * The range names are taken from the Unicode range names in
- * http://www.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt
+ * Package-private binary search: return whether `num` falls in the named
+ * range entry of a ctype data table.
  *
- * <ul>
- * <li>Cn - Unassigned
- * <li>Lu - Uppercase_Letter
- * <li>Ll - Lowercase_Letter
- * <li>Lt - Titlecase_Letter
- * <li>Lm - Modifier_Letter
- * <li>Lo - Other_Letter
- * <li>Mn - Nonspacing_Mark
- * <li>Me - Enclosing_Mark
- * <li>Mc - Spacing_Mark
- * <li>Nd - Decimal_Number
- * <li>Nl - Letter_Number
- * <li>No - Other_Number
- * <li>Zs - Space_Separator
- * <li>Zl - Line_Separator
- * <li>Zp - Paragraph_Separator
- * <li>Cc - Control
- * <li>Cf - Format
- * <li>Co - Private_Use
- * <li>Cs - Surrogate
- * <li>Pd - Dash_Punctuation
- * <li>Ps - Open_Punctuation
- * <li>Pe - Close_Punctuation
- * <li>Pc - Connector_Punctuation
- * <li>Po - Other_Punctuation
- * <li>Sm - Math_Symbol
- * <li>Sc - Currency_Symbol
- * <li>Sk - Modifier_Symbol
- * <li>So - Other_Symbol
- * <li>Pi - Initial_Punctuation
- * <li>Pf - Final_Punctuation
- * </ul>
+ * Exported from this module so other files in ilib-ctype can import it
+ * (isDigit, withinRange, hasUCDCharProperty, etc.), but intentionally
+ * not re-exported from index.js. Using it from outside the package would
+ * require exposing the internal data-table format, which is not part of
+ * the public API and may change.
  *
- * @protected
+ * @private
  * @param {number} num code point of the character to examine
  * @param {string} rangeName the name of the range to check
  * @param {Object} obj object containing the character range data
- * @return {boolean} true if the first character is within the named
- * range
+ * @return {boolean} true if the code point is within the named range
  */
 export function inRange(num, rangeName, obj) {
     var range;

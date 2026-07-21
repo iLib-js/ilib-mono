@@ -53,6 +53,18 @@ import { withinRange } from "ilib-ctype";
 console.log(withinRange("\uFE2A", "HalfMarks")); // prints true
 ```
 
+There is also a `hasUCDCharProperty()` function which returns true
+if a character has a given Unicode general-category property. You
+may pass either the short code (`"Mn"`) or the long Unicode name
+(`"Nonspacing_Mark"`):
+
+```javascript
+import { hasUCDCharProperty } from "ilib-ctype";
+
+console.log(hasUCDCharProperty("\u0308", "Nonspacing_Mark")); // true
+console.log(hasUCDCharProperty(0x093E, "Mc")); // true (Spacing_Mark)
+```
+
 ## Using the CType Functions
 
 All of the functions are exported from the package in general. Here is
