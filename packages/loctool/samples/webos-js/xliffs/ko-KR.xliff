@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">
+  <file id="sample-webos-js_f1" original="sample-webos-js">
+    <group id="sample-webos-js_g1" name="javascript">
+      <unit id="1">
+        <segment>
+          <source>Thank you</source>
+          <target>감사합니다</target>
+        </segment>
+      </unit>
+      <unit id="2">
+        <segment>
+          <source>Hello</source>
+          <target>안녕하세요</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

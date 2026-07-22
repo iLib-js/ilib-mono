@@ -1,0 +1,14 @@
+{
+  "name": "loctool webos-js Sample",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Sample localization project",
+  "devDependencies": {
+    "ilib-loctool-webos-javascript": "^1.13.2",
+    "ilib-loctool-webos-json-resource": "^1.7.9",
+    "loctool": "workspace:^"
+  },
+  "scripts": {
+    "run:sample": "loctool localize ."
+  }
+}

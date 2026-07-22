@@ -3605,6 +3605,30 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.19.41)
 
+  packages/loctool/samples/webos-dart:
+    devDependencies:
+      ilib-loctool-webos-dart:
+        specifier: ^1.5.2
+        version: 1.5.2(loctool@packages+loctool)
+      ilib-loctool-webos-json-resource:
+        specifier: ^1.7.9
+        version: 1.7.9(loctool@packages+loctool)
+      loctool:
+        specifier: workspace:^
+        version: link:../..
+
+  packages/loctool/samples/webos-js:
+    devDependencies:
+      ilib-loctool-webos-javascript:
+        specifier: ^1.13.2
+        version: 1.13.2(loctool@packages+loctool)
+      ilib-loctool-webos-json-resource:
+        specifier: ^1.7.9
+        version: 1.7.9(loctool@packages+loctool)
+      loctool:
+        specifier: workspace:^
+        version: link:../..
+
   packages/message-accumulator:
     dependencies:
       ilib-tree-node:
@@ -7341,6 +7365,29 @@ packages:
   ilib-loctool-mock@file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz:
     resolution: {integrity: sha512-qP6wJwUn6YFhdKSP0MQMXsTkwaBSDxgv1cwGfLzrs1mT/nmz/blHGP7JT55+XAakbdd6SO4aZeOCF0lB4bhCxg==, tarball: file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz}
     version: 1.0.0
+
+  ilib-loctool-webos-common@1.2.4:
+    resolution: {integrity: sha512-G7EZGTRVsqkSKFG3qIc/qK1tCwUVgxRkeeM6z25Fhruuf4in6XcaiGj5/+jcLNwKy5/mUXsImNbTaXArFx+ciw==}
+    peerDependencies:
+      loctool: 2.32.3
+
+  ilib-loctool-webos-dart@1.5.2:
+    resolution: {integrity: sha512-EXiDMoOHyxVjGTYLPk72zorPEfq+vF3ez47HmMWgzekNVESYwdW+92qMcu9mtmAtOJQ7WiGNa142zJ+j6Z4+Yw==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      loctool: 2.32.3
+
+  ilib-loctool-webos-javascript@1.13.2:
+    resolution: {integrity: sha512-tH1H+izAa6NlEcwk3Lf0nJgwKDl2C26XonzmBJ06sVu3fCgdq8eqsreUmwV2CmGZcpzuEZ4TW0ZVPjjJEjGh1Q==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      loctool: 2.32.3
+
+  ilib-loctool-webos-json-resource@1.7.9:
+    resolution: {integrity: sha512-8NSYWwAd1L3it4b3BVhVFCWspMnSnqIlOWbXorZ09EbDBdJNtGwvVefskhZW36MB0u/vav44VjFg9kSnngKO6A==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      loctool: 2.32.3
 
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     resolution: {integrity: sha512-jKrfpzwShklRzKlRCJ9Pzt2p6V3AM7YfvtuapWZNwc/jYOfBd/2WuprkWmm++zgdzh8wfveeBSn1CElCHCbv0w==, tarball: file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz}
@@ -15457,6 +15504,29 @@ snapshots:
   ilib-loctool-mock@file:packages/loctool/test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz:
     dependencies:
       ilib: 14.21.3
+
+  ilib-loctool-webos-common@1.2.4(loctool@packages+loctool):
+    dependencies:
+      loctool: link:packages/loctool
+
+  ilib-loctool-webos-dart@1.5.2(loctool@packages+loctool):
+    dependencies:
+      ilib: 14.21.3
+      ilib-loctool-webos-common: 1.2.4(loctool@packages+loctool)
+      ilib-loctool-webos-json-resource: 1.7.9(loctool@packages+loctool)
+      loctool: link:packages/loctool
+      micromatch: 4.0.8
+
+  ilib-loctool-webos-javascript@1.13.2(loctool@packages+loctool):
+    dependencies:
+      ilib-loctool-webos-common: 1.2.4(loctool@packages+loctool)
+      ilib-loctool-webos-json-resource: 1.7.9(loctool@packages+loctool)
+      loctool: link:packages/loctool
+
+  ilib-loctool-webos-json-resource@1.7.9(loctool@packages+loctool):
+    dependencies:
+      ilib: 14.21.3
+      loctool: link:packages/loctool
 
   ilib-mock@file:packages/ilib-assemble/test/ilib-mock/ilib-mock-1.0.0.tgz:
     dependencies:

@@ -1,0 +1,32 @@
+{
+    "name": "sample-webos-dart",
+    "id": "sample-webos-dart",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "resourceDirs": {
+        "json": "resources"
+    },
+    "resourceFileTypes": {
+        "json": "ilib-loctool-webos-json-resource"
+    },
+    "plugins": [
+        "ilib-loctool-webos-dart"
+    ],
+    "excludes": [
+        ".*",
+        "xliffs",
+        "resources",
+        "assets"
+    ],
+    "settings": {
+        "translationsDir": "./xliffs",
+        "xliffVersion": 2,
+        "xliffStyle": "webOS",
+        "localizeOnly": true,
+        "locales": [
+            "ko-KR",
+            "de-DE"
+        ]
+    }
+}
