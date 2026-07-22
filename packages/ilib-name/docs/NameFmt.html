@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>NameFmt - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Name.html">Name</a><ul class='methods'><li data-type='method'><a href="Name.html#.create">create</a></li><li data-type='method'><a href="Name.html#clone">clone</a></li><li data-type='method'><a href="Name.html#getSortFamilyName">getSortFamilyName</a></li></ul></li><li><a href="NameFmt.html">NameFmt</a><ul class='methods'><li data-type='method'><a href="NameFmt.html#.create">create</a></li><li data-type='method'><a href="NameFmt.html#format">format</a></li><li data-type='method'><a href="NameFmt.html#getComponents">getComponents</a></li><li data-type='method'><a href="NameFmt.html#getLocale">getLocale</a></li><li data-type='method'><a href="NameFmt.html#getStyle">getStyle</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">NameFmt</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        NameFmt
+        </h2>
+        
+            <div class="class-description usertext">Represents a formatter that can format person name instances (Name) for display to
+a user.<p>
+
+Formatting names is a locale-dependent function, as the order of the components
+depends on the locale. The following explains some of the details:<p>
+
+<ul>
+<li>In Western countries, the given name comes first, followed by a space, followed
+by the family name. In Asian countries, the family name comes first, followed immediately
+by the given name with no space. But, that format is only used with Asian names written
+in ideographic characters. In Asian countries, especially ones where both an Asian and
+a Western language are used (Hong Kong, Singapore, etc.), the convention is often to
+follow the language of the name. That is, Asian names are written in Asian style, and
+Western names are written in Western style. This class follows that convention as
+well.
+<li>In other Asian countries, Asian names
+written in Latin script are written with Asian ordering. eg. "Xu Ping-an" instead
+of the more Western order "Ping-an Xu", as the order is thought to go with the style
+that is appropriate for the name rather than the style for the language being written.
+<li>In some Spanish speaking countries, people often take both their maternal and
+paternal last names as their own family name. When formatting a short or medium style
+of that family name, only the paternal name is used. In the long style, all the names
+are used. eg. "Juan Julio Raul Lopez Ortiz" took the name "Lopez" from his father and
+the name "Ortiz" from his mother. His family name would be "Lopez Ortiz". The formatted
+short style of his name would be simply "Juan Lopez" which only uses his paternal
+family name of "Lopez".
+<li>In many Western languages, it is common to use auxillary words in family names. For
+example, the family name of "Ludwig von Beethoven" in German is "von Beethoven", not
+"Beethoven". This class ensures that the family name is formatted correctly with
+all auxillary words.
+</ul></div>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="NameFmt"><span class="type-signature"></span>new NameFmt<span class="signature">(options)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Create an instance of a name formatter.<p>
+
+The options may contain the following properties:
+
+<ul>
+<li><i>locale</i> - Use the conventions of the given locale to construct the name format.
+<li><i>style</i> - Format the name with the given style. The value of this property
+should be one of the following strings:
+  <ul>
+    <li><i>short</i> - Format a short name with just the given and family names. eg. "John Smith"
+    <li><i>medium</i> - Format a medium-length name with the given, middle, and family names.
+    eg. "John James Smith"
+    <li><i>long</i> - Format a long name with all names available in the given name object, including
+    prefixes. eg. "Mr. John James Smith"
+    <li><i>full</i> - Format a long name with all names available in the given name object, including
+    prefixes and suffixes. eg. "Mr. John James Smith, Jr."
+    <li><i>formal_short</i> - Format a name with the honorific or prefix/suffix and the family
+    name. eg. "Mr. Smith"
+    <li><i>formal_long</i> - Format a name with the honorific or prefix/suffix and the
+    given and family name. eg. "Mr. John Smith"
+    <li><i>familiar</i> - Format a name with the most familiar style that the culture of the locale
+    will accept. In some locales, it is not rude to address people you just met by their given name.
+    In others, it is rude to address a person in such a familiar style unless you are previously
+    invited to do so or unless you have known them for a while. In this case, it will use a more formal
+    style, but still as familiar as possible so as not to be rude.
+  </ul>
+<li><i>components</i> - Format the name with the given components in the correct
+order for those components. Components are encoded as a string of letters representing
+the desired components:
+  <ul>
+    <li><i>p</i> - prefixes
+    <li><i>g</i> - given name
+    <li><i>m</i> - middle names
+    <li><i>f</i> - family name
+    <li><i>s</i> - suffixes
+    <li><i>h</i> - honorifics (selects the prefix or suffix as required by the locale)
+  </ul>
+</ul>
+<p>
+
+For example, the string "pf" would mean to only format any prefixes and family names
+together and leave out all the other parts of the name.<p>
+
+The components can be listed in any order in the string. The <i>components</i> option
+overrides the <i>style</i> option if both are specified.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A set of options that govern how the formatter will behave</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line242">line 242</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Factory method to create a new instance of NameFmt asynchronously.
+The parameters are the same as for the constructor, but it returns
+a `Promise` instead of the instance directly.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the same objects you would send to a constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    a promise to load a NameFmt instance. The resolved
+value of the promise is the new instance of NameFmt,
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="format"><span class="type-signature"></span>format<span class="signature">(name)</span><span class="type-signature"> &rarr; {string|undefined}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line360">line 360</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Format the name for display in the current locale with the options set up
+in the constructor of this formatter instance.<p>
+
+If the name does not contain all the parts required for the style, those parts
+will be left blank.<p>
+
+There are two basic styles of formatting: European, and Asian. If this formatter object
+is set for European style, but an Asian name is passed to the format method, then this
+method will format the Asian name with a generic Asian template. Similarly, if the
+formatter is set for an Asian style, and a European name is passed to the format method,
+the formatter will use a generic European template.<p>
+
+This means it is always safe to format any name with a formatter for any locale. You should
+always get something at least reasonable as output.<p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Name.html">Name</a></span>
+|
+
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the name instance to format, or an object containing name parts to format</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the name formatted according to the style of this formatter instance
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getComponents"><span class="type-signature"></span>getComponents<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line337">line 337</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Return the list of components used to format names in this formatter
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the list of components
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getLocale"><span class="type-signature"></span>getLocale<span class="signature">()</span><span class="type-signature"> &rarr; {Locale}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line321">line 321</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Return the locale for this formatter instance.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the locale instance for this formatter
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Locale</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getStyle"><span class="type-signature"></span>getStyle<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line329">line 329</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Return the style of names returned by this formatter
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the style of names returned by this formatter
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.11</a> on Wed Oct 12 2022 23:55:04 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
