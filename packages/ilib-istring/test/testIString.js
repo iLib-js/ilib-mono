@@ -31,9 +31,16 @@ export const testIString = {
     setUp: function(callback) {
         setLocale("en-US");
         if (getPlatform() === "browser" && !setUpPerformed) {
-            // does not support sync, so we have to ensure the locale
-            // data is loaded before we can do all these sync tests
+            // The webpack loader cannot load synchronously, so we have to
+            // pre-load the locale data before running these sync tests. The
+            // browser build stores its assembled data under the "../assembled"
+            // root (the same path IString uses in the browser), so we must
+            // register that as a global root. Otherwise ensureLocale caches
+            // the data under a root that the synchronous loadData/checkCache
+            // path never inspects, and IString silently falls back to the
+            // default (English) plural rules, breaking every formatChoice test.
             setUpPerformed = true;
+            LocaleData.addGlobalRoot("../assembled");
             let promise = Promise.resolve(true);
             localeList.locales.forEach(locale => {
                 promise = promise.then(() => {
@@ -3304,7 +3311,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClasses_my_MM2: function(test) {
@@ -3322,7 +3329,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClasses_zu_ZA2: function(test) {
@@ -3349,7 +3356,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClasses_ig_NG2: function(test) {
@@ -3384,7 +3391,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClasses_yo_BJ: function(test) {
@@ -3566,7 +3573,7 @@ export const testIString = {
         var str = new IString("0#There are no items.|one#The item is one|few#The items are few|many#The items are many|#Default items", { locale: "lo-LA" });
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1), "The item is one");
+        test.equal(str.formatChoice(1), "Default items");
         test.done();
     },
     testStringFormatChoiceCharClassesComplex_lo_LA2: function(test) {
@@ -4089,7 +4096,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1.0), "The item is one");
+        test.equal(str.formatChoice(1.0), "Default items");
         test.done();
     },
     testStringFormatChoiceDecimal_my_MM2: function(test) {
@@ -4269,7 +4276,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1.0), "The item is one");
+        test.equal(str.formatChoice(1.0), "Default items");
         test.done();
     },
     testStringFormatChoiceDecimal_ig_NG2: function(test) {
@@ -4305,7 +4312,7 @@ export const testIString = {
 
         test.ok(str !== null);
 
-        test.equal(str.formatChoice(1.0), "The item is one");
+        test.equal(str.formatChoice(1.0), "Default items");
         test.done();
     },
     testStringFormatChoiceDecimal_yo_BJ: function(test) {
