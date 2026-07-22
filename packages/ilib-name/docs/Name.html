@@ -14,6 +14,7 @@
     <link type="text/css" rel="stylesheet" href="styles/prettify.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
     <script src="scripts/nav.js" defer></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -27,7 +28,9 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Name.html">Name</a><ul class='methods'><li data-type='method'><a href="Name.html#.create">create</a></li><li data-type='method'><a href="Name.html#clone">clone</a></li><li data-type='method'><a href="Name.html#getSortFamilyName">getSortFamilyName</a></li></ul></li><li><a href="NameFmt.html">NameFmt</a><ul class='methods'><li data-type='method'><a href="NameFmt.html#.create">create</a></li><li data-type='method'><a href="NameFmt.html#format">format</a></li><li data-type='method'><a href="NameFmt.html#getComponents">getComponents</a></li><li data-type='method'><a href="NameFmt.html#getLocale">getLocale</a></li><li data-type='method'><a href="NameFmt.html#getStyle">getStyle</a></li></ul></li></ul>
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Name.html">Name</a><ul class='methods'><li data-type='method'><a href="Name.html#clone">clone</a></li><li data-type='method'><a href="Name.html#getSortFamilyName">getSortFamilyName</a></li><li data-type='method'><a href="Name.html#.create">create</a></li></ul></li><li><a href="NameFmt.html">NameFmt</a><ul class='methods'><li data-type='method'><a href="NameFmt.html#format">format</a></li><li data-type='method'><a href="NameFmt.html#getComponents">getComponents</a></li><li data-type='method'><a href="NameFmt.html#getLocale">getLocale</a></li><li data-type='method'><a href="NameFmt.html#getStyle">getStyle</a></li><li data-type='method'><a href="NameFmt.html#.create">create</a></li></ul></li></ul>
+    
 </nav>
 
 <div id="main">
@@ -45,7 +48,9 @@
 <header>
     
         <h2>
-        Name
+        
+            Name
+        
         </h2>
         
             <div class="class-description usertext">A class to parse names of people. Different locales have different conventions when it
@@ -72,51 +77,9 @@ comes to naming people.<p></div>
 
 
 <dl class="details">
-
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Name.js.html">Name.js</a>, <a href="Name.js.html#line53">line 53</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    Create a new instance of a Name. This parses the name and puts the result in the various
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Create a new instance of a Name. This parses the name and puts the result in the various
 fields.<p>
 
 The options can contain any of the following properties:
@@ -167,8 +130,46 @@ of the auxilliary words ("van der") will be included in the field.<p>
 For names in some Spanish locales, it is assumed that the family name is doubled. That is,
 a person may have a paternal family name followed by a maternal family name. All
 family names will be listed in the familyName field as normal, separated by spaces.
-When formatting the short version of such names, only the paternal family name is used.
-</div>
+When formatting the short version of such names, only the paternal family name is used.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Name.js.html">Name.js</a>, <a href="Name.js.html#line53">line 53</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -180,7 +181,9 @@ When formatting the short version of such names, only the paternal family name i
 
 
 
-    <h5>Parameters:</h5>
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -222,6 +225,7 @@ When formatting the short version of such names, only the paternal family name i
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -251,6 +255,7 @@ When formatting the short version of such names, only the paternal family name i
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -323,6 +328,11 @@ When formatting the short version of such names, only the paternal family name i
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>The family names in this name. If there are multiple family names, they all
+appear in this field separated by spaces.</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -373,7 +383,7 @@ appear in this field separated by spaces.
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
@@ -381,6 +391,7 @@ appear in this field separated by spaces.
 |
 
 <span class="param-type">Array.&lt;string></span>
+
 
 
         </li>
@@ -400,6 +411,10 @@ appear in this field separated by spaces.
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>The given (personal) name in this name.</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -449,7 +464,7 @@ appear in this field separated by spaces.
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
@@ -457,6 +472,7 @@ appear in this field separated by spaces.
 |
 
 <span class="param-type">Array.&lt;string></span>
+
 
 
         </li>
@@ -476,6 +492,11 @@ appear in this field separated by spaces.
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>The honorific title for this name. This honorific will be used as the prefix
+or suffix as dictated by the locale</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -526,7 +547,7 @@ or suffix as dictated by the locale
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
@@ -534,6 +555,7 @@ or suffix as dictated by the locale
 |
 
 <span class="param-type">Array.&lt;string></span>
+
 
 
         </li>
@@ -553,6 +575,11 @@ or suffix as dictated by the locale
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>The middle names used in this name. If there are multiple middle names, they all
+appear in this field separated by spaces.</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -603,7 +630,7 @@ appear in this field separated by spaces.
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
@@ -611,6 +638,7 @@ appear in this field separated by spaces.
 |
 
 <span class="param-type">Array.&lt;string></span>
+
 
 
         </li>
@@ -630,6 +658,10 @@ appear in this field separated by spaces.
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>The prefixes for this name</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -679,7 +711,7 @@ appear in this field separated by spaces.
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
@@ -687,6 +719,7 @@ appear in this field separated by spaces.
 |
 
 <span class="param-type">Array.&lt;string></span>
+
 
 
         </li>
@@ -706,6 +739,11 @@ appear in this field separated by spaces.
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>The suffixes for this name. If there are multiple suffixes, they all
+appear in this field separated by spaces.</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -756,7 +794,7 @@ appear in this field separated by spaces.
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
@@ -764,6 +802,7 @@ appear in this field separated by spaces.
 |
 
 <span class="param-type">Array.&lt;string></span>
+
 
 
         </li>
@@ -785,7 +824,7 @@ appear in this field separated by spaces.
 
     
 
-    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(name, options)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="clone"><span class="type-signature type-signature-protected">(protected) </span>clone<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -793,190 +832,10 @@ appear in this field separated by spaces.
 
 
 <dl class="details">
-
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Name.js.html">Name.js</a>, <a href="Name.js.html#line241">line 241</a>
-    </li></ul></dd>
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Return a shallow copy of the current instance.</li></ul></dd>
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    Factory method to create a new instance of Name asynchronously.
-The parameters are the same as for the constructor, but it returns
-a `Promise` instead of the instance directly.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the name to parse</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the same objects you would send to a constructor</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    a promise to load a Name instance. The resolved
-value of the promise is the new instance of Name,
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="clone"><span class="type-signature">(protected) </span>clone<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
 
     
     <dt class="tag-source">Source:</dt>
@@ -1020,12 +879,6 @@ value of the promise is the new instance of Name,
 
 
 
-<div class="description usertext">
-    Return a shallow copy of the current instance.
-</div>
-
-
-
 
 
 
@@ -1064,6 +917,14 @@ value of the promise is the new instance of Name,
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>When sorting names with auxiliary words (like "van der" or "de los"), determine
+which is the "head word" and return a string that can be easily sorted by head
+word. In English, names are always sorted by initial characters. In places like
+the Netherlands or Germany, family names are sorted by the head word of a list
+of names rather than the first element of that name.</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1107,13 +968,6 @@ value of the promise is the new instance of Name,
 
 
 
-<div class="description usertext">
-    When sorting names with auxiliary words (like "van der" or "de los"), determine
-which is the "head word" and return a string that can be easily sorted by head
-word. In English, names are always sorted by initial characters. In places like
-the Netherlands or Germany, family names are sorted by the head word of a list
-of names rather than the first element of that name.
-</div>
 
 
 
@@ -1136,10 +990,7 @@ of names rather than the first element of that name.
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1159,6 +1010,192 @@ in the current locale, or undefined if there is no family name in this object
 |
 
 <span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".create"><span class="type-signature type-signature-static">(static) </span>create<span class="signature">(name, options)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Factory method to create a new instance of Name asynchronously.
+The parameters are the same as for the constructor, but it returns
+a `Promise` instead of the instance directly.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Name.js.html">Name.js</a>, <a href="Name.js.html#line241">line 241</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the name to parse</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the same objects you would send to a constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    a promise to load a Name instance. The resolved
+value of the promise is the new instance of Name,
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
 
 
     </dd>
@@ -1188,7 +1225,7 @@ in the current locale, or undefined if there is no family name in this object
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.11</a> on Wed Oct 12 2022 23:55:04 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Tue Jul 21 2026 21:57:09 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

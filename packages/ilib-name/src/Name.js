@@ -1,7 +1,7 @@
 /*
  * Name.js - Person name parser
  *
- * Copyright © 2013-2015, 2018, 2021-2022 JEDLSoft
+ * Copyright © 2013-2015, 2018, 2021-2022, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,10 @@ function localeDir() {
                 "../locale");
 
         case "browser":
-            return "../assembled";
+            // Must match LocaleData.ensureLocale's default root ("./locale") so
+            // preloaded assembled data is found in the cache under the same key.
+            // Webpack maps this root to the assembled/ directory via calling-module.
+            return "./locale";
 
         default:
             return "../locale";

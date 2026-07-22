@@ -32,6 +32,8 @@ export const testname_zh_Hant = {
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
             return LocaleData.ensureLocale("zh-Hant-TW").then(() => {
+                return LocaleData.ensureLocale("zh-Hant-HK");
+            }).then(() => {
                 callback();
             });
         } else {

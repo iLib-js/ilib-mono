@@ -1,7 +1,7 @@
 /*
- * webpack.config.js - webpack configuration script for ilib-env
+ * webpack.config.js - webpack configuration script for this package
  *
- * Copyright © 2022, JEDLSoft
+ * Copyright © 2022, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var webpack = require('webpack');
-var path = require('path');
+var webpack = require("webpack");
+var path = require("path");
+var moduleRoot = path.resolve(__dirname, "..");
 
 module.exports = {
     mode: "development",
-    entry: "./test/testSuiteWeb.js",
+    entry: path.join(moduleRoot, "test/testSuiteWeb.js"),
     output: {
-        path: path.resolve(__dirname, 'test'),
+        path: path.join(moduleRoot, "test-web"),
         filename: "ilib-name-test.js",
+        // Required for lazy locale chunks when opening testSuite.html via file://
+        publicPath: "../test-web/",
         library: {
             name: "ilibNameTest",
-            type: "umd"
-        }
+            type: "umd",
+        },
     },
     externals: {
         "./NodeLoader.js": "NodeLoader",
@@ -36,9 +39,16 @@ module.exports = {
         "./RhinoLoader.js": "RhinoLoader",
         "./NashornLoader.js": "NashornLoader",
         "./RingoLoader.js": "RingoLoader",
-        "log4js": "log4js",
-        "nodeunit": "nodeunit"
+        log4js: "log4js",
+        nodeunit: "nodeunit",
     },
+    plugins: [
+        // Strip the LocaleData root prefix so dynamic imports resolve to
+        // assembled/<locale>.js via the calling-module alias (not locale/<locale>.js).
+        new webpack.DefinePlugin({
+            __CALLING_MODULE_PATH__: JSON.stringify("./locale"),
+        }),
+    ],
     module: {
         rules: [
             {
@@ -46,29 +56,29 @@ module.exports = {
                 exclude: /node_modules/,
                 include: /node_modules\/ilib-/,
                 use: {
-                    loader: 'babel-loader',
+                    loader: "babel-loader",
                     options: {
-                        presets: [
-                            '@babel/preset-env',
-                        ],
+                        presets: ["@babel/preset-env"],
                         plugins: [
                             //"add-module-exports",
-                            "@babel/plugin-transform-regenerator"
-                        ]
-                    }
-                }
-            }
-        ]
+                            "@babel/plugin-transform-regenerator",
+                        ],
+                    },
+                },
+            },
+        ],
     },
     resolve: {
         fallback: {
-            buffer: require.resolve("buffer")
+            buffer: require.resolve("buffer"),
         },
         alias: {
-            "calling-module": path.join(path.dirname(module.id), "assembled")
-        }
+            "calling-module": path.join(moduleRoot, "assembled"),
+            // Avoid bundling NodeLoader and its Node-only dependencies
+            "ilib-loader": "ilib-loader/browser",
+        },
     },
     optimization: {
-        minimize: false
-    }
+        minimize: false,
+    },
 };

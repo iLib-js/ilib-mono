@@ -33,6 +33,10 @@ export const testnamefmt = {
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
             return LocaleData.ensureLocale("en-US").then(() => {
+                return LocaleData.ensureLocale("ii-II");
+            }).then(() => {
+                return LocaleData.ensureLocale("hu-MG");
+            }).then(() => {
                 callback();
             });
         } else {

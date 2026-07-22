@@ -32,6 +32,8 @@ export const testname_es = {
             // data is loaded before we can do all these sync tests
             setUpPerformed = true;
             return LocaleData.ensureLocale("es-ES").then(() => {
+                return LocaleData.ensureLocale("es-MX");
+            }).then(() => {
                 callback();
             });
         } else {

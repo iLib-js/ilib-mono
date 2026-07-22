@@ -14,6 +14,7 @@
     <link type="text/css" rel="stylesheet" href="styles/prettify.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
     <script src="scripts/nav.js" defer></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -27,7 +28,9 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Name.html">Name</a><ul class='methods'><li data-type='method'><a href="Name.html#.create">create</a></li><li data-type='method'><a href="Name.html#clone">clone</a></li><li data-type='method'><a href="Name.html#getSortFamilyName">getSortFamilyName</a></li></ul></li><li><a href="NameFmt.html">NameFmt</a><ul class='methods'><li data-type='method'><a href="NameFmt.html#.create">create</a></li><li data-type='method'><a href="NameFmt.html#format">format</a></li><li data-type='method'><a href="NameFmt.html#getComponents">getComponents</a></li><li data-type='method'><a href="NameFmt.html#getLocale">getLocale</a></li><li data-type='method'><a href="NameFmt.html#getStyle">getStyle</a></li></ul></li></ul>
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Name.html">Name</a><ul class='methods'><li data-type='method'><a href="Name.html#clone">clone</a></li><li data-type='method'><a href="Name.html#getSortFamilyName">getSortFamilyName</a></li><li data-type='method'><a href="Name.html#.create">create</a></li></ul></li><li><a href="NameFmt.html">NameFmt</a><ul class='methods'><li data-type='method'><a href="NameFmt.html#format">format</a></li><li data-type='method'><a href="NameFmt.html#getComponents">getComponents</a></li><li data-type='method'><a href="NameFmt.html#getLocale">getLocale</a></li><li data-type='method'><a href="NameFmt.html#getStyle">getStyle</a></li><li data-type='method'><a href="NameFmt.html#.create">create</a></li></ul></li></ul>
+    
 </nav>
 
 <div id="main">
@@ -45,7 +48,9 @@
 <header>
     
         <h2>
-        NameFmt
+        
+            NameFmt
+        
         </h2>
         
             <div class="class-description usertext">Represents a formatter that can format person name instances (Name) for display to
@@ -101,51 +106,9 @@ all auxillary words.
 
 
 <dl class="details">
-
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line79">line 79</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    Create an instance of a name formatter.<p>
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Create an instance of a name formatter.<p>
 
 The options may contain the following properties:
 
@@ -189,8 +152,46 @@ For example, the string "pf" would mean to only format any prefixes and family n
 together and leave out all the other parts of the name.<p>
 
 The components can be listed in any order in the string. The <i>components</i> option
-overrides the <i>style</i> option if both are specified.
-</div>
+overrides the <i>style</i> option if both are specified.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -202,7 +203,9 @@ overrides the <i>style</i> option if both are specified.
 
 
 
-    <h5>Parameters:</h5>
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -234,6 +237,7 @@ overrides the <i>style</i> option if both are specified.
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -294,167 +298,6 @@ overrides the <i>style</i> option if both are specified.
 
     
 
-    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line242">line 242</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    Factory method to create a new instance of NameFmt asynchronously.
-The parameters are the same as for the constructor, but it returns
-a `Promise` instead of the instance directly.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the same objects you would send to a constructor</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    a promise to load a NameFmt instance. The resolved
-value of the promise is the new instance of NameFmt,
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
     <h4 class="name" id="format"><span class="type-signature"></span>format<span class="signature">(name)</span><span class="type-signature"> &rarr; {string|undefined}</span></h4>
 
     
@@ -463,6 +306,23 @@ value of the promise is the new instance of NameFmt,
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Format the name for display in the current locale with the options set up
+in the constructor of this formatter instance.<p>
+
+If the name does not contain all the parts required for the style, those parts
+will be left blank.<p>
+
+There are two basic styles of formatting: European, and Asian. If this formatter object
+is set for European style, but an Asian name is passed to the format method, then this
+method will format the Asian name with a generic Asian template. Similarly, if the
+formatter is set for an Asian style, and a European name is passed to the format method,
+the formatter will use a generic European template.<p>
+
+This means it is always safe to format any name with a formatter for any locale. You should
+always get something at least reasonable as output.<p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -506,22 +366,6 @@ value of the promise is the new instance of NameFmt,
 
 
 
-<div class="description usertext">
-    Format the name for display in the current locale with the options set up
-in the constructor of this formatter instance.<p>
-
-If the name does not contain all the parts required for the style, those parts
-will be left blank.<p>
-
-There are two basic styles of formatting: European, and Asian. If this formatter object
-is set for European style, but an Asian name is passed to the format method, then this
-method will format the Asian name with a generic Asian template. Similarly, if the
-formatter is set for an Asian style, and a European name is passed to the format method,
-the formatter will use a generic European template.<p>
-
-This means it is always safe to format any name with a formatter for any locale. You should
-always get something at least reasonable as output.<p>
-</div>
 
 
 
@@ -530,10 +374,7 @@ always get something at least reasonable as output.<p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -570,6 +411,7 @@ always get something at least reasonable as output.<p>
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -599,7 +441,7 @@ always get something at least reasonable as output.<p>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -618,6 +460,7 @@ always get something at least reasonable as output.<p>
 |
 
 <span class="param-type">undefined</span>
+
 
 
     </dd>
@@ -640,6 +483,10 @@ always get something at least reasonable as output.<p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Return the list of components used to format names in this formatter</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -683,9 +530,6 @@ always get something at least reasonable as output.<p>
 
 
 
-<div class="description usertext">
-    Return the list of components used to format names in this formatter
-</div>
 
 
 
@@ -708,10 +552,7 @@ always get something at least reasonable as output.<p>
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -727,6 +568,7 @@ always get something at least reasonable as output.<p>
     <dd>
         
 <span class="param-type">string</span>
+
 
 
     </dd>
@@ -749,6 +591,10 @@ always get something at least reasonable as output.<p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Return the locale for this formatter instance.</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -792,9 +638,6 @@ always get something at least reasonable as output.<p>
 
 
 
-<div class="description usertext">
-    Return the locale for this formatter instance.
-</div>
 
 
 
@@ -817,10 +660,7 @@ always get something at least reasonable as output.<p>
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -836,6 +676,7 @@ always get something at least reasonable as output.<p>
     <dd>
         
 <span class="param-type">Locale</span>
+
 
 
     </dd>
@@ -858,6 +699,10 @@ always get something at least reasonable as output.<p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Return the style of names returned by this formatter</li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -901,9 +746,6 @@ always get something at least reasonable as output.<p>
 
 
 
-<div class="description usertext">
-    Return the style of names returned by this formatter
-</div>
 
 
 
@@ -926,10 +768,7 @@ always get something at least reasonable as output.<p>
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -945,6 +784,168 @@ always get something at least reasonable as output.<p>
     <dd>
         
 <span class="param-type">string</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".create"><span class="type-signature type-signature-static">(static) </span>create<span class="signature">(options)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Factory method to create a new instance of NameFmt asynchronously.
+The parameters are the same as for the constructor, but it returns
+a `Promise` instead of the instance directly.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NameFmt.js.html">NameFmt.js</a>, <a href="NameFmt.js.html#line242">line 242</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the same objects you would send to a constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    a promise to load a NameFmt instance. The resolved
+value of the promise is the new instance of NameFmt,
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
 
 
     </dd>
@@ -974,7 +975,7 @@ always get something at least reasonable as output.<p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.11</a> on Wed Oct 12 2022 23:55:04 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Tue Jul 21 2026 21:57:09 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
