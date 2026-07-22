@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-export {
-    GlyphString,
-    GlyphString as default,
-} from "./GlyphString";
+// GlyphString is the default export of the package.
+export { default } from "./GlyphString";
 export type { GlyphStringOptions, GlyphCharIterator } from "./GlyphString";
+
+// GlyphIterator and its helpers are named exports.
 export {
     GlyphIterator,
     defaultCompose,

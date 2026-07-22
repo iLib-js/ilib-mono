@@ -721,6 +721,19 @@ importers:
         specifier: ^16.0.1
         version: 16.0.1
 
+  packages/ilib-glyphstring/samples/cli:
+    dependencies:
+      ilib-glyphstring:
+        specifier: workspace:^
+        version: link:../..
+    devDependencies:
+      tsx:
+        specifier: ^4.0.0
+        version: 4.23.1
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
   packages/ilib-internal:
     dependencies:
       fs-extra:
