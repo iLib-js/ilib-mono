@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#inRange">inRange</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#categoryTables">categoryTables</a></li><li><a href="global.html#propertyAliases">propertyAliases</a></li><li><a href="global.html#resolvePropertyCode">resolvePropertyCode</a></li></ul>
     
 </nav>
 
@@ -121,6 +121,156 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="categoryTables"><span class="type-signature type-signature-constant">(constant) </span>categoryTables<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>General-category data tables keyed by the first letter of the short
+property code (L, M, N, Z, C, P, S). Kept private so the on-disk /
+in-memory format can change without breaking callers.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="hasUCDCharProperty.js.html">hasUCDCharProperty.js</a>, <a href="hasUCDCharProperty.js.html#line108">line 108</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    General-category data tables keyed by the first letter of the short
+property code (L, M, N, Z, C, P, S). Kept private so the on-disk /
+in-memory format can change without breaking callers.
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="propertyAliases"><span class="type-signature type-signature-constant">(constant) </span>propertyAliases<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Map from general-category aliases (lower-cased) to the short property
+codes used as keys inside the ctype_* data tables.
+
+Callers may pass either the short code ("Mn") or the long Unicode name
+("Nonspacing_Mark"); both resolve to the same internal lookup.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="hasUCDCharProperty.js.html">hasUCDCharProperty.js</a>, <a href="hasUCDCharProperty.js.html#line38">line 38</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    Map from general-category aliases (lower-cased) to the short property
+codes used as keys inside the ctype_* data tables.
+
+Callers may pass either the short code ("Mn") or the long Unicode name
+("Nonspacing_Mark"); both resolve to the same internal lookup.
+</div>
+
+
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -130,7 +280,7 @@
 
     
 
-    <h4 class="name" id="inRange"><span class="type-signature type-signature-protected">(protected) </span>inRange<span class="signature">(num, rangeName, obj)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="resolvePropertyCode"><span class="type-signature"></span>resolvePropertyCode<span class="signature">(propertyType)</span><span class="type-signature"> &rarr; {string|undefined}</span></h4>
 
     
 
@@ -140,48 +290,14 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li>Actual implementation for withinRange. Searches the given object for ranges.
-The range names are taken from the Unicode range names in
-http://www.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt
-
-<ul>
-<li>Cn - Unassigned
-<li>Lu - Uppercase_Letter
-<li>Ll - Lowercase_Letter
-<li>Lt - Titlecase_Letter
-<li>Lm - Modifier_Letter
-<li>Lo - Other_Letter
-<li>Mn - Nonspacing_Mark
-<li>Me - Enclosing_Mark
-<li>Mc - Spacing_Mark
-<li>Nd - Decimal_Number
-<li>Nl - Letter_Number
-<li>No - Other_Number
-<li>Zs - Space_Separator
-<li>Zl - Line_Separator
-<li>Zp - Paragraph_Separator
-<li>Cc - Control
-<li>Cf - Format
-<li>Co - Private_Use
-<li>Cs - Surrogate
-<li>Pd - Dash_Punctuation
-<li>Ps - Open_Punctuation
-<li>Pe - Close_Punctuation
-<li>Pc - Connector_Punctuation
-<li>Po - Other_Punctuation
-<li>Sm - Math_Symbol
-<li>Sc - Currency_Symbol
-<li>Sk - Modifier_Symbol
-<li>So - Other_Symbol
-<li>Pi - Initial_Punctuation
-<li>Pf - Final_Punctuation
-</ul></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li>Resolve a user-supplied property name to the short general-category
+code used as a key in the ctype_* tables.</li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="CType.js.html">CType.js</a>, <a href="CType.js.html#line71">line 71</a>
+        <a href="hasUCDCharProperty.js.html">hasUCDCharProperty.js</a>, <a href="hasUCDCharProperty.js.html#line125">line 125</a>
     </li></ul></dd>
     
 
@@ -253,31 +369,7 @@ http://www.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt
 
         <tr>
             
-                <td class="name"><code>num</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">code point of the character to examine</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rangeName</code></td>
+                <td class="name"><code>propertyType</code></td>
             
 
             <td class="type">
@@ -294,31 +386,7 @@ http://www.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt
 
             
 
-            <td class="description last">the name of the range to check</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">object containing the character range data</td>
+            <td class="description last">short code or long Unicode name</td>
         </tr>
 
     
@@ -344,8 +412,7 @@ http://www.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt
 
         
 <div class="param-desc">
-    true if the first character is within the named
-range
+    short code such as "Mn", or undefined if unknown
 </div>
 
 
@@ -356,7 +423,10 @@ range
     </dt>
     <dd>
         
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
+|
+
+<span class="param-type">undefined</span>
 
 
 
@@ -387,7 +457,7 @@ range
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Tue Jan 14 2025 12:02:41 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Tue Jul 21 2026 00:59:58 GMT-0700 (Pacific Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
