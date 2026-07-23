@@ -35,8 +35,9 @@ export interface GlyphStringOptions {
 /**
  * Iterator returned by {@link GlyphString.charIterator}.
  * Steps through whole on-screen glyphs (base + combining marks).
+ * Also iterable via {@link Symbol.iterator} for `for...of` and spread.
  */
-export interface GlyphCharIterator {
+export interface GlyphCharIterator extends Iterable<string> {
     hasNext(): boolean;
     next(): string | undefined;
     /**
@@ -150,6 +151,19 @@ export class GlyphString extends IString {
      */
     override charIterator(): GlyphCharIterator {
         return new GlyphIterator(this);
+    }
+
+    /**
+     * Iterate whole glyphs for `for...of` and the spread operator.
+     * Delegates to {@link charIterator} so the unit matches glyph-aware
+     * APIs (`forEach`, `truncate`, `ellipsize`) rather than IString's
+     * code-point iterator.
+     *
+     * @generator
+     * @yields each whole glyph in this string
+     */
+    *[Symbol.iterator](): Generator<string, void, unknown> {
+        yield* this.charIterator();
     }
 
     /**

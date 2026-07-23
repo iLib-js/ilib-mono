@@ -209,6 +209,22 @@ export class GlyphIterator {
     wasSpacingCombining(): boolean {
         return this.spacingCombining;
     }
+
+    /**
+     * Make this iterator iterable so it works with `for...of`, spread,
+     * and `Array.from`. Shares progress with {@link hasNext} / {@link next}.
+     *
+     * @generator
+     * @yields each whole glyph in the remaining input
+     */
+    *[Symbol.iterator](): Generator<string, void, unknown> {
+        while (this.hasNext()) {
+            const glyph = this.next();
+            if (glyph !== undefined) {
+                yield glyph;
+            }
+        }
+    }
 }
 
 export default GlyphIterator;

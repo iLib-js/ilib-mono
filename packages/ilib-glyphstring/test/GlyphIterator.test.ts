@@ -318,4 +318,33 @@ describe("GlyphIterator", () => {
             expect(it.wasSpacingCombining()).toBe(false);
         });
     });
+
+    describe("iterable protocol", () => {
+        test("for...of yields whole glyphs", () => {
+            const glyphs: string[] = [];
+            for (const g of new GlyphIterator("aA\u0308a")) {
+                glyphs.push(g);
+            }
+            expect(glyphs).toEqual(["a", "A\u0308", "a"]);
+        });
+
+        test("spread yields whole glyphs", () => {
+            expect([...new GlyphIterator("aA\u0302\u0323a")]).toEqual([
+                "a",
+                "A\u0302\u0323",
+                "a",
+            ]);
+        });
+
+        test("empty iterator spreads to empty array", () => {
+            expect([...new GlyphIterator("")]).toEqual([]);
+        });
+
+        test("Symbol.iterator shares progress with next()", () => {
+            const it = new GlyphIterator("abc");
+            expect(it.next()).toBe("a");
+            expect([...it]).toEqual(["b", "c"]);
+            expect(it.hasNext()).toBe(false);
+        });
+    });
 });

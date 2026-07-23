@@ -182,6 +182,44 @@ describe("testglyphstr", () => {
             expect(ch).toBe(expected[i++]);
         });
     });
+    test("ForOfNormal", () => {
+        const s = new GlyphString("aba");
+        const expected = ["a", "b", "a"];
+        let i = 0;
+
+        for (const ch of s) {
+            expect(ch).toBe(expected[i++]);
+        }
+        expect(i).toBe(expected.length);
+    });
+    test("ForOfDecomposed", () => {
+        const s = new GlyphString("aÄa"); // the A umlaut is a decomposed char
+        const expected = ["a", "Ä", "a"];
+        let i = 0;
+
+        for (const ch of s) {
+            expect(ch).toBe(expected[i++]);
+        }
+        expect(i).toBe(expected.length);
+    });
+    test("SpreadDecomposed", () => {
+        const s = new GlyphString("aẬa"); // accented A with 2 combining marks
+        expect([...s]).toEqual(["a", "Ậ", "a"]);
+    });
+    test("SpreadWithSurrogatesAndDecomposed", () => {
+        const s = new GlyphString("a\uD800\uDF02bï\uD800\uDC00");
+        expect([...s]).toEqual([
+            "a",
+            "\uD800\uDF02",
+            "b",
+            "ï",
+            "\uD800\uDC00",
+        ]);
+    });
+    test("CharIteratorIsIterable", () => {
+        const s = new GlyphString("aÄa");
+        expect([...s.charIterator()]).toEqual(["a", "Ä", "a"]);
+    });
     test("GlyphStrTruncateSimple", () => {
         expect.assertions(1);
         const s = new GlyphString("abcdefghijklmnop");
