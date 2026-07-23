@@ -74,7 +74,7 @@ class ResourceICUPlurals extends ResourceRule {
         this.link = "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-lint/docs/resource-icu-plurals.md";
     }
 
-    matchCategories(sourceSelect, targetSelect, locale, resource) {
+    matchCategories(sourceSelect, targetSelect, locale, resource, file) {
         let problems = [];
         const srcLocale = new Locale(resource.getSourceLocale());
 
@@ -121,7 +121,8 @@ class ResourceICUPlurals extends ResourceRule {
                     sourceSelect.node.options[category].value,
                     targetSelect.node.options[category].value,
                     locale,
-                    resource
+                    resource,
+                    file
                 ));
             } else if (category === "few" || category === "many" || category === "two") {
                 // target exists, but source does not -> if it is a plural category,
@@ -130,7 +131,8 @@ class ResourceICUPlurals extends ResourceRule {
                     sourceSelect.node.options.other.value,
                     targetSelect.node.options[category].value,
                     locale,
-                    resource
+                    resource,
+                    file
                 ));
             }
             return false;
@@ -142,9 +144,10 @@ class ResourceICUPlurals extends ResourceRule {
                 description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
                 id: resource.getKey(),
                 highlight: `Target: ${resource.getTarget()}<e0></e0>`,
-                pathName: resource.getPath(),
+                pathName: file,
                 source: resource.getSource(),
-                locale: resource.getTargetLocale()
+                locale: resource.getTargetLocale(),
+                lineNumber: resource.getLocation()?.line
             };
             problems.push(new Result(opts));
         }
@@ -163,9 +166,10 @@ class ResourceICUPlurals extends ResourceRule {
                     description: `Missing categories in target string: ${missing.join(", ")}. Expecting these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
                     id: resource.getKey(),
                     highlight: `Target: ${resource.getTarget()}<e0></e0>`,
-                    pathName: resource.getPath(),
+                    pathName: file,
                     source: resource.getSource(),
-                    locale: resource.getTargetLocale()
+                    locale: resource.getTargetLocale(),
+                    lineNumber: resource.getLocation()?.line
                 };
                 problems.push(new Result(opts));
             }
@@ -183,9 +187,10 @@ class ResourceICUPlurals extends ResourceRule {
                 description: `Extra categories in target string: ${extra.join(", ")}. Expecting only these: ${Array.from(union(requiredTargetCategories, actualNonrequiredSourceCategories)).join(", ")}`,
                 id: resource.getKey(),
                 highlight: `Target: ${highlight}`,
-                pathName: resource.getPath(),
+                pathName: file,
                 source: resource.getSource(),
-                locale: resource.getTargetLocale()
+                locale: resource.getTargetLocale(),
+                lineNumber: resource.getLocation()?.line
             };
             problems.push(new Result(opts));
         }
@@ -215,7 +220,7 @@ class ResourceICUPlurals extends ResourceRule {
         return selects;
     }
 
-    checkNodes(sourceAst, targetAst, locale, resource) {
+    checkNodes(sourceAst, targetAst, locale, resource, file) {
         const sourceSelects = this.findSelects(sourceAst);
         const targetSelects = this.findSelects(targetAst);
         let problems = [];
@@ -223,7 +228,7 @@ class ResourceICUPlurals extends ResourceRule {
         Object.keys(targetSelects).forEach(select => {
             const targetSelect = targetSelects[select];
             if (sourceSelects[select]) {
-                problems = problems.concat(this.matchCategories(sourceSelects[select], targetSelect, locale, resource));
+                problems = problems.concat(this.matchCategories(sourceSelects[select], targetSelect, locale, resource, file));
             } else {
                 const targetSnippet = resource.getTarget().replace(new RegExp(`(\\{\\s*${select})`, "g"), "<e0>$1</e0>");
                 let opts = {
@@ -232,9 +237,10 @@ class ResourceICUPlurals extends ResourceRule {
                     description: `Select or plural with pivot variable ${targetSelects[select].node.value} does not exist in the source string. Possible translated variable name.`,
                     id: resource.getKey(),
                     highlight: `Target: ${targetSnippet}`,
-                    pathName: resource.getPath(),
+                    pathName: file,
                     source: resource.getSource(),
-                    locale: resource.getTargetLocale()
+                    locale: resource.getTargetLocale(),
+                    lineNumber: resource.getLocation()?.line
                 };
                 problems.push(new Result(opts));
             }
@@ -266,7 +272,7 @@ class ResourceICUPlurals extends ResourceRule {
             const imf = new IntlMessageFormat(target, tLoc.getSpec(), undefined, {captureLocation: true});
             targetAst = imf.getAst();
 
-            problems = this.checkNodes(sourceAst, targetAst, tLoc, resource);
+            problems = this.checkNodes(sourceAst, targetAst, tLoc, resource, file);
         } catch (e) {
             let value = {
                 severity: "error",
@@ -276,10 +282,11 @@ class ResourceICUPlurals extends ResourceRule {
                 source,
                 highlight: `Target: ${target.substring(0, e?.location?.end?.offset)}<e0>${target.substring(e?.location?.end?.offset)}</e0>`,
                 pathName: file,
-                locale: tLoc.getSpec()
+                locale: tLoc.getSpec(),
+                lineNumber: resource.getLocation()?.line
             };
-            if (typeof(resource.lineNumber) !== 'undefined') {
-                value.lineNumber = resource.lineNumber + e.location.end.line - 1;
+            if (resource.getLocation()?.line !== undefined) {
+                value.lineNumber = resource.getLocation().line + e.location.end.line - 1;
             }
             problems.push(new Result(value));
         }

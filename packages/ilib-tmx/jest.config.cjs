@@ -1,13 +1,11 @@
-const baseConfig = require('../../jest.config.js');
+const { jestConfig } = require("ilib-internal");
 
 const config = {
-    ...baseConfig,
+    ...jestConfig,
     displayName: {
         name: "ilib-tmx",
         color: "backBright",
-    }
-}
-
+    },
+};
 
 module.exports = config;
-

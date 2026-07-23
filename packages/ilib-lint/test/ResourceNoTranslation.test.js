@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceString } from 'ilib-tools-common';
+import { ResourceString, Location } from 'ilib-tools-common';
 
 import ResourceNoTranslation from '../src/rules/ResourceNoTranslation.js';
 
@@ -24,7 +24,7 @@ import { Result } from 'ilib-lint-common';
 
 describe("testResourceNoTranslation", () => {
     test("ResourceNoTranslationNone", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rule = new ResourceNoTranslation();
         expect(rule).toBeTruthy();
@@ -34,7 +34,12 @@ describe("testResourceNoTranslation", () => {
             sourceLocale: "en-US",
             source: 'This is the source string.',
             pathName: "a/b/c.xliff",
-            state: "new"
+            state: "new",
+            location: new Location({
+                line: 33,
+                offset: 0,
+                char: 0
+            })
         });
         const actual = rule.matchString({
             source: resource.getSource(),
@@ -50,9 +55,11 @@ describe("testResourceNoTranslation", () => {
             rule,
             pathName: "a/b/c.xliff",
             locale: "en-US",
-            source: 'This is the source string.'
+            source: 'This is the source string.',
+            lineNumber: 33
         });
         expect(actual).toStrictEqual(expected);
+        expect(actual.lineNumber).toBe(33);
     });
 
     test("ResourceNoTranslationEmptyString", () => {

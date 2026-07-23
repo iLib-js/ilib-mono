@@ -3,13 +3,13 @@
        xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0">
   <file id="sample1_f1" original="sample1">
     <group id="sample1_g1" name="c">
-      <unit id="3">
+      <unit id="sample1_g1_1">
         <segment>
           <source>OK</source>
           <target>확인</target>
         </segment>
       </unit>
-      <unit id="4">
+      <unit id="sample1_g1_2">
         <segment>
           <source>Time Settings</source>
           <target>시간 설정</target>
@@ -19,19 +19,19 @@
   </file>
   <file id="sample2_f2" original="sample2">
     <group id="sample2_g2" name="c">
-      <unit id="1">
+      <unit id="sample2_g2_1">
         <segment>
           <source>No</source>
           <target>아니오</target>
         </segment>
       </unit>
-      <unit id="2">
+      <unit id="sample2_g2_2">
         <segment>
           <source>Yes</source>
           <target>예</target>
         </segment>
       </unit>
-      <unit id="7">
+      <unit id="sample2_g2_3">
         <mda:metadata>
           <mda:metaGroup category="device-type">
             <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceArray, ResourcePlural, ResourceString } from 'ilib-tools-common';
+import { ResourceArray, ResourcePlural, ResourceString, Location } from 'ilib-tools-common';
 import ResourceCompleteness from "../src/rules/ResourceCompleteness.js";
 import ResourceDNTTerms from '../src/rules/ResourceDNTTerms.js';
 
@@ -89,7 +89,7 @@ describe("testRules", () => {
     });
 
     test("ResourceCompletenessResourceTargetMissing", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rule = new ResourceCompleteness();
         expect(rule).toBeTruthy();
@@ -102,6 +102,7 @@ describe("testRules", () => {
             target: undefined,
             pathName: "completeness-test.xliff",
             state: "translated",
+            location: new Location({ line: 42, offset: 0, char: 0 })
         });
         const subject = {
             source: resource.getSource(),
@@ -121,8 +122,10 @@ describe("testRules", () => {
                 id: "resource-completeness-test.target-missing",
                 description: "Missing target string in resource",
                 highlight: undefined,
+                lineNumber: 42
             })
         );
+        expect(result.lineNumber).toBe(42);
     });
 
     test("ResourceCompletenessResourceTargetMissingSameLanguage", () => {
@@ -158,9 +161,11 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term"
-            ]
+            param: {
+                terms: [
+                    "Some DNT term"
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -202,7 +207,9 @@ describe("testRules", () => {
         // "Some DNT term" from TXT file should be matched
 
         const rule = new ResourceDNTTerms({
-            termsFilePath: "./test/testfiles/dnt-test.txt",
+            param: {
+                termsFilePath: "./test/testfiles/dnt-test.txt",
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -244,7 +251,9 @@ describe("testRules", () => {
         // "Some DNT term" from JSON file should be matched
 
         const rule = new ResourceDNTTerms({
-            termsFilePath: "./test/testfiles/dnt-test.json",
+            param: {
+                termsFilePath: "./test/testfiles/dnt-test.json",
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -284,11 +293,13 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term",
-                "Another DNT term",
-                "Yet another DNT term",
-            ]
+            param: {
+                terms: [
+                    "Some DNT term",
+                    "Another DNT term",
+                    "Yet another DNT term",
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -340,9 +351,11 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term"
-            ]
+            param: {
+                terms: [
+                    "Some DNT term"
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -382,10 +395,12 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term",
-                "Another DNT term"
-            ]
+            param: {
+                terms: [
+                    "Some DNT term",
+                    "Another DNT term"
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -443,10 +458,12 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term",
-                "Another DNT term"
-            ]
+            param: {
+                terms: [
+                    "Some DNT term",
+                    "Another DNT term"
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -491,9 +508,11 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term"
-            ]
+            param: {
+                terms: [
+                    "Some DNT term"
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -522,9 +541,11 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term"
-            ]
+            param: {
+                terms: [
+                    "Some DNT term"
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -553,9 +574,11 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term"
-            ]
+            param: {
+                terms: [
+                    "Some DNT term"
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 
@@ -591,9 +614,11 @@ describe("testRules", () => {
         expect.assertions(2);
 
         const rule = new ResourceDNTTerms({
-            terms: [
-                "Some DNT term"
-            ]
+            param: {
+                terms: [
+                    "Some DNT term"
+                ]
+            }
         });
         expect(rule).toBeTruthy();
 

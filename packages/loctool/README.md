@@ -5,7 +5,7 @@ This tool reads source files in various formats, extracts strings
 for translation, and writes out the translated strings the various
 resource file formats needed by each project.
 
-See the [release notes](./CHANGELOG.md) for details on what is
+See the [release notes](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/CHANGELOG.md) for details on what is
 new and what has changed.
 
 Installation
@@ -38,7 +38,7 @@ Running the Tool
 
 ### Basic Operation
 
-1. Create a project.json configuration file for your project
+1. Create a loctool project configuration file for your project
 1. Run the loctool to produce a set of xliff files with new strings to translate in them
 1. Send the xliff files to your translators for translation and, some time
 later, receive the translations back
@@ -49,14 +49,26 @@ since the last time that the loctool was run.
 
 ### Configuration
 
-To run the tool, you will need to create a project.json configuration file for
-each project and place it in the root of that project. The presence of a project.json
+To run the tool, you will need to create a loctool project configuration file for
+each project and place it in the root of that project. By default, loctool looks for
+a file named `loctool-config.json` or `project.json` in each directory. If both are
+present, `loctool-config.json` is preferred. The presence of a valid loctool config
 file indicates to the loctool that it has found the root of a project.
 
-The easiest way to create a new project.json file for a particular directory is
+Loctool validates config files before using them. A file must contain the required
+loctool properties (`id`, `name`, and `projectType`) to be treated as a loctool
+project. This means that other `project.json` files in your tree, such as those
+used by Nx, are ignored.
+
+The easiest way to create a new config file for a particular directory is
 to use the `loctool init` command. This will ask you a few questions and generate
-a new project.json file in the current directory. You can use this as a starting
-point for your project, and then edit it to customize any settings.
+a new `loctool-config.json` file in the current directory by default. You can use
+this as a starting point for your project, and then edit it to customize any
+settings.
+
+Use `--configFileBaseName` to search for or create a config file with a different
+name. For example, `loctool init --configFileBaseName project.json` writes
+`project.json` instead of `loctool-config.json`.
 
 ```
 > node node_modules/.bin/loctool.js init
@@ -68,24 +80,23 @@ Project Initialize
 Full name of this project: myproject
 Type of this project (web, swift, iosobjc, android, custom) [custom]:
 Source locale [en-US]:
-22:52:57 INFO loctool.loctool: Wrote file project.json
+22:52:57 INFO loctool.loctool: Wrote file loctool-config.json
 22:52:57 INFO loctool.loctool: Done
-> cat project.json
+> cat loctool-config.json
 {
+    "$schema": "https://github.com/iLib-js/ilib-mono/packages/loctool/loctool-project-v1.schema.json",
     "name": "myproject",
     "id": "myproject",
     "sourceLocale": "en-US",
     "pseudoLocale": "zxx-XX",
-    "resourceDirs": {
-        "javascript": "target",
-        "md": "target"
-    },
     "includes": [],
     "excludes": [
         ".git",
         ".github",
         "test",
-        "node_modules"
+        "node_modules",
+        "package.json",
+        "loctool-config.json"
     ],
     "settings": {
         "locales": [
@@ -110,7 +121,7 @@ Source locale [en-US]:
 >
 ```
 
-The project.json file minimally contains the name, id, and projectType
+The config file minimally contains the name, id, and projectType
 properties.
 
 All paths are relative to the root of the project.
@@ -800,8 +811,9 @@ These are the actions which are available:
 
 - localize - localize any projects found in the current directory tree.
   This is the default action.
-- init - create a new project.json file based on the answers to a few
-  questions. This makes it easy to set up a new project for localization.
+- init - create a new loctool-config.json file (or another name with
+  `--configFileBaseName`) based on the answers to a few questions. This makes
+  it easy to set up a new project for localization.
 - merge - merge multiple xliff files together into one. There may be some
   restrictions to this, as xliff v2.0 format files cannot contain translations
   to multiple languages.
@@ -828,21 +840,22 @@ These are the actions which are available:
   maximum number of units, or the maximum number of source or target words.
   It also allows you to randomize the selection so you can create a sample
   of the input translations units.
+- compare - Compare two xliff files (from and to) and write the
+  differences to an output directory. The files are compared
+  logically by translation units instead of lexically by characters
+  or line-by-line. This operation outputs up to three files:
+  modified.xliff (units present in both but with changed target),
+  added.xliff (units only in 'to'), and deleted.xliff (units only in
+  'from'). A file is only created if there are translation units of
+  that type to report upon.
 
-Copyright and License
--------
+## License
 
-Copyright &copy; 2016-2025, HealthTap, Inc. and JEDLSoft
+Copyright © 2016-2026, HealthTap, Inc. and JEDLSoft
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this tool except in compliance with the License.
-You may obtain a copy of the License at
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/LICENSE.txt) file in the ilib-mono repository on GitHub.
 
-http://www.apache.org/licenses/LICENSE-2.0
+## Release Notes
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/CHANGELOG.md).
 
-See the License for the specific language governing permissions and
-limitations under the License.

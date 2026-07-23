@@ -1,2 +1,11 @@
 packages:
-  - "packages/*"
+    - packages/*
+    - packages/*/samples/*
+
+ignoredBuiltDependencies:
+    - ejs
+    - esbuild
+    - unrs-resolver
+
+onlyBuiltDependencies:
+    - node-expat

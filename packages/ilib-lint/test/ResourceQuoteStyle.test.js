@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceString } from 'ilib-tools-common';
+import { ResourceString, Location } from 'ilib-tools-common';
 import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
 
 import ResourceQuoteStyle from "../src/rules/ResourceQuoteStyle.js";
@@ -139,7 +139,7 @@ describe("testResourceQuoteStyle", () => {
             pathName: "x"
         });
         expect(actual).toEqual(expected);
-        expect(actual.fix).toBeTruthy();
+        expect(actual?.fix).toBeTruthy();
 
         const ir = new IntermediateRepresentation({
             type: "resource",
@@ -148,7 +148,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
@@ -231,7 +231,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
@@ -478,7 +478,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("「マイドキュメント」をクリックすると詳細が表示されます");
     });
@@ -556,7 +556,7 @@ describe("testResourceQuoteStyle", () => {
             sourceFile
         });
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("「マイドキュメント」をクリックすると詳細が表示されます");
     });
@@ -573,7 +573,8 @@ describe("testResourceQuoteStyle", () => {
             source: 'This string contains "quotes" in it.',
             targetLocale: "de-DE",
             target: 'Diese Zeichenfolge enthält "Anführungszeichen".',
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            location: new Location({line: 67, offset: 0, char: 0 })
         });
         const actual = rule.matchString({
             source: resource.getSource(),
@@ -658,7 +659,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält „Anführungszeichen“.");
     });
@@ -758,7 +759,7 @@ describe("testResourceQuoteStyle", () => {
         });
 
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe("Diese Zeichenfolge enthält ‚Anführungszeichen‘.");
     });
@@ -836,7 +837,7 @@ describe("testResourceQuoteStyle", () => {
             sourceFile
         });
         const fixer = new ResourceFixer();
-        fixer.applyFixes(ir, [actual.fix]);
+        fixer.applyFixes(ir, [actual?.fix]);
 
         expect(resource.getTarget()).toBe('Stel asseblief u PIN-kode vanaf ‘Kieslys > PIN-kode’.');
     });
@@ -967,7 +968,7 @@ describe("testResourceQuoteStyle", () => {
         expect(result).toEqual(expected);
 
         // if the target does not contain quotes, then we can't fix it
-        expect(result.fix).toBeFalsy();
+        expect(result?.fix).toBeFalsy();
     });
 
     test("ResourceQuoteStyleQuotesAdjacentReplacementParamBracket fancy quotes in source and no quotes in translation", () => {
@@ -1006,7 +1007,7 @@ describe("testResourceQuoteStyle", () => {
         expect(result).toEqual(expected);
 
         // if the target does not contain quotes, then we can't fix it
-        expect(result.fix).toBeFalsy();
+        expect(result?.fix).toBeFalsy();
     });
 
     test("ResourceQuoteStyleQuotesAdjacentReplacementParamBracket with single quotes in source", () => {
@@ -1145,7 +1146,55 @@ describe("testResourceQuoteStyle", () => {
         expect(!actual).toBeTruthy();
     });
 
-    test("ResourceQuoteStyleItalianNoGuillemets", () => {
+    test("ResourceQuoteStyleItalianOptionalQuotesNoQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "it-IT",
+            target: "Questa stringa contiene virgolette.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Italian, quotes are optional, so no quotes in target is okay
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleItalianOptionalQuotesCorrectQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "it-IT",
+            target: 'Questa stringa contiene «virgolette».',
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Italian, quotes are optional, but if present should be correct style
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleItalianOptionalQuotesAsciiQuotesInTarget", () => {
         expect.assertions(2);
 
         const rule = new ResourceQuoteStyle();
@@ -1165,10 +1214,11 @@ describe("testResourceQuoteStyle", () => {
             resource,
             file: "a/b/c.xliff"
         });
-        expect(!actual).toBeTruthy();
+        // For Italian, if quotes are present, they are allowed to be ascii quotes
+        expect(actual).toBeFalsy();
     });
 
-    test("ResourceQuoteStyleItalianSkipped", () => {
+    test("ResourceQuoteStyleItalianOptionalQuotesWrongQuotesInTarget", () => {
         expect.assertions(2);
 
         const rule = new ResourceQuoteStyle();
@@ -1179,22 +1229,133 @@ describe("testResourceQuoteStyle", () => {
             sourceLocale: "en-US",
             source: 'This string contains "quotes" in it.',
             targetLocale: "it-IT",
-            target: "Questa stringa non contiene virgolette.",
+            target: 'Questa stringa contiene “virgolette”.',
             pathName: "a/b/c.xliff"
         });
-
-        const ir = new IntermediateRepresentation({
-            type: "resource",
-            ir: [resource],
-            sourceFile
-        });
-
-        const actual = rule.match({
-            ir,
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
             file: "a/b/c.xliff"
         });
+        // For Italian, if quotes are present, they should be the correct style
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale it-IT should be «text» or there should be no quotes in the target",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: 'Target: Questa stringa contiene <e0>“</e0>virgolette<e1>”</e1>.',
+            rule,
+            locale: "it-IT",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
+    });
 
+    test("ResourceQuoteStyleSwedishOptionalQuotesNoQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "sv-SE",
+            target: "Denna sträng innehåller citattecken.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Swedish, quotes are optional, so no quotes in target is okay
         expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleSwedishOptionalQuotesCorrectQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains “quotes” in it.',
+            targetLocale: "sv-SE",
+            target: "Denna sträng innehåller ”citattecken”.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Swedish, quotes are optional, but if present should be correct style
+        expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleSwedishOptionalQuotesAsciiQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "sv-SE",
+            target: 'Denna sträng innehåller "citattecken".',
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Swedish, if quotes are present, they are allowed to be ascii quotes
+        expect(actual).toBeFalsy();
+    });
+
+    test("ResourceQuoteStyleSwedishOptionalQuotesWrongQuotesInTarget", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'This string contains "quotes" in it.',
+            targetLocale: "sv-SE",
+            target: 'Denna sträng innehåller »citattecken«.',
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // For Swedish, if quotes are present, they should be the correct style
+        const expected = expect.objectContaining({
+            severity: "warning",
+            description: "Quote style for the locale sv-SE should be ”text” or there should be no quotes in the target",
+            id: "quote.test",
+            source: 'This string contains "quotes" in it.',
+            highlight: 'Target: Denna sträng innehåller <e0>»</e0>citattecken<e1>«</e1>.',
+            rule,
+            locale: "sv-SE",
+            pathName: "a/b/c.xliff"
+        });
+        expect(actual).toEqual(expected);
     });
 
     test("ResourceQuoteStyleMatchQuotesInTargetOnly", () => {
@@ -1628,27 +1789,6 @@ describe("testResourceQuoteStyle", () => {
         expect(!actual).toBeTruthy();
     });
 
-    test("ResourceQuoteStyleIgnoreMissingSwedishQuotes", () => {
-        expect.assertions(2);
-
-        const rule = new ResourceQuoteStyle();
-        expect(rule).toBeTruthy();
-
-        const actual = rule.match({
-            locale: "sv-SE",
-            resource: new ResourceString({
-                key: "quote.test",
-                sourceLocale: "en-US",
-                source: `This is a "string."`,
-                targetLocale: "sv-SE",
-                target: "Det här är ett snöre.",
-                pathName: "a/b/c.xliff"
-            }),
-            file: "x/y"
-        });
-        expect(!actual).toBeTruthy();
-    });
-
     test("ResourceQuoteStyleSourceOnlyResource", () => {
         expect.assertions(2);
 
@@ -1668,5 +1808,680 @@ describe("testResourceQuoteStyle", () => {
             file: "a/b/c.xliff"
         });
         expect(!actual).toBeTruthy();
+    });
+
+    test("Italian apostrophe contraction with no quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The product has not been setup or there is an issue with the connection.",
+            targetLocale: "it-IT",
+            target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // 1. Source has no quotes, so rule should return early
+        // 2. Even if source had quotes, "c'è" is a contraction using ASCII straight quote as apostrophe, not quotation marks
+        expect(!actual).toBeTruthy();
+    });
+
+    test("Italian apostrophe contraction with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The \"product\" has not been setup or there is an issue with the connection.",
+            targetLocale: "it-IT",
+            target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // Even though source has quotes, "c'è" is a contraction using ASCII straight quote as apostrophe, not quotation marks
+        // Italian is also an optional quote language, so missing quotes in target is acceptable
+        // Currently this test FAILS because the rule incorrectly flags the apostrophe as a quotation mark error
+        expect(actual).toBeFalsy();
+    });
+
+    test("Italian Unicode apostrophe contraction with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The \"product\" has not been setup or there is an issue with the connection.",
+            targetLocale: "it-IT",
+            target: "Il prodotto non è stato configurato o c'è un problema con la connessione.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // Even though source has quotes, "c'è" uses Unicode apostrophe (U+2019) as apostrophe, not quotation marks
+        // Italian is also an optional quote language, so missing quotes in target is acceptable
+        // Currently this test FAILS because the rule incorrectly flags the Unicode apostrophe as a quotation mark error
+        expect(actual).toBeFalsy();
+    });
+
+    test("French contraction apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The product is 'ready' for school.",
+            targetLocale: "fr-FR",
+            target: "Le produit est «prêt» pour l'école.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "l'école" is a French contraction using apostrophe, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("French multiple contractions with no quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "What is it?",
+            targetLocale: "fr-FR",
+            target: "Qu'est-ce que c'est ?",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'accord" and "qu'il" are French contractions using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("French multiple contractions with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "What is 'it'?",
+            targetLocale: "fr-FR",
+            target: "Qu'est-ce que «c'est» ?",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'accord" and "qu'il" are French contractions using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("English possessive apostrophe with no quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The product belongs to the user's account.",
+            targetLocale: "de-DE",
+            target: "Das Produkt gehört zum Benutzerkonto.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "user's" is a possessive apostrophe in the source, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("English contraction apostrophe with no quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "The product doesn't work properly.",
+            targetLocale: "de-DE",
+            target: "Das Produkt funktioniert nicht richtig.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "doesn't" is a contraction apostrophe in the source, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Mixed apostrophes and quotes in French", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The "product" is ready for l\'école and "school".',
+            targetLocale: "fr-FR",
+            target: "Le produit est prêt pour l'école et «école».",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "l'école" is a contraction (should be ignored)
+        // "«école»" are proper French quotes (should be accepted)
+        expect(actual).toBeFalsy();
+    });
+
+    test("Catalan contraction apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for water.',
+            targetLocale: "ca-ES",
+            target: "El producte està \u201cllest\u201d per l'aigua.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "l'aigua" is a Catalan contraction using apostrophe, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Catalan multiple contractions with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the here and the there.',
+            targetLocale: "ca-ES",
+            target: "El producte està \u201cllest\u201d per l'aquí i l'allà.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'aquí" and "n'aquí" are Catalan contractions using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Irish glottal stop apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the eye.',
+            targetLocale: "ga-IE",
+            target: "Tá an táirge «réidh» don 'ain.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "'ain" is an Irish glottal stop using apostrophe, not quotation marks
+        // Proper quotes are used for "réidh"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Irish multiple glottal stops with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the eye and mother.',
+            targetLocale: "ga-IE",
+            target: "Tá an táirge «réidh» don 'ain agus don 'umm.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "'ain" and "'umm" are Irish glottal stops using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Irish elision apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for drinking.',
+            targetLocale: "ga-IE",
+            target: "Tá an táirge «réidh» don d'ól.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'ól" is an Irish elision using apostrophe, not quotation marks
+        // Proper quotes are used for "réidh"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Irish multiple elisions with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for drinking and eating.',
+            targetLocale: "ga-IE",
+            target: "Tá an táirge «réidh» don d'ól agus don d'ith.",
+            pathName: "a/b/c.xliff"
+        });
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/c.xliff"
+        });
+        // Should not trigger quote style errors because:
+        // "d'ól" and "d'ith" are Irish elisions using apostrophes, not quotation marks
+        // No quotes in source, so no quotes expected in target
+        expect(actual).toBeFalsy();
+    });
+
+    test("Hawaiian glottal stop apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the \'okina.',
+            targetLocale: "haw-US",
+            target: "He huahana \"mākaukau\" no ka 'okina.",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.checkString(resource.getSource(), resource.getTarget(), resource, null, resource.getTargetLocale(), 0, "string");
+
+        // "'okina" is a Hawaiian glottal stop using apostrophe, not quotation marks
+        // Proper quotes are used for "mākaukau"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Hawaiian multiple glottal stops with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the \'okina and \'ohana.',
+            targetLocale: "haw-US",
+            target: "He huahana \"mākaukau\" no ka 'okina a me ka 'ohana.",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.checkString(resource.getSource(), resource.getTarget(), resource, null, resource.getTargetLocale(), 0, "string");
+
+        // "'okina" and "'ohana" are Hawaiian glottal stops using apostrophes, not quotation marks
+        // Proper quotes are used for "mākaukau"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Samoan glottal stop apostrophe with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the \'ava.',
+            targetLocale: "sm-WS",
+            target: "O le oloa \"sauni\" mo le 'ava.",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.checkString(resource.getSource(), resource.getTarget(), resource, null, resource.getTargetLocale(), 0, "string");
+
+        // "'ava" is a Samoan glottal stop using apostrophe, not quotation marks
+        // Proper quotes are used for "sauni"
+        expect(actual).toBeFalsy();
+    });
+
+    test("Samoan multiple glottal stops with quotes in source", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'The product is "ready" for the \'ava and \'aiga.',
+            targetLocale: "sm-WS",
+            target: "O le oloa \"sauni\" mo le 'ava ma le 'aiga.",
+            pathName: "a/b/c.xliff"
+        });
+
+        const actual = rule.checkString(resource.getSource(), resource.getTarget(), resource, null, resource.getTargetLocale(), 0, "string");
+
+        // "'ava" and "'aiga" are Samoan glottal stops using apostrophes, not quotation marks
+        // Proper quotes are used for "sauni"
+        expect(actual).toBeFalsy();
+    });
+
+    test("ResourceQuoteStyleMatchAsciiQuotesChines", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "Prevent Input Delay (Input Lag) setting will return to Standard if 'Game Optimizer' is not used.",
+            targetLocale: "zh-Hans-CN",
+            target: '如果未使用“游戏优化器”，则“防止输入延迟（输入滞后）”设置将返回“标准”',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+    });
+    test("ResourceQuoteStyleMatchAsciiQuotesChines2", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "To delete the list, press 'OK'.",
+            targetLocale: "zh-Hans-CN",
+            target: '要删除此列表，请按“确定”。',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        expect(actual).toBeTruthy();
+    });
+
+    test("ResourceQuoteStyleMatchAsciiQuotesChinese -- apply fix", () => {
+        expect.assertions(3);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-KR",
+            source: "To delete the list, press 'OK'.",
+            targetLocale: "zh-Hans-CN",
+            // target uses primary “” quotes instead of correct alt ‘’ quotes
+            target: '要删除此列表，请按“确定”。',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        expect(actual?.fix).toBeTruthy();
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile
+        });
+
+        const fixer = new ResourceFixer();
+        fixer.applyFixes(ir, [actual?.fix]);
+
+        // fix should replace primary “” quotes with alt ‘’ quotes
+        expect(resource.getTarget()).toBe('要删除此列表，请按‘确定’。');
+    });
+
+    test("ResourceQuoteStyleNoViolationChineseCorrectAltQuotes", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "To delete the list, press 'OK'.",
+            targetLocale: "zh-Hans-CN",
+            // target uses correct alt ‘’ quotes for zh-Hans-CN
+            target: '要删除此列表，请按‘确定’。',
+            pathName: "a/b/zh-Hans-CN.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/zh-Hans-CN.xliff"
+        });
+
+        // correct native alt quotes should not trigger a violation
+        expect(actual).toBeFalsy();
+    });
+
+    test("ResourceQuoteStyleKoreanCorrectPrimaryQuotes", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'Click the "OK" button.',
+            targetLocale: "ko-KR",
+            // target uses correct primary “/” quotes for ko-KR
+            target: '“확인” 버튼을 클릭하세요.',
+            pathName: "a/b/ko-KR.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/ko-KR.xliff"
+        });
+
+        // correct native primary quotes should not trigger a violation
+        expect(actual).toBeFalsy();
+    });
+    
+    test("ResourceQuoteStyleKoreanCorrectAltQuotes", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: "Press 'OK' to confirm.",
+            targetLocale: "ko-KR",
+            // target uses correct alt ‘/’ quotes for ko-KR
+            target: "‘확인‘을 눌러 확인하세요.",
+            pathName: "a/b/ko-KR.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/ko-KR.xliff"
+        });
+
+        // correct native alt quotes should not trigger a violation
+        expect(actual).toBeFalsy();
+    });
+
+    test("ResourceQuoteStyleJapaneseCorrectCornerBrackets", () => {
+        expect.assertions(2);
+
+        const rule = new ResourceQuoteStyle();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "quote.test",
+            sourceLocale: "en-US",
+            source: 'Click "OK" to continue.',
+            targetLocale: "ja-JP",
+            // target uses correct 「/」 corner bracket quotes for ja-JP
+            target: "「確認」をクリックして続行します。",
+            pathName: "a/b/ja-JP.xliff"
+        });
+
+        const actual = rule.matchString({
+            source: resource.getSource(),
+            target: resource.getTarget(),
+            resource,
+            file: "a/b/ja-JP.xliff"
+        });
+
+        // correct native corner bracket quotes should not trigger a violation
+        expect(actual).toBeFalsy();
     });
 });

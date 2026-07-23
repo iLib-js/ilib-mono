@@ -1,0 +1,17 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "›",
+        "alternateQuotationStart": "‹",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Walser",
+    "locale": "wae",
+    "numfmt": {
+        "decimalChar": ",",
+        "groupChar": "’"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

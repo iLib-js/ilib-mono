@@ -1,5 +1,70 @@
 # ilib-assemble
 
+## 1.5.1
+
+### Patch Changes
+
+- 514b05c: Fixed legacy assemble to strip require imports and non-ilib module.exports from minified/compiled ilib sources, so the assembled bundle is valid JS.
+
+## 1.5.0
+
+### Minor Changes
+
+- fb0a4c3: - Add the --assemble flag to bypass all of the directory
+  walking and searching and just point the tool directly
+  to the assemble.mjs file that needs to be used to generate
+  the locale data that is required
+  - mostly used for unit or e2e testing
+
+### Patch Changes
+
+- 37fb176: Fix `--mergeJson` to also resolve `assemble.mjs` from the package root
+  (`<ilibPath>/assemble.mjs`), so it works against installed ilib packages and
+  not just the source-tree layout (`<ilibPath>/js/assembleData/assemble.mjs`).
+
+## 1.4.1
+
+### Patch Changes
+
+- 793c79a: Support the flat lib/ and locale/ directory layout that ilib uses when published to npm, in addition to the js/lib and js/data/locale layout of the ilib source repository
+- 7a89d52: Throw error when assemble returns empty for mergeJson
+- d7b15b0: \* Enable `assembleLocaleRootData()` to merge root-level JSON files from `customLocalePath` with the default ilib locale data
+  - When `customLocalePath` is specified and a matching JSON file exists at its root (e.g., `currency.json`), it is deep-merged with the ilib default data using JSUtils.merge(), with custom data taking precedence
+
+## 1.4.0
+
+### Minor Changes
+
+- 7f07fcd: Added `mergeJson` function and `--mergeJson/--splitByLocale` CLI options to ilib-assemble
+  for assembling and writing locale JSON data from ilib include files.
+
+  - A new `--mergeJson` (`-x`) CLI option has been added. When specified,
+    `ilib-assemble` runs the `mergeJson` function
+  - `ilibPath` option specifies the base directory where `assemble.mjs` is
+    located (`js/assembleData/assemble.mjs` relative to that path). Defaults
+    to `"./"` when not provided.
+  - Returns a `Promise` that rejects with a descriptive error if the include file
+    cannot be read, or if the assembly/write step fails.
+  - A new `--splitByLocale` (`-s`) CLI option has been added. Must be used together
+    with `--mergeJson`; using it alone is an error. When specified, locale data is
+    written as a hierarchy of files (`root.json`, `ko.json`, `ko_KR.json`, etc.)
+    instead of one merged file per locale.
+
+## 1.3.4
+
+### Patch Changes
+
+- dc76424: - Fix the issue of duplicated code inclusion of legacyilibassemble
+  - When the filePath is `index.js`, the path that should be read is not updated, causing previously read data to be included again as duplicates.
+- Updated dependencies [d9d717c]
+  - ilib-common@1.1.7
+
+## 1.3.3
+
+### Patch Changes
+
+- b454304: Update the legacy ilib assembly to ensure that locale-independent root data is not omitted.
+
 ## 1.3.2
 
 ### Patch Changes

@@ -17,6 +17,8 @@ When creating or modifying loctool plugins:
 - New plugins should be written in Typescript and use ESM from the very beginning
     - The `build` script in the package should be responsible for transpiling TS code into the `lib/` directory
     - The `lib/` directory should be included in the `files` section of the package.json for shipping
+- Create sample projects under the `samples/` directory to showcase the plugin in action
+- Create E2E tests for the plugin in the `test-e2e/` directory which utilize the sample projects
 
 ## Resource Handling
 - Parse source files to extract translatable strings
@@ -41,6 +43,7 @@ Each plugin should support:
 - Test error handling for malformed files
 - Include integration tests with the main loctool CLI
 - Test plugin loading and registration
+- Create E2E tests that run against sample projects
 
 ## Debugging
 Use the provided debugging commands:

@@ -2,19 +2,19 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR">
   <file id="sample1_f1" original="sample1">
     <group id="sample1_g1" name="c">
-      <unit id="3">
+      <unit id="sample1_g1_1">
         <segment>
           <source>OK</source>
           <target>(updated) 확인!</target>
         </segment>
       </unit>
-      <unit id="4">
+      <unit id="sample1_g1_2">
         <segment>
           <source>Time Settings</source>
           <target>시간 설정</target>
         </segment>
       </unit>
-      <unit id="5">
+      <unit id="sample1_g1_3">
         <notes>
           <note>new</note>
         </notes>

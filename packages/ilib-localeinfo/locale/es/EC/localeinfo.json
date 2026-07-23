@@ -1,0 +1,11 @@
+{
+    "locale": "es-EC",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "{s}-{n}"
+        },
+        "negativepctFmt": "-{n}%",
+        "pctFmt": "{n}%"
+    }
+}

@@ -1,12 +1,12 @@
-const baseConfig = require('../../jest.config.js');
+const { jestConfig } = require("ilib-internal");
 
 const config = {
-    ...baseConfig,
-    testEnvironment: 'node',
+    ...jestConfig,
+    testEnvironment: "node",
     displayName: {
-        name: 'ilib-xliff',
-        color: 'magenta'
-    }
+        name: "ilib-xliff",
+        color: "magenta",
+    },
 };
 
 module.exports = config;

@@ -1,0 +1,11 @@
+{
+    "clock": "12",
+    "currency": "GTQ",
+    "firstDayOfWeek": 0,
+    "locale": "und-GT",
+    "paperSizes": {
+        "regular": "8x11"
+    },
+    "region.name": "Guatemala",
+    "timezone": "America/Guatemala"
+}

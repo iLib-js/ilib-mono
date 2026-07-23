@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="en-US">
- <file id="app2_f1" original="app2">
+ <file original="app2" l:project="app2">
   <group id="app2_g1" name="javascript">
-   <unit id="app2_1">
+   <unit id="app2_1" name="String 2a" type="res:string" l:datatype="javascript">
     <segment>
      <source>app2: String 2a</source>
      <target>app2: String 2a</target>
     </segment>
    </unit>
-   <unit id="app2_2">
+   <unit id="app2_2" name="String 2b" type="res:string" l:datatype="javascript">
     <segment>
      <source>app2: String 2b</source>
      <target>app2: String 2b</target>

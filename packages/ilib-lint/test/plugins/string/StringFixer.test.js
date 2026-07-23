@@ -22,6 +22,9 @@ import StringFixer from "../../../src/plugins/string/StringFixer.js";
 import StringFix from "../../../src/plugins/string/StringFix.js";
 import StringFixCommand from "../../../src/plugins/string/StringFixCommand.js";
 
+// ESM support
+const jest = import.meta.jest;
+
 const sourceFile = new SourceFile("test/file.txt", {});
 
 describe("testStringFixer", () => {
@@ -87,9 +90,9 @@ describe("testStringFixer", () => {
         });
         const fixer = new StringFixer();
         // produced by rule "always quote"
-        const fix = new StringFix(StringFixCommand.insertAfter(0, "\""), StringFixCommand.insertAfter(6, "\""));
+        const fix = new StringFix(StringFixCommand.insertAfter(0, '"'), StringFixCommand.insertAfter(6, '"'));
         fixer.applyFixes(subject, [fix]);
-        expect(subject.ir).toBe("\"abcdef\"");
+        expect(subject.ir).toBe('"abcdef"');
     });
 
     test("StringFixerShouldDeleteMultiple", () => {
@@ -134,12 +137,12 @@ describe("testStringFixer", () => {
         const fixer = new StringFixer();
         const fixes = [
             // produced by rule "always quote"
-            new StringFix(StringFixCommand.insertAfter(0, "\""), StringFixCommand.insertAfter(6, "\"")),
+            new StringFix(StringFixCommand.insertAfter(0, '"'), StringFixCommand.insertAfter(6, '"')),
             // produced by rule "disallow vowels"
             new StringFix(StringFixCommand.deleteAfter(0, 1), StringFixCommand.deleteAfter(4, 1)),
         ];
         fixer.applyFixes(subject, fixes);
-        expect(subject.ir).toBe("\"bcdf\"");
+        expect(subject.ir).toBe('"bcdf"');
     });
 
     test("StringFixerShouldFlagAppliedFixes", () => {
@@ -158,7 +161,7 @@ describe("testStringFixer", () => {
             new StringFix(StringFixCommand.insertAfter(6, "!")),
         ];
         fixer.applyFixes(subject, fixes);
-        expect(fixes.every(f => f.applied)).toBe(true);
+        expect(fixes.every((f) => f.applied)).toBe(true);
     });
 
     test("StringFixerShouldNotMarkOverlappingFixAsApplied", () => {
@@ -203,6 +206,72 @@ describe("testStringFixer", () => {
         // but become banned from producing autofixes
     });
 
+    test("should not mark fixes as applied if an attempt to apply them fails", () => {
+        const subject = new IntermediateRepresentation({
+            type: "byte",
+            sourceFile,
+            ir: "abcdef",
+        });
+
+        const fixer = new StringFixer();
+        // no overlap
+        const fixes = [
+            // produced by rule "sentence case"
+            new StringFix(new StringFixCommand(0, 1, "A")),
+            // produced by rule "always shout"
+            new StringFix(new StringFixCommand(6, 0, "!")),
+        ];
+
+        // mock error when applying fix commands
+        const applyCommandsSpy = jest.spyOn(StringFixCommand, "applyCommands").mockImplementationOnce(() => {
+            throw new Error("test error");
+        });
+
+        expect(() => {
+            fixer.applyFixes(subject, fixes);
+        }).toThrow();
+
+        // no fixes should be marked as applied
+        expect(fixes.every((f) => f.applied)).toBe(false);
+
+        // cleanup
+        applyCommandsSpy.mockRestore();
+    });
+
+    test("should not overwrite the intermediate representation content if an attempt to apply fixes fails", () => {
+        const originalContent = "abcdef";
+
+        const subject = new IntermediateRepresentation({
+            type: "byte",
+            sourceFile,
+            ir: originalContent,
+        });
+
+        const fixer = new StringFixer();
+        // no overlap
+        const fixes = [
+            // produced by rule "sentence case"
+            new StringFix(new StringFixCommand(0, 1, "A")),
+            // produced by rule "always shout"
+            new StringFix(new StringFixCommand(6, 0, "!")),
+        ];
+
+        // mock error when applying fix commands
+        const applyCommandsSpy = jest.spyOn(StringFixCommand, "applyCommands").mockImplementationOnce(() => {
+            throw new Error("test error");
+        });
+
+        expect(() => {
+            fixer.applyFixes(subject, fixes);
+        }).toThrow();
+
+        // the original content should not be modified
+        expect(subject.ir).toBe(originalContent);
+
+        // cleanup
+        applyCommandsSpy.mockRestore();
+    });
+
     test("StringFixerShouldNotApplyAnyCommandsOfASkippedFix", () => {
         expect.assertions(4);
         const subject = new IntermediateRepresentation({
@@ -217,9 +286,15 @@ describe("testStringFixer", () => {
         // produced by rule "always ask"
         const alwaysAskFix = new StringFix(StringFixCommand.insertAfter(6, "?"));
         // produced by rule "always shout in Spanish"
-        const alwaysShoutFix = new StringFix(StringFixCommand.insertAfter(0, "¡"), StringFixCommand.insertAfter(6, "!"));
+        const alwaysShoutFix = new StringFix(
+            StringFixCommand.insertAfter(0, "¡"),
+            StringFixCommand.insertAfter(6, "!")
+        );
         // produced by rule "uppercase B and D"
-        const uppercaseSelectedFix = new StringFix(StringFixCommand.replaceAfter(1, 1, "B"), StringFixCommand.replaceAfter(3, 1, "D"));
+        const uppercaseSelectedFix = new StringFix(
+            StringFixCommand.replaceAfter(1, 1, "B"),
+            StringFixCommand.replaceAfter(3, 1, "D")
+        );
 
         fixer.applyFixes(subject, [alwaysAskFix, alwaysShoutFix, uppercaseSelectedFix]);
 

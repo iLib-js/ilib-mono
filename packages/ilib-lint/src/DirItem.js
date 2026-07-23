@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import log4js from 'log4js';
+import { Result } from "ilib-lint-common";
 
-const logger = log4js.getLogger("ilib-lint.DirItem");
+// type imports
+/** @ignore @typedef {import("./Project.js").default} Project */
 
 /**
  * @class Represent a directory item.
@@ -31,14 +32,32 @@ const logger = log4js.getLogger("ilib-lint.DirItem");
  */
 class DirItem {
     /**
+     * The file path for this directory item
+     * @type {String}
+     */
+    filePath;
+
+    /**
+     * The settings from the ilib-lint config that apply to this file
+     * @type {Record<string, unknown> | undefined}
+     */
+    settings;
+
+    /**
+     * The project that this directory item is part of
+     * @type {Project|undefined}
+     */
+    project;
+
+    /**
      * Construct a new directory item
      * The options parameter can contain any of the following properties:
      *
-     * - filePath {String} path to the file
-     * - settings {Object} the settings from the ilib-lint config that
+     * @param {String} filePath path to the file
+     * @param {Object} options options for constructing this directory item
+     * @param {Record<string, unknown>} [options.settings] the settings from the ilib-lint config that
      *   apply to this file
-     * - pluginManager {PluginManager} the plugin manager for this run of
-     *   the ilib-lint tool
+     * @param {Project} [project] the project that this directory item is part of
      */
     constructor(filePath, options, project) {
         if (!options || !filePath) {
@@ -46,36 +65,36 @@ class DirItem {
         }
         this.filePath = filePath;
         this.settings = options.settings;
-        this.pluginMgr = options.pluginManager;
         this.project = project;
     }
 
     /**
-     * Return the file path for this source file.
+     * Initialize this directory item.
+     * @returns {Promise<void>} a promise to initialize the directory item
+     */
+    async init() {
+        return Promise.resolve();
+    }
+
+    /**
+     * Return the file path for this directory item.
      *
-     * @returns {String} the file path for this source file
+     * @returns {String} the file path for this directory item
      */
     getFilePath() {
         return this.filePath;
     }
 
     /**
-     * Parse the current directory item.
-     *
-     * @returns {Array.<IntermediateRepresentation>} the parsed
-     * representations of this file
-     * @abstract
-     */
-    parse() {}
-
-    /**
      * Check the directory item and return a list of issues found in it.
      *
-     * @param {Array.<Locale>} locales a set of locales to apply
-     * @returns {Array.<Result>} a list of natch results
+     * @param {Array.<string>} locales a set of locales to apply
+     * @returns {Array.<Result>} a list of match results
      * @abstract
      */
-    findIssues(locales) {}
-};
+    findIssues(locales) {
+        throw new Error("Not implemented");
+    }
+}
 
 export default DirItem;

@@ -134,6 +134,17 @@ LocalRepository.prototype.init = function(cb) {
         var miniMatchExpressions = getIntermediateFileExtensions().map(function(ext) {
             return "**/*." + ext;
         });
+
+        // Normalize and deduplicate translationsDir
+        var normalizedPaths = [];
+        for (var i = 0; i < this.translationsDir.length; i++) {
+            var resolvedPath = path.resolve(this.translationsDir[i]);
+            if (normalizedPaths.indexOf(resolvedPath) === -1) {
+                normalizedPaths.push(resolvedPath);
+            }
+        }
+        this.translationsDir = normalizedPaths;
+
         this.translationsDir.forEach(function(dir) {
             if (!fs.existsSync(dir)) {
                logger.warn("Translation dir " + dir + " does not exist.");

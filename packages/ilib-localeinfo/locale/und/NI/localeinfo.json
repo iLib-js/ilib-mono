@@ -1,0 +1,11 @@
+{
+    "clock": "12",
+    "currency": "NIO",
+    "firstDayOfWeek": 0,
+    "locale": "und-NI",
+    "paperSizes": {
+        "regular": "8x11"
+    },
+    "region.name": "Nicaragua",
+    "timezone": "America/Managua"
+}

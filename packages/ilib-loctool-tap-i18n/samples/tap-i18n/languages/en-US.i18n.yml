@@ -1,0 +1,18 @@
+toplevel:
+    first:
+        # This is the comment for the first string
+        loading: 'Loading...'
+        # This is the comment for the second string
+        pageLoading: 'Loading the page...'
+        # Label for the button that saves all changes for the search configuration.
+        saveChanges: 'Save Changes'
+    second:
+        # Label for the button that cancels an action.
+        cancel: 'Cancel'
+        # Label for the button creating a new item.
+        create: 'Create'
+    plurals:
+        # This is the comment for the first plural string
+        plural1: '{{count}} item'
+        # This is the comment for the second plural string
+        plural1_plural: '{{count}} items'

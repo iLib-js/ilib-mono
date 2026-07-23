@@ -53,6 +53,18 @@ import { withinRange } from "ilib-ctype";
 console.log(withinRange("\uFE2A", "HalfMarks")); // prints true
 ```
 
+There is also a `hasUCDCharProperty()` function which returns true
+if a character has a given Unicode general-category property. You
+may pass either the short code (`"Mn"`) or the long Unicode name
+(`"Nonspacing_Mark"`):
+
+```javascript
+import { hasUCDCharProperty } from "ilib-ctype";
+
+console.log(hasUCDCharProperty("\u0308", "Nonspacing_Mark")); // true
+console.log(hasUCDCharProperty(0x093E, "Mc")); // true (Spacing_Mark)
+```
+
 ## Using the CType Functions
 
 All of the functions are exported from the package in general. Here is
@@ -74,21 +86,11 @@ for the functions you are using will be included in your bundle.
 
 ## License
 
-Copyright © 2021-2025, JEDLSoft
+Copyright © 2021-2026, JEDLSoft
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and
-limitations under the License.
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-ctype/LICENSE) file in the ilib-mono repository on GitHub.
 
 ## Release Notes
 
-See [CHANGELOG.md](./CHANGELOG.md)
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-ctype/CHANGELOG.md).
+

@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"#-#-#-#-#  sample-tap-i18n-extracted.po  #-#-#-#-#\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: loctool\n"
+"Project-Id-Version: 1\n"
+"Language: ko-KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Project: sample-tap-i18n\n"
+
+#. This is the comment for the first plural string
+#: languages/en-US.i18n.yml
+#d x-yaml
+#k toplevel.plurals.plural1
+msgid "{{count}} item"
+msgid_plural "{{count}} items"
+msgstr[0] "{{count}}개 항목"
+
+#. This is the comment for the first string
+#: languages/en-US.i18n.yml
+#d x-yaml
+#k toplevel.first.loading
+msgid "Loading..."
+msgstr "로딩 중 ..."
+
+#. This is the comment for the second string
+#: languages/en-US.i18n.yml
+#d x-yaml
+#k toplevel.first.pageLoading
+msgid "Loading the page..."
+msgstr "페이지를 로딩하는 중 ..."
+
+#. Label for the button that cancels an action.
+#: languages/en-US.i18n.yml
+#d x-yaml
+#k toplevel.second.cancel
+msgid "Cancel"
+msgstr "취소"
+
+#. Label for the button creating a new item.
+#: languages/en-US.i18n.yml
+#d x-yaml
+#k toplevel.second.create
+msgid "Create"
+msgstr "만들다"

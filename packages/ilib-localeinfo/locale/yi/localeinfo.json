@@ -1,0 +1,11 @@
+{
+    "delimiter": {
+        "alternateQuotationStart": "’",
+        "quotationStart": "”"
+    },
+    "language.name": "Yiddish",
+    "locale": "yi",
+    "scripts": [
+        "Hebr"
+    ]
+}

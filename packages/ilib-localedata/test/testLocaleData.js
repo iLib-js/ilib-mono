@@ -458,7 +458,7 @@ export const testLocaleData = {
             test.ok(result);
 
             const locData = new LocaleData({
-                path: "./test/files",
+                path: "./test/files3",
                 sync: false
             });
 
@@ -517,7 +517,7 @@ export const testLocaleData = {
             test.ok(result);
 
             const locData = new LocaleData({
-                path: "./test/files",
+                path: "./test/files3",
                 sync: false
             });
 

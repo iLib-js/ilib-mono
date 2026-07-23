@@ -1,0 +1,20 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Interlingue",
+    "locale": "ie",
+    "numfmt": {
+        "currencyFormats": {
+            "commonNegative": "{s} -{n}"
+        },
+        "decimalChar": ",",
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

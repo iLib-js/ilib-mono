@@ -1,5 +1,65 @@
 # ilib-loctool-javascript-resource
 
+## 1.3.0
+
+### Minor Changes
+
+- e079b44: - Support new outputSourceLocale flag in the settings
+  - Meant to support languages/i18n libraries where
+    strings are extracted from the source code directly
+    and there is no source locale resource file
+  - For the javascript and json plugins, this causes
+    the plugin to write out the source locale along
+    with the other locales if it is configured in the
+    the locales list
+  - For the javascript resources plugin, it means that
+    it will write out the source string instead of the
+    target string for source locale Resource instances
+
+## 1.2.0
+
+### Minor Changes
+
+- a6b6084: - Add support for the settings.javascript.template setting
+  so that callers can use a regular loctool-style formatted
+  path template if they like
+  - default behaviour is the same as it was before, which is
+    to get the resource file path from the this.pathName if
+    it exists or from the resourceDirs.js setting as before
+
+## 1.1.2
+
+### Patch Changes
+
+- 604565d: Fix json plugin to localize anyOf or oneOf properly
+
+  - If there was anyOf or oneOf in the schema, it would sometimes
+    localize the json object as a string instead of as an object.
+  - `JsonFileType.getResourceFile` now creates resource files at the path
+    from the mapping template and target locale (same as `getLocalizedPath`)
+    instead of reusing the source file path, so merged translations are
+    written to the correct output location.
+  - `getLocalizedPath` uses `parsePath` / `formatPath` from `ilib-tools-common`
+    so template placeholders line up with the source path the same way as
+    other loctool file types. `formatPath` still receives `sourcepath` so
+    `[filename]` / `[dir]` resolve when the template does not regex-match the
+    source (e.g. `src/t1.js` with the default `resources/...` template).
+  - When `JsonFile` delegates to `ilib-loctool-javascript-resource`, it passes
+    the source JSON path into `getResourceFile` for disambiguation. JavaScript
+    resource files now treat only `.js` paths as explicit output paths; a
+    non-`.js` path still resolves through the javascript `resourceDirs` template.
+
+## 1.1.1
+
+### Patch Changes
+
+- 86ccd9c: - Fixed a bug where the header/footer was treated like a path
+  - if your header or footer included slashes, the whole
+    thing would become normalized as a path when reality, it
+    should just stay as it is.
+  - eg. // this is a header became / this is a header
+    because the normalize would get rid of the double slashes
+
 ## 1.1.0
 
 ### Minor Changes

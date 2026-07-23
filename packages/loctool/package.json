@@ -1,6 +1,6 @@
 {
     "name": "loctool",
-    "version": "2.29.3",
+    "version": "2.33.1",
     "main": "./loctool.js",
     "bin": "./loctool.js",
     "description": "A string resource extractor for multiple files types and project types",
@@ -49,17 +49,19 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
-        "node": ">=10.0.0"
+        "node": ">=12 <23"
     },
     "scripts": {
-        "coverage": "pnpm test -- --coverage",
+        "coverage": "pnpm test --coverage",
         "clean": "ant clean",
         "build": "pnpm generate",
         "generate": "node generate/genPluralCategories.js",
         "test": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --detectOpenHandles",
+        "test:e2e": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.cjs",
+        "test:all": "pnpm test && pnpm test:e2e",
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --detectOpenHandles --watch",
         "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node --detectOpenHandles -i"
     },
@@ -70,6 +72,8 @@
         "he": "^1.2.0",
         "html-parser": "^0.11.0",
         "ilib": "^14.18.0",
+        "ilib-locale": "workspace:^",
+        "ilib-localematcher": "workspace:^",
         "ilib-po": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "ilib-tree-node": "workspace:^",
@@ -95,6 +99,7 @@
     "devDependencies": {
         "@types/jest": "^29.5.14",
         "cldr-core": "46.1.0",
+        "ilib-internal": "workspace:^",
         "ilib-loctool-mock": "file:test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz",
         "ilib-loctool-mock-json": "file:test/ilib-loctool-mock-json/ilib-loctool-mock-json-1.0.0.tgz",
         "ilib-loctool-mock-resource": "file:test/ilib-loctool-mock-resource/ilib-loctool-mock-resource-1.0.0.tgz",

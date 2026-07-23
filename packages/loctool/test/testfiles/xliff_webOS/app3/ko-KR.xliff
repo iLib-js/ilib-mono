@@ -2,19 +2,19 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-KR" trgLang="ko-KR">
   <file id="sample3_f1" original="sample3">
     <group id="sample3_g1" name="x-qml">
-      <unit id="sample3_1">
+      <unit id="sample3_g1_1">
         <segment>
           <source>OK</source>
           <target>확인</target>
         </segment>
       </unit>
-       <unit id="sample3_2" name="login">
+       <unit id="sample3_g1_2" name="login">
         <segment>
           <source>Device Sign In</source>
           <target>기기 로그인</target>
         </segment>
       </unit>
-       <unit id="sample3_3" name="login">
+       <unit id="sample3_g1_3" name="login">
         <segment>
           <source>Sign In</source>
           <target>로그인</target>
@@ -22,7 +22,7 @@
       </unit>
     </group>
     <group id="sample3_g2" name="x-json">
-      <unit id="sample3_10">
+      <unit id="sample3_g2_1">
         <notes>
           <note>for json</note>
         </notes>

@@ -1,0 +1,176 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples webos-dart should produce localized de-DE resources 1`] = `
+"{
+    "Hello": "Hallo",
+    "Thank you": "Danke"
+}"
+`;
+
+exports[`samples webos-dart should produce localized ko-KR resources 1`] = `
+"{
+    "Hello": "안녕하세요",
+    "Thank you": "감사합니다"
+}"
+`;
+
+exports[`samples webos-js should apply localeInherit and write en-AU resources inherited from en-GB 1`] = `
+"{
+    "Hello": "Hi",
+    "Thank you": "Cheers"
+}"
+`;
+
+exports[`samples webos-js should apply localeMap and write fr-CA resources under the fr resource directory 1`] = `
+"{
+    "Hello": "Bonjour",
+    "Thank you": "Merci"
+}"
+`;
+
+exports[`samples webos-js should produce a new-strings XLIFF file for de-DE 1`] = `
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-US" trgLang="de-DE" version="2.0">
+  <file id="sample-webos-js_f1" original="sample-webos-js">
+    <group id="sample-webos-js_g1" name="javascript">
+      <unit id="sample-webos-js_g1_1">
+        <notes>
+          <note>No translation for Hello World to de-DE</note>
+        </notes>
+        <segment>
+          <source>Hello World</source>
+          <target state="new">Hello World</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
+"
+`;
+
+exports[`samples webos-js should produce a new-strings XLIFF file for en-AU 1`] = `
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-US" trgLang="en-AU" version="2.0">
+  <file id="sample-webos-js_f1" original="sample-webos-js">
+    <group id="sample-webos-js_g1" name="javascript">
+      <unit id="sample-webos-js_g1_1">
+        <notes>
+          <note>No translation for Hello World to en-AU</note>
+        </notes>
+        <segment>
+          <source>Hello World</source>
+          <target state="new">Hello World</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
+"
+`;
+
+exports[`samples webos-js should produce a new-strings XLIFF file for en-GB 1`] = `
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-US" trgLang="en-GB" version="2.0">
+  <file id="sample-webos-js_f1" original="sample-webos-js">
+    <group id="sample-webos-js_g1" name="javascript">
+      <unit id="sample-webos-js_g1_1">
+        <notes>
+          <note>No translation for Hello World to en-GB</note>
+        </notes>
+        <segment>
+          <source>Hello World</source>
+          <target state="new">Hello World</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
+"
+`;
+
+exports[`samples webos-js should produce a new-strings XLIFF file for fr-CA 1`] = `
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-US" trgLang="fr-CA" version="2.0">
+  <file id="sample-webos-js_f1" original="sample-webos-js">
+    <group id="sample-webos-js_g1" name="javascript">
+      <unit id="sample-webos-js_g1_1">
+        <notes>
+          <note>No translation for Hello World to fr-CA</note>
+        </notes>
+        <segment>
+          <source>Hello World</source>
+          <target state="new">Hello World</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
+"
+`;
+
+exports[`samples webos-js should produce a new-strings XLIFF file for ko-KR 1`] = `
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-US" trgLang="ko-KR" version="2.0">
+  <file id="sample-webos-js_f1" original="sample-webos-js">
+    <group id="sample-webos-js_g1" name="javascript">
+      <unit id="sample-webos-js_g1_1">
+        <notes>
+          <note>No translation for Hello World to ko-KR</note>
+        </notes>
+        <segment>
+          <source>Hello World</source>
+          <target state="new">Hello World</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
+"
+`;
+
+exports[`samples webos-js should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-US" version="2.0">
+  <file id="sample-webos-js_f1" original="sample-webos-js">
+    <group id="sample-webos-js_g1" name="javascript">
+      <unit id="sample-webos-js_g1_1">
+        <segment>
+          <source>Thank you</source>
+        </segment>
+      </unit>
+      <unit id="sample-webos-js_g1_2">
+        <segment>
+          <source>Hello</source>
+        </segment>
+      </unit>
+      <unit id="sample-webos-js_g1_3">
+        <segment>
+          <source>Hello World</source>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
+"
+`;
+
+exports[`samples webos-js should produce localized de-DE resources 1`] = `
+"{
+    "Hello": "Hallo",
+    "Thank you": "Danke"
+}"
+`;
+
+exports[`samples webos-js should produce localized en-GB resources 1`] = `
+"{
+    "Hello": "Hi",
+    "Thank you": "Cheers"
+}"
+`;
+
+exports[`samples webos-js should produce localized ko-KR resources 1`] = `
+"{
+    "Hello": "안녕하세요",
+    "Thank you": "감사합니다"
+}"
+`;

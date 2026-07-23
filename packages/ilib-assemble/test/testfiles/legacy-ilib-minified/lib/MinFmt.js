@@ -1,0 +1,1 @@
+var ilib=require("./ilibcore.js"),Locale=require("./Locale.js"),MinFmt=function(options){this.locale=options&&options.locale||"en"};MinFmt.prototype={format:function(num){return String(num)},getLocale:function(){return this.locale}},module.exports=MinFmt;

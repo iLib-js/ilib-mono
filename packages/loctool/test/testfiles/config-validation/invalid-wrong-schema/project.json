@@ -1,0 +1,6 @@
+{
+    "$schema": "https://nx.dev/schemas/project-schema.json",
+    "name": "Wrong Schema",
+    "id": "invalid-wrong-schema",
+    "projectType": "web"
+}

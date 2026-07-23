@@ -1,0 +1,27 @@
+{
+    "tabs": [
+        {
+            "pages": [
+                {
+                    "group": " ",
+                    "pages": [
+                        "guides/index",
+                        {
+                            "group": "Nested",
+                            "pages": ["a", "b"]
+                        }
+                    ]
+                },
+                "plain-slug"
+            ]
+        },
+        {
+            "groups": [
+                {
+                    "group": "G",
+                    "pages": ["x"]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,31 @@
+{
+    "name" : "sample-tap-i18n",
+    "id" : "sample-tap-i18n",
+    "projectType" : "custom",
+    "sourceLocale" : "en-US",
+    "pseudoLocale" : "zxx-XX",
+    "resourceDirs": {
+        "tap": "languages"
+    },
+    "plugins" : [
+        "ilib-loctool-tap-i18n"
+    ],
+    "excludes" : [
+        "xliffs",
+        "locale"
+    ],
+    "settings" : {
+        "xliffsDir" : "./xliffs",
+        "locales" : [
+            "ko-KR",
+            "nl-NL"
+        ],
+        "tap" : {
+            "mappings" : {
+                "**/*.i18n.yml" : {
+                    "template" : "languages/[locale].i18n.[extension]"
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 /*
  * Webpackloader.test.js - test the loader under webpack
  *
- * Copyright © 2022-2023 JEDLSoft
+ * Copyright © 2022-2023, 2025 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import { getPlatform } from 'ilib-env';
 import LoaderFactory, { registerLoader } from '../src/index.js';
 
 describe("testWebpackLoader", () => {
-    if (getPlatform() === "browser") {
         test("LoaderGetName", () => {
             expect.assertions(1);
             var loader = LoaderFactory();
@@ -34,14 +33,26 @@ describe("testWebpackLoader", () => {
             expect(!loader.supportsSync()).toBeTruthy();
         });
 
-        test("LoadFileSync", () => {
-            expect.assertions(1);
+        test("LoadFileSync should throw because sync is not supported", () => {
+            expect.assertions(3);
 
             var loader = LoaderFactory();
+            expect(loader.getSyncMode()).toBe(false);
+            expect(loader.supportsSync()).toBe(false);
 
             expect(() => {
                 return loader.loadFile("root.js", {sync: true});
-            }).toThrow();
+            }).toThrow(new Error("This loader does not support synchronous loading of data."));
+        });
+
+        test("Loader set sync mode should not work", () => {
+            expect.assertions(2);
+            var loader = LoaderFactory();
+
+            // should not be able to set sync mode
+            loader.setSyncMode();
+            expect(loader.getSyncMode()).toBe(false);
+            expect(loader.supportsSync()).toBe(false);
         });
 
         test("LoadFileAsync", () => {
@@ -544,9 +555,4 @@ describe("testWebpackLoader", () => {
                 });
             });
         });
-    } else {
-        test("fake", () => {
-            expect(1+1).toBe(2);
-        });
-    }
 });

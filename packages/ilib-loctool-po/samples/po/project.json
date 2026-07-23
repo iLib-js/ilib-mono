@@ -1,0 +1,27 @@
+{
+    "name": "sample-po",
+    "id": "sample-po",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "plugins": [
+        "ilib-loctool-po"
+    ],
+    "excludes": [
+        "xliffs"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "ko-KR",
+            "ru-RU"
+        ],
+        "po": {
+            "mappings": {
+                "**/*.po": {
+                    "template": "resources/[locale].po"
+                }
+            }
+        }
+    }
+}

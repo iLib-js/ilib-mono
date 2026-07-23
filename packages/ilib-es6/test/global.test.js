@@ -498,15 +498,6 @@ describe("testglobal", () => {
         expect(object1).toStrictEqual({"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}});
     });
 
-    test("ExtendSubobjectsAddProps", () => {
-        expect.assertions(1);
-        const object1 = {"a": "A", "b": {"x": "X", "y": "Y"}},
-            object2 = {"b": {"x": "M", "y": "N", "z": "Z"}};
-
-        ilib.extend(object1, object2);
-        expect(object1).toStrictEqual({"a": "A", "b": {"x": "M", "y": "N", "z": "Z"}});
-    });
-
     test("ExtendBooleans", () => {
         expect.assertions(1);
         const object1 = {"a": true, "b": true},

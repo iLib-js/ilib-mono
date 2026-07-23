@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Show_Sender_in_Recipient_List</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Whether or not the sender should be shown in the recipient list of the email.</shortDescription>
+        <value>Show Sender in Recipient List</value>
+        <categories>email</categories>
+    </labels>
+    <labels>
+        <fullName>Test_of_emergency_warning_system</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Had this been a real test, you would have been instructed to calmly leave the building.</shortDescription>
+        <value>Test of the emergency warning system.</value>
+        <categories></categories>
+    </labels>
+</CustomLabels>

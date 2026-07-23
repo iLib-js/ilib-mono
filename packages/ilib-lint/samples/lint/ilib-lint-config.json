@@ -1,0 +1,66 @@
+{
+  "name": "lint-test",
+  "plugins": [
+    "python",
+    "python-gnu",
+    "react"
+  ],
+  "locales": [
+    "en-US",
+    "de-DE"
+  ],
+  "filetypes": {
+    "jsx": {
+      "parsers": [
+        "JSXParser"
+      ],
+      "ruleset": [
+        "generic",
+        "react",
+        "source"
+      ]
+    },
+    "python": {
+      // "parsers": [ "PythonParser" ],
+      "ruleset": [
+        "generic",
+        "python",
+        "python-gnu",
+        "source"
+      ]
+    },
+    "xliff": {
+      "parsers": ["xliff"],
+      "ruleset": [
+        "generic",
+        "python",
+        "python-gnu",
+        "overrides"
+      ],
+      "transformers": [ "errorfilter" ],
+      "serializer": "xliff"
+    }
+  },
+  "paths": {
+    "xliffs/*.xliff": "xliff",
+    "src/**/*.py": "python",
+    "src/**/*.jsx": "jsx"
+  },
+  "excludes": [
+    "**/.git",
+    "**/node_modules",
+    "**/.svn",
+    "package.json",
+    "package-lock.json"
+  ],
+  "rulesets": {
+    "overrides": {
+      "resource-camel-case": {
+        "except": ["SomeException"]
+      },
+      "resource-snake-case": {
+        "except": ["some_exception"]
+      }
+    }
+  }
+}

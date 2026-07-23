@@ -9,18 +9,18 @@ The project status and structure are described in the [README.md](./README.md) f
 
 ## Table of Contents
 
-- [Getting Started](#getting-started)
-- [Environment](#environment)
-- [Coding Guidelines](#coding-guidelines)
-- [Adding a New Package](#adding-a-new-package)
-- [Running Scripts](#running-scripts)
-- [Debugging Pluggable CLI Applications](#debugging-pluggable-cli-applications)
-- [Code Coverage](#code-coverage)
-- [Documentation](#documentation)
-- [Versioning](#versioning)
-- [Publishing](#publishing)
-- [Reporting Issues](#reporting-issues)
-- [License](#license)
+-   [Getting Started](#getting-started)
+-   [Environment](#environment)
+-   [Coding Guidelines](#coding-guidelines)
+-   [Adding a New Package](#adding-a-new-package)
+-   [Running Scripts](#running-scripts)
+-   [Debugging Pluggable CLI Applications](#debugging-pluggable-cli-applications)
+-   [Code Coverage](#code-coverage)
+-   [Documentation](#documentation)
+-   [Versioning](#versioning)
+-   [Publishing](#publishing)
+-   [Reporting Issues](#reporting-issues)
+-   [License](#license)
 
 ## Getting Started
 
@@ -42,17 +42,17 @@ Before contributing, please set up the project on your local machine by followin
 
 Every pull request should include the following:
 
-- Documentation in the code (following the JSDoc/TSDoc standard).
-- Tests.
-- A changelog entry.
+-   Documentation in the code (following the JSDoc/TSDoc standard).
+-   Tests.
+-   A changelog entry (add a [changeset](#creating-a-changeset) for any change that should appear in the release notes).
 
 ## Environment
 
 This project uses the following tools:
 
-- Node.js for running JavaScript code.
-- `pnpm` as the package manager for managing dependencies and supporting workspaces.
-- Turborepo for monorepo task management (caching, parallelization).
+-   Node.js for running JavaScript code.
+-   `pnpm` as the package manager for managing dependencies and supporting workspaces.
+-   Turborepo for monorepo task management (caching, parallelization).
 
 Common commands are aliased in the root [`package.json`](./package.json) scripts.
 
@@ -75,22 +75,22 @@ To manually create a new package, follow these steps:
 2. In the new directory, create a `package.json` file.
 3. Add the following scripts to the new package's `package.json` file to integrate with monorepo tasks (defined in `turbo.json` in the monorepo root directory):
 
-   - `build`
-   - `test`
-   - `doc`
+    - `build`
+    - `test`
+    - `doc`
 
-   These scripts are optional.
+    These scripts are optional.
 
 4. If the new package depends on another package in the monorepo, define this dependency using the workspace protocol in the `dependencies` section of your `packages/<packageName>/package.json`, like this:
-   ```json
-   {
-     "dependencies": {
-       "ilib-common": "workspace:^"
-     }
-   }
-   ```
-   When you run `pnpm publish`, `pnpm` will automatically replace this protocol with the appropriate semver version.
-   You can learn more about `pnpm` workspaces [here](https://pnpm.io/workspaces).
+    ```json
+    {
+        "dependencies": {
+            "ilib-common": "workspace:^"
+        }
+    }
+    ```
+    When you run `pnpm publish`, `pnpm` will automatically replace this protocol with the appropriate semver version.
+    You can learn more about `pnpm` workspaces [here](https://pnpm.io/workspaces).
 
 ## Running Scripts
 
@@ -129,8 +129,8 @@ TBD
 
 There are several ways to run tests:
 
-- For affected package(s) only.
-- For all packages in the monorepo.
+-   For affected package(s) only.
+-   For all packages in the monorepo.
 
 #### 1. Run tests for affected package(s)
 
@@ -170,24 +170,24 @@ pnpm test
 2. Run tests for a single file by passing the file path as an argument to the `pnpm test` command, like this:
 
 ```bash
-pnpm --filter loctool test -- "ResourceConvert.test.js"
+pnpm --filter loctool test "ResourceConvert.test.js"
 ```
 
 Or `cd` into the package directory and run:
 
 ```bash
 # cd packages/package-name
-pnpm test -- "ResourceConvert.test.js"
+pnpm test "ResourceConvert.test.js"
 ```
 
 ## Debugging Pluggable CLI Applications
 
 This monorepo publishes some CLI applications that support plugins; it also publishes those plugins. For example:
 
-- [`loctool`](./packages/loctool)
-  - [`ilib-loctool-json`](./packages/ilib-loctool-json)
-- [`ilib-lint`](./packages/ilib-lint)
-  - [`ilib-lint-react`](./packages/ilib-lint-react)
+-   [`loctool`](./packages/loctool)
+    -   [`ilib-loctool-json`](./packages/ilib-loctool-json)
+-   [`ilib-lint`](./packages/ilib-lint)
+    -   [`ilib-lint-react`](./packages/ilib-lint-react)
 
 To debug these CLI applications with plugins directly within the monorepo, you can use the environment variable [`NODE_PATH`](https://nodejs.org/api/modules.html#loading-from-the-global-folders).
 
@@ -264,12 +264,12 @@ Each package that wants to participate in code coverage reporting needs to:
 const baseConfig = require("../../jest.config.js");
 
 const config = {
-  ...baseConfig,
-  displayName: {
-    name: "package-name",
-    color: "blue", // Choose your color from chalk's palette
-  },
-  // Package-specific Jest configuration (if needed)
+    ...baseConfig,
+    displayName: {
+        name: "package-name",
+        color: "blue", // Choose your color from chalk's palette
+    },
+    // Package-specific Jest configuration (if needed)
 };
 
 module.exports = config;
@@ -278,10 +278,11 @@ module.exports = config;
 The `color` property uses [chalk's color palette](https://github.com/chalk/chalk#colors).
 
 2. Have a `coverage` script in its `package.json`:
+
 ```json
 "scripts": {
   // ...
-  "coverage": "pnpm test -- --coverage"
+  "coverage": "pnpm test --coverage"
 }
 ```
 
@@ -293,11 +294,55 @@ TBD
 
 ## Versioning
 
-TBD
+This monorepo uses [Changesets](https://github.com/changesets/changesets) to manage versions and changelogs. If your PR changes a published package in a way that should be noted in the release, you need to add a changeset.
+
+### Creating a changeset
+
+From the **repo root**, run:
+
+```bash
+pnpm changeset
+```
+
+The Changesets CLI will:
+
+1. **Ask which packages to include** — use the space bar to select each package your change affects, then press Enter.
+2. **Ask the bump type** for each selected package:
+   - **patch** — bug fixes, small changes (e.g. `1.0.0` → `1.0.1`)
+   - **minor** — new features, backward compatible (e.g. `1.0.0` → `1.1.0`)
+   - **major** — breaking changes (e.g. `1.0.0` → `2.0.0`)
+3. **Ask for a summary** — a short description that will appear in the package changelog.
+
+A new markdown file will be created under `.changeset/` (e.g. `.changeset/my-change-name.md`). Commit this file with your PR so the release workflow can use it.
+
+**Example** of what a changeset file looks like:
+
+```md
+---
+"ilib-po": patch
+---
+
+Fix character escaping in PO message strings
+```
+
+The frontmatter lists each affected package and its bump type; the rest is the changelog text.
+
+**After your PR is merged:** Version bumps and changelog updates are applied by the release workflow when changesets are published. You do not need to run `pnpm changeset version` or `pnpm changeset publish` yourself for normal contributions.
 
 ## Publishing
 
-TBD
+Publishing to npm is **automated** and handled by the [Release workflow](.github/workflows/release.yml) when changes are merged to `main`. Contributors do not publish packages manually.
+
+### How it works
+
+1. **You add changesets** in your PR (see [Creating a changeset](#creating-a-changeset)) and merge to `main`.
+2. **The release workflow runs** on every push to `main`. If there are unversioned changesets, it opens or updates a **"Version Packages"** pull request that bumps package versions and updates changelogs.
+3. **A maintainer merges** the Version Packages PR.
+4. **The workflow runs again** and publishes the new versions to npm using `pnpm ci:release` (build then `changeset publish`). Publishing uses the GitHub **Release** environment and npm trusted publishing (OIDC); no long-lived npm tokens are stored in the repo.
+
+### What you need to do
+
+As a contributor: **add a changeset** for any change that should be released. The rest (versioning, changelog updates, and publishing) is done by the workflow. Maintainers are responsible for reviewing and merging the Version Packages PR when a release is ready.
 
 ## Reporting Issues
 

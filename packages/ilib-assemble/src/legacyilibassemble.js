@@ -1,7 +1,7 @@
 /*
  * legacyilibassemble.js - assemble of legacy style of ilib files.
  *
- * Copyright © 2024 JEDLSoft
+ * Copyright © 2024, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ let locales;
 let outFileName;
 let isCompressed;
 let customPath;
+let libDir;
+let localeDir;
 let jsFileList = [];
 let allJSList = [];
 
@@ -44,6 +46,10 @@ function assembleilib(options) {
     outFileName = options.opt.outjsFileName || "ilib-all.js";
     isCompressed = options.opt.compressed || false;
     customPath = options.opt.customLocalePath;
+
+    libDir = fs.existsSync(path.join(ilibPath, "js/lib")) ? "js/lib" : "lib";
+    localeDir = fs.existsSync(path.join(ilibPath, "js/data/locale")) ? "js/data/locale" : "locale";
+
     readIncFile(incPath);
     readJSFiles();
 }
@@ -81,7 +87,7 @@ function readJSFiles() {
     let matchedJS;
     let matchedData;
     jsFileList.forEach(function(file){
-        let jsPath = path.join(ilibPath, "js/lib", file);
+        let jsPath = path.join(ilibPath, libDir, file);
         readData = readFile(jsPath);
         if (readData) {
             matchedJS = [...readData.matchAll(reDependentPattern)];
@@ -112,12 +118,29 @@ function readJSFiles() {
 }
 
 function deletePatterns(data) {
-    const deletePattern1 = /var\s*[^;]*=[^;]require[^;]*;/g;
-    const deletePattern2 = /module\.exports\s*=\s*\b(?:(?!ilib)\w)+\b\;/g;
+    // Strip CommonJS `require(...)` imports and `module.exports`. This must work
+    // for BOTH un-minified source (`var X = require("y");`, one statement per
+    // line) and minified/compiled sources (`var A=require("x"),B=require("y"),
+    // Real=function(){...};` and `...,X.prototype={...},module.exports=X;`).
+    // Only string-literal requires are stripped; dynamic requires such as
+    // `require(fnc(entry))` are intentionally left untouched.
+    //
+    // 1) comma-separated require binding inside a multi-declarator `var`
+    const deleteFrag = /[A-Za-z_$][\w$]*\s*=\s*require\(\s*(["'])(?:(?!\1).)*\1\s*\)\s*,/g;
+    // 2) standalone / last require declarator: `var X = require("...");`
+    const deleteStmt = /var\s+[A-Za-z_$][\w$]*\s*=\s*require\(\s*(["'])(?:(?!\1).)*\1\s*\)\s*;/g;
+    // 3) module.exports, possibly as the tail of a comma-expression. Emitting a
+    //    `;` keeps the enclosing statement terminated. The core
+    //    `module.exports = ilib;` is preserved via the (?!ilib) lookahead.
+    const deleteExport = /,?\s*module\.exports\s*=\s*\b(?:(?!ilib)\w)+\b\s*;/g;
     const macroPattern = /\/\/\s*\!macro\s*ilibVersion/g;
     const readPkg = readFile(path.join(ilibPath, "package.json"));
     const ilibVersion = JSON.parse(readPkg).version;
-    data = data.replaceAll(deletePattern1, "").replaceAll(deletePattern2, "").replaceAll(macroPattern, '"' +ilibVersion+ '"');
+    data = data
+        .replaceAll(deleteFrag, "")
+        .replaceAll(deleteStmt, "")
+        .replaceAll(deleteExport, ";")
+        .replaceAll(macroPattern, '"' + ilibVersion + '"');
 
     return data;
 }
@@ -125,17 +148,34 @@ function deletePatterns(data) {
 function assembleLocaleRootData() {
     let readData;
     let allData = "";
+    let rootJsonFiles = ["scripts", "scriptToRange", "ctype", "ctype_c", "ctype_l", "ctype_m", "ctype_n", "ctype_p", "ctype_s", "ctype_z" ];
+    dependentData.push(... rootJsonFiles);
+
     dependentData.forEach(function(data){
-        let dataPath = path.join(ilibPath, "js/data/locale", data + ".json" );
+        let dataPath = path.join(ilibPath, localeDir, data + ".json" );
         readData = readFile(dataPath);
-        allData += "ilib.data." + data + " = " + readData + ";\n";
+        if (customPath) {
+            let customDataPath = path.join(customPath, data + ".json");
+            let customReadData = readFile(customDataPath);
+            if (customReadData) {
+                if (readData) {
+                    let parsed = JSUtils.merge(JSON.parse(readData), JSON.parse(customReadData), true);
+                    readData = JSON.stringify(parsed, undefined, 4);
+                } else {
+                    readData = customReadData;
+                }
+            }
+        }
+        if (readData) {
+            allData += "ilib.data." + data + " = " + readData + ";\n";
+        }
     });
     return allData;
 }
 
 function assembleZoneinfo() {
     let readData;
-    let zoneinfoPath = path.join(ilibPath, "js/data/locale/zoneinfo");
+    let zoneinfoPath = path.join(ilibPath, localeDir, "zoneinfo");
     readData = zoneinfoWalk(zoneinfoPath);
     return readData;
 }
@@ -153,7 +193,7 @@ function zoneinfoWalk(zoneinfoPath) {
             if (stat && stat.isDirectory()) {
                 zoneinfoWalk(filePath);
             } else {
-                let timezoneID = filePath.replace(path.join(ilibPath, "js/data/locale/zoneinfo/"), "").replace(".json", "");
+                let timezoneID = filePath.replace(path.join(ilibPath, localeDir, "zoneinfo/"), "").replace(".json", "");
                 let readData = readFile(filePath);
                 allTimeZoneData += 'ilib.data.zoneinfo["' + timezoneID + '"] = ' + readData + ';\n';
             }
@@ -164,14 +204,14 @@ function zoneinfoWalk(zoneinfoPath) {
 }
 
 function assemblejs() {
-    let readData = "";
-    let filePath;
-    allJSList.forEach(function(file){
-        if (file !== "index.js") {
-            filePath = path.join(ilibPath, "js/lib", file);
+    allJSList
+    .filter(file => file !== "index.js")
+    .forEach(file => {
+        const filePath = path.join(ilibPath, libDir, file);
+        const readData = readFile(filePath);
+        if (readData) {
+            assembleJSAll += readData;
         }
-        readData = readFile(filePath, "utf-8");
-        if (readData) assembleJSAll += readData;
     });
 
     assembleJSAll = deletePatterns(assembleJSAll);
@@ -293,7 +333,7 @@ function assembleData(dataPath, allData){
 
 function assembleLocale() {
     let result = {};
-    result = assembleData(path.join(ilibPath, "js/data/locale"), result);
+    result = assembleData(path.join(ilibPath, localeDir), result);
 
     if (customPath) {
         result = assembleData(customPath, result);

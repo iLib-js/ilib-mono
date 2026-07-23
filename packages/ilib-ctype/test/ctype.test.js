@@ -858,7 +858,7 @@ describe("testctype", function() {
         expect(withinRange("\u10AA", "Georgian")).toBeTruthy();
     });
 
-    test("WithinRangeGeorgian", function() {
+    test("WithinRangeGeorgian2", function() {
         expect.assertions(1);
         expect(withinRange("\u2D0A", "Georgian")).toBeTruthy();
     });
@@ -1443,7 +1443,7 @@ describe("testctype", function() {
         expect(withinRange(str, "cyrillic")).toBeTruthy();
     });
 
-    test("WithinRangeMongolian", function() {
+    test("WithinRangeMongolian2", function() {
         expect.assertions(1);
         var str = JSUtils.fromCodePoint(0x11660);
         expect(withinRange(str, "mongolian")).toBeTruthy();
@@ -1467,7 +1467,7 @@ describe("testctype", function() {
         expect(withinRange(str, "tangut")).toBeTruthy();
     });
 
-    test("WithinRangeGlagolitic", function() {
+    test("WithinRangeGlagolitic2", function() {
         expect.assertions(1);
         var str = JSUtils.fromCodePoint(0x1e000);
         expect(withinRange(str, "glagolitic")).toBeTruthy();

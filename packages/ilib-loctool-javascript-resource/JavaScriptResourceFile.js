@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFile.js - represents a javascript resource file
  *
- * Copyright © 2019-2022, 2025 JEDLSoft
+ * Copyright © 2019-2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-var Locale = require("ilib/lib/Locale.js");
+var Locale = require("ilib-locale");
 
 /**
  * @class Represents an Android resource file.
@@ -147,6 +147,30 @@ function clean(str) {
 
 /**
  * @private
+ * JsonFile passes its source .json path as pathName for cache disambiguation; that is
+ * not the resource output path unless a javascript.template computes the target.
+ * @param {String} pathName
+ * @returns {boolean}
+ */
+function isDelegatingSourcePath(pathName) {
+    return !!(pathName && path.extname(pathName).toLowerCase() === ".json");
+}
+
+/**
+ * @private
+ * @param {Object|undefined} jsSettings project settings.javascript
+ * @returns {String} extension including leading dot
+ */
+function getOutputExtension(jsSettings) {
+    if (jsSettings && jsSettings.extension) {
+        var ext = jsSettings.extension;
+        return ext.charAt(0) === "." ? ext : "." + ext;
+    }
+    return ".js";
+}
+
+/**
+ * @private
  */
 JavaScriptResourceFile.prototype.getDefaultSpec = function() {
     if (!this.defaultSpec) {
@@ -175,20 +199,30 @@ JavaScriptResourceFile.prototype.getContent = function() {
             return (left.getKey() < right.getKey()) ? -1 : (left.getKey() > right.getKey() ? 1 : 0);
         });
 
+        var isSourceLocaleFile = this.project.isSourceLocale(this.locale.getSpec());
+
         for (var j = 0; j < resources.length; j++) {
             var resource = resources[j];
-            if (resource.getSource() && resource.getTarget()) {
-                if (clean(resource.getSource()) !== clean(resource.getTarget())) {
-                    this.logger.trace("writing translation for " + resource.getKey() + " as " + resource.getTarget());
-                    json[resource.getKey()] = this.project.settings.identify ?
-                        '<span loclang="javascript" locid="' + resource.getKey() + '">' + resource.getTarget() + '</span>' :
-                        resource.getTarget();
-                } else {
-                    this.logger.trace("skipping translation with no change");
-                }
-            } else {
+            if (!resource.getSource()) {
                 this.logger.warn("String resource " + resource.getKey() + " has no source text. Skipping...");
+                continue;
             }
+
+            var value;
+            if (isSourceLocaleFile) {
+                value = resource.getSource();
+                this.logger.trace("writing source locale string for " + resource.getKey() + " as " + value);
+            } else if (resource.getTarget() && clean(resource.getSource()) !== clean(resource.getTarget())) {
+                value = resource.getTarget();
+                this.logger.trace("writing translation for " + resource.getKey() + " as " + value);
+            } else {
+                this.logger.trace("skipping translation with no change");
+                continue;
+            }
+
+            json[resource.getKey()] = (!isSourceLocaleFile && this.project.settings.identify) ?
+                '<span loclang="javascript" locid="' + resource.getKey() + '">' + value + '</span>' :
+                value;
         }
     }
 
@@ -200,13 +234,9 @@ JavaScriptResourceFile.prototype.getContent = function() {
     if (settings && settings.JavaScriptResourceFile && settings.JavaScriptResourceFile.prefix) {
         output = settings.JavaScriptResourceFile.prefix;
     }
-    output += this.API.utils.formatPath(this.header, {
-        locale: defaultLocale
-    });
+    output += this.API.utils.formatLocaleParams(this.header, defaultLocale);
     output += JSON.stringify(json, undefined, 4);
-    output += this.API.utils.formatPath(this.footer, {
-        locale: defaultLocale
-    });
+    output += this.API.utils.formatLocaleParams(this.footer, defaultLocale);
 
     // take care of double-escaped unicode chars
     output = output.replace(/\\\\u/g, "\\u");
@@ -225,14 +255,38 @@ JavaScriptResourceFile.prototype.getContent = function() {
  * given project, context, and locale.
  */
 JavaScriptResourceFile.prototype.getResourceFilePath = function(locale, flavor) {
-    if (this.pathName) return this.pathName;
-
     var localeDir, dir, newPath, spec;
     locale = locale || this.locale;
 
-    var defaultSpec = this.getDefaultSpec();
+    var jsSettings = this.project && this.project.settings && this.project.settings.javascript;
+    var template = jsSettings && jsSettings.template;
 
-    var filename = defaultSpec + ".js";
+    // javascript.template maps a source path (often .json from JsonFile) to the output path.
+    if (template && this.pathName) {
+        var localeSpec = (typeof locale === "string") ? locale :
+            ((locale && typeof locale.getSpec === "function") ? locale.getSpec() : this.locale.getSpec());
+        var relativePath = this.API.utils.formatPath(template, {
+            sourcepath: this.pathName,
+            locale: localeSpec
+        });
+        newPath = path.join(this.project.target, relativePath);
+
+        this.logger.trace("Getting resource file path from javascript.template for locale " + localeSpec + ": " + newPath);
+        return path.normalize(newPath);
+    }
+
+    // Use pathName as the output path when the caller set one (any extension).
+    if (this.pathName && !isDelegatingSourcePath(this.pathName)) {
+        return this.pathName;
+    }
+
+    var localeDefaults = this.project.settings && this.project.settings.localeDefaults;
+    var defaultSpec = localeDefaults ?
+        this.API.utils.getLocaleDefault(locale, flavor, localeDefaults) :
+        ((typeof locale === "string") ? locale :
+            ((locale && typeof locale.getSpec === "function") ? locale.getSpec() : this.locale.getSpec()));
+
+    var filename = defaultSpec + getOutputExtension(jsSettings);
 
     dir = path.join(this.project.target, this.project.getResourceDirs("js")[0] ||this.project.getResourceDirs("javascript")[0] || ".");
     newPath = path.join(dir, filename);
@@ -254,6 +308,12 @@ JavaScriptResourceFile.prototype.write = function() {
             // must be a new file, so create the name
             this.pathName = this.getResourceFilePath();
         } else {
+            var jsSettings = this.project && this.project.settings && this.project.settings.javascript;
+            var template = jsSettings && jsSettings.template;
+            if ((template && this.pathName) || isDelegatingSourcePath(this.pathName)) {
+                this.logger.trace("Computing resource output path from template or resourceDirs");
+                this.pathName = this.getResourceFilePath();
+            }
             this.defaultSpec = this.locale.getSpec();
         }
 

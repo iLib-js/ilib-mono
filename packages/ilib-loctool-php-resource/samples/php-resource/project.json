@@ -1,0 +1,39 @@
+{
+    "name" : "sample-php-resource",
+    "id" : "sample-php-resource",
+    "projectType" : "custom",
+    "sourceLocale" : "en-US",
+    "pseudoLocale" : "zxx-XX",
+    "resourceDirs" : {
+        "javascript" : "resources"
+    },
+    "resourceFileTypes" : {
+        "javascript" : "ilib-loctool-php-resource"
+    },
+    "plugins" : [
+        "ilib-loctool-javascript"
+    ],
+    "excludes" : [
+        ".*",
+        "xliffs",
+        "resources"
+    ],
+    "settings" : {
+        "xliffsDir" : "./xliffs",
+        "locales" : [
+            "ko-KR",
+            "de-DE"
+        ],
+        "javascript" : {
+            "wrapper" : "\\.\\s*getString(JS)?",
+            "mappings": {
+                "**/*.js": {
+                    "template": "resources/Strings[locale].php"
+                }
+            }
+        },
+        "php": {
+            "sourceLocale": "en-US"
+        }
+    }
+}

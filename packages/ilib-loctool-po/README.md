@@ -229,18 +229,6 @@ If the name of the localized file that the template produces is the same as
 the source file name, this plugin will throw an exception, the file will not
 be localized, and the loctool will continue on to the next file.
 
-
-## License
-
-Copyright © 2019, 2022-2023 JEDLSoft
-
-This plugin is license under Apache2. See the [LICENSE](./LICENSE)
-file for more details.
-
-## Release Notes
-
-See [CHANGELOG.md](./CHANGELOG.md)
-
 ## Appendix A. Mappings From GNU gettext Plural Number and Unicode Category
 
 These mappings are encoded in the file pluralforms.json which is packaged
@@ -527,4 +515,15 @@ This plugin assumes that any language not explicitly listed below has only the
 | number | category |
 | ---- | ---- |
 | 0 | other |
+
+
+## License
+
+Copyright © 2019, 2022-2023, 2026 JEDLSoft
+
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loctool-po/LICENSE) file in the ilib-mono repository on GitHub.
+
+## Release Notes
+
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loctool-po/CHANGELOG.md).
 

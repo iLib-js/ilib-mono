@@ -1,7 +1,7 @@
 /*
  * ProjectFactory.js - factory object that creates project instances
  *
- * Copyright © 2016-2017, HealthTap, Inc.
+ * Copyright © 2016-2017, 2026, HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ var ObjectiveCProject = require("./ObjectiveCProject.js");
 var SwiftProject = require("./SwiftProject.js");
 
 var CustomProject = require("./CustomProject.js");
+var projectConfig = require("./projectConfig.js");
 
 var logger = log4js.getLogger("loctool.lib.ProjectFactory");
 
@@ -41,8 +42,8 @@ var projectCache = {};
 
 /**
  * Create a new project of the correct type based on
- * the given dir. If the dir contains a project.json
- * file, this factory will return a project of the
+ * the given dir. If the dir contains the configured
+ * project config file, this factory will return a project of the
  * correct type. If not, it will return undefined.
  *
  * @param {String} path to the directory containing the root of the project
@@ -53,25 +54,51 @@ var projectCache = {};
  * of a project.
  */
 var ProjectFactory = function ProjectFactory(dir, settings) {
-    var pathName = path.join(dir, "project.json");
-    logger.debug("checking for the existence of " + pathName);
-    if (fs.existsSync(pathName)) {
-        var data = fs.readFileSync(pathName, 'utf8');
-        if (data.length > 0) {
-            var projectProps = JSON.parse(data);
-            projectProps.settings = _mergeSettings(projectProps.settings, settings);
-            settings = settings || {locales:[""]};
-            var project, projectType = projectTypes[projectProps.projectType];
-            if (!projectProps.projectType || !projectType) {
-                project = new CustomProject(projectProps, dir, settings);
-            } else {
-                project = new projectType(projectProps, dir, settings);
-            }
-            projectCache[project.getProjectId()] = project;
-            return project;
+    var configFileBaseNames = projectConfig.getConfigFileBaseNames(settings);
+    for (var i = 0; i < configFileBaseNames.length; i++) {
+        var configFileBaseName = configFileBaseNames[i];
+        var pathName = path.join(dir, configFileBaseName);
+        logger.debug("checking for the existence of " + pathName);
+        if (!fs.existsSync(pathName)) {
+            logger.debug("not there");
+            continue;
         }
-    } else {
-        logger.debug("not there");
+
+        var data = fs.readFileSync(pathName, 'utf8');
+        if (data.length === 0) {
+            continue;
+        }
+
+        var projectProps;
+        try {
+            projectProps = JSON.parse(data);
+        } catch (e) {
+            logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not valid JSON; ignoring.");
+            continue;
+        }
+
+        var validation = projectConfig.validateLoctoolConfig(projectProps);
+        if (!validation.valid) {
+            logger.warn("Found " + configFileBaseName + " in " + dir + " but it is not a valid loctool project config (" + validation.reason + "); ignoring.");
+            continue;
+        }
+
+        if (validation.unknownProperties && validation.unknownProperties.length > 0) {
+            validation.unknownProperties.forEach(function(prop) {
+                logger.warn("Unknown property \"" + prop + "\" in " + pathName);
+            });
+        }
+
+        projectProps.settings = _mergeSettings(projectProps.settings, settings);
+        settings = settings || {locales:[""]};
+        var project, projectType = projectTypes[projectProps.projectType];
+        if (!projectProps.projectType || !projectType) {
+            project = new CustomProject(projectProps, dir, settings);
+        } else {
+            project = new projectType(projectProps, dir, settings);
+        }
+        projectCache[project.getProjectId()] = project;
+        return project;
     }
     return undefined;
 };

@@ -1,0 +1,24 @@
+{
+    "language.name": "Kashmiri",
+    "locale": "ks",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "‎-‎{s}{n}"
+        },
+        "decimalChar": "٫",
+        "digits": "۰۱۲۳۴۵۶۷۸۹",
+        "exponential": "×۱۰^",
+        "groupChar": "٬",
+        "negativenumFmt": "‎-‎{n}",
+        "negativepctFmt": "‎-‎{n}٪",
+        "pctChar": "٪",
+        "pctFmt": "{n}٪",
+        "script": "Arab",
+        "useNative": true
+    },
+    "scripts": [
+        "Arab",
+        "Deva"
+    ]
+}

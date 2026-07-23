@@ -1,10 +1,12 @@
 {
     "name": "ilib-locale",
-    "version": "1.2.4",
+    "version": "1.4.0",
     "main": "./lib/Locale.js",
     "module": "./src/Locale.js",
+    "types": "./src/Locale.d.ts",
     "exports": {
         ".": {
+            "types": "./src/Locale.d.ts",
             "import": "./src/Locale.js",
             "require": "./lib/Locale.js"
         }
@@ -53,15 +55,22 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:iLib-js/ilib-mono.git"
+        "url": "https://github.com/iLib-js/ilib-mono"
+    },
+    "engines": {
+        "node": ">=12 <23"
     },
     "scripts": {
-        "build": "pnpm build:prod",
+        "build": "npm-run-all --npm-path pnpm -p generate build:prod",
         "build:prod": "grunt babel --mode=prod && pnpm build:pkg",
         "build:dev": "grunt babel --mode=dev && pnpm build:pkg",
-        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json",
+        "build:pkg": "echo '{\"type\": \"commonjs\"}' > lib/package.json && cp src/*.d.ts lib/",
+        "generate": "npm-run-all --npm-path pnpm -p generate:scripts generate:languages generate:regions",
+        "generate:scripts": "node scripts/generate-scripts.js",
+        "generate:languages": "node scripts/generate-languages.js",
+        "generate:regions": "node scripts/generate-regions.js",
         "coverage": "pnpm test:cli --coverage",
-        "test": "pnpm test:all",
+        "test": "pnpm test:cli",
         "test:cli": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node",
         "test:web": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/karma/bin/karma start --reporters dots --single-run",
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --watch",
@@ -88,6 +97,7 @@
         "grunt-contrib-clean": "^2.0.1",
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-contrib-uglify": "^5.2.2",
+        "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "jest-mock": "^29.7.0",
         "jsdoc": "^4.0.2",
@@ -100,6 +110,9 @@
         "karma-webpack": "^5.0.0",
         "load-grunt-tasks": "^5.1.0",
         "npm-run-all": "^4.1.5",
+        "@cospired/i18n-iso-languages": "^4.2.0",
+        "iso-3166-1": "^2.1.1",
+        "ucd-full": "^17.0.0",
         "webpack": "^5.89.0",
         "webpack-cli": "^5.1.4"
     },

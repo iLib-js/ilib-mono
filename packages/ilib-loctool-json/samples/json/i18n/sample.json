@@ -1,0 +1,18 @@
+{
+  "project.whatever.hello": {
+    "defaultMessage": "Hello",
+    "description": "A greeting"
+  },
+  "project.whatever.world": {
+    "defaultMessage": "World",
+    "description": "An object that greetings are directed to"
+  },
+  "project.whatever.translate.me": {
+    "defaultMessage": "Translate me",
+    "description": "This is a string that has no translation yet"
+  },
+  "project.whatever.and.me": {
+    "description": "Another string that has no translation yet",
+    "defaultMessage": "And me"
+  }
+}

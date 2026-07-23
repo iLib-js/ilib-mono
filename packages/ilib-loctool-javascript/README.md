@@ -22,6 +22,12 @@ used within the json property:
 
 - wrapper: specify a regular expression that matches the wrapper function
   that contains strings to extract and unique ids
+- outputSourceLocale: when `true`, write out a resource file for the source
+  locale using the extracted source strings. This is useful when strings are
+  extracted from source code and the source locale resource file must exist at
+  runtime. The output is sent to whatever resource file type is configured in
+  `resourceFileTypes.javascript`, such as this plugin or the json plugin.
+  Default is `false`.
 - mappings: a mapping between file matchers and an object that gives
   info used to localize the files that match it. This allows different
   json files within the project to be processed with different schema.
@@ -113,23 +119,13 @@ If the name of the localized file that the template produces is the same as
 the source file name, this plugin will throw an exception, the file will not
 be localized, and the loctool will continue on to the next file.
 
-## Release Notes
-
-See [CHANGELOG.md](./CHANGELOG.md)
-
 ## License
 
-Copyright © 2019, 2022 JEDLSoft
+Copyright © 2019, 2022, 2026 JEDLSoft
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loctool-javascript/LICENSE) file in the ilib-mono repository on GitHub.
 
-    http://www.apache.org/licenses/LICENSE-2.0
+## Release Notes
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-loctool-javascript/CHANGELOG.md).
 
-See the License for the specific language governing permissions and
-limitations under the License.

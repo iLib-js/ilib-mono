@@ -1,0 +1,24 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Basque",
+    "locale": "eu",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "−{n} {s}"
+        },
+        "decimalChar": ",",
+        "groupChar": ".",
+        "negativenumFmt": "−{n}",
+        "negativepctFmt": "−% {n}",
+        "pctFmt": "% {n}"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

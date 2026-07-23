@@ -1,0 +1,13 @@
+{
+    "language.name": "Nama",
+    "locale": "naq",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{s}{n}",
+            "commonNegative": "-{s}{n}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

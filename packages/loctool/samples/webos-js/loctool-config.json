@@ -1,0 +1,39 @@
+{
+    "name": "sample-webos-js",
+    "id": "sample-webos-js",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "resourceDirs": {
+        "json": "resources"
+    },
+    "resourceFileTypes": {
+        "json": "ilib-loctool-webos-json-resource"
+    },
+    "plugins": [
+        "ilib-loctool-webos-javascript"
+    ],
+    "excludes": [
+        ".*",
+        "xliffs",
+        "resources"
+    ],
+    "settings": {
+        "translationsDir": "./xliffs",
+        "xliffVersion": 2,
+        "xliffStyle": "webOS",
+        "locales": [
+            "ko-KR",
+            "de-DE",
+            "fr-CA",
+            "en-AU",
+            "en-GB"
+        ],
+        "localeMap": {
+            "fr-CA": "fr"
+        },
+        "localeInherit": {
+            "en-AU": "en-GB"
+        }
+    }
+}

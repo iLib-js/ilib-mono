@@ -302,6 +302,11 @@ class LocaleData {
 
         this.loader = LoaderFactory();
         this.sync = typeof(sync) === "boolean" && sync && (!this.loader || this.loader.supportsSync());
+        if (this.sync && this.loader) {
+            this.loader.setSyncMode();
+        } else if (this.loader) {
+            this.loader.setAsyncMode();
+        }
         this.cache = DataCache.getDataCache();
         this.logger = log4js.getLogger("ilib-localedata");
         this.path = path;
@@ -415,6 +420,14 @@ class LocaleData {
             }
         }
 
+        if (this.loader) {
+            if (sync && this.loader.supportsSync()) {
+                this.loader.setSyncMode();
+            } else {
+                this.loader.setAsyncMode();
+            }
+        }
+
         function mergeData(files) {
             if (mostSpecific) {
                 return files.reduce((previous, current) => {
@@ -449,6 +462,18 @@ class LocaleData {
             }, {});
         }
 
+        const isFileLoaded = (file) => {
+            if (file.data || this.cache.isLoaded(file.name)) {
+                return true;
+            }
+            if (!sync || this.loader.supportsSync()) {
+                return false;
+            }
+            const spec = file.locale.getSpec();
+            return this.cache.isLoaded(Path.join(file.root, `${spec}.js`)) ||
+                this.cache.isLoaded(Path.join(file.root, `${spec}.json`));
+        };
+
         // for async operation, try loading the assembled locale data file first
         // so that we don't have to load a bunch of individual files
         let promise = (!sync && !this.cache.isLoaded(`${loc.getSpec()}.js`)) ?
@@ -466,19 +491,21 @@ class LocaleData {
             const count = files.filter(file => !file.data).length;
             if (count) {
                 const fileNames = files.map((file) => {
-                    return (file.data || this.cache.isLoaded(file.name)) ? undefined : file.name;
+                    return isFileLoaded(file) ? undefined : file.name;
                 });
-                const data = this.loader.loadFiles(fileNames, {sync});
-                data.forEach((datum, i) => {
-                    if (!files[i].data) {
-                        // null indicates we attempted to load the file, but
-                        // there was no data or the file did not exist
-                        this.cache.markFileAsLoaded(fileNames[i]);
-                        const parsed = datum ? parseData(datum, fileNames[i]) : null;
-                        this.cache.storeData(files[i].root, basename, files[i].locale, parsed);
-                        files[i].data = parsed;
-                    }
-                });
+                if (fileNames.some(fileName => fileName)) {
+                    const data = this.loader.loadFiles(fileNames, {sync});
+                    data.forEach((datum, i) => {
+                        if (!files[i].data) {
+                            // null indicates we attempted to load the file, but
+                            // there was no data or the file did not exist
+                            this.cache.markFileAsLoaded(fileNames[i]);
+                            const parsed = datum ? parseData(datum, fileNames[i]) : null;
+                            this.cache.storeData(files[i].root, basename, files[i].locale, parsed);
+                            files[i].data = parsed;
+                        }
+                    });
+                }
             }
 
             return mergeData(files);
@@ -488,21 +515,23 @@ class LocaleData {
                 const count = files.filter(file => !file.data).length;
                 if (count) {
                     const fileNames = files.map((file) => {
-                        return (file.data || this.cache.isLoaded(file)) ? undefined : file.name;
+                        return isFileLoaded(file) ? undefined : file.name;
                     });
-                    return this.loader.loadFiles(fileNames, {sync}).then((data) => {
-                        data.forEach((datum, i) => {
-                            // record that we already attempted to load this
-                            this.cache.markFileAsLoaded(fileNames[i]);
-                            if (!files[i].data) {
-                                // null indicates we attempted to load the file, but
-                                // there was no data or the file did not exist
-                                const parsed = datum ? parseData(datum, fileNames[i]) : null;
-                                this.cache.storeData(files[i].root, basename, files[i].locale, parsed);
-                                files[i].data = parsed;
-                            }
+                    if (fileNames.some(fileName => fileName)) {
+                        return this.loader.loadFiles(fileNames, {sync}).then((data) => {
+                            data.forEach((datum, i) => {
+                                // record that we already attempted to load this
+                                this.cache.markFileAsLoaded(fileNames[i]);
+                                if (!files[i].data) {
+                                    // null indicates we attempted to load the file, but
+                                    // there was no data or the file did not exist
+                                    const parsed = datum ? parseData(datum, fileNames[i]) : null;
+                                    this.cache.storeData(files[i].root, basename, files[i].locale, parsed);
+                                    files[i].data = parsed;
+                                }
+                            });
                         });
-                    });
+                    }
                 }
             });
             return promise.then(() => mergeData(files));
@@ -694,6 +723,9 @@ class LocaleData {
         const spec = loc.getSpec();
 
         const loader = LoaderFactory();
+        if (loader) {
+            loader.setAsyncMode();
+        }
         const cache = DataCache.getDataCache();
         const subLocales = Utils.getSublocales(locale);
         let files = [];

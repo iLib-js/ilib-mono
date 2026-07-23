@@ -1,7 +1,7 @@
 /*
  * index.js - export everything from all of the files
  *
- * Copyright © 2021 JEDLSoft
+ * Copyright © 2021, 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  */
 
 import withinRange from './CType.js';
+import hasUCDCharProperty from './hasUCDCharProperty.js';
 import isAlnum from './isAlnum.js';
 import isAlpha from './isAlpha.js';
 import isAscii from './isAscii.js';
@@ -36,6 +37,7 @@ import isXdigit from './isXdigit.js';
 
 export {
     withinRange,
+    hasUCDCharProperty,
     isAlnum,
     isAlpha,
     isAscii,

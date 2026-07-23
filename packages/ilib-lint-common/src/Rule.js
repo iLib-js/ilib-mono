@@ -35,6 +35,7 @@ class Rule {
      * being linted
      * @param {Function} [options.getLogger] a callback function provided by
      * the linter to retrieve the log4js logger
+     * @param {*} [options.param] the parameter value from the configuration file
      * @constructor
      */
     constructor(options) {
@@ -43,6 +44,7 @@ class Rule {
         }
         this.getLogger = options?.getLogger;
         this.sourceLocale = options?.sourceLocale || "en-US";
+        this.param = options?.param;
     }
 
     /** a callback function provided by
@@ -185,6 +187,12 @@ class Rule {
      */
     sourceLocale;
 
+    /** Parameter value from the configuration file.
+     * @readonly
+     * @type {*}
+     */
+    param;
+
     /**
      * Get the source locale for this rule.
      *
@@ -195,15 +203,24 @@ class Rule {
     }
 
     /**
+     * Get the parameter value from the configuration file.
+     *
+     * @returns {*} the parameter value from the configuration file
+     */
+    getParam() {
+        return this.param;
+    }
+
+    /**
      * Test whether or not this rule matches the input. If so, produce {@link Result} instances
      * that document what the problems are.
      *
      * @abstract
      * @param {Object} options The options object as per the description
      * @param {IntermediateRepresentation} options.ir The intermediate representation of the file to check
-     * @param {String} options.locale the locale against which this rule should be checked. Some rules
-     * are locale-sensitive, others not.
      * @param {string} options.file the file where the resource came from
+     * @param {String} [options.locale] the locale against which this rule should be checked. Some rules
+     * are locale-sensitive, others not.
      * @param {object} [options.parameters] optional additional parameters for this rule from the configuration file
      * @returns {Result|Array.<Result>|undefined} a Result instance describing the problem if
      * the rule check fails for this locale, or an array of such Result instances if

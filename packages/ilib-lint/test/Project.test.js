@@ -16,224 +16,177 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import fs from 'fs';
-import { ResourceString, Location } from 'ilib-tools-common';
-import { Serializer, SourceFile } from 'ilib-lint-common';
+import fs from "fs";
+import { ResourceString, Location } from "ilib-tools-common";
+import { expectToBeDefined } from "ilib-internal";
 
-import Project from '../src/Project.js';
-import PluginManager from '../src/PluginManager.js';
+import Project from "../src/Project.js";
+import PluginManager from "../src/PluginManager.js";
+
+// ESM support
+const jest = import.meta.jest;
 
 const pluginManager = new PluginManager();
 
 const genericConfig = {
     // the name is reaquired and should be unique amongst all your projects
-    "name": "tester",
+    name: "tester",
     // this is the global set of locales that applies unless something else overrides it
-    "locales": [
-        "en-US",
-        "de-DE",
-        "ja-JP",
-        "ko-KR"
-    ],
+    locales: ["en-US", "de-DE", "ja-JP", "ko-KR"],
     // list of plugins to load
-    "plugins": [
-        "plugin-test"
-    ],
+    plugins: ["plugin-test"],
     // default micromatch expressions to exclude from recursive dir searches
-    "excludes": [
-        "node_modules/**",
-        ".git/**",
-        "docs/**"
-    ],
+    excludes: ["node_modules/**", ".git/**", "docs/**"],
     // declarative definitions of new rules
-    "rules": [
+    rules: [
         // test that named parameters like {param} appear in both the source and target
         {
-            "type": "resource-matcher",
-            "name": "resource-named-params",
-            "description": "Ensure that named parameters that appear in the source string are also used in the translated string",
-            "note": "The named parameter '{matchString}' from the source string does not appear in the target string",
-            "regexps": [ "\\{\\w+\\}" ]
+            type: "resource-matcher",
+            name: "resource-named-params",
+            description:
+                "Ensure that named parameters that appear in the source string are also used in the translated string",
+            note: "The named parameter '{matchString}' from the source string does not appear in the target string",
+            regexps: ["\\{\\w+\\}"],
         },
         {
-            "type": "source-checker",
-            "name": "source-no-normalize",
-            "severity": "warning",
-            "description": "Ensure that the normalize function is not called.",
-            "note": "Do not call the normalize function, as it is deprecated.",
-            "regexps": [ "\\.normalize\\s*\\(" ]
-        }
+            type: "source-checker",
+            name: "source-no-normalize",
+            severity: "warning",
+            description: "Ensure that the normalize function is not called.",
+            note: "Do not call the normalize function, as it is deprecated.",
+            regexps: ["\\.normalize\\s*\\("],
+        },
     ],
-    "formatters": [
+    formatters: [
         {
-            "name": "minimal",
-            "description": "A minimalistic formatter that only outputs the path and the highlight",
-            "template": "{pathName}\n{highlight}\n",
-            "highlightStart": ">>",
-            "highlightEnd": "<<"
-        }
+            name: "minimal",
+            description: "A minimalistic formatter that only outputs the path and the highlight",
+            template: "{pathName}\n{highlight}\n",
+            highlightStart: ">>",
+            highlightEnd: "<<",
+        },
     ],
     // named rule sets to be used with the file types
-    "rulesets": {
+    rulesets: {
         "react-rules": {
             // this is the declarative rule defined above
             "resource-named-params": true,
             // the "localeOnly" is an option that the quote matcher supports
             // so this both includes the rule in the rule set and instantiates
             // it with the "localeOnly" option
-            "resource-quote-matcher": "localeOnly"
+            "resource-quote-matcher": "localeOnly",
         },
         "js-rules": {
-            "source-no-normalize": true
-        }
+            "source-no-normalize": true,
+        },
     },
     // defines common settings for a particular types of file
-    "filetypes": {
-        "json": {
+    filetypes: {
+        json: {
             // override the general locales
-            "locales": [
-                "en-US",
-                "de-DE",
-                "ja-JP"
-            ],
-            "template": "[dir]/[localeDir]/[basename].json"
+            locales: ["en-US", "de-DE", "ja-JP"],
+            template: "[dir]/[localeDir]/[basename].json",
         },
-        "javascript": {
-            "type": "source",
-            "ruleset": [
-                "js-rules"
-            ]
+        javascript: {
+            type: "source",
+            ruleset: ["js-rules"],
         },
-        "jsx": {
-            "ruleset": [
-                "react-rules"
-            ]
+        jsx: {
+            ruleset: ["react-rules"],
         },
         // fake file type that is really json underneath so that we can test
         // transformers and serializers
-        "xyz": {
-            "template": "[dir]/[localeDir]/[basename].xyz",
-            "parsers": ["parser-xyz"],
-            "ruleset": [
-                "react-rules"
-            ],
-            "transformers": [
-                "transformer-xyz"
-            ],
-            "serializer": "serializer-xyz"
-        }
+        xyz: {
+            template: "[dir]/[localeDir]/[basename].xyz",
+            parsers: ["parser-xyz"],
+            ruleset: ["react-rules"],
+            transformers: ["transformer-xyz"],
+            serializer: "serializer-xyz",
+        },
     },
     // this maps micromatch path expressions to a file type definition
-    "paths": {
+    paths: {
         // use the file type defined above
         "src/**/*.json": "json",
         "{src,test}/**/*.js": "javascript",
         "src/**/*.jsx": "jsx",
         // define a file type on the fly
         "**/*.xliff": {
-            "ruleset": {
+            ruleset: {
                 "formatjs-plural-syntax": true,
                 "formatjs-plural-categories": true,
                 "formatjs-match-substitution-params": true,
-                "match-quote-style": "localeOnly"
-            }
+                "match-quote-style": "localeOnly",
+            },
         },
-        "**/*.xyz": "xyz"
-    }
+        "**/*.xyz": "xyz",
+    },
 };
 
 const genericConfig2 = {
     // the name is required and should be unique amongst all your projects
-    "name": "tester2",
-    "sourceLocale": "en-KR",
+    name: "tester2",
+    sourceLocale: "en-KR",
 };
 
 const testConfig = {
     // the name is reaquired and should be unique amongst all your projects
-    "name": "tester3",
+    name: "tester3",
     // this is the global set of locales that applies unless something else overrides it
-    "locales": [
-        "en-US",
-        "de-DE",
-        "ja-JP",
-        "ko-KR"
-    ],
+    locales: ["en-US", "de-DE", "ja-JP", "ko-KR"],
     // list of plugins to load
-    "plugins": [
-        "ilib-lint-plugin-test"
-    ],
+    plugins: ["ilib-lint-plugin-test"],
     // default micromatch expressions to exclude from recursive dir searches
-    "excludes": [
-        "node_modules/**",
-        ".git/**",
-        "docs/**"
-    ],
+    excludes: ["node_modules/**", ".git/**", "docs/**"],
     // named rule sets to be used with the file types
-    "rulesets": {
+    rulesets: {
         "react-rules": {
             // this is the declarative rule defined above
             "resource-named-params": true,
             // the "localeOnly" is an option that the quote matcher supports
             // so this both includes the rule in the rule set and instantiates
             // it with the "localeOnly" option
-            "resource-quote-matcher": "localeOnly"
-        }
+            "resource-quote-matcher": "localeOnly",
+        },
     },
     // defines common settings for a particular types of file
-    "filetypes": {
+    filetypes: {
         // fake file type that is really json underneath so that we can test
         // transformers and serializers
-        "xyz": {
-            "template": "[dir]/[localeDir]/[basename].xyz",
-            "parsers": ["parser-xyz"],
-            "ruleset": [
-                "react-rules"
-            ],
-            "transformers": [
-                "transformer-xyz"
-            ],
-            "serializer": "serializer-xyz"
-        }
+        xyz: {
+            template: "[dir]/[localeDir]/[basename].xyz",
+            parsers: ["parser-xyz"],
+            ruleset: ["react-rules"],
+            transformers: ["transformer-xyz"],
+            serializer: "serializer-xyz",
+        },
     },
     // this maps micromatch path expressions to a file type definition
-    "paths": {
-        "**/*.xyz": "xyz"
-    }
+    paths: {
+        "**/*.xyz": "xyz",
+    },
 };
 
 const testConfig2 = {
     // the name is reaquired and should be unique amongst all your projects
-    "name": "tester4",
+    name: "tester4",
     // this is the global set of locales that applies unless something else overrides it
-    "locales": [
-        "en-US",
-        "de-DE",
-        "ja-JP",
-        "ko-KR"
-    ],
+    locales: ["en-US", "de-DE", "ja-JP", "ko-KR"],
     // default micromatch expressions to exclude from recursive dir searches
-    "excludes": [
-        "node_modules/**",
-        ".git/**",
-        "docs/**"
-    ],
+    excludes: ["node_modules/**", ".git/**", "docs/**"],
     // defines common settings for a particular types of file
-    "filetypes": {
-        "xliff": {
-            "template": "[dir]/[localeDir]/[basename].xliff",
-            "ruleset": [
-                "generic"
-            ],
-            "transformers": [
-                "errorfilter"
-            ],
-            "serializer": "xliff"
-        }
+    filetypes: {
+        xliff: {
+            template: "[dir]/[localeDir]/[basename].xliff",
+            ruleset: ["generic"],
+            transformers: ["errorfilter"],
+            serializer: "xliff",
+        },
     },
     // this maps micromatch path expressions to a file type definition
-    "paths": {
-        "**/*.xliff": "xliff"
-    }
+    paths: {
+        "**/*.xliff": "xliff",
+    },
 };
 
 function rmf(file) {
@@ -251,7 +204,7 @@ describe("testProject", () => {
     test("ProjectConstructorEmpty", () => {
         expect.assertions(1);
 
-        const project = new Project("x", {pluginManager, opt: {}}, {});
+        const project = new Project("x", { pluginManager, opt: {} }, {});
         expect(project).toBeTruthy();
     });
 
@@ -259,7 +212,7 @@ describe("testProject", () => {
         expect.assertions(1);
 
         expect(() => {
-            const project = new Project(undefined, {pluginManager, opt: {}}, {});
+            const project = new Project(undefined, { pluginManager, opt: {} }, {});
         }).toThrow();
     });
 
@@ -275,14 +228,14 @@ describe("testProject", () => {
         expect.assertions(1);
 
         expect(() => {
-            const project = new Project("x", {pluginManager, opt: {}});
+            const project = new Project("x", { pluginManager, opt: {} });
         }).toThrow();
     });
 
     test("ProjectGetRoot", () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, {});
+        const project = new Project("x", { pluginManager, opt: {} }, {});
         expect(project).toBeTruthy();
 
         expect(project.getRoot()).toBe("x");
@@ -291,7 +244,7 @@ describe("testProject", () => {
     test("ProjectGetPluginManager", () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, {});
+        const project = new Project("x", { pluginManager, opt: {} }, {});
         expect(project).toBeTruthy();
 
         expect(project.getPluginManager()).toBe(pluginManager);
@@ -300,7 +253,7 @@ describe("testProject", () => {
     test("ProjectGetRuleManager", () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, {});
+        const project = new Project("x", { pluginManager, opt: {} }, {});
         expect(project).toBeTruthy();
 
         expect(project.getRuleManager()).toBe(pluginManager.getRuleManager());
@@ -309,7 +262,7 @@ describe("testProject", () => {
     test("ProjectGetParserManager", () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, {});
+        const project = new Project("x", { pluginManager, opt: {} }, {});
         expect(project).toBeTruthy();
 
         expect(project.getParserManager()).toBe(pluginManager.getParserManager());
@@ -318,7 +271,7 @@ describe("testProject", () => {
     test("ProjectGetExcludes", () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         expect(project.getExcludes()).toBe(genericConfig.excludes);
@@ -328,9 +281,9 @@ describe("testProject", () => {
         expect.assertions(2);
 
         const options = {
-            "test": "x",
-            "test2": "y",
-            pluginManager
+            test: "x",
+            test2: "y",
+            pluginManager,
         };
         const project = new Project("x", options, genericConfig);
         expect(project).toBeTruthy();
@@ -338,36 +291,40 @@ describe("testProject", () => {
         expect(project.getOptions()).toBe(options);
     });
 
-    test("ProjectGetLocalesOptions", () => {
+    test("ProjectLocalesOptions", () => {
         expect.assertions(2);
 
+        const locales = ["en-US", "ko-KR"];
+
         const options = {
-            "locales": ["en-US", "ko-KR"],
-            pluginManager
+            pluginManager,
         };
-        const project = new Project("x", options, genericConfig);
+        const project = new Project("x", options, {
+            ...genericConfig,
+            locales,
+        });
         expect(project).toBeTruthy();
 
-        expect(project.getLocales()).toBe(options.locales);
+        expect(project.locales).toEqual(locales);
     });
 
-    test("ProjectGetLocalesFallbackToConfig", () => {
+    test("ProjectLocalesFallbackToConfig", () => {
         expect.assertions(2);
 
         const options = {
-            pluginManager
+            pluginManager,
         };
         const project = new Project("x", options, genericConfig);
         expect(project).toBeTruthy();
 
-        expect(project.getLocales()).toBe(genericConfig.locales);
+        expect(project.locales).toEqual(genericConfig.locales);
     });
 
     test("ProjectGetSourceLocaleFallbackToConfig", () => {
         expect.assertions(2);
 
         const options = {
-            pluginManager
+            pluginManager,
         };
         const project = new Project("x", options, genericConfig);
         expect(project).toBeTruthy();
@@ -379,7 +336,7 @@ describe("testProject", () => {
         expect.assertions(2);
 
         const options = {
-            pluginManager
+            pluginManager,
         };
         const project = new Project("x", options, genericConfig2);
         expect(project).toBeTruthy();
@@ -390,11 +347,11 @@ describe("testProject", () => {
     test("ProjectGetFileTypeForPath1", async () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("src/foo/ja/asdf.json");
         expect(ft.getName()).toBe("json");
     });
@@ -402,11 +359,11 @@ describe("testProject", () => {
     test("ProjectGetFileTypeForPath2", async () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("src/foo/asdf.js");
         expect(ft.getName()).toBe("javascript");
     });
@@ -414,11 +371,11 @@ describe("testProject", () => {
     test("ProjectGetFileTypeForPathUnknown", async () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("notsrc/foo/ja/asdf.json");
         expect(ft.getName()).toBe("unknown");
     });
@@ -426,11 +383,11 @@ describe("testProject", () => {
     test("ProjectGetFileTypeForPathNormalizePath", async () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("./src/foo/ja/asdf.json");
         expect(ft.getName()).toBe("json");
     });
@@ -438,11 +395,11 @@ describe("testProject", () => {
     test("ProjectGetFileTypeForPathAnonymousFileType", async () => {
         expect.assertions(2);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         // must initialize the project before the filetypes are available
-        const result = await project.init();
+        await project.init();
         const ft = project.getFileTypeForPath("i18n/it-IT.xliff");
         // since it is not a pre-defined xliff with a real name, it uses
         // the mapping's glob as the name
@@ -452,7 +409,7 @@ describe("testProject", () => {
     test("ProjectInit", () => {
         expect.assertions(5);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         const pluginMgr = project.getPluginManager();
@@ -475,17 +432,15 @@ describe("testProject", () => {
     });
 
     test("ProjectWalk", async () => {
-        expect.assertions(6);
+        expect.assertions(5);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         const pluginMgr = project.getPluginManager();
         expect(pluginMgr).toBeTruthy();
 
-        const result = await project.init();
-        // verify that the init indeed loaded the test plugin
-        expect(result).toBeTruthy();
+        await project.init();
 
         const files = await project.walk("./test/testfiles/js");
         expect(files).toBeTruthy();
@@ -494,17 +449,15 @@ describe("testProject", () => {
     });
 
     test("ProjectFindIssues", async () => {
-        expect.assertions(20);
+        expect.assertions(19);
 
-        const project = new Project("x", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("x", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         const pluginMgr = project.getPluginManager();
         expect(pluginMgr).toBeTruthy();
 
-        const result = await project.init();
-        // verify that the init indeed loaded the test plugin
-        expect(result).toBeTruthy();
+        await project.init();
 
         await project.walk("./test/testfiles/js");
         const results = project.findIssues(genericConfig.locales);
@@ -513,13 +466,15 @@ describe("testProject", () => {
 
         expect(results[0].severity).toBe("warning");
         expect(results[0].description).toBe("Do not call the normalize function, as it is deprecated.");
-        expect(results[0].highlight).toBe('    pathname = Path<e0>.normalize(</e0>pathname);');
+        expect(results[0].highlight).toBe("    pathname = Path<e0>.normalize(</e0>pathname);");
         expect(results[0].pathName).toBe("test/testfiles/js/Path.js");
         expect(results[0].lineNumber).toBe(51);
 
         expect(results[1].severity).toBe("warning");
         expect(results[1].description).toBe("Do not call the normalize function, as it is deprecated.");
-        expect(results[1].highlight).toBe('    return (pathname === ".") ? ".." : Path<e0>.normalize(</e0>pathname + "/..");');
+        expect(results[1].highlight).toBe(
+            '    return (pathname === ".") ? ".." : Path<e0>.normalize(</e0>pathname + "/..");'
+        );
         expect(results[1].pathName).toBe("test/testfiles/js/Path.js");
         expect(results[1].lineNumber).toBe(52);
 
@@ -533,7 +488,7 @@ describe("testProject", () => {
     test("Recursively get all source files in a whole project", async () => {
         expect.assertions(5);
 
-        const project = new Project("test/testproject", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("test/testproject", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         const pluginMgr = project.getPluginManager();
@@ -549,17 +504,17 @@ describe("testProject", () => {
         const files = project.get();
 
         expect(files).toBeTruthy();
-        expect(files.map(file => file.getFilePath()).sort()).toStrictEqual([
+        expect(files.map((file) => file.getFilePath()).sort()).toStrictEqual([
             "test/testproject/x/empty.xyz",
             "test/testproject/x/test.xyz",
-            "test/testproject/x/test_ru_RU.xyz"
+            "test/testproject/x/test_ru_RU.xyz",
         ]);
     });
 
     test("Verify that the project continues if the parser throws up", async () => {
         expect.assertions(7);
 
-        const project = new Project("test/testproject", {pluginManager, opt: {}}, genericConfig);
+        const project = new Project("test/testproject", { pluginManager, opt: {} }, genericConfig);
         expect(project).toBeTruthy();
 
         const pluginMgr = project.getPluginManager();
@@ -581,7 +536,7 @@ describe("testProject", () => {
         // make sure the scan picked up the empty file which causes the parser to barf
         const files = project.get();
         expect(files).toBeTruthy();
-        expect(files.filter(file => file.getFilePath() === "test/testproject/x/empty.xyz")).toBeTruthy();
+        expect(files.filter((file) => file.getFilePath() === "test/testproject/x/empty.xyz")).toBeTruthy();
 
         // should not throw
         const issues = project.findIssues(["en-US"]);
@@ -598,9 +553,16 @@ describe("testProject", () => {
         expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
 
-        const project = new Project("test/testproject", {pluginManager, opt: {
-            write: true
-        }}, testConfig);
+        const project = new Project(
+            "test/testproject",
+            {
+                pluginManager,
+                opt: {
+                    write: true,
+                },
+            },
+            testConfig
+        );
 
         expect(project).toBeTruthy();
 
@@ -640,9 +602,16 @@ describe("testProject", () => {
         expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
 
-        const project = new Project("test/testproject", {pluginManager, opt: {
-            write: true
-        }}, testConfig);
+        const project = new Project(
+            "test/testproject",
+            {
+                pluginManager,
+                opt: {
+                    write: true,
+                },
+            },
+            testConfig
+        );
 
         expect(project).toBeTruthy();
 
@@ -661,9 +630,9 @@ describe("testProject", () => {
         // artificially mark the files as modified
         const files = project.get();
         expect(files).toBeTruthy();
-        files.forEach(file => {
+        files.forEach((file) => {
             // sneakily mark the file as dirty when it really hasn't been modified
-            file.dirty = true;
+            file.irs[0].dirty = true;
         });
 
         project.serialize();
@@ -677,7 +646,85 @@ describe("testProject", () => {
         rmf("test/testproject/x/empty.xyz.modified");
         rmf("test/testproject/x/test_ru_RU.xyz.modified");
         rmf("test/testproject/x/test.xyz.modified");
-});
+    });
+
+    test("Verify that serialization recovers from errors", async () => {
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(false);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
+
+        const project = new Project(
+            "test/testproject",
+            {
+                pluginManager,
+                opt: {
+                    write: true,
+                },
+            },
+            testConfig
+        );
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("parser-xyz")[0];
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["./test/testproject/x"]);
+
+        const issues = project.findIssues(["en-US"]);
+        expect(issues).toBeTruthy();
+
+        // artificially mark the files as modified
+        const files = project.get();
+        expect(files).toBeTruthy();
+        files.forEach((file) => {
+            // sneakily mark the file as dirty when it really hasn't been modified
+            file.irs[0].dirty = true;
+        });
+
+        // patch the serializer to throw an error when trying to serialize test/testproject/x/test_ru_RU.xyz
+        const serializer = files
+            .find((file) => file.getFilePath() === "test/testproject/x/test_ru_RU.xyz")
+            ?.getFileType()
+            .getSerializer();
+        expectToBeDefined(serializer);
+        const originalSerialize = serializer.serialize;
+        const serializeSpy = jest.spyOn(serializer, "serialize");
+        serializeSpy.mockImplementation((representations) => {
+            if (
+                representations.some(
+                    (representation) => representation.sourceFile.getPath() === "test/testproject/x/test_ru_RU.xyz"
+                )
+            ) {
+                throw new Error("test error");
+            }
+            return originalSerialize(representations);
+        });
+
+        project.serialize();
+
+        // this file should not have been serialized due to the error
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test_ru_RU.xyz.modified")).toBe(false);
+        // remaining files should have been serialized normally
+        expect(fs.existsSync("test/testproject/x/test.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/test.xyz.modified")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
+        expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(true);
+        rmf("test/testproject/x/test_ru_RU.xyz.modified");
+        rmf("test/testproject/x/test.xyz.modified");
+        rmf("test/testproject/x/empty.xyz.modified");
+
+        // cleanup
+        serializeSpy.mockRestore();
+    });
 
     test("Verify that serialization works when only some of the files are modified", async () => {
         expect.assertions(17);
@@ -689,9 +736,16 @@ describe("testProject", () => {
         expect(fs.existsSync("test/testproject/x/empty.xyz")).toBe(true);
         expect(fs.existsSync("test/testproject/x/empty.xyz.modified")).toBe(false);
 
-        const project = new Project("test/testproject", {pluginManager, opt: {
-            write: true
-        }}, testConfig);
+        const project = new Project(
+            "test/testproject",
+            {
+                pluginManager,
+                opt: {
+                    write: true,
+                },
+            },
+            testConfig
+        );
 
         expect(project).toBeTruthy();
 
@@ -711,9 +765,9 @@ describe("testProject", () => {
         const files = project.get();
         expect(files).toBeTruthy();
         expect(files.length).toBe(3);
-        files[0].dirty = true;
+        files[0].irs[0].dirty = true;
         // not files[1]
-        files[2].dirty = true;
+        files[2].irs[0].dirty = true;
 
         project.serialize();
 
@@ -740,17 +794,24 @@ describe("testProject", () => {
             fs.mkdirSync("test/testproject/y");
         }
         const content = {
-            "this is a string": "this is a translation"
+            "this is a string": "this is a translation",
         };
         fs.writeFileSync(testFile, JSON.stringify(content), "utf-8");
 
         expect(fs.existsSync(testFile)).toBe(true);
         expect(fs.existsSync(testFile + ".modified")).toBe(false);
 
-        const project = new Project("test/testproject/y", {pluginManager, opt: {
-            write: true,
-            overwrite: true
-        }}, testConfig);
+        const project = new Project(
+            "test/testproject/y",
+            {
+                pluginManager,
+                opt: {
+                    write: true,
+                    overwrite: true,
+                },
+            },
+            testConfig
+        );
 
         expect(project).toBeTruthy();
 
@@ -769,10 +830,10 @@ describe("testProject", () => {
         // artificially mark the files as modified
         const files = project.get();
         expect(files).toBeTruthy();
-        files.forEach(file => {
+        files.forEach((file) => {
             // sneakily mark the file as dirty when it really hasn't been modified
             if (file.getFilePath() === testFile) {
-                file.dirty = true;
+                file.irs[0].dirty = true;
                 const irs = file.getIRs();
                 expect(irs.length).toBe(1);
                 const resources = irs[0].getRepresentation();
@@ -787,8 +848,7 @@ describe("testProject", () => {
         expect(fs.existsSync(testFile)).toBe(true);
         expect(fs.existsSync(testFile + ".modified")).toBe(false);
 
-        const expected =
-`{
+        const expected = `{
     "a": "b"
 }`;
 
@@ -796,7 +856,7 @@ describe("testProject", () => {
         expect(fs.readFileSync(testFile, "utf-8")).toBe(expected);
 
         // clean up
-        fs.rmSync("test/testproject/y", {recursive: true});
+        fs.rmSync("test/testproject/y", { recursive: true });
     });
 
     test("Run rules on an xliff file and then use a transformer to transform the file", async () => {
@@ -890,9 +950,9 @@ describe("testProject", () => {
                 id: "1",
                 state: "translated",
                 location: new Location({
-                    "char": 7,
-                    "line": 4
-                })
+                    char: 7,
+                    line: 4,
+                }),
             }),
             new ResourceString({
                 reskey: "foobar2",
@@ -906,9 +966,9 @@ describe("testProject", () => {
                 id: "2",
                 state: "translated",
                 location: new Location({
-                    "char": 7,
-                    "line": 8
-                })
+                    char: 7,
+                    line: 8,
+                }),
             }),
             new ResourceString({
                 reskey: "foobar3",
@@ -922,9 +982,9 @@ describe("testProject", () => {
                 id: "3",
                 state: "translated",
                 location: new Location({
-                    "char": 7,
-                    "line": 12
-                })
+                    char: 7,
+                    line: 12,
+                }),
             }),
             new ResourceString({
                 reskey: "foobar6",
@@ -938,9 +998,9 @@ describe("testProject", () => {
                 id: "6", // 4 and 5 were removed
                 state: "translated",
                 location: new Location({
-                    "char": 7,
-                    "line": 24
-                })
+                    char: 7,
+                    line: 24,
+                }),
             }),
             new ResourceString({
                 reskey: "foobar7",
@@ -954,12 +1014,12 @@ describe("testProject", () => {
                 id: "7",
                 state: "translated",
                 location: new Location({
-                    "char": 7,
-                    "line": 28
-                })
-            })
+                    char: 7,
+                    line: 28,
+                }),
+            }),
         ];
-        expected.forEach(resource => {
+        expected.forEach((resource) => {
             resource.dirty = true;
             resource.resfile = "test/testfiles/xliff/param-problems.xliff";
         });
@@ -969,9 +1029,16 @@ describe("testProject", () => {
     test("Run rules on an xliff file, apply the error filter transformer, and then use a serializer to serialize the file", async () => {
         expect.assertions(9);
 
-        const project = new Project("test/testproject/x", { pluginManager, opt: {
-            write: true
-        } }, testConfig2);
+        const project = new Project(
+            "test/testproject/x",
+            {
+                pluginManager,
+                opt: {
+                    write: true,
+                },
+            },
+            testConfig2
+        );
         expect(project).toBeTruthy();
 
         const pluginMgr = project.getPluginManager();
@@ -1001,8 +1068,7 @@ describe("testProject", () => {
 
         // make sure we got the right file contents
         const modifiedFileName = fileName + ".modified";
-        const expected =
-            `<?xml version="1.0" encoding="utf-8"?>
+        const expected = `<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.2">
   <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="webapp">
     <body>
@@ -1035,5 +1101,71 @@ describe("testProject", () => {
 
         // clean-up
         rmf(modifiedFileName);
+    });
+
+    test("Recover from error when applying transformers on one of the files", async () => {
+        const project = new Project("test/testproject/x", { pluginManager, opt: {} }, testConfig2);
+
+        expect(project).toBeTruthy();
+
+        const pluginMgr = project.getPluginManager();
+        await project.init();
+
+        const parserMgr = pluginMgr.getParserManager();
+        const prsr = parserMgr.get("xliff");
+        expect(prsr).toBeTruthy();
+
+        await project.scan(["test/testfiles/xliff/param-problems.xliff", "test/testfiles/xliff/quote-problems.xliff"]);
+
+        const files = project.get();
+        expect(files).toBeTruthy();
+        expect(files.length).toBe(2);
+
+        const quoteProblemsFile = files.find(
+            (file) => file.getFilePath() === "test/testfiles/xliff/quote-problems.xliff"
+        );
+        expectToBeDefined(quoteProblemsFile);
+        const paramProblemsFile = files.find(
+            (file) => file.getFilePath() === "test/testfiles/xliff/param-problems.xliff"
+        );
+        expectToBeDefined(paramProblemsFile);
+
+        // patch the transformer to throw an error for one of the files
+        const transformer = quoteProblemsFile.getFileType().getTransformers()?.[0];
+        expectToBeDefined(transformer);
+        const originalTransform = transformer.transform;
+        const transformSpy = jest.spyOn(transformer, "transform");
+        transformSpy.mockImplementation((ir, results) => {
+            if (ir.getSourceFile().getPath() === "test/testfiles/xliff/quote-problems.xliff") {
+                throw new Error("Test error");
+            }
+            return originalTransform(ir, results);
+        });
+
+        const results = project.findIssues(["en-US"]);
+        expect(results).toBeTruthy();
+        expect(results.length).toBeGreaterThan(0);
+
+        // verify that the param problems file has been transformed correctly
+        // despite the error in the quote problems file
+
+        // findIssues calls the parsers, so we can only get the intermediate representations
+        // after we have called findIssues
+        let irs = paramProblemsFile.getIRs();
+        expect(irs.length).toBe(1);
+        let resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(7);
+
+        // should remove the resources that have problems
+        project.applyTransformers(results);
+
+        // make sure we deleted 2 of the 7 resources
+        irs = paramProblemsFile.getIRs();
+        expect(irs.length).toBe(1);
+        resources = irs[0].getRepresentation();
+        expect(resources.length).toBe(5);
+
+        // cleanup
+        transformSpy.mockRestore();
     });
 });

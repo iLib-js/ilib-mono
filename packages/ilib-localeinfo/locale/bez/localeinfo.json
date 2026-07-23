@@ -1,0 +1,13 @@
+{
+    "language.name": "Bena",
+    "locale": "bez",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n}{s}",
+            "commonNegative": "-{n}{s}"
+        }
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "”",
+        "alternateQuotationStart": "“",
+        "quotationEnd": "»",
+        "quotationStart": "«"
+    },
+    "language.name": "Malagasy",
+    "locale": "mg",
+    "scripts": [
+        "Latn"
+    ]
+}

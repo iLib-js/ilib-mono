@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceString } from "ilib-tools-common";
+import { ResourceString, Location } from "ilib-tools-common";
 import { Result } from "ilib-lint-common";
 import ResourceSourceICUPluralCategories from "../src/rules/ResourceSourceICUPluralCategories.js";
 
@@ -42,7 +42,7 @@ describe("testFlat", () => {
     });
 
     test("MissingCategoryOne", () => {
-        expect.assertions(2);
+        expect.assertions(3);
 
         const rule = new ResourceSourceICUPluralCategories();
         expect(rule).toBeTruthy();
@@ -52,6 +52,11 @@ describe("testFlat", () => {
             sourceLocale: "en-US",
             source: "{count, plural, other {This is plural}}",
             pathName: "a/b/c.xliff",
+            location: new Location({
+                line: 15,
+                offset: 0,
+                char: 0
+            })
         });
         const result = rule.matchString({
             source: resource.getSource(),
@@ -68,9 +73,11 @@ describe("testFlat", () => {
                 highlight: "<e0>{count, plural, other {This is plural}}</e0>",
                 id: "plural.test",
                 source: "{count, plural, other {This is plural}}",
+                lineNumber: 15
             }),
         ];
         expect(result).toStrictEqual(expected);
+        expect(result[0].lineNumber).toBe(15);
     });
 
     test("MissingCategoryOther", () => {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/strings.json" source-language="en-US" target-language="de-DE" product-name="sample-slack-json">
+    <body>
+      <trans-unit id="2" resname="string1" restype="string" datatype="mrkdwn">
+        <source>Hello</source>
+        <target>Hallo</target>
+      </trans-unit>
+      <trans-unit id="3" resname="string2" restype="string" datatype="mrkdwn">
+        <source>Thank &lt;c0>you&lt;/c0></source>
+        <target>Danke &lt;c0>schoen&lt;/c0></target>
+      </trans-unit>
+      <trans-unit id="4" resname="string3" restype="string" datatype="mrkdwn">
+        <source>This &lt;c0>is a &lt;c1>test&lt;/c1> with a unique id&lt;/c0></source>
+        <target>Dies ist ein &lt;c1>Test&lt;/c1> mit &lt;c0>einer eindeutigen ID&lt;/c0></target>
+      </trans-unit>
+      <trans-unit id="5" resname="string4" restype="string" datatype="mrkdwn">
+        <source>This is a &lt;c0>test&lt;/c0> with a slack &lt;c1>link&lt;/c1> in it and a &lt;c2>User&lt;/c2> reference.</source>
+        <target>Dies ist ein &lt;c0>Test&lt;/c0> mit einem &lt;c1>Slack-Link&lt;/c1> und einer &lt;c2>Benutzerreferenz&lt;/c2>.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

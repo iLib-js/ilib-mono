@@ -55,7 +55,7 @@ describe("testResourceGNUPrintfMatch", () => {
 
     // Test missing parameters in target
     test("should report missing parameters in target", () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
         const rule = new ResourceGNUPrintfMatch();
         const resource = new ResourceString({
@@ -79,11 +79,13 @@ describe("testResourceGNUPrintfMatch", () => {
             id: "printf.test",
             source: 'Hello %1$s, you have %2$d items.',
             highlight: '<e0>Hallo %1$s, Sie haben Artikel.</e0>',
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            locale: "de-DE"
         });
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual && Array.isArray(actual) && actual.length).toBe(1);
         expect(actual && Array.isArray(actual) && actual[0]).toStrictEqual(expected);
+        expect(actual[0].locale).toBe("de-DE");
     });
 
     // Test extra parameters in target
@@ -112,7 +114,8 @@ describe("testResourceGNUPrintfMatch", () => {
             id: "printf.test",
             source: 'This string contains no parameters.',
             highlight: 'Diese Zeichenfolge enthält <e0>%1$d</e0> Parameter.',
-            pathName: "a/b/c.xliff"
+            pathName: "a/b/c.xliff",
+            locale: "de-DE"
         });
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual && Array.isArray(actual) && actual.length).toBe(1);
@@ -623,7 +626,8 @@ describe("testResourceGNUPrintfMatch", () => {
             id: "printf.swift.missing.test",
             source: 'Hello %@, you have %d items.',
             highlight: '<e0>Hola, tienes %d artículos.</e0>',
-            pathName: "a/b/c.strings"
+            pathName: "a/b/c.strings",
+            locale: "es-ES"
         });
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual && Array.isArray(actual) && actual.length).toBe(1);
@@ -655,7 +659,8 @@ describe("testResourceGNUPrintfMatch", () => {
             id: "printf.swift.extra.test",
             source: 'Hello, you have %d items.',
             highlight: 'Hola <e0>%@</e0>, tienes %d artículos.',
-            pathName: "a/b/c.strings"
+            pathName: "a/b/c.strings",
+            locale: "es-ES"
         });
         expect(Array.isArray(actual)).toBeTruthy();
         expect(actual && Array.isArray(actual) && actual.length).toBe(1);

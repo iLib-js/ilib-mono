@@ -20,6 +20,7 @@ This is a monorepo for the [iLib-js project](https://github.com/iLib-js) contain
 ## Development Workflow
 - Always use `pnpm` as the package manager
 - Always run tests with `pnpm test` (affected packages only) or `pnpm test:all`. Do not use plain npm.
+- Once unit tests pass, move on to running E2E tests with `pnpm test:e2e` (affected packages only) or `pnpm test:e2e:all`.
 - Build with `pnpm build`
 - Generate docs with `pnpm doc`
 - Target Node.js versions >=12.0.0

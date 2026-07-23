@@ -280,7 +280,7 @@ export const testaddress_AM = {
         test.done();
     },
 
-    testFormatAddressAMFromUS: function(test) {
+    testFormatAddressAMFromUSInArmenian: function(test) {
         test.expect(1);
         var parsedAddress = new Address({
             streetAddress: "Արմեն Սիմոնյանը, Սարյան փող 22, բն 25",

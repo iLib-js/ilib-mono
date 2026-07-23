@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples tap-i18n should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="languages/en-US.i18n.yml" source-language="en-US" product-name="sample-tap-i18n">
+    <body>
+      <trans-unit id="1" resname="toplevel.plurals.plural1" restype="plural" datatype="x-yaml" extype="one">
+        <source>{{count}} item</source>
+        <note>This is the comment for the first plural string</note>
+      </trans-unit>
+      <trans-unit id="2" resname="toplevel.plurals.plural1" restype="plural" datatype="x-yaml" extype="other">
+        <source>{{count}} items</source>
+        <note>This is the comment for the first plural string</note>
+      </trans-unit>
+      <trans-unit id="3" resname="toplevel.first.loading" restype="string" datatype="x-yaml">
+        <source>Loading...</source>
+        <note>This is the comment for the first string</note>
+      </trans-unit>
+      <trans-unit id="4" resname="toplevel.first.pageLoading" restype="string" datatype="x-yaml">
+        <source>Loading the page...</source>
+        <note>This is the comment for the second string</note>
+      </trans-unit>
+      <trans-unit id="5" resname="toplevel.first.saveChanges" restype="string" datatype="x-yaml">
+        <source>Save Changes</source>
+        <note>Label for the button that saves all changes for the search configuration.</note>
+      </trans-unit>
+      <trans-unit id="6" resname="toplevel.second.cancel" restype="string" datatype="x-yaml">
+        <source>Cancel</source>
+        <note>Label for the button that cancels an action.</note>
+      </trans-unit>
+      <trans-unit id="7" resname="toplevel.second.create" restype="string" datatype="x-yaml">
+        <source>Create</source>
+        <note>Label for the button creating a new item.</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

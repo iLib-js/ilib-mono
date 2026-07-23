@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ResourceArray, ResourcePlural, ResourceString } from 'ilib-tools-common';
+import { ResourceArray, ResourcePlural, ResourceString, Location } from 'ilib-tools-common';
 
 import ResourceICUPlurals from '../../src/rules/ResourceICUPlurals.js';
 
-import { Result } from 'ilib-lint-common';
+import { IntermediateRepresentation, Result, SourceFile } from 'ilib-lint-common';
 
 describe("testResourceICUPlurals", () => {
     test("ResourceICUPluralsMatchNoError", () => {
@@ -388,6 +388,40 @@ describe("testResourceICUPlurals", () => {
         });
         // this rule does not test for problems in the source string
         expect(!actual).toBeTruthy();
+    });
+
+    test("ResourceICUPlurals make sure the file and line number are set correctly in the result", () => {
+        expect.assertions(4);
+
+        const rule = new ResourceICUPlurals();
+        expect(rule).toBeTruthy();
+
+        const resource = new ResourceString({
+            key: "plural.test",
+            sourceLocale: "en-US",
+            source: '{count, plural, one {This is singular} other {This is plural}}',
+            targetLocale: "de-DE",
+            target: "{count, plural, one {Dies ist einzigartig} few {This is few} other {Dies ist mehrerartig}}",
+            pathName: "x/y/sourcefile.js",
+            location: new Location({
+                offset: 100,
+                line: 25,
+                char: 0
+            })
+        });
+
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [resource],
+            sourceFile: new SourceFile("a/b/c.xliff", {}),
+            dirty: false
+        });
+
+        const actual = rule.match({ir, file: "a/b/c.xliff"});
+
+        expect(actual).toBeTruthy();
+        expect(actual?.pathName).toBe("a/b/c.xliff");
+        expect(actual?.lineNumber).toBe(25);
     });
 
     test("ResourceICUPluralsMatchExtraCategoriesInTarget", () => {

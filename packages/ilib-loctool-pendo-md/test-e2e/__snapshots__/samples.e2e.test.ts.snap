@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples pendo-md should produce a localized Pendo XLIFF file 1`] = `
+"<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="A000A00Aaa0aaa-AaaaAaa00A0a" datatype="pendoguide" source-language="en-US" target-language="pl-PL">
+        <body>
+            <group id="Aaaaaaaa0aAaaAAA0AAA0A0aAaa">
+                <note/>
+                <trans-unit id="73e6c197-f1c0-4bb1-9b31-a40ce2270870|ariaLabel">
+                    <source><![CDATA[Close]]></source>
+                    <target state="translated">Zamknij</target>
+                    <note>CloseButton</note>
+                </trans-unit>
+                <trans-unit id="8de49842-c1fd-4536-905e-8817673b4c24|md">
+                    <source><![CDATA[**Callout!**]]></source>
+                    <target state="translated">**Wywołanie!**</target>
+                    <note>TextView</note>
+                </trans-unit>
+                <trans-unit id="a165c0e2-11de-40b4-9209-55bcdff6d67b|md">
+                    <source><![CDATA[First paragraph of a multi-paragraph string.
+
+Second paragraph of a multi-paragraph string.]]></source>
+                    <target state="translated">Pierwszy akapit wieloakapitowego ciągu.
+
+Drugi akapit wieloakapitowego ciągu.</target>
+                    <note>TextView</note>
+                </trans-unit>
+                <trans-unit id="5f8bec10-d663-43d7-a185-49824564060c|md">
+                    <source><![CDATA[String with [a link in it](https://example.com)]]></source>
+                    <target state="translated">Ciąg z [linkiem wewnątrz](https://example.com)</target>
+                    <note>TextView</note>
+                </trans-unit>
+                <trans-unit id="cff9a58d-39e6-4562-8b39-96a137d0bfd1|url">
+                    <source><![CDATA[https://example.com/linkOnly]]></source>
+                    <target state="translated">https://example.com/linkOnly</target>
+                    <note>ButtonLink</note>
+                </trans-unit>
+                <trans-unit id="7542337f-62c3-44c3-9a4a-d0f7944dd5b4|md">
+                    <source><![CDATA[First paragraph of a multi-paragraph string with list.
+
+This is a list:
+* **first** item
+* second **item**
+* **third** item]]></source>
+                    <target state="translated">Pierwszy akapit wieloakapitowego ciągu z listą.
+
+To jest lista:
+
+*   **pierwszy** element
+*   drugi **element**
+*   **trzeci** element</target>
+                    <note>TextView</note>
+                </trans-unit>
+            </group>
+        </body>
+    </file>
+</xliff>"
+`;
+
+exports[`samples pendo-md should produce an extracted Loctool XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="" source-language="en-US" product-name="pendo-md">
+    <body>
+      <trans-unit id="1" resname="73e6c197-f1c0-4bb1-9b31-a40ce2270870|ariaLabel" restype="string" datatype="plaintext">
+        <source>Close</source>
+        <note>CloseButton</note>
+      </trans-unit>
+      <trans-unit id="2" resname="8de49842-c1fd-4536-905e-8817673b4c24|md" restype="string" datatype="plaintext">
+        <source>Callout!</source>
+        <note>TextView</note>
+      </trans-unit>
+      <trans-unit id="3" resname="a165c0e2-11de-40b4-9209-55bcdff6d67b|md" restype="string" datatype="plaintext">
+        <source>&lt;c0&gt;First paragraph of a multi-paragraph string.&lt;/c0&gt;&lt;c1&gt;Second paragraph of a multi-paragraph string.&lt;/c1&gt;</source>
+        <note>TextView [c0: paragraph, c1: paragraph]</note>
+      </trans-unit>
+      <trans-unit id="4" resname="5f8bec10-d663-43d7-a185-49824564060c|md" restype="string" datatype="plaintext">
+        <source>String with &lt;c0&gt;a link in it&lt;/c0&gt;</source>
+        <note>TextView [c0: link]</note>
+      </trans-unit>
+      <trans-unit id="5" resname="cff9a58d-39e6-4562-8b39-96a137d0bfd1|url" restype="string" datatype="plaintext">
+        <source>https://example.com/linkOnly</source>
+        <note>ButtonLink</note>
+      </trans-unit>
+      <trans-unit id="6" resname="7542337f-62c3-44c3-9a4a-d0f7944dd5b4|md" restype="string" datatype="plaintext">
+        <source>&lt;c0&gt;First paragraph of a multi-paragraph string with list.&lt;/c0&gt;&lt;c1&gt;This is a list:&lt;/c1&gt;&lt;c2&gt;&lt;c3&gt;&lt;c4&gt;first&lt;/c4&gt; item&lt;/c3&gt;&lt;c5&gt;second &lt;c6&gt;item&lt;/c6&gt;&lt;/c5&gt;&lt;c7&gt;&lt;c8&gt;third&lt;/c8&gt; item&lt;/c7&gt;&lt;/c2&gt;</source>
+        <note>TextView [c0: paragraph, c1: paragraph, c2: list, c3: listItem&gt;paragraph, c4: strong, c5: listItem&gt;paragraph, c6: strong, c7: listItem&gt;paragraph, c8: strong]</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

@@ -26,6 +26,19 @@ const logger = log4js.getLogger("ilib-common");
  */
 
 /**
+ * Check if a property key is safe from prototype pollution attacks.
+ * This prevents modifications to Object.prototype through __proto__,
+ * constructor, or prototype properties.
+ *
+ * @private
+ * @param {string} key the property key to check
+ * @return {boolean} true if the key is safe to use, false otherwise
+ */
+function isSafeKey(key) {
+    return key !== '__proto__' && key !== 'constructor' && key !== 'prototype';
+}
+
+/**
  * Polyfill to test whether an object is an javascript array.
  *
  * @static
@@ -61,7 +74,7 @@ export function shallowCopy(source, target) {
         }
         // polyfill
         for (prop in source) {
-            if (prop !== undefined && typeof(source[prop]) !== 'undefined') {
+            if (prop !== undefined && typeof(source[prop]) !== 'undefined' && isSafeKey(prop)) {
                 target[prop] = source[prop];
             }
         }
@@ -80,7 +93,7 @@ export function deepCopy(from, to) {
     var prop;
 
     for (prop in from) {
-        if (prop) {
+        if (prop && isSafeKey(prop)) {
             if (typeof(from[prop]) === 'object') {
                 to[prop] = {};
                 deepCopy(from[prop], to[prop]);
@@ -242,12 +255,12 @@ export function merge(object1, object2, replace, name1, name2) {
     var prop = undefined,
         newObj = {};
     for (prop in object1) {
-        if (prop && typeof(object1[prop]) !== 'undefined') {
+        if (prop && typeof(object1[prop]) !== 'undefined' && isSafeKey(prop)) {
             newObj[prop] = object1[prop];
         }
     }
     for (prop in object2) {
-        if (prop && typeof(object2[prop]) !== 'undefined') {
+        if (prop && typeof(object2[prop]) !== 'undefined' && isSafeKey(prop)) {
             if (isArray(object1[prop]) && isArray(object2[prop])) {
                 if (typeof(replace) !== 'boolean' || !replace) {
                     newObj[prop] = [].concat(object1[prop]);
@@ -391,7 +404,8 @@ export function extend(object1, object2) {
     if (object2) {
         for (prop in object2) {
             // don't extend object with undefined or functions
-            if (prop && typeof(object2[prop]) !== 'undefined' && typeof(object2[prop]) !== "function") {
+            // also skip prototype pollution attack vectors
+            if (prop && typeof(object2[prop]) !== 'undefined' && typeof(object2[prop]) !== "function" && isSafeKey(prop)) {
                 if (isArray(object1[prop]) && isArray(object2[prop])) {
                     logger.trace("Merging array prop " + prop);
                     object1[prop] = object1[prop].concat(object2[prop]);
@@ -416,7 +430,8 @@ export function extend2(object1, object2) {
     if (object2) {
         for (prop in object2) {
             // don't extend object with undefined or functions
-            if (prop && typeof(object2[prop]) !== 'undefined') {
+            // also skip prototype pollution attack vectors
+            if (prop && typeof(object2[prop]) !== 'undefined' && isSafeKey(prop)) {
                 if (isArray(object1[prop]) && isArray(object2[prop])) {
                     logger.trace("Merging array prop " + prop);
                     object1[prop] = object1[prop].concat(object2[prop]);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-KR" trgLang="de-DE" version="2.0">
+  <file id="sample-webos-js_f1" original="sample-webos-js">
+    <group id="sample-webos-js_g1" name="javascript">
+      <unit id="1">
+        <segment>
+          <source>Thank you</source>
+          <target>Danke</target>
+        </segment>
+      </unit>
+      <unit id="2">
+        <segment>
+          <source>Hello</source>
+          <target>Hallo</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

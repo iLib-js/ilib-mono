@@ -17,69 +17,78 @@
  * limitations under the License.
  */
 
-import { Serializer, Transformer } from 'ilib-lint-common';
+import { Serializer, Transformer } from "ilib-lint-common";
 
-import FileType from '../src/FileType.js';
-import Project from '../src/Project.js';
-import PluginManager from '../src/PluginManager.js';
+import FileType from "../src/FileType.js";
+import Project from "../src/Project.js";
+import PluginManager from "../src/PluginManager.js";
 
 const pluginManager = new PluginManager();
 const ruleMgr = pluginManager.getRuleManager();
 
 ruleMgr.addRuleSetDefinition("asdf", {
     "resource-icu-plurals": true,
-    "resource-quote-style": "localeOnly"
+    "resource-quote-style": "localeOnly",
 });
 
 ruleMgr.addRuleSetDefinition("no-state-checker", {
-    "resource-state-checker": false
+    "resource-state-checker": false,
 });
 
-const project = new Project("x", {
-    locales: ["fr-FR", "nl-NL"],
-    pluginManager
-}, {});
-
-const projectWithValidPlugins = new Project("y", {
-    locales: ["fr-FR", "nl-NL"],
-    pluginManager
-}, {
-    plugins: [
-        "ilib-lint-plugin-test"
-    ],
-    fileTypes: {
-        "test": {
-            "name": "test",
-            "parsers": ["parser-xyz"],
-            "formatter": ["formatter-xyz"],
-            "transformers": ["transformer-xyz"],
-            "serializer": "serializer-xyz"
-        }
+const project = new Project(
+    "x",
+    {
+        pluginManager,
+    },
+    {
+        locales: ["fr-FR", "nl-NL"],
     }
-});
+);
 
-const projectWithParserAndUnknownSerializer = new Project("z", {
-    locales: ["fr-FR", "nl-NL"],
-    pluginManager
-}, {
-    plugins: [
-        "ilib-lint-plugin-test"
-    ],
-    fileTypes: {
-        "test": {
-            "name": "test",
-            "parsers": ["parser-xyz"],
-            "formatter": ["formatter-xyz"],
-            "serializer": "non-existent-serializer"
-        }
+const projectWithValidPlugins = new Project(
+    "y",
+    {
+        pluginManager,
+    },
+    {
+        plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
+        fileTypes: {
+            test: {
+                name: "test",
+                parsers: ["parser-xyz"],
+                formatter: ["formatter-xyz"],
+                transformers: ["transformer-xyz"],
+                serializer: "serializer-xyz",
+            },
+        },
     }
-});
+);
+
+const projectWithParserAndUnknownSerializer = new Project(
+    "z",
+    {
+        pluginManager,
+    },
+    {
+        plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
+        fileTypes: {
+            test: {
+                name: "test",
+                parsers: ["parser-xyz"],
+                formatter: ["formatter-xyz"],
+                serializer: "non-existent-serializer",
+            },
+        },
+    }
+);
 
 class MockSerializer extends Serializer {
     constructor(options) {
         super(options);
 
-        this.extensions = [ "mock" ];
+        this.extensions = ["mock"];
         this.name = "mock-serializer";
         // this is different than the parser from ilib-lint-plugin-test which
         // is of type "resource"
@@ -92,49 +101,53 @@ class MockSerializer extends Serializer {
 }
 
 const serializerMgr = pluginManager.getSerializerManager();
-serializerMgr.add([ MockSerializer ]);
+serializerMgr.add([MockSerializer]);
 
-const projectWithWrongTypeOfSerializer = new Project("a", {
-    locales: ["fr-FR", "nl-NL"],
-    pluginManager
-}, {
-    plugins: [
-        "ilib-lint-plugin-test"
-    ],
-    fileTypes: {
-        "test": {
-            "name": "test",
-            "parsers": ["parser-xyz"],
-            "formatters": ["formatter-xyz"],
-            // this serializer is different than the parser from ilib-lint-plugin-test which
-            // is of type "resource"
-            "serializer": "mock-serializer"
-        }
+const projectWithWrongTypeOfSerializer = new Project(
+    "a",
+    {
+        pluginManager,
+    },
+    {
+        plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
+        fileTypes: {
+            test: {
+                name: "test",
+                parsers: ["parser-xyz"],
+                formatters: ["formatter-xyz"],
+                // this serializer is different than the parser from ilib-lint-plugin-test which
+                // is of type "resource"
+                serializer: "mock-serializer",
+            },
+        },
     }
-});
+);
 
-const projectWithParserAndUnknownTransformers = new Project("q", {
-    locales: ["fr-FR", "nl-NL"],
-    pluginManager
-}, {
-    plugins: [
-        "ilib-lint-plugin-test"
-    ],
-    fileTypes: {
-        "test": {
-            "name": "test",
-            "parsers": ["parser-xyz"],
-            "formatter": ["formatter-xyz"],
-            "transformers": ["foo", "bar"],
-            "serializer": "serializer-xyz"
-        }
+const projectWithParserAndUnknownTransformers = new Project(
+    "q",
+    {
+        pluginManager,
+    },
+    {
+        plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
+        fileTypes: {
+            test: {
+                name: "test",
+                parsers: ["parser-xyz"],
+                formatter: ["formatter-xyz"],
+                transformers: ["foo", "bar"],
+                serializer: "serializer-xyz",
+            },
+        },
     }
-});
+);
 
 class MockTransformer extends Transformer {
     constructor(options) {
         super(options);
-        this.extensions = [ "mock" ];
+        this.extensions = ["mock"];
         this.name = "mock-transformer";
         this.type = "mock-type";
         this.description = "A test transformer for xyz files, which are really just json files.";
@@ -145,42 +158,48 @@ class MockTransformer extends Transformer {
     }
 }
 const transformerMgr = pluginManager.getTransformerManager();
-transformerMgr.add([ MockTransformer ]);
+transformerMgr.add([MockTransformer]);
 
-const projectWithWrongTypeOfTransformers = new Project("a", {
-    locales: ["fr-FR", "nl-NL"],
-    pluginManager
-}, {
-    plugins: [
-        "ilib-lint-plugin-test"
-    ],
-    fileTypes: {
-        "test": {
-            "name": "test",
-            "parsers": ["parser-xyz"],
-            "formatter": ["formatter-xyz"],
-            // this transformer is different than the parser from ilib-lint-plugin-test which
-            // is of type "resource"
-            "transformers": ["mock-transformer"]
-        }
-    }
-});
-
-const projectWithDefaultParser = new Project("a", {
-    locales: ["fr-FR", "nl-NL"],
-    pluginManager
-}, {
-    fileTypes: {
-        "test": {
-            "name": "test",
-            "transformer": "errorfilter",
-            "serializer": "xliff"
-        }
+const projectWithWrongTypeOfTransformers = new Project(
+    "a",
+    {
+        pluginManager,
     },
-    paths: {
-        "**/*.xliff": "test"
+    {
+        plugins: ["ilib-lint-plugin-test"],
+        locales: ["fr-FR", "nl-NL"],
+        fileTypes: {
+            test: {
+                name: "test",
+                parsers: ["parser-xyz"],
+                formatter: ["formatter-xyz"],
+                // this transformer is different than the parser from ilib-lint-plugin-test which
+                // is of type "resource"
+                transformers: ["mock-transformer"],
+            },
+        },
     }
-});
+);
+
+const projectWithDefaultParser = new Project(
+    "a",
+    {
+        pluginManager,
+    },
+    {
+        locales: ["fr-FR", "nl-NL"],
+        fileTypes: {
+            test: {
+                name: "test",
+                transformer: "errorfilter",
+                serializer: "xliff",
+            },
+        },
+        paths: {
+            "**/*.xliff": "test",
+        },
+    }
+);
 
 describe("testFileType", () => {
     beforeAll(async () => {
@@ -196,7 +215,7 @@ describe("testFileType", () => {
 
         const ft = new FileType({
             name: "test",
-            project
+            project,
         });
         expect(ft).toBeTruthy();
     });
@@ -207,7 +226,7 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             project: projectWithValidPlugins,
-            ...projectWithValidPlugins.config.fileTypes.test
+            ...projectWithValidPlugins.config.fileTypes.test,
         });
         expect(ft).toBeTruthy();
     });
@@ -216,8 +235,9 @@ describe("testFileType", () => {
         expect.assertions(1);
 
         expect(() => {
+            // @ts-expect-error: we are testing the error case
             const ft = new FileType({
-                project
+                project,
             });
         }).toThrow(/Missing required options to the FileType constructor/);
     });
@@ -226,8 +246,9 @@ describe("testFileType", () => {
         expect.assertions(1);
 
         expect(() => {
+            // @ts-expect-error: we are testing the error case
             const ft = new FileType({
-                name: "test"
+                name: "test",
             });
         }).toThrow(/Missing required options to the FileType constructor/);
     });
@@ -239,9 +260,11 @@ describe("testFileType", () => {
             const ft = new FileType({
                 name: "test",
                 project: projectWithParserAndUnknownSerializer,
-                ...projectWithParserAndUnknownSerializer.config.fileTypes.test
+                ...projectWithParserAndUnknownSerializer.config.fileTypes.test,
             });
-        }).toThrow(/Could not find or instantiate serializer non-existent-serializer named in the configuration for filetype test/);
+        }).toThrow(
+            /Could not find or instantiate serializer non-existent-serializer named in the configuration for filetype test/
+        );
     });
 
     test("FileTypeConstructor throws exception if the serializer is a different type than the parser", () => {
@@ -251,9 +274,11 @@ describe("testFileType", () => {
             const ft = new FileType({
                 name: "test",
                 project: projectWithWrongTypeOfSerializer,
-                ...projectWithWrongTypeOfSerializer.config.fileTypes.test
+                ...projectWithWrongTypeOfSerializer.config.fileTypes.test,
             });
-        }).toThrow(/The serializer mock-serializer processes representations of type mock-type, but the filetype test handles representations of type resource. The two types must match./);
+        }).toThrow(
+            /The serializer mock-serializer processes representations of type mock-type, but the filetype test handles representations of type resource. The two types must match./
+        );
     });
 
     test("FileTypeConstructor throws exception if the transformers names a type that doesn't exist", () => {
@@ -263,7 +288,7 @@ describe("testFileType", () => {
             const ft = new FileType({
                 name: "test",
                 project: projectWithParserAndUnknownTransformers,
-                ...projectWithParserAndUnknownTransformers.config.fileTypes.test
+                ...projectWithParserAndUnknownTransformers.config.fileTypes.test,
             });
         }).toThrow(/Could not find transformer foo named in the configuration for filetype test/);
     });
@@ -275,9 +300,11 @@ describe("testFileType", () => {
             const ft = new FileType({
                 name: "test",
                 project: projectWithWrongTypeOfTransformers,
-                ...projectWithWrongTypeOfTransformers.config.fileTypes.test
+                ...projectWithWrongTypeOfTransformers.config.fileTypes.test,
             });
-        }).toThrow(/The transformer mock-transformer processes representations of type mock-type, but the filetype test handles representations of type resource. The two types must match./);
+        }).toThrow(
+            /The transformer mock-transformer processes representations of type mock-type, but the filetype test handles representations of type resource. The two types must match./
+        );
     });
 
     test("FileTypeConstructor works properly with default parser", () => {
@@ -285,7 +312,7 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             project: projectWithDefaultParser,
-            ...projectWithDefaultParser.config.fileTypes.test
+            ...projectWithDefaultParser.config.fileTypes.test,
         });
         expect(ft).toBeTruthy();
     });
@@ -295,7 +322,7 @@ describe("testFileType", () => {
 
         const ft = new FileType({
             name: "test",
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
@@ -307,25 +334,11 @@ describe("testFileType", () => {
 
         const ft = new FileType({
             name: "test",
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
         expect(ft.getProject()).toBe(project);
-    });
-
-    test("FileTypeGetLocales", () => {
-        expect.assertions(2);
-
-        const locales = ["en-US", "de-DE"];
-        const ft = new FileType({
-            name: "test",
-            locales,
-            project
-        });
-        expect(ft).toBeTruthy();
-
-        expect(ft.getLocales()).toBe(locales);
     });
 
     test("FileType get the intermediate representation type", () => {
@@ -333,7 +346,7 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             project: projectWithValidPlugins,
-            ...projectWithValidPlugins.config.fileTypes.test
+            ...projectWithValidPlugins.config.fileTypes.test,
         });
         expect(ft).toBeTruthy();
         expect(ft.getType()).toBe("resource");
@@ -344,7 +357,7 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             project: projectWithDefaultParser,
-            ...projectWithDefaultParser.config.fileTypes.test
+            ...projectWithDefaultParser.config.fileTypes.test,
         });
         expect(ft).toBeTruthy();
         expect(ft.getType()).toBe("resource");
@@ -355,10 +368,10 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             project: projectWithValidPlugins,
-            ...projectWithValidPlugins.config.fileTypes.test
+            ...projectWithValidPlugins.config.fileTypes.test,
         });
         expect(ft).toBeTruthy();
-        const parsers = ft.getParserClasses(".xyz");
+        const parsers = ft.getParsers(".xyz");
         expect(parsers).toBeTruthy();
         expect(parsers.length).toBe(1);
         expect(parsers[0].getName()).toBe("parser-xyz");
@@ -369,13 +382,13 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             project: projectWithValidPlugins,
-            ...projectWithValidPlugins.config.fileTypes.test
+            ...projectWithValidPlugins.config.fileTypes.test,
         });
         expect(ft).toBeTruthy();
         const transformers = ft.getTransformers();
         expect(transformers).toBeTruthy();
-        expect(transformers.length).toBe(1);
-        expect(transformers[0].getName()).toBe("transformer-xyz");
+        expect(transformers?.length).toBe(1);
+        expect(transformers?.[0]?.getName()).toBe("transformer-xyz");
     });
 
     test("FileType get serializer", () => {
@@ -383,24 +396,12 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             project: projectWithValidPlugins,
-            ...projectWithValidPlugins.config.fileTypes.test
+            ...projectWithValidPlugins.config.fileTypes.test,
         });
         expect(ft).toBeTruthy();
         const serializer = ft.getSerializer();
         expect(serializer).toBeTruthy();
-        expect(serializer.getName()).toBe("serializer-xyz");
-    });
-
-    test("FileTypeGetLocalesFromProject", () => {
-        expect.assertions(2);
-
-        const ft = new FileType({
-            name: "test",
-            project
-        });
-        expect(ft).toBeTruthy();
-
-        expect(ft.getLocales()).toEqual(["fr-FR", "nl-NL"]);
+        expect(serializer?.getName()).toBe("serializer-xyz");
     });
 
     test("FileTypeGetTemplate", () => {
@@ -410,7 +411,7 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             template,
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
@@ -424,21 +425,21 @@ describe("testFileType", () => {
         const ft = new FileType({
             name: "test",
             ruleset,
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
-        expect(ft.getRuleSetNames()).toStrictEqual([ "ruleset1" ]);
+        expect(ft.getRuleSetNames()).toStrictEqual(["ruleset1"]);
     });
 
     test("FileTypeGetRuleSetNamesMultiple", () => {
         expect.assertions(2);
 
-        const ruleset = [ "ruleset1", "ruleset2" ];
+        const ruleset = ["ruleset1", "ruleset2"];
         const ft = new FileType({
             name: "test",
             ruleset,
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
@@ -448,11 +449,11 @@ describe("testFileType", () => {
     test("FileTypeGetRuleSetNamesSingleArray", () => {
         expect.assertions(2);
 
-        const ruleset = [ "ruleset1" ];
+        const ruleset = ["ruleset1"];
         const ft = new FileType({
             name: "test",
             ruleset,
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
@@ -464,12 +465,12 @@ describe("testFileType", () => {
 
         const ruleset = {
             "resource-icu-plurals": true,
-            "resource-quote-style": "localeOnly"
+            "resource-quote-style": "localeOnly",
         };
         const ft = new FileType({
             name: "test",
             ruleset,
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
@@ -482,11 +483,11 @@ describe("testFileType", () => {
     test("FileTypeGetRuleSet", () => {
         expect.assertions(5);
 
-        const ruleset = [ "asdf" ]; // defined at the top of this file
+        const ruleset = ["asdf"]; // defined at the top of this file
         const ft = new FileType({
             name: "test",
             ruleset,
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
@@ -494,8 +495,8 @@ describe("testFileType", () => {
 
         expect(Array.isArray(rules)).toBeTruthy();
         expect(rules.length).toBe(2);
-        expect(typeof(rules[0])).toBe('object');
-        expect(typeof(rules[1])).toBe('object');
+        expect(typeof rules[0]).toBe("object");
+        expect(typeof rules[1]).toBe("object");
     });
 
     test("FileTypeGetRuleSetNoRulesetsAvailable", () => {
@@ -503,7 +504,7 @@ describe("testFileType", () => {
 
         const ft = new FileType({
             name: "test",
-            project
+            project,
         });
         expect(ft).toBeTruthy();
 
@@ -516,11 +517,33 @@ describe("testFileType", () => {
     test("FileType contains particular rule", () => {
         expect.assertions(4);
 
-        const ruleset = [ "generic" ];
+        const ruleset = ["generic"];
         const ft = new FileType({
             name: "test",
             ruleset,
-            project
+            project,
+        });
+        expect(ft).toBeTruthy();
+
+        const rules = ft.getRules();
+
+        expect(Array.isArray(rules)).toBeTruthy();
+        expect(rules.length).toBe(22);
+
+        expect(rules.find((rule) => rule.getName() === "resource-state-checker")).toBeTruthy();
+    });
+
+    test("FileType latter ruleset removes a rule", () => {
+        expect.assertions(4);
+
+        const ruleset = [
+            "generic",
+            "no-state-checker", // defined at the top of this file
+        ];
+        const ft = new FileType({
+            name: "test",
+            ruleset,
+            project,
         });
         expect(ft).toBeTruthy();
 
@@ -529,30 +552,6 @@ describe("testFileType", () => {
         expect(Array.isArray(rules)).toBeTruthy();
         expect(rules.length).toBe(21);
 
-        expect(rules.find(rule => rule.getName() === "resource-state-checker")).toBeTruthy();
+        expect(rules.find((rule) => rule.getName() === "resource-state-checker")).toBeFalsy();
     });
-
-    test("FileType latter ruleset removes a rule", () => {
-        expect.assertions(4);
-
-        const ruleset = [
-            "generic",
-            "no-state-checker"  // defined at the top of this file
-        ];
-        const ft = new FileType({
-            name: "test",
-            ruleset,
-            project
-        });
-        expect(ft).toBeTruthy();
-
-        const rules = ft.getRules();
-
-        expect(Array.isArray(rules)).toBeTruthy();
-        expect(rules.length).toBe(20);
-
-        expect(rules.find(rule => rule.getName() === "resource-state-checker")).toBeFalsy();
-    });
-
 });
-

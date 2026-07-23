@@ -2,7 +2,7 @@
 /*
  * loctool.js - tool to extract resources from source code
  *
- * Copyright © 2016-2017, 2019-2025, HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2026, HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,13 @@ var Queue = require("js-stl").Queue;
 var mm = require("micromatch");
 
 var ProjectFactory = require("./lib/ProjectFactory.js");
+var projectConfig = require("./lib/projectConfig.js");
 var GenerateModeProcess = require("./lib/GenerateModeProcess.js");
 var XliffFactory = require("./lib/XliffFactory.js");
 var XliffMerge = require("./lib/XliffMerge.js");
 var XliffSplit = require("./lib/XliffSplit.js");
 var XliffSelect = require("./lib/XliffSelect.js");
+var XliffCompare = require("./lib/XliffCompare.js");
 var fileConvert = require("./lib/convert.js");
 
 // var Git = require("simple-git");
@@ -50,10 +52,12 @@ function getVersion() {
 
 var commandOptionHelp = {
     init:
-        "init  [project-name]\n" +
-        "  Initialize the current directory as a loctool project and write out a project.json file.\n\n" +
-        "project-name (optional)\n" +
-        "  the name of the project to initialize",
+        "init  [root-dir-name]\n" +
+        "  Initialize a directory as a loctool project and write out a project config file.\n\n" +
+        "root-dir-name (optional)\n" +
+        "  the directory where the config file should be written. Default is '.'\n" +
+        "--configFileBaseName name\n" +
+        "  base name of the config file to write (default: loctool-config.json)\n",
     localize:
         "localize [root-dir-name]\n" +
         "  Extract strings and generate localized resource files. This is the default command.\n\n" + 
@@ -65,7 +69,7 @@ var commandOptionHelp = {
         "  during localization. This is intended for use with translation management systems that cannot\n" + 
         "  handle plurals properly.\n" +
         "--exclude\n" +
-        "  exclude a comma-separated list of directories while searching for project.json config files \n" +
+        "  exclude a comma-separated list of directories while searching for project config files \n" +
         "-f or --filetype\n" +
         "  Restrict operation to only the given list of file types. This allows you to\n" +
         "  run only the parts of the loctool that are needed at the moment.\n" +
@@ -143,14 +147,29 @@ var commandOptionHelp = {
         "--segmentation\n" +
         "  Style of segmentation to use when writing out TMX files. Style can be 'sentence'\n" +
         "  or 'paragraph'. (Default is 'paragraph')",
+    compare:
+        "compare from_xliff to_xliff output_dir\n" +
+        "  Compare two xliff files logically by translation units (instead of line-by-line) and write the differences to the output directory.\n\n" +
+        "from_xliff\n" +
+        "  the path to the from xliff file\n" +
+        "to_xliff\n" +
+        "  the path to the to xliff file\n" +
+        "output_dir\n" +
+        "  the path to the directory where the output files will be written.\n" +
+        "  Output files: modified.xliff, added.xliff, deleted.xliff\n" +
+        "  added contains units only in to_xliff, deleted contains units only in from_xliff.\n" +
+        "  A file is only created if there are units of that type.",
     select:
         "select criteria outfile filename ...\n" +
         "  Select translation units from the input files using the given criteria and write them\n" +
         "  to the output file. All files must be xliff files.\n\n" +
         "criteria\n" +
         "  The selection criteria. The syntax is as follows:\n" +
-        "    [field]=[regexp]\n" +
-        "      Select any translation units where the given field name matches the regular expression.\n" +
+        "    [field]=[regexp]     or\n" +
+        "    [field]!=[regexp]\n" +
+        "      Select any translation units where the given field name matches the regular expression,\n" +
+        "      or if the operator is \"!=\", select translation units where the given field does not\n" +
+        "      match the regular expression.\n" + 
         "      Fields can be one of: project, context, sourceLocale, targetLocale, key, pathName, state,\n" +
         "        comment, dnt, datatype, resType, flavor, source, or target\n" +
         "      Additionally, the field name may be one of the following:\n" +
@@ -186,7 +205,10 @@ var commandOptionHelp = {
         "--extendedAttr <name>=<value>\n" +
         "  Add an extended attribute to the output file. This can be used to add arbitrary metadata to\n" +
         "  each translation unit in the output file. You may specify this option multiple times to add\n" +
-        "  multiple extended attributes.",
+        "  multiple extended attributes.\n" +
+        "--prune\n" +
+        "  Exclude all translation units that match the selection criteria.\n" +
+        "  This can be used to filter out translation units that should not be included in the output.\n",
 };
 
 function usage() {
@@ -222,6 +244,11 @@ function usage() {
 //        "  Do a git pull first to update to the latest. (Assumes clean dirs.)\n" +
         "--projectId\n" +
         "  Specify the default name of the project if not specified otherwise.\n" +
+        "--configFileBaseName\n" +
+        "  Specify the base name of the project config file to search for in any directory\n" +
+        "  during the tree walk. This is a file name only, not a path.\n" +
+        "  When not set, loctool searches for loctool-config.json or project.json.\n" +
+        "  (loctool init writes loctool-config.json by default.)\n" +
         "--projectType\n" +
         "  The type of project, which affects how source files are read and resource files are written. Default: web \n" +
         "--plugins\n" +
@@ -251,7 +278,7 @@ function usage() {
         "  Do not allow duplicated strings in extracted xliff file. (Default is 'true') \n" +
         "command\n" +
         "  a command to execute. This is one of:\n" +
-        "    init, localize, split, merge, generate, convert, select\n" +
+        "    init, localize, split, merge, generate, convert, select, compare\n" +
         "    Use loctool [command] --help to see help for a particular command.\n"
         );
     process.exit(0);
@@ -286,6 +313,7 @@ var settings = {
         "package.json",
         "package-lock.json",
         "project.json",
+        "loctool-config.json",
         "log4js.json",
         "yarn.lock",
         ".gitignore",
@@ -371,6 +399,20 @@ for (var i = 0; i < argv.length; i++) {
         }
     } else if (val === "--projectId") {
         settings.id = argv[++i];
+    } else if (val === "--root") {
+        if (i + 1 < argv.length && argv[i + 1] && argv[i + 1][0] !== "-") {
+            settings.rootDir = argv[++i];
+        } else {
+            console.error("Error: --root option requires a directory name argument to follow it.");
+            usage();
+        }
+    } else if (val === "--configFileBaseName") {
+        if (i + 1 < argv.length && argv[i + 1] && argv[i + 1][0] !== "-") {
+            settings.configFileBaseName = argv[++i];
+        } else {
+            console.error("Error: --configFileBaseName option requires a file name argument to follow it.");
+            usage();
+        }
     } else if (val === "--projectType") {
         settings.projectType = argv[++i];
     } else if (val === "--plugins") {
@@ -486,11 +528,18 @@ for (var i = 0; i < argv.length; i++) {
                 }
             });
         }
+    } else if (val === "--prune") {
+        settings.prune = true;
     } else {
         options.push(val);
     }
 }
 
+projectConfig.getConfigFileBaseNames(settings).forEach(function(configFileBaseName) {
+    if (settings.exclude.indexOf(configFileBaseName) === -1) {
+        settings.exclude.push(configFileBaseName);
+    }
+});
 
 if (settings.help) {
     if (options.length > 2 && options[2] && commandOptionHelp[options[2]]) {
@@ -505,6 +554,12 @@ settings.mode = command;
 switch (command) {
 default:
 case "localize":
+    if (options.length > 3) {
+        settings.rootDir = options[3];
+    }
+    break;
+
+case "init":
     if (options.length > 3) {
         settings.rootDir = options[3];
     }
@@ -556,13 +611,28 @@ case "convert":
     settings.infiles = options.slice(4);
     break;
 
+case "compare":
+    if (options.length < 6) {
+        console.log("Error: must specify a from xliff file, a to xliff file, and an output directory.");
+        usage();
+    }
+    settings.infiles = [options[3], options[4]];
+    settings.outfile = options[5];
+    settings.infiles.forEach(function (file) {
+        if (!fs.existsSync(file)) {
+            console.log("Error: could not access file " + file);
+            usage();
+        }
+    });
+    break;
+
 case "select":
     if (options.length < 5) {
         console.log("Error: must specify selection criteria, an output file, and at least one input file.");
         usage();
     }
     settings.criteria = options[3];
-    settings.outfile = options[4]
+    settings.outfile = options[4];
     settings.infiles = options.slice(5);
     settings.infiles.forEach(function (file) {
         if (!fs.existsSync(file)) {
@@ -612,6 +682,7 @@ function processNextProject() {
                         });
                     });
                 });
+
             });
         });
     }
@@ -767,9 +838,10 @@ try {
     switch (command) {
     case "init":
         var info = collectInfo();
-        var project = ProjectFactory.newProject(info);
-        var config = project.getConfig(info);
-        var outputFile = path.join(settings.rootDir, "project.json");
+        info.rootDir = settings.rootDir;
+        var project = ProjectFactory.newProject(info, settings);
+        var config = project.getConfig(settings);
+        var outputFile = projectConfig.getInitOutputPath(settings);
         fs.writeFileSync(outputFile, JSON.stringify(config, undefined, 4) + '\n', "utf-8");
         logger.info("Wrote file " + outputFile);
         break;
@@ -813,6 +885,11 @@ try {
         var selected = XliffSelect(settings);
         XliffSelect.write(selected);
         break;
+
+    case "compare":
+        var compareResult = XliffCompare(settings);
+        XliffCompare.write(compareResult, settings);
+        break;
     }
 } catch (e) {
     logger.error("caught exception: " + e);
@@ -824,7 +901,6 @@ try {
     }
     exitValue = 2;
 }
+
+process.exitCode = exitValue;
 logger.info("Done");
-log4js.shutdown(function() {
-    process.exit(exitValue);
-});

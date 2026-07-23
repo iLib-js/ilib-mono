@@ -381,4 +381,48 @@ describe("javascriptfiletype", function() {
 
         expect(resfile1).not.toBe(resfile2);
     });
+
+    test("JavaScriptFileTypeWriteSourceLocale", function() {
+        expect.assertions(2);
+
+        var p3 = new CustomProject({
+            id: "app",
+            resourceFileTypes: { "javascript": "ilib-loctool-javascript-resource" },
+            plugins: [require.resolve("../.")],
+            sourceLocale: "en-US"
+        }, "./testfiles", {
+            locales: ["de-DE"],
+            javascript: {
+                outputSourceLocale: true,
+                mappings: {
+                    "**/*.js": {
+                        template: "resources/[locale].js"
+                    }
+                }
+            }
+        });
+
+        p3.defineFileTypes();
+
+        var jtf = new JavaScriptFileType(p3);
+        var resFileType = p3.getResourceFileType("javascript");
+        var mapping = jtf.getMapping("src/t1.js");
+
+        jtf.extracted.add(p3.getAPI().newResource({
+            type: "string",
+            project: "app",
+            key: "Hello",
+            sourceLocale: "en-US",
+            source: "Hello",
+            pathName: "src/t1.js",
+            datatype: "javascript"
+        }));
+        jtf.extracted.getAll()[0].mapping = mapping;
+
+        jtf.write({}, ["de-DE"]);
+
+        var sourceFile = resFileType.getResourceFile("en-US", "resources/en-US.js");
+        expect(sourceFile.isDirty()).toBeTruthy();
+        expect(sourceFile.getContent()).toContain('"Hello": "Hello"');
+    });
 });

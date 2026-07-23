@@ -1,0 +1,10 @@
+{
+    "clock": "12",
+    "currency": "EGP",
+    "firstDayOfWeek": 6,
+    "locale": "und-EG",
+    "region.name": "Egypt",
+    "timezone": "Africa/Cairo",
+    "weekendEnd": 6,
+    "weekendStart": 5
+}

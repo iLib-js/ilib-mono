@@ -120,6 +120,12 @@ ilib-assemble [options] output-dir [input-dir-or-file ...]
 
 The ilib-assemble tool takes the following options:
 
+* --assemble or -a. Directly specify the path to an assemble.mjs file to include.
+    When this option is used, the walk/scan step is skipped and only the specified
+    assemble.mjs files are loaded and called to produce locale data. This is useful
+    for testing or when you want to include custom locale data without creating a
+    full ilib package. This option may be specified multiple times for multiple
+    assemble.mjs files.
 * --compressed or -c. The data should appear in compressed/minified form
 * --format or -f. Specify the format of the output files. This can be one of:
     - json: the output files should be written in plain json form
@@ -200,23 +206,36 @@ the webpack bundles. In order to exclude them, add the following to your
 See the documentation for [ilib-loader](https://github.com/iLib-js/ilib-mono/tree/main/packages/ilib-loader)
 for more details.
 
+## Samples
+
+The [samples](./samples) directory contains example projects that demonstrate
+how to use ilib-assemble:
+
+- **istring-sample** - Shows the standard workflow of using ilib-assemble with
+  an ilib package (ilib-istring). The tool scans source code for ilib imports
+  and automatically assembles the required locale data.
+
+- **custom-assemble-sample** - Demonstrates using the `--assemble` flag to
+  directly specify a custom `assemble.mjs` file. This is useful for including
+  custom locale data without creating a full ilib package.
+
+- **resources-sample** - Shows how to use the `--resources` flag to include
+  translated resource files (from loctool or similar tools) in the assembled
+  output for use with ilib-resbundle.
+
+- **legacy-ilib-sample** - Demonstrates using the `--legacyilib` flag to
+  assemble data for the monolithic legacy ilib package (version 14.x).
+
+See the [samples README](./samples/README.md) for detailed instructions on
+running each sample.
+
 ## License
 
-Copyright © 2022, 2024 JEDLSoft
+Copyright © 2022, 2024, 2026 JEDLSoft
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and
-limitations under the License.
+This package is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). The full license text is available in the [LICENSE](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-assemble/LICENSE) file in the ilib-mono repository on GitHub.
 
 ## Release Notes
 
-See [CHANGELOG.md](./CHANGELOG.md)
+See [CHANGELOG.md](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-assemble/CHANGELOG.md).
+

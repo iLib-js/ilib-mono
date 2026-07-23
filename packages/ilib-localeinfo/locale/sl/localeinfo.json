@@ -1,0 +1,25 @@
+{
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "alternateQuotationStart": "‚",
+        "quotationEnd": "“",
+        "quotationStart": "„"
+    },
+    "language.name": "Slovenian",
+    "locale": "sl",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "{n} {s}",
+            "commonNegative": "−{n} {s}"
+        },
+        "decimalChar": ",",
+        "exponential": "e",
+        "groupChar": ".",
+        "negativenumFmt": "−{n}",
+        "negativepctFmt": "−{n} %",
+        "pctFmt": "{n} %"
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

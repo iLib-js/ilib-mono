@@ -7,6 +7,8 @@ Each package in the `packages/` directory should follow this structure:
 - `lib/` - Compiled/built files (generated)
 - `locale/` - Locale data
 - `test/` - Test files
+- `test-e2e/` - E2E test files
+- `samples/` - Sample projects to showcase the package in action (also used as E2E test resources)
 - `docs/` - Documentation files
 - `CHANGELOG.md` - Version history and changes
 - `README.md` - Package-specific documentation
@@ -32,6 +34,7 @@ Each package in the `packages/` directory should follow this structure:
 - Use descriptive test file names that match the source files
 - Include integration tests for complex workflows
 - Maintain good test coverage (aim for >80%)
+- Include E2E tests for CLI tools and their plugins in `test-e2e/` (utilize `samples/` directory as test resources where applicable)
 
 ## Documentation
 - Include descriptive JSDoc or TSDoc comments for all public APIs.

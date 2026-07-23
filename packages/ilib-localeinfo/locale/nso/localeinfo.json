@@ -1,0 +1,10 @@
+{
+    "language.name": "Northern Sotho",
+    "locale": "nso",
+    "numfmt": {
+        "groupChar": " "
+    },
+    "scripts": [
+        "Latn"
+    ]
+}

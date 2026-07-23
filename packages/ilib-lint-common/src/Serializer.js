@@ -70,6 +70,7 @@ class Serializer extends PipelineElement {
      * representations to serialize
      * @returns {SourceFile} the source file that contains the serialized form of the
      * given intermediate representation
+     * @throws {Error} if the source file could not be created
      */
     serialize(representations) {
         throw new NotImplementedError();

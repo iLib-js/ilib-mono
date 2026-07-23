@@ -1,0 +1,31 @@
+{
+    "name": "sample-js",
+    "id": "sample-js",
+    "projectType": "custom",
+    "sourceLocale": "en-US",
+    "pseudoLocale": "zxx-XX",
+    "resourceDirs": {
+        "javascript": "resources"
+    },
+    "resourceFileTypes": {
+        "javascript":"ilib-loctool-javascript-resource"
+    },
+    "plugins": [
+        "ilib-loctool-javascript"
+    ],
+    "excludes": [
+        ".*",
+        "xliffs",
+        "resources"
+    ],
+    "settings": {
+        "xliffsDir": "./xliffs",
+        "locales":[
+            "ko-KR",
+            "de-DE"
+        ],
+        "javascript": {
+            "wrapper": "\\.\\s*getString(JS)?"
+        }
+    }
+}

@@ -43,12 +43,22 @@ class StringSerializer extends Serializer {
      * @param {IntermediateRepresentation[]} irs the intermediate representations to convert
      * @returns {SourceFile} the source file with the contents of the intermediate
      * representation
+     * @throws {Error} if the source file could not be created
      */
     serialize(irs) {
         // should only have 1 intermediate representation in the array because the StringParser
         // only creates one
+        if (!irs || irs.length === 0) {
+            throw new Error("No intermediate representation provided");
+        }
         const ir = irs[0];
+        if (ir.getType() !== this.type) {
+            throw new Error("Invalid intermediate representation");
+        }
         const data = ir.getRepresentation();
+        if (!data) {
+            throw new Error("No data found in intermediate representation");
+        }
         return new SourceFile(ir.sourceFile.getPath(), {
             file: ir.sourceFile,
             content: data

@@ -59,7 +59,7 @@ class ErrorFilterTransformer extends Transformer {
             type: ir.getType(),
             ir: filteredResources,
             sourceFile: ir.getSourceFile(),
-            dirty: (filteredResources.length !== resources.length)
+            dirty: ir.isDirty() || (filteredResources.length !== resources.length)
         });
     }
 };

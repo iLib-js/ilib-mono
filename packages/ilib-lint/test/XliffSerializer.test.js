@@ -1,7 +1,7 @@
 /*
  * XliffSerializer.test.js - test the built-in XliffSerializer plugin
  *
- * Copyright © 2024-2025 JEDLSoft
+ * Copyright © 2024-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,6 +75,90 @@ describe("test the XliffParser plugin", () => {
 </xliff>`);
     });
 
+    test("Serialize a regular xliff 2.0 file", () => {
+        expect.assertions(3);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/es-ES.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [
+                new ResourceString({
+                    source: "App",
+                    sourceLocale: "en-US",
+                    target: "aplicación",
+                    targetLocale: "es-ES",
+                    key: "App",
+                    datatype: "plaintext",
+                    restype: "string",
+                    project: "webapp",
+                    pathName: "foo/bar/asdf.js"
+                })
+            ],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        const newSourceFile = xs.serialize([ir]);
+        expect(newSourceFile).toBeTruthy();
+        expect(newSourceFile.getPath()).toBe(sourceFile.getPath());
+        expect(newSourceFile.getContent()).toBe(
+`<?xml version="1.0" encoding="utf-8"?>
+<xliff version="2.0" srcLang="en-US" trgLang="es-ES" xmlns:l="http://ilib-js.com/loctool">
+  <file original="foo/bar/asdf.js" l:project="webapp">
+    <group id="group_1" name="plaintext">
+      <unit id="1" type="res:string" l:datatype="plaintext">
+        <segment>
+          <source>App</source>
+          <target>aplicación</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>`);
+    });
+
+    test("Serialize a regular xliff 2.0 webOS xlifffile", () => {
+        expect.assertions(3);
+        const sourceFile = new SourceFile("test/testfiles/xliff/webOSXliff/es-ES.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [
+                new ResourceString({
+                    source: "App",
+                    sourceLocale: "en-KR",
+                    target: "aplicación",
+                    targetLocale: "es-ES",
+                    key: "App",
+                    datatype: "javascript",
+                    restype: "string",
+                    project: "home",
+                    pathName: "foo/bar/asdf.js",
+                    autoKey: true
+                })
+            ],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        const newSourceFile = xs.serialize([ir]);
+        expect(newSourceFile).toBeTruthy();
+        expect(newSourceFile.getPath()).toBe(sourceFile.getPath());
+        expect(newSourceFile.getContent()).toBe(
+`<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="es-ES" version="2.0">
+  <file id="home_f1" original="home">
+    <group id="home_g1" name="javascript">
+      <unit id="home_g1_1">
+        <segment>
+          <source>App</source>
+          <target>aplicación</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
+`);
+    });
     test("Serialize a regular xliff file with multiple resources", () => {
         expect.assertions(3);
 
@@ -171,6 +255,54 @@ describe("test the XliffParser plugin", () => {
     </body>
   </file>
 </xliff>`);
-
     });
+
+    test("Serialize a resource with an invalid resource type", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "string",
+            ir: ["random string"],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([ir])).toThrow("Invalid intermediate representation");
+    });
+
+    test("Serialize an intermediate representation with no representations", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([])).toThrow("No intermediate representation provided");
+    });
+
+    test("Serialize an intermediate representation with no resource representations", () => {
+        expect.assertions(1);
+
+        const sourceFile = new SourceFile("test/testfiles/xliff/test.xliff", {});
+        const ir = new IntermediateRepresentation({
+            type: "resource",
+            ir: [],
+            sourceFile
+        });
+
+        const xs = new XliffSerializer();
+        expect(() => xs.serialize([ir])).toThrow("No resources found in intermediate representation");
+    });
+
+    test.each([undefined, null])(
+        "Serialize an intermediate representation with invalid argument type %s",
+        (invalidIr) => {
+            expect.assertions(1);
+
+            const xs = new XliffSerializer();
+            expect(() =>
+                // @ts-expect-error testing invalid argument types
+                xs.serialize([invalidIr])
+            ).toThrow("Invalid intermediate representation");
+        }
+    );
 });

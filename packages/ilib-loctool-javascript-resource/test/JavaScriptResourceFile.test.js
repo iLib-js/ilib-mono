@@ -1,7 +1,7 @@
 /*
  * JavaScriptResourceFile.test.js - test the JavaScript file handler object.
  *
- * Copyright © 2019-2020, 2023, 2025 Box, Inc.
+ * Copyright © 2019-2020, 2023, 2025-2026 Box, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 if (!JavaScriptResourceFile) {
     var JavaScriptResourceFile = require("../JavaScriptResourceFile.js");
     var CustomProject = require("loctool/lib/CustomProject.js");
+    var Locale = require("ilib-locale");
 }
 
 function diff(a, b) {
@@ -142,6 +143,85 @@ var p5 = new CustomProject({
         header: "/* This is a generated file. DO NOT EDIT THIS. */\n\nimport type ReactString from './types.d.ts';\n\nconst strings = ",
         footer: ";\n\nexport default strings;\n"
     },
+    identify: true
+});
+
+// Project with a line comment header (starts with //)
+var p6 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "de-AT"],
+    javascript: {
+        header: "// This is a generated file. DO NOT MODIFY BY HAND\nexport default ",
+        footer: ";\n"
+    },
+    identify: true
+});
+
+// Project with javascript.template for output path generation
+var p7 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "de-AT"],
+    javascript: {
+        template: "[dir]/[locale].js"
+    },
+    identify: true
+});
+
+// Project with javascript.template and localeDefaults (template uses full locale spec)
+var p9 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "de-AT"],
+    localeDefaults: {
+        "de": {
+            def: "de-DE",
+            spec: "de"
+        }
+    },
+    javascript: {
+        template: "[dir]/[locale].js"
+    },
+    identify: true
+});
+
+// Project with javascript.template using [localeDir]
+var p10 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "ja-JP", "zh-Hans-CN"],
+    javascript: {
+        template: "[dir]/[localeDir]/messages.js"
+    },
+    identify: true
+});
+
+// Project with no javascript.template: should keep legacy resourceDirs behavior
+var p8 = new CustomProject({
+    id: "webapp",
+    sourceLocale: "en-US",
+    resourceDirs: {
+        "js": "localized_js"
+    }
+}, "./testfiles", {
+    locales:["en-GB", "de-DE", "de-AT"],
     identify: true
 });
 
@@ -277,6 +357,92 @@ describe("javascriptresourcefile", function() {
         expect(jsrf).toBeTruthy();
 
         expect(jsrf.getContent()).toBe('ilib.data.strings_de_DE = {};\n'
+        );
+    });
+
+    test("JavaScriptResourceFileOutputSourceLocale", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p,
+            pathName: "localized_js/en-US.js",
+            locale: "en-US"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        [
+            p.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "en-US",
+                key: "Hello",
+                sourceLocale: "en-US",
+                source: "Hello",
+                target: "Hello"
+            }),
+            p.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "en-US",
+                key: "Goodbye",
+                sourceLocale: "en-US",
+                source: "Goodbye",
+                target: "Goodbye"
+            })
+        ].forEach(function(res) {
+            jsrf.addResource(res);
+        });
+
+        expect(jsrf.getContent()).toBe('ilib.data.strings_en_US = {\n' +
+            '    "Goodbye": "Goodbye",\n' +
+            '    "Hello": "Hello"\n' +
+            '};\n'
+        );
+    });
+
+    test("JavaScriptResourceFileOutputSourceLocaleWithHeaderAndFooter", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p3,
+            pathName: "localized_js/en-US.js",
+            locale: "en-US"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        [
+            p3.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "en-US",
+                key: "Hello",
+                sourceLocale: "en-US",
+                source: "Hello",
+                target: "Hello"
+            }),
+            p3.getAPI().newResource({
+                type: "string",
+                project: "webapp",
+                targetLocale: "en-US",
+                key: "Goodbye",
+                sourceLocale: "en-US",
+                source: "Goodbye",
+                target: "Goodbye"
+            })
+        ].forEach(function(res) {
+            jsrf.addResource(res);
+        });
+
+        expect(jsrf.getContent()).toBe(
+            '/* This is a generated file. DO NOT EDIT THIS. */\n\n' +
+            "import type ReactString from './types.d.ts';\n\n" +
+            'const strings_en_US = {\n' +
+            '    "Goodbye": "Goodbye",\n' +
+            '    "Hello": "Hello"\n' +
+            '};\n\n' +
+            'export default strings_en_US;\n'
         );
     });
 
@@ -571,6 +737,259 @@ describe("javascriptresourcefile", function() {
         expect(jsrf).toBeTruthy();
 
         expect(jsrf.getResourceFilePath()).toBe("path/to/foo.js");
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathAlreadyHasCustomExtensionPath", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p2,
+            locale: "de-DE",
+            pathName: "path/to/strings.mjs"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe("path/to/strings.mjs");
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathLegacyUsesJavascriptExtensionSetting", function() {
+        expect.assertions(2);
+
+        var pExt = new CustomProject({
+            id: "webapp",
+            sourceLocale: "en-US",
+            resourceDirs: {
+                "js": "localized_js"
+            }
+        }, "./testfiles", {
+            locales: ["de-DE"],
+            javascript: {
+                extension: "tsx"
+            },
+            identify: true
+        });
+
+        var jsrf = new JavaScriptResourceFile({
+            project: pExt,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de-DE.tsx");
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathJsonDelegatingSourceUsesTemplate", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p2,
+            locale: "de-DE",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de.js");
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathJsonDelegatingSourceUsesJavascriptTemplateWhenConfigured", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p7,
+            locale: "de-DE",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        // With a configured javascript.template, output path should be based on source path + locale.
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/json/de-DE.js");
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathJsonDelegatingSourceFallsBackWithoutJavascriptTemplate", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p8,
+            locale: "de-DE",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        // Without javascript.template, keep legacy behavior (resourceDirs + locale.js).
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de-DE.js");
+    });
+
+    test.each([
+        ["de-DE", "testfiles/json/de-DE.js"],
+        ["fr-FR", "testfiles/json/fr-FR.js"],
+        ["ja-JP", "testfiles/json/ja-JP.js"],
+        ["zh-Hans-CN", "testfiles/json/zh-Hans-CN.js"],
+        ["en-GB", "testfiles/json/en-GB.js"]
+    ])("JavaScriptResourceFileGetResourceFilePathWithJavascriptTemplate locale %s", function(locale, expectedPath) {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p7,
+            locale: locale,
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe(expectedPath);
+    });
+
+    test.each([
+        ["de-DE", "testfiles/watermark-editor/i18n/de-DE.js"],
+        ["fr-FR", "testfiles/watermark-editor/i18n/fr-FR.js"],
+        ["ja-JP", "testfiles/watermark-editor/i18n/ja-JP.js"]
+    ])("JavaScriptResourceFileGetResourceFilePathWithJavascriptTemplateNestedSource locale %s", function(locale, expectedPath) {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p7,
+            locale: locale,
+            pathName: "watermark-editor/i18n/en-US.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe(expectedPath);
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathWithJavascriptTemplateUsesFullLocaleNotDefaultSpec", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p9,
+            locale: "de-AT",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        // Template uses the file's locale spec, not localeDefaults.spec ("de").
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/json/de-AT.js");
+    });
+
+    test.each([
+        ["de-DE", "testfiles/json/de/DE/messages.js"],
+        ["ja-JP", "testfiles/json/ja/JP/messages.js"],
+        ["zh-Hans-CN", "testfiles/json/zh/Hans/CN/messages.js"]
+    ])("JavaScriptResourceFileGetResourceFilePathWithJavascriptTemplateLocaleDir locale %s", function(locale, expectedPath) {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p10,
+            locale: locale,
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe(expectedPath);
+    });
+
+    test.each([
+        ["de-DE", "testfiles/json/de-DE.js"],
+        ["fr-FR", "testfiles/json/fr-FR.js"],
+        ["ja-JP", "testfiles/json/ja-JP.js"],
+        ["zh-Hans-CN", "testfiles/json/zh-Hans-CN.js"]
+    ])("JavaScriptResourceFileGetResourceFilePathWithJavascriptTemplateLocaleParam %s", function(pathLocale, expectedPath) {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p7,
+            locale: "en-US",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath(pathLocale)).toBe(expectedPath);
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathWithJavascriptTemplateLocaleObjectParam", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p7,
+            locale: "en-US",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath(new Locale("de-DE"))).toBe("testfiles/json/de-DE.js");
+    });
+
+    test.each([
+        ["de-DE", "testfiles/watermark-editor/i18n/de-DE.js"],
+        ["fr-FR", "testfiles/watermark-editor/i18n/fr-FR.js"]
+    ])("JavaScriptResourceFileGetResourceFilePathWithJavascriptTemplateLocaleParamNested %s", function(pathLocale, expectedPath) {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p7,
+            locale: "en-US",
+            pathName: "watermark-editor/i18n/en-US.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath(pathLocale)).toBe(expectedPath);
+    });
+
+    test.each([
+        ["de-DE", "testfiles/json/de/DE/messages.js"],
+        ["ja-JP", "testfiles/json/ja/JP/messages.js"]
+    ])("JavaScriptResourceFileGetResourceFilePathWithJavascriptTemplateLocaleDirLocaleParam %s", function(pathLocale, expectedPath) {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p10,
+            locale: "en-US",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath(pathLocale)).toBe(expectedPath);
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathLocaleParamOverridesInstanceLocale", function() {
+        expect.assertions(3);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p7,
+            locale: "de-DE",
+            pathName: "json/strings.json"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/json/de-DE.js");
+        expect(jsrf.getResourceFilePath("fr-FR")).toBe("testfiles/json/fr-FR.js");
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathLocaleParamLegacyWithLocaleDefaults", function() {
+        expect.assertions(3);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p2,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de.js");
+        expect(jsrf.getResourceFilePath("de-AT")).toBe("testfiles/localized_js/de-AT.js");
+    });
+
+    test("JavaScriptResourceFileGetResourceFilePathLocaleParamLegacyWithoutLocaleDefaults", function() {
+        expect.assertions(3);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+        expect(jsrf.getResourceFilePath()).toBe("testfiles/localized_js/de-DE.js");
+        expect(jsrf.getResourceFilePath("fr-FR")).toBe("testfiles/localized_js/fr-FR.js");
     });
 
     test("JavaScriptResourceFileGetContentDefaultLocale", function() {
@@ -1258,6 +1677,39 @@ describe("javascriptresourcefile", function() {
             '    "yet more source text": "<span loclang=\\"javascript\\" locid=\\"yet more source text\\">noch mehr Quellentext</span>"\n' +
             '};\n\n' +
             'export default strings_de;\n';
+
+        var actual = jsrf.getContent();
+        diff(actual, expected);
+
+        expect(actual).toBe(expected);
+    });
+
+    test("JavaScriptResourceFile test header with line comment starting with double slash", function() {
+        expect.assertions(2);
+
+        var jsrf = new JavaScriptResourceFile({
+            project: p6,
+            locale: "de-DE"
+        });
+
+        expect(jsrf).toBeTruthy();
+
+        jsrf.addResource(p6.getAPI().newResource({
+            type: "string",
+            project: "webapp",
+            sourceLocale: "en-US",
+            source: "source text",
+            targetLocale: "de-DE",
+            key: "source text",
+            target: "Quellentext"
+        }));
+
+        // The header starts with "// This is..." - the first slash should be preserved
+        var expected =
+            '// This is a generated file. DO NOT MODIFY BY HAND\n' +
+            'export default {\n' +
+            '    "source text": "<span loclang=\\"javascript\\" locid=\\"source text\\">Quellentext</span>"\n' +
+            '};\n';
 
         var actual = jsrf.getContent();
         diff(actual, expected);

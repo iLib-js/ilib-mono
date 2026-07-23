@@ -1,0 +1,75 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "custom-schema",
+    "type": "object",
+    "description": "Test schema to test schema overwriting using project config",
+    "properties": {
+        "paths": {
+            "type": "object",
+            "properties": {
+                "/markdown": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "tags": {
+                                "type": "array",
+                                "localizable": true,
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalField": {
+                                "type": "string",
+                                "localizable": true
+                            }
+                        }
+                    }
+                },
+                "/plural": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "pluralProp": {
+                                "type": "object",
+                                "required": [
+                                    "one",
+                                    "other"
+                                ],
+                                "localizable": true,
+                                "properties": {
+                                    "zero": {
+                                        "type": "string",
+                                        "description": "Handle the zero string."
+                                    },
+                                    "one": {
+                                        "type": "string",
+                                        "description": "Handle the singular string."
+                                    },
+                                    "two": {
+                                        "type": "string",
+                                        "description": "Handle the dual string."
+                                    },
+                                    "few": {
+                                        "type": "string",
+                                        "description": "Handle the few plural string."
+                                    },
+                                    "many": {
+                                        "type": "string",
+                                        "description": "Handle the many plural string."
+                                    },
+                                    "other": {
+                                        "type": "string",
+                                        "description": "Handle any string not covered by the other plurals."
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -4,19 +4,19 @@
        srcLang="en-KR" trgLang="ko-KR">
   <file id="sample2_f1" original="sample2">
     <group id="sample2_g1" name="c">
-      <unit id="1">
+      <unit id="sample2_g1_1">
         <segment>
           <source>No</source>
           <target>아니오</target>
         </segment>
       </unit>
-      <unit id="2">
+      <unit id="sample2_g1_2">
         <segment>
           <source>Yes</source>
           <target>예</target>
         </segment>
       </unit>
-      <unit id="7">
+      <unit id="sample2_g1_3">
         <mda:metadata>
             <mda:metaGroup category="device-type">
             <mda:meta type="Monitor">"Monitor" 이용이 불가능합니다</mda:meta>

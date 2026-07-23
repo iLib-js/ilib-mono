@@ -1,0 +1,42 @@
+<!-- input / new -->
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="en-US" version="2.0">
+  <file id="app1_f1" original="app1">
+    <group id="app1_g1" name="javascript">
+      <unit id="app1_g1_1">
+        <mda:metadata>
+          <mda:metaGroup category="device-type">
+            <mda:meta type="StanbyME">(changed) StanbyME {arg1}.</mda:meta>
+            <mda:meta type="TV">(added) TV {arg1}.</mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment>
+          <source>%deviceType% {arg1}.</source>
+          <target>(changed) %deviceType% {arg1}.</target>
+        </segment>
+      </unit>
+      <unit id="app1_g1_2">
+        <mda:metadata>
+          <mda:metaGroup category="device-type">
+            <mda:meta type="TV">(added) TV specific settings</mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment>
+          <source>Settings</source>
+          <target>Settings</target>
+        </segment>
+      </unit>
+      <unit id="app1_g1_3">
+        <mda:metadata>
+          <mda:metaGroup category="feature">
+            <mda:meta type="premium">Premium feature text</mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment>
+          <source>New text with metadata</source>
+          <target>New text with metadata</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

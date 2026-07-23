@@ -1168,44 +1168,6 @@ export const testformatinfo = {
         test.expect(2);
         var formatter = new AddressFmt({locale: 'ja-JP'});
 
-        formatter.getFormatInfo().then((info) => {
-            test.ok(info);
-
-            for (var i = 0; i < info.length; i++) {
-                for (var j = 0; j < info[i].length; j++) {
-                    if (info[i][j].component === "region") {
-                        test.equal(info[i][j], "Prefecture");
-                    }
-                }
-            }
-
-            test.done();
-        });
-    },
-
-    testAddressFmtGetFormatInfoRightRegionNameJA: function(test) {
-        test.expect(2);
-        var formatter = new AddressFmt({locale: 'ja-JP'});
-
-        formatter.getFormatInfo().then((info) => {
-            test.ok(info);
-
-            for (var i = 0; i < info.length; i++) {
-                for (var j = 0; j < info[i].length; j++) {
-                    if (info[i][j].component === "region") {
-                        test.equal(info[i][j], "Prefecture");
-                    }
-                }
-            }
-
-            test.done();
-        });
-    },
-
-    testAddressFmtGetFormatInfoRightRegionNameJA: function(test) {
-        test.expect(2);
-        var formatter = new AddressFmt({locale: 'ja-JP'});
-
         formatter.getFormatInfo("en").then((info) => {
             test.ok(info);
 

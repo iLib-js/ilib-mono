@@ -1,5 +1,29 @@
 # ilib-lint-common
 
+## 3.7.0
+
+### Minor Changes
+
+- 7658dff: - Added "param" property to the constructor of a Rule
+  - gives the parameters from the ilib-lint-config file
+  - preserves the type of the parameter
+  - previously, it was ambiguous how the parameters
+    would get passed to the rule constructor
+
+## 3.6.0
+
+### Minor Changes
+
+- a164407: Allow updating the `dirty` flag on `IntermediateRepresentation`
+
+## 3.5.0
+
+### Minor Changes
+
+- 9212dff: - Serializer plugins can now throw an Error if the
+  data they are trying to serialize is insufficient
+  or the output file cannot be generated
+
 ## 3.4.0
 
 ### Minor Changes

@@ -1,0 +1,31 @@
+{
+    "clock": "12",
+    "delimiter": {
+        "alternateQuotationEnd": "‘",
+        "alternateQuotationStart": "’",
+        "quotationEnd": "“",
+        "quotationStart": "”"
+    },
+    "language.name": "Arabic",
+    "locale": "ar",
+    "numfmt": {
+        "currencyFormats": {
+            "common": "‏{n} {s}",
+            "commonNegative": "؜-‏{n} {s}"
+        },
+        "decimalChar": "٫",
+        "digits": "٠١٢٣٤٥٦٧٨٩",
+        "exponential": "أس",
+        "groupChar": "٬",
+        "negativenumFmt": "؜-{n}",
+        "negativepctFmt": "؜-{n}٪؜",
+        "pctChar": "٪؜",
+        "pctFmt": "{n}٪؜",
+        "script": "Arab",
+        "useNative": true
+    },
+    "scripts": [
+        "Arab",
+        "Syrc"
+    ]
+}

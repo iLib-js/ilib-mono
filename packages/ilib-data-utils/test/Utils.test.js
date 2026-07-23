@@ -51,12 +51,6 @@ describe("testUtils", () => {
         var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDF02);
         expect(0x10302).toBe(Utils.UTF16ToCodePoint(str));
     });
-    test("UTFToCodePoint", () => {
-        expect.assertions(1)
-        var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDF02);
-
-        expect(0x10302).toBe(Utils.UTF16ToCodePoint(str));
-    });
     test("UTFToCodePointLast", () => {
         expect.assertions(1)
         var str = String.fromCharCode(0xDBFF) + String.fromCharCode(0xDFFD);
@@ -118,36 +112,6 @@ describe("testUtils", () => {
 
         expect(str.length).toBe(1);
         expect(0x0302).toBe(str.charCodeAt(0));
-    });
-    test("UTFToCodePoint", () => {
-        expect.assertions(1)
-        var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDF02);
-
-        expect(0x10302).toBe(Utils.UTF16ToCodePoint(str));
-    });
-    test("UTFToCodePointLast", () => {
-        expect.assertions(1)
-        var str = String.fromCharCode(0xDBFF) + String.fromCharCode(0xDFFD);
-
-        expect(0x10FFFD).toBe(Utils.UTF16ToCodePoint(str));
-    });
-    test("UTFToCodePointFirst", () => {
-        expect.assertions(1)
-        var str = String.fromCharCode(0xD800) + String.fromCharCode(0xDC00);
-
-        expect(0x10000).toBe(Utils.UTF16ToCodePoint(str));
-    });
-    test("UTFToCodePointBeforeFirst", () => {
-        expect.assertions(1)
-        var str = String.fromCharCode(0xFFFF);
-
-        expect(0xFFFF).toBe(Utils.UTF16ToCodePoint(str));
-    });
-    test("UTFToCodePointNotSupplementary", () => {
-        expect.assertions(1)
-        var str = String.fromCharCode(0x0302);
-
-        expect(0x0302).toBe(Utils.UTF16ToCodePoint(str));
     });
     test("IsMemberTrue", () => {
         expect.assertions(4)
@@ -802,10 +766,6 @@ describe("testUtils", () => {
     test("HexToChar2", () => {
         expect.assertions(1)
         expect(Utils.hexToChar("65")).toBe('e');
-    });
-    test("HexToChar3", () => {
-        expect.assertions(1)
-        expect(Utils.hexToChar("1E0A")).toBe('Ḋ');
     });
     test("HexToChar3", () => {
         expect.assertions(1)

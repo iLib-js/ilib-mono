@@ -1,0 +1,4 @@
+{
+    "extends": "ilib-internal/config/tsconfig.build.json",
+    "include": ["src"]
+}

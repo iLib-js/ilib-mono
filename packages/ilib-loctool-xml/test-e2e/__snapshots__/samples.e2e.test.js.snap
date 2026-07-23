@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples xml should produce an extracted XLIFF file 1`] = `
+"<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="xml/res/values/arrays.xml" source-language="en-US" product-name="sample-xml">
+    <body>
+      <trans-unit id="5" resname="subaccount_questions" restype="array" datatype="xml" extype="0">
+        <source>How many times has {first_name} been pregnant?</source>
+      </trans-unit>
+      <trans-unit id="6" resname="subaccount_questions" restype="array" datatype="xml" extype="1">
+        <source>How many deliveries did {first_name} have?</source>
+      </trans-unit>
+      <trans-unit id="7" resname="subaccount_questions" restype="array" datatype="xml" extype="2">
+        <source>How many times did {first_name} have a pre-term deliveries?</source>
+      </trans-unit>
+      <trans-unit id="8" resname="subaccount_questions" restype="array" datatype="xml" extype="3">
+        <source>How many times did {first_name} have a miscarriage or termination?</source>
+      </trans-unit>
+      <trans-unit id="9" resname="subaccount_questions" restype="array" datatype="xml" extype="4">
+        <source>How many living children does {first_name} have?</source>
+      </trans-unit>
+      <trans-unit id="10" resname="subaccount_questions" restype="array" datatype="xml" extype="5">
+        <source>When was {first_name} last menstrual period?</source>
+      </trans-unit>
+      <trans-unit id="15" resname="self_questions" restype="array" datatype="xml" extype="0">
+        <source>How many times have you been pregnant?</source>
+      </trans-unit>
+      <trans-unit id="16" resname="self_questions" restype="array" datatype="xml" extype="1">
+        <source>How many deliveries did you have?</source>
+      </trans-unit>
+      <trans-unit id="17" resname="self_questions" restype="array" datatype="xml" extype="2">
+        <source>How many times did you have a pre-term deliveries?</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="xml/res/values/plurals.xml" source-language="en-US" product-name="sample-xml">
+    <body>
+      <trans-unit id="3" resname="app_recommend" restype="plural" datatype="xml" extype="one">
+        <source>
+            {start}1{end} friend recommends
+        </source>
+        <note>Make sure {start} and {end} are surrounding the translated words of '1 friend' or '%d friends'.</note>
+      </trans-unit>
+      <trans-unit id="4" resname="app_recommend" restype="plural" datatype="xml" extype="other">
+        <source>
+            {start}%d{end} friends recommend
+        </source>
+        <note>Make sure {start} and {end} are surrounding the translated words of '1 friend' or '%d friends'.</note>
+      </trans-unit>
+      <trans-unit id="13" resname="app_recommend2" restype="plural" datatype="xml" extype="one">
+        <source>
+            {start}1 friend{end} recommends this app
+        </source>
+        <note>Make sure {start} and {end} are surrounding the translated words of '1 friend' or '%d friends'.</note>
+      </trans-unit>
+      <trans-unit id="14" resname="app_recommend2" restype="plural" datatype="xml" extype="other">
+        <source>
+            {start}%d friends{end} recommend this app
+        </source>
+        <note>Make sure {start} and {end} are surrounding the translated words of '1 friend' or '%d friends'.</note>
+      </trans-unit>
+      <trans-unit id="19" resname="friend_comment" restype="plural" datatype="xml" extype="one">
+        <source>
+            {start}1 friend{end} commented
+        </source>
+        <note>{"pluralForm":"one","pluralFormOther":"friend_comment"}</note>
+      </trans-unit>
+      <trans-unit id="20" resname="friend_comment" restype="plural" datatype="xml" extype="other">
+        <source>
+            {start}%d friends{end} commented
+        </source>
+        <note>{"pluralForm":"other","pluralFormOther":"friend_comment"}</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="xml/res/values/strings.xml" source-language="en-US" product-name="sample-xml">
+    <body>
+      <trans-unit id="2" resname="app_id" restype="string" datatype="xml">
+        <source>151779581544891</source>
+        <note>Do not translate</note>
+      </trans-unit>
+      <trans-unit id="12" resname="disclaimer" restype="string" datatype="xml">
+        <source>Disclaimer</source>
+      </trans-unit>
+      <trans-unit id="18" resname="description_imgVw" restype="string" datatype="xml">
+        <source>imageView</source>
+      </trans-unit>
+      <trans-unit id="21" resname="thanks_friend_pre" restype="string" datatype="xml">
+        <source>Send a thank you note to\\n{name}</source>
+      </trans-unit>
+      <trans-unit id="22" resname="thanks_news" restype="string" datatype="xml">
+        <source>{name} appreciates your gratitude :)</source>
+      </trans-unit>
+      <trans-unit id="23" resname="thanks" restype="string" datatype="xml">
+        <source>Thank you!</source>
+      </trans-unit>
+      <trans-unit id="24" resname="talk_to_friend" restype="string" datatype="xml">
+        <source>Get help now</source>
+      </trans-unit>
+      <trans-unit id="25" resname="ask_question" restype="string" datatype="xml">
+        <source>Ask friends</source>
+      </trans-unit>
+      <trans-unit id="26" resname="thank" restype="string" datatype="xml">
+        <source>Thank</source>
+      </trans-unit>
+      <trans-unit id="27" resname="thanked" restype="string" datatype="xml">
+        <source>Thanked</source>
+      </trans-unit>
+      <trans-unit id="28" resname="thanked_note" restype="string" datatype="xml">
+        <source>Leave a note?</source>
+      </trans-unit>
+      <trans-unit id="29" resname="r707551335" restype="string" datatype="xml">
+        <source>{meeting_time} with {friend_name}</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="xml/test.properties" source-language="en-US" product-name="sample-xml">
+    <body>
+      <trans-unit id="1" resname="src" restype="string" datatype="xml">
+        <source>This is a source string.</source>
+      </trans-unit>
+      <trans-unit id="11" resname="two" restype="string" datatype="xml">
+        <source>This is a second string.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>"
+`;

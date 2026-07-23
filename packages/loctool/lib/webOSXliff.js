@@ -2,7 +2,7 @@
 /*
  * webOSXliff.js - model an xliff file for the webOS
  *
- * Copyright © 2025, JEDLSoft
+ * Copyright © 2025-2026, JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ var webOSXliff = function webOSXliff(options) {
 webOSXliff.prototype.parse = function(xliff) {
     var sourceLocale = xliff._attributes["srcLang"] || this.project.sourceLocale;
     var targetLocale = xliff._attributes["trgLang"];
-    
+
     if (xliff.file) {
         var files = ilib.isArray(xliff.file) ? xliff.file : [ xliff.file ];
          for (var i = 0; i < files.length; i++) {
@@ -167,21 +167,6 @@ webOSXliff.prototype.parse = function(xliff) {
 }
 
 /**
- * Get the target string corresponding to the metadata
- *
- * @returns {String} The target string corresponding to the metadata.
- */
-webOSXliff.prototype.getMetadataTarget = function(metadata, tuData) {
-    if (!metadata || !tuData) return undefined;
-
-    this.type = metadata["device-type"];
-    var dataArr = tuData["mda:metaGroup"]['mda:meta'];
-
-    var matchItem = dataArr.find(item => item['_attributes']['type'] === this.type);
-    return matchItem ? matchItem['_text'] : undefined;
-};
-
-/**
  * Get the translation units in this xliff.
  *
  * @returns {Array.<Object>} the translation units in this xliff
@@ -195,6 +180,91 @@ webOSXliff.prototype._hashKey = function(project, context, sourceLocale, targetL
     logger.trace("Hashkey is " + key);
     return key;
 };
+
+/**
+ * Merges new metadata into base metadata by category and type,
+ * overwriting existing types and adding new ones as needed.
+ *
+ * @param {Object} newMetadata - Metadata object with updates.
+ * @param {Object} baseMetadata - Original metadata to merge into.
+ * @returns {Object} Merged metadata object.
+ */
+webOSXliff.prototype._mergeMetadata = function(newMetadata, baseMetadata) {
+    if (!baseMetadata) return newMetadata;
+    if (!newMetadata) return baseMetadata;
+
+    function normalizeGroup(metaGroup) {
+        if (!metaGroup) {
+            return [];
+        }
+        return Array.isArray(metaGroup) ? metaGroup : [metaGroup];
+    }
+
+    function normalizeMeta(meta) {
+        if (!meta) {
+            return [];
+        }
+        var arr = Array.isArray(meta) ? meta : [meta];
+        return arr.filter(function (m) { return m; });
+    }
+
+    var baseGroups = normalizeGroup(baseMetadata["mda:metaGroup"]);
+    var newGroups = normalizeGroup(newMetadata["mda:metaGroup"]);
+    var groupMap = new Map();
+
+    // Index base groups
+    baseGroups.forEach(function (group) {
+        var category = group && group._attributes && group._attributes.category;
+        if (!category) return;
+
+        var metaMap = new Map();
+        normalizeMeta(group["mda:meta"]).forEach(function (meta) {
+            var type = meta && meta._attributes && meta._attributes.type;
+            if (type) metaMap.set(type, meta);
+        });
+
+        groupMap.set(category, {
+            _attributes: { category: category },
+            metaMap: metaMap
+        });
+    });
+
+    // Merge new groups
+    newGroups.forEach(function (group) {
+        var category = group && group._attributes && group._attributes.category;
+        if (!category) return;
+
+        var newMetaArray = normalizeMeta(group["mda:meta"]);
+        var targetGroup = groupMap.get(category);
+
+        if (!targetGroup) {
+            var metaMap = new Map();
+            newMetaArray.forEach(function (meta) {
+                var type = meta && meta._attributes && meta._attributes.type;
+                if (type) metaMap.set(type, meta);
+            });
+            groupMap.set(category, {
+                _attributes: { category: category },
+                metaMap: metaMap
+            });
+        } else {
+            newMetaArray.forEach(function (meta) {
+                var type = meta && meta._attributes && meta._attributes.type;
+                if (type) targetGroup.metaMap.set(type, meta);
+            });
+        }
+    });
+
+    // Reconstruct
+    var mergedGroups = Array.from(groupMap.values()).map(function (group) {
+    return {
+        _attributes: group._attributes,
+        "mda:meta": Array.from(group.metaMap.values())
+    };
+    });
+
+    return { "mda:metaGroup": mergedGroups };
+}
 
 /**
  * Add this translation unit to this xliff.
@@ -221,7 +291,12 @@ webOSXliff.prototype.addTranslationUnit = function(unit) {
     var oldUnit = this.tuhash[hashKeyTarget];
     if (oldUnit && !this.allowDups) {
         logger.trace("Merging unit");
+
         // update the old unit with this new info
+        if (unit.metadata || oldUnit.metadata) {
+            // update metadata
+            unit.metadata = this._mergeMetadata(unit.metadata, oldUnit.metadata);
+        }
         JSUtils.shallowCopy(unit, oldUnit);
     } else {
         if (this.version >= 2 && this.tu.length) {
@@ -328,9 +403,10 @@ webOSXliff.prototype.getTranslationSet = function() {
                 resType: tu.resType,
                 datatype: tu.datatype,
                 state: tu.state,
-                flavor: tu.flavor
+                flavor: tu.flavor,
+                metadata: tu.metadata
             });
-            
+
             if (tu.target) {
                 res.setTarget(tu.target);
             }
@@ -382,6 +458,7 @@ webOSXliff.prototype.toStringData = function(units) {
         xliff: {
             _attributes: {
                 "xmlns": "urn:oasis:names:tc:xliff:document:2.0",
+                "xmlns:mda": "urn:oasis:names:tc:xliff:metadata:2.0",
             }
         }
     };
@@ -390,10 +467,9 @@ webOSXliff.prototype.toStringData = function(units) {
 
     // now finally add each of the units to the json
     var files = {};
-    var index = 1;
     var fileIndex = 1;
-    var datatype;
-    var groupIndex = 1;
+    var groupIndexMap = {}; // key: project+datatype, value: groupIndex
+    var unitIndexMap = {};  // key: project+groupIndex, value: unitIndex
 
     for (var i = 0; i < units.length; i++) {
         var tu = units[i];
@@ -401,6 +477,14 @@ webOSXliff.prototype.toStringData = function(units) {
             console.log("undefined?");
         }
         var hashKey = tu.project;
+        var datatype = tu.datatype || "javascript";
+        var groupKey = hashKey + "_" + datatype;
+
+        if (!groupIndexMap[groupKey]) {
+            groupIndexMap[groupKey] = Object.keys(groupIndexMap).length + 1;
+        }
+        var groupIndex = groupIndexMap[groupKey];
+
         var file = files[hashKey];
         if (!file) {
             files[hashKey] = file = {
@@ -408,22 +492,32 @@ webOSXliff.prototype.toStringData = function(units) {
                     "id": tu.project + "_f" + fileIndex++,
                     "original": tu.project
                 },
-                group : [
-                    {
-                        _attributes: {
-                            "id": tu.project + "_g" + groupIndex++,
-                            "name": tu.datatype || "javascript"
-                        },
-                        unit: []
-                    }
-                ]
+                group: []
             };
         }
 
+        var groupSet = file.group.find(g => g._attributes.name === datatype);
+        if (!groupSet) {
+            groupSet = {
+                _attributes: {
+                    "id": tu.project + "_g" + groupIndex,
+                    "name": datatype
+                },
+                unit: []
+            };
+            file.group.push(groupSet);
+        }
+
+        var unitKey = tu.project + "_g" + groupIndex;
+        if (!unitIndexMap[unitKey]) {
+            unitIndexMap[unitKey] = 1;
+        }
+        var unitIndex = unitIndexMap[unitKey]++;
+
         var tujson = {
             _attributes: {
-                "id": (tu.id || index++),
-                 "name": (tu.source !== tu.key) ? escapeAttr(tu.key) : undefined,
+                "id": tu.project + "_g" + groupIndex + "_" + unitIndex,
+                "name": (tu.source !== tu.key) ? escapeAttr(tu.key) : undefined,
             }
         };
 
@@ -450,10 +544,6 @@ webOSXliff.prototype.toStringData = function(units) {
             }
         ];
 
-        if (tu.id && tu.id > index) {
-            index = tu.id + 1;
-        }
-
         if (tu.target) {
             tujson.segment[0].target = {
                 _attributes: {
@@ -463,30 +553,7 @@ webOSXliff.prototype.toStringData = function(units) {
             };
         }
 
-        datatype = tu.datatype || "javascript";
-        if (!files[hashKey].group) {
-            files[hashKey].group = [];
-        }
-
-        var groupSet = {
-            _attributes: {},
-            unit: []
-        }
-
-        var existGroup = files[hashKey].group.filter(function(item) {
-            if (item._attributes.name === datatype) {
-                return item;
-            }
-        })
-
-        if (existGroup.length > 0) {
-            existGroup[0].unit.push(tujson);
-        } else {
-            groupSet._attributes.id = tu.project+ "_g" + groupIndex++;
-            groupSet._attributes.name = datatype;
-            files[hashKey].group.push(groupSet);
-            groupSet.unit.push(tujson);
-        }
+        groupSet.unit.push(tujson);
     }
 
     // sort the file tags so that they come out in the same order each time
@@ -497,19 +564,16 @@ webOSXliff.prototype.toStringData = function(units) {
         json.xliff.file.push(files[fileHashKey]);
     });
 
-    if (hasMetadata) {
-        json.xliff._attributes["xmlns:mda"] = "urn:oasis:names:tc:xliff:metadata:2.0";
-    }
     json.xliff._attributes.srcLang = sourceLocale;
     if (targetLocale) {
         json.xliff._attributes.trgLang = targetLocale;
     }
     json.xliff._attributes.version = versionString(this.version);
 
-    var xml = '<?xml version="1.0" encoding="utf-8"?>\n' + xmljs.js2xml(json, {
+    var xml = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' + xmljs.js2xml(json, {
         compact: true,
         spaces: 2
-    });
+    }).trimEnd() + '\n';
 
     return xml;
 }

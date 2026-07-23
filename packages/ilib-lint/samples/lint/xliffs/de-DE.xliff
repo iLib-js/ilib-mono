@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="src/prime.py" source-language="en-US" target-language="de-DE" product-name="lint-test">
+    <body>
+      <trans-unit id="1" resname="My name is %(name)s and I am %(age)d years old." restype="string" datatype="python">
+        <source>My name is %(name)s and I am %(age)d years old.</source>
+        <target state="translated">Mein Name ist %(name)s und ich bin %(age)d Jahre alt.</target>
+      </trans-unit>
+      <trans-unit id="1" resname="My name is %(name3)s and I am %(age3)d years old." restype="string" datatype="python">
+        <source>My name is %(name3)s and I am %(age3)d years old.</source>
+        <target state="translated">Mein Name ist %(name)3)s und ich bin %(age3)d Jahre alt.</target>
+      </trans-unit>
+      <trans-unit id="2" resname="My name is $name and I am $age years old." restype="string" datatype="python">
+        <source>My name is $name and I am $age years old.</source>
+        <target state="translated">Mein Name ist $name und ich bin %(age)d Jahre alt.</target>
+      </trans-unit>
+      <trans-unit id="3" resname="My name is %s and I am %d years old." restype="string" datatype="python">
+        <source>My name is "%s" and I am %d years old.</source>
+        <target state="translated">Mein Name ist «%(name)s» und ich bin %(age)d Jahre alt.</target>
+      </trans-unit>
+      <trans-unit id="4" resname="My name is {name} and I am {age} years old." restype="string" datatype="python">
+        <source>My name is {name} and I am {age} years old.</source>
+        <target state="translated">Mein Name ist %(name)s und ich bin %(age)d Jahre alt.</target>
+      </trans-unit>
+      <trans-unit id="5" resname="My name is &quot;{name}&quot; and I am {age} years old." restype="string" datatype="python">
+        <source>My name is "{name}" and I am {age} years old.</source>
+        <target state="needs-review">Mein Name ist {name} und ich bin %(age)d Jahre alt.</target>
+      </trans-unit>
+      <trans-unit id="4" resname="My name is %1$s and I am %2$d years old." restype="string" datatype="python">
+        <source>My name is %1$s and I am %2$d years old.</source>
+        <target state="translated">Mein Name ist %3$d und ich bin %1$s Jahre alt.</target>
+      </trans-unit>
+      <trans-unit id="4" resname="My name is %s and I am %s years old." restype="string" datatype="python">
+        <source>My name is %s and I am %s years old.</source>
+        <target state="translated">Mein Name ist %s und ich bin %s Jahre alt.</target>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="src/example.js" source-language="en-US" target-language="de-DE" product-name="lint-test">
+    <body>
+      <trans-unit id="10" resname="test1" restype="string" datatype="javascript">
+        <source>Source-only resource</source>
+      </trans-unit>
+      <trans-unit id="11" resname="test2" restype="string" datatype="javascript">
+        <source>Source and target are the same.</source>
+        <target state="translated">Source and target are the same.</target>
+      </trans-unit>
+      <trans-unit id="12" resname="test3" restype="string" datatype="javascript" translate="no">
+        <source>Source and target are the same but it should not be reported because there is a do not translate flag.</source>
+        <target state="translated">Source and target are the same but it should not be reported because there is a do not translate flag.</target>
+      </trans-unit>
+      <trans-unit id="13" resname="test4" restype="string" datatype="javascript">
+        <source>Source and target only differ by case.</source>
+        <target state="translated">Source and Target only Differ by Case.</target>
+      </trans-unit>
+      <trans-unit id="14" resname="test5" restype="string" datatype="javascript">
+        <source>source-and-target-are-kabob-case</source>
+        <target state="translated">source-and-target-are-kabob-case</target>
+      </trans-unit>
+      <trans-unit id="15" resname="test6" restype="string" datatype="javascript">
+        <source>source_and_target_are_snake_case</source>
+        <target state="translated">source_and_target_are_snake_case</target>
+      </trans-unit>
+      <trans-unit id="15" resname="test7" restype="string" datatype="javascript">
+        <source>sourceAndTargetAreCamelCase</source>
+        <target state="translated">sourceAndTargetAreCamelCase</target>
+      </trans-unit>
+      <trans-unit id="14" resname="test8" restype="string" datatype="javascript">
+        <source>This translation unit has a bad state attribute.</source>
+        <target state="needs-review">Source and target are not the same.</target>
+      </trans-unit>
+      <trans-unit id="17" resname="test9" restype="string" datatype="javascript">
+        <source>This translation unit has &lt;b>a bold tag&lt;/b> in it.</source>
+        <target state="translated">This translation has no bold tags in it.</target>
+      </trans-unit>
+      <trans-unit id="18" resname="test10" restype="string" datatype="javascript">
+        <source>This translation unit has &lt;p>a paragraph tag in it.</source>
+        <target state="translated">This translation has a &lt;p> paragraph tag in it.</target>
+      </trans-unit>
+      <trans-unit id="19" resname="test11" restype="string" datatype="javascript">
+        <source>This translation unit &lt;a href="url">has &lt;b>multiple tags&lt;/b> in it&lt;/a>.</source>
+        <target state="translated">This translation is &lt;a href="url">not &lt;b>well-formed.&lt;/a>&lt;/b></target>
+      </trans-unit>
+      <trans-unit id="20" resname="test12" restype="string" datatype="javascript">
+        <source>This translation unit has &lt;b>a bold tag&lt;/b> in it.</source>
+        <target state="translated">This translation has bad &lt;>tags in it.&lt;/></target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
