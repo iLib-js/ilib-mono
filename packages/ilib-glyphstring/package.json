@@ -1,0 +1,86 @@
+{
+    "name": "ilib-glyphstring",
+    "version": "1.0.0",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "description": "String subclass that iterates and truncates by whole glyphs, including combining characters",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "unicode",
+        "glyph",
+        "combining",
+        "string",
+        "truncate",
+        "ellipsis"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-glyphstring",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "marketing@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "lib",
+        "src",
+        "README.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
+    },
+    "engines": {
+        "node": ">=12 <23"
+    },
+    "scripts": {
+        "build": "npm-run-all --npm-path pnpm build:data build:ts",
+        "build:ts": "tsc -p tsconfig.build.json",
+        "build:data": "tsx scripts/generate.ts",
+        "coverage": "pnpm test:cli --coverage",
+        "test": "pnpm test:cli",
+        "test:cli": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:watch": "pnpm test:cli --watch",
+        "debug": "node --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
+        "clean": "git clean -f -d src test && rm -rf lib",
+        "types": "tsc",
+        "doc": "npm-run-all --npm-path pnpm doc:md doc:html",
+        "doc:md": "mkdir -p docs && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
+        "doc:html": "mkdir -p docs && typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts"
+    },
+    "devDependencies": {
+        "@tsconfig/node12": "^12.1.4",
+        "@types/jest": "^29.5.14",
+        "@types/json-stable-stringify": "^1.2.0",
+        "@types/node": "12",
+        "dedent": "^1.7.2",
+        "ilib-data-utils": "workspace:^",
+        "ilib-internal": "workspace:^",
+        "jest": "^29.7.0",
+        "json-stable-stringify": "^1.1.1",
+        "npm-run-all": "^4.1.5",
+        "ts-jest": "^29.2.5",
+        "tsx": "^4.20.5",
+        "typedoc": "^0.26.11",
+        "typedoc-plugin-markdown": "^4.2.10",
+        "typescript": "^5.9.2",
+        "ucd-full": "^16.0.1"
+    },
+    "dependencies": {
+        "ilib-ctype": "workspace:^",
+        "ilib-istring": "workspace:^"
+    }
+}
