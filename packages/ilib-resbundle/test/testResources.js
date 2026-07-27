@@ -52,8 +52,15 @@ export const testResources = {
             ResBundle.clearPseudoLocales();
             LocaleData.clearCache();
             if (getPlatform() === "browser") {
-                // does not support sync, so we have to ensure the locale
-                // data is loaded before we can do all these sync tests
+                // The webpack loader cannot load synchronously, so we have to
+                // pre-load the locale data before running these sync tests. The
+                // browser build stores its assembled data under "../assembled"
+                // (the same path ResBundle uses in the browser), so we must
+                // register that as a global root. Otherwise ensureLocale caches
+                // under the test/resources* roots (which the webpack loader
+                // cannot resolve to the assembled chunks), and sync ResBundle
+                // construction still calls loadFiles and throws.
+                LocaleData.addGlobalRoot("../assembled");
                 let promise = Promise.resolve(true);
                 localeList.locales.forEach(locale => {
                     promise = promise.then(() => {

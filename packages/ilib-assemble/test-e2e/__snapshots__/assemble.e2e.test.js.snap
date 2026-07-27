@@ -279,6 +279,9 @@ exports[`ilib-assemble E2E tests Standard ilib module assembly (ilib-istring) as
                     ]
                 }
             }
+        },
+        "ja": {
+            "plurals": {}
         }
     };
 };"

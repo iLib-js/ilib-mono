@@ -1,11 +1,12 @@
 {
     "presets": [[
         "@babel/preset-env", {
+            "modules": "commonjs",
             "targets": {
-                "node": "current"
+                "node": "10"
             }
         }
-    ]]
+    ]],
     "plugins": [
         "add-module-exports",
         "@babel/plugin-transform-regenerator"
