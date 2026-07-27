@@ -19700,7 +19700,7 @@ snapshots:
     dependencies:
       glob: 7.2.3
       minimatch: 9.0.9
-      webpack: 5.106.2
+      webpack: 5.106.2(webpack-cli@5.1.4)
       webpack-merge: 4.2.2
 
   karma-webpack@5.0.1(webpack@5.108.4):
