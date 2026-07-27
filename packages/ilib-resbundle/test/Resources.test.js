@@ -19,15 +19,11 @@
 
 import IString from "ilib-istring";
 import Locale from "ilib-locale";
-import { Path } from "ilib-common";
-import { getPlatform, setPlatform, getLocale, setLocale } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { registerLoader } from 'ilib-loader';
+import { getPlatform, getLocale, setLocale } from 'ilib-env';
+import getLocaleData, { LocaleData } from 'ilib-localedata';
 
 import ResBundle from "../src/index.js";
 import { localeList } from './locales.js';
-
-const __dirname = Path.dirname(Path.fileUriToPath(import.meta.url));
 
 let setupCompleted = false;
 
@@ -55,9 +51,33 @@ describe("testResources", () => {
             ResBundle.clearPseudoLocales();
             LocaleData.clearCache();
             if (getPlatform() === "browser") {
+                // The webpack loader cannot load synchronously, so we have to
+                // pre-load the locale data before running these sync tests. The
+                // browser build stores its assembled data under "../assembled"
+                // (the same path ResBundle uses in the browser), so we must
+                // register that as a global root.
+                LocaleData.addGlobalRoot("../assembled");
                 let promise = Promise.resolve(true);
                 localeList.locales.forEach(locale => {
                     promise = promise.then(() => LocaleData.ensureLocale(locale));
+                });
+                promise = promise.then(async () => {
+                    const locData = getLocaleData({
+                        path: "../assembled",
+                        sync: false
+                    });
+                    // Pre-cache data for sync tests that use locales/basenames
+                    // that are not fully covered by ensureLocale alone.
+                    await locData.loadData({
+                        basename: "pseudomap",
+                        locale: "zxx-Latn-XX",
+                        sync: false
+                    });
+                    await locData.loadData({
+                        basename: "tester",
+                        locale: "zz-ZZ",
+                        sync: false
+                    });
                 });
                 await promise;
             }
