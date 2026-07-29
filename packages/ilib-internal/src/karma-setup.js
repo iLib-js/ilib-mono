@@ -53,3 +53,64 @@ window.test.todo = function () {
 window.expect.assertions = (num) => {
     return undefined;
 };
+
+function deepEqual(a, b) {
+    if (Object.is(a, b)) {
+        return true;
+    }
+    if (typeof a !== "object" || a === null || typeof b !== "object" || b === null) {
+        return false;
+    }
+    if (Array.isArray(a) !== Array.isArray(b)) {
+        return false;
+    }
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+        return false;
+    }
+    return aKeys.every((key) => Object.prototype.hasOwnProperty.call(b, key) && deepEqual(a[key], b[key]));
+}
+
+/**
+ * Jest-compatible toMatchObject for Jasmine.
+ * Checks that `actual` contains all key/value pairs from `expected`
+ * (extra properties on actual are allowed).
+ */
+beforeEach(() => {
+    jasmine.addMatchers({
+        toMatchObject: () => ({
+            compare(actual, expected) {
+                if (actual == null || typeof actual !== "object") {
+                    return {
+                        pass: false,
+                        message: `Expected an object, but received ${JSON.stringify(actual)}`,
+                    };
+                }
+                if (expected == null || typeof expected !== "object") {
+                    return {
+                        pass: false,
+                        message: `Expected a matcher object, but received ${JSON.stringify(expected)}`,
+                    };
+                }
+
+                const mismatches = [];
+                for (const key of Object.keys(expected)) {
+                    if (!deepEqual(actual[key], expected[key])) {
+                        mismatches.push(
+                            `  ${key}: expected ${JSON.stringify(expected[key])} but got ${JSON.stringify(actual[key])}`
+                        );
+                    }
+                }
+
+                const pass = mismatches.length === 0;
+                return {
+                    pass,
+                    message: pass
+                        ? `Expected object not to match ${JSON.stringify(expected)}`
+                        : `Expected object to match:\n${mismatches.join("\n")}`,
+                };
+            },
+        }),
+    });
+});
