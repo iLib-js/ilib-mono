@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2">
+  <file original="111111" source-language="en" target-language="bn-IN" product-name="111111">
+    <body>
+      <trans-unit id="1" resname="got.it.key" restype="string">
+        <source>Got it</source>
+        <target>one</target>
+      </trans-unit>
+      <trans-unit id="2" resname="hello.key" restype="string">
+        <source>Hello</source>
+        <target>two</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
