@@ -37,6 +37,28 @@ import DataCache from './DataCache.js';
  */
 class FileCache {
     /**
+     * The logger for this class.
+     * @private
+     * @type {Object}
+     */
+    logger;
+
+    /**
+     * The loader used to read files from wherever they are stored.
+     * @private
+     * @type {Object}
+     */
+    loader;
+
+    /**
+     * The shared data cache where the file contents and the promises for the
+     * files that are currently loading are stored.
+     * @private
+     * @type {DataCache}
+     */
+    dataCache;
+
+    /**
      * Create a new FileCache instance.
      *
      * @param {Object} loader - The loader instance to use for file loading

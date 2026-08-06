@@ -35,6 +35,52 @@ import Locale from 'ilib-locale';
  */
 class MergedDataCache {
     /**
+     * The loader used to read files from wherever they are stored.
+     * @private
+     * @type {Object}
+     */
+    loader;
+
+    /**
+     * The shared data cache. The merged results are stored in it under keys
+     * created by `_createMergedCacheKey`.
+     * @private
+     * @type {DataCache}
+     */
+    dataCache;
+
+    /**
+     * The cache of parsed, unmerged locale data that this class merges together.
+     * @private
+     * @type {ParsedDataCache}
+     */
+    parsedDataCache;
+
+    /**
+     * When true, return the data from the most specific sublocale that has any
+     * data instead of merging the sublocales together.
+     * @private
+     * @type {boolean}
+     */
+    mostSpecific;
+
+    /**
+     * When true, return the data from the most locale-specific file that was
+     * found instead of merging the files together.
+     * @private
+     * @type {boolean}
+     */
+    returnOne;
+
+    /**
+     * When true, merge the data across all of the roots instead of stopping at
+     * the first root that has data for a sublocale.
+     * @private
+     * @type {boolean}
+     */
+    crossRoots;
+
+    /**
      * Create a new MergedDataCache instance
      * @param {Object} loader - The loader instance for file operations
      * @param {Object} options - Configuration options
@@ -47,7 +93,6 @@ class MergedDataCache {
         this.dataCache = DataCache.getDataCache();
         this.parsedDataCache = new ParsedDataCache(loader);
 
-        // Set merge options with defaults
         this.mostSpecific = options.mostSpecific || false;
         this.returnOne = options.returnOne || false;
         this.crossRoots = options.crossRoots || false;

@@ -22,6 +22,7 @@ import Locale from 'ilib-locale';
 import DataCache from '../src/DataCache.js';
 import { setPlatform, getPlatform } from 'ilib-env';
 import { registerLoader } from 'ilib-loader';
+import LoaderFactory from 'ilib-loader';
 import MockLoader from './MockLoader.js';
 
 describe('LocaleData.ensureLocale', () => {
@@ -268,5 +269,80 @@ describe('LocaleData.ensureLocale', () => {
         } catch (e) {
             expect(e.message).toBe("Invalid locale parameter to ensureLocale");
         }
+    });
+
+    describe('with a loader that does not support synchronous operation', () => {
+        let loader;
+
+        beforeEach(() => {
+            registerLoader(MockLoader);
+            setPlatform("mock");
+            loader = LoaderFactory();
+            loader.setMockSyncSupport(false);
+        });
+
+        afterEach(() => {
+            loader.setMockSyncSupport(true);
+            setPlatform(undefined);
+        });
+
+        test('should throw when loading synchronously before ensureLocale was ever called', () => {
+            expect.assertions(2);
+
+            LocaleData.addGlobalRoot("./test/testfiles/files7");
+
+            // the instance itself is asynchronous, since a synchronous instance
+            // cannot even be constructed with this loader
+            const locData = new LocaleData({
+                path: "./test/testfiles/files7"
+            });
+            expect(locData.isSync()).toBe(false);
+
+            // nothing has pre-loaded the data, so there is no way to satisfy a
+            // synchronous request
+            try {
+                locData.loadData({
+                    sync: true,
+                    locale: "en-US",
+                    basename: "info"
+                });
+                fail("Expected loadData to throw");
+            } catch (e) {
+                expect(e.message).toBe("Synchronous load was requested with a loader that does not support synchronous operation" +
+                    " and the requested locale data was not already available in the cache.");
+            }
+        });
+
+        test('should throw when loading synchronously while ensureLocale is still in flight', async () => {
+            expect.assertions(2);
+
+            LocaleData.addGlobalRoot("./test/testfiles/files7");
+
+            const locData = new LocaleData({
+                path: "./test/testfiles/files7"
+            });
+
+            // start the pre-load, but do not wait for it to finish
+            const ensurePromise = LocaleData.ensureLocale("en-US");
+
+            // the data is not in the cache yet, so this must not silently
+            // return partial data
+            try {
+                locData.loadData({
+                    sync: true,
+                    locale: "en-US",
+                    basename: "info"
+                });
+                fail("Expected loadData to throw");
+            } catch (e) {
+                expect(e.message).toBe("Synchronous load was requested with a loader that does not support synchronous operation" +
+                    " and the requested locale data was not already available in the cache.");
+            }
+
+            // the throw above was purely a matter of timing. The data really was
+            // available, as the pre-load proves once it finishes.
+            const result = await ensurePromise;
+            expect(result).toBe(true);
+        });
     });
 });

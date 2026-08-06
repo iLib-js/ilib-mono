@@ -60,6 +60,29 @@ function parseData(data, pathName) {
  */
 class ParsedDataCache {
     /**
+     * The loader used to read files from wherever they are stored.
+     * @private
+     * @type {Object}
+     */
+    loader;
+
+    /**
+     * The cache of raw file contents. This is the layer that guarantees that
+     * each file is only read once, no matter how many callers ask for it.
+     * @private
+     * @type {FileCache}
+     */
+    fileCache;
+
+    /**
+     * The shared data cache where the parsed data is stored, indexed by root,
+     * basename, and locale spec.
+     * @private
+     * @type {DataCache}
+     */
+    dataCache;
+
+    /**
      * Create a new ParsedDataCache instance
      * @param {Object} loader - The loader instance for file operations
      */

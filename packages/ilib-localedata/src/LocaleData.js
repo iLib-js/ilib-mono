@@ -250,6 +250,51 @@ function getSharedMergedDataCache() {
  */
 class LocaleData {
     /**
+     * The loader for this platform, or undefined if this platform has no loader.
+     * @private
+     * @type {Object|undefined}
+     */
+    loader;
+
+    /**
+     * Whether this instance loads data synchronously by default. This can only
+     * be true if the loader for this platform supports synchronous operation.
+     * @private
+     * @type {boolean}
+     */
+    sync;
+
+    /**
+     * The shared data cache, used to check what has already been loaded.
+     * @private
+     * @type {DataCache}
+     */
+    cache;
+
+    /**
+     * The logger for this class.
+     * @private
+     * @type {Object}
+     */
+    logger;
+
+    /**
+     * The path to the calling package's own locale data. This is always used as
+     * the last root, so that all other roots override it.
+     * @private
+     * @type {string}
+     */
+    path;
+
+    /**
+     * The cache that loads and merges the locale data, configured with the merge
+     * options that were given to the constructor.
+     * @private
+     * @type {MergedDataCache}
+     */
+    mergedDataCache;
+
+    /**
      * Create a locale data instance.
      *
      * @param {string} packageName the unique name of the calling package. (eg. "LocaleInfo")
@@ -262,12 +307,13 @@ class LocaleData {
      * @param {boolean} [options.mergeOptions.mostSpecific] - if true, return the most specific data available
      * @param {boolean} [options.mergeOptions.returnOne] - if true, return only the most locale-specific data available instead of merging
      * @param {boolean} [options.mergeOptions.crossRoots] - if true, merge data across all roots
-     * @throws {Error} if the synchronous mode is requested but the loader does not support synchronous operation
+     * @throws {Error} if the options are not given or do not contain a path, or if the synchronous
+     * mode is requested but the loader does not support synchronous operation
      * @constructor
      */
     constructor(options) {
         if (!options || !options.path) {
-            throw "Missing options to LocaleData constructor";
+            throw new Error("Missing options to LocaleData constructor");
         }
         let {
             sync = false,
@@ -299,8 +345,6 @@ class LocaleData {
         this.cache = DataCache.getDataCache();
         this.logger = log4js.getLogger("ilib-localedata");
         this.path = path;
-
-        // Create MergedDataCache instance with the merge options
         this.mergedDataCache = new MergedDataCache(this.loader, mergeOptions);
     }
 
@@ -432,8 +476,8 @@ class LocaleData {
             });
             loc = new Locale(lm.getLikelyLocale());
             if (!this.checkCache(loc.getSpec(), basename)) {
-                throw "Synchronous load was requested with a loader that does not support synchronous operation" +
-                    " and the requested locale data was not already available in the cache.";
+                throw new Error("Synchronous load was requested with a loader that does not support synchronous operation" +
+                    " and the requested locale data was not already available in the cache.");
             }
         }
 

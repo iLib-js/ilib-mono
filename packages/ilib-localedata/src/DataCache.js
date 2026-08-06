@@ -68,6 +68,54 @@ function getLocaleSpec(locale) {
  */
 class DataCache {
     /**
+     * The logger for this class.
+     * @private
+     * @type {Object}
+     */
+    logger;
+
+    /**
+     * The number of data items currently stored in this cache. Items that were
+     * explicitly stored as undefined are not counted.
+     * @private
+     * @type {number}
+     */
+    count;
+
+    /**
+     * The locale data, indexed by root, then by locale spec, then by basename.
+     * @private
+     * @type {Object.<string, Object.<string, Object>>}
+     */
+    data;
+
+    /**
+     * The set of file names that have already been loaded.
+     * @private
+     * @type {Set.<string>}
+     */
+    loaded;
+
+    /**
+     * The raw contents of files that the code has attempted to load, indexed by
+     * file path. A value of null means that the load was attempted but the file
+     * had no data or could not be loaded, whereas a missing entry means that no
+     * attempt has been made yet.
+     * @private
+     * @type {Map.<string, Object|null>}
+     */
+    fileData;
+
+    /**
+     * The promises for files that are currently being loaded asynchronously,
+     * indexed by file path. Sharing these promises prevents concurrent requests
+     * for the same file from triggering multiple loads.
+     * @private
+     * @type {Map.<string, Promise>}
+     */
+    filePromises;
+
+    /**
      * Create a locale data cache.
      *
      * @private
@@ -81,10 +129,8 @@ class DataCache {
         this.count = 0;
         this.data = {};
         this.loaded = new Set();
-
-        // File-level caching for FileCache integration
-        this.fileData = new Map(); // filename -> data (object, null, or undefined)
-        this.filePromises = new Map(); // filename -> Promise
+        this.fileData = new Map();
+        this.filePromises = new Map();
     }
 
     /**
