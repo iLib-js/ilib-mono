@@ -468,5 +468,63 @@ export const testaddress = {
         var formatter = new AddressFmt();
         test.equal(formatter.format(parsedAddress), expected);
         test.done();
+    },
+
+    testParseAddressNaoero: function(test) {
+        test.expect(3);
+        var parsedAddress = new Address("Government Offices, Yaren District, Naoero", {locale: 'en-US'});
+
+        test.ok(typeof(parsedAddress) !== "undefined");
+        test.equal(parsedAddress.country, "Naoero");
+        test.equal(parsedAddress.countryCode, "NR");
+        test.done();
+    },
+
+    testParseAddressNaoeroOldName: function(test) {
+        // "Nauru" is the pre-2026 name, but addresses using it must still parse
+        test.expect(3);
+        var parsedAddress = new Address("Government Offices, Yaren District, Nauru", {locale: 'en-US'});
+
+        test.ok(typeof(parsedAddress) !== "undefined");
+        test.equal(parsedAddress.country, "Nauru");
+        test.equal(parsedAddress.countryCode, "NR");
+        test.done();
+    },
+
+    testParseAddressNaoeroAsianLocale: function(test) {
+        // the Japanese country names contain neither spelling, so "Naoero" has
+        // to resolve through the root country names and "Nauru" through the
+        // English fallback table. Without the fallback, "Nauru" would silently
+        // parse as the caller's own region rather than failing.
+        test.expect(4);
+        var naoero = new Address("Government Offices, Yaren District, Naoero", {locale: 'ja-JP'});
+        var nauru = new Address("Government Offices, Yaren District, Nauru", {locale: 'ja-JP'});
+
+        test.ok(typeof(naoero) !== "undefined");
+        test.equal(naoero.countryCode, "NR");
+        test.ok(typeof(nauru) !== "undefined");
+        test.equal(nauru.countryCode, "NR");
+        test.done();
+    },
+
+    testAddressFmtGetFormatInfoNaoeroListedOnce: function(test) {
+        // the legacy "Nauru" alias is a parsing aid only, so it must not show
+        // up as a second entry in the country list
+        test.expect(3);
+        var formatter = new AddressFmt({locale: 'en-US'});
+
+        formatter.getFormatInfo().then((info) => {
+            var constraint = info[2][0].constraint;
+            var countries = constraint.filter((country) => {
+                return country.code === "NR";
+            });
+
+            test.equal(countries.length, 1);
+            test.equal(countries[0].name, "Naoero");
+            test.ok(!constraint.some((country) => {
+                return country.name === "Nauru";
+            }));
+            test.done();
+        });
     }
 };

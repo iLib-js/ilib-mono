@@ -12750,6 +12750,14 @@ export const testLocaleInfo = {
         test.equal(li.getLanguageName(), "Chickasaw");
         test.done();
     },
+    testLocaleInfoGetLanguageName6: function(test) {
+        // the country was renamed to Naoero, but the language name is unchanged
+        test.expect(2);
+        var li = new LocaleInfo("na");
+        test.ok(typeof(li) !== "undefined");
+        test.equal(li.getLanguageName(), "Nauru");
+        test.done();
+    },
 
     testLocaleInfoGetRegionName1: function(test) {
         test.expect(2);
@@ -12814,6 +12822,21 @@ export const testLocaleInfo = {
         var li = new LocaleInfo("XB");
         test.ok(typeof(li) !== "undefined");
         test.equal(li.getRegionName(), "Pseudo-Bidi");
+        test.done();
+    },
+    testLocaleInfoGetRegionName10: function(test) {
+        test.expect(2);
+        var li = new LocaleInfo("NR");
+        test.ok(typeof(li) !== "undefined");
+        test.equal(li.getRegionName(), "Naoero");
+        test.done();
+    },
+    testLocaleInfoGetTimeZoneNR: function(test) {
+        // the country was renamed to Naoero, but the IANA zone id is unchanged
+        test.expect(2);
+        var li = new LocaleInfo("NR");
+        test.ok(typeof(li) !== "undefined");
+        test.equal(li.getTimeZone(), "Pacific/Nauru");
         test.done();
     },
     testGetDigitsWestern: function(test) {

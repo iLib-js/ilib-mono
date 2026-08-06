@@ -254,6 +254,8 @@ export const countries = {
     "mozambique": "MZ",
     "myanmar": "MM",
     "namibia": "NA",
+    "naoero": "NR",
+    // "nauru" is the pre-2026 name of Naoero, kept so that older addresses still parse
     "nauru": "NR",
     "nepal": "NP",
     "holland": "NL",

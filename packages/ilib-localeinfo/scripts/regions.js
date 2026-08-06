@@ -23,13 +23,25 @@ import { main } from 'cldr-localenames-full/main/en/territories.json';
 
 const territoriesData = main.en.localeDisplayNames.territories;
 
+/*
+ * Region names where iLib intentionally differs from CLDR, usually because a
+ * country has been renamed and CLDR has not published the new name yet. Delete
+ * an entry once the CLDR data catches up so that we go back to tracking it.
+ *
+ * NR: renamed to Naoero by constitutional amendment in May 2026.
+ *     See https://en.wikipedia.org/wiki/Naoero
+ */
+const overrides = {
+    "NR": "Naoero"
+};
+
 export default function genRegions(root) {
     let names;
 
     for (var region in territoriesData) {
         if (region.search(/[_\-0123456789]/) === -1) {
             names = getLocaleParts("und-" + region);
-            setValue(root, names, "region.name", territoriesData[region]);
+            setValue(root, names, "region.name", overrides[region] || territoriesData[region]);
             console.log(`Region: ${region}`);
         }
     }
