@@ -47,17 +47,6 @@ module.exports = function (config) {
         },
     });
 
-    // Company policy: do not launch Opera even if it is installed
-    karmaConfig.browsers = (karmaConfig.browsers || []).filter(
-        (browser) => !String(browser).toLowerCase().includes("opera")
-    );
-    karmaConfig.plugins = (karmaConfig.plugins || []).filter(
-        (plugin) => plugin !== "karma-opera-launcher"
-    );
-    if (karmaConfig.customLaunchers) {
-        delete karmaConfig.customLaunchers.OperaHeadless;
-    }
-
     const jsRule = karmaConfig.webpack.module.rules.find(
         (rule) => rule.test && rule.test.toString().includes("\\.js")
     );
