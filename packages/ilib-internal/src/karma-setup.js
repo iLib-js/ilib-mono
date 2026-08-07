@@ -46,6 +46,7 @@ window.test.each = (inputs) => (testName, testFn) =>
                 : testName;
         window.it(name, () => testFn(args));
     });
+window.test.skip = window.xit;
 window.test.todo = function () {
     return undefined;
 };

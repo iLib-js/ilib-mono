@@ -187,7 +187,10 @@ class LocaleInfo {
                     "../locale");
 
             case "browser":
-                return "../assembled";
+                // Must match LocaleData.ensureLocale's default root ("./locale") so
+                // preloaded assembled data is found in the cache under the same key.
+                // Webpack maps this root to the assembled/ directory via calling-module.
+                return "./locale";
 
             default:
                 return "../locale";
