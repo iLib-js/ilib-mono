@@ -394,10 +394,10 @@ describe("LocaleDataNode", () => {
             }
         }, "./test/testfiles/files2");
 
-        // cacheData alone doesn't populate the merged cache, so checkCache returns false
-        expect(locData.checkCache("de-DE", "tester")).toBe(false);
+        // the data is there to merge, even though it has not been merged yet
+        expect(locData.checkCache("de-DE", "tester")).toBe(true);
 
-        // After loadData, the merged cache is populated and checkCache returns true
+        // and of course it is still there after it has been merged
         locData.loadData({
             basename: "tester",
             locale: "de-DE"
@@ -471,16 +471,15 @@ describe("LocaleDataNode", () => {
             }
         }, "./test/testfiles/files2");
 
-        // cacheData alone doesn't populate the merged cache
-        expect(locData.checkCache("de-DE", "tester")).toBe(false);
+        // true = everything that can be loaded is loaded
+        expect(locData.checkCache("de-DE", "tester")).toBe(true);
 
-        // After loadData, the merged cache is populated (with just root data)
+        // and it stays true after the merge, which produces just the root data
         locData.loadData({
             basename: "tester",
             locale: "de-DE"
         });
 
-        // true = everything that can be loaded is loaded
         expect(locData.checkCache("de-DE", "tester")).toBe(true);
     });
 

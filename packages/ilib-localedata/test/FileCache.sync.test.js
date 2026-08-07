@@ -58,6 +58,21 @@ describe('FileCache Sync Tests (Node Only)', () => {
 
             expect(() => fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json')).toThrow();
         });
+
+        test('should not record a sync attempt that the loader could not make, so that a later async load still finds the file', async () => {
+            expect.assertions(3);
+
+            let loader = LoaderFactory("nodejs");
+            loader.setAsyncMode();
+            const fileCache = new FileCache(loader);
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
+
+            expect(() => fileCache.loadFileSync(filePath)).toThrow();
+            expect(fileCache.attemptCount()).toBe(0);
+
+            const data = await fileCache.loadFile(filePath);
+            expect(typeof data).toBe('string');
+        });
     });
 
     describe('loadFileSync', () => {

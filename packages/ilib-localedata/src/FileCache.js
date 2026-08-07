@@ -145,13 +145,15 @@ class FileCache {
             return existingData;
         }
 
-        try {
-            // Check if the loader supports sync operations
-            if (!this.loader.getSyncMode()) {
-                this.logger.warn(`Loader does not support sync operations for file ${filePath}`);
-                throw new Error(`Loader does not support sync operations for file ${filePath}`);
-            }
+        // Check if the loader supports sync operations. Nothing is attempted in that
+        // case, so the file must not be recorded as tried, or a later asynchronous
+        // load would skip it and report that there is no data for it.
+        if (!this.loader.getSyncMode()) {
+            this.logger.warn(`Loader does not support sync operations for file ${filePath}`);
+            throw new Error(`Loader does not support sync operations for file ${filePath}`);
+        }
 
+        try {
             // Attempt to load the file synchronously
             const data = this.loader.loadFile(filePath, { sync: true });
 

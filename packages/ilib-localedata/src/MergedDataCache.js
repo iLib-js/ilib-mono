@@ -22,6 +22,9 @@ import DataCache from './DataCache.js';
 import { JSUtils, Utils } from 'ilib-common';
 import Locale from 'ilib-locale';
 
+// the extensions of the files that can contain the data for a whole locale
+const localeFileExtensions = ['.js', '.cjs', '.mjs', '.json'];
+
 /**
  * MergedDataCache manages parsed locale data and merged locale data caching.
  *
@@ -307,9 +310,15 @@ class MergedDataCache {
             return cachedMergedData;
         }
 
-        // Get parsed data from ParsedDataCache (handles .js, flat .json, hierarchical .json)
-        // ParsedDataCache already iterates through all roots and handles fallback logic
-        const parsedData = this.parsedDataCache.getParsedDataSync(loc, roots, basename);
+        // Get parsed data from ParsedDataCache (handles .js, flat .json, hierarchical .json).
+        // Loading more files can fail on platforms that cannot load synchronously. That is
+        // not fatal, since the data may already be in the cache from a preassembled file,
+        // ensureLocale, or cacheData, so merge whatever is there.
+        try {
+            this.parsedDataCache.getParsedDataSync(loc, roots, basename);
+        } catch (error) {
+            // nothing more can be loaded synchronously here
+        }
 
         // Merge the parsed data
         const mergedData = this._mergeParsedData(loc, basename, roots);
@@ -363,6 +372,51 @@ class MergedDataCache {
             }
         }
         return false;
+    }
+
+    /**
+     * Check if the data needed to satisfy a request for the given locale and basename
+     * has already been loaded, whether or not it has been merged yet. This is what
+     * makes it possible to satisfy a synchronous request with a loader that can only
+     * load asynchronously: the data must already be in the cache, having been
+     * preassembled, preloaded with `ensureLocale`, or added with `cacheData`.
+     *
+     * Data for the root locale does not count. Root data is shared by every locale,
+     * so counting it would make all locales appear to be loaded as soon as any one
+     * of them was.
+     *
+     * A locale that was loaded but had no data of its own still counts as loaded,
+     * since there is nothing more that could be loaded for it.
+     *
+     * @param {string|Locale} locale - The locale to check
+     * @param {Array.<string>} roots - Array of root directories
+     * @param {string} basename - The basename of the data
+     * @returns {boolean} true if the data for this locale and basename was already loaded
+     */
+    hasLoadedLocaleData(locale, roots, basename) {
+        if (!locale || !basename || !Array.isArray(roots) || roots.length === 0) {
+            return false;
+        }
+
+        const loc = (typeof locale === 'string') ? new Locale(locale) : locale;
+        if (typeof loc.getSpec !== 'function') {
+            return false;
+        }
+
+        const subLocales = Utils.getSublocales(loc.getSpec()).filter((sublocale) => sublocale !== 'root');
+
+        return subLocales.some((sublocale) => {
+            return roots.some((root) => {
+                // undefined means no attempt was made to load it yet, whereas null
+                // means it was loaded but there was no data for this locale
+                if (this.dataCache.getData(root, basename, sublocale) !== undefined) {
+                    return true;
+                }
+                return localeFileExtensions.some((extension) => {
+                    return this.dataCache.getFileData(`${root}/${sublocale}${extension}`) !== undefined;
+                });
+            });
+        });
     }
 
     /**

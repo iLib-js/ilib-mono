@@ -58,7 +58,7 @@ describe("LocaleData", () => {
         expect(!locData.isSync()).toBe(true);
     });
 
-    test("should create LocaleData instance when loader doesn't support sync", () => {
+    test("should create LocaleData instance in async mode when loader doesn't support sync", () => {
         expect.assertions(1);
         registerLoader(MockLoader);
         setPlatform("mock");
@@ -69,15 +69,13 @@ describe("LocaleData", () => {
             loader.setMockSyncSupport(false);
         }
 
-        try {
-            new LocaleData({
-                path: "./test/testfiles/files",
-                sync: true
-            });
-            fail("Expected LocaleData constructor to throw");
-        } catch (e) {
-            expect(e.message).toBe("Synchronous mode is requested but the loader does not support synchronous operation");
-        }
+        // asking for sync with a loader that cannot do it gives an async instance
+        // instead of throwing
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+        expect(locData.isSync()).toBe(false);
 
         // Restore sync support
         if (loader && loader.setMockSyncSupport) {

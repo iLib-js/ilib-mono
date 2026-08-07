@@ -24,18 +24,18 @@ import { registerLoader } from 'ilib-loader';
 import LocaleData from '../src/LocaleData.js';
 
 describe("LocaleDataWeb", () => {
-    test("should throw when creating LocaleData with sync when web loader doesn't support it", () => {
+    test("should create LocaleData in async mode when web loader doesn't support sync", () => {
         expect.assertions(1);
 
-        try {
-            new LocaleData({
-                path: "./test/testfiles/files3",
-                sync: true
-            });
-            fail("Expected LocaleData constructor to throw");
-        } catch (e) {
-            expect(e.message).toBe("Synchronous mode is requested but the loader does not support synchronous operation");
-        }
+        // browsers cannot load synchronously, so the instance falls back to async
+        // instead of throwing. Preassembled data can still be read synchronously
+        // through loadData, which is how ilib classes work in a browser.
+        const locData = new LocaleData({
+            path: "./test/testfiles/files3",
+            sync: true
+        });
+
+        expect(locData.isSync()).toBe(false);
     });
 
     test("should create LocaleData in async mode by default", () => {
@@ -122,6 +122,68 @@ describe("LocaleDataWeb", () => {
             "c": "d de files3"
         };
         expect(actual).toEqual(expected);
+    });
+
+    test("should load sync data that ensureLocale preloaded", async () => {
+        expect.assertions(3);
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+        LocaleData.addGlobalRoot("./test/testfiles/files3");
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files3",
+            sync: true
+        });
+
+        // this is how ilib classes work in a browser: preload the whole locale
+        // from a preassembled file, then read it synchronously afterwards
+        expect(await LocaleData.ensureLocale("de-DE")).toBe(true);
+        expect(locData.checkCache("de-DE", "foo")).toBe(true);
+
+        // the data was never merged before, so this must merge it out of the
+        // preloaded data rather than trying to load anything synchronously
+        const actual = locData.loadData({
+            basename: "foo",
+            locale: "de-DE",
+            sync: true
+        });
+
+        expect(actual).toEqual({
+            "m": "n de",
+            "o": "p de",
+            "q": "r de"
+        });
+    });
+
+    test("should load sync data that ensureLocale preloaded from the default root", async () => {
+        expect.assertions(3);
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        // this is how a browser app is set up: the package has its own path, and
+        // the preassembled files live in the directory that the bundler points at,
+        // so ensureLocale finds them under its default root instead
+        const locData = new LocaleData({
+            path: "./test/testfiles/files3",
+            sync: true
+        });
+
+        expect(await LocaleData.ensureLocale("fr-FR")).toBe(true);
+        expect(locData.checkCache("fr-FR", "foo")).toBe(true);
+
+        const actual = locData.loadData({
+            basename: "foo",
+            locale: "fr-FR",
+            sync: true
+        });
+
+        expect(actual).toEqual({
+            "m": "n fr",
+            "o": "p root",
+            "q": "r fr"
+        });
     });
 
     test("should ensure locale json right data sync no roots", async () => {

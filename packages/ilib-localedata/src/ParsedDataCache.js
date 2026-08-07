@@ -348,11 +348,17 @@ class ParsedDataCache {
      * @returns {string} The module type, either 'module' or 'commonjs'
      */
     _getModuleTypeSync(root) {
-        const packageJsonPath = `${root}/package.json`;
-        const packageJson = this.fileCache.loadFileSync(packageJsonPath);
-        if (packageJson) {
-            const pkg = JSON.parse(packageJson);
-            return pkg.type;
+        try {
+            const packageJsonPath = `${root}/package.json`;
+            const packageJson = this.fileCache.loadFileSync(packageJsonPath);
+            if (packageJson) {
+                const pkg = JSON.parse(packageJson);
+                return pkg.type;
+            }
+        } catch (error) {
+            // loaders that cannot read files synchronously cannot tell us the
+            // module type; assume commonjs so callers can still use data that
+            // is already in the cache
         }
         return 'commonjs';
     }
@@ -365,18 +371,11 @@ class ParsedDataCache {
      * @returns {Array.<string>} Array of file extensions to try in order
      */
     _getJsFileExtensions(root) {
-        try {
-            const moduleType = this._getModuleTypeSync(root);
-            // Check if there's a package.json in the root
-            if (moduleType === 'module') {
-                return ['.cjs', '.js'];
-            } else {
-                return ['.js', '.cjs'];
-            }
-        } catch (error) {
-            // If we can't read package.json, assume .js files are CommonJS
-            return ['.js', '.cjs'];
+        // If we can't read package.json, _getModuleTypeSync assumes commonjs
+        if (this._getModuleTypeSync(root) === 'module') {
+            return ['.cjs', '.js'];
         }
+        return ['.js', '.cjs'];
     }
 
     /**
