@@ -8,3 +8,5 @@
   Error instances instead of bare strings. Callers that only report the
   error do not need to change, but callers that compare the thrown value
   against a string should now read its "message" property instead.
+- MergedDataCache no longer double-merges root or duplicate und-REGION
+  sublocales, which was concatenating arrays (e.g. address fields) twice.

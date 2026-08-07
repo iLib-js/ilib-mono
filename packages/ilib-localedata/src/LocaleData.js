@@ -449,8 +449,12 @@ class LocaleData {
      * @param {boolean} [params.mostSpecific] if true, only return the most specific locale data
      * @param {boolean} [params.returnOne] if true, only return the data for the most locale-specific file found
      * @param {boolean} [params.crossRoots] if true, merge data across all roots. Default is false.
-     * @returns {Object|Promise.<Object>} the locale data if sync is true, or a promise to the locale data if sync is false
-     * @throws {Error} if the data could not be loaded
+     * @returns {Object|Promise.<Object>} the locale data if sync is true, or a promise to the locale data
+     * if sync is false. When no data exists for the requested locale and basename, an empty object
+     * is returned (or the promise resolves to one) so callers can treat missing data as an
+     * empty map.
+     * @throws {Error} if synchronous loading is requested but the loader does not support it and the
+     * data is not already in the cache
      */
     loadData(params) {
         const {
@@ -518,15 +522,14 @@ class LocaleData {
         };
 
         if (sync) {
-            // Try to load data synchronously
+            // Missing data used to merge down to {} before the cache rewrite; keep that
+            // contract so callers can treat "no data" as an empty map.
             const result = mergedDataCache.loadMergedDataSync(loc.getSpec(), roots, basename);
-            if (result === undefined) {
-                throw new Error(`No locale data found for locale ${loc.getSpec()}`);
-            }
-            return result;
+            return result === undefined ? {} : result;
         } else {
-            // Load data asynchronously
-            return mergedDataCache.loadMergedData(loc.getSpec(), roots, basename);
+            return mergedDataCache.loadMergedData(loc.getSpec(), roots, basename).then((result) => {
+                return result === undefined ? {} : result;
+            });
         }
     }
 

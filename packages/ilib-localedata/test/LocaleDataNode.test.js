@@ -1084,4 +1084,127 @@ describe("LocaleDataNode", () => {
             "b": "b from files"
         });
     });
+
+    test("should return empty object sync when no data exists for basename", () => {
+        expect.assertions(3);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        // Missing data must be an empty map, not an exception, so callers can
+        // fall back without special-casing a thrown error.
+        let threw = false;
+        let actual;
+        try {
+            actual = locData.loadData({
+                basename: "no-such-basename",
+                locale: "en-US"
+            });
+        } catch (e) {
+            threw = true;
+        }
+
+        expect(threw).toBe(false);
+        expect(actual).toEqual({});
+    });
+
+    test("should return empty object sync when no data exists with crossRoots", () => {
+        expect.assertions(3);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
+
+        expect(locData).toBeTruthy();
+
+        // Same empty-map contract when crossRoots is true.
+        let threw = false;
+        let actual;
+        try {
+            actual = locData.loadData({
+                basename: "no-such-basename",
+                locale: "en-US",
+                crossRoots: true
+            });
+        } catch (e) {
+            threw = true;
+        }
+
+        expect(threw).toBe(false);
+        expect(actual).toEqual({});
+    });
+
+    test("should return empty object async when no data exists for basename", async () => {
+        expect.assertions(3);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: false
+        });
+
+        expect(locData).toBeTruthy();
+
+        let threw = false;
+        let actual;
+        try {
+            actual = await locData.loadData({
+                basename: "no-such-basename",
+                locale: "en-US"
+            });
+        } catch (e) {
+            threw = true;
+        }
+
+        expect(threw).toBe(false);
+        expect(actual).toEqual({});
+    });
+
+    test("should return empty object async when no data exists with crossRoots", async () => {
+        expect.assertions(3);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: false
+        });
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
+
+        expect(locData).toBeTruthy();
+
+        let threw = false;
+        let actual;
+        try {
+            actual = await locData.loadData({
+                basename: "no-such-basename",
+                locale: "en-US",
+                crossRoots: true
+            });
+        } catch (e) {
+            threw = true;
+        }
+
+        expect(threw).toBe(false);
+        expect(actual).toEqual({});
+    });
 });

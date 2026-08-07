@@ -168,7 +168,7 @@ class MergedDataCache {
      *
      * @param {string|Locale} locale - The locale to load data for
      * @param {Array.<string>} roots - Array of root directories to search
-     * @param {string} basename - The basename of the data to load (e.g., "ResBundle")
+     * @param {string} basename - The basename of the data to load
      * @returns {Promise<Object>} Promise that resolves to the merged locale data for the specified basename
      */
     async loadMergedData(locale, roots, basename) {
@@ -537,7 +537,12 @@ class MergedDataCache {
     _mergeParsedData(locale, basename, roots = ["./locale"]) {
         const files = [];
 
-        const subLocales = locale === null || locale.getSpec() === 'root' ? ['root'] : ['root', ...Utils.getSublocales(locale.getSpec())];
+        // getSublocales already starts with "root". Do not prepend another "root",
+        // and dedupe: for language "und", getSublocales("und-US") yields "und-US" twice.
+        // Without dedupe, JSUtils.merge concatenates arrays (e.g. address fields) twice.
+        const subLocales = locale === null || locale.getSpec() === 'root'
+            ? ['root']
+            : [...new Set(Utils.getSublocales(locale.getSpec()))];
 
         // Build list of files to merge based on merge preferences
         if (this.crossRoots) {
@@ -593,11 +598,26 @@ class MergedDataCache {
             return found || {};
         }
 
-        // Default: merge all data in sublocale order
-        const result = files.map(file => file.data || {}).reduce((previous, current) => {
+        // Default: merge all data in sublocale order. Match pre-rewrite LocaleData:
+        // one fragment per locale spec so duplicate sublocales cannot concat arrays twice.
+        if (!this.crossRoots) {
+            const seen = {};
+            const dataToMerge = [];
+            files.forEach((file) => {
+                const spec = file.locale.getSpec();
+                if (file.data && !seen[spec]) {
+                    seen[spec] = true;
+                    dataToMerge.push(file.data);
+                }
+            });
+            return dataToMerge.reduce((previous, current) => {
+                return JSUtils.merge(previous, current || {});
+            }, {});
+        }
+
+        return files.map(file => file.data || {}).reduce((previous, current) => {
             return JSUtils.merge(previous, current);
         }, {});
-        return result;
     }
 
 

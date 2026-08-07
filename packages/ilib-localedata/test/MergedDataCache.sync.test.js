@@ -447,6 +447,41 @@ describe('MergedDataCache Sync Tests (Node Only)', () => {
             expect(result).toBeTruthy(); // Should find data in files4
             expect(mergedDataCache.getMergedDataCount()).toBeGreaterThan(0); // Should cache some data
         });
+
+        test('should not duplicate arrays when merging und-REGION locales', () => {
+            // Utils.getSublocales("und-US") historically lists "und-US" twice because
+            // language is "und". Merging must not concatenate fields arrays twice.
+            expect.assertions(2);
+
+            const root = "./test/testfiles/files4";
+            const mergedCache = new MergedDataCache(loader);
+            mergedCache.storeData({
+                "root": {
+                    "address": {
+                        fieldNames: { locality: "City" }
+                    }
+                },
+                "und-US": {
+                    "address": {
+                        fields: [
+                            { name: "postalCode" },
+                            { name: "region" },
+                            { name: "locality" }
+                        ],
+                        startAt: "end"
+                    }
+                }
+            }, root);
+
+            const result = mergedCache.loadMergedDataSync(new Locale("und-US"), [root], "address");
+
+            expect(result.fields.map((f) => f.name)).toEqual([
+                "postalCode",
+                "region",
+                "locality"
+            ]);
+            expect(result.fieldNames).toEqual({ locality: "City" });
+        });
     });
 
     describe('Cache Behavior Sync', () => {
