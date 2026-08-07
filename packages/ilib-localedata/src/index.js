@@ -31,10 +31,11 @@ import LocaleData from './LocaleData.js';
  * @returns {LocaleData|undefined} a locale data instance you can use
  * to load locale data, or undefined if it could not be created
  * or if the package name was not specified
+ * @throws {Error} if the options are not given or do not contain a path
  */
 function getLocaleData(options) {
     if (!options || !options.path) {
-        throw "Missing options to LocaleData constructor";
+        throw new Error("Missing options to LocaleData constructor");
     }
 
     const { path } = options;

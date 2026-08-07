@@ -1,0 +1,12 @@
+{
+    "zh-Hans-CN": {
+        "info": {
+            "a": "b zh-Hans-CN",
+            "c": "d zh-Hans-CN"
+        },
+        "foo": {
+            "m": "n zh-Hans-CN",
+            "o": "p zh-Hans-CN"
+        }
+    }
+}
