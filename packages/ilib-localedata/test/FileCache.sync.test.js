@@ -184,7 +184,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(3);
 
             fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
-            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
 
             fileCache.clearCache();
@@ -206,7 +206,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(fileCache.size()).toBe(0);
             fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
             expect(fileCache.size()).toBe(1);
-            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
         });
 
@@ -214,7 +214,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(4);
 
             fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
-            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
 
             fileCache.removeFileFromCache('test/testfiles/files/fr/localeinfo.json');
@@ -239,7 +239,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(1);
 
-            fileCache.loadFileSync('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(2);
         });
 
@@ -265,7 +265,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(fileCache.attemptCount()).toBe(1);
 
             // Different file should increase count
-            fileCache.loadFileSync('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(2);
         });
     });
