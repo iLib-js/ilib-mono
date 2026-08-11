@@ -188,6 +188,7 @@ class WebpackLoader extends Loader {
         const load = (request) => {
             return import(
                 /* webpackInclude: /([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root)\.(js|cjs|mjs|json)$/ */
+                /* webpackExclude: /(^|\/)assemble\.mjs$/ */
                 /* webpackChunkName: "ilib.[request]" */
                 /* webpackMode: "lazy" */
                 `calling-module/${request}`
