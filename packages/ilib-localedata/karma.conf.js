@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 const path = require("path");
+const webpack = require("webpack");
 const { createKarmaConfig } = require("ilib-internal");
 
 module.exports = function (config) {
@@ -39,6 +40,17 @@ module.exports = function (config) {
             // Note: __CALLING_MODULE_PATH__ is NOT defined here.
             // The WebpackLoader uses a heuristic fallback that looks for
             // common root directory patterns like 'files*', 'locale', 'data', 'resources'
+            plugins: [
+                // zz-ZZ.json contains intentionally malformed JSON so that Node tests
+                // can exercise the parse-failure path. It has a locale-shaped name, so
+                // the WebpackLoader context would otherwise pick it up and webpack would
+                // fail the whole build trying to parse it. Keep it out of the browser
+                // bundle; the async loader treats a missing file the same as a parse
+                // failure (both resolve to undefined).
+                new webpack.IgnorePlugin({
+                    resourceRegExp: /zz-ZZ\.json$/
+                })
+            ],
             resolve: {
                 fallback: {
                     buffer: require.resolve("buffer")

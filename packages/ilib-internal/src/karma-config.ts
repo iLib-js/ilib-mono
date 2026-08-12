@@ -19,7 +19,14 @@
 
 import * as os from "os";
 import * as fs from "fs";
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
+
+// how long to wait for the check that a browser is intact before giving up on it
+const browserCheckTimeout = 10000;
+
+// name of the environment variable that lists browsers to leave out of the test
+// run, for example when IT policy does not allow one of them to be launched
+const skipBrowsersVariable = "KARMA_SKIP_BROWSERS";
 
 const defaultFiles = ["./test/**/*.test.js"];
 const defaultFilesTS = ["./test/**/*.test.ts"];
@@ -85,16 +92,16 @@ interface BrowserConfig {
 }
 
 /**
- * Detects if a browser is installed on the system
- * @param browserName - Name of the browser to check
- * @returns true if browser is installed, false otherwise
+ * Finds the executable for the given browser on this system
+ * @param browserName - Name of the browser to look for
+ * @returns the path to the executable, or undefined if it cannot be found
  */
-function isBrowserInstalled(browserName: string): boolean {
+function getBrowserExecutable(browserName: string): string | undefined {
     try {
         const platform = os.platform();
 
         switch (platform) {
-            case "win32":
+            case "win32": {
                 // Windows paths
                 const windowsPaths: { [key: string]: string } = {
                     chrome: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -102,32 +109,132 @@ function isBrowserInstalled(browserName: string): boolean {
                     opera: "C:\\Program Files\\Opera\\opera.exe",
                     edge: "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
                 };
-                return fs.existsSync(windowsPaths[browserName]);
+                const executable = windowsPaths[browserName];
+                return executable && fs.existsSync(executable) ? executable : undefined;
+            }
 
-            case "darwin":
+            case "darwin": {
                 // macOS paths
                 const macPaths: { [key: string]: string } = {
                     chrome: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
                     firefox: "/Applications/Firefox.app/Contents/MacOS/firefox",
                     opera: "/Applications/Opera.app/Contents/MacOS/Opera",
                 };
-                return fs.existsSync(macPaths[browserName]);
+                const executable = macPaths[browserName];
+                return executable && fs.existsSync(executable) ? executable : undefined;
+            }
 
-            case "linux":
-                // Linux - check if executable is in PATH
-                try {
-                    execSync(`which ${browserName}`, { stdio: "ignore" });
-                    return true;
-                } catch {
-                    return false;
-                }
+            case "linux": {
+                // Linux - find the executable in the PATH
+                const executable = execSync(`which ${browserName}`, {
+                    encoding: "utf-8",
+                    stdio: ["ignore", "pipe", "ignore"],
+                }).trim();
+                return executable || undefined;
+            }
 
             default:
-                return false;
+                return undefined;
         }
     } catch (error) {
+        return undefined;
+    }
+}
+
+/**
+ * Detects if a browser is installed on the system
+ * @param browserName - Name of the browser to check
+ * @returns true if browser is installed, false otherwise
+ */
+function isBrowserInstalled(browserName: string): boolean {
+    return getBrowserExecutable(browserName) !== undefined;
+}
+
+/**
+ * Detects if the given browser was listed in the KARMA_SKIP_BROWSERS environment
+ * variable. Use that variable for browsers that are installed and intact but still
+ * cannot be launched, such as when IT policy blocks that software. There is no way
+ * to detect such a policy, and launching the browser to find out would trigger the
+ * very notification that the policy shows when it blocks an application.
+ *
+ * @param browserName - Name of the browser to check
+ * @returns true if this browser should be left out of the test run
+ */
+function isBrowserSkipped(browserName: string): boolean {
+    const skipped = process.env[skipBrowsersVariable];
+    if (!skipped) {
         return false;
     }
+
+    return skipped
+        .split(",")
+        .map((name) => name.trim().toLowerCase())
+        .some((name) => name === browserName || name === `${browserName}headless`);
+}
+
+/**
+ * Detects if a macOS application bundle is intact. A partially applied update can
+ * leave a bundle that macOS refuses to run, which karma reports only as a browser
+ * that cannot start. Verifying the code signature catches that without launching
+ * the application.
+ *
+ * @param executable - Path to the executable inside the application bundle
+ * @returns true if the bundle verifies, or if the executable is not in a bundle
+ */
+function isMacAppIntact(executable: string): boolean {
+    const bundleEnd = executable.indexOf(".app/");
+    if (bundleEnd === -1) {
+        return true;
+    }
+    const bundle = executable.slice(0, bundleEnd + ".app".length);
+
+    try {
+        execFileSync("codesign", ["--verify", bundle], {
+            stdio: "ignore",
+            timeout: browserCheckTimeout,
+        });
+        return true;
+    } catch (error) {
+        // if codesign itself is not available, there is nothing to conclude about
+        // the bundle, so give it the benefit of the doubt
+        return (error as NodeJS.ErrnoException).code === "ENOENT";
+    }
+}
+
+// remember the results so that each browser is only checked once per process
+const usableBrowsers: { [browserName: string]: boolean } = {};
+
+/**
+ * Detects if a browser is installed and can be used for testing. Being installed is
+ * not enough, because karma fails the entire run when it cannot launch a browser
+ * that it was configured to use.
+ *
+ * @param browserName - Name of the browser to check
+ * @returns true if the browser can be used for testing, false otherwise
+ */
+function isBrowserUsable(browserName: string): boolean {
+    if (typeof usableBrowsers[browserName] === "boolean") {
+        return usableBrowsers[browserName];
+    }
+
+    let usable = false;
+
+    if (!isBrowserSkipped(browserName)) {
+        const executable = getBrowserExecutable(browserName);
+        if (executable) {
+            usable = os.platform() !== "darwin" || isMacAppIntact(executable);
+            if (!usable) {
+                console.warn(
+                    `Skipping ${browserName}: its code signature does not verify, so macOS ` +
+                    `will not run it. Reinstall it, or set ${skipBrowsersVariable}=${browserName} ` +
+                    `to skip it without this warning.`
+                );
+            }
+        }
+    }
+
+    usableBrowsers[browserName] = usable;
+    return usable;
 }
 
 type BrowserInfo = {
@@ -147,8 +254,8 @@ export function getAvailableBrowsers(): BrowserInfo {
     const customLaunchers: { [key: string]: BrowserConfig } = {};
     const browsers: string[] = [];
 
-    // Cross-platform browsers - only add if installed
-    if (isBrowserInstalled("chrome")) {
+    // Cross-platform browsers - only add if they can be used for testing
+    if (isBrowserUsable("chrome")) {
         plugins.push("karma-chrome-launcher");
         customLaunchers.ChromeHeadless = {
             base: "Chrome",
@@ -157,7 +264,7 @@ export function getAvailableBrowsers(): BrowserInfo {
         browsers.push("ChromeHeadless");
     }
 
-    if (isBrowserInstalled("firefox")) {
+    if (isBrowserUsable("firefox")) {
         plugins.push("karma-firefox-launcher");
         customLaunchers.FirefoxHeadless = {
             base: "Firefox",
@@ -166,7 +273,7 @@ export function getAvailableBrowsers(): BrowserInfo {
         browsers.push("FirefoxHeadless");
     }
 
-    if (isBrowserInstalled("opera")) {
+    if (isBrowserUsable("opera")) {
         plugins.push("karma-opera-launcher");
         customLaunchers.OperaHeadless = {
             base: "Opera",
@@ -176,7 +283,7 @@ export function getAvailableBrowsers(): BrowserInfo {
     }
 
     // Platform-specific browsers
-    if (platform === "win32" && isBrowserInstalled("edge")) {
+    if (platform === "win32" && isBrowserUsable("edge")) {
         plugins.push("karma-edge-launcher");
         customLaunchers.EdgeHeadless = {
             base: "Edge",
@@ -189,17 +296,16 @@ export function getAvailableBrowsers(): BrowserInfo {
 }
 
 /**
- * Exports the browser detection function for debugging purposes
- * @param browserName - Name of the browser to check
- * @returns true if browser is installed, false otherwise
+ * Exports the browser detection functions for debugging purposes
  */
-export { isBrowserInstalled };
+export { isBrowserInstalled, isBrowserUsable, getBrowserExecutable };
 
 /**
  * Creates a shared karma configuration that can be extended by individual packages
  *
  * Supported browsers: Chrome, Firefox, Opera (cross-platform) + Edge (Windows)
- * Only browsers that are actually installed on the system will be included
+ * Only browsers that are installed, intact, and not listed in the KARMA_SKIP_BROWSERS
+ * environment variable will be included
  * Default browsers: All available browsers for the current platform
  *
  * @param options - Package-specific options to merge with the base configuration

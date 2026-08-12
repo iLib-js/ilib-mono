@@ -222,7 +222,7 @@ class MockLoader extends Loader {
                 "locale": "fr"
             }
             `;
-        } else if (pathName.search("FR/localeinfo.json$") !== -1) {
+        } else if (pathName.search("und/FR/localeinfo.json$") !== -1) {
             returnValue = `
             {
                 "currency": "EUR",

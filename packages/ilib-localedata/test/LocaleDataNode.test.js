@@ -394,10 +394,10 @@ describe("LocaleDataNode", () => {
             }
         }, "./test/testfiles/files2");
 
-        // cacheData alone doesn't populate the merged cache, so checkCache returns false
-        expect(locData.checkCache("de-DE", "tester")).toBe(false);
+        // the data is there to merge, even though it has not been merged yet
+        expect(locData.checkCache("de-DE", "tester")).toBe(true);
 
-        // After loadData, the merged cache is populated and checkCache returns true
+        // and of course it is still there after it has been merged
         locData.loadData({
             basename: "tester",
             locale: "de-DE"
@@ -471,16 +471,15 @@ describe("LocaleDataNode", () => {
             }
         }, "./test/testfiles/files2");
 
-        // cacheData alone doesn't populate the merged cache
-        expect(locData.checkCache("de-DE", "tester")).toBe(false);
+        // true = everything that can be loaded is loaded
+        expect(locData.checkCache("de-DE", "tester")).toBe(true);
 
-        // After loadData, the merged cache is populated (with just root data)
+        // and it stays true after the merge, which produces just the root data
         locData.loadData({
             basename: "tester",
             locale: "de-DE"
         });
 
-        // true = everything that can be loaded is loaded
         expect(locData.checkCache("de-DE", "tester")).toBe(true);
     });
 
@@ -1083,5 +1082,128 @@ describe("LocaleDataNode", () => {
             "a": "a from files",
             "b": "b from files"
         });
+    });
+
+    test("should return empty object sync when no data exists for basename", () => {
+        expect.assertions(3);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        // Missing data must be an empty map, not an exception, so callers can
+        // fall back without special-casing a thrown error.
+        let threw = false;
+        let actual;
+        try {
+            actual = locData.loadData({
+                basename: "no-such-basename",
+                locale: "en-US"
+            });
+        } catch (e) {
+            threw = true;
+        }
+
+        expect(threw).toBe(false);
+        expect(actual).toEqual({});
+    });
+
+    test("should return empty object sync when no data exists with crossRoots", () => {
+        expect.assertions(3);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
+
+        expect(locData).toBeTruthy();
+
+        // Same empty-map contract when crossRoots is true.
+        let threw = false;
+        let actual;
+        try {
+            actual = locData.loadData({
+                basename: "no-such-basename",
+                locale: "en-US",
+                crossRoots: true
+            });
+        } catch (e) {
+            threw = true;
+        }
+
+        expect(threw).toBe(false);
+        expect(actual).toEqual({});
+    });
+
+    test("should return empty object async when no data exists for basename", async () => {
+        expect.assertions(3);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: false
+        });
+
+        expect(locData).toBeTruthy();
+
+        let threw = false;
+        let actual;
+        try {
+            actual = await locData.loadData({
+                basename: "no-such-basename",
+                locale: "en-US"
+            });
+        } catch (e) {
+            threw = true;
+        }
+
+        expect(threw).toBe(false);
+        expect(actual).toEqual({});
+    });
+
+    test("should return empty object async when no data exists with crossRoots", async () => {
+        expect.assertions(3);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: false
+        });
+        LocaleData.addGlobalRoot("./test/testfiles/files2");
+
+        expect(locData).toBeTruthy();
+
+        let threw = false;
+        let actual;
+        try {
+            actual = await locData.loadData({
+                basename: "no-such-basename",
+                locale: "en-US",
+                crossRoots: true
+            });
+        } catch (e) {
+            threw = true;
+        }
+
+        expect(threw).toBe(false);
+        expect(actual).toEqual({});
     });
 });

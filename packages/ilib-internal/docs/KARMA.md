@@ -145,7 +145,19 @@ The shared configuration automatically detects which browsers are installed on y
 -   **Windows**: Checks for browser executables in `Program Files` directories
 -   **Linux**: Uses `which` command to check if browser is in PATH
 
-Only browsers that are actually installed will be included in the test configuration, ensuring reliable test execution.
+On macOS, the configuration also verifies the code signature of each application bundle it finds. An update that was only partially applied leaves a bundle that macOS refuses to run, and karma fails the whole run when it cannot launch a browser it was told to use. Verifying the signature catches that without launching the browser.
+
+Only browsers that are actually installed and intact will be included in the test configuration, ensuring reliable test execution.
+
+### Skipping a Browser
+
+Some browsers are installed and intact but still cannot be launched, for example when IT policy does not allow that software. That cannot be detected, and trying to launch the browser to find out only triggers the notification that the policy shows when it blocks an application. List such browsers in the `KARMA_SKIP_BROWSERS` environment variable to leave them out of every test run:
+
+```bash
+KARMA_SKIP_BROWSERS=opera pnpm test:web
+```
+
+The variable takes a comma-separated list of browser names (`chrome`, `firefox`, `opera`, `edge`). Set it in your shell profile to apply it to all runs on that machine. It is declared in `turbo.json`, so it also reaches the test tasks when you run the web tests from the repo root.
 
 ### Custom Browser Selection
 

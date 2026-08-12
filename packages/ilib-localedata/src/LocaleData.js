@@ -28,6 +28,11 @@ import LocaleMatcher from 'ilib-localematcher';
 import DataCache from './DataCache.js';
 import MergedDataCache from './MergedDataCache.js';
 
+// The root that `ensureLocale` loads from when the app has not configured any
+// global roots. Preassembled locale data ends up cached under this root, which is
+// not one of the roots of the package that eventually asks for the data.
+const defaultRoot = "./locale";
+
 /**
  * @private
  */
@@ -325,16 +330,14 @@ class LocaleData {
         this.sync = false;
 
         if (typeof(sync) === "boolean" && sync) {
-            // If sync mode is requested and supported, set the loader to sync mode
             if (!this.loader) {
                 throw new Error("Synchronous mode is requested but no loader is available");
             }
-            if (this.loader.supportsSync()) {
-                this.sync = true;
-                this.loader.setSyncMode();
-            } else {
-                throw new Error("Synchronous mode is requested but the loader does not support synchronous operation");
-            }
+            // Fall back to asynchronous operation when the loader cannot load
+            // synchronously. Callers may still request individual synchronous
+            // loads, which loadData satisfies from the cache when the data was
+            // preassembled or preloaded, and rejects otherwise.
+            this.sync = this.loader.supportsSync();
         }
 
         if (this.sync && this.loader) {
@@ -449,8 +452,12 @@ class LocaleData {
      * @param {boolean} [params.mostSpecific] if true, only return the most specific locale data
      * @param {boolean} [params.returnOne] if true, only return the data for the most locale-specific file found
      * @param {boolean} [params.crossRoots] if true, merge data across all roots. Default is false.
-     * @returns {Object|Promise.<Object>} the locale data if sync is true, or a promise to the locale data if sync is false
-     * @throws {Error} if the data could not be loaded
+     * @returns {Object|Promise.<Object>} the locale data if sync is true, or a promise to the locale data
+     * if sync is false. When no data exists for the requested locale and basename, an empty object
+     * is returned (or the promise resolves to one) so callers can treat missing data as an
+     * empty map.
+     * @throws {Error} if synchronous loading is requested but the loader does not support it and the
+     * data is not already in the cache
      */
     loadData(params) {
         const {
@@ -518,15 +525,19 @@ class LocaleData {
         };
 
         if (sync) {
-            // Try to load data synchronously
-            const result = mergedDataCache.loadMergedDataSync(loc.getSpec(), roots, basename);
-            if (result === undefined) {
-                throw new Error(`No locale data found for locale ${loc.getSpec()}`);
-            }
-            return result;
+            // A loader that cannot load synchronously can only give us what is already
+            // in the cache, which may be under the root that ensureLocale loaded it from
+            // rather than one of this instance's own roots.
+            const syncRoots = this.loader.supportsSync() ? roots : this.getCachedRoots();
+
+            // Missing data used to merge down to {} before the cache rewrite; keep that
+            // contract so callers can treat "no data" as an empty map.
+            const result = mergedDataCache.loadMergedDataSync(loc.getSpec(), syncRoots, basename);
+            return result === undefined ? {} : result;
         } else {
-            // Load data asynchronously
-            return mergedDataCache.loadMergedData(loc.getSpec(), roots, basename);
+            return mergedDataCache.loadMergedData(loc.getSpec(), roots, basename).then((result) => {
+                return result === undefined ? {} : result;
+            });
         }
     }
 
@@ -545,6 +556,25 @@ class LocaleData {
             return globalRoots;
         }
         return globalRoots.concat([this.path]);
+    }
+
+    /**
+     * Return the list of roots to search for data that is already in the cache.
+     * When the app has not configured any global roots, `ensureLocale` loads the
+     * preassembled data from the default root, which is not one of this instance's
+     * own roots. Include it as the last-chance fallback so that a synchronous
+     * request can still be satisfied from that data on a platform that can only
+     * load asynchronously.
+     *
+     * @private
+     * @returns {Array.<string>} the list of roots, in order
+     */
+    getCachedRoots() {
+        const roots = this.getRoots();
+        if (LocaleData.getGlobalRoots().length > 0 || roots.includes(defaultRoot)) {
+            return roots;
+        }
+        return roots.concat([defaultRoot]);
     }
 
     /**
@@ -719,7 +749,7 @@ class LocaleData {
         // Get the list of roots to search
         const roots = LocaleData.getGlobalRoots().concat(otherRoots || []);
         if (roots.length === 0) {
-            roots.push("./locale");
+            roots.push(defaultRoot);
         }
 
         // Get shared MergedDataCache instance for this operation
@@ -770,12 +800,12 @@ class LocaleData {
      * <li>`loadData` already attempted to load it, whether or not that attempt
      * succeeded
      * <li>The entire locale was already loaded using `ensureLocale`
+     * <li>The data was added to the cache using `cacheData`
      * </ul>
      *
-     * Note: calling `cacheData` alone does not cause this method to return true.
-     * The `cacheData` method pre-populates data at lower levels of the cache, but
-     * `loadData` must still be called to merge the data. After `loadData` completes,
-     * this method will return true.
+     * The data does not need to have been merged yet. This method reports whether
+     * the data is there to merge, which is what makes it possible to satisfy a
+     * synchronous request on a platform that can only load asynchronously.
      *
      * @param {string} locale full locale of the data to check
      * @param {string|undefined} basename the basename of the data to check. If
@@ -791,8 +821,8 @@ class LocaleData {
         // Get the list of roots to search (includes this.path)
         const roots = this.getRoots();
 
-        // Check if merged data exists in the cache
-        return this.mergedDataCache.hasMergedData(locale, roots, basename);
+        return this.mergedDataCache.hasMergedData(locale, roots, basename) ||
+            this.mergedDataCache.hasLoadedLocaleData(locale, this.getCachedRoots(), basename);
     }
 
     /**

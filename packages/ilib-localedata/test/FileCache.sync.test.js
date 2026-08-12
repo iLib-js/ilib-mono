@@ -58,6 +58,21 @@ describe('FileCache Sync Tests (Node Only)', () => {
 
             expect(() => fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json')).toThrow();
         });
+
+        test('should not record a sync attempt that the loader could not make, so that a later async load still finds the file', async () => {
+            expect.assertions(3);
+
+            let loader = LoaderFactory("nodejs");
+            loader.setAsyncMode();
+            const fileCache = new FileCache(loader);
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
+
+            expect(() => fileCache.loadFileSync(filePath)).toThrow();
+            expect(fileCache.attemptCount()).toBe(0);
+
+            const data = await fileCache.loadFile(filePath);
+            expect(typeof data).toBe('string');
+        });
     });
 
     describe('loadFileSync', () => {
@@ -184,7 +199,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(3);
 
             fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
-            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
 
             fileCache.clearCache();
@@ -206,7 +221,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(fileCache.size()).toBe(0);
             fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
             expect(fileCache.size()).toBe(1);
-            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
         });
 
@@ -214,7 +229,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(4);
 
             fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
-            fileCache.loadFile('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
 
             fileCache.removeFileFromCache('test/testfiles/files/fr/localeinfo.json');
@@ -239,7 +254,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(1);
 
-            fileCache.loadFileSync('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(2);
         });
 
@@ -265,7 +280,7 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect(fileCache.attemptCount()).toBe(1);
 
             // Different file should increase count
-            fileCache.loadFileSync('test/testfiles/files/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.attemptCount()).toBe(2);
         });
     });

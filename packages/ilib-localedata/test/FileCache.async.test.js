@@ -190,7 +190,7 @@ describe('FileCache Async Tests (Node and Browser)', () => {
             expect.assertions(6);
 
             const filePath1 = 'test/testfiles/files/fr/localeinfo.json';
-            const filePath2 = 'test/testfiles/files/FR/localeinfo.json';
+            const filePath2 = 'test/testfiles/files/und/FR/localeinfo.json';
 
             // Load files
             const result1 = await fileCache.loadFile(filePath1);

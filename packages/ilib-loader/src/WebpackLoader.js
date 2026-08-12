@@ -183,21 +183,37 @@ class WebpackLoader extends Loader {
         this.logger.trace(`Loading file ${pathName} from webpack asynchronously`);
 
         const relativePath = this._extractRelativePath(pathName);
+        const fileName = Path.basename(pathName);
 
-        return import(
-            /* webpackInclude: /([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root)\.(js|cjs|mjs|json)$/ */
-            /* webpackChunkName: "ilib.[request]" */
-            /* webpackMode: "lazy" */
-            `calling-module/${relativePath}`
-        ).then((module) => {
-            // Webpack wraps imports in a module object with a 'default' property.
-            // For JSON files, webpack parses the JSON and puts the result in .default.
-            // For JS modules, the module object contains the exports.
-            // We unwrap .default to return the actual content.
-            if (module && typeof module === 'object' && 'default' in module) {
-                return module.default;
+        const load = (request) => {
+            return import(
+                /* webpackInclude: /([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root)\.(js|cjs|mjs|json)$/ */
+                /* webpackExclude: /(^|\/)assemble\.mjs$/ */
+                /* webpackChunkName: "ilib.[request]" */
+                /* webpackMode: "lazy" */
+                `calling-module/${request}`
+            ).then((module) => {
+                // Webpack wraps imports in a module object with a 'default' property.
+                // For JSON files, webpack parses the JSON and puts the result in .default.
+                // For JS modules, the module object contains the exports.
+                // We unwrap .default to return the actual content.
+                if (module && typeof module === 'object' && 'default' in module) {
+                    return module.default;
+                }
+                return module;
+            });
+        };
+
+        return load(relativePath).catch((e) => {
+            if (relativePath === fileName) {
+                throw e;
             }
-            return module;
+            // The alias may point straight at the directory that contains the
+            // preassembled locale files, in which case the root directory in the
+            // path is not part of the request. (eg. "locale/de-DE.js" is really
+            // just "de-DE.js")
+            this.logger.trace(`${relativePath} not found. Retrying as ${fileName}`);
+            return load(fileName);
         }).catch((e) => {
             this.logger.trace(e);
             return undefined;

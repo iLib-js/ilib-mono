@@ -95,6 +95,40 @@ describe("testWebpackLoader", () => {
             });
         });
 
+        test("LoadFileAsyncWithRootDirectoryInPath", () => {
+            expect.assertions(1);
+
+            var loader = LoaderFactory();
+
+            // the alias points straight at the directory of preassembled files, so
+            // the root directory in the path is not part of the request
+            return loader.loadFile("./locale/de-DE.js", {sync: false}).then((module) => {
+                expect(module.getLocaleData()).toEqual({
+                    "de": {
+                        "localeinfo": {
+                            "thousandsSeparator": ".",
+                            "decimalSeparator": ",",
+                            "language.name": "German",
+                            "locale": "de"
+                        }
+                    },
+                    "de-DE": {
+                        "localeinfo": {
+                            "clock": "24",
+                            "locale": "de-DE"
+                        }
+                    },
+                    "und-DE": {
+                        "localeinfo": {
+                            "timezone": "Europe/Berlin",
+                            "region.name": "Germany",
+                            "locale": "und-DE"
+                        }
+                    }
+                });
+            });
+        });
+
         test("LoadFilesAsync", () => {
             expect.assertions(3);
 
