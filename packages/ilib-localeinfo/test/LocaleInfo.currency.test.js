@@ -17,54 +17,40 @@
  * LocaleInfo.currency.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.currency", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should get the currency", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-US");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-US");
+        expect(info).not.toBeNull()
 
         expect(info.getCurrency()).toBe("USD")
     });
 
     test("should get the currency for the DE locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("de-DE");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("de-DE");
+        expect(info).not.toBeNull()
 
         expect(info.getCurrency()).toBe("EUR")
     });
 
     test("should get the currency for the GB locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-GB");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-GB");
+        expect(info).not.toBeNull()
 
         expect(info.getCurrency()).toBe("GBP")
     });
 
     test("should get the currency for an unknown locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("zxx-XX");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("zxx-XX");
+        expect(info).not.toBeNull()
 
         expect(info.getCurrency()).toBe("USD")
     });

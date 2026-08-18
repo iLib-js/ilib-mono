@@ -17,30 +17,16 @@
  * LocaleInfo.paper.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.paper", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should get the paper size for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo();
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo();
+        expect(info).not.toBeNull()
 
         // If locale is not specified, default locale would be return as "en-US".
         expect(info.getPaperSize()).toBe("8x11")
@@ -48,80 +34,80 @@ describe("LocaleInfo.paper", () => {
 
     test("should get the paper size for en-US", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-US");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-US");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("8x11")
     });
 
     test("should get the paper size for ko-KR", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("ko-KR");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("ko-KR");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("A4")
     });
 
     test("should get the paper size for es-MX", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("es-MX");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("es-MX");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("8x11")
     });
 
     test("should get the paper size for es-SV", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("es-SV");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("es-SV");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("8x11")
     });
 
     test("should get the paper size for es-PR", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("es-PR");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("es-PR");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("8x11")
     });
 
     test("should get the paper size for es-VE", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("es-VE");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("es-VE");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("8x11")
     });
 
     test("should get the paper size for fr-FR", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("fr-FR");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("fr-FR");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("A4")
     });
 
     test("should get the paper size for de-DE", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("de-DE");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("de-DE");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("A4")
     });
 
     test("should get the paper size for it-IT", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("it-IT");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("it-IT");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("A4")
     });
 
     test("should get the paper size for zh-CN", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("zh-CN");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("zh-CN");
+        expect(info).not.toBeNull()
 
         expect(info.getPaperSize()).toBe("A4")
     });

@@ -18,37 +18,23 @@
  */
 
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfoAsync", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should construct a LocaleInfo instance asynchronously", () => {
         expect.assertions(5);
         return LocaleInfo.create(undefined).then((info) => {
-            expect(info !== null).toBeTruthy()
+            expect(info).not.toBeNull()
 
-            var loc = info.getLocale();
-            expect(loc !== null).toBeTruthy()
+            const loc = info.getLocale();
+            expect(loc).not.toBeNull()
 
             expect(loc.getLanguage()).toBe("en")
             expect(loc.getRegion()).toBe("US")
-            expect(typeof(loc.getVariant()) === "undefined").toBeTruthy()
+            expect(loc.getVariant()).toBeUndefined()
 
         });
     });
@@ -56,13 +42,13 @@ describe("LocaleInfoAsync", () => {
     test("should construct a LocaleInfo for a given locale asynchronously", () => {
         expect.assertions(4);
         return LocaleInfo.create("de-DE").then((info) => {
-            expect(info !== null).toBeTruthy()
+            expect(info).not.toBeNull()
 
-            var loc = info.getLocale();
+            const loc = info.getLocale();
 
             expect(loc.getLanguage()).toBe("de")
             expect(loc.getRegion()).toBe("DE")
-            expect(typeof(loc.getVariant()) === "undefined").toBeTruthy()
+            expect(loc.getVariant()).toBeUndefined()
 
         });
     });
@@ -70,7 +56,7 @@ describe("LocaleInfoAsync", () => {
     test("should get the time zone for the default locale asynchronously", () => {
         expect.assertions(2);
         return LocaleInfo.create("zz-ZZ").then((info) => {
-            expect(info !== null).toBeTruthy()
+            expect(info).not.toBeNull()
 
             expect(info.getTimeZone()).toBe("Etc/UTC")
 
@@ -80,7 +66,7 @@ describe("LocaleInfoAsync", () => {
     test("should get the currency for an unknown locale asynchronously", () => {
         expect.assertions(2);
         return LocaleInfo.create("zxx-XX").then((info) => {
-            expect(info !== null).toBeTruthy()
+            expect(info).not.toBeNull()
 
             expect(info.getCurrency()).toBe("USD")
 
@@ -90,7 +76,7 @@ describe("LocaleInfoAsync", () => {
     test("should get the decimal separator for ko-KR asynchronously", () => {
         expect.assertions(5);
         return LocaleInfo.create("ko-KR").then((info) => {
-            expect(info !== null).toBeTruthy()
+            expect(info).not.toBeNull()
             expect(info.getDecimalSeparator()).toBe(".")
             expect(info.getGroupingSeparator()).toBe(",")
             expect(info.getPercentageFormat()).toBe("{n}%")
@@ -102,7 +88,7 @@ describe("LocaleInfoAsync", () => {
     test("should get the decimal separator for fr-FR asynchronously", () => {
         expect.assertions(5);
         return LocaleInfo.create("fr-FR").then((info) => {
-            expect(info !== null).toBeTruthy()
+            expect(info).not.toBeNull()
             expect(info.getDecimalSeparator()).toBe(",")
             expect(info.getGroupingSeparator()).toBe(' ')
             expect(info.getPercentageFormat()).toBe("{n} %")
@@ -115,7 +101,7 @@ describe("LocaleInfoAsync", () => {
         expect.assertions(5);
         // test mixing locale parts for a non-standard locale
         return LocaleInfo.create("zh-Hant-US").then((info) => {
-            expect(info !== null).toBeTruthy()
+            expect(info).not.toBeNull()
             expect(info.getDecimalSeparator()).toBe(".")
             expect(info.getGroupingSeparator()).toBe(",")
             expect(info.getRoundingMode()).toBe("halfdown")

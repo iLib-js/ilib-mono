@@ -17,141 +17,127 @@
  * LocaleInfo.calendar.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.calendar", () => {
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should get the clock for the US locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-US");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-US");
+        expect(info).not.toBeNull()
 
         expect(info.getClock()).toBe("12")
     });
 
     test("should get the clock for the CA locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-CA");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-CA");
+        expect(info).not.toBeNull()
 
         expect(info.getClock()).toBe("12")
     });
 
     test("should get the clock for the GB locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-GB");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-GB");
+        expect(info).not.toBeNull()
 
         expect(info.getClock()).toBe("24")
     });
 
     test("should get the clock for the DE locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("de-DE");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("de-DE");
+        expect(info).not.toBeNull()
 
         expect(info.getClock()).toBe("24")
     });
 
     test("should get the calendar for the US locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-US");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-US");
+        expect(info).not.toBeNull()
 
         expect(info.getCalendar()).toBe("gregorian")
     });
 
     test("should get the calendar for the DE locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("de-DE");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("de-DE");
+        expect(info).not.toBeNull()
 
         expect(info.getCalendar()).toBe("gregorian")
     });
 
     test("should get the units for the US locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-US");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-US");
+        expect(info).not.toBeNull()
 
         expect(info.getUnits()).toBe("uscustomary")
     });
 
     test("should get the units for the CA locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-CA");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-CA");
+        expect(info).not.toBeNull()
 
         expect(info.getUnits()).toBe("metric")
     });
 
     test("should get the units for the GB locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-GB");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-GB");
+        expect(info).not.toBeNull()
 
         expect(info.getUnits()).toBe("metric")
     });
 
     test("should get the units for the DE locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("de-DE");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("de-DE");
+        expect(info).not.toBeNull()
 
         expect(info.getUnits()).toBe("metric")
     });
 
     test("should get the first day of the week for the US locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-US");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-US");
+        expect(info).not.toBeNull()
 
         expect(info.getFirstDayOfWeek()).toBe(0)
     });
 
     test("should get the first day of the week for the DE locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("de-DE");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("de-DE");
+        expect(info).not.toBeNull()
 
         expect(info.getFirstDayOfWeek()).toBe(1)
     });
 
     test("should get the first day of the week for the FR locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("fr-FR");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("fr-FR");
+        expect(info).not.toBeNull()
 
         expect(info.getFirstDayOfWeek()).toBe(1)
     });
 
     test("should get the rounding mode for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo();
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo();
+        expect(info).not.toBeNull()
 
         expect(info.getRoundingMode()).toBe("halfdown")
     });
 
     test("should get the rounding mode for the yy locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("yy-YY");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("yy-YY");
+        expect(info).not.toBeNull()
 
         expect(info.getRoundingMode()).toBe("halfdown")
     });

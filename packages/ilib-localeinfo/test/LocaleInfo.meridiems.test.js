@@ -17,54 +17,40 @@
  * LocaleInfo.meridiems.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.meridiems", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should get the meridiems style for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo();
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo();
+        expect(info).not.toBeNull()
 
         expect(info.getMeridiemsStyle()).toBe("gregorian")
     });
 
     test("should get the meridiems style for the US locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-US");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-US");
+        expect(info).not.toBeNull()
 
         expect(info.getMeridiemsStyle()).toBe("gregorian")
     });
 
     test("should get the meridiems style for am-ET", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("am-ET");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("am-ET");
+        expect(info).not.toBeNull()
 
         expect(info.getMeridiemsStyle()).toBe("ethiopic")
     });
 
     test("should get the meridiems style for zh-Hans-CN", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("zh-Hans-CN");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("zh-Hans-CN");
+        expect(info).not.toBeNull()
 
         // Even for the Chinese locales, the default is
         // Gregorian style. To format with Chinese style,

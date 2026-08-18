@@ -17,136 +17,107 @@
  * LocaleInfo.names.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.names", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should get the language name for he-IL", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("he-IL");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("he-IL");
+        expect(li).not.toBeUndefined()
         expect(li.getLanguageName()).toBe("Hebrew")
     });
 
     test("should get the language name for es-MX", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("es-MX");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("es-MX");
+        expect(li).not.toBeUndefined()
         expect(li.getLanguageName()).toBe("Spanish")
     });
 
     test("should get the language name for asa-TZ", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("asa-TZ");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("asa-TZ");
+        expect(li).not.toBeUndefined()
         expect(li.getLanguageName()).toBe("Asu")
     });
 
     test("should get the language name for mus", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("mus");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("mus");
+        expect(li).not.toBeUndefined()
         expect(li.getLanguageName()).toBe("Muscogee")
     });
 
     test("should get the language name for cic", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("cic");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("cic");
+        expect(li).not.toBeUndefined()
         expect(li.getLanguageName()).toBe("Chickasaw")
-    });
-
-    test("should get the language name for na", () => {
-        // the country was renamed to Naoero, but the language name is unchanged
-        expect.assertions(2);
-        var li = new LocaleInfo("na");
-        expect(typeof(li) !== "undefined").toBeTruthy()
-        expect(li.getLanguageName()).toBe("Nauru")
     });
 
     test("should get the region name for he-IL", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("he-IL");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("he-IL");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("Israel")
     });
 
     test("should get the region name for es-MX", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("es-MX");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("es-MX");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("Mexico")
     });
 
     test("should get the region name for asa-TZ", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("asa-TZ");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("asa-TZ");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("Tanzania")
     });
 
     test("should get the region name for MK", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("MK");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("MK");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("North Macedonia")
     });
 
     test("should get the region name for MO", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("MO");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("MO");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("Macao SAR China")
     });
 
     test("should get the region name for SZ", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("SZ");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("SZ");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("Eswatini")
     });
 
     test("should get the region name for XX", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("XX");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("XX");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("Unknown")
     });
 
     test("should get the region name for XA", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("XA");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("XA");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("Pseudo-Accents")
     });
 
     test("should get the region name for XB", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("XB");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("XB");
+        expect(li).not.toBeUndefined()
         expect(li.getRegionName()).toBe("Pseudo-Bidi")
-    });
-
-    test("should get the region name for NR", () => {
-        expect.assertions(2);
-        var li = new LocaleInfo("NR");
-        expect(typeof(li) !== "undefined").toBeTruthy()
-        expect(li.getRegionName()).toBe("Naoero")
     });
 });

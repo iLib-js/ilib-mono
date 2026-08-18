@@ -18,9 +18,7 @@
  */
 
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 
 /** Expected number-format fields keyed by locale (extracted from nodeunit tests). */
@@ -2950,65 +2948,53 @@ const numberFormatCases = [
 
 describe("LocaleInfo.numberFormats", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test.each(numberFormatCases)("$name", ({ locale, field }) => {
         const expected = numberFormatData[locale];
         expect(expected).toBeDefined();
         expect(Object.prototype.hasOwnProperty.call(expected, field)).toBeTruthy();
         const info = new LocaleInfo(locale);
-        expect(info !== null).toBeTruthy();
+        expect(info).not.toBeNull();
         expect(fieldGetters[field](info)).toBe(expected[field]);
     });
 
     test("should get the decimal separator for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo();
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo();
+        expect(info).not.toBeNull()
 
         expect(info.getDecimalSeparator()).toBe(".")
     });
 
     test("should get the grouping separator for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo();
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo();
+        expect(info).not.toBeNull()
 
         expect(info.getGroupingSeparator()).toBe(",")
     });
 
     test("should get the primary grouping digits for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo();
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo();
+        expect(info).not.toBeNull()
 
         expect(info.getPrimaryGroupingDigits()).toBe(3)
     });
 
     test("should get the percentage format for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo();
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo();
+        expect(info).not.toBeNull()
 
         expect(info.getPercentageFormat()).toBe("{n}%")
     });
 
     test("should get the percentage symbol for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo();
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo();
+        expect(info).not.toBeNull()
 
         expect(info.getPercentageSymbol()).toBe("%")
     });

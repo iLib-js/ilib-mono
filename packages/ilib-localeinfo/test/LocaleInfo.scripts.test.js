@@ -17,79 +17,65 @@
  * LocaleInfo.scripts.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.scripts", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should get all scripts for a single-script locale", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("nl-NL");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("nl-NL");
+        expect(li).not.toBeUndefined()
         expect([].concat(li.getAllScripts()).sort()).toEqual([].concat(["Latn"]).sort());
     });
 
     test("should get all scripts for a multi-script locale (de-DE)", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("de-DE");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("de-DE");
+        expect(li).not.toBeUndefined()
         expect([].concat(li.getAllScripts()).sort()).toEqual([].concat(["Latn", "Runr"]).sort());
     });
 
     test("should get all scripts for a multi-script locale (uz-UZ)", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("uz-UZ");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("uz-UZ");
+        expect(li).not.toBeUndefined()
         expect([].concat(li.getAllScripts()).sort()).toEqual([].concat(["Arab", "Cyrl", "Latn"]).sort());
     });
 
     test("should get the default script for a single-script locale", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("nl-NL");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("nl-NL");
+        expect(li).not.toBeUndefined()
         expect(li.getDefaultScript()).toBe("Latn")
     });
 
     test("should get the default script for a multi-script locale", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("uz-UZ");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("uz-UZ");
+        expect(li).not.toBeUndefined()
         expect(li.getDefaultScript()).toBe("Arab")
     });
 
     test("should get the script for a single-script locale", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("nl-NL");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("nl-NL");
+        expect(li).not.toBeUndefined()
         expect(li.getScript()).toBe("Latn")
     });
 
     test("should get the script for a multi-script locale", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("uz-UZ");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("uz-UZ");
+        expect(li).not.toBeUndefined()
         expect(li.getScript()).toBe("Arab")
     });
 
     test("should get the script for a multi-script locale with a locale override", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("uz-Cyrl-UZ");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("uz-Cyrl-UZ");
+        expect(li).not.toBeUndefined()
         expect(li.getScript()).toBe("Cyrl")
     });
 });

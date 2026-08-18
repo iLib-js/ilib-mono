@@ -22,26 +22,15 @@
  */
 
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform, setPlatform } from 'ilib-env';
+import { setPlatform } from 'ilib-env';
 import { registerLoader } from 'ilib-loader';
 import { LocaleData } from 'ilib-localedata';
 import MockLoader from './MockLoader.js';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.loading", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     // Formerly testLocaleInfoLoadMissingDataAsynch
     test.skip("should load missing locale data asynchronously", async () => {
@@ -51,7 +40,7 @@ describe("LocaleInfo.loading", () => {
         setPlatform("mock");
 
         const info = await LocaleInfo.create("yyy-ZX");
-        expect(info !== null).toBeTruthy();
+        expect(info).not.toBeNull();
         expect(info.getCurrencyFormats().iso).toBe("iso {s} {n}");
         expect(info.getFirstDayOfWeek()).toBe(4);
         expect(info.getPercentageSymbol()).toBe("%");
@@ -67,7 +56,7 @@ describe("LocaleInfo.loading", () => {
         setPlatform("mock");
 
         const info = new LocaleInfo("yyy-ZX");
-        expect(info !== null).toBeTruthy();
+        expect(info).not.toBeNull();
         expect(info.getCurrencyFormats().iso).toBe("iso {s} {n}");
         expect(info.getFirstDayOfWeek()).toBe(4);
         expect(info.getPercentageSymbol()).toBe("%");
@@ -81,12 +70,12 @@ describe("LocaleInfo.loading", () => {
         setPlatform("mock");
 
         const info = await LocaleInfo.create("qq-QQ");
-        expect(typeof(info) !== "undefined").toBeTruthy();
+        expect(info).not.toBeUndefined();
         // should return the shared data only
         expect(info.getCurrencyFormats().common).toBe("{s}{n}");
         expect(info.getFirstDayOfWeek()).toBe(1);
         expect(info.getPercentageSymbol()).toBe("%");
-        expect(info !== null).toBeTruthy();
+        expect(info).not.toBeNull();
     });
 
     // Formerly testLocaleInfoMissingDataSynchNoDataNoLoader
@@ -96,12 +85,12 @@ describe("LocaleInfo.loading", () => {
         // Original cleared the loader callback entirely; with no mock loader,
         // missing locale parts should fall back to shared/default data.
         const info = new LocaleInfo("xxx-QQ");
-        expect(typeof(info) !== "undefined").toBeTruthy();
+        expect(info).not.toBeUndefined();
         // should return the shared data only
         expect(info.getCurrencyFormats().common).toBe("{s} {n}");
         expect(info.getFirstDayOfWeek()).toBe(1);
         expect(info.getPercentageSymbol()).toBe("%");
-        expect(info !== null).toBeTruthy();
+        expect(info).not.toBeNull();
     });
 
     // Formerly testLocaleInfoLoadMissingDataSyncNoData
@@ -112,7 +101,7 @@ describe("LocaleInfo.loading", () => {
         setPlatform("mock");
 
         const li = new LocaleInfo("qq-QQ");
-        expect(typeof(li) !== "undefined").toBeTruthy();
+        expect(li).not.toBeUndefined();
         // should return the shared data only
         expect(li.getCurrencyFormats().common).toBe("{s}{n}");
         expect(li.getFirstDayOfWeek()).toBe(1);
@@ -126,12 +115,12 @@ describe("LocaleInfo.loading", () => {
         setPlatform("mock");
 
         const info = await LocaleInfo.create("fr-FR");
-        expect(typeof(info) !== "undefined").toBeTruthy();
+        expect(info).not.toBeUndefined();
         expect(info.getCurrency()).toBe("EUR");
         expect(info.getFirstDayOfWeek()).toBe(1);
         expect(info.info.locale).toBe("FR");
         expect(info.getTimeZone()).toBe("Europe/Paris");
-        expect(info !== null).toBeTruthy();
+        expect(info).not.toBeNull();
     });
 
     // Formerly testLocaleInfoLoadMissingLocaleParts
@@ -140,7 +129,7 @@ describe("LocaleInfo.loading", () => {
     test.skip("should load a locale with missing parts from assembled data", () => {
         expect.assertions(5);
         const li = new LocaleInfo("fr-FR-overseas");
-        expect(typeof(li) !== "undefined").toBeTruthy();
+        expect(li).not.toBeUndefined();
         expect(li.getCurrency()).toBe("USD");
         expect(li.getFirstDayOfWeek()).toBe(1);
         expect(li.info.locale).toBe("fr-FR-overseas");

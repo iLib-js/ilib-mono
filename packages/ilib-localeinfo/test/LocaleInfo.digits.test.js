@@ -17,86 +17,72 @@
  * LocaleInfo.digits.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.digits", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should leave digits undefined for western locales", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("en-US");
-        expect(typeof(li) !== "undefined").toBeTruthy()
-        expect(typeof(li.getDigits()) === "undefined").toBeTruthy()
+        const li = new LocaleInfo("en-US");
+        expect(li).not.toBeUndefined()
+        expect(li.getDigits()).toBeUndefined()
     });
 
     test("should leave native digits undefined for western locales", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("en-US");
-        expect(typeof(li) !== "undefined").toBeTruthy()
-        expect(typeof(li.getDigits()) === "undefined").toBeTruthy()
+        const li = new LocaleInfo("en-US");
+        expect(li).not.toBeUndefined()
+        expect(li.getDigits()).toBeUndefined()
     });
 
     test("should leave digits undefined when non-western digits are optional", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("hi-IN");
-        expect(typeof(li) !== "undefined").toBeTruthy()
-        expect(typeof(li.getDigits()) === "undefined").toBeTruthy()
+        const li = new LocaleInfo("hi-IN");
+        expect(li).not.toBeUndefined()
+        expect(li.getDigits()).toBeUndefined()
     });
 
     test("should get native digits for a non-western locale", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("hi-IN");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("hi-IN");
+        expect(li).not.toBeUndefined()
         expect(li.getNativeDigits()).toBe("०१२३४५६७८९")
     });
 
     test("should get usual non-western digits", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("bn-IN");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("bn-IN");
+        expect(li).not.toBeUndefined()
         expect(li.getDigits()).toBe("০১২৩৪৫৬৭৮৯")
     });
 
     test("should get usual native non-western digits", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("bn-IN");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("bn-IN");
+        expect(li).not.toBeUndefined()
         expect(li.getNativeDigits()).toBe("০১২৩৪৫৬৭৮৯")
     });
 
     test("should get the western digits style", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("en-US");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("en-US");
+        expect(li).not.toBeUndefined()
         expect(li.getDigitsStyle()).toBe("western")
     });
 
     test("should get the optional digits style", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("hi-IN");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("hi-IN");
+        expect(li).not.toBeUndefined()
         expect(li.getDigitsStyle()).toBe("optional")
     });
 
     test("should get the native digits style", () => {
         expect.assertions(2);
-        var li = new LocaleInfo("bn-IN");
-        expect(typeof(li) !== "undefined").toBeTruthy()
+        const li = new LocaleInfo("bn-IN");
+        expect(li).not.toBeUndefined()
         expect(li.getDigitsStyle()).toBe("native")
     });
 });

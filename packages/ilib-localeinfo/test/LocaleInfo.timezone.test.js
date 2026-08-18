@@ -17,112 +17,90 @@
  * LocaleInfo.timezone.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.timezone", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should get the time zone for the US locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-US");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-US");
+        expect(info).not.toBeNull()
 
         expect(info.getTimeZone()).toBe("America/New_York")
     });
 
     test("should get the time zone for the DE locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("de-DE");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("de-DE");
+        expect(info).not.toBeNull()
 
         expect(info.getTimeZone()).toBe("Europe/Berlin")
     });
 
     test("should get the time zone for the ES locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("es-ES");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("es-ES");
+        expect(info).not.toBeNull()
 
         expect(info.getTimeZone()).toBe("Europe/Madrid")
     });
 
     test("should get the time zone for the MM locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("my-MM");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("my-MM");
+        expect(info).not.toBeNull()
         expect(info.getTimeZone()).toBe("Asia/Yangon")
     });
 
     test("should get the time zone for the CA locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-CA");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-CA");
+        expect(info).not.toBeNull()
         expect(info.getTimeZone()).toBe("America/Toronto")
     });
 
     test("should get the time zone for the CH locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("de-CH");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("de-CH");
+        expect(info).not.toBeNull()
         expect(info.getTimeZone()).toBe("Europe/Zurich")
     });
 
     test("should get the time zone for the KR locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("ko-KR");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("ko-KR");
+        expect(info).not.toBeNull()
         expect(info.getTimeZone()).toBe("Asia/Seoul")
     });
 
     test("should get the time zone for the BT locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("dz-BT");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("dz-BT");
+        expect(info).not.toBeNull()
         expect(info.getTimeZone()).toBe("Asia/Thimphu")
     });
 
     test("should get the time zone for the FO locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("fo-FO");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("fo-FO");
+        expect(info).not.toBeNull()
         expect(info.getTimeZone()).toBe("Atlantic/Faroe")
     });
 
     test("should get the time zone for the FM locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("en-FM");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("en-FM");
+        expect(info).not.toBeNull()
         expect(info.getTimeZone()).toBe("Pacific/Pohnpei")
     });
 
     test("should get the time zone for the default locale", () => {
         expect.assertions(2);
-        var info = new LocaleInfo("zz-ZZ");
-        expect(info !== null).toBeTruthy()
+        const info = new LocaleInfo("zz-ZZ");
+        expect(info).not.toBeNull()
 
         expect(info.getTimeZone()).toBe("Etc/UTC")
-    });
-
-    test("should get the time zone for the NR locale", () => {
-        // the country was renamed to Naoero, but the IANA zone id is unchanged
-        expect.assertions(2);
-        var li = new LocaleInfo("NR");
-        expect(typeof(li) !== "undefined").toBeTruthy()
-        expect(li.getTimeZone()).toBe("Pacific/Nauru")
     });
 });

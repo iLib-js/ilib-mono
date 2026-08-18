@@ -17,56 +17,43 @@
  * LocaleInfo.constructor.test.js - LocaleInfo Jest tests
  */
 import LocaleInfo from '../src/index.js';
-import { setLocale, getPlatform } from 'ilib-env';
-import { LocaleData } from 'ilib-localedata';
-import { localeList } from './locales.js';
+import { setLocale } from 'ilib-env';
+import { setupLocaleInfoTests } from './setup.js';
 
 describe("LocaleInfo.constructor", () => {
 
-    beforeAll(async () => {
-        setLocale("en-US");
-        if (getPlatform() === "browser") {
-            // Browser does not support sync locale loads; preload locales used by tests.
-            for (const locale of localeList.locales) {
-                await LocaleData.ensureLocale(locale);
-            }
-        }
-    });
-
-    beforeEach(() => {
-        setLocale("en-US");
-    });
+    setupLocaleInfoTests();
 
     test("should construct a LocaleInfo instance", () => {
         expect.assertions(1);
-        var loc = new LocaleInfo();
-        expect(loc !== null).toBeTruthy()
+        const loc = new LocaleInfo();
+        expect(loc).not.toBeNull()
     });
 
     test("should construct a LocaleInfo for the current locale", () => {
         expect.assertions(4);
         setLocale(undefined);
-        var loc, info = new LocaleInfo(); // gives locale of the host JS engine
+        const info = new LocaleInfo(); // gives locale of the host JS engine
 
-        expect(info !== null).toBeTruthy()
+        expect(info).not.toBeNull()
 
-        loc = info.getLocale();
+        const loc = info.getLocale();
 
         expect(loc.getLanguage()).toBe("en")
         expect(loc.getRegion()).toBe("US")
-        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy()
+        expect(loc.getVariant()).toBeUndefined()
     });
 
     test("should construct a LocaleInfo for a given locale", () => {
         expect.assertions(4);
-        var loc, info = new LocaleInfo("de-DE");
+        const info = new LocaleInfo("de-DE");
 
-        expect(info !== null).toBeTruthy()
+        expect(info).not.toBeNull()
 
-        loc = info.getLocale();
+        const loc = info.getLocale();
 
         expect(loc.getLanguage()).toBe("de")
         expect(loc.getRegion()).toBe("DE")
-        expect(typeof(loc.getVariant()) === "undefined").toBeTruthy()
+        expect(loc.getVariant()).toBeUndefined()
     });
 });
