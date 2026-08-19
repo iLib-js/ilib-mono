@@ -876,6 +876,259 @@ describe("LocaleDataNode", () => {
         });
     });
 
+    test("should load sync empty object when there is no data at all", () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        // merging zero files gives an empty object. Missing data for a basename is
+        // not an error, because the caller may have data for other locales only.
+        const actual = locData.loadData({
+            basename: "nonexistentbasename",
+            locale: "en-US"
+        });
+
+        expect(actual).toEqual({});
+    });
+
+    test("should load sync empty object when there is no data at all with crossRoots", () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        const actual = locData.loadData({
+            basename: "nonexistentbasename",
+            locale: "en-US",
+            crossRoots: true
+        });
+
+        expect(actual).toEqual({});
+    });
+
+    test("should load sync empty object when there is no data at all with mostSpecific", () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        const actual = locData.loadData({
+            basename: "nonexistentbasename",
+            locale: "en-US",
+            mostSpecific: true
+        });
+
+        expect(actual).toEqual({});
+    });
+
+    test("should load sync undefined when there is no data at all with returnOne", () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        // returnOne returns a single file's data, so with no files found there is
+        // nothing to return at all
+        const actual = locData.loadData({
+            basename: "nonexistentbasename",
+            locale: "en-US",
+            returnOne: true
+        });
+
+        expect(actual).toBeUndefined();
+    });
+
+    test("should load async empty object when there is no data at all", async () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: false
+        });
+
+        expect(locData).toBeTruthy();
+
+        const actual = await locData.loadData({
+            basename: "nonexistentbasename",
+            locale: "en-US"
+        });
+
+        expect(actual).toEqual({});
+    });
+
+    test("should load async undefined when there is no data at all with returnOne", async () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: false
+        });
+
+        expect(locData).toBeTruthy();
+
+        const actual = await locData.loadData({
+            basename: "nonexistentbasename",
+            locale: "en-US",
+            returnOne: true
+        });
+
+        expect(actual).toBeUndefined();
+    });
+
+    test("should not duplicate array data for the root locale", () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        const actual = locData.loadData({
+            basename: "arrays",
+            locale: "root"
+        });
+
+        // arrays are concatenated when data is merged, so merging the same
+        // sublocale's data twice would give ["root1", "root2", "root1", "root2"]
+        expect(actual).toEqual({
+            "list": ["root1", "root2"],
+            "nested": {
+                "inner": ["rootinner"]
+            }
+        });
+    });
+
+    test("should not duplicate array data when merging sublocales", () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        const actual = locData.loadData({
+            basename: "arrays",
+            locale: "en-US"
+        });
+
+        // the root array followed by the und-US array, each appearing exactly once
+        expect(actual).toEqual({
+            "list": ["root1", "root2", "undUS"],
+            "nested": {
+                "inner": ["rootinner", "undUSinner"]
+            }
+        });
+    });
+
+    test("should not duplicate array data for a locale with a repeated sublocale", () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: true
+        });
+
+        expect(locData).toBeTruthy();
+
+        // getSublocales("und-US") names "und-US" twice, so this locale is the one
+        // that duplicated array data even when the root data had no arrays
+        const actual = locData.loadData({
+            basename: "arrays",
+            locale: "und-US"
+        });
+
+        expect(actual).toEqual({
+            "list": ["root1", "root2", "undUS"],
+            "nested": {
+                "inner": ["rootinner", "undUSinner"]
+            }
+        });
+    });
+
+    test("should not duplicate array data when merging sublocales async", async () => {
+        expect.assertions(2);
+        setPlatform();
+
+        LocaleData.clearCache();
+        LocaleData.clearGlobalRoots();
+
+        const locData = new LocaleData({
+            path: "./test/testfiles/files",
+            sync: false
+        });
+
+        expect(locData).toBeTruthy();
+
+        const actual = await locData.loadData({
+            basename: "arrays",
+            locale: "en-US"
+        });
+
+        expect(actual).toEqual({
+            "list": ["root1", "root2", "undUS"],
+            "nested": {
+                "inner": ["rootinner", "undUSinner"]
+            }
+        });
+    });
+
     test("should ensure locale bad root", async () => {
         expect.assertions(1);
         setPlatform();

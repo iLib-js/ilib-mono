@@ -1,0 +1,6 @@
+{
+    "list": ["root1", "root2"],
+    "nested": {
+        "inner": ["rootinner"]
+    }
+}

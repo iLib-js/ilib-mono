@@ -187,6 +187,13 @@ var commandOptionHelp = {
         "      of resources and will search the string, category strings, or array values as appropriate.\n" +
         "    random\n" +
         "      Select a random set of translation units.\n" +
+        "    unique\n" +
+        "      Do not select a translation unit if another unit with the same identity was already\n" +
+        "      selected. The default identity uses project, targetLocale, key, datatype, flavor,\n" +
+        "      context, and source.\n" +
+        "    unique:[field]+[field]+...\n" +
+        "      Same as unique, but only the listed fields form the identity. Fields are separated by\n" +
+        "      plus signs. eg. unique:key+source  (resname is accepted as an alias for key)\n" +
         "    maxunits:[number]\n" +
         "      Select a the given maximum number of translation units.\n" +
         "    maxsource:[number]\n" +
@@ -194,7 +201,7 @@ var commandOptionHelp = {
         "    maxtarget:[number]\n" +
         "      Select translation units until the given number of target words is reached.\n" +
         "  Selection criteria can be combined with a comma. All criteria must match, making the selection a\n" +
-        "  conjunction. eg. loctool select 'random,maxsource:100,project=myproject' outfile.xliff infile.xliff\n" +
+        "  conjunction. eg. loctool select 'unique:key+source,random,maxunits:100' outfile.xliff infile.xliff\n" +
         "outfile\n" +
         "  the path to the file where the selected translation units are written to\n" +
         "filename\n" +

@@ -8,6 +8,10 @@ resource file formats needed by each project.
 See the [release notes](https://github.com/iLib-js/ilib-mono/blob/main/packages/loctool/CHANGELOG.md) for details on what is
 new and what has changed.
 
+Documentation for individual commands and topics lives under
+[docs/](docs/index.md). Many pages are still planned; finished guides
+are linked from that index.
+
 Installation
 ------------
 
@@ -839,7 +843,13 @@ These are the actions which are available:
   of specific fields. Also, you can limit the output by specifying the
   maximum number of units, or the maximum number of source or target words.
   It also allows you to randomize the selection so you can create a sample
-  of the input translations units.
+  of the input translations units. Use `unique` to skip units whose default
+  identity (project, targetLocale, key, datatype, flavor, context, and
+  source) was already selected, or `unique:field+field+...` to define that
+  identity yourself (for example `unique:key+source` when drop ids are
+  stored in the project field). Criteria can be combined with commas. See
+  [The select Command](docs/SelectCommand.md) for a full guide with
+  examples, or `loctool select --help` for the option list.
 - compare - Compare two xliff files (from and to) and write the
   differences to an output directory. The files are compared
   logically by translation units instead of lexically by characters

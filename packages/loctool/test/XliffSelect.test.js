@@ -195,6 +195,72 @@ describe("xliff select criteria parser", function() {
         };
         expect(actual).toStrictEqual(expected);
     });
+
+    test("unique criteria with default fields", function() {
+        expect.assertions(1);
+
+        var actual = XliffSelect.parseCriteria("unique");
+        var expected = {
+            uniqueFields: [
+                "project",
+                "targetLocale",
+                "key",
+                "datatype",
+                "flavor",
+                "context",
+                "source"
+            ]
+        };
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("unique criteria with field list", function() {
+        expect.assertions(1);
+
+        var actual = XliffSelect.parseCriteria("unique:key+source");
+        var expected = {
+            uniqueFields: ["key", "source"]
+        };
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("unique criteria with resname alias", function() {
+        expect.assertions(1);
+
+        var actual = XliffSelect.parseCriteria("unique:resname+source");
+        var expected = {
+            uniqueFields: ["key", "source"]
+        };
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("unique criteria combined with other criteria", function() {
+        expect.assertions(1);
+
+        var actual = XliffSelect.parseCriteria("unique:key+source,random,maxunits:100");
+        var expected = {
+            uniqueFields: ["key", "source"],
+            random: true,
+            maxunits: 100
+        };
+        expect(actual).toStrictEqual(expected);
+    });
+
+    test("unique criteria with unknown field", function() {
+        expect.assertions(1);
+
+        expect(function() {
+            XliffSelect.parseCriteria("unique:key+bogus");
+        }).toThrow();
+    });
+
+    test("unique criteria with empty field list", function() {
+        expect.assertions(1);
+
+        expect(function() {
+            XliffSelect.parseCriteria("unique:");
+        }).toThrow();
+    });
 });
 
 describe("xliff select test edge cases", function() {
@@ -627,6 +693,72 @@ describe("xliff select translation units in xliff v1", function() {
         '</xliff>';
 
         expect(actual).toBe(expected);
+    });
+
+    test("Select keeps same key+source from different projects by default", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff_select/drop1.xliff",
+                "test/testfiles/xliff_select/drop2.xliff"
+            ]
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var units = target.getTranslationUnits();
+        // different product-name/original values mean different projects, so both
+        // copies of got.it.key / hello.key are kept, plus bye.key from drop2
+        expect(units.length).toBe(5);
+    });
+
+    test("Select with unique:key+source collapses across projects", function() {
+        expect.assertions(4);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff_select/drop1.xliff",
+                "test/testfiles/xliff_select/drop2.xliff"
+            ],
+            criteria: "unique:key+source"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var units = target.getTranslationUnits();
+        expect(units.length).toBe(3);
+        expect(units.map(function(u) { return u.key; }).sort()).toEqual([
+            "bye.key",
+            "got.it.key",
+            "hello.key"
+        ]);
+        // first-seen wins, so targets come from drop1 for the overlapping keys
+        var gotIt = units.filter(function(u) { return u.key === "got.it.key"; })[0];
+        expect(gotIt.target).toBe("one");
+    });
+
+    test("Select with unique:key+source and maxunits counts only unique units", function() {
+        expect.assertions(2);
+
+        var settings = {
+            xliffVersion: 1,
+            infiles: [
+                "test/testfiles/xliff_select/drop1.xliff",
+                "test/testfiles/xliff_select/drop2.xliff"
+            ],
+            criteria: "unique:key+source,maxunits:2"
+        };
+
+        var target = XliffSelect(settings);
+        expect(target).toBeTruthy();
+
+        var units = target.getTranslationUnits();
+        expect(units.length).toBe(2);
     });
 });
 

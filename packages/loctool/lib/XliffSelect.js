@@ -27,6 +27,22 @@ var XliffFactory = require("./XliffFactory.js");
 
 var logger = log4js.getLogger("loctool.lib.XliffSelect");
 
+/**
+ * Default fields used to decide whether a translation unit has already
+ * been seen. Used for load-time deduplication and for the bare "unique"
+ * selection criterion.
+ * @private
+ */
+var defaultUniqueFields = [
+    "project",
+    "targetLocale",
+    "key",
+    "datatype",
+    "flavor",
+    "context",
+    "source"
+];
+
 // very simple tokenizer that only tokenizes by whitespace. This, of
 // course, does not work so well in languages that do not use spaces
 // between the words.
@@ -37,22 +53,48 @@ function wordCount(string) {
 }
 
 /**
+ * Normalize a field name used in a unique: criterion.
+ * @private
+ * @param {string} field the field name from the criteria
+ * @returns {string} normalized field name
+ */
+function normalizeUniqueField(field) {
+    if (field === "resname") return "key";
+    return field;
+}
+
+/**
+ * Return the value of a field on a translation unit for uniqueness hashing.
+ * @private
+ * @param {TranslationUnit} unit the translation unit
+ * @param {string} field the field name
+ * @returns {string} the value to include in the hash
+ */
+function uniqueFieldValue(unit, field) {
+    if (field === "pathName") {
+        return unit.pathName || unit.file || "";
+    }
+    if (field === "source" || field === "target") {
+        return utils.hashKey(unit[field] || "");
+    }
+    return unit[field] || "";
+}
+
+/**
  * Return a hash for the translation unit. This is used to identify
- * translation units in the cache so we can avoid adding duplicates.
+ * translation units that have already been seen so they are not
+ * selected again.
  * @private
  * @param {TranslationUnit} unit the translation unit to hash
+ * @param {Array.<string>} [fields] fields to include in the hash;
+ *        defaults to the full uniqueness field set
  * @returns {string} the hash for the translation unit
  */
-function tuHash(unit) {
-    return [
-        unit.project,
-        unit.targetLocale,
-        unit.key,
-        unit.datatype,
-        unit.flavor,
-        unit.context,
-        utils.hashKey(unit.source)
-    ].join("_");
+function tuHash(unit, fields) {
+    var hashFields = fields || defaultUniqueFields;
+    return hashFields.map(function(field) {
+        return uniqueFieldValue(unit, field);
+    }).join("_");
 }
 
 
@@ -110,6 +152,9 @@ var XliffSelect = function XliffSelect(settings) {
                 if (!settings.prune) {
                     unit.extended["original-file"] = file;
                 }
+                // Always collapse exact duplicates using the default field set
+                // while loading. Narrower uniqueness (e.g. unique:key+source) is
+                // applied later as a selection filter.
                 var hash = tuHash(unit);
                 unitCache[hash] = unit;
             });
@@ -134,6 +179,7 @@ var XliffSelect = function XliffSelect(settings) {
             var totalunits = 0;
             var sourcewords = 0;
             var targetwords = 0;
+            var seen = new ISet();
 
             if (criteria.random) {
                 // Mix up the units first and then perform the normal criteria below.
@@ -156,28 +202,6 @@ var XliffSelect = function XliffSelect(settings) {
 
             units = units.filter(function(unit) {
                 var match = true;
-                if (criteria.maxunits) {
-                    if (totalunits >= criteria.maxunits) {
-                        match = false;
-                    }
-                    totalunits++;
-                }
-
-                if (criteria.maxsource) {
-                    var count = wordCount(unit.source);
-                    if (sourcewords + count >= criteria.maxsource) {
-                        match = false;
-                    }
-                    sourcewords += count;
-                }
-
-                if (criteria.maxtarget) {
-                    var count = wordCount(unit.target);
-                    if (targetwords + count >= criteria.maxtarget) {
-                        match = false;
-                    }
-                    targetwords += count;
-                }
 
                 if (criteria.category && (!unit.quantity || unit.quantity !== criteria.category)) {
                     // units that are part of a plural have a quantity field
@@ -210,6 +234,45 @@ var XliffSelect = function XliffSelect(settings) {
                         if (unit[nfield] && unit[nfield].match(nre) !== null) {
                             match = false;
                         }
+                    }
+                }
+
+                // Uniqueness is "do not select this unit again if one with the
+                // same identity was already selected". Applied after field filters
+                // and before size budgets so that maxunits/maxsource count selected
+                // units only.
+                if (match && criteria.uniqueFields) {
+                    var id = tuHash(unit, criteria.uniqueFields);
+                    if (seen.has(id)) {
+                        match = false;
+                    } else {
+                        seen.add(id);
+                    }
+                }
+
+                if (match && criteria.maxunits) {
+                    if (totalunits >= criteria.maxunits) {
+                        match = false;
+                    } else {
+                        totalunits++;
+                    }
+                }
+
+                if (match && criteria.maxsource) {
+                    var sourceCount = wordCount(unit.source);
+                    if (sourcewords + sourceCount >= criteria.maxsource) {
+                        match = false;
+                    } else {
+                        sourcewords += sourceCount;
+                    }
+                }
+
+                if (match && criteria.maxtarget) {
+                    var targetCount = wordCount(unit.target);
+                    if (targetwords + targetCount >= criteria.maxtarget) {
+                        match = false;
+                    } else {
+                        targetwords += targetCount;
                     }
                 }
 
@@ -295,6 +358,29 @@ XliffSelect.parseCriteria = function (criteria) {
             criteriaObj.maxtarget = parseInt(part.substring(10));
         } else if (lowerPart === "random") {
             criteriaObj.random = true;
+        } else if (lowerPart === "unique") {
+            criteriaObj.uniqueFields = defaultUniqueFields.slice();
+        } else if (lowerPart.startsWith("unique:")) {
+            var fieldList = part.substring(7);
+            if (!fieldList) {
+                throw new Error("Incorrect syntax for criteria: " + part);
+            }
+            var fields = fieldList.split("+").map(function(f) {
+                return f.trim();
+            }).filter(function(f) {
+                return f.length > 0;
+            });
+            if (fields.length === 0) {
+                throw new Error("Incorrect syntax for criteria: " + part);
+            }
+            criteriaObj.uniqueFields = fields.map(function(field) {
+                // resname is accepted as an alias for key in unique: criteria only
+                var normalized = normalizeUniqueField(field);
+                if (!knownFields[normalized]) {
+                    throw new Error("Unknown field name in criteria: " + part);
+                }
+                return normalized;
+            });
         } else {
             // get the first equals sign only, as there may be equals signs in the regex
             var equals = part.indexOf("=");

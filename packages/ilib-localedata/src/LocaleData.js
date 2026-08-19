@@ -445,6 +445,12 @@ class LocaleData {
      * called and completed successfully, then the data will be returned immediately. If the data is not in the cache,
      * then this method will throw an error because synchronous loading is not supported.
      *
+     * If no data at all could be found for the requested locale and basename, this method does
+     * not throw. Instead it returns the result of merging nothing, which is an empty object for
+     * all of the merge modes except `returnOne`, which returns undefined because there is no
+     * single file to return. This lets callers treat missing data for a particular locale or
+     * basename as "no strings available" rather than as an error.
+     *
      * @param {Object} params parameters controlling the data loading
      * @param {string|Locale} params.locale the locale to load data for
      * @param {string} params.basename the basename of the data to load
@@ -455,7 +461,8 @@ class LocaleData {
      * @returns {Object|Promise.<Object>} the locale data if sync is true, or a promise to the locale data
      * if sync is false. When no data exists for the requested locale and basename, an empty object
      * is returned (or the promise resolves to one) so callers can treat missing data as an
-     * empty map.
+     * empty map. The exception is `returnOne`, which returns undefined because there is no
+     * single file to return.
      * @throws {Error} if synchronous loading is requested but the loader does not support it and the
      * data is not already in the cache
      */
@@ -524,19 +531,22 @@ class LocaleData {
                 this.cache.isLoaded(Path.join(file.root, `${spec}.json`));
         };
 
+        // The merged data caches signal "nothing found at all" with undefined, but
+        // callers expect the result of merging zero files instead: an empty object
+        // for every merge mode except returnOne, which has nothing to return.
+        const noData = () => returnOne ? undefined : {};
+
         if (sync) {
             // A loader that cannot load synchronously can only give us what is already
             // in the cache, which may be under the root that ensureLocale loaded it from
             // rather than one of this instance's own roots.
             const syncRoots = this.loader.supportsSync() ? roots : this.getCachedRoots();
 
-            // Missing data used to merge down to {} before the cache rewrite; keep that
-            // contract so callers can treat "no data" as an empty map.
             const result = mergedDataCache.loadMergedDataSync(loc.getSpec(), syncRoots, basename);
-            return result === undefined ? {} : result;
+            return (result === undefined) ? noData() : result;
         } else {
             return mergedDataCache.loadMergedData(loc.getSpec(), roots, basename).then((result) => {
-                return result === undefined ? {} : result;
+                return (result === undefined) ? noData() : result;
             });
         }
     }
@@ -758,23 +768,10 @@ class LocaleData {
             throw new Error("No loader available for this platform");
         }
 
-        try {
-            // Use MergedDataCache to load all locale-specific data for the locale
-            // This will look for [locale].js and [locale].json files and cache all the data
-            const result = await mergedDataCache.loadLocaleData(loc.getSpec(), roots);
-
-            // Return true if any data was loaded and cached
-            return result;
-        } catch (error) {
-            // If MergedDataCache failed to load the data, return false
-            // MergedDataCache should handle the case where no locale-specific files are found
-            if (error.message && error.message.includes("No locale data found")) {
-                return false;
-            }
-
-            // Re-throw unexpected errors
-            throw error;
-        }
+        // Use MergedDataCache to load all locale-specific data for the locale.
+        // This will look for [locale].js and [locale].json files and cache all the data.
+        // It reports a locale with no data by returning false rather than throwing.
+        return mergedDataCache.loadLocaleData(loc.getSpec(), roots);
     }
 
     /**
