@@ -18,7 +18,8 @@
  */
 
 import IString from '../src/index.js';
-import { setLocale } from 'ilib-env';
+import { getPlatform, setLocale } from 'ilib-env';
+import { LocaleData } from 'ilib-localedata';
 
 describe("IString", () => {
     beforeEach(() => {
@@ -397,6 +398,40 @@ describe("IString", () => {
             const str = new IString("0,0#{num} items on {pages} pages|1,1#{num} item on {pages} page");
             expect(str).toBeTruthy();
             expect(str.formatChoice([2, 2], {num: 2, pages: 2})).toBe("");
+        });
+    });
+
+    describe("Other-only plural locales", () => {
+        const choice = "0#There are no items.|one#The item is one|few#The items are few|many#The items are many|#Default items";
+        const locales = [
+            "ja-JP",
+            "ko-KR",
+            "zh-Hans-CN",
+            "th-TH",
+            "vi-VN",
+            "id-ID",
+            "my-MM",
+            "ig-NG",
+            "lo-LA",
+            "yo-NG",
+            "yue-HK",
+        ];
+
+        beforeAll(async () => {
+            if (getPlatform() === "browser") {
+                // does not support sync, so we have to ensure the locale
+                // data is loaded before we can do all these sync tests
+                for (const locale of locales) {
+                    await LocaleData.ensureLocale(locale);
+                }
+            }
+        });
+
+        test.each(locales)("should not treat 1 as singular for %s", (locale) => {
+            const str = new IString(choice, { locale });
+            expect(str.formatChoice(1)).toBe("Default items");
+            expect(str.formatChoice(5)).toBe("Default items");
+            expect(str.formatChoice(1.0)).toBe("Default items");
         });
     });
 
