@@ -1,0 +1,66 @@
+{
+    "name": "mojito-sdk",
+    "version": "0.0.0",
+    "description": "TypeScript SDK for the Mojito translation management system",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "sideEffects": false,
+    "keywords": [
+        "mojito",
+        "translation",
+        "localization",
+        "l10n",
+        "tms",
+        "sdk",
+        "typescript"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/mojito-sdk",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "files": [
+        "lib",
+        "src",
+        "docs",
+        "README.md",
+        "CHANGELOG.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
+    },
+    "engines": {
+        "node": ">=18 <23"
+    },
+    "scripts": {
+        "build": "tsc --project tsconfig.build.json",
+        "clean": "rm -rf lib coverage",
+        "coverage": "pnpm test --coverage",
+        "debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
+        "doc": "npm-run-all --npm-path pnpm doc:md doc:html",
+        "doc:md": "mkdir -p docs/api && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs/api src/index.ts",
+        "doc:html": "mkdir -p docs/api-html && typedoc --out docs/api-html --skipErrorChecking --cleanOutputDir false src/index.ts",
+        "test": "node node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:e2e": "node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js",
+        "test:watch": "pnpm test --watch",
+        "types": "tsc"
+    },
+    "devDependencies": {
+        "@tsconfig/node12": "^12.1.4",
+        "@types/jest": "^29.5.14",
+        "@types/node": "18",
+        "ilib-internal": "workspace:^",
+        "jest": "^29.7.0",
+        "npm-run-all": "^4.1.5",
+        "ts-jest": "^29.2.5",
+        "tsx": "^4.20.5",
+        "typedoc": "^0.26.11",
+        "typedoc-plugin-markdown": "^4.2.10",
+        "typescript": "^5.9.2"
+    }
+}

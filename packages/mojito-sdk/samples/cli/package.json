@@ -1,0 +1,20 @@
+{
+    "name": "mojito-sdk-cli-sample",
+    "private": true,
+    "version": "0.0.0",
+    "description": "Command-line sample demonstrating mojito-sdk",
+    "main": "index.ts",
+    "scripts": {
+        "run:sample": "tsx index.ts"
+    },
+    "dependencies": {
+        "mojito-sdk": "workspace:^"
+    },
+    "devDependencies": {
+        "tsx": "^4.20.5",
+        "typescript": "^5.9.2"
+    },
+    "engines": {
+        "node": ">=18 <23"
+    }
+}
