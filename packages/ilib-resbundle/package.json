@@ -74,7 +74,7 @@
         "test:watch": "LANG=en_US.UTF8 node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment node --watch",
         "test:cli": "pnpm test:jest",
         "test:karma": "LANG=en_US.UTF8 NODE_OPTIONS=\"$NODE_OPTIONS\" node --experimental-vm-modules node_modules/karma/bin/karma start karma.conf.js --reporters dots",
-        "test:web": "npm-run-all --npm-path pnpm build:locales build:dev build:assemble test:karma -- --single-run",
+        "test:web": "npm-run-all --npm-path pnpm build:locales build:dev build:assemble && pnpm test:karma --single-run",
         "test:all": "npm-run-all --npm-path pnpm test test:web",
         "debug": "npm-run-all --npm-path pnpm build:locales build:dev build:assemble ; node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
         "debug:web": "npm-run-all --npm-path pnpm build:locales build:dev build:assemble test:karma",
