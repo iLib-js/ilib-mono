@@ -35,7 +35,7 @@ describe("testResourcesAsync", () => {
         LocaleData.clearCache();
 
         return ResBundle.create({}).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             expect(rb.getName()).toBe("strings");
         });
@@ -46,9 +46,9 @@ describe("testResourcesAsync", () => {
         return ResBundle.create({
             locale: "de-DE"
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
-            var loc = rb.getLocale();
+            const loc = rb.getLocale();
 
             expect(loc.toString()).toBe("de-DE");
         });
@@ -61,7 +61,7 @@ describe("testResourcesAsync", () => {
             locale: "zxx-XX",
             type: "raw"
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             // should pseudo-ize the replacement parameter names in raw mode
             expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {çõüñţŕÿ}");
@@ -76,7 +76,7 @@ describe("testResourcesAsync", () => {
             name: "tester",
             locale: "zh-CN"
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             // should return source
             expect(rb.getString("foobar").toString()).toBe("foobar");
@@ -89,7 +89,7 @@ describe("testResourcesAsync", () => {
             name: "tester",
             locale: "zz-ZZ"
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             expect(rb.getString("This is a test.").toString()).toBe("This is a test.");
         });
@@ -102,7 +102,7 @@ describe("testResourcesAsync", () => {
             locale: "zxx-Cyrl-XX",
             type: "raw"
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             // should pseudo-ize the replacement parameter names in raw mode
             expect(rb.getString("Hello from {country}").toString()).toBe("Хэлло фром {чоунтря}");
@@ -118,7 +118,7 @@ describe("testResourcesAsync", () => {
             locale: "zxx-Hans-XX",
             type: "text"
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             // should not pseudo-ize the replacement parameter names
             // for Chinese scripts, remove the spaces to the simulate Chinese writing style
@@ -135,7 +135,7 @@ describe("testResourcesAsync", () => {
             locale: "zxx-Hebr-XX",
             type: "text"
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             // should not pseudo-ize the replacement parameter names
             expect(rb.getString("Hello from {country}").toString()).toBe("הֶללֹ פרֹמ {country}");

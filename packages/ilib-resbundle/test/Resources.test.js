@@ -88,56 +88,56 @@ describe("testResources", () => {
     test("ResBundleConstructorEmpty", () => {
         expect.assertions(1);
 
-        var rb = new ResBundle();
+        const rb = new ResBundle();
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
     });
 
     test("ResBundleConstructorDefaultName", () => {
         expect.assertions(2);
-        var rb = new ResBundle();
+        const rb = new ResBundle();
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getName()).toBe("strings");
     });
 
     test("ResBundleConstructorDefaultLocale", () => {
         expect.assertions(2);
-        var rb = new ResBundle();
+        const rb = new ResBundle();
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
-        var loc = rb.getLocale();
+        const loc = rb.getLocale();
 
         expect(loc.toString()).toBe("en-US");
     });
 
     test("ResBundleConstructorOtherLocale", () => {
         expect.assertions(2);
-        var rb = new ResBundle({locale: "de-DE"});
+        const rb = new ResBundle({locale: "de-DE"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
-        var loc = rb.getLocale();
+        const loc = rb.getLocale();
 
         expect(loc.toString()).toBe("de-DE");
     });
 
     test("ResBundleConstructorOtherName", () => {
         expect.assertions(2);
-        var rb = new ResBundle({name: "tester"});
+        const rb = new ResBundle({name: "tester"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getName()).toBe("tester");
     });
 
     test("ResBundleGetString", () => {
         expect.assertions(4);
-        var rb = new ResBundle(); // default locale
+        const rb = new ResBundle(); // default locale
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("first string").toString()).toBe("first");
         expect(rb.getString("second string").toString()).toBe("second");
@@ -146,9 +146,9 @@ describe("testResources", () => {
 
     test("ResBundleGetStringJS", () => {
         expect.assertions(4);
-        var rb = new ResBundle(); // default locale
+        const rb = new ResBundle(); // default locale
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("first string")).toBe("first");
         expect(rb.getStringJS("second string")).toBe("second");
@@ -157,36 +157,36 @@ describe("testResources", () => {
 
     test("ResBundleGetStringJSUndefinedSource", () => {
         expect.assertions(2);
-        var rb = new ResBundle(); // default locale
+        const rb = new ResBundle(); // default locale
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(typeof(rb.getStringJS(undefined)) === "undefined").toBeTruthy();
     });
 
     test("ResBundleGetStringEmpty", () => {
         expect.assertions(2);
-        var rb = new ResBundle(); // default locale
+        const rb = new ResBundle(); // default locale
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("").toString()).toBe("");
     });
 
     test("ResBundleGetStringUndefined", () => {
         expect.assertions(2);
-        var rb = new ResBundle(); // default locale
+        const rb = new ResBundle(); // default locale
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString(undefined).toString()).toBe("");
     });
 
     test("ResBundleGetStringde", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "de"});
+        const rb = new ResBundle({locale: "de"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("first string").toString()).toBe("erste String");
         expect(rb.getString("second string").toString()).toBe("zweite String");
@@ -195,9 +195,9 @@ describe("testResources", () => {
 
     test("ResBundleGetStringfr", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "fr"});
+        const rb = new ResBundle({locale: "fr"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("first string").toString()).toBe("première chaîne");
         expect(rb.getString("second string").toString()).toBe("deuxième chaîne");
@@ -206,9 +206,9 @@ describe("testResources", () => {
 
     test("ResBundleGetStringfrCA", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "fr-CA"});
+        const rb = new ResBundle({locale: "fr-CA"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("first string").toString()).toBe("première collier");
         expect(rb.getString("second string").toString()).toBe("deuxième collier");
@@ -217,9 +217,9 @@ describe("testResources", () => {
 
     test("ResBundleGetStringfrCAgovt", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "fr-CA-govt"});
+        const rb = new ResBundle({locale: "fr-CA-govt"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("first string").toString()).toBe("première corde");
         expect(rb.getString("second string").toString()).toBe("deuxième collier");
@@ -228,9 +228,9 @@ describe("testResources", () => {
 
     test("ResBundleGetStringDefaultToParent", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "de-DE"});
+        const rb = new ResBundle({locale: "de-DE"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("first string").toString()).toBe("erste String");
         expect(rb.getString("second string").toString()).toBe("zweite String");
@@ -239,9 +239,9 @@ describe("testResources", () => {
 
     test("ResBundleGetStringDefaultToSource", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "ja-JP"});
+        const rb = new ResBundle({locale: "ja-JP"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("first string x").toString()).toBe("first string x");
         expect(rb.getString("second string x").toString()).toBe("second string x");
@@ -250,9 +250,9 @@ describe("testResources", () => {
 
     test("ResBundleGetStringJSDefaultToSource", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "ja-JP"});
+        const rb = new ResBundle({locale: "ja-JP"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("first string x")).toBe("first string x");
         expect(rb.getStringJS("second string x")).toBe("second string x");
@@ -261,9 +261,9 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundle", () => {
         expect.assertions(4);
-        var rb = new ResBundle({name: "tester"});
+        const rb = new ResBundle({name: "tester"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {country}").toString()).toBe("Hello from {country}");
         expect(rb.getString("Hello from {city}").toString()).toBe("Hello from {city}");
@@ -272,12 +272,12 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundleesES", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "es-ES"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {country}").toString()).toBe("Saludos desde {country}");
         expect(rb.getString("Hello from {city}").toString()).toBe("Saludos desde {city}");
@@ -286,12 +286,12 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundleesMX", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "es-MX"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {country}").toString()).toBe("Hola de {country}");
         expect(rb.getString("Hello from {city}").toString()).toBe("Saludos desde {city}");
@@ -300,12 +300,12 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundleesMXslang", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "es-MX-slang"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {country}").toString()).toBe("Que tal de {country}");
         expect(rb.getString("Hello from {city}").toString()).toBe("Que tal de {city}");
@@ -314,13 +314,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoRaw", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "raw"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {çõüñţŕÿ}");
@@ -330,13 +330,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoText", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "text"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {country}");
@@ -346,13 +346,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoHtml", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {country}");
@@ -362,13 +362,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoHtmlWithTags", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from <span class=\"foo\">{country}</span>").toString()).toBe("Ħëľľõ fŕõm <span class=\"foo\">{country}</span>");
@@ -378,13 +378,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoHtmlWithMultipleTags", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from <div><span class=\"foo\">{country}</span></div>").toString()).toBe("Ħëľľõ fŕõm <div><span class=\"foo\">{country}</span></div>");
@@ -394,13 +394,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoHtmlWithTagsAndEntities", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from &amp;<span class=\"foo\">{country}</span>&mdash;").toString()).toBe("Ħëľľõ fŕõm &amp;<span class=\"foo\">{country}</span>&mdash;");
@@ -410,13 +410,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoXml", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "xml"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {country}");
@@ -426,14 +426,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoC", () => {
         expect.assertions(48);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "c",
             lengthen: true
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the C style replacement parameters
         // now follows the IEEE printf specification:
@@ -500,12 +500,12 @@ describe("testResources", () => {
 
     test("ResBundleGetStringOtherBundlePseudoDefault", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should be equivalent to "text" and not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {country}");
@@ -515,13 +515,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringMissingBundlePseudoHtml", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "asdfasdffoobar",
             locale: "zxx-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should still pseudo-translate, despite having no translations
         expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {country}");
@@ -531,14 +531,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringPseudoHtmlLengthenShort", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "asdfasdffoobar",
             locale: "zxx-XX",
             type: "html",
             lengthen: true
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // short: increase by 50%
         expect(rb.getString("Hello from Paris").toString()).toBe("Ħëľľõ fŕõm Pàŕíš76543210");
@@ -546,14 +546,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringPseudoHtmlLengthenMedium", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "asdfasdffoobar",
             locale: "zxx-XX",
             type: "html",
             lengthen: true
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // short: increase by 33%
         expect(rb.getString("Hello from Paris, city of lights").toString()).toBe("Ħëľľõ fŕõm Pàŕíš, çíţÿ õf ľíğĥţš09876543210");
@@ -561,14 +561,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringPseudoHtmlLengthenLong", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "asdfasdffoobar",
             locale: "zxx-XX",
             type: "html",
             lengthen: true
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // short: increase by 20%
         expect(rb.getString("Hello from Paris, city of culture, lights, and superb cuisine.").toString()).toBe("Ħëľľõ fŕõm Pàŕíš, çíţÿ õf çüľţüŕë, ľíğĥţš, àñð šüþëŕb çüíšíñë.109876543210");
@@ -576,104 +576,104 @@ describe("testResources", () => {
 
     test("ResBundleGetStringPseudoLeaveHTMLTags", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from <a href='url'>{city}</a>").toString()).toBe("Ħëľľõ fŕõm <a href='url'>{city}</a>");
     });
 
     test("ResBundleGetStringPseudoLeaveHTMLTags2", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString('<span class="n_letter">n</span>Cluster: <strong>{clusterName}</strong>').toString()).toBe('<span class="n_letter">ñ</span>Çľüšţëŕ: <strong>{clusterName}</strong>');
     });
 
     test("ResBundleGetStringPseudoNotLeaveHTMLTagsRaw", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "raw"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from <a href='url'>{city}</a>").toString()).toBe("Ħëľľõ fŕõm <à ĥŕëf='üŕľ'>{çíţÿ}</à>");
     });
 
     test("ResBundleGetStringPseudoNotLeaveHTMLTagsText", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "text"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from <a href='url'>{city}</a>").toString()).toBe("Ħëľľõ fŕõm <à ĥŕëf='üŕľ'>{city}</à>");
     });
 
     test("ResBundleGetStringPseudoLeaveHTMLEntities", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {city} &amp; {country}").toString()).toBe("Ħëľľõ fŕõm {city} &amp; {country}");
     });
 
     test("ResBundleGetStringPseudoNotLeaveHTMLEntitiesRaw", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "raw"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {city} &amp; {country}").toString()).toBe("Ħëľľõ fŕõm {çíţÿ} &àmþ; {çõüñţŕÿ}");
     });
 
     test("ResBundleGetStringPseudoNotLeaveHTMLEntitiesText", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "text"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {city} &amp; {country}").toString()).toBe("Ħëľľõ fŕõm {city} &àmþ; {country}");
     });
 
     test("ResBundleGetStringMissingBundlePseudoXml", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "asdfasdffoobar",
             locale: "zxx-XX",
             type: "xml"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should still pseudo-translate, despite having no translations
         expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {country}");
@@ -683,14 +683,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringPseudoXmlLengthenShort", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "asdfasdffoobar",
             locale: "zxx-XX",
             type: "xml",
             lengthen: true
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // short: increase by 50%
         expect(rb.getString("Hello from Paris").toString()).toBe("Ħëľľõ fŕõm Pàŕíš76543210");
@@ -698,14 +698,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringPseudoXmlLengthenMedium", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "asdfasdffoobar",
             locale: "zxx-XX",
             type: "xml",
             lengthen: true
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // short: increase by 33%
         expect(rb.getString("Hello from Paris, city of lights").toString()).toBe("Ħëľľõ fŕõm Pàŕíš, çíţÿ õf ľíğĥţš09876543210");
@@ -713,14 +713,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringPseudoXmlLengthenLong", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "asdfasdffoobar",
             locale: "zxx-XX",
             type: "xml",
             lengthen: true
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // short: increase by 20%
         expect(rb.getString("Hello from Paris, city of culture, lights, and superb cuisine.").toString()).toBe("Ħëľľõ fŕõm Pàŕíš, çíţÿ õf çüľţüŕë, ľíğĥţš, àñð šüþëŕb çüíšíñë.109876543210");
@@ -728,110 +728,110 @@ describe("testResources", () => {
 
     test("ResBundleGetStringPseudoLeaveXmlTags", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "xml"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from <city type='large'>{city}</city>").toString()).toBe("Ħëľľõ fŕõm <city type='large'>{city}</city>");
     });
 
     test("ResBundleGetStringPseudoLeaveXmlEntities", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-XX",
             type: "xml"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {city} &amp; {country}").toString()).toBe("Ħëľľõ fŕõm {city} &amp; {country}");
     });
 
     test("ResBundleGetStringWithKeyNamees", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "es"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {user}.", "key1").toString()).toBe("Saludos desde {user}.");
     });
 
     test("ResBundleGetStringWithKeyNameesMX", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "es-MX"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {user}.", "key1").toString()).toBe("Saludos desde {user}.");
     });
 
     test("ResBundleGetStringWithKeyNameesMXslang", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "es-MX-slang"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {user}.", "key1").toString()).toBe("Buenas desde {user}.");
     });
 
     test("ResBundleGetStringWithKeyNamedeDE", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "de-DE"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {user}.", "key1").toString()).toBe("Grüße vom {user}");
     });
 
     test("ResBundleGetStringWithKeyNameUnknown", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "de-DE"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {user}.", "key3").toString()).toBe("Hello from {user}.");
     });
 
     test("ResBundleGetStringRightLocale", () => {
         expect.assertions(3);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "de-DE"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
-        var str = rb.getString("first string");
+        const str = rb.getString("first string");
         expect(str.toString()).toBe("erste String");
         expect(str.getLocale()).toBe("de-DE");
     });
 
     test("ResBundleGetResObj", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "fr"});
+        const rb = new ResBundle({locale: "fr"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
-        var obj = rb.getResObj();
+        const obj = rb.getResObj();
 
         expect(obj["first string"]).toBe("première chaîne");
         expect(obj["second string"]).toBe("deuxième chaîne");
@@ -840,11 +840,11 @@ describe("testResources", () => {
 
     test("ResBundleGetResObjMerge", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "fr-CA"});
+        const rb = new ResBundle({locale: "fr-CA"});
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
-        var obj = rb.getResObj();
+        const obj = rb.getResObj();
 
         expect(obj["first string"]).toBe("première collier");
         expect(obj["second string"]).toBe("deuxième collier");
@@ -853,24 +853,24 @@ describe("testResources", () => {
 
     test("ResBundleGetStringAcceptEmptyTranslations", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zh-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("empty").toString()).toBe("");
     });
 
     test("ResBundleGetStringNonExistantTranslations", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zh-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should return source
         expect(rb.getString("foobar").toString()).toBe("foobar");
@@ -878,48 +878,48 @@ describe("testResources", () => {
 
     test("ResBundleGetStringAcceptSpaceTranslations", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zh-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("space").toString()).toBe(" ");
     });
 
     test("ResBundleGetStringAcceptCommaTranslations", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zh-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("comma").toString()).toBe(",");
     });
 
     test("ResBundleGetStringAcceptEmptyTranslationsWithKey", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zh-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("asdf", "empty").toString()).toBe("");
     });
 
     test("ResBundleGetStringAcceptNonExistantTranslationsWithKey", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zh-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should return source
         expect(rb.getString("asdf", "foobar").toString()).toBe("asdf");
@@ -927,271 +927,271 @@ describe("testResources", () => {
 
     test("ResBundleGetStringAcceptSpaceTranslationsWithKey", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zh-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("asdf", "space").toString()).toBe(" ");
     });
 
     test("ResBundleGetStringAcceptCommaTranslationsWithKey", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zh-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("asdf", "comma").toString()).toBe(",");
     });
 
     test("ResBundleGetStringNoResourcesReturnSource", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
          name: "tester",
          locale: "zz-ZZ"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("This is a test.").toString()).toBe("This is a test.");
        });
 
     test("ResBundleGetStringNoResourcesReturnSourceHtmlTypeHtml", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
          name: "tester",
          locale: "zz-ZZ",
          type: "html"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("This is a <b>test</b>. A&amp;P.").toString()).toBe("This is a <b>test</b>. A&amp;P.");
        });
 
     test("ResBundleGetStringNoResourcesReturnSourceHtmlTypejs", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
          name: "tester",
          locale: "zz-ZZ",
          type: "js"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("This is a <b>test</b>. A&amp;P.").toString()).toBe("This is a <b>test</b>. A&amp;P.");
        });
 
     test("ResBundleGetStringNoResourcesReturnSourceTypejsNoEscape", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
          name: "tester",
          locale: "zz-ZZ",
          type: "js"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("This is a 'test'.").toString()).toBe("This is a 'test'.");
        });
 
     test("ResBundleGetStringNoResourcesReturnSourceTypejsWithEscape", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
          name: "tester",
          locale: "zz-ZZ",
          type: "js"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("This is a 'test'.", undefined, "js").toString()).toBe("This is a \\'test\\'.");
        });
 
     test("ResBundleGetStringNoResourcesReturnSourceTypeHtmlWithEscape", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
          name: "tester",
          locale: "zz-ZZ",
          type: "html"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("This is a <b>test</b>. A&amp;P.", undefined, "html").toString()).toBe("This is a &lt;b&gt;test&lt;/b&gt;. A&amp;amp;P.");
        });
 
     test("ResBundleGetStringNoResourcesReturnSourceTypeHtmlWithEscapeJS", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
          name: "tester",
          locale: "zz-ZZ",
          type: "html"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("This is <a href=\"a test\">a 'test'</a>.", undefined, "js").toString()).toBe("This is <a href=\\\"a test\\\">a \\'test\\'</a>.");
        });
 
     test("ResBundleGetStringPseudoHtmlNoEscape", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "asdfasdffoobar",
            locale: "zxx-XX",
            type: "html"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("Hello from <a href=\"asdf\">Paris</a>, city of lights.").toString()).toBe("Ħëľľõ fŕõm <a href=\"asdf\">Pàŕíš</a>, çíţÿ õf ľíğĥţš.");
        });
 
     test("ResBundleGetStringPseudoHtmlEscapeHtml", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "asdfasdffoobar",
            locale: "zxx-XX",
            type: "html"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("Hello from <a href=\"asdf\">Paris</a>, city of lights.", undefined, "html").toString()).toBe("Ħëľľõ fŕõm &lt;a href=\"asdf\"&gt;Pàŕíš&lt;/a&gt;, çíţÿ õf ľíğĥţš.");
        });
 
     test("ResBundleGetStringPseudoHtmlEscapeJst", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "asdfasdffoobar",
            locale: "zxx-XX",
            type: "template"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getStringJS("Hello from <%= (i > 4) ? RB.getStringJS(\"Las Vegas\") : RB.getStringJS(\"Paris\") %>, city of lights.", undefined, "none")).toBe("Ħëľľõ fŕõm <%= (i > 4) ? RB.getStringJS(\"Las Vegas\") : RB.getStringJS(\"Paris\") %>, çíţÿ õf ľíğĥţš.");
        });
 
     test("ResBundleGetStringPseudoHtmlEscapeRuby", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "asdfasdffoobar",
            locale: "zxx-XX",
            type: "ruby"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getStringJS("Hello from %PARIS%, city of lights.", undefined, "html")).toBe("Ħëľľõ fŕõm %PARIS%, çíţÿ õf ľíğĥţš.");
        });
 
     test("ResBundleGetStringPseudoHtmlEscapeHaml", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "asdfasdffoobar",
            locale: "zxx-XX",
            type: "ruby"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getStringJS("Hello from %{city}, city of #{description}.")).toBe("Ħëľľõ fŕõm %{city}, çíţÿ õf #{description}.");
        });
 
     test("ResBundleGetStringPseudoHtmlEscapeJS", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "asdfasdffoobar",
            locale: "zxx-XX",
            type: "html"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.getString("Hello from <a href=\"asdf\">Paris</a>, city of lights.", undefined, "js").toString()).toBe("Ħëľľõ fŕõm <a href=\\\"asdf\\\">Pàŕíš</a>, çíţÿ õf ľíğĥţš.");
        });
 
     test("ResBundleContainsKeyByKeyTrue", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "strings",
            locale: "de-DE"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.containsKey(undefined, "first string")).toBeTruthy();
        });
 
     test("ResBundleContainsKeyByKeyFalse", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "strings",
            locale: "de-DE"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(!rb.containsKey(undefined, "asdfasdf")).toBeTruthy();
        });
 
     test("ResBundleContainsKeyBySourceTrue", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "strings",
            locale: "de-DE"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.containsKey("first string")).toBeTruthy();
        });
 
     test("ResBundleContainsKeyBySourceFalse", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "strings",
            locale: "de-DE"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(!rb.containsKey("asdfasdf")).toBeTruthy();
        });
 
     test("ResBundleContainsKeyBySourceMakeKey", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "strings",
            locale: "de-DE"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(rb.containsKey("first   \t\t\r\n  string")).toBeTruthy();
        });
 
     test("ResBundleContainsKeyBothUndefined", () => {
         expect.assertions(2);
-       var rb = new ResBundle({
+       const rb = new ResBundle({
            name: "strings",
            locale: "de-DE"
        });
 
-       expect(rb !== null).toBeTruthy();
+       expect(rb).not.toBeNull();
 
        expect(!rb.containsKey(undefined, undefined)).toBeTruthy();
        });
 
     test("ResBundleConstructSynchDynamic", () => {
         // uses Mock
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "de-DE-SAP",
             name: "foobar"
         });
@@ -1206,7 +1206,7 @@ describe("testResources", () => {
 
     test("ResBundleConstructSynchDynamicDefaultName", () => {
         // uses Mock
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "fr-CA-govt"
         });
 
@@ -1220,7 +1220,7 @@ describe("testResources", () => {
 
     test("ResBundleConstructSynchDynamicNoStrings", () => {
         // uses Mock
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "de-DE-SAP",
             name: "asdf" // doesn't exist
         });
@@ -1235,13 +1235,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringCyrlPseudoRaw", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-Cyrl-XX",
             type: "raw"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Хэлло фром {чоунтря}");
@@ -1251,13 +1251,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringCyrlPseudoText", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-Cyrl-XX",
             type: "text"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Хэлло фром {country}");
@@ -1267,13 +1267,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringCyrlPseudoHtml", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-Cyrl-XX",
             type: "html"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Хэлло фром {country}");
@@ -1283,13 +1283,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringCyrlPseudoXml", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-Cyrl-XX",
             type: "xml"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Хэлло фром {country}");
@@ -1299,12 +1299,12 @@ describe("testResources", () => {
 
     test("ResBundleGetStringCyrlPseudoDefault", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-Cyrl-XX"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should be equivalent to "text" and not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Хэлло фром {country}");
@@ -1314,13 +1314,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringHansPseudoText", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-Hans-XX",
             type: "text"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         // for Chinese scripts, remove the spaces to the simulate Chinese writing style
@@ -1331,13 +1331,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringHebrPseudoText", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester",
             locale: "zxx-Hebr-XX",
             type: "text"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("הֶללֹ פרֹמ {country}");
@@ -1347,66 +1347,66 @@ describe("testResources", () => {
 
     test("ResBundleGetStringMissingWrongValue", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
             missing: "foo"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.missing).toBe("source");
     });
 
     test("ResBundleGetStringMissingRightValue1", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
             missing: "pseudo"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.missing).toBe("pseudo");
     });
 
     test("ResBundleGetStringMissingRightValue2", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
             missing: "source"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.missing).toBe("source");
     });
 
     test("ResBundleGetStringMissingRightValue3", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
             missing: "empty"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.missing).toBe("empty");
     });
 
     test("ResBundleGetStringCyrlMissingRawSource", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
             type: "raw",
             missing: "source"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {country}").toString()).toBe("Hello from {country}");
         expect(rb.getString("Hello from {city}").toString()).toBe("Hello from {city}");
@@ -1415,14 +1415,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringCyrlMissingRawPseudo", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
             type: "raw",
             missing: "pseudo"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {country}").toString()).toBe("Хэлло фром {чоунтря}");
         expect(rb.getString("Hello from {city}").toString()).toBe("Хэлло фром {читя}");
@@ -1431,14 +1431,14 @@ describe("testResources", () => {
 
     test("ResBundleGetStringCyrlMissingRawEmpty", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
             type: "raw",
             missing: "empty"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("Hello from {country}").toString()).toBe("");
         expect(rb.getString("Hello from {city}").toString()).toBe("");
@@ -1447,13 +1447,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringLatnMissingPseudo", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "de-DE",
             missing: "pseudo"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Ħëľľõ fŕõm {country}");
@@ -1463,13 +1463,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringCyrlMissingPseudo", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "ru-RU",
             missing: "pseudo"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("Хэлло фром {country}");
@@ -1479,13 +1479,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringHebrMissingPseudo", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "he-IL",
             missing: "pseudo"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         expect(rb.getString("Hello from {country}").toString()).toBe("הֶללֹ פרֹמ {country}");
@@ -1495,13 +1495,13 @@ describe("testResources", () => {
 
     test("ResBundleGetStringHansMissingPseudo", () => {
         expect.assertions(4);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2",
             locale: "zh-Hans-CN",
             missing: "pseudo"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         // should not pseudo-ize the replacement parameter names
         // for Chinese scripts, remove the spaces to the simulate Chinese writing style
@@ -1512,55 +1512,55 @@ describe("testResources", () => {
 
     test("ResBundleGetStringWithSpaces", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString(" This is a test. ").toString()).toBe("test1");
     });
 
     test("ResBundleGetStringCompressSpaces", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("    This    is     a     test.     ").toString()).toBe("test1");
     });
 
     test("ResBundleGetStringConvertAllWhiteToSpaces", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString(" \t\r   This \n\n   is \n\t    a    \t test.  \n   ").toString()).toBe("test1");
     });
 
     test("ResBundleGetStringCompressSpacesEnd", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("This    is     a     test.     ").toString()).toBe("test2");
     });
 
     test("ResBundleGetStringCompressSpacesBeginning", () => {
         expect.assertions(2);
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             name: "tester2"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString("     This    is     a     test.").toString()).toBe("test3");
     });
@@ -1569,7 +1569,7 @@ describe("testResources", () => {
         expect.assertions(1);
         ResBundle.clearPseudoLocales();
         ResBundle.addPseudoLocale("eu-XX");
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale:'eu-XX'
         });
         expect(rb.getStringJS("This is pseudo string test")).toBe("Ťĥíš íš þšëüðõ šţŕíñğ ţëšţ");
@@ -1580,7 +1580,7 @@ describe("testResources", () => {
         expect.assertions(1);
         ResBundle.clearPseudoLocales();
         ResBundle.addPseudoLocale("ps-XX");
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale:'ps-XX'
         });
         expect(rb.getStringJS("This is pseudo string test")).toBe('טהִס ִס פסֶֻדֹ סטרִנג טֶסט');
@@ -1592,7 +1592,7 @@ describe("testResources", () => {
         expect.assertions(1);
         ResBundle.clearPseudoLocales();
         ResBundle.addPseudoLocale("de-DE");
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale:'de-DE'
         });
         expect(rb.getStringJS("This is pseudo string test")).toBe("Ťĥíš íš þšëüðõ šţŕíñğ ţëšţ");
@@ -1610,7 +1610,7 @@ describe("testResources", () => {
 
     test("ResBundlePseudoIsPseudo", () => {
         expect.assertions(2);
-        var loc = new Locale("de-DE");
+        const loc = new Locale("de-DE");
         ResBundle.clearPseudoLocales();
         expect(!ResBundle.isPseudoLocale(loc)).toBeTruthy();
         ResBundle.addPseudoLocale("de-DE");
@@ -1622,7 +1622,7 @@ describe("testResources", () => {
         expect.assertions(1);
         ResBundle.clearPseudoLocales();
         ResBundle.addPseudoLocale("");
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale:""
         });
         expect(rb.getStringJS("This is pseudo string test")).toBe("This is pseudo string test");
@@ -1649,7 +1649,7 @@ describe("testResources", () => {
 
     test("ClearPseudoLocalesOldOnesGone", () => {
         expect.assertions(2);
-        var loc = new Locale("de-DE");
+        const loc = new Locale("de-DE");
         ResBundle.addPseudoLocale("de-DE");
         expect(ResBundle.isPseudoLocale(loc)).toBeTruthy();
 
@@ -1662,7 +1662,7 @@ describe("testResources", () => {
         expect.assertions(4);
         ResBundle.clearPseudoLocales();
 
-        var loc = new Locale("zxx-XX");
+        let loc = new Locale("zxx-XX");
         expect(ResBundle.isPseudoLocale(loc)).toBeTruthy();
 
         loc = new Locale("zxx-Hans-XX");
@@ -1676,12 +1676,12 @@ describe("testResources", () => {
     test("ResBundleWithDefaultLocaleBeingPseudo", () => {
         expect.assertions(1);
         ResBundle.clearPseudoLocales();
-        var tmp = getLocale();
+        const tmp = getLocale();
 
         setLocale("zxx-XX"); // pseudo-locale
 
         // this used to throw an exception:
-        var rb = new ResBundle();
+        const rb = new ResBundle();
 
         expect(rb.getStringJS("translation")).toBe("ţŕàñšľàţíõñ");
         setLocale(tmp);
@@ -1689,7 +1689,7 @@ describe("testResources", () => {
 
     test("ResBundleLocalizeArray", () => {
         expect.assertions(3);
-        var rb = new ResBundle({locale: "de-DE"});
+        const rb = new ResBundle({locale: "de-DE"});
 
         arrayEqual( rb.getStringJS([
             "first string",
@@ -1705,7 +1705,7 @@ describe("testResources", () => {
 
     test("ResBundleLocalizeArrayUntranslatedElements", () => {
         expect.assertions(4);
-        var rb = new ResBundle({locale: "de-DE"});
+        const rb = new ResBundle({locale: "de-DE"});
 
         arrayEqual( rb.getStringJS([
             "first string",
@@ -1723,7 +1723,7 @@ describe("testResources", () => {
 
     test("ResBundleLocalizeArrayUndefinedElements", () => {
         expect.assertions(3);
-        var rb = new ResBundle({locale: "de-DE"});
+        const rb = new ResBundle({locale: "de-DE"});
 
         arrayEqual( rb.getStringJS([
             "first string",
@@ -1739,7 +1739,7 @@ describe("testResources", () => {
 
     test("ResBundleLocalizeArrayEmptyString", () => {
         expect.assertions(3);
-        var rb = new ResBundle({locale: "de-DE"});
+        const rb = new ResBundle({locale: "de-DE"});
 
         arrayEqual( rb.getStringJS([
             "first string",
@@ -1755,7 +1755,7 @@ describe("testResources", () => {
 
     test("ResBundleLocalizeArraySkipNonStrings", () => {
         expect.assertions(7);
-        var rb = new ResBundle({locale: "de-DE"});
+        const rb = new ResBundle({locale: "de-DE"});
 
         arrayEqual( rb.getStringJS([
             "first string",
@@ -1779,7 +1779,7 @@ describe("testResources", () => {
 
     test("ResBundleLocalizeArrayWithFormat", () => {
         expect.assertions(3);
-        var rb = new ResBundle({locale: "de-DE"});
+        const rb = new ResBundle({locale: "de-DE"});
 
         arrayEqual( rb.getString([
             "first string {n}",

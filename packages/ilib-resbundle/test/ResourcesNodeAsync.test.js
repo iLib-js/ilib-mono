@@ -33,16 +33,16 @@ describe("testResourcesNodeAsync", () => {
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
 
-        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+        const base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
         return ResBundle.create({
             locale: "de-DE",
             basePath: base
         }).then((rb) => {
-            var loc = rb.getLocale();
+            const loc = rb.getLocale();
             expect(loc.toString()).toBe("de-DE");
 
-            var str = new IString("one#({N}) file selected|#({N}) files selected");
-            var temp = rb.getString(str);
+            const str = new IString("one#({N}) file selected|#({N}) files selected");
+            const temp = rb.getString(str);
             expect(temp.formatChoice(2, {N:2})).toBe("(2) Dateien ausgewählt");
         });
     });
@@ -51,16 +51,16 @@ describe("testResourcesNodeAsync", () => {
         expect.assertions(2);
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
-        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+        const base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
         const rb = await ResBundle.create({
             locale: "ko-KR",
             basePath: base
         });
-        var loc = rb.getLocale();
+        const loc = rb.getLocale();
         expect(loc.toString()).toBe("ko-KR");
 
-        var str = new IString("one#({N}) file selected|#({N}) files selected");
-        var temp = rb.getString(str);
+        const str = new IString("one#({N}) file selected|#({N}) files selected");
+        const temp = rb.getString(str);
         expect(temp.formatChoice(1, {N:1})).toBe("(1)개 파일 선택됨(other)");
     });
 
@@ -70,13 +70,13 @@ describe("testResourcesNodeAsync", () => {
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
 
-        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+        const base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
 
         return ResBundle.create({
             locale: "es-MX",
             basePath: base
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             expect(rb.getString("Hello from {country}").toString()).toBe("Que tal de {country}");
             expect(rb.getString("Hello from {city}").toString()).toBe("Que tal de {city}");
@@ -90,13 +90,13 @@ describe("testResourcesNodeAsync", () => {
         // clear this to be sure it is actually loading something
         LocaleData.clearCache();
 
-        var base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
+        const base = path.relative(process.cwd(), path.resolve(__dirname, "./resources"));
 
         return ResBundle.create({
             locale: "es-MX",
             basePath: base
         }).then((rb) => {
-            expect(rb !== null).toBeTruthy();
+            expect(rb).not.toBeNull();
 
             expect(rb.getString("Hello from {country}").toString()).toBe("Que tal de {country}");
             expect(rb.getString("Hello from {city}").toString()).toBe("Que tal de {city}");

@@ -51,11 +51,11 @@ describe("testResourcesNode", () => {
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("Hello, {name}")).toBe("{name}, 안녕하세요");
 
@@ -71,11 +71,11 @@ describe("testResourcesNode", () => {
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR-flavor"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("Hello, {name}")).toBe("안녕하세요");
         LocaleData.removeGlobalRoot(root);
@@ -90,11 +90,11 @@ describe("testResourcesNode", () => {
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "zh-Hans-CN"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("Hello, {name}")).toBe("{name}, 你好");
         LocaleData.removeGlobalRoot(root);
@@ -108,11 +108,11 @@ describe("testResourcesNode", () => {
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "zh-Hans-CN-flavor"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("Hello, {name}")).toBe("你好");
         LocaleData.removeGlobalRoot(root);
@@ -125,12 +125,12 @@ describe("testResourcesNode", () => {
         LocaleData.clearCache();
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
-        var str = new IString("one#({N}) file selected|#({N}) files selected");
+        const str = new IString("one#({N}) file selected|#({N}) files selected");
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "de-DE"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getString(str).formatChoice(1, {N:1})).toBe("(1) Datei ausgewählt");
         expect(rb.getString(str).formatChoice(5, {N:5})).toBe("(5) Dateien ausgewählt");
@@ -147,13 +147,13 @@ describe("testResourcesNode", () => {
 
         const root = Path.join(__dirname, "./resources");
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             basePath: root,
             locale: "ja-JP",
             name: "basetest"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("Hello from {country}")).toBe("{country}からこんにちは");
         expect(rb.getStringJS("Hello from {city}")).toBe("{city}からこんにちは");
@@ -169,13 +169,13 @@ describe("testResourcesNode", () => {
         LocaleData.clearGlobalRoots();
         const root = Path.join(__dirname, "./resources2");
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             basePath: root,
             locale: "ja-JP",
             name: "basetest"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("Hello from {country}")).toBe("{country}からこんにちは2");
         expect(rb.getStringJS("Hello from {city}")).toBe("{city}からこんにちは2");
@@ -196,12 +196,12 @@ describe("testResourcesNode", () => {
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ja-JP",
             name: "basetest"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("Hello from {country}")).toBe("{country}からこんにちは");
         expect(rb.getStringJS("Hello from {city}")).toBe("{city}からこんにちは");
@@ -220,12 +220,12 @@ describe("testResourcesNode", () => {
         const root = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ja-JP",
             name: "basetest"
         });
 
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
 
         expect(rb.getStringJS("Hello from {country}")).toBe("{country}からこんにちは2");
         expect(rb.getStringJS("Hello from {city}")).toBe("{city}からこんにちは2");
@@ -239,10 +239,10 @@ describe("testResourcesNode", () => {
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕하세요!");
         expect(rb.getStringJS("Settings")).toBe("설정");
 
@@ -257,10 +257,10 @@ describe("testResourcesNode", () => {
         const root2 = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root2);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕2");
         expect(rb.getStringJS("Settings")).toBe("설정");
 
@@ -276,10 +276,10 @@ describe("testResourcesNode", () => {
         const root2 = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root2);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕2");
         expect(rb.getStringJS("Settings")).toBe("설정");
 
@@ -297,10 +297,10 @@ describe("testResourcesNode", () => {
         const root2 = Path.join(__dirname, "./resources5"); // does not exist
         LocaleData.addGlobalRoot(root2);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕하세요!");
         expect(rb.getStringJS("Settings")).toBe("설정");
 
@@ -319,10 +319,10 @@ describe("testResourcesNode", () => {
         const root2 = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root2);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕2");
         expect(rb.getStringJS("Settings")).toBe("설정");
 
@@ -343,10 +343,10 @@ describe("testResourcesNode", () => {
         const root3 = Path.join(__dirname, "./resources3");
         LocaleData.addGlobalRoot(root3);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕3");
         expect(rb.getStringJS("Settings")).toBe("설정");
 
@@ -364,10 +364,10 @@ describe("testResourcesNode", () => {
         const root = Path.join(__dirname, "./resources");
         LocaleData.addGlobalRoot(root);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕하세요!");
         expect(rb.getStringJS("thanks")).toBe("감사합니다");
 
@@ -384,10 +384,10 @@ describe("testResourcesNode", () => {
         const root2 = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root2);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕2");
         expect(rb.getStringJS("thanks")).toBe("고마워2");
         expect(rb.getStringJS("Settings")).toBe("설정");
@@ -407,10 +407,10 @@ describe("testResourcesNode", () => {
         const root2 = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root2);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕2");
         expect(rb.getStringJS("Settings")).toBe("설정");
 
@@ -428,10 +428,10 @@ describe("testResourcesNode", () => {
         const root2 = Path.join(__dirname, "./resources2");
         LocaleData.addGlobalRoot(root2);
 
-        var rb = new ResBundle({
+        const rb = new ResBundle({
             locale: "ko-KR"
         });
-        expect(rb !== null).toBeTruthy();
+        expect(rb).not.toBeNull();
         expect(rb.getStringJS("hello")).toBe("안녕2");
         expect(rb.getStringJS("Settings")).toBe("설정");
 
