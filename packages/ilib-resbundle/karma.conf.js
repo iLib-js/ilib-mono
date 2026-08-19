@@ -19,6 +19,7 @@
  */
 
 const path = require("path");
+const webpack = require("webpack");
 const { createKarmaConfig } = require("ilib-internal");
 
 const moduleRoot = path.resolve(__dirname);
@@ -30,6 +31,13 @@ module.exports = function (config) {
             "./test/ResourcesNodeAsync.test.js",
         ],
         webpack: {
+            plugins: [
+                // Strip the LocaleData root prefix so dynamic imports resolve to
+                // assembled/<locale>.js via the calling-module alias.
+                new webpack.DefinePlugin({
+                    __CALLING_MODULE_PATH__: JSON.stringify("../assembled"),
+                }),
+            ],
             resolve: {
                 fallback: {
                     buffer: require.resolve("buffer"),

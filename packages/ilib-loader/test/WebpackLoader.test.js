@@ -27,6 +27,14 @@ describe("testWebpackLoader", () => {
             expect(loader.getName()).toBe("Webpack Loader");
         });
 
+        test("ExtractRelativePathKeepsVariantAndThreeLetterLocales", () => {
+            const loader = LoaderFactory();
+            expect(loader._extractRelativePath("../assembled/de-DE-SAP.js")).toBe("de-DE-SAP.js");
+            expect(loader._extractRelativePath("../assembled/zxx-Hebr-XX.js")).toBe("zxx-Hebr-XX.js");
+            expect(loader._extractRelativePath("../assembled/fr-CA-govt.js")).toBe("fr-CA-govt.js");
+            expect(loader._extractRelativePath("./locale/de-DE.js")).toBe("locale/de-DE.js");
+        });
+
         test("LoaderSupportsSync", () => {
             expect.assertions(1);
             var loader = LoaderFactory();

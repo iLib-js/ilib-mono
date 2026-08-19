@@ -22,17 +22,48 @@ import ResBundle from "../src/index.js";
 import IString from "ilib-istring";
 import Locale from "ilib-locale";
 import { Path } from "ilib-common";
+import { getPlatform } from "ilib-env";
 import { LocaleData } from "ilib-localedata";
 
 describe("testResourcesAsync", () => {
-    test("ResBundleAsyncConstructorEmpty", async () => {
-        expect.assertions(2);
+    beforeAll(async () => {
         LocaleData.addGlobalRoot("test/resources");
         LocaleData.addGlobalRoot("test/resources2");
         LocaleData.addGlobalRoot("test/resources3");
         LocaleData.addGlobalRoot("test/resources4");
         ResBundle.clearPseudoLocales();
-        LocaleData.clearCache();
+        if (getPlatform() === "browser") {
+            // Webpack can only load preassembled locale files, not the
+            // hierarchical JSON trees under test/resources*.
+            LocaleData.addGlobalRoot("../assembled");
+            const locales = [
+                "de-DE",
+                "de-DE-SAP",
+                "fr-CA-govt",
+                "zh-CN",
+                "zz-ZZ",
+                "zxx-XX",
+                "zxx-Cyrl-XX",
+                "zxx-Hans-XX",
+                "zxx-Hebr-XX",
+                "eu-XX",
+                "ps-XX"
+            ];
+            for (const locale of locales) {
+                await LocaleData.ensureLocale(locale);
+            }
+        }
+    });
+
+    beforeEach(() => {
+        ResBundle.clearPseudoLocales();
+    });
+
+    test("ResBundleAsyncConstructorEmpty", async () => {
+        expect.assertions(2);
+        if (getPlatform() !== "browser") {
+            LocaleData.clearCache();
+        }
 
         return ResBundle.create({}).then((rb) => {
             expect(rb).not.toBeNull();

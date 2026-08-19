@@ -105,8 +105,10 @@ class WebpackLoader extends Loader {
         const parts = normalizedPath.split('/');
         const filename = parts[parts.length - 1];
 
-        // Check if the filename looks like a locale file
-        const localePattern = /^([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root)\.(js|cjs|mjs|json)$/;
+        // Check if the filename looks like a locale file. Keep this in sync with
+        // the webpackInclude regex in loadFile() so variant locales (de-DE-SAP)
+        // and 3-letter language codes (zxx-Hebr-XX) are treated as locale files.
+        const localePattern = /^(([a-z]{2,3})(-[A-Z][a-z]{3})?(-[A-Z]{2})?(-[a-zA-Z0-9]+)?|root)\.(js|cjs|mjs|json)$/;
         if (localePattern.test(filename)) {
             // For pre-assembled locale files (e.g., en-US.js), the relative path
             // is just the filename if there's no subdirectory structure
@@ -187,7 +189,7 @@ class WebpackLoader extends Loader {
 
         const load = (request) => {
             return import(
-                /* webpackInclude: /([a-z][a-z](-[A-Z][a-z][a-z][a-z])?(-[A-Z][A-Z])?|root)\.(js|cjs|mjs|json)$/ */
+                /* webpackInclude: /(([a-z]{2,3})(-[A-Z][a-z]{3})?(-[A-Z]{2})?(-[a-zA-Z0-9]+)?|root)\.(js|cjs|mjs|json)$/ */
                 /* webpackExclude: /(^|\/)assemble\.mjs$/ */
                 /* webpackChunkName: "ilib.[request]" */
                 /* webpackMode: "lazy" */
