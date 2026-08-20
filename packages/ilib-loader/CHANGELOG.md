@@ -1,5 +1,16 @@
 # ilib-loader
 
+## 1.4.1
+
+### Patch Changes
+
+- f66ea37: - The webpack loader now falls back to requesting only the file name when the
+  path it derived from the root directory does not resolve. Apps that point the
+  "calling-module" alias straight at their directory of preassembled locale
+  files could not load any of that data, because the root directory in the path
+  (eg. "locale/de-DE.js") is not part of the request in that setup.
+- ae4a452: - Include variant locales (such as de-DE-SAP) and 3-letter language codes (such as zxx-Hebr-XX) in the webpack loader's dynamic import context so browser bundles can load those assembled locale files.
+
 ## 1.4.0
 
 ### Minor Changes
