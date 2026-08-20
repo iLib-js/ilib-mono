@@ -2,7 +2,7 @@
  * LocaleDataWeb.test.js - test the locale data class synchronously
  * on a browser
  *
- * Copyright © 2022, 2025 JEDLSoft
+ * Copyright © 2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ describe("LocaleDataWeb", () => {
         expect(locData.isSync()).toBe(false);
     });
 
-    test("should create LocaleData in async mode by default", () => {
+    test("should create LocaleData in async mode by default", async () => {
         expect.assertions(2);
 
         const locData = new LocaleData({
@@ -53,6 +53,10 @@ describe("LocaleDataWeb", () => {
         });
 
         expect(actual instanceof Promise).toBe(true);
+
+        // the load writes into the globally shared cache when it settles, so it
+        // must finish inside this test instead of landing in a later one
+        await actual;
     });
 
     test("should throw error when sync loading not supported", () => {

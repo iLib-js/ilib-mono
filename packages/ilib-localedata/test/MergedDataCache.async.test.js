@@ -1,7 +1,7 @@
 /*
  * MergedDataCache.async.test.js - async unit tests for the MergedDataCache class (Node and Browser)
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -541,6 +541,10 @@ describe('MergedDataCache Async Tests (Node and Browser)', () => {
 
             const result = mergedDataCache.loadMergedData(null, ["./test/testfiles/files3"], "info")
             expect(result).toBeDefined();
+
+            // the load writes into the globally shared cache when it settles, so it
+            // must finish inside this test instead of landing in a later one
+            await result;
         });
 
 
