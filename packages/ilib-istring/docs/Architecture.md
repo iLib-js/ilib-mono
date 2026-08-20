@@ -152,12 +152,11 @@ is pre-assembled:
   under `assembled/` (e.g. `assembled/ru-RU.js`). Each assembled module is
   self-contained and includes the `root` data.
 
-### 4.3 Building the browser test bundle (`build:test:browser`)
+### 4.3 Building the browser test bundle (`test:web`)
 
-`build:assemble` → `build:dev` → `build:test:browser-suite` (webpack). Webpack
-uses the `calling-module` alias pointed at `assembled/` so the webpack loader can
-`import()` the per-locale chunks on demand. The output bundle
-`test-web/ilib-istring-test.js` is loaded by `test/testSuite.html`.
+`test:web` runs `build:assemble` and then Karma, which bundles the tests with
+webpack. `karma.conf.js` points the `calling-module` alias at `assembled/` so the
+webpack loader can `import()` the per-locale chunks on demand.
 
 ## 5. Data loading at runtime
 
@@ -168,6 +167,11 @@ mostSpecific: true, sync })`.
 - `localeDir()` returns:
   - Node: `<module>/../locale` (individual JSON files, loaded synchronously).
   - Browser: `../assembled` (pre-assembled per-locale JS modules).
+
+  `LocaleData.ensureLocale` caches preassembled data under its own default root
+  (`./locale`) rather than `../assembled`. A synchronous lookup still finds it
+  because `LocaleData` appends that default root to the roots it searches when the
+  loader cannot load synchronously and the app has registered no global roots.
 
 - **`mostSpecific: true`** means the result is the data of the *most specific*
   sublocale that has any data. Sublocales are ordered least→most specific
@@ -180,10 +184,10 @@ mostSpecific: true, sync })`.
     directly.
   - The browser's webpack loader is async-only. Synchronous construction in the
     browser therefore requires the data to already be in the cache. Either use
-    `IString.create()` (async), or pre-load with `LocaleData.ensureLocale(...)`
-    after registering the correct global root (`../assembled`). If sync data is
-    not cached, `init()` catches the failure and falls back to
-    `plurals_default` (English-like).
+    `IString.create()` (async), or pre-load with `LocaleData.ensureLocale(...)`.
+    If sync data is not cached, `init()` catches the failure and falls back to
+    `plurals_default` (English-like), which silently gives other-only languages
+    an English singular.
 
 ## 6. How plural categories are calculated from the data
 
@@ -283,12 +287,14 @@ for a language with no numeric plural distinction.
 
 ## 7. Testing
 
-- **CLI (Node):** `test:cli` runs `test/testSuite.sh` → `test/testSuite.js`,
-  loading individual files from `locale/` synchronously.
-- **Browser:** `test:browser` builds the assembled data + webpack bundle, then
-  opens `test/testSuite.html`. Because the webpack loader is async-only, the
-  sync tests pre-load data in `setUp` via `LocaleData.addGlobalRoot("../assembled")`
-  followed by `LocaleData.ensureLocale(...)` for each locale in `locales.json`.
+- **CLI (Node):** `test:cli` runs Jest on `test/*.test.js`, loading individual
+  files from `locale/` synchronously.
+- **Browser:** `test:web` builds the assembled data and runs the same Jest tests
+  under Karma. Because the webpack loader is async-only, any test that constructs
+  an `IString` synchronously for a non-default locale must pre-load the data in
+  `beforeAll` with `LocaleData.ensureLocale(...)`, guarded on
+  `getPlatform() === "browser"`. Locales used that way must also be listed in
+  `locales.json` so `build:assemble` produces their data.
 
 ## 8. Maintenance notes
 

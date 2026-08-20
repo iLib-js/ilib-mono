@@ -15,10 +15,12 @@
         "he-IL",
         "hr-HR",
         "hy-AM",
+        "id-ID",
         "ig-NG",
         "it-IT",
         "ja-JP",
         "ka-GE",
+        "ko-KR",
         "lb-LU",
         "lo-LA",
         "lt-LT",
@@ -36,10 +38,14 @@
         "sk-KS",
         "sl-SL",
         "tg-TJ",
+        "th-TH",
         "tk-TM",
+        "vi-VN",
         "wo-SN",
         "yo-BJ",
         "yo-NG",
+        "yue-HK",
+        "zh-Hans-CN",
         "zu-ZA"
     ]
 }
