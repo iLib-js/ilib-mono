@@ -1,7 +1,7 @@
 /*
  * FileCache.sync.test.js - sync unit tests for the FileCache class (Node only)
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,6 +167,62 @@ describe('FileCache Sync Tests (Node Only)', () => {
             const result2 = fileCache.loadFileSync(filePath);
             expect(result2).toBe(result);
         });
+
+        test('should not count a file twice when it is loaded synchronously and then asynchronously', async () => {
+            expect.assertions(4);
+
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
+            fileCache.loadFileSync(filePath);
+
+            // the synchronous load counts the same as an asynchronous one would
+            expect(fileCache.size()).toBe(1);
+            expect(fileCache.attemptCount()).toBe(1);
+
+            await fileCache.loadFile(filePath);
+
+            // the asynchronous load found the cached data rather than loading again
+            expect(fileCache.size()).toBe(1);
+            expect(fileCache.attemptCount()).toBe(1);
+        });
+
+        test('should not count a file twice when it is loaded asynchronously and then synchronously', async () => {
+            expect.assertions(4);
+
+            const filePath = 'test/testfiles/files/fr/localeinfo.json';
+            await fileCache.loadFile(filePath);
+
+            expect(fileCache.size()).toBe(1);
+            expect(fileCache.attemptCount()).toBe(1);
+
+            fileCache.loadFileSync(filePath);
+
+            // the synchronous load found the cached data rather than loading again
+            expect(fileCache.size()).toBe(1);
+            expect(fileCache.attemptCount()).toBe(1);
+        });
+
+        test('should report a failed load as undefined to both methods no matter which one attempted it', async () => {
+            expect.assertions(4);
+
+            const filePath = 'test/testfiles/files/nonexistent/file.json';
+            expect(fileCache.loadFileSync(filePath)).toBeUndefined();
+
+            // the cache records the failure as null, but callers see undefined the
+            // same way they would for a load that was never attempted before
+            expect(fileCache.loadFileSync(filePath)).toBeUndefined();
+            expect(await fileCache.loadFile(filePath)).toBeUndefined();
+            expect(fileCache.getCachedData(filePath)).toBeNull();
+        });
+
+        test('should report a failed asynchronous load as undefined to a later synchronous caller', async () => {
+            expect.assertions(3);
+
+            const filePath = 'test/testfiles/files/nonexistent/file.json';
+            expect(await fileCache.loadFile(filePath)).toBeUndefined();
+
+            expect(await fileCache.loadFile(filePath)).toBeUndefined();
+            expect(fileCache.loadFileSync(filePath)).toBeUndefined();
+        });
     });
 
     describe('removeFileFromCache', () => {
@@ -174,14 +230,14 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(3);
 
             const filePath = 'test/testfiles/files/fr/localeinfo.json';
-            fileCache.loadFile(filePath);
+            fileCache.loadFileSync(filePath);
             expect(fileCache.size()).toBe(1);
 
             fileCache.removeFileFromCache(filePath);
             expect(fileCache.size()).toBe(0);
 
             // Should be able to load again
-            fileCache.loadFile(filePath);
+            fileCache.loadFileSync(filePath);
             expect(fileCache.size()).toBe(1);
         });
 
@@ -195,12 +251,13 @@ describe('FileCache Sync Tests (Node Only)', () => {
     });
 
     describe('clearCache', () => {
-        test('should clear all cached file promises', () => {
-            expect.assertions(3);
+        test('should clear all cached files', () => {
+            expect.assertions(4);
 
-            fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
-            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
+            expect(fileCache.attemptCount()).toBe(2);
 
             fileCache.clearCache();
             expect(fileCache.size()).toBe(0);
@@ -219,17 +276,25 @@ describe('FileCache Sync Tests (Node Only)', () => {
             expect.assertions(3);
 
             expect(fileCache.size()).toBe(0);
-            fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json');
             expect(fileCache.size()).toBe(1);
-            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
+        });
+
+        test('should count files that were attempted but had no data', () => {
+            expect.assertions(2);
+
+            fileCache.loadFileSync('nonexistent/file.json');
+            expect(fileCache.size()).toBe(1);
+            expect(fileCache.attemptCount()).toBe(1);
         });
 
         test('should update count when files are removed', () => {
             expect.assertions(4);
 
-            fileCache.loadFile('test/testfiles/files/fr/localeinfo.json');
-            fileCache.loadFile('test/testfiles/files/und/FR/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/fr/localeinfo.json');
+            fileCache.loadFileSync('test/testfiles/files/und/FR/localeinfo.json');
             expect(fileCache.size()).toBe(2);
 
             fileCache.removeFileFromCache('test/testfiles/files/fr/localeinfo.json');
