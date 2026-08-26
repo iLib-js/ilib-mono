@@ -1,7 +1,7 @@
 /*
- * testSuiteFiles.js - list the test files in this directory
+ * jest.config.js - Jest configuration for ilib-istring
  *
- * Copyright © 2022, JEDLSoft
+ * Copyright © 2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const { jestConfig } = require("ilib-internal");
 
-export const files = [
-    "testIString.js",
-    "testIStringAsync.js"
-];
+const config = {
+    ...jestConfig,
+    displayName: {
+        name: "ilib-istring",
+        color: "greenBright",
+    },
+};
+
+module.exports = config;
