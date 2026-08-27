@@ -2,7 +2,7 @@
  * FileCache.js - class to handle file loading and caching to prevent race conditions
  * and avoid re-attempting failed file loads
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,8 +93,9 @@ class FileCache {
         // Check if we already have the data in DataCache
         const existingData = this.dataCache.getFileData(filePath);
         if (existingData !== undefined) {
-            // Return resolved promise with existing data
-            const promise = Promise.resolve(existingData);
+            // a null entry records a load that already happened and found nothing.
+            // Callers see that the same way as a first-time failure, as undefined
+            const promise = Promise.resolve(existingData === null ? undefined : existingData);
             this.dataCache.setFilePromise(filePath, promise);
             return promise;
         }
@@ -142,7 +143,9 @@ class FileCache {
         // Check if we already have the data in DataCache
         const existingData = this.dataCache.getFileData(filePath);
         if (existingData !== undefined) {
-            return existingData;
+            // a null entry records a load that already happened and found nothing.
+            // Callers see that the same way as a first-time failure, as undefined
+            return existingData === null ? undefined : existingData;
         }
 
         // Check if the loader supports sync operations. Nothing is attempted in that
@@ -157,20 +160,32 @@ class FileCache {
             // Attempt to load the file synchronously
             const data = this.loader.loadFile(filePath, { sync: true });
 
-            if (data) {
-                // Store successful load in DataCache
-                this.dataCache.setFileData(filePath, data);
-                return data;
-            } else {
-                // Store no-data result in DataCache
-                this.dataCache.setFileData(filePath, null);
-                return undefined;
-            }
+            this.recordLoad(filePath, data || null);
+            return data || undefined;
         } catch (error) {
             // Store failed load in DataCache
-            this.dataCache.setFileData(filePath, null);
+            this.recordLoad(filePath, null);
             this.logger.warn(`Failed to load file ${filePath} synchronously: ${error.message}`);
             throw error;
+        }
+    }
+
+    /**
+     * Record the result of a synchronous load. The cached promise doubles as the
+     * marker that a file has already been loaded, so a synchronous load has to
+     * record one as well. Without it, the same cached file would be counted
+     * differently depending on which method happened to load it first.
+     *
+     * @private
+     * @param {string} filePath - The path to the file that was loaded
+     * @param {Object|null} data - The file data, or null if there was none
+     */
+    recordLoad(filePath, data) {
+        this.dataCache.setFileData(filePath, data);
+        // an asynchronous load of the same file may already be in flight, and its
+        // promise is the one that its callers are waiting on, so leave it alone
+        if (!this.dataCache.getFilePromise(filePath)) {
+            this.dataCache.setFilePromise(filePath, Promise.resolve(data === null ? undefined : data));
         }
     }
 
@@ -206,9 +221,11 @@ class FileCache {
     }
 
     /**
-     * Return the number of files currently being loaded (promises in flight).
+     * Return the number of files that this cache has loaded or is loading. Files
+     * loaded synchronously count the same as files loaded asynchronously, so this
+     * does not depend on which method a caller used.
      *
-     * @returns {number} The number of files currently being loaded
+     * @returns {number} The number of files loaded or loading
      */
     size() {
         return this.dataCache.getFilePromiseCount();
