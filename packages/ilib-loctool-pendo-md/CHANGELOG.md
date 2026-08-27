@@ -1,5 +1,12 @@
 # ilib-loctool-pendo-md
 
+## 5.0.0
+
+### Patch Changes
+
+- Updated dependencies [8139684]
+  - loctool@2.34.0
+
 ## 4.0.0
 
 ### Patch Changes

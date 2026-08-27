@@ -1,5 +1,13 @@
 # ilib-istring
 
+## 1.1.2
+
+### Patch Changes
+
+- 83316c6: - Fix a bug where plurals in some languages were wrong
+  - Plurals for Asian languages mistakenly had a singular.
+  - Update to CLDR 48.2
+
 ## 1.1.1
 
 ### Patch Changes
