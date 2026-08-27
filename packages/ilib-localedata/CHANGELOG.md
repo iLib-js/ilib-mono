@@ -1,5 +1,42 @@
 # ilib-localedata
 
+## 1.5.6
+
+### Patch Changes
+
+- 58f7816: Fixed two inconsistencies in FileCache between synchronous and asynchronous loading causing flaky tests
+
+  - A file loaded with loadFileSync was not counted by size(), so the same cached file
+    reported a different count depending on whether it was first loaded synchronously or
+    asynchronously. Synchronous loads now record the same promise marker in the cache
+    that asynchronous loads do.
+  - Once a failed load was cached, both loadFile and loadFileSync returned null for it
+    instead of the documented undefined. A failure that is already in the cache now
+    looks the same to callers as one that was just attempted.
+
+- b4b44b9: - Fixed a race condition bug where LocaleData.ensureLocale() would
+  sometimes resolve to "true" when the data was not yet loaded.
+  - The LocaleData constructor, loadData(), and getLocaleData() now throw
+    Error instances instead of bare strings. Callers that only report the
+    error do not need to change, but callers that compare the thrown value
+    against a string should now read its "message" property instead.
+  - MergedDataCache no longer double-merges root or duplicate und-REGION
+    sublocales, which was concatenating arrays (e.g. address fields) twice.
+  - Fixed synchronous loading in browsers. Asking the constructor for sync
+    operation with a loader that cannot load synchronously now falls back to
+    asynchronous operation as documented instead of throwing, checkCache()
+    again reports data that was preloaded but not merged yet, and a merge no
+    longer fails when there is nothing left that can be loaded synchronously.
+    Together these restore reading preassembled locale data synchronously
+    after ensureLocale() or cacheData().
+  - Data that ensureLocale() preloaded is now found even when the app has no
+    global roots, in which case it is cached under the default "./locale" root
+    instead of the calling package's own path. Without this, a synchronous read
+    in a browser could not see the data that was just preloaded for it.
+  - A synchronous read that the loader could not even attempt no longer marks
+    the file as tried, which was making a later asynchronous read of the same
+    file report that there is no data for it.
+
 ## 1.5.5
 
 ### Patch Changes
