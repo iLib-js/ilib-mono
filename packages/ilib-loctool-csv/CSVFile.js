@@ -19,8 +19,7 @@
 
 var fs = require("fs");
 var path = require("path");
-
-var whiteSpaceChars = [' ', '\t', '\f', '\n', '\r', '\v'];
+var CSV = require("ilib-csv").CSV;
 
 /**
  * Create a new CSV file with the given path name and within
@@ -58,7 +57,7 @@ var CSVFile = function(options) {
         }
 
         if (!columnSep) {
-            columnSep = this.mapping.columnSeparator;
+            columnSep = this.mapping.columnSeparator || this.mapping.columnSeparatorChar;
         }
 
         if (!columns) {
@@ -72,16 +71,7 @@ var CSVFile = function(options) {
 
     this.rowSeparatorRegex = new RegExp(sepRE || '[\n\r\f]+');
     this.rowSeparator = sep || '\n';
-    this.columnSeparator =  columnSep || ',';
-
-    var white, sep = whiteSpaceChars.indexOf(this.columnSeparator);
-    white = (sep > -1) ? '[' + whiteSpaceChars.map(function(ch) {
-        return ch !== this.columnSeparator ? ch : undefined;
-    }.bind(this)).join('') + ']' : '\\s';
-
-    this.columnSeparatorRegex = new RegExp(white + '*("(([^"]|\\\\"|"")*)"|([^' +
-            this.columnSeparator + ']|\\\\' + this.columnSeparator + ')*)' +
-            white + '*(' + this.columnSeparator + '|$)', "g");
+    this.columnSeparator = columnSep || ',';
 
     this.records = options.records || [];
     this.headerRow = typeof(headerRow) === 'boolean' ? headerRow : true;
@@ -111,34 +101,6 @@ var CSVFile = function(options) {
 };
 
 /**
- * @private
- */
-CSVFile.prototype._splitIt = function (line) {
-    // take care of the escaped separators first
-    var escaped = line.replace("\\" + this.columnSeparator, "%comma%");
-
-    var result, results = [];
-
-    this.columnSeparatorRegex.lastIndex = 0; // reset manually just to be safe
-
-    while (this.columnSeparatorRegex.lastIndex < line.length && (result = this.columnSeparatorRegex.exec(escaped)) !== null) {
-        var field = "";
-
-        if (result[1]) {
-            // result[2] is a quoted string -- unescape two double-quotes to only one
-            field = result[2] ? result[2].replace(/""/g, '"') : result[1];
-        }
-
-        results.push(field.trim());
-    }
-
-    // put the escaped separators back again and unescape them
-    return results.map(function(entry) {
-        return entry.replace("%comma%", this.columnSeparator);
-    }.bind(this));
-}
-
-/**
  * Make a new key for the given string.
  *
  * @private
@@ -165,39 +127,35 @@ CSVFile.prototype.parse = function(data) {
         return;
     }
 
-    var lines = data.split(this.rowSeparatorRegex).filter(function(line) {
-        return line && line.trim().length > 0;
+    var csv = new CSV({
+        rowSeparatorRegex: this.rowSeparatorRegex,
+        columnSeparator: this.columnSeparator,
+        headerRow: this.headerRow,
+        columns: this.columns
     });
+    var records = csv.parse(data);
 
-    if (this.headerRow) {
-        // the first record has the names of the columns in it
-        if (!this.columns) {
-            var names = this._splitIt(lines[0]);
-            if (names && names.length) {
-                if (!this.localizable) {
-                    this.localizable = new Set();
-                }
-                this.columns = names.map(function(name) {
-                    this.localizable.add(name);
-                    return {
-                        name: name,
-                        localizable: true
-                    };
-                }.bind(this));
-            }
+    if (records.length > 0 && !this.columns) {
+        var names = Object.keys(records[0]);
+        if (!this.localizable) {
+            this.localizable = new Set();
         }
-        lines = lines.slice(1);
+        this.columns = names.map(function(name) {
+            this.localizable.add(name);
+            return {
+                name: name,
+                localizable: true
+            };
+        }.bind(this));
     }
 
-    this.records = lines.map(function(line) {
-        var fields = this._splitIt(line);
-        var json = {};
-        this.columns.forEach(function(column, i) {
-            json[column.name] = i < fields.length ? fields[i] : "";
+    this.records = records;
 
-            if (json[column.name] && (!this.localizable || this.localizable.has(column.name))) {
-                // localizable field
-                var source = this.API.utils.escapeInvalidChars(json[column.name]);
+    this.records.forEach(function(record) {
+        this.columns.forEach(function(column) {
+            var value = record[column.name];
+            if (value && (!this.localizable || this.localizable.has(column.name))) {
+                var source = this.API.utils.escapeInvalidChars(value);
                 this.set.add(this.API.newResource({
                     resType: "string",
                     project: this.project.getProjectId(),
@@ -211,8 +169,6 @@ CSVFile.prototype.parse = function(data) {
                 }));
             }
         }.bind(this));
-
-        return json;
     }.bind(this));
 };
 
@@ -310,31 +266,26 @@ CSVFile.prototype.getLocalizedPath = function(locale) {
  * @returns {String} the localized text of this file
  */
 CSVFile.prototype.localizeText = function(translations, locale) {
-    var header = this.headerRow && this.columns ? this.columns.map(function(column) { return column.name; }).join(this.columnSeparator) + this.rowSeparator : "";
-    if (this.records && this.records.length) {
-        return header + this.records.map(function(record) {
-            return this.columns.map(function(column) {
+    if (this.records && this.records.length && this.columns) {
+        var translatedRecords = this.records.map(function(record) {
+            var out = {};
+            this.columns.forEach(function(column) {
                 var text = record[column.name] || "",
                     translated = text;
-    
-                if (!text || !translations || (this.localizable && !this.localizable.has(column.name))) {
-                    // not translatable or not a translatable column
-                    return text;
-                }
-    
-                var source = this.API.utils.escapeInvalidChars(text);
-                var key = this.makeKey(source);
-                var tester = this.API.newResource({
-                    type: "string",
-                    project: this.project.getProjectId(),
-                    sourceLocale: this.sourceLocale,
-                    reskey: key,
-                    datatype: this.type.datatype
-                });
-                var hashkey = tester.hashKeyForTranslation(locale);
-                var translatedResource = translations.get(hashkey);
-    
-                if (text) {
+
+                if (text && translations && (this.localizable && this.localizable.has(column.name))) {
+                    var source = this.API.utils.escapeInvalidChars(text);
+                    var key = this.makeKey(source);
+                    var tester = this.API.newResource({
+                        type: "string",
+                        project: this.project.getProjectId(),
+                        sourceLocale: this.sourceLocale,
+                        reskey: key,
+                        datatype: this.type.datatype
+                    });
+                    var hashkey = tester.hashKeyForTranslation(locale);
+                    var translatedResource = translations.get(hashkey);
+
                     if (locale === this.project.pseudoLocale && this.project.settings.nopseudo) {
                         translated = source;
                     } else if (translatedResource) {
@@ -343,7 +294,6 @@ CSVFile.prototype.localizeText = function(translations, locale) {
                         if (this.type.pseudos && this.type.pseudos[locale]) {
                             var sourceLocale = this.type.pseudos[locale].getPseudoSourceLocale();
                             if (sourceLocale !== this.sourceLocale) {
-                                // translation is derived from a different locale's translation instead of from the source string
                                 var sourceRes = translations.get(tester.hashKeyForTranslation(sourceLocale));
                                 source = sourceRes ? sourceRes.getTarget() : source;
                             }
@@ -368,14 +318,19 @@ CSVFile.prototype.localizeText = function(translations, locale) {
                         }
                     }
                 }
-    
-                if (translated.indexOf(this.columnSeparator) > -1 || translated.trim() !== translated || translated.indexOf('\n') > -1 || translated.indexOf('"') > -1) {
-                    translated = '"' + translated.replace(/"/g, '""') + '"';
-                }
-    
-                return translated;
-            }.bind(this)).join(this.columnSeparator);
-        }.bind(this)).join(this.rowSeparator);
+
+                out[column.name] = translated;
+            }.bind(this));
+            return out;
+        }.bind(this));
+
+        var csv = new CSV({
+            outputRowSeparator: this.rowSeparator,
+            columnSeparator: this.columnSeparator,
+            headerRow: this.headerRow,
+            columns: this.columns
+        });
+        return csv.generate(translatedRecords);
     } else if (this.set.size() > 0) {
         // no source records available, so just output the resources by making
         // a simple 3 column file

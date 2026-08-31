@@ -1,0 +1,9 @@
+{
+  "extends": "ilib-internal/config/tsconfig.build.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node"
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts", "test"]
+}

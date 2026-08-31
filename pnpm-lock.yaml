@@ -396,6 +396,30 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(webpack@5.106.2)
 
+  packages/ilib-csv:
+    devDependencies:
+      '@tsconfig/node12':
+        specifier: ^12.1.4
+        version: 12.1.7
+      '@types/jest':
+        specifier: ^29.5.0
+        version: 29.5.14
+      '@types/node':
+        specifier: '12'
+        version: 12.20.55
+      ilib-internal:
+        specifier: workspace:^
+        version: link:../ilib-internal
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@12.20.55)
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.4.9(@babel/core@8.0.1)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@8.0.1))(jest-util@30.4.1)(jest@29.7.0(@types/node@12.20.55))(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+
   packages/ilib-ctype:
     dependencies:
       ilib-common:
@@ -1937,6 +1961,9 @@ importers:
       ilib:
         specifier: ^14.18.0
         version: 14.21.3
+      ilib-csv:
+        specifier: workspace:^
+        version: link:../ilib-csv
       micromatch:
         specifier: ^4.0.5
         version: 4.0.8
