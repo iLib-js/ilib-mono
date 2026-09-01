@@ -49,6 +49,57 @@ function smartJoin(parent, child) {
     return path.join(parent, child);
 }
 
+/**
+ * Return true if the given string contains something other than whitespace.
+ *
+ * @private
+ * @param {String} str the string to check
+ * @returns {boolean} true if the string has real text in it
+ */
+function hasText(str) {
+    return typeof(str) !== "undefined" && str !== null && String(str).trim().length > 0;
+}
+
+/**
+ * Return true if the given resource has at least one source string in it
+ * that contains something other than whitespace.
+ *
+ * @private
+ * @param {Resource} res the resource to check
+ * @returns {boolean} true if the resource has real source text in it
+ */
+function hasSource(res) {
+    if (res.sourceArray) {
+        return res.sourceArray.some(hasText);
+    }
+    if (res.sourceStrings) {
+        return Object.keys(res.sourceStrings).some(function(category) {
+            return hasText(res.sourceStrings[category]);
+        });
+    }
+    return hasText(res.source);
+}
+
+/**
+ * Filter out the resources that have no source text in them and warn about
+ * each one that is skipped. Such resources serialize to translation units
+ * with an empty source, which many translation management systems cannot
+ * process.
+ *
+ * @private
+ * @param {Array.<Resource>} resources the resources to filter
+ * @param {String} outputPath the path of the file these resources were headed for
+ * @returns {Array.<Resource>} the resources that have source text in them
+ */
+function filterNoSource(resources, outputPath) {
+    return resources.filter(function(res) {
+        if (hasSource(res)) return true;
+        logger.warn("Resource " + res.getKey() + " in file " + (res.getPath() || "unknown") +
+            " has no source text in it. Skipping it instead of writing it out to " + outputPath + ".");
+        return false;
+    });
+}
+
 function validateMap(map) {
     var valid = {};
     if (map) {
@@ -772,15 +823,13 @@ Project.prototype.close = function(cb) {
 
         for (var i = 0; i < this.fileTypes.length; i++) {
             logger.trace("Collecting extracted strings from " + this.fileTypes[i].name());
-            extracted.addAll(this.fileTypes[i].getExtracted().getBy({
+            extracted.addAll(filterNoSource(this.fileTypes[i].getExtracted().getBy({
                 sourceLocale: this.sourceLocale
             }).filter(function(res) {
-                // no source means nothing to translate, so don't need those resources
-                // also exclude resources with a target locale - those are translations, not extracted source strings
+                // exclude resources with a target locale - those are translations, not extracted source strings
                 var targetLocale = res.getTargetLocale();
-                return (res.source || res.sourceArray || res.sourceStrings) &&
-                    (!targetLocale || targetLocale === this.sourceLocale);
-            }.bind(this)));
+                return !targetLocale || targetLocale === this.sourceLocale;
+            }.bind(this)), extractedPath));
 
             if (this.fileTypes[i].modern && this.fileTypes[i].modern.size() > 0) {
                 var modernPath = path.join(dir, base + "-modern.xliff");
@@ -836,10 +885,9 @@ Project.prototype.close = function(cb) {
                 var locale = newLocales[i];
                 if (!this.isSourceLocale(locale) && !PseudoFactory.isPseudoLocale(locale, this)) {
                     var newPath = path.join(dir, base + "-new-" + locale + "." + getIntermediateFileExtension(fileFormat));
-                    var resources = newres.getAll().filter(function(res) {
-                        return res.getTargetLocale() === locale && !res.dnt &&
-                            (res.source || res.sourceArray || res.sourceStrings);
-                    });
+                    var resources = filterNoSource(newres.getAll().filter(function(res) {
+                        return res.getTargetLocale() === locale && !res.dnt;
+                    }), newPath);
 
                     if (resources && resources.length) {
                         logger.info("Writing out the new strings to " + newPath);
