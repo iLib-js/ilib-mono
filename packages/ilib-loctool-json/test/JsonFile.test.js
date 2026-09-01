@@ -386,6 +386,34 @@ describe("jsonfile", function () {
         expect(resources[0].getKey()).toBe("string 1");
     });
 
+    // Whitespace-only values are treated like "": they stay in the JSON (copy method)
+    // but are not extracted as translatable resources.
+    test("JsonFileParseSimpleDontExtractWhitespaceOnly", function () {
+        expect.assertions(6);
+
+        var jf = new JsonFile({
+            project: p,
+            type: t
+        });
+        expect(jf).toBeTruthy();
+
+        jf.parse(
+            '{\n' +
+            '    "string 1": "this is string one",\n' +
+            '    "string 2": " "\n' +
+            '}\n');
+
+        var set = jf.getTranslationSet();
+        expect(set).toBeTruthy();
+
+        expect(set.size()).toBe(1);
+        var resources = set.getAll();
+        expect(resources.length).toBe(1);
+
+        expect(resources[0].getSource()).toBe("this is string one");
+        expect(resources[0].getKey()).toBe("string 1");
+    });
+
     test("JsonFileParseEscapeStringKeys", function () {
         expect.assertions(8);
 

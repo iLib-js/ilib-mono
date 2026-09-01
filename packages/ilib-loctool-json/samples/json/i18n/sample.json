@@ -14,5 +14,9 @@
   "project.whatever.and.me": {
     "description": "Another string that has no translation yet",
     "defaultMessage": "And me"
+  },
+  "project.whatever.empty.source": {
+    "defaultMessage": " ",
+    "description": "This is a string that has no source and should not be extracted"
   }
 }
