@@ -52,7 +52,7 @@
     "dependencies": {
         "ilib": "^14.18.0",
         "micromatch": "^4.0.5",
-        "yaml": "2.0.0"
+        "yaml": "^2.8.3"
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",
