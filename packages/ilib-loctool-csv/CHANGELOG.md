@@ -1,5 +1,12 @@
 # ilib-loctool-csv
 
+## 1.2.5
+
+### Patch Changes
+
+- Updated dependencies [5e907d3]
+  - ilib-csv@1.0.0
+
 ## 1.2.4
 
 ### Patch Changes
