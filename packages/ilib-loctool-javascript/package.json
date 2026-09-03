@@ -55,13 +55,13 @@
     },
     "dependencies": {
         "ilib": "^14.18.0",
-        "ilib-loctool-javascript-resource": "workspace:^"
+        "ilib-loctool-javascript-resource": "workspace:^",
+        "micromatch": "^4.0.8"
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",
         "ilib-loctool-json": "workspace:^",
         "jest": "^29.7.0",
-        "loctool": "workspace:^",
-        "micromatch": "^4.0.8"
+        "loctool": "workspace:^"
     }
 }

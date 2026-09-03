@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "ilib": "^14.18.0",
-        "yaml": "2.2.1"
+        "yaml": "^2.8.3"
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",

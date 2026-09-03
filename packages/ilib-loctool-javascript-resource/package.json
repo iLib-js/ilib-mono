@@ -54,7 +54,6 @@
         "node": ">=12 <23"
     },
     "dependencies": {
-        "ilib": "^14.18.0",
         "ilib-locale": "workspace:^"
     },
     "devDependencies": {

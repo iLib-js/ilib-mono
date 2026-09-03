@@ -59,7 +59,6 @@
     },
     "dependencies": {
         "ilib": "^14.20.0",
-        "ilib-tree-node": "workspace:^",
         "message-accumulator": "workspace:^",
         "micromatch": "^4.0.8",
         "slack-message-parser": "^3.0.2"

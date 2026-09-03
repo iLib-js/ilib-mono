@@ -56,19 +56,16 @@
         "he": "^1.2.0",
         "ilib": "^14.1.0",
         "ilib-tree-node": "workspace:^",
-        "log4js": "^2.11.0",
+        "log4js": "^6.9.1",
         "message-accumulator": "workspace:^",
         "rehype-raw": "^4.0.0",
         "remark-highlight.js": "^5.1.0",
-        "remark-html": "^9.0.0",
         "remark-parse": "^6.0.3",
         "remark-rehype": "^4.0.0",
         "remark-stringify": "^6.0.4",
         "unified": "^7.1.0",
         "unist-builder": "^1.0.3",
-        "unist-util-filter": "^1.0.0",
-        "unist-util-map": "^1.0.4",
-        "unist-util-visit": "^1.4.0"
+        "unist-util-filter": "^1.0.0"
     },
     "devDependencies": {
         "loctool": "workspace:^",

@@ -54,7 +54,7 @@
     "dependencies": {
         "ilib": "^14.18.0",
         "ilib-csv": "workspace:^",
-        "micromatch": "^4.0.5"
+        "micromatch": "^4.0.8"
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",
