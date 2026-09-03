@@ -66,7 +66,6 @@
         "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node --detectOpenHandles -i"
     },
     "dependencies": {
-        "@formatjs/intl": "^2.10.4",
         "build-gradle-reader": "*",
         "cldr-segmentation": "^2.2.0",
         "he": "^1.2.0",
@@ -81,7 +80,7 @@
         "js-yaml": "^4.3.1",
         "log4js": "^6.9.1",
         "message-accumulator": "workspace:^",
-        "micromatch": "^4.0.5",
+        "micromatch": "^4.0.8",
         "opencc-js": "^1.0.5",
         "readline-sync": "^1.4.10",
         "rehype-raw": "^5.0.0",
@@ -93,11 +92,9 @@
         "unified": "^9.0.0",
         "unist-builder": "^2.0.3",
         "unist-util-filter": "^2.0.0",
-        "util.promisify": "^1.1.2",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "@types/jest": "^29.5.14",
         "cldr-core": "46.1.0",
         "ilib-internal": "workspace:^",
         "ilib-loctool-mock": "file:test/ilib-loctool-mock/ilib-loctool-mock-1.0.0.tgz",

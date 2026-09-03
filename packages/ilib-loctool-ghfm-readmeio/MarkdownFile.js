@@ -29,15 +29,12 @@ var isIdeo = require("ilib/lib/isIdeo.js");
 var IString = require("ilib/lib/IString.js");
 var unified = require("unified");
 var markdown = require("remark-parse");
-var html = require("remark-html");
 var remark2rehype = require('remark-rehype');
 var highlight = require('remark-highlight.js');
 var raw = require('rehype-raw');
 var stringify = require('remark-stringify');
 var he = require("he");
 var unistFilter = require('unist-util-filter');
-var unistMap = require('unist-util-map');
-var unistVisit = require('unist-util-visit');
 var u = require('unist-builder');
 
 var logger = log4js.getLogger("loctool.lib.MarkdownFile");

@@ -60,7 +60,7 @@
         "ilib-locale": "workspace:^",
         "ilib-po": "workspace:^",
         "ilib-tools-common": "workspace:^",
-        "micromatch": "^4.0.5"
+        "micromatch": "^4.0.8"
     },
     "devDependencies": {
         "jest": "^29.7.0",

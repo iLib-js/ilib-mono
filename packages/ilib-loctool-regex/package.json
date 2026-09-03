@@ -66,11 +66,10 @@
         "loctool": "workspace:^",
         "ilib-internal": "workspace:^"
     },
-    "peerDependency": {
+    "peerDependencies": {
         "loctool": "workspace:^"
     },
     "dependencies": {
-        "ilib-istring": "workspace:^",
         "ilib-locale": "workspace:^",
         "ilib-tools-common": "workspace:^",
         "micromatch": "^4.0.8"
