@@ -1,7 +1,7 @@
 /*
  * address.test.js - test the address parsing and formatting routines
  *
- * Copyright © 2013-2015, 2017-2018, 2025 JEDLSoft
+ * Copyright © 2013-2015, 2017-2018, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import { getPlatform } from 'ilib-env';
 
 import Address from '../src/Address.js';
 import AddressFmt from '../src/AddressFmt.js';
-import { localeList } from './locales.cjs';
 
 let setUpPerformed = false;
 
@@ -37,11 +36,10 @@ beforeAll(async () => {
         // does not support sync, so we have to ensure the locale
         // data is loaded before we can do all these sync tests
         setUpPerformed = true;
-        LocaleData.clearCache();
         
         // Only ensure the locales that are actually tested in this file
         const testLocales = [
-            'en-US', 'en-JP', 'nl-NL', 'zxx-XX', 'en-QQ', 'en-HK', 'en-XY'
+            'en-US', 'en-JP', 'nl-NL', 'zxx-XX', 'en-HK', 'en-XY'
         ];
         
         // Run ensureLocale calls in parallel for better performance

@@ -1,7 +1,7 @@
 /*
  * address_SY.test.js - test the address parsing and formatting routines for Syria
  *
- * Copyright © 2013, 2025 JEDLSoft
+ * Copyright © 2013, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -1,7 +1,7 @@
 /*
  * address_BO.test.js - Bolivia address parsing and formatting tests for ilib-address
  *
- * Copyright © 2013-2015, 2017, 2022, 2025 JEDLSoft
+ * Copyright © 2013-2015, 2017, 2022, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

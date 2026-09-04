@@ -1,7 +1,7 @@
 /*
  * address_AZ.test.js - test the address parsing and formatting routines for Azerbaijan
  *
- * Copyright © 2013-2015, 2017, 2022-2025 JEDLSoft
+ * Copyright © 2013-2015, 2017, 2022-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

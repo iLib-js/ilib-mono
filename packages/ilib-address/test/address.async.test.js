@@ -1,7 +1,7 @@
 /*
  * address.async.test.js - test the address parsing and formatting routines asynchronously
  *
- * Copyright © 2015, 2017-2018, 2025 JEDLSoft
+ * Copyright © 2015, 2017-2018, 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,14 @@
  * limitations under the License.
  */
 
-import { LocaleData } from 'ilib-localedata';
-import { getPlatform } from 'ilib-env';
-
 import Address from '../src/Address.js';
 import AddressFmt from '../src/AddressFmt.js';
-
-let setUpPerformed = false;
 
 function searchRegions(array, regionCode) {
     return array.find(function(region) {
         return region.code === regionCode;
     });
 }
-
-beforeAll(async () => {
-    if (getPlatform() === "browser" && !setUpPerformed) {
-        setUpPerformed = true;
-        LocaleData.clearCache();
-    }
-});
 
 describe('Async Address Parsing', () => {
     describe('Simple US Addresses', () => {

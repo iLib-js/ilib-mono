@@ -1,7 +1,8 @@
 /*
  * karma.conf.js - configure the karma testing environment
+ * This package uses the shared karma configuration from ilib-internal
  *
- * Copyright © 2025, JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,78 +18,60 @@
  * limitations under the License.
  */
 
-module.exports = function(config) {
-    config.set({
-        plugins: [
-            "karma-webpack",
-            "karma-jasmine",
-            "karma-chrome-launcher",
-            "karma-firefox-launcher",
-            "karma-assert"
-        ],
-        basePath: '',
-        frameworks: ['jasmine', 'webpack'],
-        files: [
-            'karma-setup.js',
-            'test/*.test.js'
-        ],
-        exclude: [
-            'test/package.json'
-        ],
+const path = require("path");
+const webpack = require("webpack");
+const { createKarmaConfig } = require("ilib-internal");
+
+const moduleRoot = path.resolve(__dirname);
+
+module.exports = function (config) {
+    const karmaConfig = createKarmaConfig({
+        client: {
+            jasmine: {
+                random: false,
+            },
+        },
+        files: ["./karma-setup.js", "./test/**/*.test.js"],
         preprocessors: {
-            'karma-setup.js': ['webpack'],
-            'test/*.test.js': ['webpack']
+            "./karma-setup.js": ["webpack"],
+            "./test/**/*.test.js": ["webpack"],
         },
         webpack: {
-            mode: 'development',
-            target: 'web',
-            entry: {
-                test: './karma-setup.js'
-            },
-            externals: {
-                "log4js": "log4js"
-            },
-            optimization: {
-                moduleIds: 'named',
-                chunkIds: 'named'
-            },
+            plugins: [
+                new webpack.DefinePlugin({
+                    __CALLING_MODULE_PATH__: JSON.stringify("../assembled"),
+                }),
+            ],
             resolve: {
                 fallback: {
-                    buffer: require.resolve("buffer")
+                    buffer: require.resolve("buffer"),
                 },
                 alias: {
-                    "ilib-loader": "ilib-loader/browser",
-                    "ilib-localedata": require('path').resolve(__dirname, "../ilib-localedata/src"),
-                    "ilib-locale": require('path').resolve(__dirname, "../ilib-locale/src/Locale.js"),
-                    "ilib-common": require('path').resolve(__dirname, "../ilib-common/src"),
-                    "ilib-env": require('path').resolve(__dirname, "../ilib-env/src"),
-                    "ilib-istring": require('path').resolve(__dirname, "../ilib-istring/src"),
-                    "calling-module": require('path').resolve(__dirname, "assembled")
+                    "calling-module": path.join(moduleRoot, "assembled"),
+                    "ilib-loader": path.join(moduleRoot, "../ilib-loader/src/index-browser.js"),
                 },
-                extensions: ['.js', '.json']
             },
-            module: {
-                rules: [
-                    {
-                        test: /\.js$/,
-                        include: require('path').resolve(__dirname, "assembled"),
-                        type: "javascript/auto"
-                    }
-                ]
-            }
         },
-        reporters: ['progress', 'coverage'],
-        coverageReporter: {
-            type: 'lcov',
-            dir: 'coverage/',
-            subdir: 'browser'
-        },
-        port: 9876,
-        colors: true,
-        logLevel: config.LOG_INFO,
-        autoWatch: false,
-        browsers: ['ChromeHeadless', 'FirefoxHeadless'],
-        singleRun: true,
-        concurrency: Infinity
     });
-}; 
+
+    const jsRule = karmaConfig.webpack.module.rules.find(
+        (rule) => rule.test && rule.test.toString().includes("\\.js")
+    );
+    if (jsRule && jsRule.use) {
+        jsRule.use = [
+            {
+                loader: "babel-loader",
+                options: {
+                    ...jsRule.use.options,
+                    plugins: [
+                        ...(jsRule.use.options?.plugins || []),
+                        "babel-plugin-transform-import-meta",
+                    ],
+                },
+            },
+            { loader: "@open-wc/webpack-import-meta-loader" },
+        ];
+    }
+
+    config.set(karmaConfig);
+};

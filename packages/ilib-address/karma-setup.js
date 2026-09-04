@@ -1,8 +1,7 @@
 /*
- * karma-setup.js - set up the karma testing environment before
- * running the tests
+ * karma-setup.js - set the browser locale for the tests
  *
- * Copyright © 2025, JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +17,29 @@
  * limitations under the License.
  */
 
-var ilibEnv = require('ilib-env');
-
-// Add missing Jest functions for browser compatibility
-window.test = window.it;
-window.test.each = function(inputs) {
-    return function(testName, test) {
-        inputs.forEach(function(input) {
-            const name = typeof testName === 'string' ? testName.replace('$name', input.name || 'test case') : 'test case';
-            window.it(name, function() {
-                test(input);
-            });
-        });
-    };
-};
-window.test.todo = function() {
-    return undefined;
-};
-
-window.expect.assertions = function(num) {
-    return undefined;
-};
+var ilibEnv = require("ilib-env");
+var LocaleData = require("ilib-localedata").LocaleData;
+var locales = require("./locales.json").locales;
 
 // Set locale for testing
-ilibEnv.setLocale("en-US"); 
+ilibEnv.setLocale("en-US");
+
+// Address parsing is synchronous, so preload every assembled locale before
+// running the browser suite.
+beforeAll(async function () {
+    LocaleData.clearGlobalRoots();
+    LocaleData.addGlobalRoot("./locale");
+    LocaleData.clearCache();
+    for (const locale of locales) {
+        // Unknown-region tests exercise the fallback path, so do not populate
+        // synthetic locale data for them.
+        if (locale !== "en-QQ") {
+            await LocaleData.ensureLocale(locale);
+        }
+    }
+    LocaleData.cacheData({
+        "und-QQ": {
+            address: {},
+        },
+    }, "./locale");
+});
