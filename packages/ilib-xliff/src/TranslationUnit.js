@@ -1,7 +1,7 @@
 /*
  * TranslationUnit.js - model a translation unit
  *
- * Copyright © 2022-2025 JEDLSoft
+ * Copyright © 2022-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,11 @@ class TranslationUnit {
      * @param {string} [options.project] the project that this string/unit is part of
      * @param {string} [options.resType] type of this resource (string, array, plural)
      * @param {string} [options.state] the state of the current unit
-     * @param {string} [options.comment] the translator's comment for this unit
+     * @param {string} [options.comment] the translator's comment for this unit.
+     * A translation unit may have more than one note in the xliff file, in
+     * which case this comment contains the text of all of those notes in
+     * document order, joined with newlines. When this unit is written back
+     * out again, the whole comment is written as a single note.
      * @param {string} [options.datatype] the source of the data of this unit
      * @param {string} [options.flavor] the flavor that this string comes from
      * @param {boolean} [options.translate] flag that tells whether to translate this unit

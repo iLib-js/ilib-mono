@@ -1,7 +1,7 @@
 /*
  * xliff12.test.js - test the Xliff object with v1.2 xliff files
  *
- * Copyright © 2016-2017, 2019-2025 HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2026 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2251,4 +2251,99 @@ describe("XLIFF 1.2", () => {
         expect(tulist[0].targetLocale).toBe("de-DE");
         expect(tulist[0].translate).toBe(false);
     });
-}); 
+
+    test('should deserialize a single note without attributes', () => {
+        const x = new Xliff();
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="1.2">\n' +
+            '  <file original="foo/bar/asdf.java" source-language="en-US" product-name="webapp">\n' +
+            '    <body>\n' +
+            '      <trans-unit id="1" resname="save.button" restype="string">\n' +
+            '        <source>Save</source>\n' +
+            '        <note>Toolbar button</note>\n' +
+            '      </trans-unit>\n' +
+            '    </body>\n' +
+            '  </file>\n' +
+            '</xliff>');
+
+        const tu = x.getTranslationUnits()[0];
+        expect(tu.comment).toBe("Toolbar button");
+    });
+
+    test('should deserialize every note on a trans-unit into the comment', () => {
+        const x = new Xliff();
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="1.2">\n' +
+            '  <file original="foo/bar/asdf.java" source-language="en-US" product-name="webapp">\n' +
+            '    <body>\n' +
+            '      <trans-unit id="1" resname="save.button" restype="string">\n' +
+            '        <source>Save</source>\n' +
+            '        <note>Toolbar button</note>\n' +
+            '        <note annotates="source" from="developer" priority="2">Shown on the editor chrome</note>\n' +
+            '      </trans-unit>\n' +
+            '    </body>\n' +
+            '  </file>\n' +
+            '</xliff>');
+
+        const tu = x.getTranslationUnits()[0];
+        expect(tu.comment).toBe("Toolbar button\nShown on the editor chrome");
+    });
+
+    test('should deserialize an empty note as an empty line in the comment', () => {
+        const x = new Xliff();
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="1.2">\n' +
+            '  <file original="foo/bar/asdf.java" source-language="en-US" product-name="webapp">\n' +
+            '    <body>\n' +
+            '      <trans-unit id="1" resname="save.button" restype="string">\n' +
+            '        <source>Save</source>\n' +
+            '        <note></note>\n' +
+            '        <note>Shown on the editor chrome</note>\n' +
+            '      </trans-unit>\n' +
+            '    </body>\n' +
+            '  </file>\n' +
+            '</xliff>');
+
+        const tu = x.getTranslationUnits()[0];
+        expect(tu.comment).toBe("\nShown on the editor chrome");
+    });
+
+    test('should serialize a comment containing multiple notes as a single note', () => {
+        const x = new Xliff();
+        const tu = new TranslationUnit({
+            source: "Save",
+            sourceLocale: "en-US",
+            key: "save.button",
+            file: "foo/bar/asdf.java",
+            project: "webapp",
+            resType: "string",
+            comment: "Toolbar button\nShown on the editor chrome"
+        });
+        x.addTranslationUnit(tu);
+
+        const actual = x.serialize();
+        const expected =
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="1.2">\n' +
+            '  <file original="foo/bar/asdf.java" source-language="en-US" product-name="webapp">\n' +
+            '    <body>\n' +
+            '      <trans-unit id="1" resname="save.button" restype="string">\n' +
+            '        <source>Save</source>\n' +
+            '        <note>Toolbar button\nShown on the editor chrome</note>\n' +
+            '      </trans-unit>\n' +
+            '    </body>\n' +
+            '  </file>\n' +
+            '</xliff>';
+
+        expect(actual).toBe(expected);
+    });
+});

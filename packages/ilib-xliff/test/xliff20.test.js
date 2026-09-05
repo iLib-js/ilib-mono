@@ -1,7 +1,7 @@
 /*
  * xliff20.test.js - test the Xliff 2.0 object.
  *
- * Copyright © 2022-2025 JEDLSoft
+ * Copyright © 2022-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1902,5 +1902,87 @@ describe("XLIFF 2.0", () => {
         expect(tulist[0].target).toBe("foobarfoo");
         expect(tulist[0].targetLocale).toBe("de-DE");
         expect(tulist[0].translate).toBe(false);
+    });
+
+    test('should deserialize a single note without extra attributes', () => {
+        const x = new Xliff({version: 2.0});
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="2.0" srcLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+            '  <file original="foo/bar/asdf.java" l:project="webapp">\n' +
+            '    <unit id="1" name="save.button" type="res:string">\n' +
+            '      <notes>\n' +
+            '        <note appliesTo="source">Toolbar button</note>\n' +
+            '      </notes>\n' +
+            '      <segment>\n' +
+            '        <source>Save</source>\n' +
+            '      </segment>\n' +
+            '    </unit>\n' +
+            '  </file>\n' +
+            '</xliff>');
+
+        const tu = x.getTranslationUnits()[0];
+        expect(tu.comment).toBe("Toolbar button");
+    });
+
+    test('should deserialize every note on a unit into the comment', () => {
+        const x = new Xliff({version: 2.0});
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="2.0" srcLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+            '  <file original="foo/bar/asdf.java" l:project="webapp">\n' +
+            '    <unit id="1" name="save.button" type="res:string">\n' +
+            '      <notes>\n' +
+            '        <note appliesTo="source">Toolbar button</note>\n' +
+            '        <note appliesTo="target" category="loc-quality" priority="2">Shown on the editor chrome</note>\n' +
+            '      </notes>\n' +
+            '      <segment>\n' +
+            '        <source>Save</source>\n' +
+            '      </segment>\n' +
+            '    </unit>\n' +
+            '  </file>\n' +
+            '</xliff>');
+
+        const tu = x.getTranslationUnits()[0];
+        expect(tu.comment).toBe("Toolbar button\nShown on the editor chrome");
+    });
+
+    test('should serialize a comment containing multiple notes as a single note', () => {
+        const x = new Xliff({version: 2.0});
+        const tu = new TranslationUnit({
+            source: "Save",
+            sourceLocale: "en-US",
+            key: "save.button",
+            file: "foo/bar/asdf.java",
+            project: "webapp",
+            resType: "string",
+            datatype: "plaintext",
+            comment: "Toolbar button\nShown on the editor chrome"
+        });
+        x.addTranslationUnit(tu);
+
+        const actual = x.serialize();
+        const expected =
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="2.0" srcLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+            '  <file original="foo/bar/asdf.java" l:project="webapp">\n' +
+            '    <group id="group_1" name="plaintext">\n' +
+            '      <unit id="1" name="save.button" type="res:string" l:datatype="plaintext">\n' +
+            '        <notes>\n' +
+            '          <note appliesTo="source">Toolbar button\nShown on the editor chrome</note>\n' +
+            '        </notes>\n' +
+            '        <segment>\n' +
+            '          <source>Save</source>\n' +
+            '        </segment>\n' +
+            '      </unit>\n' +
+            '    </group>\n' +
+            '  </file>\n' +
+            '</xliff>';
+
+        expect(actual).toBe(expected);
     });
 });
