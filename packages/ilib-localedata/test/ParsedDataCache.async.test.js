@@ -27,6 +27,10 @@ describe('ParsedDataCache Async Tests (Node and Browser)', () => {
     let parsedDataCache;
 
     beforeEach(() => {
+        // Discard anything left in the shared cache by earlier suites. Loads that
+        // are still in flight when a suite ends can resolve and store data here
+        // later, which would throw off the exact entry counts asserted below.
+        DataCache.clearDataCache();
         loader = LoaderFactory();
         loader.setSyncMode(); // Enable sync mode for tests that need it
         parsedDataCache = new ParsedDataCache(loader);
