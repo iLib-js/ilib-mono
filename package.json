@@ -14,6 +14,7 @@
     "ci:test:e2e:all": "turbo test:e2e --concurrency=5",
     "ci:test:e2e:affected": "turbo test:e2e --concurrency=5 --affected",
     "ci:release": "pnpm build && pnpm changeset publish",
+    "check:ilib-es6-version": "node scripts/check-ilib-es6-version.js",
     "coverage": "pnpm coverage:unit:affected",
     "coverage:unit:affected": "turbo coverage --affected",
     "coverage:unit:all": "turbo coverage",

@@ -59,7 +59,7 @@
         "clean": "git clean -f -d *"
     },
     "dependencies": {
-        "ilib": "14.21.0"
+        "ilib": "15.0.0"
     },
     "devDependencies": {
         "ilib-internal": "workspace:^",
