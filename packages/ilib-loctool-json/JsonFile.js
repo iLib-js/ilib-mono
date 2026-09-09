@@ -238,7 +238,7 @@ function isEmpty(obj) {
     }
 
     if (typeof obj === "string") {
-        if (obj.length === 0) {
+        if (obj.trim().length === 0) {
             return true;
         }
     }
