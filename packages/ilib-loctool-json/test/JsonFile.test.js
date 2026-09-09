@@ -28,6 +28,7 @@ var TranslationSet = require("loctool/lib/TranslationSet.js");
 var ResourceString = require("loctool/lib/ResourceString.js");
 var ResourcePlural = require("loctool/lib/ResourcePlural.js");
 var ResourceArray = require("loctool/lib/ResourceArray.js");
+var { FSSnapshot } = require("ilib-internal");
 
 function diff(a, b) {
     var min = Math.min(a.length, b.length);
@@ -42,22 +43,15 @@ function diff(a, b) {
     }
 }
 
-function rmrf(path) {
-    if (fs.existsSync(path)) {
-        fs.unlinkSync(path);
-    }
-}
+var resourcesDir = path.join(path.dirname(module.id), "testfiles", "resources");
+var fsSnapshot;
+
+beforeEach(function () {
+    fsSnapshot = FSSnapshot.create([resourcesDir]);
+});
 
 afterEach(function () {
-    [
-        "test/testfiles/resources/de/DE/messages.json",
-        "test/testfiles/resources/de/DE/sparse2.json",
-        "test/testfiles/resources/fr/FR/messages.json",
-        "test/testfiles/resources/fr/FR/str.json",
-        "test/testfiles/resources/fr/FR/sparse2.json",
-        "test/testfiles/resources/deep_de-DE.json",
-        "test/testfiles/resources/deep_fr-FR.json",
-    ].forEach(rmrf);
+    fsSnapshot.restore();
 });
 
 describe("jsonfile", function () {
@@ -387,9 +381,10 @@ describe("jsonfile", function () {
     });
 
     // Whitespace-only values are treated like "": they stay in the JSON (copy method)
-    // but are not extracted as translatable resources.
+    // but are not extracted as translatable resources. Space, tab, newline, and NBSP
+    // are all skipped; punctuation-only strings are still extracted.
     test("JsonFileParseSimpleDontExtractWhitespaceOnly", function () {
-        expect.assertions(6);
+        expect.assertions(8);
 
         var jf = new JsonFile({
             project: p,
@@ -400,18 +395,25 @@ describe("jsonfile", function () {
         jf.parse(
             '{\n' +
             '    "string 1": "this is string one",\n' +
-            '    "string 2": " "\n' +
+            '    "string 2": " ",\n' +
+            '    "string 3": "\\t",\n' +
+            '    "string 4": "\\n",\n' +
+            '    "string 5": "\\u00A0",\n' +
+            '    "string 6": "???"\n' +
             '}\n');
 
         var set = jf.getTranslationSet();
         expect(set).toBeTruthy();
 
-        expect(set.size()).toBe(1);
+        expect(set.size()).toBe(2);
         var resources = set.getAll();
-        expect(resources.length).toBe(1);
+        expect(resources.length).toBe(2);
 
         expect(resources[0].getSource()).toBe("this is string one");
         expect(resources[0].getKey()).toBe("string 1");
+
+        expect(resources[1].getSource()).toBe("???");
+        expect(resources[1].getKey()).toBe("string 6");
     });
 
     test("JsonFileParseEscapeStringKeys", function () {
@@ -2836,13 +2838,6 @@ describe("schema 'localizable'", () => {
     }
 
     const base = path.dirname(module.id);
-    const paths = [
-        `${base}/testfiles/resources/mi/MI/localizable.json`
-    ];
-
-    afterEach(() => {
-        paths.forEach((path) => fs.existsSync(path) && fs.unlinkSync(path));
-    });
 
     test("supports 'localizable: key' property", () => {
         const {jsonFile} = setupTest({schema: "localizable-schema"});
@@ -2952,17 +2947,6 @@ describe("schema 'localizable'", () => {
 
 describe("resourceFileTypes delegation", () => {
     var base = path.dirname(module.id);
-    var outputPaths = [];
-
-    afterEach(() => {
-        // Clean up any output files
-        outputPaths.forEach(function(p) {
-            if (fs.existsSync(p)) {
-                fs.unlinkSync(p);
-            }
-        });
-        outputPaths = [];
-    });
 
     function setupTestWithResourceFileType(options) {
         var projectConfig = {
@@ -3073,7 +3057,6 @@ describe("resourceFileTypes delegation", () => {
         // When delegating to resourceFileType, the resource file type determines the output path
         // based on its own configuration (resourceDirs + locale), not the JSON mapping template
         var outputPath = path.join(base, "testfiles/resources/fr-FR.js");
-        outputPaths.push(outputPath);
 
         expect(fs.existsSync(outputPath)).toBe(true);
 
@@ -3115,7 +3098,6 @@ describe("resourceFileTypes delegation", () => {
         jsonFile.localize(translations, ["fr-FR"]);
 
         var outputPath = path.join(base, "testfiles/resources/fr/FR/strings.json");
-        outputPaths.push(outputPath);
 
         expect(fs.existsSync(outputPath)).toBe(true);
 
@@ -3162,12 +3144,10 @@ describe("resourceFileTypes delegation", () => {
 
         // fr-FR file should exist (resource file type determines path)
         var frPath = path.join(base, "testfiles/resources/fr-FR.js");
-        outputPaths.push(frPath);
         expect(fs.existsSync(frPath)).toBe(true);
 
         // en-US file should NOT exist (source locale skipped)
         var enPath = path.join(base, "testfiles/resources/en-US.js");
-        outputPaths.push(enPath);
         expect(fs.existsSync(enPath)).toBe(false);
     });
 
@@ -3217,8 +3197,6 @@ describe("resourceFileTypes delegation", () => {
         // Resource file type determines paths based on its configuration
         var frPath = path.join(base, "testfiles/resources/fr-FR.js");
         var dePath = path.join(base, "testfiles/resources/de-DE.js");
-        outputPaths.push(frPath);
-        outputPaths.push(dePath);
 
         expect(fs.existsSync(frPath)).toBe(true);
         expect(fs.existsSync(dePath)).toBe(true);
@@ -3253,7 +3231,6 @@ describe("resourceFileTypes delegation", () => {
         jsonFile.localize(new TranslationSet(), ["en-US", "fr-FR"]);
 
         var enPath = path.join(base, "testfiles/resources/en/US/strings.json");
-        outputPaths.push(enPath);
         expect(fs.existsSync(enPath)).toBe(true);
 
         var content = fs.readFileSync(enPath, "utf-8");
@@ -3285,7 +3262,6 @@ describe("resourceFileTypes delegation", () => {
         resFileType.write();
 
         var enPath = path.join(base, "testfiles/resources/en-US.js");
-        outputPaths.push(enPath);
         expect(fs.existsSync(enPath)).toBe(true);
 
         var content = fs.readFileSync(enPath, "utf-8");
