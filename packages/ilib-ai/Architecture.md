@@ -9,7 +9,7 @@ This document describes how **ilib-ai** is structured and what callers can rely 
 
 ### Goals
 
-- **Transport only**: connect to an AI provider, send prompts and parameters the adapter maps to HTTP/SDK calls, and return **results** to the caller (including **error details** when a call fails at the HTTP/SDK layer).
+- **Transport only**: connect to an AI provider, send prompts and parameters the adapter maps to HTTP/SDK calls, and return **results** to the caller. Failures **reject** the promise (typically as **`AICompletionError`**).
 - **Provider abstraction**: an **interface-like** base type (`AIModelAdapter`) that hides vendor-specific details.
 - **Built-in providers (phase 1)**: **OpenAI** (ChatGPT / OpenAI HTTP APIs) and **Box AI**, as **subclasses** in this repo. **Box AI** uses the official **[Box Node SDK](https://github.com/box/box-node-sdk)** ([Box SDKs & tools](https://developer.box.com/sdks-and-tools)) for authentication and API access to Box Platform (including AI endpoints).
 - **Session lifecycle**: after construction, callers **`connect()`** once to validate credentials and create reusable clients; **`complete()`** and (where applicable) **`listAvailableModels()`** run on that session; **`disconnect()`** tears down. See **`AIModelAdapter`** below.
@@ -59,7 +59,9 @@ This document describes how **ilib-ai** is structured and what callers can rely 
 
 Do **not** fold that catalog into `getCapabilities()` as a synchronous value—subscriptions and provider-side catalogs change over time and require I/O.
 
-Implementations may return an **empty** array on failure or when unsupported; `supportsModelListing` lets UIs disable “refresh models” when pointless.
+Implementations log listing failures. Authentication and authorization failures reject so callers
+can prompt for corrected credentials; other provider/network failures return an **empty** array.
+`supportsModelListing` lets UIs disable “refresh models” when pointless.
 
 ---
 
@@ -74,32 +76,35 @@ Types are TypeScript **interfaces** / enums.
 | `systemPrompt` | Instructions / role. |
 | `userContent` | Caller-defined payload (often JSON string). **Not interpreted** by the library. |
 | `model` | **LLM** model id for this call (OpenAI model name, Box model API name for text gen, etc.). |
-| `parameters` | Optional: `temperature`, `maxTokens`, `timeout`, etc. |
+| `parameters` | Optional provider-specific tuning. OpenAI maps `temperature`, `maxTokens`, and `timeoutMs`; Box maps `temperature` and `maxTokens` but not `timeoutMs`. |
 
 This version is **text-only**; there are no image or other multimodal attachments on `CompletionRequest`.
 
 ### `CompletionResponse`
 
+Success only. Failures **reject** (typically {@link AICompletionError}).
+
 | Field | Purpose |
 | --- | --- |
-| `rawContent` | Model output string on **success**. May be empty if the provider returns no text in edge cases. |
+| `rawContent` | Model output string. May be empty if the provider returns no text. |
 | `providerRequestId` | Optional (logging). |
-| `error` | **Present when the adapter surfaces a failure** (HTTP error, SDK error, or provider error body). Omit or leave undefined on success. Should carry at least enough detail to log and debug; suggested fields below. |
 
-**Suggested shape for `error` (illustrative; exact fields in TypeScript types):**
+### `AICompletionError`
+
+Thrown / used as the rejection reason from **`complete()`**.
 
 | Field | Purpose |
 | --- | --- |
-| `message` | Human-readable summary (required when `error` is set). |
-| `httpStatus` | HTTP status code when the failure came from an HTTP response (optional). |
+| `message` | Human-readable summary. |
+| `httpStatus` | HTTP status when the failure came from an HTTP response (optional). |
 | `httpStatusText` | Status line text when available (optional). |
-| `providerBody` | Raw response body snippet or parsed provider error payload for diagnostics (optional; avoid logging secrets). |
-
-Whether **successful** HTTP responses with **application-level** errors inside `rawContent` are also copied into `error` is an implementation choice; at minimum, transport-level failures set `error`.
+| `providerBody` | Raw response body snippet for diagnostics (optional; avoid logging secrets). |
 
 ### `AdapterCapabilities`
 
-Default model **hint**, `maxConcurrentRequests`, and **`supportsModelListing`**. No batch-queue API and no image inputs in v1: use multiple text `complete()` calls.
+Default model **hint**, `maxConcurrentRequests`, and **`supportsModelListing`**. The hint is not
+implicitly substituted: callers still pass the required `CompletionRequest.model`. No batch-queue
+API and no image inputs in v1: use multiple text `complete()` calls.
 
 ---
 
@@ -116,7 +121,7 @@ Construction stores **configuration** only. A **session** starts with **`connect
 | `connect()` | Async | Validates credentials with the provider (e.g. OpenAI handshake request, Box `users.getUserMe()`), prepares SDK clients. **Idempotent** if already connected. |
 | `isConnected()` | Sync | Whether `connect()` completed successfully since the last `disconnect()`. |
 | `disconnect()` | Async | Clears session / cached clients; after this, `connect()` again before `complete()`. |
-| `complete(request)` | Async | **`request.model`** selects the LLM. Returns `Promise<CompletionResponse>`. Requires a prior successful **`connect()`** for built-in adapters that use network sessions. |
+| `complete(request)` | Async | **`request.model`** selects the LLM. Resolves to `CompletionResponse` on success. **Rejects** (typically `AICompletionError`) on failure. Requires a prior successful **`connect()`** for built-in adapters that use network sessions. |
 | `listAvailableModels()` | Async | Returns models this adapter/account can use. For built-in **OpenAI** and **Box** adapters, requires **`connect()`** first. |
 
 ---
@@ -128,8 +133,9 @@ Each subclass **documents its own initialization parameters** in **TSDoc** (and 
 ### `OpenAIModelAdapter`
 
 - **Auth**: API key → `Authorization: Bearer` to OpenAI-compatible endpoints.
-- **Init** (illustrative): `apiKey`, optional `baseUrl`, optional default model **hint**, timeouts as in `OpenAIModelInitOptions`.
+- **Init** (illustrative): `apiKey`, optional `baseUrl`, and an optional default model **hint**.
 - **Session**: **`connect()`** performs a lightweight API request to validate the key; **`complete()`** uses Chat Completions (or equivalent) on the same session.
+- **Parameters**: maps `temperature` and `maxTokens`; `timeoutMs` aborts the completion HTTP request.
 - **Capabilities**: **`supportsModelListing: true`** (lists models via OpenAI’s models API when connected).
 
 ### `BoxAIModelAdapter`
@@ -138,16 +144,20 @@ Each subclass **documents its own initialization parameters** in **TSDoc** (and 
 - **Init**: access token and/or JWT config (`configPath`, `boxDeveloperJwtConfig`, or explicit fields) as in **`BoxAIModelInitOptions`**. **`contextFileId`** is required for **`complete()`** (Box `createAiTextGen` expects file context). Token refresh remains the **caller’s** or **app’s** responsibility unless we add helpers later.
 - **Session**: **`connect()`** calls **`users.getUserMe()`** to validate the token.
 - **Completions**: maps to **`createAiTextGen`** with **`ai_agent_text_gen`** / **`basic_gen.model`** from **`CompletionRequest.model`**.
-- **Capabilities**: **`supportsModelListing: true`** (uses **`aiStudio.getAiAgents()`** when connected). **Multiple LLM models** are selected via **`complete({ model: ... })`**, not via separate adapter classes.
+- **Parameters**: maps `temperature` to `basic_gen.llm_endpoint_params` (using the
+  OpenAI, Google, AWS, or IBM parameter discriminator inferred from the model-id
+  prefix) and `maxTokens` to `basic_gen.num_tokens_for_completion`. `timeoutMs`
+  is currently ignored because the SDK does not expose a cancellable per-request timeout.
+- **Capabilities**: **`supportsModelListing: true`** (uses **`aiStudio.getAiAgents()`** when connected). Listing returns unique **`textGen.basicGen.model`** values (the same strings **`complete({ model })`** accepts); agents without a text-gen model id are omitted. **Multiple LLM models** are selected via **`complete({ model: ... })`**, not via separate adapter classes.
 
 ---
 
 ## Errors and configuration
 
 - Invalid factory **`name`** or invalid **constructor** options → **throw** at **`createAIModelAdapter`** time when validation fails.
-- **`isConfigured()`** false → **`connect()`** / **`complete()`** should fail clearly (rejected promise or `CompletionResponse` with `error`—see unit tests for each adapter).
+- **`isConfigured()`** false → **`connect()`** / **`complete()`** **reject**.
 - **`connect()`** failures → **rejected promise** (cannot establish session).
-- **`complete()`** transport failures → typically **`CompletionResponse`** with **`error`** set (OpenAI); Box SDK errors may **reject** from **`complete()`** per tests.
+- **`complete()`** failures (HTTP, SDK, network, timeout, empty payload) → **rejected promise**, typically **`AICompletionError`**. Callers handle failures with **try/catch**.
 
 ---
 
@@ -171,7 +181,8 @@ Each subclass **documents its own initialization parameters** in **TSDoc** (and 
 
 ## Documentation output (published API)
 
-- **TypeDoc**: run the package’s `doc` script after install to generate HTML (and optional Markdown) under `docs/` from TypeScript sources.
+- **TypeDoc (consumers):** published HTML on [GitHub Pages](https://ilib-js.github.io/ilib-mono/packages/ilib-ai/docs/).
+- **TypeDoc (contributors):** run this package’s `doc` script in the monorepo to regenerate HTML (and optional Markdown) under `docs/`.
 - The **npm package** includes compiled **`lib`** and **`README.md`**; deep design stays in **this** file on GitHub.
 
 ---

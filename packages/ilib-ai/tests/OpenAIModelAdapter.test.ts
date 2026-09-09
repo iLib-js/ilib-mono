@@ -17,6 +17,39 @@
  * limitations under the License.
  */
 
+/*
+ * Scenario summary — mocked HTTP (`fetch`); no live OpenAI account.
+ *
+ * Constructor / identity
+ *   - Empty or whitespace-only apiKey throws.
+ *   - Whitespace around a real key is accepted (trimmed at use).
+ *   - Provider id/display name, capabilities (defaultModel hint, listing flag),
+ *     isConfigured, and isConnected-before-connect.
+ *
+ * connect()
+ *   - Handshake GET /v1/models?limit=1 with Bearer token.
+ *   - Custom baseUrl (trailing slash stripped).
+ *   - HTTP 401 handshake throws; second connect is a no-op; disconnect then
+ *     connect handshakes again.
+ *
+ * complete() — request mapping
+ *   - Rejects if connect() was not called.
+ *   - POST /v1/chat/completions with Bearer, model, system+user messages.
+ *   - Custom baseUrl; temperature → temperature; maxTokens → max_tokens.
+ *   - timeoutMs aborts fetch; non-positive timeoutMs rejects.
+ *   - Success maps assistant content to rawContent + providerRequestId.
+ *   - userContent may be JSON/unicode.
+ *
+ * complete() — failures reject (AICompletionError), never resolve with an error field
+ *   - HTTP 401 / 429 / 500; network (ENOTFOUND); malformed JSON; empty choices.
+ *
+ * listAvailableModels()
+ *   - Rejects if not connected.
+ *   - GET /v1/models maps ids to ModelInfo.
+ *   - Non-auth HTTP failure: warn + [].
+ *   - 401/403: log + reject.
+ */
+
 import { OpenAIModelAdapter } from "../src";
 
 /** Node 12 typings omit `fetch`; tests assign a jest mock. */
@@ -333,6 +366,61 @@ describe("OpenAIModelAdapter", () => {
             expect(parsed.max_tokens).toBe(256);
         });
 
+        test("aborts the fetch when parameters.timeoutMs elapses", async () => {
+            (globalThis as FetchHolder).fetch = jest
+                .fn()
+                .mockResolvedValueOnce(connectHandshakeResponse())
+                .mockImplementationOnce(
+                    (
+                        _url: string,
+                        init: {
+                            signal: {
+                                addEventListener: (
+                                    type: "abort",
+                                    listener: () => void
+                                ) => void;
+                            };
+                        }
+                    ) =>
+                        new Promise((_resolve, reject) => {
+                            init.signal.addEventListener("abort", () => {
+                                reject(new Error("aborted"));
+                            });
+                        })
+                );
+            const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
+            await adapter.connect();
+
+            await expect(
+                adapter.complete({
+                    ...baseRequest,
+                    parameters: { timeoutMs: 5 },
+                })
+            ).rejects.toEqual(
+                expect.objectContaining({
+                    name: "AICompletionError",
+                    message: expect.stringMatching(
+                        /timed out after 5 milliseconds/i
+                    ),
+                })
+            );
+        });
+
+        test("rejects a non-positive parameters.timeoutMs", async () => {
+            (globalThis as FetchHolder).fetch = jest
+                .fn()
+                .mockResolvedValueOnce(connectHandshakeResponse());
+            const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
+            await adapter.connect();
+
+            await expect(
+                adapter.complete({
+                    ...baseRequest,
+                    parameters: { timeoutMs: 0 },
+                })
+            ).rejects.toThrow(/positive finite number/i);
+        });
+
         test("successful response maps assistant content to rawContent", async () => {
             (globalThis as FetchHolder).fetch = jest
                 .fn()
@@ -349,12 +437,11 @@ describe("OpenAIModelAdapter", () => {
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
             await adapter.connect();
             const res = await adapter.complete(baseRequest);
-            expect(res.error).toBeUndefined();
             expect(res.rawContent).toBe("  trimmed answer  ");
             expect(res.providerRequestId).toBe("chatcmpl-abc");
         });
 
-        test("HTTP 401 resolves (or maps) to CompletionResponse with error.httpStatus 401 and message", async () => {
+        test("HTTP 401 rejects with AICompletionError httpStatus 401", async () => {
             (globalThis as FetchHolder).fetch = jest
                 .fn()
                 .mockResolvedValueOnce(connectHandshakeResponse())
@@ -372,14 +459,18 @@ describe("OpenAIModelAdapter", () => {
                 );
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-bad" });
             await adapter.connect();
-            const res = await adapter.complete(baseRequest);
-            expect(res.error).toBeDefined();
-            expect(res.error?.httpStatus).toBe(401);
-            expect(res.error?.message).toMatch(/key|401|Unauthorized|invalid/i);
-            expect(res.rawContent).toBe("");
+            await expect(adapter.complete(baseRequest)).rejects.toEqual(
+                expect.objectContaining({
+                    name: "AICompletionError",
+                    httpStatus: 401,
+                    message: expect.stringMatching(
+                        /key|401|Unauthorized|invalid/i
+                    ),
+                })
+            );
         });
 
-        test("HTTP 429 includes rate limit context in error.message or providerBody", async () => {
+        test("HTTP 429 rejects with rate-limit context on AICompletionError", async () => {
             (globalThis as FetchHolder).fetch = jest
                 .fn()
                 .mockResolvedValueOnce(connectHandshakeResponse())
@@ -392,12 +483,13 @@ describe("OpenAIModelAdapter", () => {
                 );
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
             await adapter.connect();
-            const res = await adapter.complete(baseRequest);
-            expect(res.error?.httpStatus).toBe(429);
-            expect(res.error?.message).toBeTruthy();
+            await expect(adapter.complete(baseRequest)).rejects.toMatchObject({
+                name: "AICompletionError",
+                httpStatus: 429,
+            });
         });
 
-        test("HTTP 500 maps to error with httpStatus 500", async () => {
+        test("HTTP 500 rejects with AICompletionError httpStatus 500", async () => {
             (globalThis as FetchHolder).fetch = jest
                 .fn()
                 .mockResolvedValueOnce(connectHandshakeResponse())
@@ -410,8 +502,10 @@ describe("OpenAIModelAdapter", () => {
                 );
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
             await adapter.connect();
-            const res = await adapter.complete(baseRequest);
-            expect(res.error?.httpStatus).toBe(500);
+            await expect(adapter.complete(baseRequest)).rejects.toMatchObject({
+                name: "AICompletionError",
+                httpStatus: 500,
+            });
         });
 
         test("fetch rejection (network failure) on chat rejects or returns error with descriptive message", async () => {
@@ -421,9 +515,10 @@ describe("OpenAIModelAdapter", () => {
                 .mockRejectedValueOnce(new Error("ENOTFOUND"));
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
             await adapter.connect();
-            await expect(adapter.complete(baseRequest)).rejects.toThrow(
-                /ENOTFOUND|network|fetch/i
-            );
+            await expect(adapter.complete(baseRequest)).rejects.toMatchObject({
+                name: "AICompletionError",
+                message: expect.stringMatching(/ENOTFOUND|network|fetch/i),
+            });
         });
 
         test("200 response with malformed JSON body surfaces error", async () => {
@@ -441,12 +536,12 @@ describe("OpenAIModelAdapter", () => {
                 });
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
             await adapter.connect();
-            const res = await adapter.complete(baseRequest);
-            expect(res.error).toBeDefined();
-            expect(res.error?.message).toBeTruthy();
+            await expect(adapter.complete(baseRequest)).rejects.toThrow(
+                /bad json|Invalid JSON/i
+            );
         });
 
-        test("200 with empty choices array is handled (error or empty rawContent)", async () => {
+        test("200 with empty choices array rejects", async () => {
             (globalThis as FetchHolder).fetch = jest
                 .fn()
                 .mockResolvedValueOnce(connectHandshakeResponse())
@@ -458,8 +553,12 @@ describe("OpenAIModelAdapter", () => {
                 );
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
             await adapter.connect();
-            const res = await adapter.complete(baseRequest);
-            expect(Boolean(res.error) || res.rawContent === "").toBe(true);
+            await expect(adapter.complete(baseRequest)).rejects.toEqual(
+                expect.objectContaining({
+                    name: "AICompletionError",
+                    message: expect.stringMatching(/no assistant message/i),
+                })
+            );
         });
 
         test("userContent may contain JSON and unicode", async () => {
@@ -534,7 +633,28 @@ describe("OpenAIModelAdapter", () => {
             );
         });
 
-        test("non-OK list response yields empty ModelInfo[] and must not throw", async () => {
+        test("non-auth list failure logs and yields an empty ModelInfo[]", async () => {
+            const warn = jest.spyOn(console, "warn").mockImplementation();
+            (globalThis as FetchHolder).fetch = jest
+                .fn()
+                .mockResolvedValueOnce(connectHandshakeResponse())
+                .mockResolvedValueOnce(
+                    httpJsonResponse(
+                        500,
+                        { error: { message: "Internal error" } },
+                        "Internal Server Error"
+                    )
+                );
+            const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
+            await adapter.connect();
+            const models = await adapter.listAvailableModels();
+            expect(getFetchMock()).toHaveBeenCalledTimes(2);
+            expect(models).toEqual([]);
+            expect(warn).toHaveBeenCalled();
+        });
+
+        test("auth list failure logs and rejects", async () => {
+            const error = jest.spyOn(console, "error").mockImplementation();
             (globalThis as FetchHolder).fetch = jest
                 .fn()
                 .mockResolvedValueOnce(connectHandshakeResponse())
@@ -547,9 +667,10 @@ describe("OpenAIModelAdapter", () => {
                 );
             const adapter = new OpenAIModelAdapter({ apiKey: "sk-x" });
             await adapter.connect();
-            const models = await adapter.listAvailableModels();
-            expect(getFetchMock()).toHaveBeenCalledTimes(2);
-            expect(models).toEqual([]);
+            await expect(adapter.listAvailableModels()).rejects.toThrow(
+                /HTTP 403/
+            );
+            expect(error).toHaveBeenCalled();
         });
     });
 });

@@ -406,6 +406,17 @@ async function runCliExecution(
 const credentials = resolveCredentialsForE2e();
 const describeCred = e2eCredentialsPresent() ? describe : describe.skip;
 
+/*
+ * Scenario summary — spawns samples/cli against live OpenAI.
+ * Skipped without test-e2e credentials.json or OPENAI_API_KEY.
+ *
+ *   - Minimal ping: CLI prints the fixture JSON {format, message}.
+ *   - Structured JSON echo: format/echo/sum as in integration prompts.
+ *   - Geo JSON: capital of France is Paris.
+ *
+ * Each test is a fresh CLI process: connect, one prompt, .exit.
+ */
+
 describeCred("ilib-ai CLI sample (e2e)", () => {
     test("minimal ping returns fixed JSON message (deterministic)", async () => {
         const expected = JSON.parse(

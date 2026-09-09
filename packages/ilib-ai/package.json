@@ -39,7 +39,7 @@
         "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
-        "node": ">=12 <23"
+        "node": ">=18 <23"
     },
     "scripts": {
         "build": "tsc --project tsconfig.build.json",

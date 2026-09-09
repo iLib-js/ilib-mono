@@ -20,12 +20,12 @@
 import { AIModelAdapter } from "./AIModelAdapter";
 import type { OpenAIModelInitOptions } from "./OpenAIModelInitOptions";
 import { OPENAI_ADAPTER_NAME } from "./constants";
-import type {
-    AdapterCapabilities,
-    CompletionRequest,
-    CompletionResponse,
-    CompletionResponseError,
-    ModelInfo,
+import {
+    AICompletionError,
+    type AdapterCapabilities,
+    type CompletionRequest,
+    type CompletionResponse,
+    type ModelInfo,
 } from "./types";
 
 const DEFAULT_OPENAI_MODEL = "gpt-4o-2024-08-06";
@@ -42,10 +42,24 @@ type OpenAiHttpResult = {
     text: () => Promise<string>;
 };
 
+type AbortSignalLike = {
+    addEventListener: (
+        type: "abort",
+        listener: () => void,
+        options?: { once?: boolean }
+    ) => void;
+};
+
+type AbortControllerLike = {
+    signal: AbortSignalLike;
+    abort: () => void;
+};
+
 /** Older Node typings may omit `fetch`; runtime requires global fetch (Node 18+). */
 async function openAiFetch(
     url: string,
-    init: { method: string; headers: Record<string, string>; body?: string }
+    init: { method: string; headers: Record<string, string>; body?: string },
+    timeoutMs?: number
 ): Promise<OpenAiHttpResult> {
     const f = (globalThis as unknown as {
         fetch?: (input: string, init?: object) => Promise<OpenAiHttpResult>;
@@ -55,7 +69,39 @@ async function openAiFetch(
             "OpenAIModelAdapter requires global fetch (Node.js 18+)"
         );
     }
-    return f(url, init);
+
+    if (timeoutMs === undefined) {
+        return f(url, init);
+    }
+    if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+        throw new RangeError(
+            "OpenAIModelAdapter: parameters.timeoutMs must be a positive finite number"
+        );
+    }
+
+    const AbortControllerCtor = (globalThis as unknown as {
+        AbortController?: new () => AbortControllerLike;
+    }).AbortController;
+    if (!AbortControllerCtor) {
+        throw new Error(
+            "OpenAIModelAdapter requires AbortController for parameters.timeoutMs (Node.js 18+)"
+        );
+    }
+
+    const controller = new AbortControllerCtor();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await f(url, { ...init, signal: controller.signal });
+    } catch (err) {
+        if ((controller.signal as { aborted?: boolean }).aborted) {
+            throw new AICompletionError(
+                `OpenAI completion timed out after ${timeoutMs} milliseconds`
+            );
+        }
+        throw err;
+    } finally {
+        clearTimeout(timer);
+    }
 }
 
 function buildOpenAiErrorMessage(
@@ -167,19 +213,40 @@ export class OpenAIModelAdapter extends AIModelAdapter {
         }
         const base = normalizeOpenAiBaseUrl(this.init.baseUrl);
         const url = `${base}/v1/models`;
-        const res = await openAiFetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${this.init.apiKey.trim()}`,
-            },
-        });
+        let res: OpenAiHttpResult;
+        try {
+            res = await openAiFetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${this.init.apiKey.trim()}`,
+                },
+            });
+        } catch (err) {
+            console.warn(
+                `OpenAIModelAdapter.listAvailableModels failed: ${
+                    err instanceof Error ? err.message : String(err)
+                }`
+            );
+            return [];
+        }
         if (!res.ok) {
+            const message = `OpenAI model listing failed: HTTP ${res.status} ${res.statusText}`;
+            if (res.status === 401 || res.status === 403) {
+                console.error(message);
+                throw new Error(message);
+            }
+            console.warn(message);
             return [];
         }
         let data: unknown;
         try {
             data = await res.json();
-        } catch {
+        } catch (err) {
+            console.warn(
+                `OpenAIModelAdapter.listAvailableModels returned invalid JSON: ${
+                    err instanceof Error ? err.message : String(err)
+                }`
+            );
             return [];
         }
         const list = data as { data?: Array<{ id?: string }> };
@@ -217,35 +284,39 @@ export class OpenAIModelAdapter extends AIModelAdapter {
             body.max_tokens = p.maxTokens;
         }
 
-        const res = await openAiFetch(url, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${this.init.apiKey.trim()}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-        });
-
-        const fail = async (): Promise<CompletionResponseError> => {
-            const text = await res.text().catch(() => "");
-            return {
-                message: buildOpenAiErrorMessage(
-                    res.status,
-                    res.statusText,
-                    text
-                ),
-                httpStatus: res.status,
-                httpStatusText: res.statusText,
-                providerBody: text.slice(0, 2000),
-            };
-        };
+        let res: OpenAiHttpResult;
+        try {
+            res = await openAiFetch(
+                url,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${this.init.apiKey.trim()}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(body),
+                },
+                p?.timeoutMs
+            );
+        } catch (err) {
+            if (err instanceof AICompletionError) {
+                throw err;
+            }
+            throw new AICompletionError(
+                err instanceof Error ? err.message : String(err)
+            );
+        }
 
         if (!res.ok) {
-            const err = await fail();
-            return {
-                rawContent: "",
-                error: err,
-            };
+            const text = await res.text().catch(() => "");
+            throw new AICompletionError(
+                buildOpenAiErrorMessage(res.status, res.statusText, text),
+                {
+                    httpStatus: res.status,
+                    httpStatusText: res.statusText,
+                    providerBody: text.slice(0, 2000),
+                }
+            );
         }
 
         let parsed: unknown;
@@ -253,14 +324,10 @@ export class OpenAIModelAdapter extends AIModelAdapter {
             parsed = await res.json();
         } catch (e) {
             const text = await res.text().catch(() => "");
-            return {
-                rawContent: "",
-                error: {
-                    message:
-                        (e as Error)?.message ||
-                        `Invalid JSON from OpenAI: ${text.slice(0, 200)}`,
-                },
-            };
+            throw new AICompletionError(
+                (e as Error)?.message ||
+                    `Invalid JSON from OpenAI: ${text.slice(0, 200)}`
+            );
         }
 
         const chat = parsed as {
@@ -275,14 +342,10 @@ export class OpenAIModelAdapter extends AIModelAdapter {
         const content = first?.message?.content;
 
         if (choices.length === 0 || content === undefined || content === null) {
-            return {
-                rawContent: "",
-                error: {
-                    message: "OpenAI returned no assistant message",
-                    httpStatus: res.status,
-                    httpStatusText: res.statusText,
-                },
-            };
+            throw new AICompletionError("OpenAI returned no assistant message", {
+                httpStatus: res.status,
+                httpStatusText: res.statusText,
+            });
         }
 
         return {

@@ -34,11 +34,11 @@ export {
     createAIModelAdapter,
     listKnownAIModelAdapterNames,
 } from "./factory";
+export { AICompletionError } from "./types";
 export type {
     AdapterCapabilities,
     CompletionParameters,
     CompletionRequest,
     CompletionResponse,
-    CompletionResponseError,
     ModelInfo,
 } from "./types";

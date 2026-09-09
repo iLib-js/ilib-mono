@@ -101,6 +101,15 @@ async function resolveContextFileId(
     return String((file as { id: string }).id);
 }
 
+/*
+ * Live Box createAiTextGen (needs contextFileId or rootFolderId).
+ * Skipped without Box credentials / file context.
+ *
+ * Scenario summary
+ *   - Structured JSON echo: fixed schema format/echo/sum.
+ *   - Geo JSON: capital of France is Paris (content, not only shape).
+ */
+
 describeCred("Box AI — real prompts (integration)", () => {
     let client: BoxClient;
     let contextFileId: string;

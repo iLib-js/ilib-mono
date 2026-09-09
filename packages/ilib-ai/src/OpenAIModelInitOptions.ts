@@ -30,6 +30,10 @@ export interface OpenAIModelInitOptions {
     apiKey: string;
     /** Override the default host (default: `https://api.openai.com`). */
     baseUrl?: string;
-    /** Default model id when a {@link CompletionRequest} omits `model`. */
+    /**
+     * Model id returned as {@link AdapterCapabilities.defaultModel}.
+     * {@link CompletionRequest.model} remains required; the adapter does not
+     * implicitly substitute this value in {@link OpenAIModelAdapter.complete}.
+     */
     defaultModel?: string;
 }

@@ -17,6 +17,39 @@
  * limitations under the License.
  */
 
+/*
+ * Scenario summary — Box SDK is mocked (`createBoxClientFromInit`); no live Box.
+ *
+ * Constructor / identity
+ *   - No credentials throws (README hint).
+ *   - Unset ${VAR} accessToken throws (README hint); does not use the literal.
+ *   - accessToken is accepted; provider id/display name; capabilities
+ *     (listing + default model); isConfigured; isConnected-before-connect.
+ *
+ * connect()
+ *   - Builds client and calls users.getUserMe().
+ *   - Second connect is a no-op; disconnect then connect validates again.
+ *   - getUserMe rejection fails connect (not connected).
+ *   - Failed client create is not cached; a later connect() retries.
+ *
+ * complete()
+ *   - Rejects if connect() was not called; requires contextFileId.
+ *   - createAiTextGen after connect (not as implicit connect).
+ *   - Prompt is systemPrompt + userContent; model → basicGen.model.
+ *   - temperature / maxTokens mapped; google__ models use google_params.
+ *   - SDK answer → rawContent; empty answer → empty rawContent.
+ *   - SDK throw → AICompletionError.
+ *   - userContent may be JSON/unicode.
+ *
+ * listAvailableModels()
+ *   - Rejects if not connected.
+ *   - Maps textGen.basicGen.model (not agent resource id) + displayName.
+ *   - Omits agents without a text-gen model; dedupes the same model id.
+ *   - Empty entries → [].
+ *   - Non-auth failure: warn + [].
+ *   - 401/403: log + reject.
+ */
+
 import type { BoxClient } from "box-node-sdk";
 
 import { BoxAIModelAdapter } from "../src";
@@ -62,11 +95,21 @@ describe("BoxAIModelAdapter", () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+        jest.restoreAllMocks();
     });
 
     describe("constructor", () => {
         test("throws when no credentials are provided", () => {
-            expect(() => new BoxAIModelAdapter({})).toThrow();
+            expect(() => new BoxAIModelAdapter({})).toThrow(/README\.md/);
+        });
+
+        test("throws and mentions README when accessToken is an unset ${VAR} placeholder", () => {
+            expect(
+                () =>
+                    new BoxAIModelAdapter({
+                        accessToken: "${ILIB_AI_TEST_UNSET_ENV_VAR_DO_NOT_SET}",
+                    })
+            ).toThrow(/README\.md/);
         });
 
         test("accepts accessToken", () => {
@@ -149,6 +192,24 @@ describe("BoxAIModelAdapter", () => {
             await expect(adapter.connect()).rejects.toThrow(/401 from Box/);
             expect(adapter.isConnected()).toBe(false);
         });
+
+        test("failed createBoxClientFromInit is not cached; connect() can retry", async () => {
+            mockCreateBoxClient
+                .mockRejectedValueOnce(new Error("JWT parse failed"))
+                .mockResolvedValueOnce({
+                    ai: { createAiTextGen },
+                    aiStudio: { getAiAgents },
+                    users: { getUserMe },
+                } as unknown as BoxClient);
+            const adapter = new BoxAIModelAdapter({
+                accessToken: "box-dev-token",
+            });
+            await expect(adapter.connect()).rejects.toThrow(/JWT parse failed/);
+            expect(adapter.isConnected()).toBe(false);
+            await adapter.connect();
+            expect(adapter.isConnected()).toBe(true);
+            expect(mockCreateBoxClient).toHaveBeenCalledTimes(2);
+        });
     });
 
     /**
@@ -220,6 +281,43 @@ describe("BoxAIModelAdapter", () => {
             expect(agent.basicGen?.model).toBe(modelId);
         });
 
+        test("maps temperature and maxTokens into the Box text-gen agent override", async () => {
+            createAiTextGen.mockResolvedValue(boxAiResponse("x"));
+            const adapter = new BoxAIModelAdapter(boxCompleteInit);
+            await adapter.connect();
+            await adapter.complete({
+                ...baseRequest,
+                parameters: {
+                    temperature: 0.25,
+                    maxTokens: 512,
+                },
+            });
+
+            const basicGen = createAiTextGen.mock.calls[0][0].aiAgent.basicGen;
+            expect(basicGen.numTokensForCompletion).toBe(512);
+            expect(basicGen.llmEndpointParams).toEqual({
+                type: "openai_params",
+                temperature: 0.25,
+            });
+        });
+
+        test("uses provider-specific endpoint params for Box model ids", async () => {
+            createAiTextGen.mockResolvedValue(boxAiResponse("x"));
+            const adapter = new BoxAIModelAdapter(boxCompleteInit);
+            await adapter.connect();
+            await adapter.complete({
+                ...baseRequest,
+                model: "google__gemini_2_5_flash",
+                parameters: { temperature: 0.5 },
+            });
+
+            const basicGen = createAiTextGen.mock.calls[0][0].aiAgent.basicGen;
+            expect(basicGen.llmEndpointParams).toEqual({
+                type: "google_params",
+                temperature: 0.5,
+            });
+        });
+
         test("maps SDK answer to rawContent", async () => {
             createAiTextGen.mockResolvedValue(
                 boxAiResponse("  boxed answer  ")
@@ -227,7 +325,6 @@ describe("BoxAIModelAdapter", () => {
             const adapter = new BoxAIModelAdapter(boxCompleteInit);
             await adapter.connect();
             const res = await adapter.complete(baseRequest);
-            expect(res.error).toBeUndefined();
             expect(res.rawContent).toBe("  boxed answer  ");
         });
 
@@ -235,23 +332,24 @@ describe("BoxAIModelAdapter", () => {
          * Per-request failures (e.g. AI endpoint 403) can still occur after a successful
          * {@link connect}. This asserts `complete()` propagates the SDK error from `createAiTextGen`.
          */
-        test("SDK rejection surfaces with the SDK error message (not a generic stub)", async () => {
+        test("SDK rejection surfaces as AICompletionError", async () => {
             createAiTextGen.mockRejectedValue(
                 new Error("Box SDK: unauthorized")
             );
             const adapter = new BoxAIModelAdapter(boxCompleteInit);
             await adapter.connect();
-            await expect(adapter.complete(baseRequest)).rejects.toThrow(
-                "Box SDK: unauthorized"
-            );
+            await expect(adapter.complete(baseRequest)).rejects.toMatchObject({
+                name: "AICompletionError",
+                message: "Box SDK: unauthorized",
+            });
         });
 
-        test("empty answer yields empty rawContent or explicit error — must be consistent", async () => {
+        test("empty answer yields empty rawContent", async () => {
             createAiTextGen.mockResolvedValue(boxAiResponse(""));
             const adapter = new BoxAIModelAdapter(boxCompleteInit);
             await adapter.connect();
             const res = await adapter.complete(baseRequest);
-            expect(res.rawContent === "" || res.error).toBeTruthy();
+            expect(res.rawContent).toBe("");
         });
 
         test("userContent may contain JSON and unicode", async () => {
@@ -310,17 +408,69 @@ describe("BoxAIModelAdapter", () => {
 
             expect(mockCreateBoxClient).toHaveBeenCalled();
             expect(getAiAgents).toHaveBeenCalled();
-            expect(models.length).toBeGreaterThanOrEqual(1);
-            expect(
-                models.some(
-                    (m) =>
-                        m.id === "azure__openai__gpt_4o_mini" ||
-                        m.id === "agent-1"
-                )
-            ).toBe(true);
-            expect(models.every((m) => typeof m.displayName === "string")).toBe(
-                true
-            );
+            expect(models).toEqual([
+                {
+                    id: "azure__openai__gpt_4o_mini",
+                    displayName: "My text agent",
+                },
+            ]);
+        });
+
+        test("omits agents that have no textGen.basicGen.model", async () => {
+            getAiAgents.mockResolvedValue({
+                entries: [
+                    {
+                        id: "agent-ask-only",
+                        name: "Ask only",
+                    },
+                    {
+                        id: "agent-2",
+                        name: "Text gen",
+                        textGen: {
+                            basicGen: { model: "azure__openai__gpt_4o" },
+                        },
+                    },
+                ],
+            });
+            const adapter = new BoxAIModelAdapter({
+                accessToken: "box-dev-token",
+            });
+            await adapter.connect();
+            const models = await adapter.listAvailableModels();
+            expect(models.map((m) => m.id)).toEqual(["azure__openai__gpt_4o"]);
+            expect(models.some((m) => m.id === "agent-ask-only")).toBe(false);
+        });
+
+        test("deduplicates the same text-gen model used by multiple agents", async () => {
+            getAiAgents.mockResolvedValue({
+                entries: [
+                    {
+                        id: "agent-a",
+                        name: "First",
+                        textGen: {
+                            basicGen: { model: "azure__openai__gpt_4o_mini" },
+                        },
+                    },
+                    {
+                        id: "agent-b",
+                        name: "Second",
+                        textGen: {
+                            basicGen: { model: "azure__openai__gpt_4o_mini" },
+                        },
+                    },
+                ],
+            });
+            const adapter = new BoxAIModelAdapter({
+                accessToken: "box-dev-token",
+            });
+            await adapter.connect();
+            const models = await adapter.listAvailableModels();
+            expect(models).toEqual([
+                {
+                    id: "azure__openai__gpt_4o_mini",
+                    displayName: "First",
+                },
+            ]);
         });
 
         test("empty entries yields empty array", async () => {
@@ -333,7 +483,8 @@ describe("BoxAIModelAdapter", () => {
             expect(models).toEqual([]);
         });
 
-        test("getAiAgents rejection resolves to empty array (no unhandled throw)", async () => {
+        test("non-auth getAiAgents failure logs and resolves to an empty array", async () => {
+            const warn = jest.spyOn(console, "warn").mockImplementation();
             getAiAgents.mockRejectedValue(new Error("network down"));
             const adapter = new BoxAIModelAdapter({
                 accessToken: "box-dev-token",
@@ -342,6 +493,21 @@ describe("BoxAIModelAdapter", () => {
             const models = await adapter.listAvailableModels();
             expect(Array.isArray(models)).toBe(true);
             expect(models).toEqual([]);
+            expect(warn).toHaveBeenCalled();
+        });
+
+        test("auth getAiAgents failure logs and rejects", async () => {
+            const error = jest.spyOn(console, "error").mockImplementation();
+            const authError = Object.assign(new Error("Forbidden"), {
+                responseInfo: { statusCode: 403 },
+            });
+            getAiAgents.mockRejectedValue(authError);
+            const adapter = new BoxAIModelAdapter({
+                accessToken: "box-dev-token",
+            });
+            await adapter.connect();
+            await expect(adapter.listAvailableModels()).rejects.toBe(authError);
+            expect(error).toHaveBeenCalled();
         });
     });
 });

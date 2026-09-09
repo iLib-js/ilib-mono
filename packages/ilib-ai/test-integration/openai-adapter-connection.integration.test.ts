@@ -21,6 +21,16 @@ const describeCred = openAiIntegrationCredentialsPresent(packageRoot)
     ? describe
     : describe.skip;
 
+/**
+ * Live OpenAI handshake. Skipped without credentials.
+ *
+ * Scenario summary
+ *   - Credential loader produces a configured adapter (not yet connected).
+ *   - connect() validates the API key (GET /v1/models) and sets isConnected.
+ *   - A second connect() without disconnect is a no-op (still connected).
+ *   - After connect, listAvailableModels() returns at least one model.
+ *
+ */
 describeCred("OpenAI AIModelAdapter — connection (integration)", () => {
     test("loadOpenAiInit yields a configured adapter", () => {
         const init = loadOpenAiInit(packageRoot);

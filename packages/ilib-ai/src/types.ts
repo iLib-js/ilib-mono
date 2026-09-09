@@ -19,12 +19,21 @@
 
 /**
  * Optional generation and transport tuning for a single {@link CompletionRequest}.
- * Adapters map these to provider-specific parameters (e.g. OpenAI `temperature`, `max_tokens`).
+ * OpenAI maps all three fields. Box AI maps `temperature` (using the endpoint
+ * parameter type inferred from the model id) and `maxTokens` into its
+ * text-generation agent override; it does not currently apply `timeoutMs`.
  */
 export interface CompletionParameters {
     /**
-     * Sampling temperature; higher values increase randomness. Semantics are provider-defined.
-     * Omit to use the provider or adapter default.
+     * Sampling temperature: how randomly the model picks the next token.
+     *
+     * Lower values (toward `0`) prefer the most likely tokens, so output is more
+     * focused and repeatable. Higher values increase variety and creativity.
+     * Typical OpenAI range is about `0`–`2`. Use `0` (or a small value) when you
+     * want a stable format such as JSON. Omit to use the provider default.
+     *
+     * Exact range and effect are provider-defined; Box maps this into the
+     * text-gen agent’s LLM endpoint params for the selected model family.
      */
     temperature?: number;
     /**
@@ -34,7 +43,9 @@ export interface CompletionParameters {
     maxTokens?: number;
     /**
      * Maximum time to wait for this request to finish, in **milliseconds**.
-     * Adapters may map this to HTTP client timeouts or SDK deadlines.
+     * The OpenAI adapter aborts its HTTP request after this interval. The Box AI
+     * adapter currently ignores this field because its SDK call does not expose
+     * a cancellable per-request timeout.
      */
     timeoutMs?: number;
 }
@@ -69,46 +80,58 @@ export interface CompletionRequest {
      */
     model: string;
     /**
-     * Optional sampling, token limit, and timeout. Omitted fields use adapter or provider defaults.
+     * Optional sampling, token limit, and timeout. Support is provider-specific;
+     * see {@link CompletionParameters}. Omitted fields use provider defaults.
      */
     parameters?: CompletionParameters;
 }
 
 /**
- * Describes a **transport- or SDK-level** failure (HTTP error, network error, SDK exception)
- * when the adapter chooses to return a structured result instead of rejecting the promise.
- * @see {@link CompletionResponse.error}
+ * Failure from {@link import("./AIModelAdapter").AIModelAdapter.complete} (HTTP error,
+ * network error, SDK exception, timeout, or an empty/invalid provider payload).
+ * Adapters **reject** with this error; they do not return it on {@link CompletionResponse}.
  */
-export interface CompletionResponseError {
-    /**
-     * Human-readable explanation suitable for logs or UI. Should not embed raw secrets.
-     */
-    message: string;
+export class AICompletionError extends Error {
     /**
      * HTTP status code when the failure was returned from an HTTP API (e.g. `401`, `429`, `500`).
-     * Omitted for non-HTTP failures (e.g. DNS, TLS, or pure SDK errors).
+     * Omitted for non-HTTP failures (e.g. DNS, TLS, timeouts, or pure SDK errors).
      */
-    httpStatus?: number;
+    readonly httpStatus?: number;
     /**
      * HTTP reason phrase or status text when available (e.g. `"Unauthorized"`).
      */
-    httpStatusText?: string;
+    readonly httpStatusText?: string;
     /**
      * Optional raw response body substring, or a stringified provider error payload, for debugging.
-     * **Do not** log in production if it may contain tokens or PII; adapters should redact when possible.
+     * **Do not** log in production if it may contain tokens or PII.
      */
-    providerBody?: string;
+    readonly providerBody?: string;
+
+    constructor(
+        message: string,
+        extras?: {
+            httpStatus?: number;
+            httpStatusText?: string;
+            providerBody?: string;
+        }
+    ) {
+        super(message);
+        this.name = "AICompletionError";
+        this.httpStatus = extras?.httpStatus;
+        this.httpStatusText = extras?.httpStatusText;
+        this.providerBody = extras?.providerBody;
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
 }
 
 /**
- * Normalized result of {@link import("./AIModelAdapter").AIModelAdapter.complete}.
- * On success, `rawContent` holds model output and `error` is usually omitted.
- * On failure, the adapter may set `error` and leave `rawContent` empty or omit success-only fields.
+ * Normalized **success** result of {@link import("./AIModelAdapter").AIModelAdapter.complete}.
+ * Failures reject the promise (typically as {@link AICompletionError}) instead of using this type.
  */
 export interface CompletionResponse {
     /**
-     * Raw text returned by the model on **success** (JSON, markdown, plain text, etc.).
-     * May be an empty string when the provider returns no text or when only {@link error} is meaningful.
+     * Raw text returned by the model (JSON, markdown, plain text, etc.).
+     * May be an empty string when the provider returns no text.
      * The **caller** parses or validates this string (e.g. JSON.parse).
      */
     rawContent: string;
@@ -116,11 +139,6 @@ export interface CompletionResponse {
      * Optional identifier for correlation or support (e.g. `x-request-id`, provider trace id).
      */
     providerRequestId?: string;
-    /**
-     * Set when the adapter reports a transport/SDK failure in-band instead of throwing.
-     * When present, inspect {@link CompletionResponseError.message} and optional HTTP fields.
-     */
-    error?: CompletionResponseError;
 }
 
 /**
@@ -136,11 +154,13 @@ export interface AdapterCapabilities {
      * Whether this adapter’s provider exposes a way to **discover** LLM ids for this account (e.g. OpenAI
      * `GET /v1/models`, Box **`GET /2.0/ai_agents`** via `BoxClient.aiStudio.getAiAgents()`). If `true`,
      * {@link import("./AIModelAdapter").AIModelAdapter.listAvailableModels} should eventually return real data;
-     * it may still return `[]` until implemented or when the provider returns no models.
+     * it may still return `[]` when the provider returns no models or a non-auth listing failure occurs.
+     * Built-in adapters reject authentication/authorization listing failures.
      */
     supportsModelListing: boolean;
     /**
-     * Suggested **LLM** id when the caller omits `model` on a request; provider-specific string.
+     * Suggested provider-specific **LLM** id. {@link CompletionRequest.model} is
+     * required, so callers may explicitly copy this value into each request.
      */
     defaultModel: string;
     /**

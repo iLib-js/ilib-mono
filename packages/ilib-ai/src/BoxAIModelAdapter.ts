@@ -26,6 +26,7 @@ import {
     isBoxInitConfigured,
 } from "./boxClientFactory";
 import { BOX_AI_ADAPTER_NAME } from "./constants";
+import { AICompletionError } from "./types";
 import type {
     AdapterCapabilities,
     CompletionRequest,
@@ -34,6 +35,43 @@ import type {
 } from "./types";
 
 const DEFAULT_BOX_MODEL = "azure__openai__gpt_4o_mini";
+
+function getBoxHttpStatus(err: unknown): number | undefined {
+    if (!err || typeof err !== "object") {
+        return undefined;
+    }
+    const responseInfo = (err as {
+        responseInfo?: { statusCode?: unknown };
+    }).responseInfo;
+    return typeof responseInfo?.statusCode === "number"
+        ? responseInfo.statusCode
+        : undefined;
+}
+
+function getErrorMessage(err: unknown): string {
+    return err instanceof Error ? err.message : String(err);
+}
+
+type BoxEndpointParamsType =
+    | "openai_params"
+    | "google_params"
+    | "aws_params"
+    | "ibm_params";
+
+function getBoxEndpointParamsType(model: string): BoxEndpointParamsType {
+    const provider = model.split("__", 1)[0].toLowerCase();
+    switch (provider) {
+        case "google":
+            return "google_params";
+        case "aws":
+            return "aws_params";
+        case "ibm":
+            return "ibm_params";
+        default:
+            // Includes openai__, azure__openai__, and OpenAI-compatible models.
+            return "openai_params";
+    }
+}
 
 /**
  * Box AI–backed adapter using the official **[Box Node SDK](https://github.com/box/box-node-sdk)**.
@@ -49,6 +87,9 @@ const DEFAULT_BOX_MODEL = "azure__openai__gpt_4o_mini";
  * @see {@link https://developer.box.com/sdks-and-tools Box SDKs & tools}
  *
  * **Model discovery:** Uses **`BoxClient.aiStudio.getAiAgents()`** (`GET /2.0/ai_agents`).
+ * Only agents with a text-gen **model API name** (`textGen.basicGen.model`) are listed;
+ * agent resource ids are omitted because {@link complete} sends that string as `basicGen.model`.
+ * Duplicate model ids are collapsed to one {@link ModelInfo}.
  */
 export class BoxAIModelAdapter extends AIModelAdapter {
     private readonly init: BoxAIModelInitOptions;
@@ -107,10 +148,16 @@ export class BoxAIModelAdapter extends AIModelAdapter {
     /**
      * Lazily creates the Box client. Used by {@link connect}, {@link complete}, and
      * {@link listAvailableModels} — the same promise is reused until {@link disconnect}.
+     * A rejected create is not cached, so a later {@link connect} can retry.
      */
     protected async getClient(): Promise<BoxClient> {
         if (!this.clientPromise) {
-            this.clientPromise = createBoxClientFromInit(this.init);
+            this.clientPromise = createBoxClientFromInit(this.init).catch(
+                (err) => {
+                    this.clientPromise = null;
+                    throw err;
+                }
+            );
         }
         return this.clientPromise;
     }
@@ -128,22 +175,33 @@ export class BoxAIModelAdapter extends AIModelAdapter {
             const res = await client.aiStudio.getAiAgents();
             const entries = res.entries ?? [];
             const out: ModelInfo[] = [];
+            const seen = new Set<string>();
             for (const e of entries) {
                 const row = e as {
-                    id?: string;
                     name?: string;
                     textGen?: { basicGen?: { model?: string } };
                 };
-                const modelId = row.textGen?.basicGen?.model ?? row.id;
-                if (modelId) {
-                    out.push({
-                        id: modelId,
-                        displayName: row.name ?? modelId,
-                    });
+                const modelId = row.textGen?.basicGen?.model?.trim();
+                if (!modelId || seen.has(modelId)) {
+                    continue;
                 }
+                seen.add(modelId);
+                out.push({
+                    id: modelId,
+                    displayName: row.name ?? modelId,
+                });
             }
             return out;
-        } catch {
+        } catch (err) {
+            const status = getBoxHttpStatus(err);
+            const message = `BoxAIModelAdapter.listAvailableModels failed${
+                status ? ` with HTTP ${status}` : ""
+            }: ${getErrorMessage(err)}`;
+            if (status === 401 || status === 403) {
+                console.error(message);
+                throw err;
+            }
+            console.warn(message);
             return [];
         }
     }
@@ -166,17 +224,45 @@ export class BoxAIModelAdapter extends AIModelAdapter {
         }
         const prompt = `${request.systemPrompt}\n\n${request.userContent}`;
         const client = await this.getClient();
-        const out = await client.ai.createAiTextGen({
-            prompt,
-            items: [{ type: "file", id: fileId }],
-            aiAgent: {
-                type: "ai_agent_text_gen",
-                basicGen: { model: request.model },
-            },
-        });
-        const answer = out.answer ?? "";
-        return {
-            rawContent: answer,
-        };
+        const parameters = request.parameters;
+        try {
+            const out = await client.ai.createAiTextGen({
+                prompt,
+                items: [{ type: "file", id: fileId }],
+                aiAgent: {
+                    type: "ai_agent_text_gen",
+                    basicGen: {
+                        model: request.model,
+                        ...(parameters?.maxTokens !== undefined
+                            ? {
+                                  numTokensForCompletion: parameters.maxTokens,
+                              }
+                            : {}),
+                        ...(parameters?.temperature !== undefined
+                            ? {
+                                  llmEndpointParams: {
+                                      type: getBoxEndpointParamsType(
+                                          request.model
+                                      ),
+                                      temperature: parameters.temperature,
+                                  },
+                              }
+                            : {}),
+                    },
+                },
+            });
+            const answer = out.answer ?? "";
+            return {
+                rawContent: answer,
+            };
+        } catch (err) {
+            if (err instanceof AICompletionError) {
+                throw err;
+            }
+            const status = getBoxHttpStatus(err);
+            throw new AICompletionError(getErrorMessage(err), {
+                httpStatus: status,
+            });
+        }
     }
 }

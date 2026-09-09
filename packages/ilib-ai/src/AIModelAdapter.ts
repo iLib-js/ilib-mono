@@ -69,12 +69,16 @@ export abstract class AIModelAdapter {
     /**
      * Run a single completion. Subclasses map this to OpenAI, Box AI, etc.
      * Requires a prior successful {@link connect}; does not establish new connections.
+     * On transport, HTTP, SDK, timeout, or empty-payload failure, the promise **rejects**
+     * (typically with {@link import("./types").AICompletionError}); it does not resolve with an error field.
      */
     abstract complete(request: CompletionRequest): Promise<CompletionResponse>;
 
     /**
      * Returns LLM models available to this adapter/account (may require network I/O).
      * Default: empty list. Override when {@link AdapterCapabilities.supportsModelListing} is true.
+     * Built-in adapters log failures, reject authentication/authorization failures,
+     * and return an empty list for other listing failures.
      */
     listAvailableModels(): Promise<ModelInfo[]> {
         return Promise.resolve([]);

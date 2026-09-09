@@ -362,11 +362,7 @@ async function main(): Promise<void> {
                 userContent: input,
                 model: llmModel,
             });
-            if (res.error) {
-                console.error(`Error: ${res.error.message}`);
-            } else {
-                console.log(res.rawContent);
-            }
+            console.log(res.rawContent);
         } catch (err) {
             const msg = err instanceof Error ? err.message : String(err);
             console.error(`Error: ${msg}`);

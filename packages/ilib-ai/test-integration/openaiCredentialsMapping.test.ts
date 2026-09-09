@@ -15,6 +15,16 @@ import {
     stripOpenAiIntegrationOnlyFields,
 } from "./loadOpenAiIntegrationCredentials";
 
+/*
+ * Static tests for loadOpenAiIntegrationCredentials (no live OpenAI API).
+ *
+ * Scenario summary
+ *   - File apiKey + optional baseUrl map to OpenAIModelInitOptions.
+ *   - Empty file apiKey falls back to OPENAI_API_KEY.
+ *   - Non-empty file apiKey wins over the environment variable.
+ *
+ */
+
 describe("stripOpenAiIntegrationOnlyFields", () => {
     const originalEnv = process.env.OPENAI_API_KEY;
 

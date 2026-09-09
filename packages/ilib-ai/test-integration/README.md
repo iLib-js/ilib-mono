@@ -248,4 +248,4 @@ Never commit:
 - **`*_config.json`** (Box JWT downloads)
 - **`*.pvk`**, **`*.pem`**
 
-Patterns are listed in **`packages/ilib-ai/.gitignore`**.
+Patterns are listed in the **repository root `.gitignore`**.

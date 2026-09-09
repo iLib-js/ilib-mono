@@ -17,6 +17,17 @@ import {
     stripIntegrationOnlyFields,
 } from "./loadIntegrationCredentials";
 
+/*
+ * Static tests for Box integration credential mapping (no live Box API).
+ *
+ * Scenario summary
+ *   - Console JSON (boxAppSettings + enterpriseID) → boxDeveloperJwtConfig.
+ *   - Optional userId override kept for app-user JWT.
+ *   - Legacy flat clientId-style fields pass through (integration-only keys stripped).
+ *   - jwtConfigPath overlay becomes configPath-only init (two-file layout).
+ *   - Relative jwtConfigPath resolves against the test-integration directory.
+ */
+
 describe("stripIntegrationOnlyFields (Box Developer Console JSON)", () => {
     test("maps top-level boxAppSettings + enterpriseID to boxDeveloperJwtConfig", () => {
         const raw: BoxIntegrationCredentialsFile = {

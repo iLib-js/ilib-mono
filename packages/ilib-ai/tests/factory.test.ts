@@ -17,6 +17,16 @@
  * limitations under the License.
  */
 
+/*
+ * Scenario summary — factory entry point only (no network).
+ *
+ *   - listKnownAIModelAdapterNames is exactly openai and box-ai.
+ *   - Unknown adapter id throws.
+ *   - openai + valid apiKey → OpenAIModelAdapter.
+ *   - box-ai + accessToken → BoxAIModelAdapter.
+ *   - Empty OpenAI apiKey and empty Box init throw (validation propagated).
+ */
+
 import {
     BOX_AI_ADAPTER_NAME,
     createAIModelAdapter,
@@ -61,6 +71,6 @@ describe("factory", () => {
     test("createAIModelAdapter propagates Box init validation errors", () => {
         expect(() =>
             createAIModelAdapter(BOX_AI_ADAPTER_NAME, {})
-        ).toThrow();
+        ).toThrow(/README\.md/);
     });
 });

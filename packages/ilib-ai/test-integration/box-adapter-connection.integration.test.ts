@@ -21,6 +21,18 @@ const describeCred = integrationCredentialsPresent(packageRoot)
     ? describe
     : describe.skip;
 
+/*
+ * Live Box JWT handshake. Skipped without box-integration-credentials.json.
+ * Does not require contextFileId (no text-gen calls).
+ *
+ * Scenario summary
+ *   - loadBoxInit produces a configured adapter (not yet connected).
+ *   - connect() validates JWT via users.getUserMe() and sets isConnected;
+ *     disconnect() clears it.
+ *   - A second connect() without disconnect is a no-op (still connected).
+ *
+ */
+
 describeCred("Box AIModelAdapter — connection (integration)", () => {
     test("loadBoxInit yields a configured adapter", () => {
         const init = loadBoxInit(packageRoot);

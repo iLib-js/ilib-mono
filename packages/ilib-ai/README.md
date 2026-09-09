@@ -1,6 +1,6 @@
 # ilib-ai
 
-**ilib-ai** is a **TypeScript** library for **calling AI providers**: you supply prompts and options; the library returns the **raw model output** (or structured **error** information when a call fails at the transport/SDK layer). **Designing prompts and interpreting successful `rawContent` is up to you** — there are no built-in translation or lint workflows.
+**ilib-ai** is a **TypeScript** library for **calling AI providers**: you supply prompts and options; the library returns the **raw model output**. Failures **reject** the promise (typically as **`AICompletionError`**). **Designing prompts and interpreting successful `rawContent` is up to you** — there are no built-in translation or lint workflows.
 
 It lives in the [iLib-js ilib-mono](https://github.com/iLib-js/ilib-mono) repository. Design details are in [**Architecture.md** on GitHub](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-ai/Architecture.md) (that file is **not** shipped on npm; clone or browse the repo to read it).
 
@@ -22,7 +22,9 @@ pnpm add ilib-ai
 yarn add ilib-ai
 ```
 
-**Requirements:** Node.js version range in `engines` in [package.json](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-ai/package.json).
+**Requirements:** **Node.js 18 or later** (see `engines` in [package.json](https://github.com/iLib-js/ilib-mono/blob/main/packages/ilib-ai/package.json)). OpenAI uses global `fetch`; Box AI uses the Box Node SDK.
+
+String fields on **`BoxAIModelInitOptions`** may use `${VAR}` placeholders. Those variables must be set in the environment before you construct the adapter; if they are missing, initialization throws and points you back to this README.
 
 ### Try it with real APIs (monorepo developers)
 
@@ -62,17 +64,13 @@ async function run() {
 
   await ai.connect();
 
-  const { rawContent, error } = await ai.complete({
+  const { rawContent } = await ai.complete({
     systemPrompt: "You are a helpful assistant.",
     userContent: "Say hello in one sentence.",
     model: "gpt-4o-2024-08-06",
     parameters: { temperature: 0.3 },
   });
 
-  if (error) {
-    console.error(error.message);
-    return;
-  }
   console.log(rawContent);
 }
 
@@ -102,17 +100,16 @@ const ai = createAIModelAdapter(OPENAI_ADAPTER_NAME, {
 
 await ai.connect();
 
-const { rawContent, error } = await ai.complete({
-  systemPrompt: "You are a helpful assistant. Reply with valid JSON only.",
-  userContent: JSON.stringify({ task: "greet", language: "es" }),
-  model: "gpt-4o-2024-08-06",
-  parameters: { temperature: 0.2 },
-});
-
-if (error) {
-  // e.g. error.httpStatus, error.message — see CompletionResponse TSDoc
-} else {
+try {
+  const { rawContent } = await ai.complete({
+    systemPrompt: "You are a helpful assistant. Reply with valid JSON only.",
+    userContent: JSON.stringify({ task: "greet", language: "es" }),
+    model: "gpt-4o-2024-08-06",
+    parameters: { temperature: 0.2, timeoutMs: 30_000 },
+  });
   const parsed = JSON.parse(rawContent);
+} catch (err) {
+  // AICompletionError: message, optional httpStatus / providerBody
 }
 ```
 
@@ -129,19 +126,24 @@ const ai = createAIModelAdapter(BOX_AI_ADAPTER_NAME, {
 
 await ai.connect();
 
-const { rawContent, error } = await ai.complete({
+const { rawContent } = await ai.complete({
   systemPrompt: "You help with product copy.",
   userContent: "Rewrite this headline to be shorter: …",
   model: "azure__openai__gpt_4o_mini",
 });
 ```
 
+### `parameters.temperature`
+
+`temperature` is optional sampling noise on `complete()`. Lower values (toward `0`) make the model stick to the most likely tokens, so answers are more focused and repeatable. Higher values make wording and ideas more varied. Use a low value (often `0`) when you need a stable shape such as JSON. If you omit it, the provider default applies. OpenAI typically treats the range as about `0`–`2`; Box forwards it to the model family’s endpoint params.
+
 ### List **LLM** models available to an adapter (async)
 
 ```typescript
 await ai.connect();
 const models = await ai.listAvailableModels();
-// May be empty on failure or if unsupported
+// May be empty if unsupported or on a non-auth failure.
+// Authentication/authorization failures are logged and reject.
 ```
 
 ### Capabilities
@@ -162,14 +164,11 @@ There is no separate “JSON mode” on **`CompletionRequest`**: the library for
 
 ## API reference (TypeDoc)
 
-The package ships with **TypeDoc**-ready source. After **`npm install ilib-ai`**, generate HTML (and optional Markdown) from the installed package:
+Extracted API docs (TypeDoc HTML) are published on GitHub Pages:
 
-```bash
-cd node_modules/ilib-ai
-pnpm doc
-```
+**[ilib-ai TypeDoc](https://ilib-js.github.io/ilib-mono/packages/ilib-ai/docs/)**
 
-Open the generated files under `docs/` (e.g. `docs/index.html`). **Subclass initialization** parameters are described in **TSDoc** on **`OpenAIModelAdapter`**, **`BoxAIModelAdapter`**, and the corresponding **`OpenAIModelInitOptions`** / **`BoxAIModelInitOptions`** types.
+**Subclass initialization** parameters are described there (and in TSDoc) on **`OpenAIModelAdapter`**, **`BoxAIModelAdapter`**, and the corresponding **`OpenAIModelInitOptions`** / **`BoxAIModelInitOptions`** types.
 
 ---
 

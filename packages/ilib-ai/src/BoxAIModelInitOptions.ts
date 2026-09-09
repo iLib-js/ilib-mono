@@ -52,7 +52,9 @@ export interface BoxDeveloperJwtConfig {
  * - **`configPath`** — path to a JWT config JSON file from the Box Developer Console (same JSON as above, on disk).
  * - **Explicit JWT fields** — `clientId`, `clientSecret`, private key material, and either `enterpriseId` (service account) or `userId` (app user).
  *
- * Environment placeholders such as `${VAR}` in string fields are resolved from `process.env` where noted.
+ * Environment placeholders such as `${VAR}` in string fields are resolved from `process.env`.
+ * If a referenced variable is missing or empty, construction and client creation throw and do
+ * **not** treat the placeholder as a literal; see the package **README.md** for setup.
  */
 export interface BoxAIModelInitOptions {
     /** Pre-obtained access token (e.g. from `${BOX_ACCESS_TOKEN}`). */
