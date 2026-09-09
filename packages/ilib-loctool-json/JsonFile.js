@@ -444,26 +444,24 @@ JsonFile.prototype.handleSource = function (json, ref, translations, locale, ret
             }
         } else {
             // extract this new string
-            if (this.API.utils.containsActualText(text)) {
-                var opts = {
-                    resType: "string",
-                    project: this.project.getProjectId(),
-                    key: this.key || key,
-                    sourceLocale: this.project.sourceLocale,
-                    pathName: this.pathName,
-                    state: "new",
-                    comment: this.comment,
-                    datatype: this.type.datatype,
-                    index: this.resourceIndex++
-                };
-                if (locale !== this.project.sourceLocale) {
-                    opts.target = text;
-                    opts.targetLocale = locale;
-                } else {
-                    opts.source = text;
-                }
-                this.set.add(this.API.newResource(opts));
+            var opts = {
+                resType: "string",
+                project: this.project.getProjectId(),
+                key: this.key || key,
+                sourceLocale: this.project.sourceLocale,
+                pathName: this.pathName,
+                state: "new",
+                comment: this.comment,
+                datatype: this.type.datatype,
+                index: this.resourceIndex++
+            };
+            if (locale !== this.project.sourceLocale) {
+                opts.target = text;
+                opts.targetLocale = locale;
+            } else {
+                opts.source = text;
             }
+            this.set.add(this.API.newResource(opts));
             returnValue = this.sparseValue(text);
         }
     } else {
