@@ -50,17 +50,6 @@ function smartJoin(parent, child) {
 }
 
 /**
- * Return true if the given string contains something other than whitespace.
- *
- * @private
- * @param {String} str the string to check
- * @returns {boolean} true if the string has real text in it
- */
-function hasText(str) {
-    return typeof(str) !== "undefined" && str !== null && String(str).trim().length > 0;
-}
-
-/**
  * Return true if the given resource has at least one source string in it
  * that contains something other than whitespace.
  *
@@ -70,14 +59,14 @@ function hasText(str) {
  */
 function hasSource(res) {
     if (res.sourceArray) {
-        return res.sourceArray.some(hasText);
+        return res.sourceArray.some(utils.hasText);
     }
     if (res.sourceStrings) {
         return Object.keys(res.sourceStrings).some(function(category) {
-            return hasText(res.sourceStrings[category]);
+            return utils.hasText(res.sourceStrings[category]);
         });
     }
-    return hasText(res.source);
+    return utils.hasText(res.source);
 }
 
 /**

@@ -826,6 +826,139 @@ describe("xliff", function() {
         expect(actual).toBe(expected);
     });
 
+    test("XliffSerializeWithSourceOnlyAndArrayWithWhitespaceOnlyElement", function() {
+        expect.assertions(2);
+
+        var x = new Xliff();
+        expect(x).toBeTruthy();
+
+        var res = new ResourceArray({
+            sourceArray: ["one", "two", "   \t", "three"],
+            sourceLocale: "en-US",
+            key: "huzzah",
+            pathName: "foo/bar/j.java",
+            project: "webapp",
+            targetLocale: "fr-FR"
+        });
+
+        x.addResource(res);
+
+        var actual = x.serialize();
+        var expected =
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="1.2">\n' +
+            '  <file original="foo/bar/j.java" source-language="en-US" target-language="fr-FR" product-name="webapp">\n' +
+            '    <body>\n' +
+            '      <trans-unit id="1" resname="huzzah" restype="array" datatype="x-android-resource" extype="0">\n' +
+            '        <source>one</source>\n' +
+            '      </trans-unit>\n' +
+            '      <trans-unit id="2" resname="huzzah" restype="array" datatype="x-android-resource" extype="1">\n' +
+            '        <source>two</source>\n' +
+            '      </trans-unit>\n' +
+            '      <trans-unit id="3" resname="huzzah" restype="array" datatype="x-android-resource" extype="3">\n' +
+            '        <source>three</source>\n' +
+            '      </trans-unit>\n' +
+            '    </body>\n' +
+            '  </file>\n' +
+            '</xliff>';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("XliffSerializeWithPluralsAndWhitespaceOnlyCategory", function() {
+        expect.assertions(2);
+
+        var x = new Xliff();
+        expect(x).toBeTruthy();
+
+        var res = new ResourcePlural({
+            sourceStrings: {
+                "one": "There is 1 object.",
+                "other": "   \t"
+            },
+            sourceLocale: "en-US",
+            targetLocale: "de-DE",
+            key: "foobar",
+            pathName: "foo/bar/asdf.java",
+            project: "androidapp",
+            resType: "plural",
+            datatype: "ruby"
+        });
+
+        x.addResource(res);
+
+        var actual = x.serialize();
+        var expected =
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="1.2">\n' +
+            '  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="androidapp">\n' +
+            '    <body>\n' +
+            '      <trans-unit id="1" resname="foobar" restype="plural" datatype="ruby" extype="one">\n' +
+            '        <source>There is 1 object.</source>\n' +
+            '        <note>{"pluralForm":"one","pluralFormOther":"foobar"}</note>\n' +
+            '      </trans-unit>\n' +
+            '    </body>\n' +
+            '  </file>\n' +
+            '</xliff>';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
+    test("XliffSerializeWithTranslatedPluralsAndWhitespaceOnlySourceCategory", function() {
+        expect.assertions(2);
+
+        var x = new Xliff();
+        expect(x).toBeTruthy();
+
+        var res = new ResourcePlural({
+            sourceStrings: {
+                "one": "   \t",
+                "other": "There are {n} objects."
+            },
+            sourceLocale: "en-US",
+            targetStrings: {
+                "one": "Da gibts 1 Objekt.",
+                "other": "Da gibts {n} Objekten."
+            },
+            targetLocale: "de-DE",
+            key: "foobar",
+            pathName: "foo/bar/asdf.java",
+            project: "androidapp",
+            resType: "plural",
+            state: "new",
+            datatype: "ruby"
+        });
+
+        x.addResource(res);
+
+        // the "one" category has no real source text, so it falls back to the
+        // source of the "other" category rather than emitting an empty source
+        var actual = x.serialize();
+        var expected =
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="1.2">\n' +
+            '  <file original="foo/bar/asdf.java" source-language="en-US" target-language="de-DE" product-name="androidapp">\n' +
+            '    <body>\n' +
+            '      <trans-unit id="1" resname="foobar" restype="plural" datatype="ruby" extype="one">\n' +
+            '        <source>There are {n} objects.</source>\n' +
+            '        <target state="new">Da gibts 1 Objekt.</target>\n' +
+            '        <note>{"pluralForm":"one","pluralFormOther":"foobar"}</note>\n' +
+            '      </trans-unit>\n' +
+            '      <trans-unit id="2" resname="foobar" restype="plural" datatype="ruby" extype="other">\n' +
+            '        <source>There are {n} objects.</source>\n' +
+            '        <target state="new">Da gibts {n} Objekten.</target>\n' +
+            '        <note>{"pluralForm":"other","pluralFormOther":"foobar"}</note>\n' +
+            '      </trans-unit>\n' +
+            '    </body>\n' +
+            '  </file>\n' +
+            '</xliff>';
+
+        diff(actual, expected);
+        expect(actual).toBe(expected);
+    });
+
     test("XliffSerializeWithExplicitIds", function() {
         expect.assertions(2);
 

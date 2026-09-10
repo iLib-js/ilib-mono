@@ -679,4 +679,16 @@ describe("utils", function() {
         expect(utils.getBaseLocale("es-CO")).toBe("es-ES");
         expect(utils.getBaseLocale("fr-FR")).toBe("fr-FR");
     });
+    test("hasText", function() {
+        expect.assertions(9);
+        expect(utils.hasText("asdf")).toBe(true);
+        expect(utils.hasText(" asdf ")).toBe(true);
+        expect(utils.hasText("0")).toBe(true);
+        expect(utils.hasText("")).toBe(false);
+        expect(utils.hasText(" ")).toBe(false);
+        expect(utils.hasText("   \t\n")).toBe(false);
+        expect(utils.hasText(undefined)).toBe(false);
+        expect(utils.hasText(null)).toBe(false);
+        expect(utils.hasText("\u00a0")).toBe(false);
+    });
 });
