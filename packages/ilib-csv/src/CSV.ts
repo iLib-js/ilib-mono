@@ -122,7 +122,8 @@ function parseRows(
     // row. A backslash before the column separator outside quotes inserts that
     // separator as field data. Quotes only change whether separators are syntax
     // or field data: "" is one literal quote, and CR/LF/CRLF inside quotes stay
-    // in the field.
+    // in the field. Unquoted space or tab around a quoted field is skipped;
+    // whitespace inside the quotes is kept.
 
     while (i < len) {
         const ch = data[i];
@@ -176,6 +177,17 @@ function parseRows(
             pushField();
             sawColumnSeparator = true;
             i += sepLen;
+            continue;
+        }
+
+        // Unquoted padding after a quoted field. Never skip the column
+        // separator itself (a tab in TSV is a field break, not padding).
+        if (
+            fieldQuoted &&
+            (ch === " " || ch === "\t") &&
+            ch !== columnSeparator
+        ) {
+            i++;
             continue;
         }
 
@@ -233,7 +245,8 @@ export class CSV {
      * Parse CSV/TSV text and return an array of records.
      *
      * Quoted fields may contain row separators (including CR, LF, and CRLF)
-     * and keep leading and trailing whitespace. Unquoted fields are trimmed.
+     * and keep leading and trailing whitespace inside the quotes. Unquoted
+     * fields are trimmed, as is unquoted space or tab around a quoted field.
      * `columnSeparator` and the row separator apply only outside of quotes.
      *
      * @param data - The string to parse

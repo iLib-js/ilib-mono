@@ -26,6 +26,9 @@ import { CSV } from "../src/index";
  * - TSV (tab separator) behaves the same for multi-line quoted fields
  * - a trailing newline does not invent an empty record
  * - quoted fields keep leading/trailing spaces; unquoted fields are still trimmed
+ * - inner whitespace in an unquoted field is kept; only the ends are trimmed
+ * - inner whitespace in a quoted field is kept, including padding inside the quotes
+ * - unquoted whitespace around a quoted field is trimmed; padding inside quotes is not
  * - generate() then parse() preserves newline, quote, separator, and spaces
  */
 
@@ -97,6 +100,107 @@ describe("quoted fields", () => {
         test("still trims unquoted fields", () => {
             const records = new CSV().parse("A,B\n1, foo\n");
             expect(records[0].B).toBe("foo");
+        });
+
+        test("preserves inner spaces in an unquoted field", () => {
+            const records = new CSV().parse(
+                "A,B,C\nfield1,  field2      field2 continued     ,field3\n"
+            );
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({
+                A: "field1",
+                B: "field2      field2 continued",
+                C: "field3",
+            });
+        });
+
+        test("preserves inner spaces in a quoted field", () => {
+            const records = new CSV().parse(
+                'A,B,C\nfield1,  "field2      field2 continued"     ,field3\n'
+            );
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({
+                A: "field1",
+                B: "field2      field2 continued",
+                C: "field3",
+            });
+        });
+
+        test("preserves padding and inner spaces inside quotes", () => {
+            const records = new CSV().parse(
+                'A,B,C\nfield1,  "  field2      field2 continued     "     ,field3\n'
+            );
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({
+                A: "field1",
+                B: "  field2      field2 continued     ",
+                C: "field3",
+            });
+        });
+
+        test("trims unquoted spaces around a quoted field", () => {
+            const records = new CSV().parse(
+                "id,name,description\n" +
+                    '26234345,     "name with quotes"  ,     "description with quotes"   \n'
+            );
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({
+                id: "26234345",
+                name: "name with quotes",
+                description: "description with quotes",
+            });
+        });
+
+        test("trims unquoted spaces around quoted fields that contain a comma", () => {
+            const records = new CSV().parse(
+                "id,name,description\n" +
+                    '2345642, "quoted name with, comma in it" , "description with, comma in it"\n'
+            );
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({
+                id: "2345642",
+                name: "quoted name with, comma in it",
+                description: "description with, comma in it",
+            });
+        });
+
+        test("trims unquoted spaces around quoted fields in TSV", () => {
+            const records = new CSV({ columnSeparator: "\t" }).parse(
+                "id\tname\tdescription\n" +
+                    '26234345\t     "name with quotes"  \t     "description with quotes"   \n'
+            );
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({
+                id: "26234345",
+                name: "name with quotes",
+                description: "description with quotes",
+            });
+        });
+
+        test("trims unquoted spaces after a quoted TSV field that contains a tab", () => {
+            const records = new CSV({ columnSeparator: "\t" }).parse(
+                "id\tname\tdescription\n" +
+                    '2345642\t "quoted name with\t tab in it" \t "description with\t tab in it"\n'
+            );
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({
+                id: "2345642",
+                name: "quoted name with\t tab in it",
+                description: "description with\t tab in it",
+            });
+        });
+
+        test("trims unquoted spaces around quoted fields with CRLF rows", () => {
+            const records = new CSV().parse(
+                "id,name,description\r\n" +
+                    '2345642, "quoted name with, comma in it" , "description with, comma in it"\r\n'
+            );
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({
+                id: "2345642",
+                name: "quoted name with, comma in it",
+                description: "description with, comma in it",
+            });
         });
     });
 
