@@ -561,8 +561,10 @@ Xliff.prototype._convertResource = function(res) {
             });
 
             for (var j = 0; j < sarr.length; j++) {
-                // only output array items that have a translation
-                if (sarr[j]) {
+                // only output array items that have real source text in them. An item
+                // that is empty or only whitespace serializes to a trans-unit with an
+                // empty source, which many translation management systems cannot process.
+                if (utils.hasText(sarr[j])) {
                     var newtu = tu.clone();
                     newtu.source = sarr[j];
                     newtu.ordinal = j;
@@ -571,10 +573,12 @@ Xliff.prototype._convertResource = function(res) {
                         newtu.target = tarr[j];
                     }
 
-                    newtu.ordinal = j;
                     units.push(newtu);
                 } else if (tarr && tarr[j]) {
                     logger.warn("Translated array  " + res.getKey() + " has no source string at index " + j + ". Cannot translate. Resource is: " + JSON.stringify(res, undefined, 4));
+                } else if (typeof(sarr[j]) !== "undefined" && sarr[j] !== null) {
+                    logger.warn("Array " + res.getKey() + " in file " + (res.getPath() || "unknown") +
+                        " has no source text at index " + j + ". Skipping that item.");
                 }
             }
             break;
@@ -601,6 +605,13 @@ Xliff.prototype._convertResource = function(res) {
 
             if (!tp || utils.isEmpty(tp)) {
                 for (var p in sp) {
+                    // categories that are empty or only whitespace would serialize to a
+                    // trans-unit with an empty source, so leave them out
+                    if (!utils.hasText(sp[p])) {
+                        logger.warn("Plural " + res.getKey() + " in file " + (res.getPath() || "unknown") +
+                            " has no source text for the \"" + p + "\" category. Skipping that category.");
+                        continue;
+                    }
                     var newtu = tu.clone();
                     newtu.source = sp[p];
                     newtu.quantity = p;
@@ -609,8 +620,16 @@ Xliff.prototype._convertResource = function(res) {
                 }
             } else {
                 for (var p in tp) {
+                    // fall back to the "other" category when this one has no real text in it
+                    var source = utils.hasText(sp[p]) ? sp[p] : sp.other;
+                    if (!utils.hasText(source)) {
+                        logger.warn("Plural " + res.getKey() + " in file " + (res.getPath() || "unknown") +
+                            " has no source text for the \"" + p + "\" category, and no \"other\" category to fall " +
+                            "back to. Skipping that category.");
+                        continue;
+                    }
                     var newtu = tu.clone();
-                    newtu.source = sp[p] || sp.other;
+                    newtu.source = source;
                     newtu.target = tp[p];
                     newtu.quantity = p;
                     newtu.comment = generatePluralComment(res, sp, p);

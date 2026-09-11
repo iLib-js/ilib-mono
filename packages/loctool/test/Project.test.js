@@ -21,6 +21,7 @@ var fs = require('fs');
 
 var ProjectFactory = require("../lib/ProjectFactory.js");
 var Project = require("../lib/Project.js");
+var ResourceString = require("../lib/ResourceString.js");
 
 function rmrf(path) {
     if (fs.existsSync(path)) {
@@ -148,6 +149,72 @@ describe("project", function() {
                             expect(fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
                             expect(fs.existsSync("./test/testfiles/loctest-new-ja-JP.xliff")).toBeTruthy();
                             expect(fs.existsSync("./test/testfiles/loctest-new-zh-Hans-CN.xliff")).toBeTruthy();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    test("Project does not write whitespace-only sources to extracted or new xliffs", function() {
+        expect.assertions(6);
+
+        expect(!fs.existsSync("./test/testfiles/loctest-extracted.xliff")).toBeTruthy();
+        expect(!fs.existsSync("./test/testfiles/loctest-new-es-US.xliff")).toBeTruthy();
+
+        var project = ProjectFactory('./test/testfiles', {
+            'translationsDir': "xliffs",
+            'locales': ['es-US']
+        });
+        project.addPath("md/test1.md");
+        project.init(function() {
+            project.extract(function() {
+                // Simulate a plugin that extracted a source that is only whitespace.
+                // Project.close must not write that resource to extracted or new xliffs
+                // (empty trans-units cannot be handled by some translation systems).
+                var whitespaceExtracted = new ResourceString({
+                    project: project.getProjectId(),
+                    key: "whitespaceOnlySource",
+                    source: "   \t\n",
+                    sourceLocale: project.sourceLocale,
+                    pathName: "md/test1.md",
+                    datatype: "markdown",
+                    origin: "source"
+                });
+                var whitespaceNew = new ResourceString({
+                    project: project.getProjectId(),
+                    key: "whitespaceOnlySource",
+                    source: "   \t\n",
+                    sourceLocale: project.sourceLocale,
+                    targetLocale: "es-US",
+                    target: "   \t\n",
+                    pathName: "md/test1.md",
+                    datatype: "markdown",
+                    origin: "source",
+                    state: "new"
+                });
+                project.fileTypes.forEach(function(type) {
+                    if (type.getExtracted && type.getExtracted()) {
+                        type.getExtracted().add(whitespaceExtracted);
+                    }
+                    if (type.getNew && type.getNew()) {
+                        type.getNew().add(whitespaceNew);
+                    }
+                });
+
+                project.generatePseudo();
+                project.write(function() {
+                    project.save(function() {
+                        project.close(function() {
+                            var extractedPath = "./test/testfiles/loctest-extracted.xliff";
+                            expect(fs.existsSync(extractedPath)).toBeTruthy();
+                            var extractedXml = fs.readFileSync(extractedPath, "utf8");
+                            expect(extractedXml.indexOf("whitespaceOnlySource")).toBe(-1);
+
+                            var newPath = "./test/testfiles/loctest-new-es-US.xliff";
+                            expect(fs.existsSync(newPath)).toBeTruthy();
+                            var newXml = fs.readFileSync(newPath, "utf8");
+                            expect(newXml.indexOf("whitespaceOnlySource")).toBe(-1);
                         });
                     });
                 });

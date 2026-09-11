@@ -1855,6 +1855,16 @@ module.exports.containsActualText = function (str) {
 };
 
 /**
+ * Return true if the given string contains something other than whitespace.
+ * Undefined and null are treated as having no text in them.
+ * @param {String} str the string to check
+ * @returns {boolean} true if the string has real text in it
+ */
+module.exports.hasText = function(str) {
+    return typeof(str) !== "undefined" && str !== null && String(str).trim().length > 0;
+};
+
+/**
  * Replace characters that are invalid in HTML documents (ie. control characters)
  * with entities to escape them.
  * @param {string} str the string to escape
