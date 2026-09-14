@@ -497,7 +497,7 @@ describe("yamlresourcefile", function() {
         var expected =
             "zh:\n" +
             '  "&apos;&#41;, url&#40;imgs/masks/top_bar": "&apos;&#41;, url&#40;imgs/masks/top_bar康生活相"\n' +
-            '  "• &amp;nbsp; Hello, how are you": • &amp;nbsp; 你好吗\n';
+            '  • &amp;nbsp; Hello, how are you: • &amp;nbsp; 你好吗\n';
 
         diff(yml.getContent(), expected);
 

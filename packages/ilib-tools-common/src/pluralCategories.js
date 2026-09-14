@@ -64,6 +64,11 @@ const pluralCategories ={
         "many",
         "other"
     ],
+    "cv": [
+        "zero",
+        "one",
+        "other"
+    ],
     "cy": [
         "zero",
         "one",
@@ -296,6 +301,13 @@ const pluralCategories ={
         "other"
     ],
     "sg": [
+        "other"
+    ],
+    "sgs": [
+        "one",
+        "two",
+        "few",
+        "many",
         "other"
     ],
     "sh": [

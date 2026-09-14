@@ -57,11 +57,14 @@
         "ilib": "^14.20.0",
         "ilib-tools-common": "workspace:^",
         "ilib-yaml": "workspace:^",
-        "micromatch": "^4.0.5"
+        "micromatch": "^4.0.8"
     },
     "devDependencies": {
         "jest": "^29.7.0",
         "loctool": "workspace:^",
         "ilib-internal": "workspace:^"
+    },
+    "peerDependencies": {
+        "loctool": "workspace:^"
     }
 }

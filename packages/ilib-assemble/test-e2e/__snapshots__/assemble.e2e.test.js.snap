@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ilib-assemble E2E tests Custom --assemble flag assembles locale data using custom assemble.mjs: de-DE.js 1`] = `
 "export default function getLocaleData() {

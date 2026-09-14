@@ -38,7 +38,10 @@ module.exports = function(grunt) {
         babel: {
             options: {
                 sourceMap: true,
-                presets: ['@babel/preset-env'],
+                // Babel 8's modules:"auto" assumes ESM is supported and leaves
+                // import/export intact. lib/ is CommonJS
+                // (lib/package.json has "type":"commonjs"), so force CJS.
+                presets: [['@babel/preset-env', { modules: "commonjs" }]],
                 plugins: ["add-module-exports"],
                 minified: !debug
             },
