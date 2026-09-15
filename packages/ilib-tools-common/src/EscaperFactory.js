@@ -72,6 +72,7 @@ const escaperCache = {};
  * <li>swift - escape for regular Swift strings</li>
  * <li>swift-multi - escape for Swift multi-line strings</li>
  * <li>swift-extended - escape for Swift extended strings</li>
+ * <li>po - escape for GNU gettext PO format</li>
  * <li>uri - escape for URLs and URIs</li>
  * <li>xml - escape for XML text, including HTML</li>
  * <li>xml-attr - escape for XML attributes, including HTML</li>
@@ -157,6 +158,10 @@ function escaperFactory(style) {
         case 'swift-multi':
         case 'swift-extended':
             escaperCache[style] = new SwiftEscaper(style);
+            break;
+
+        case 'po':
+            escaperCache[style] = new RegexBasedEscaper(style);
             break;
 
         case 'uri':

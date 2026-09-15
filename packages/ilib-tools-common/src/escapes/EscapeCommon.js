@@ -200,14 +200,15 @@ export const escapeRegexes = {
         }
     },
     // from https://en.cppreference.com/w/cpp/language/string_literal
+    // Order matters: unescape \" and \' before \\ so that \" is not turned into \ + "
     "cpp": {
         "unescape": {
-            "^\\\\\\\\": "\\",               // unescape backslashes
-            "([^\\\\])\\\\\\\\": "$1\\",     // unescape backslashes
+            '^\\\\"': '"',                   // unescape double quotes first
+            '([^\\\\])\\\\"': '$1"',
             "^\\\\'": "'",                   // unescape single quotes
             "([^\\\\])\\\\'": "$1'",
-            '^\\\\"': '"',                   // unescape double quotes
-            '([^\\\\])\\\\"': '$1"',
+            "^\\\\\\\\": "\\",               // unescape backslashes
+            "([^\\\\])\\\\\\\\": "$1\\",
             "\\\\0": "\x00",
             "\\\\a": "\x07",
             "\\\\b": "\x08",
@@ -851,6 +852,22 @@ export const escapeRegexes = {
             "\x08": "\\b",
             "\f": "\\f",
             "\v": "\\v"
+        }
+    },
+    // GNU gettext PO format: only backslash and double-quote in msgid/msgstr strings.
+    // Order: unescape \" before \\ (RegexBasedEscaper loop applies in map order).
+    // Escape: double every \ in one pass (\\\\ → \\\\\\\\), then escape " (→ \\").
+    "po": {
+        "unescape": {
+            '^\\\\"': '"',
+            '([^\\\\])\\\\"': '$1"',
+            "^\\\\\\\\": "\\\\",
+            "([^\\\\])\\\\\\\\": "$1\\\\"
+        },
+        "escape": {
+            "\\\\": "\\\\\\\\",
+            '^"': '\\"',
+            '([^\\\\])"': '$1\\"'
         }
     }
 };
