@@ -103,7 +103,7 @@ describe("testscriptinfopromise", () => {
         ScriptInfo.getAllScripts(false, undefined, scripts => {
             expect(scripts !== null).toBeTruthy();
 
-            expect(scripts.length).toBe(223);
+            expect(scripts.length).toBe(224);
 
             expect(scripts[0]).toBe("Adlm");
             expect(scripts[1]).toBe("Afak");
@@ -115,7 +115,7 @@ describe("testscriptinfopromise", () => {
             ScriptInfo.getAllScripts(false, undefined, scripts => {
                 expect(scripts !== null).toBeTruthy();
 
-                expect(scripts.length).toBe(223);
+                expect(scripts.length).toBe(224);
 
                 expect(scripts[0]).toBe("Adlm");
                 expect(scripts[scripts.length-1]).toBe("Zzzz");

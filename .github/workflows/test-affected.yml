@@ -34,6 +34,8 @@ jobs:
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
+            - name: Check that ilib-es6 will release at the version of ilib it wraps
+              run: pnpm check:ilib-es6-version
             - name: List affected packages
               id: affected-packages
               run: |

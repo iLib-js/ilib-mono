@@ -138,7 +138,7 @@ describe("testdurfmtpromise", () => {
                 second: 1,
                 millisecond: 1
             });
-            expect(duration.toString()).toBe("1 J, 1 M, 1 W, 1 T, 1 Std., 1 Min., 1 Sek., 1 ms");
+            expect(duration.toString()).toBe("1 J, 1 M, 1 W, 1 T, 1h, 1 Min., 1 Sek., 1ms");
         });
     });
 
