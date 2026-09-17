@@ -194,9 +194,43 @@ In this example, Japanese will use:
 - **Custom**: Question mark (`?`) and exclamation mark (`!`)
 - **Default**: Period (`。`), ellipsis (`…`), and colon (`：`)
 
+#### Disabling the Rule for a Locale
+
+Set a locale to `false` to skip sentence-ending checks for every locale of that language. For example, `"ja-JP": false` turns the rule off for Japanese (`ja-JP`, `ja`, and so on). Other languages are unaffected:
+
+```json
+{
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "ja-JP": false
+      }
+    }
+  }
+}
+```
+
+Set a locale to `true` to keep the built-in defaults for that language (an explicit on).
+
 #### Disabling Punctuation Types
 
-You can disable checking for specific punctuation types by setting them to `null`. This is useful for languages where certain punctuation types should not be checked:
+You can disable checking for specific punctuation types by setting them to `null` or `false`. This is useful for languages where certain punctuation types should not be checked. Other punctuation types for that locale still run:
+
+```json
+{
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "ja-JP": {
+          "period": false
+        }
+      }
+    }
+  }
+}
+```
+
+`null` is equivalent to `false`:
 
 ```json
 {
