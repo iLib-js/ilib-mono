@@ -80,6 +80,21 @@ The rule automatically skips checking strings that:
 - Have no spaces (likely identifiers or single words)
 - Are shorter than the minimum length threshold
 
+#### Optional Period Endings
+
+To avoid false positives, the rule accepts either a period or no period after
+known endings that can legitimately be unpunctuated fragments. These are
+language-specific spelling lists, not grammatical analysis:
+
+- Japanese: `場合`, `際`, `時`, `ため`, `ために`, `など`, `等`, `もの`
+- Korean: `경우`, `때`, `시`, `중`, `하기`, `기`
+- Chinese: `情况下`, `时候`, `时`
+
+Other readily identifiable sentence endings are still enforced. For example,
+Japanese `です`, `ます`, `こと`, and `とき`; Korean `합니다`, `니다`, `하세요`,
+and `하십시오`; and complete Chinese statements still require their
+locale-appropriate period when the source has one.
+
 #### Exception Lists
 
 **Global exceptions** — skip checking for ALL locales by specifying `exceptions` at the top level:

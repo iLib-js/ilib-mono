@@ -1,7 +1,7 @@
 /*
  * ResourceSentenceEnding.js - rule to check sentence-ending punctuation in the target string
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,18 @@ const defaults = {
     'exclamation': '!',
     'ellipsis': '…',
     'colon': ':'
+};
+
+/*
+ * Closed spelling lists of suffixes for which a period is optional in each language.
+ * This is not grammatical analysis — ilib-lint cannot reliably distinguish a
+ * fragment from a complete sentence. These known-ambiguous endings accept both
+ * punctuated and unpunctuated forms to avoid false positives.
+ */
+const periodEquivalentSuffixes = {
+    'ja': ['場合', 'ために', 'ため', 'など', 'もの', '際', '時', '等'],
+    'ko': ['경우', '때', '시', '중', '하기', '기'],
+    'zh': ['情况下', '时候', '时']
 };
 
 /*
@@ -405,6 +417,34 @@ class ResourceSentenceEnding extends ResourceRule {
      */
     getDefaultPunctuation(type) {
         return defaults[type] || defaults['period'];
+    }
+
+    /**
+     * Return a configured optional-period suffix if the string ends with one
+     * for the given locale, after stripping trailing quotes and whitespace.
+     * Longer suffixes are checked first.
+     *
+     * @param {string} str - The string to check
+     * @param {Locale} localeObj - Locale of the string
+     * @returns {string|null} - The matching suffix, or null
+     */
+    getPeriodEquivalentSuffix(str, localeObj) {
+        if (!str || typeof str !== 'string' || !localeObj) return null;
+        const language = localeObj.getLanguage();
+        if (!language) return null;
+        const suffixes = periodEquivalentSuffixes[language];
+        if (!suffixes || suffixes.length === 0) return null;
+
+        const stripped = ResourceSentenceEnding.stripTrailingQuotesAndWhitespace(str.trim());
+        if (!stripped) return null;
+
+        const sorted = [...suffixes].sort((a, b) => b.length - a.length);
+        for (const suffix of sorted) {
+            if (stripped.endsWith(suffix)) {
+                return suffix;
+            }
+        }
+        return null;
     }
 
     // Superset of quote characters from ResourceQuoteStyle.js, plus ASCII quotes
@@ -1074,6 +1114,12 @@ class ResourceSentenceEnding extends ResourceRule {
         if (sourceEnding && !targetEnding && !isOptionalPunctuationLanguage && sourceEnding.type !== 'unknown') {
             const expectedPunctuation = this.getExpectedPunctuation(targetLocaleObj, sourceEnding.type);
             if (!expectedPunctuation) return undefined;
+
+            // Some locale-specific endings can validly appear with or without a period.
+            // Do not report or auto-fix these ambiguous cases.
+            if (sourceEnding.type === 'period' && this.getPeriodEquivalentSuffix(lastSentence, targetLocaleObj)) {
+                return undefined;
+            }
 
             highlight = `${lastSentence}<e0/>`;
 
