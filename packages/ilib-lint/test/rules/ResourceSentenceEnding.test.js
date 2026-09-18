@@ -5415,4 +5415,124 @@ describe("ResourceSentenceEnding rule", function() {
             });
         });
     });
+
+    describe("per-locale disable config", () => {
+        test("constructs without throwing when a locale is set to false", () => {
+            expect.assertions(1);
+
+            expect(() => new ResourceSentenceEnding({
+                param: {
+                    "ja-JP": false
+                }
+            })).not.toThrow();
+        });
+
+        test("ja-JP false skips period, question, and colon checks for Japanese", () => {
+            expect.assertions(3);
+
+            const rule = new ResourceSentenceEnding({
+                param: {
+                    "ja-JP": false
+                }
+            });
+
+            const periodResource = new ResourceString({
+                key: "disable.ja.period",
+                sourceLocale: "en-US",
+                source: "This is a sentence.",
+                targetLocale: "ja-JP",
+                target: "これは文です.",
+                pathName: "a/b/c.xliff"
+            });
+            expect(rule.matchString({
+                source: periodResource.getSource(),
+                target: periodResource.getTarget(),
+                resource: periodResource,
+                file: "a/b/c.xliff"
+            })).toBeUndefined();
+
+            const questionResource = new ResourceString({
+                key: "disable.ja.question",
+                sourceLocale: "en-US",
+                source: "What is this?",
+                targetLocale: "ja-JP",
+                target: "これは何ですか?",
+                pathName: "a/b/c.xliff"
+            });
+            expect(rule.matchString({
+                source: questionResource.getSource(),
+                target: questionResource.getTarget(),
+                resource: questionResource,
+                file: "a/b/c.xliff"
+            })).toBeUndefined();
+
+            const colonResource = new ResourceString({
+                key: "disable.ja.colon",
+                sourceLocale: "en-US",
+                source: "The answer is:",
+                targetLocale: "ja-JP",
+                target: "答えは:",
+                pathName: "a/b/c.xliff"
+            });
+            expect(rule.matchString({
+                source: colonResource.getSource(),
+                target: colonResource.getTarget(),
+                resource: colonResource,
+                file: "a/b/c.xliff"
+            })).toBeUndefined();
+        });
+
+        test("ja-JP false does not disable checks for German", () => {
+            expect.assertions(2);
+
+            const rule = new ResourceSentenceEnding({
+                param: {
+                    "ja-JP": false
+                }
+            });
+
+            const resource = new ResourceString({
+                key: "disable.ja.not.de",
+                sourceLocale: "en-US",
+                source: "This is a sentence.",
+                targetLocale: "de-DE",
+                target: "Das ist ein Satz：",
+                pathName: "a/b/c.xliff"
+            });
+            const actual = rule.matchString({
+                source: resource.getSource(),
+                target: resource.getTarget(),
+                resource,
+                file: "a/b/c.xliff"
+            });
+
+            expect(actual).toBeTruthy();
+            expect(actual?.description).toContain('Sentence ending should be "." (U+002E) for de-DE locale instead of "：" (U+FF1A)');
+        });
+
+        test("ko-KR false skips Korean period checks", () => {
+            expect.assertions(1);
+
+            const rule = new ResourceSentenceEnding({
+                param: {
+                    "ko-KR": false
+                }
+            });
+
+            const resource = new ResourceString({
+                key: "disable.ko.period",
+                sourceLocale: "en-US",
+                source: "This is a sentence.",
+                targetLocale: "ko-KR",
+                target: "이것은 문장입니다：",
+                pathName: "a/b/c.xliff"
+            });
+            expect(rule.matchString({
+                source: resource.getSource(),
+                target: resource.getTarget(),
+                resource,
+                file: "a/b/c.xliff"
+            })).toBeUndefined();
+        });
+    });
 });
