@@ -27,6 +27,7 @@
  * - Configurable minimum length threshold to skip short strings (abbreviations)
  * - Automatic skipping of strings with no spaces (non-sentences)
  * - Custom punctuation mappings per locale
+ * - Disable the rule for a locale (`"ja-JP": false`)
  * - Exception lists to skip specific source strings
  *
  * Examples:
@@ -123,7 +124,7 @@ const punctuationMap = {
 
 /**
  * @ignore
- * @typedef {ResourceSentenceEndingFixedOptions | Record<string, LocaleOptions>} ResourceSentenceEndingOptions
+ * @typedef {ResourceSentenceEndingFixedOptions & Record<string, LocaleOptions | boolean>} ResourceSentenceEndingOptions
  */
 
 /**
@@ -182,6 +183,12 @@ class ResourceSentenceEnding extends ResourceRule {
      *     exceptions: ['See the Dr.', 'Visit the Prof.']
      *   }
      * });
+     *
+     * @example
+     * // Disable the rule for Japanese
+     * const rule = new ResourceSentenceEnding({
+     *   'ja-JP': false
+     * });
      */
     constructor(options = {}) {
         super(options);
@@ -206,6 +213,8 @@ class ResourceSentenceEnding extends ResourceRule {
         this.customPunctuationMap = {};
         // Initialize locale-specific exception lists from configuration
         this.exceptionsMap = {};
+        // Languages for which this rule is turned off entirely (`"ja-JP": false`)
+        this.disabledLanguages = new Set();
 
         if (param && typeof param === 'object' && !Array.isArray(param)) {
             // param is an object with locale codes as keys and punctuation mappings as values
@@ -222,10 +231,22 @@ class ResourceSentenceEnding extends ResourceRule {
                     // locale must have a language code
                     if (!language) continue;
 
-                    // Separate punctuation mappings from exceptions
-                    const { exceptions, ...punctuationMappings } = param[locale];
+                    const localeConfig = param[locale];
 
-                    // Apply locale-specific defaults for any locale that usesthis language
+                    // `"ja-JP": false` turns the rule off for every locale of that language
+                    if (localeConfig === false) {
+                        this.disabledLanguages.add(language);
+                        continue;
+                    }
+                    // `"ja-JP": true` means use the defaults. Non-objects are ignored.
+                    if (localeConfig === true || localeConfig == null || typeof localeConfig !== "object" || Array.isArray(localeConfig)) {
+                        continue;
+                    }
+
+                    // Separate punctuation mappings from exceptions
+                    const { exceptions, ...punctuationMappings } = localeConfig;
+
+                    // Apply locale-specific defaults for any locale that uses this language
                     const localeDefaults = this.getLocaleDefaults(language);
                     this.customPunctuationMap[language] = {
                         ...localeDefaults,
@@ -1011,6 +1032,10 @@ class ResourceSentenceEnding extends ResourceRule {
         const targetLocaleObj = new Locale(targetLocale);
         const targetLanguage = targetLocaleObj.getLanguage();
         if (!targetLanguage) return undefined;
+
+        if (this.disabledLanguages.has(targetLanguage)) {
+            return undefined;
+        }
 
         const sourceLocale = resource.getSourceLocale();
         if (!sourceLocale) return undefined;
