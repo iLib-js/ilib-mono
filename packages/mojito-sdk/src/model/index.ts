@@ -16,33 +16,54 @@
  * limitations under the License.
  */
 
+export { Asset } from "./Asset";
+export type {
+    AssetImportLocalizedParams,
+    AssetListParams,
+    AssetLocalizeParams,
+    AssetPseudoLocalizeParams,
+} from "./Asset";
+export { Branch } from "./Branch";
+export type { BranchListParams } from "./Branch";
 export { Drop } from "./Drop";
 export type {
-    DropCancelParams,
     DropExportParams,
     DropImportParams,
     DropListParams,
 } from "./Drop";
-export { Locale } from "./Locale";
 export { MojitoClient } from "./MojitoClient";
-export type { MojitoClientOptions } from "./MojitoClient";
-export { PollableTask } from "./PollableTask";
+export type {
+    AuthenticationMode,
+    MojitoClientOptions,
+    MojitoConnectionConfig,
+} from "./MojitoClient";
+export { MojitoLocale } from "./MojitoLocale";
+export type { MojitoLocaleOptions } from "./MojitoLocale";
 export { Repository } from "./Repository";
 export type {
     RepositoryCreateParams,
     RepositoryListParams,
+    RepositoryUpdateParams,
 } from "./Repository";
-export { TextUnit } from "./TextUnit";
-export type { TextUnitSearchParams } from "./TextUnit";
+export { RepositoryType } from "./RepositoryType";
+export type {
+    RepositoryTypeCreateParams,
+    RepositoryTypeIntegrityChecker,
+    RepositoryTypeUpdateParams,
+} from "./RepositoryType";
+export { Screenshot } from "./Screenshot";
+export type { ScreenshotListParams, ScreenshotUpdateParams } from "./Screenshot";
+export { SourceString } from "./SourceString";
+export type { AiTranslationOptions, SourceStringSearchParams } from "./SourceString";
+export { Translation } from "./Translation";
+export type {
+    AiReviewResult,
+    TranslationProps,
+    TranslationStatus,
+} from "./Translation";
 export { User } from "./User";
 export type {
-    DropData,
+    AsyncOperationOptions,
     ForwardCompatParams,
-    LocaleData,
-    Page,
     Pageable,
-    PollableTaskData,
-    RepositoryData,
-    TextUnitData,
-    UserProfileData,
 } from "./types";

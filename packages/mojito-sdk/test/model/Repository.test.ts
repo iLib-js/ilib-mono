@@ -16,8 +16,10 @@
  * limitations under the License.
  */
 
+import { MojitoLocale } from "../../src/model/MojitoLocale";
 import { Repository } from "../../src/model/Repository";
 import { createJsonFetch, createTestClient } from "./testClient";
+import Locale from "./ilibLocale";
 
 describe("Repository", () => {
     test("list maps array results into Repository instances", async () => {
@@ -100,8 +102,7 @@ describe("Repository", () => {
         const client = createTestClient(fetchImpl);
         const repo = new Repository(client, { id: 11, name: "old" });
 
-        const updateResult = await repo.update({ description: "new", keepOpen: true });
-        expect(updateResult).toBe("updated");
+        await repo.update({ description: "new", keepOpen: true });
         expect(calls[0].method).toBe("PATCH");
         expect(calls[0].url).toContain("/api/repositories/11");
         expect(JSON.parse(String(calls[0].body))).toEqual({
@@ -120,5 +121,122 @@ describe("Repository", () => {
         const repo = new Repository(client, {});
         await expect(repo.update({ name: "x" })).rejects.toThrow(/requires a repository id/);
         await expect(repo.delete()).rejects.toThrow(/requires a repository id/);
+    });
+
+    test("assets lists contained assets for this repository", async () => {
+        const { fetchImpl, getLastRequest } = createJsonFetch(() => [
+            { id: 8, path: "messages.json" },
+        ]);
+        const repo = new Repository(createTestClient(fetchImpl), { id: 11, name: "demo" });
+
+        const assets = await repo.assets({ path: "messages.json" });
+        expect(assets).toHaveLength(1);
+        expect(assets[0].path).toBe("messages.json");
+
+        const url = new URL(getLastRequest().url);
+        expect(url.pathname).toBe("/api/assets");
+        expect(url.searchParams.get("repositoryId")).toBe("11");
+        expect(url.searchParams.get("path")).toBe("messages.json");
+    });
+
+    test("getLocales maps all three Mojito inheritance forms", async () => {
+        const { fetchImpl } = createJsonFetch(() => ({
+            id: 11,
+            sourceLocale: { bcp47Tag: "en-US" },
+            repositoryLocales: [
+                {
+                    locale: { bcp47Tag: "de-DE" },
+                    toBeFullyTranslated: true,
+                },
+                {
+                    locale: { bcp47Tag: "fr-CA" },
+                    toBeFullyTranslated: false,
+                    parentLocale: {
+                        locale: { bcp47Tag: "fr-FR" },
+                    },
+                },
+                {
+                    locale: { bcp47Tag: "es-MX" },
+                    toBeFullyTranslated: false,
+                },
+            ],
+        }));
+        const repo = new Repository(createTestClient(fetchImpl), { id: 11 });
+
+        const locales = await repo.getLocales();
+        expect(locales).toHaveLength(3);
+        expect(locales[0].locale.getSpec()).toBe("de-DE");
+        expect(locales[0].isFullyTranslated).toBe(true);
+        expect(locales[1].parent?.getSpec()).toBe("fr-FR");
+        expect(locales[2].inheritsFromSource).toBe(true);
+    });
+
+    test("setLocales serializes Mojito inheritance", async () => {
+        const { fetchImpl, getLastRequest } = createJsonFetch(() => "updated");
+        const client = createTestClient(fetchImpl);
+        const repo = new Repository(client, { id: 11 });
+
+        await repo.setLocales([
+            new MojitoLocale(client, new Locale("de-DE")),
+            new MojitoLocale(client, new Locale("fr-CA"), {
+                parent: new Locale("fr-FR"),
+            }),
+            new MojitoLocale(client, new Locale("es-MX"), {
+                inherits: true,
+            }),
+        ]);
+
+        expect(JSON.parse(String(getLastRequest().init?.body))).toEqual({
+            repositoryLocales: [
+                {
+                    locale: { bcp47Tag: "de-DE" },
+                    toBeFullyTranslated: true,
+                },
+                {
+                    locale: { bcp47Tag: "fr-CA" },
+                    toBeFullyTranslated: false,
+                    parentLocale: {
+                        locale: { bcp47Tag: "fr-FR" },
+                    },
+                },
+                {
+                    locale: { bcp47Tag: "es-MX" },
+                    toBeFullyTranslated: false,
+                },
+            ],
+        });
+    });
+
+    test("gets and sets the source locale as an ilib Locale", async () => {
+        const requests: Array<{ method?: string; body?: string }> = [];
+        const fetchImpl: typeof fetch = async (_input, init) => {
+            requests.push({
+                method: init?.method,
+                body: init?.body === undefined ? undefined : String(init.body),
+            });
+            if (init?.method === "GET") {
+                return new Response(JSON.stringify({
+                    id: 11,
+                    sourceLocale: { bcp47Tag: "en-US" },
+                }), {
+                    status: 200,
+                    headers: { "content-type": "application/json" },
+                });
+            }
+            return new Response(JSON.stringify("updated"), {
+                status: 200,
+                headers: { "content-type": "application/json" },
+            });
+        };
+        const repo = new Repository(createTestClient(fetchImpl), { id: 11 });
+
+        const sourceLocale = await repo.getSourceLocale();
+        expect(sourceLocale).toBeInstanceOf(Locale);
+        expect(sourceLocale?.getSpec()).toBe("en-US");
+
+        await repo.setSourceLocale(new Locale("en-GB"));
+        expect(JSON.parse(requests[1].body ?? "")).toEqual({
+            sourceLocale: { bcp47Tag: "en-GB" },
+        });
     });
 });

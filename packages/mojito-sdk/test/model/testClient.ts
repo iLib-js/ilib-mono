@@ -1,5 +1,5 @@
 /*
- * testClient.ts - shared mock LowLevelClient helper for model unit tests
+ * testClient.ts - shared MojitoClient helper for model unit tests
  *
  * Copyright © 2026 JEDLSoft
  *
@@ -16,24 +16,19 @@
  * limitations under the License.
  */
 
-import type { AuthProvider } from "../../src/auth/types";
-import { LowLevelClient } from "../../src/lowlevel/client";
-
-const noopAuth: AuthProvider = {
-    async authorize() {
-        return {};
-    },
-};
+import { MojitoClient } from "../../src/model/MojitoClient";
 
 /**
- * Build a LowLevelClient backed by a custom fetch implementation.
+ * Build a MojitoClient backed by a custom fetch implementation.
  *
  * @param fetchImpl Mock fetch used for assertions.
  */
-export function createTestClient(fetchImpl: typeof fetch): LowLevelClient {
-    return new LowLevelClient({
+export function createTestClient(fetchImpl: typeof fetch): MojitoClient {
+    return new MojitoClient({
         baseUrl: "http://localhost:8080",
-        auth: noopAuth,
+        loadCliConfig: false,
+        authenticationMode: "HEADER",
+        headers: { "X-Test-Auth": "1" },
         fetchImpl,
     });
 }

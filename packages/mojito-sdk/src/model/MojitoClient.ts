@@ -1,5 +1,5 @@
 /*
- * MojitoClient.ts - high-level facade over the Mojito SDK
+ * MojitoClient.ts - session entry point for the Mojito SDK
  *
  * Copyright © 2026 JEDLSoft
  *
@@ -21,17 +21,8 @@ import {
     type MojitoConnectionConfig,
 } from "../auth";
 import { LowLevelClient } from "../lowlevel/client";
-import { Drop, type DropExportParams, type DropImportParams, type DropListParams } from "./Drop";
-import { Locale } from "./Locale";
-import { PollableTask } from "./PollableTask";
-import {
-    Repository,
-    type RepositoryCreateParams,
-    type RepositoryListParams,
-} from "./Repository";
-import { TextUnit, type TextUnitSearchParams } from "./TextUnit";
-import { User } from "./User";
-import type { ForwardCompatParams } from "./types";
+
+export type { AuthenticationMode, MojitoConnectionConfig } from "../auth";
 
 export type MojitoClientOptions = MojitoConnectionConfig & {
     /** Optional absolute base URL override (skips host/port assembly). */
@@ -42,97 +33,34 @@ export type MojitoClientOptions = MojitoConnectionConfig & {
     configDir?: string;
     /** Optional fetch implementation (useful in tests). */
     fetchImpl?: typeof fetch;
-    /** Inject a pre-built low-level client (advanced / testing). */
-    lowLevel?: LowLevelClient;
 };
 
 /**
- * Entry point for the Mojito SDK.
+ * Session for the Mojito SDK.
  *
- * Wraps authentication, the OpenAPI low-level client, and high-level resources.
+ * Holds connection settings and authentication. Domain objects store this
+ * instance and use {@link MojitoClient.call} for HTTP.
  */
 export class MojitoClient {
-    /** Low-level OpenAPI HTTP client. */
-    readonly lowLevel: LowLevelClient;
     /** Resolved absolute Mojito base URL. */
     readonly baseUrl: string;
+    private readonly transport: LowLevelClient;
 
     /**
      * @param options Connection overrides and optional test hooks.
      */
     constructor(options: MojitoClientOptions = {}) {
-        if (options.lowLevel) {
-            this.lowLevel = options.lowLevel;
-            this.baseUrl = options.baseUrl ?? "";
-            return;
-        }
-
         const { auth, baseUrl } = createAuthProvider(options, {
             configDir: options.configDir,
             loadCliConfig: options.loadCliConfig,
             fetchImpl: options.fetchImpl,
         });
         this.baseUrl = options.baseUrl ?? baseUrl;
-        this.lowLevel = new LowLevelClient({
+        this.transport = new LowLevelClient({
             baseUrl: this.baseUrl,
             auth,
             fetchImpl: options.fetchImpl,
         });
-    }
-
-    /** List repositories. */
-    listRepositories(params?: RepositoryListParams): Promise<Repository[]> {
-        return Repository.list(this.lowLevel, params);
-    }
-
-    /** Find repositories by name. */
-    findRepositories(name: string, extras?: ForwardCompatParams): Promise<Repository[]> {
-        return Repository.find(this.lowLevel, name, extras);
-    }
-
-    /** Get a repository by id. */
-    getRepository(repositoryId: number, extras?: ForwardCompatParams): Promise<Repository> {
-        return Repository.get(this.lowLevel, repositoryId, extras);
-    }
-
-    /** Create a repository. */
-    createRepository(params: RepositoryCreateParams): Promise<Repository> {
-        return Repository.create(this.lowLevel, params);
-    }
-
-    /** List drops. */
-    listDrops(params?: DropListParams): Promise<Drop[]> {
-        return Drop.list(this.lowLevel, params);
-    }
-
-    /** Export a drop for translation. */
-    exportDrop(params: DropExportParams): Promise<Record<string, unknown>> {
-        return Drop.export(this.lowLevel, params);
-    }
-
-    /** Import a translated drop. */
-    importDrop(params: DropImportParams): Promise<Record<string, unknown>> {
-        return Drop.import(this.lowLevel, params);
-    }
-
-    /** Search text units. */
-    searchTextUnits(params?: TextUnitSearchParams): Promise<TextUnit[]> {
-        return TextUnit.search(this.lowLevel, params);
-    }
-
-    /** List locales. */
-    listLocales(params?: ForwardCompatParams<{ bcp47Tag?: string }>): Promise<Locale[]> {
-        return Locale.list(this.lowLevel, params);
-    }
-
-    /** Get a pollable task by id. */
-    getPollableTask(pollableTaskId: number, extras?: ForwardCompatParams): Promise<PollableTask> {
-        return PollableTask.get(this.lowLevel, pollableTaskId, extras);
-    }
-
-    /** Current authenticated user. */
-    me(extras?: ForwardCompatParams): Promise<Record<string, unknown>> {
-        return User.me(this.lowLevel, extras);
     }
 
     /**
@@ -142,6 +70,6 @@ export class MojitoClient {
      * @param params Path/query/body parameters.
      */
     call<T = unknown>(operationId: string, params?: Record<string, unknown>): Promise<T> {
-        return this.lowLevel.call<T>(operationId, params);
+        return this.transport.call<T>(operationId, params);
     }
 }

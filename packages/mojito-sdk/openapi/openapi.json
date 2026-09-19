@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "https://app.mojito.apps-us-west1-01.gcp001.dev.box.net",
+      "url": "https://app.mojito-dev.apps-us-west1-01.gcp001.dev.box.net",
       "description": "Generated server url"
     }
   ],
@@ -1093,6 +1093,67 @@
               "application/hal+json": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repo-types": {
+      "get": {
+        "tags": [
+          "repo-type-ws"
+        ],
+        "operationId": "getRepoTypes",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RepoType_RepoType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "repo-type-ws"
+        ],
+        "operationId": "createRepoType",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepoType_RepoType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
@@ -2394,6 +2455,98 @@
               "application/hal+json": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/repo-types/{repoTypeId}": {
+      "get": {
+        "tags": [
+          "repo-type-ws"
+        ],
+        "operationId": "getRepoTypeById",
+        "parameters": [
+          {
+            "name": "repoTypeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoType_RepoType"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "repo-type-ws"
+        ],
+        "operationId": "deleteRepoType",
+        "parameters": [
+          {
+            "name": "repoTypeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "repo-type-ws"
+        ],
+        "operationId": "updateRepoType",
+        "parameters": [
+          {
+            "name": "repoTypeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepoType_RepoType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
@@ -5771,6 +5924,73 @@
           }
         }
       },
+      "RepoTypeIntegrityChecker_RepoType": {
+        "type": "object",
+        "properties": {
+          "assetExtension": {
+            "type": "string"
+          },
+          "integrityCheckerType": {
+            "type": "string",
+            "enum": [
+              "MESSAGE_FORMAT",
+              "FLUENT",
+              "MESSAGE_FORMAT_DOUBLE_BRACES",
+              "PRINTF_LIKE",
+              "SIMPLE_PRINTF_LIKE",
+              "PRINTF_LIKE_IGNORE_PERCENTAGE_AFTER_BRACKETS",
+              "PRINTF_LIKE_VARIABLE_TYPE",
+              "PRINTF_LIKE_ADD_PARAMETER_SPECIFIER",
+              "COMPOSITE_FORMAT",
+              "WHITESPACE",
+              "TRAILING_WHITESPACE",
+              "HTML_TAG",
+              "ELLIPSIS",
+              "BACKQUOTE",
+              "EMPTY_TARGET_NOT_EMPTY_SOURCE",
+              "MARKDOWN_LINKS",
+              "PYTHON_FPRINT",
+              "EMAIL",
+              "URL",
+              "FORBIDS_CONTROL_CHARACTERS",
+              "MISC_AI_TRANSLATE"
+            ]
+          }
+        }
+      },
+      "RepoType_RepoType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "aiPrompt": {
+            "type": "string"
+          },
+          "integrityCheckers": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoTypeIntegrityChecker_RepoType"
+            }
+          }
+        }
+      },
       "ProtoAiTranslateRequest": {
         "type": "object",
         "properties": {
@@ -7327,13 +7547,13 @@
       "PageUser": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "first": {
             "type": "boolean"
@@ -7358,12 +7578,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
           },
           "empty": {
             "type": "boolean"
@@ -7380,6 +7600,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject"
           },
+          "paged": {
+            "type": "boolean"
+          },
+          "unpaged": {
+            "type": "boolean"
+          },
           "pageNumber": {
             "type": "integer",
             "format": "int32"
@@ -7387,12 +7613,6 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
-          },
-          "paged": {
-            "type": "boolean"
-          },
-          "unpaged": {
-            "type": "boolean"
           }
         }
       },
@@ -7402,10 +7622,10 @@
           "empty": {
             "type": "boolean"
           },
-          "sorted": {
+          "unsorted": {
             "type": "boolean"
           },
-          "unsorted": {
+          "sorted": {
             "type": "boolean"
           }
         }
@@ -10067,13 +10287,13 @@
       "PageDrop_DropSummary": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "first": {
             "type": "boolean"
@@ -10098,12 +10318,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject_DropSummary"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject_DropSummary"
-          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject_DropSummary"
           },
           "empty": {
             "type": "boolean"
@@ -10120,6 +10340,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject_DropSummary"
           },
+          "paged": {
+            "type": "boolean"
+          },
+          "unpaged": {
+            "type": "boolean"
+          },
           "pageNumber": {
             "type": "integer",
             "format": "int32"
@@ -10127,12 +10353,6 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
-          },
-          "paged": {
-            "type": "boolean"
-          },
-          "unpaged": {
-            "type": "boolean"
           }
         }
       },
@@ -10214,10 +10434,10 @@
           "empty": {
             "type": "boolean"
           },
-          "sorted": {
+          "unsorted": {
             "type": "boolean"
           },
-          "unsorted": {
+          "sorted": {
             "type": "boolean"
           }
         }
@@ -10405,13 +10625,13 @@
       "PageTextUnitVariantDeltaDTO": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "first": {
             "type": "boolean"
@@ -10436,12 +10656,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
           },
           "empty": {
             "type": "boolean"
@@ -10473,13 +10693,13 @@
       "PageCommit_Commit": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "first": {
             "type": "boolean"
@@ -10504,12 +10724,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject_Commit"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject_Commit"
-          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject_Commit"
           },
           "empty": {
             "type": "boolean"
@@ -10526,6 +10746,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject_Commit"
           },
+          "paged": {
+            "type": "boolean"
+          },
+          "unpaged": {
+            "type": "boolean"
+          },
           "pageNumber": {
             "type": "integer",
             "format": "int32"
@@ -10533,12 +10759,6 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
-          },
-          "paged": {
-            "type": "boolean"
-          },
-          "unpaged": {
-            "type": "boolean"
           }
         }
       },
@@ -10548,10 +10768,10 @@
           "empty": {
             "type": "boolean"
           },
-          "sorted": {
+          "unsorted": {
             "type": "boolean"
           },
-          "unsorted": {
+          "sorted": {
             "type": "boolean"
           }
         }
@@ -10637,13 +10857,13 @@
       "PageCommit_CommitDetailed": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "first": {
             "type": "boolean"
@@ -10668,12 +10888,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject_CommitDetailed"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject_CommitDetailed"
-          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject_CommitDetailed"
           },
           "empty": {
             "type": "boolean"
@@ -10690,6 +10910,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject_CommitDetailed"
           },
+          "paged": {
+            "type": "boolean"
+          },
+          "unpaged": {
+            "type": "boolean"
+          },
           "pageNumber": {
             "type": "integer",
             "format": "int32"
@@ -10697,12 +10923,6 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
-          },
-          "paged": {
-            "type": "boolean"
-          },
-          "unpaged": {
-            "type": "boolean"
           }
         }
       },
@@ -10712,10 +10932,10 @@
           "empty": {
             "type": "boolean"
           },
-          "sorted": {
+          "unsorted": {
             "type": "boolean"
           },
-          "unsorted": {
+          "sorted": {
             "type": "boolean"
           }
         }
@@ -11029,13 +11249,13 @@
       "PageBranchStatistic_BranchStatistic": {
         "type": "object",
         "properties": {
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
           },
           "first": {
             "type": "boolean"
@@ -11060,12 +11280,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject_BranchStatistic"
           },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject_BranchStatistic"
-          },
           "numberOfElements": {
             "type": "integer",
             "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject_BranchStatistic"
           },
           "empty": {
             "type": "boolean"
@@ -11082,6 +11302,12 @@
           "sort": {
             "$ref": "#/components/schemas/SortObject_BranchStatistic"
           },
+          "paged": {
+            "type": "boolean"
+          },
+          "unpaged": {
+            "type": "boolean"
+          },
           "pageNumber": {
             "type": "integer",
             "format": "int32"
@@ -11089,12 +11315,6 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
-          },
-          "paged": {
-            "type": "boolean"
-          },
-          "unpaged": {
-            "type": "boolean"
           }
         }
       },
@@ -11268,10 +11488,10 @@
           "empty": {
             "type": "boolean"
           },
-          "sorted": {
+          "unsorted": {
             "type": "boolean"
           },
-          "unsorted": {
+          "sorted": {
             "type": "boolean"
           }
         }

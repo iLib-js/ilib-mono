@@ -5,9 +5,9 @@ TypeScript SDK for the
 
 ## Architecture
 
-- **Auth** — Mojito CLI-compatible STATEFUL (form login + CSRF) and HEADER modes
-- **Low-level client** — OpenAPI operation marshalling (`LowLevelClient`)
-- **Object model** — `MojitoClient`, `Repository`, `Drop`, `TextUnit`, `Locale`, …
+Applications use the object model (`MojitoClient`, `Repository`, `Asset`, …).
+Generated DTOs, HTTP transport, and auth sit underneath that layer. See
+[`docs/Architecture.md`](docs/Architecture.md).
 
 ## Installation
 
@@ -18,13 +18,13 @@ npm install mojito-sdk
 ## Quick start
 
 ```ts
-import { MojitoClient, getSdkVersion, getOpenApiSpecVersion } from "mojito-sdk";
+import { MojitoClient, Repository, getSdkVersion, getMojitoVersion, getCompatibleMojitoRange } from "mojito-sdk";
 
-console.log(getSdkVersion(), getOpenApiSpecVersion());
+console.log(getSdkVersion(), getMojitoVersion(), getCompatibleMojitoRange());
 
 // Uses ~/.l10n/config/cli properties by default (same as the Mojito CLI).
 const client = new MojitoClient();
-const repos = await client.listRepositories({ name: "my-repo" });
+const repos = await Repository.list(client, { name: "my-repo" });
 for (const repo of repos) {
     console.log(repo.id, repo.name);
 }
@@ -52,9 +52,11 @@ pnpm --filter mojito-sdk-cli-sample run:sample -- drops list --repository-id 123
 
 ## Documentation
 
-See [`docs/object-model.md`](docs/object-model.md) for the object model and
-compatibility guarantees. The cached OpenAPI document lives in
-[`openapi/openapi.json`](openapi/openapi.json).
+- [`docs/Architecture.md`](docs/Architecture.md) — layers, generation, and what
+  is public vs internal
+- [`docs/object-model.md`](docs/object-model.md) — resources, methods, and
+  compatibility
+- [`openapi/openapi.json`](openapi/openapi.json) — cached Mojito OpenAPI document
 
 ## Development
 

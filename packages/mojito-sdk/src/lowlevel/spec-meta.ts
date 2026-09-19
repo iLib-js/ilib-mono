@@ -12,14 +12,14 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/** OpenAPI info.version from the cached Mojito spec used to generate this SDK. */
+/** Mojito version (OpenAPI info.version) from the cached spec used to generate this SDK. */
 export const OPENAPI_SPEC_VERSION = "v0";
 
 /** Short content hash of the cached OpenAPI document. */
-export const OPENAPI_SPEC_HASH = "ce3581fac3125050";
+export const OPENAPI_SPEC_HASH = "f2b307e94852025c";
 
 /** ISO timestamp when this metadata was generated. */
-export const OPENAPI_GENERATED_AT = "2026-08-15T04:29:49.484Z";
+export const OPENAPI_GENERATED_AT = "2026-09-18T07:53:23.894Z";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
 
@@ -509,6 +509,36 @@ export const OPERATIONS: Record<string, OperationMeta> = {
         "pathParams": [
             "repositoryId"
         ],
+        "queryParams": [],
+        "hasBody": true
+    },
+    "getRepoTypes": {
+        "operationId": "getRepoTypes",
+        "method": "GET",
+        "path": "/api/repo-types",
+        "tags": [
+            "repo-type-ws"
+        ],
+        "summary": "",
+        "pathParams": [],
+        "queryParams": [
+            {
+                "name": "name",
+                "required": false,
+                "isPageable": false
+            }
+        ],
+        "hasBody": false
+    },
+    "createRepoType": {
+        "operationId": "createRepoType",
+        "method": "POST",
+        "path": "/api/repo-types",
+        "tags": [
+            "repo-type-ws"
+        ],
+        "summary": "",
+        "pathParams": [],
         "queryParams": [],
         "hasBody": true
     },
@@ -1064,6 +1094,48 @@ export const OPERATIONS: Record<string, OperationMeta> = {
         "summary": "",
         "pathParams": [
             "repositoryId"
+        ],
+        "queryParams": [],
+        "hasBody": true
+    },
+    "getRepoTypeById": {
+        "operationId": "getRepoTypeById",
+        "method": "GET",
+        "path": "/api/repo-types/{repoTypeId}",
+        "tags": [
+            "repo-type-ws"
+        ],
+        "summary": "",
+        "pathParams": [
+            "repoTypeId"
+        ],
+        "queryParams": [],
+        "hasBody": false
+    },
+    "deleteRepoType": {
+        "operationId": "deleteRepoType",
+        "method": "DELETE",
+        "path": "/api/repo-types/{repoTypeId}",
+        "tags": [
+            "repo-type-ws"
+        ],
+        "summary": "",
+        "pathParams": [
+            "repoTypeId"
+        ],
+        "queryParams": [],
+        "hasBody": false
+    },
+    "updateRepoType": {
+        "operationId": "updateRepoType",
+        "method": "PATCH",
+        "path": "/api/repo-types/{repoTypeId}",
+        "tags": [
+            "repo-type-ws"
+        ],
+        "summary": "",
+        "pathParams": [
+            "repoTypeId"
         ],
         "queryParams": [],
         "hasBody": true
@@ -1744,4 +1816,4 @@ export const OPERATIONS: Record<string, OperationMeta> = {
         "queryParams": [],
         "hasBody": false
     }
-} as const;
+};

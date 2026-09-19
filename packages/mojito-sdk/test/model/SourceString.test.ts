@@ -1,5 +1,5 @@
 /*
- * TextUnit.test.ts - unit tests for the TextUnit object model
+ * SourceString.test.ts - unit tests for the SourceString object model
  *
  * Copyright © 2026 JEDLSoft
  *
@@ -16,41 +16,50 @@
  * limitations under the License.
  */
 
-import { TextUnit } from "../../src/model/TextUnit";
+import { Asset } from "../../src/model/Asset";
+import { SourceString } from "../../src/model/SourceString";
 import { createJsonFetch, createTestClient } from "./testClient";
+import Locale from "./ilibLocale";
 
-describe("TextUnit", () => {
-    test("search maps results and forwards the request body", async () => {
+describe("SourceString", () => {
+    test("Asset.sourceStrings maps results and forwards the request body", async () => {
         const { fetchImpl, getLastRequest } = createJsonFetch(() => [
-            { tmTextUnitId: 10, name: "hello", content: "Hello" },
-            { tmTextUnitId: 11, name: "bye", content: "Goodbye" },
+            { tmTextUnitId: 10, name: "hello", source: "Hello" },
+            { tmTextUnitId: 11, name: "bye", source: "Goodbye" },
         ]);
         const client = createTestClient(fetchImpl);
+        const asset = new Asset(client, { id: 3, path: "messages.json" });
 
-        const units = await TextUnit.search(client, {
-            repositoryNames: ["demo"],
-            localeTags: ["fr-FR"],
+        const units = await asset.sourceStrings({
+            locales: [new Locale("fr-FR")],
             vendorHint: "on",
         });
 
         expect(units).toHaveLength(2);
-        expect(units[0]).toBeInstanceOf(TextUnit);
+        expect(units[0]).toBeInstanceOf(SourceString);
         expect(units[0].id).toBe(10);
-        expect(units[1].data.content).toBe("Goodbye");
+        expect(units[1].content).toBe("Goodbye");
 
         expect(getLastRequest().init?.method).toBe("POST");
         expect(new URL(getLastRequest().url).pathname).toBe("/api/textunits/search");
         expect(JSON.parse(String(getLastRequest().init?.body))).toEqual({
-            repositoryNames: ["demo"],
             localeTags: ["fr-FR"],
             vendorHint: "on",
+            assetPath: "messages.json",
         });
     });
 
-    test("search returns an empty array when the response body is empty", async () => {
+    test("Asset.sourceStrings returns an empty array when the response body is empty", async () => {
         const fetchImpl: typeof fetch = async () => new Response("", { status: 200 });
         const client = createTestClient(fetchImpl);
-        const units = await TextUnit.search(client);
+        const asset = new Asset(client, { path: "a.json" });
+        const units = await asset.sourceStrings();
         expect(units).toEqual([]);
+    });
+
+    test("Asset.sourceStrings requires an asset path", async () => {
+        const client = createTestClient(async () => new Response("{}", { status: 200 }));
+        const asset = new Asset(client, { id: 1 });
+        await expect(asset.sourceStrings()).rejects.toThrow(/requires an asset path/);
     });
 });

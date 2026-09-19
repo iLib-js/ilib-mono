@@ -45,6 +45,11 @@
         "doc": "npm-run-all --npm-path pnpm doc:md doc:html",
         "doc:md": "mkdir -p docs/api && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs/api src/index.ts",
         "doc:html": "mkdir -p docs/api-html && typedoc --out docs/api-html --skipErrorChecking --cleanOutputDir false src/index.ts",
+        "generate": "pnpm generate:openapi && pnpm generate:code",
+        "generate:code": "pnpm generate:types && pnpm generate:operations",
+        "generate:openapi": "node scripts/fetch-openapi.js",
+        "generate:operations": "node scripts/generate-spec-meta.js",
+        "generate:types": "openapi-typescript openapi/openapi.json --output src/generated/openapi.ts --immutable",
         "test": "node node_modules/jest/bin/jest.js --testEnvironment node",
         "test:e2e": "node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js",
         "test:watch": "pnpm test --watch",
@@ -57,10 +62,14 @@
         "ilib-internal": "workspace:^",
         "jest": "^29.7.0",
         "npm-run-all": "^4.1.5",
+        "openapi-typescript": "^7.13.0",
         "ts-jest": "^29.2.5",
         "tsx": "^4.20.5",
         "typedoc": "^0.26.11",
         "typedoc-plugin-markdown": "^4.2.10",
         "typescript": "^5.9.2"
+    },
+    "dependencies": {
+        "ilib-locale": "workspace:^"
     }
 }

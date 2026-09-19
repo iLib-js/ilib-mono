@@ -16,34 +16,70 @@
  * limitations under the License.
  */
 
-import type { LowLevelClient } from "../lowlevel/client";
-import type { ForwardCompatParams, UserProfileData } from "./types";
+import type { components } from "../generated/openapi";
+import type { MojitoClient } from "./MojitoClient";
+import type { ForwardCompatParams } from "./types";
+
+type UserProfileDto = components["schemas"]["UserProfile"];
 
 /**
- * Helpers for Mojito user/session endpoints.
+ * A Mojito user.
  */
 export class User {
+    readonly client: MojitoClient;
+    private readonly dto: UserProfileDto;
+
+    /**
+     * @param client SDK session.
+     * @param data User profile payload.
+     */
+    constructor(client: MojitoClient, data: UserProfileDto = {}) {
+        this.client = client;
+        this.dto = data;
+    }
+
+    get username(): string | undefined {
+        return this.dto.username;
+    }
+
+    get givenName(): string | undefined {
+        return this.dto.givenName;
+    }
+
+    get surname(): string | undefined {
+        return this.dto.surname;
+    }
+
+    get commonName(): string | undefined {
+        return this.dto.commonName;
+    }
+
+    get role(): UserProfileDto["role"] {
+        return this.dto.role;
+    }
+
     /**
      * Return the currently authenticated user profile.
      *
-     * @param client Low-level client.
+     * @param client SDK session.
      * @param extras Extra forwarded parameters.
      */
     static async me(
-        client: LowLevelClient,
+        client: MojitoClient,
         extras: ForwardCompatParams = {},
-    ): Promise<UserProfileData> {
-        return (await client.call<UserProfileData>("getCurrentUser", extras)) ?? {};
+    ): Promise<User> {
+        const result = await client.call<UserProfileDto>("getCurrentUser", extras);
+        return new User(client, result ?? {});
     }
 
     /**
      * Check whether the current session is active.
      *
-     * @param client Low-level client.
+     * @param client SDK session.
      * @param extras Extra forwarded parameters.
      */
     static async isSessionActive(
-        client: LowLevelClient,
+        client: MojitoClient,
         extras: ForwardCompatParams = {},
     ): Promise<boolean> {
         const result = await client.call<boolean | { active?: boolean }>(

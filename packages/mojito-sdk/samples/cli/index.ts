@@ -19,9 +19,13 @@
  */
 
 import {
+    Drop,
     MojitoClient,
+    Repository,
+    User,
     getApiInfo,
-    getOpenApiSpecVersion,
+    getCompatibleMojitoRange,
+    getMojitoVersion,
     getSdkVersion,
 } from "mojito-sdk";
 
@@ -32,7 +36,6 @@ function printUsage(): void {
     console.log("  version              Print SDK and OpenAPI versions");
     console.log("  repos list [name]    List repositories (optional name filter)");
     console.log("  drops list [--repository-id <id>]");
-    console.log("  locales list [bcp47] List locales");
     console.log("  me                   Print the current Mojito user");
 }
 
@@ -51,7 +54,9 @@ async function main(): Promise<void> {
     if (command === "version") {
         const info = await getApiInfo();
         console.log(`sdk=${getSdkVersion()}`);
-        console.log(`openapi=${getOpenApiSpecVersion()}`);
+        console.log(`mojito=${getMojitoVersion()}`);
+        console.log(`mojitoRange=${getCompatibleMojitoRange()}`);
+        console.log(`openapi=${getMojitoVersion()}`);
         console.log(`openapiHash=${info.openApiSpecHash}`);
         return;
     }
@@ -65,7 +70,7 @@ async function main(): Promise<void> {
 
     if (command === "repos" && args[1] === "list") {
         const name = args[2];
-        const repos = await client.listRepositories(name ? { name } : {});
+        const repos = await Repository.list(client, name ? { name } : {});
         for (const repo of repos) {
             console.log(`${repo.id}\t${repo.name ?? ""}`);
         }
@@ -74,7 +79,7 @@ async function main(): Promise<void> {
 
     if (command === "drops" && args[1] === "list") {
         const repositoryIdRaw = getFlag(args, "--repository-id");
-        const drops = await client.listDrops({
+        const drops = await Drop.list(client, {
             repositoryId: repositoryIdRaw ? Number(repositoryIdRaw) : undefined,
         });
         for (const drop of drops) {
@@ -83,17 +88,8 @@ async function main(): Promise<void> {
         return;
     }
 
-    if (command === "locales" && args[1] === "list") {
-        const bcp47Tag = args[2];
-        const locales = await client.listLocales(bcp47Tag ? { bcp47Tag } : {});
-        for (const locale of locales) {
-            console.log(`${locale.id}\t${locale.bcp47Tag ?? ""}`);
-        }
-        return;
-    }
-
     if (command === "me") {
-        const me = await client.me();
+        const me = await User.me(client);
         console.log(JSON.stringify(me, null, 2));
         return;
     }

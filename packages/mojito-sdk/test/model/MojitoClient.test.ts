@@ -1,5 +1,5 @@
 /*
- * MojitoClient.test.ts - unit tests for the MojitoClient facade
+ * MojitoClient.test.ts - unit tests for the MojitoClient session
  *
  * Copyright © 2026 JEDLSoft
  *
@@ -20,57 +20,27 @@ import { MojitoClient } from "../../src/model/MojitoClient";
 import { createJsonFetch, createTestClient } from "./testClient";
 
 describe("MojitoClient", () => {
-    test("delegates listRepositories and listLocales through the low-level client", async () => {
-        const { fetchImpl, getLastRequest } = createJsonFetch((url) => {
-            if (url.includes("/api/repositories")) {
-                return [{ id: 1, name: "demo" }];
-            }
-            if (url.includes("/api/locales")) {
-                return [{ id: 2, bcp47Tag: "ja-JP" }];
-            }
-            throw new Error(`Unexpected URL ${url}`);
-        });
-        const lowLevel = createTestClient(fetchImpl);
-        const client = new MojitoClient({ lowLevel, baseUrl: "http://localhost:8080" });
-
-        const repos = await client.listRepositories({ name: "demo" });
-        expect(repos[0].name).toBe("demo");
-        expect(new URL(getLastRequest().url).pathname).toBe("/api/repositories");
-
-        const locales = await client.listLocales({ bcp47Tag: "ja-JP" });
-        expect(locales[0].bcp47Tag).toBe("ja-JP");
-        expect(new URL(getLastRequest().url).pathname).toBe("/api/locales");
-    });
-
     test("call is an escape hatch to arbitrary operationIds", async () => {
         const { fetchImpl, getLastRequest } = createJsonFetch(() => ({ ok: true }));
-        const lowLevel = createTestClient(fetchImpl);
-        const client = new MojitoClient({ lowLevel });
+        const client = createTestClient(fetchImpl);
 
         const result = await client.call<{ ok: boolean }>("getCsrfToken");
         expect(result).toEqual({ ok: true });
         expect(new URL(getLastRequest().url).pathname).toBe("/api/csrf-token");
     });
 
-    test("me and searchTextUnits delegate to model helpers", async () => {
-        const { fetchImpl, getLastRequest } = createJsonFetch((url) => {
-            if (url.includes("/api/users/me")) {
-                return { username: "bob" };
-            }
-            if (url.includes("/api/textunits/search")) {
-                return [{ tmTextUnitId: 5, name: "title" }];
-            }
-            throw new Error(`Unexpected URL ${url}`);
+    test("uses HEADER auth without constructing a low-level client in tests", async () => {
+        const { fetchImpl } = createJsonFetch(() => ({ username: "bob" }));
+        const client = new MojitoClient({
+            host: "localhost",
+            port: 8080,
+            loadCliConfig: false,
+            authenticationMode: "HEADER",
+            headers: { "cf-access-token": "x" },
+            fetchImpl,
         });
-        const client = new MojitoClient({ lowLevel: createTestClient(fetchImpl) });
 
-        const me = await client.me();
-        expect(me.username).toBe("bob");
-
-        const units = await client.searchTextUnits({ repositoryIds: [1] });
-        expect(units[0].id).toBe(5);
-        expect(JSON.parse(String(getLastRequest().init?.body))).toEqual({
-            repositoryIds: [1],
-        });
+        const me = await client.call("getCurrentUser");
+        expect(me).toEqual({ username: "bob" });
     });
 });

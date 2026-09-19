@@ -16,25 +16,16 @@
  * limitations under the License.
  */
 
-import type { AuthProvider } from "../../src/auth/types";
-import { LowLevelClient } from "../../src/lowlevel/client";
 import { Drop } from "../../src/model/Drop";
+import { createJsonFetch, createTestClient } from "./testClient";
+import Locale from "./ilibLocale";
 
 describe("Drop", () => {
     test("list maps page content into Drop instances", async () => {
-        const auth: AuthProvider = { async authorize() { return {}; } };
-        const fetchImpl: typeof fetch = async () =>
-            new Response(
-                JSON.stringify({
-                    content: [{ id: 1, name: "drop-a" }, { id: 2, name: "drop-b" }],
-                }),
-                { status: 200 },
-            );
-        const client = new LowLevelClient({
-            baseUrl: "http://localhost:8080",
-            auth,
-            fetchImpl,
-        });
+        const { fetchImpl } = createJsonFetch(() => ({
+            content: [{ id: 1, name: "drop-a" }, { id: 2, name: "drop-b" }],
+        }));
+        const client = createTestClient(fetchImpl);
 
         const drops = await Drop.list(client, { repositoryId: 5 });
         expect(drops).toHaveLength(2);
@@ -44,28 +35,34 @@ describe("Drop", () => {
     });
 
     test("export posts ExportDropConfig body", async () => {
-        const auth: AuthProvider = { async authorize() { return {}; } };
-        let body = "";
-        const fetchImpl: typeof fetch = async (_input, init) => {
-            body = String(init?.body);
-            return new Response(JSON.stringify({ dropId: 99 }), { status: 200 });
-        };
-        const client = new LowLevelClient({
-            baseUrl: "http://localhost:8080",
-            auth,
-            fetchImpl,
-        });
+        const { fetchImpl, getLastRequest } = createJsonFetch(() => ({ dropId: 99 }));
+        const client = createTestClient(fetchImpl);
 
         const result = await Drop.export(client, {
             repositoryId: 7,
-            locales: ["fr-FR"],
+            locales: [new Locale("fr-FR")],
             customVendorFlag: true,
         });
-        expect(result.dropId).toBe(99);
-        expect(JSON.parse(body)).toEqual({
+        expect(result).toBeInstanceOf(Drop);
+        expect(result.id).toBe(99);
+        expect(JSON.parse(String(getLastRequest().init?.body))).toEqual({
             repositoryId: 7,
             locales: ["fr-FR"],
             customVendorFlag: true,
+        });
+    });
+
+    test("import uses this drop id and repository from the instance", async () => {
+        const { fetchImpl, getLastRequest } = createJsonFetch(() => ({ dropId: 4 }));
+        const client = createTestClient(fetchImpl);
+        const drop = new Drop(client, { id: 4, repository: { id: 7 } });
+
+        const imported = await drop.import({ status: "APPROVED" });
+        expect(imported.id).toBe(4);
+        expect(JSON.parse(String(getLastRequest().init?.body))).toEqual({
+            dropId: 4,
+            repositoryId: 7,
+            status: "APPROVED",
         });
     });
 });

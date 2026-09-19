@@ -16,54 +16,58 @@
  * limitations under the License.
  */
 
-export { getApiInfo, getOpenApiSpecVersion, getSdkVersion } from "./version";
+export {
+    getApiInfo,
+    getCompatibleMojitoRange,
+    getMojitoVersion,
+    getOpenApiSpecVersion,
+    getSdkVersion,
+    isCompatibleMojitoVersion,
+} from "./version";
 export type { MojitoApiInfo } from "./version";
 
-export {
-    createAuthProvider,
-    buildBaseUrl,
-    resolveConnectionConfig,
-    HeaderAuth,
-    StatefulFormLoginAuth,
-} from "./auth";
-export type {
-    AuthProvider,
-    AuthenticationMode,
-    MojitoConnectionConfig,
-} from "./auth";
+export { MojitoHttpError } from "./lowlevel/errors";
 
 export {
-    LowLevelClient,
-    MojitoHttpError,
-    OPENAPI_SPEC_HASH,
-    OPENAPI_SPEC_VERSION,
-    OPERATIONS,
-} from "./lowlevel";
-export type { JsonValue, OperationParams } from "./lowlevel";
-
-export {
+    Asset,
+    Branch,
     Drop,
-    Locale,
     MojitoClient,
-    PollableTask,
+    MojitoLocale,
     Repository,
-    TextUnit,
+    RepositoryType,
+    Screenshot,
+    SourceString,
+    Translation,
     User,
 } from "./model";
 export type {
-    DropData,
+    AiReviewResult,
+    AiTranslationOptions,
+    AssetImportLocalizedParams,
+    AssetListParams,
+    AssetLocalizeParams,
+    AssetPseudoLocalizeParams,
+    AsyncOperationOptions,
+    AuthenticationMode,
+    BranchListParams,
     DropExportParams,
     DropImportParams,
     DropListParams,
     ForwardCompatParams,
-    LocaleData,
     MojitoClientOptions,
+    MojitoConnectionConfig,
+    MojitoLocaleOptions,
     Pageable,
-    PollableTaskData,
     RepositoryCreateParams,
-    RepositoryData,
     RepositoryListParams,
-    TextUnitData,
-    TextUnitSearchParams,
-    UserProfileData,
+    RepositoryTypeCreateParams,
+    RepositoryTypeIntegrityChecker,
+    RepositoryTypeUpdateParams,
+    RepositoryUpdateParams,
+    ScreenshotListParams,
+    ScreenshotUpdateParams,
+    SourceStringSearchParams,
+    TranslationProps,
+    TranslationStatus,
 } from "./model";
