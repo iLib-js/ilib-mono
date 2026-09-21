@@ -1329,4 +1329,151 @@ describe("webOSxliff", function() {
 
         expect(actual).toBe(expected);
     });
+    // name attribute preservation (autoKey handling)
+    test("webOSXliffPreserveName_whenNameEqualsSource", function() {
+        // A unit whose name attribute is identical to its source text must still
+        // be preserved on serialization (regression: previously dropped because
+        // the old logic only emitted name when source !== key).
+        expect.assertions(2);
+
+        var x = new webOSXliff();
+        x.deserialize(
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '  <file id="appA_f1" original="appA">\n' +
+        '    <group id="appA_g1" name="javascript">\n' +
+        '      <unit id="appA_g1_1" name="OK">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>\n');
+
+        expect(x).toBeTruthy();
+
+        var actual = x.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '  <file id="appA_f1" original="appA">\n' +
+        '    <group id="appA_g1" name="javascript">\n' +
+        '      <unit id="appA_g1_1" name="OK">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>\n';
+        expect(actual).toBe(expected);
+    });
+    test("webOSXliffOmitName_whenNameIsMissing", function() {
+        // A unit with no name attribute must remain without one after a
+        // deserialize -> serialize round trip (autoKey === true).
+        expect.assertions(2);
+
+        var x = new webOSXliff();
+        x.deserialize(
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '  <file id="appA_f1" original="appA">\n' +
+        '    <group id="appA_g1" name="javascript">\n' +
+        '      <unit id="appA_g1_1">\n' +
+        '        <segment>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>\n');
+
+        expect(x).toBeTruthy();
+
+        var actual = x.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '  <file id="appA_f1" original="appA">\n' +
+        '    <group id="appA_g1" name="javascript">\n' +
+        '      <unit id="appA_g1_1">\n' +
+        '        <segment>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>\n';
+        expect(actual).toBe(expected);
+    });
+    test("webOSXliffPreserveName_mixedUnits", function() {
+        // Mixed units: one with an explicit name equal to source, one with an
+        // explicit name different from source, and one with no name at all.
+        // All three must round-trip correctly.
+        expect.assertions(2);
+
+        var x = new webOSXliff();
+        x.deserialize(
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '  <file id="appA_f1" original="appA">\n' +
+        '    <group id="appA_g1" name="javascript">\n' +
+        '      <unit id="appA_g1_1" name="OK">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="appA_g1_2" name="btn_cancel">\n' +
+        '        <segment>\n' +
+        '          <source>Cancel</source>\n' +
+        '          <target>취소</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="appA_g1_3">\n' +
+        '        <segment>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>\n');
+
+        expect(x).toBeTruthy();
+
+        var actual = x.serialize();
+        var expected =
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+        '<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" srcLang="en-KR" trgLang="ko-KR" version="2.0">\n' +
+        '  <file id="appA_f1" original="appA">\n' +
+        '    <group id="appA_g1" name="javascript">\n' +
+        '      <unit id="appA_g1_1" name="OK">\n' +
+        '        <segment>\n' +
+        '          <source>OK</source>\n' +
+        '          <target>확인</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="appA_g1_2" name="btn_cancel">\n' +
+        '        <segment>\n' +
+        '          <source>Cancel</source>\n' +
+        '          <target>취소</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '      <unit id="appA_g1_3">\n' +
+        '        <segment>\n' +
+        '          <source>Time Settings</source>\n' +
+        '          <target>시간 설정</target>\n' +
+        '        </segment>\n' +
+        '      </unit>\n' +
+        '    </group>\n' +
+        '  </file>\n' +
+        '</xliff>\n';
+        expect(actual).toBe(expected);
+    });
 })
