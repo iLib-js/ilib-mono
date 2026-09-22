@@ -1,5 +1,18 @@
 # ilib-lint
 
+## 2.21.7
+
+### Patch Changes
+
+- 2bb6330: `resource-sentence-ending` can be turned off for one language by setting that
+  locale to `false` in the ruleset config (for example `"ja-JP": false`). Other
+  languages still run. Individual punctuation types continue to use `null`.
+- 66a0fae: `resource-sentence-ending`: Accept either a period or no period after known
+  fragment endings in Japanese, Korean, and Chinese so the rule no longer flags
+  valid unpunctuated translations (for example Japanese 場合, Korean 경우, and
+  Chinese 情况下). Complete sentence endings such as Japanese です and Korean
+  합니다 are still required to use the locale-appropriate period.
+
 ## 2.21.6
 
 ### Patch Changes
