@@ -1,7 +1,7 @@
 /*
  * ResourceSentenceEnding.test.js - test the ResourceSentenceEnding rule
  *
- * Copyright © 2025 JEDLSoft
+ * Copyright © 2025-2026 JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,15 @@ import Locale from 'ilib-locale';
 
 import ResourceSentenceEnding from '../../src/rules/ResourceSentenceEnding.js';
 import ResourceFixer from '../../src/plugins/resource/ResourceFixer.js';
+
+/**
+ * @ignore
+ * @typedef {import("../../src/plugins/resource/ResourceFix.js").default} ResourceFix
+ */
+/**
+ * @ignore
+ * @typedef {import("../../src/plugins/resource/ResourceStringFixCommand.js").default} ResourceStringFixCommand
+ */
 
 describe("ResourceSentenceEnding rule", function() {
     test("constructs the rule", () => {
@@ -1734,6 +1743,363 @@ describe("ResourceSentenceEnding rule", function() {
         expect(actual?.id).toBe(resource.getKey());
         expect(actual?.highlight).toBe("こんにちは世界<e0/>");
         expect(actual?.fix).toBeTruthy();
+    });
+
+    function matchLocalized(source, target, targetLocale) {
+        const rule = new ResourceSentenceEnding();
+        const resource = new ResourceString({
+            key: "optional.period.test",
+            sourceLocale: "en-US",
+            source,
+            targetLocale,
+            target,
+            pathName: "a/b/c.xliff"
+        });
+        return {
+            rule,
+            resource,
+            actual: rule.matchString({
+                source: resource.getSource(),
+                target: resource.getTarget(),
+                resource,
+                file: "a/b/c.xliff"
+            })
+        };
+    }
+
+    describe("Japanese kuten for some endings but not others", () => {
+        const matchJa = (source, target) => matchLocalized(source, target, "ja-JP");
+
+        // Verb-final and clause endings that still need a kuten. 「〜こと」and「〜とき」are
+        // included on purpose: 公用文 style calls for 。 after those, unlike noun endings.
+        describe("kuten should be added", () => {
+            const shouldAddKuten = [
+                {
+                    source: "This is a sentence.",
+                    target: "これは文です",
+                    description: "です polite statement"
+                },
+                {
+                    source: "The changes are saved automatically.",
+                    target: "変更は自動的に保存されます",
+                    description: "ます polite statement"
+                },
+                {
+                    source: "That was the last file.",
+                    target: "これが最後のファイルでした",
+                    description: "でした past polite statement"
+                },
+                {
+                    source: "An error has occurred.",
+                    target: "エラーが発生しました",
+                    description: "ました past polite statement"
+                },
+                {
+                    source: "Please save the file.",
+                    target: "ファイルを保存してください",
+                    description: "ください request"
+                },
+                {
+                    source: "This operation will take a while.",
+                    target: "この操作には時間がかかるでしょう",
+                    description: "でしょう conjecture"
+                },
+                {
+                    source: "This action cannot be undone.",
+                    target: "この操作は元に戻せません",
+                    description: "ません negative statement"
+                },
+                {
+                    source: "This is a new file.",
+                    target: "これは新しいファイルだ",
+                    description: "だ plain statement"
+                },
+                {
+                    source: "This is the default setting.",
+                    target: "これは既定の設定である",
+                    description: "である written statement"
+                },
+                {
+                    source: "Do the following things.",
+                    target: "次のとおりとすること",
+                    description: "こと ending takes kuten in 公用文 style"
+                },
+                {
+                    source: "When an error occurs.",
+                    target: "エラーが発生したとき",
+                    description: "とき ending takes kuten in 公用文 style"
+                }
+            ];
+
+            test.each(shouldAddKuten)("warns and inserts kuten for $description", ({ source, target }) => {
+                expect.assertions(4);
+
+                const { actual } = matchJa(source, target);
+
+                expect(actual).toBeTruthy();
+                expect(actual?.description).toContain('Sentence ending should be "。" (U+3002) for ja-JP locale instead of no punctuation');
+                expect(actual?.fix).toBeTruthy();
+                const fix = /** @type {ResourceFix|undefined} */ (actual?.fix);
+                const command = /** @type {ResourceStringFixCommand|undefined} */ (fix?.commands[0]);
+                expect(command?.stringFix.insertContent).toBe("。");
+            });
+
+            test.each(shouldAddKuten)("does not warn when $description already has kuten", ({ source, target }) => {
+                expect.assertions(1);
+
+                const { actual } = matchJa(source, `${target}。`);
+
+                expect(actual).toBeUndefined();
+            });
+        });
+
+        describe("kuten should not be added", () => {
+            // Only the exact spellings in periodEquivalentSuffixes are exempt. This is a
+            // closed spelling list, not noun detection.
+            const noKuten = [
+                {
+                    source: "If the file is missing.",
+                    target: "ファイルがない場合",
+                    suffix: "場合"
+                },
+                {
+                    source: "When changing the settings.",
+                    target: "設定を変更する際",
+                    suffix: "際"
+                },
+                {
+                    source: "When an error occurs.",
+                    target: "エラーが発生した時",
+                    suffix: "時"
+                },
+                {
+                    source: "Because there is not enough space.",
+                    target: "容量が不足しているため",
+                    suffix: "ため"
+                },
+                {
+                    source: "In order to save the file.",
+                    target: "ファイルを保存するために",
+                    suffix: "ために"
+                },
+                {
+                    source: "Settings, options, etc.",
+                    target: "設定やオプションなど",
+                    suffix: "など"
+                },
+                {
+                    source: "Settings, options, etc.",
+                    target: "設定やオプション等",
+                    suffix: "等"
+                },
+                {
+                    source: "The ones approved by an administrator.",
+                    target: "管理者が承認したもの",
+                    suffix: "もの"
+                }
+            ];
+
+            test.each(noKuten)("does not warn or insert kuten when the target ends with $suffix", ({ source, target }) => {
+                expect.assertions(1);
+
+                const { actual } = matchJa(source, target);
+
+                expect(actual).toBeUndefined();
+            });
+
+            test.each(noKuten)("does not warn when $suffix is followed by trailing whitespace", ({ source, target }) => {
+                expect.assertions(1);
+
+                const { actual } = matchJa(source, `${target}  `);
+
+                expect(actual).toBeUndefined();
+            });
+
+            test.each(noKuten)("does not warn when $suffix is inside trailing quotes", ({ source, target }) => {
+                expect.assertions(1);
+
+                const { actual } = matchJa(`Select '${source}'`, `「${target}」`);
+
+                expect(actual).toBeUndefined();
+            });
+
+            test.each(noKuten)("does not warn when $suffix already has kuten", ({ source, target }) => {
+                expect.assertions(1);
+
+                const { actual } = matchJa(source, `${target}。`);
+
+                expect(actual).toBeUndefined();
+            });
+        });
+
+        describe("getPeriodEquivalentSuffix", () => {
+            test("matches the optional-period Japanese suffixes", () => {
+                expect.assertions(9);
+
+                const rule = new ResourceSentenceEnding();
+                expect(rule.getPeriodEquivalentSuffix("ファイルがない場合", new Locale("ja-JP"))).toBe("場合");
+                expect(rule.getPeriodEquivalentSuffix("「ファイルがない場合」", new Locale("ja-JP"))).toBe("場合");
+                expect(rule.getPeriodEquivalentSuffix("設定を変更する際", new Locale("ja-JP"))).toBe("際");
+                expect(rule.getPeriodEquivalentSuffix("エラーが発生した時", new Locale("ja-JP"))).toBe("時");
+                expect(rule.getPeriodEquivalentSuffix("容量が不足しているため", new Locale("ja-JP"))).toBe("ため");
+                expect(rule.getPeriodEquivalentSuffix("ファイルを保存するために", new Locale("ja-JP"))).toBe("ために");
+                expect(rule.getPeriodEquivalentSuffix("設定やオプションなど", new Locale("ja-JP"))).toBe("など");
+                expect(rule.getPeriodEquivalentSuffix("設定やオプション等", new Locale("ja-JP"))).toBe("等");
+                expect(rule.getPeriodEquivalentSuffix("管理者が承認したもの", new Locale("ja-JP"))).toBe("もの");
+            });
+
+            test.each([
+                { target: "次のとおりとすること", ending: "こと" },
+                { target: "エラーが発生したとき", ending: "とき" },
+                { target: "これは文です", ending: "です" }
+            ])("does not match the Japanese ending $ending", ({ target }) => {
+                expect.assertions(1);
+
+                const rule = new ResourceSentenceEnding();
+                expect(rule.getPeriodEquivalentSuffix(target, new Locale("ja-JP"))).toBeNull();
+            });
+        });
+    });
+
+    describe("Korean periods for some endings but not others", () => {
+        const optionalPeriodEndings = [
+            {
+                source: "If the file is missing.",
+                target: "파일이 없는 경우",
+                ending: "경우"
+            },
+            {
+                source: "When an error occurs.",
+                target: "오류가 발생할 때",
+                ending: "때"
+            },
+            {
+                source: "When changing the settings.",
+                target: "설정을 변경할 시",
+                ending: "시"
+            },
+            {
+                source: "The file is being uploaded.",
+                target: "파일 업로드 중",
+                ending: "중"
+            },
+            {
+                source: "Save the changes.",
+                target: "변경 사항 저장하기",
+                ending: "하기"
+            },
+            {
+                source: "Open the selected file.",
+                target: "선택한 파일 열기",
+                ending: "기"
+            }
+        ];
+
+        test.each(optionalPeriodEndings)("accepts both no period and a period after $ending", ({ source, target }) => {
+            expect.assertions(2);
+
+            expect(matchLocalized(source, target, "ko-KR").actual).toBeUndefined();
+            expect(matchLocalized(source, `${target}.`, "ko-KR").actual).toBeUndefined();
+        });
+
+        const requiredPeriodEndings = [
+            {
+                source: "The changes are saved automatically.",
+                target: "변경 사항은 자동으로 저장됩니다",
+                ending: "됩니다"
+            },
+            {
+                source: "This is the default setting.",
+                target: "기본 설정입니다",
+                ending: "입니다"
+            },
+            {
+                source: "Please save the changes.",
+                target: "변경 사항을 저장하세요",
+                ending: "하세요"
+            },
+            {
+                source: "Please check the settings.",
+                target: "설정을 확인하십시오",
+                ending: "하십시오"
+            }
+        ];
+
+        test.each(requiredPeriodEndings)("warns and inserts a period after $ending", ({ source, target }) => {
+            expect.assertions(3);
+
+            const { actual } = matchLocalized(source, target, "ko-KR");
+
+            expect(actual).toBeTruthy();
+            expect(actual?.description).toContain('Sentence ending should be "." (U+002E) for ko-KR locale instead of no punctuation');
+            const fix = /** @type {ResourceFix|undefined} */ (actual?.fix);
+            const command = /** @type {ResourceStringFixCommand|undefined} */ (fix?.commands[0]);
+            expect(command?.stringFix.insertContent).toBe(".");
+        });
+
+        test.each(requiredPeriodEndings)("accepts $ending when it already has a period", ({ source, target }) => {
+            expect.assertions(1);
+
+            expect(matchLocalized(source, `${target}.`, "ko-KR").actual).toBeUndefined();
+        });
+    });
+
+    describe("Chinese periods for some endings but not others", () => {
+        const optionalPeriodEndings = [
+            {
+                source: "If the file is missing.",
+                target: "文件不存在的情况下",
+                ending: "情况下"
+            },
+            {
+                source: "When the upload completes.",
+                target: "上传完成的时候",
+                ending: "时候"
+            },
+            {
+                source: "When changing the settings.",
+                target: "更改设置时",
+                ending: "时"
+            }
+        ];
+
+        test.each(optionalPeriodEndings)("accepts both no ideographic full stop and one after $ending", ({ source, target }) => {
+            expect.assertions(2);
+
+            expect(matchLocalized(source, target, "zh-CN").actual).toBeUndefined();
+            expect(matchLocalized(source, `${target}。`, "zh-CN").actual).toBeUndefined();
+        });
+
+        const requiredPeriodEndings = [
+            {
+                source: "This is a complete sentence.",
+                target: "这是一个完整的句子",
+                ending: "句子"
+            },
+            {
+                source: "The operation has completed.",
+                target: "操作已经完成",
+                ending: "完成"
+            }
+        ];
+
+        test.each(requiredPeriodEndings)("warns and inserts an ideographic full stop after $ending", ({ source, target }) => {
+            expect.assertions(3);
+
+            const { actual } = matchLocalized(source, target, "zh-CN");
+
+            expect(actual).toBeTruthy();
+            expect(actual?.description).toContain('Sentence ending should be "。" (U+3002) for zh-CN locale instead of no punctuation');
+            const fix = /** @type {ResourceFix|undefined} */ (actual?.fix);
+            const command = /** @type {ResourceStringFixCommand|undefined} */ (fix?.commands[0]);
+            expect(command?.stringFix.insertContent).toBe("。");
+        });
+
+        test.each(requiredPeriodEndings)("accepts $ending when it already has an ideographic full stop", ({ source, target }) => {
+            expect.assertions(1);
+
+            expect(matchLocalized(source, `${target}。`, "zh-CN").actual).toBeUndefined();
+        });
     });
 
     describe("French spacing tests", () => {
