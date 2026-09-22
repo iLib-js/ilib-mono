@@ -108,6 +108,7 @@ webOSXliff.prototype.parse = function(xliff) {
                                 tu.notes.note["_text"];
                         }
                          var resname = tu._attributes.name;
+                        var autoKey = false;
                         var restype = "string";
                         if (tu._attributes.type && tu._attributes.type.startsWith("res:")) {
                             restype = tu._attributes.type.substring(4);
@@ -129,6 +130,7 @@ webOSXliff.prototype.parse = function(xliff) {
                         }
                         if (!resname) {
                             resname = source;
+                            autoKey = true;
                         }
 
                         if (source.trim()) {
@@ -148,7 +150,8 @@ webOSXliff.prototype.parse = function(xliff) {
                                     state: state,
                                     datatype: datatype,
                                     flavor: fileSettings.flavor,
-                                    metadata: tu['mda:metadata'] || undefined
+                                    metadata: tu['mda:metadata'] || undefined,
+                                    autoKey: autoKey
                                 };
 
                                 var unit = new TranslationUnit(commonProperties);
@@ -517,7 +520,7 @@ webOSXliff.prototype.toStringData = function(units) {
         var tujson = {
             _attributes: {
                 "id": tu.project + "_g" + groupIndex + "_" + unitIndex,
-                "name": (tu.source !== tu.key) ? escapeAttr(tu.key) : undefined,
+                "name": (!tu.autoKey) ? escapeAttr(tu.key) : undefined,
             }
         };
 
@@ -662,7 +665,8 @@ webOSXliff.prototype._convertResource = function(res) {
             comment: res.comment,
             resType: res.resType,
             datatype: res.datatype,
-            flavor: res.getFlavor ? res.getFlavor() : undefined
+            flavor: res.getFlavor ? res.getFlavor() : undefined,
+            autoKey: res.getAutoKey ? res.getAutoKey() : false
         });
         units.push(tu);
     } catch (e) {
