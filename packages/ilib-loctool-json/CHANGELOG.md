@@ -1,5 +1,11 @@
 # ilib-loctool-json
 
+## 2.2.2
+
+### Patch Changes
+
+- 37cfca5: Skip extracting empty or whitespace-only JSON strings so they are not written as trans-units with no source text.
+
 ## 2.2.1
 
 ### Patch Changes
