@@ -12,8 +12,8 @@ Application code
         ▼
 ┌─────────────────────────────────────────┐
 │  Object model                           │  src/model/
-│  Repository, Drop, Asset, SourceString, │
-│  Translation, MojitoLocale, …           │
+│  Server, Repository, Drop, Asset,       │
+│  SourceString, Translation, …           │
 └─────────────────────────────────────────┘
         │  uses DTO types; never reimplements HTTP
         ▼
@@ -46,8 +46,8 @@ documented in [`object-model.md`](object-model.md).
 ## Object model design rules
 
 These rules apply to every type in `src/model/`. They are the bar for the
-published API. Application code constructs a `MojitoClient` and works with the
-domain objects that client returns.
+published API. Application code constructs a `MojitoClient`, obtains the
+`Server`, and works with the domain objects that container returns.
 
 1. **Object model only.** Clients of this library see the object model layer.
    They construct `MojitoClient` and domain objects. They do not construct
@@ -61,22 +61,56 @@ domain objects that client returns.
 
 3. **Session lives on `MojitoClient`.** Every object-model class takes a
    `MojitoClient` in its constructor and stores it. That instance is how the
-   object reaches HTTP, settings, and session state.
+   object reaches HTTP, settings, and session state. `Server` is obtained from
+   the client (`client.server` / `getServer()`); there is one server per
+   client session.
 
 4. **One session argument.** Object-model methods take domain parameters (ids,
-   names, content, `ilib-locale` objects). A `MojitoClient` appears only on static
-   collection or factory methods that do not yet have an instance. Methods do
+   names, content, `ilib-locale` objects). Callers do not pass `MojitoClient`
+   into ordinary methods — the subject already holds the session. Methods do
    not take transport, auth, or DTO classes, and they do not repeat connection
    or session fields that already live on `MojitoClient`.
 
 5. **Instance is the subject.** A constructed object represents one resource.
    Instance methods read or change that resource.
 
-6. **Collections belong to the owner.** Top-level resources expose static
-   collection and factory methods (`Repository.list`, `RepositoryType.list`,
-   `User.me`). Nested resources are listed from the object that contains them:
-   a `Repository` lists assets, branches, and drops; an `Asset` lists source
-   strings.
+6. **Collections always belong to the container.** There are no static
+   collection or factory methods on resource classes. List, find, get, and
+   create live on the object that owns the collection:
+
+   - `Server` owns top-level collections: repositories, repository types,
+     users, global screenshots search, cross-repo source-string search, and
+     server-scoped ops (session check, DB latency, …).
+   - `Repository` owns assets, branches, drops (and convenience screenshot
+     filters for that repo).
+   - `Asset` owns source strings.
+   - `SourceString` owns translations and screenshots.
+
+   Prefer `server.repositories()` / `server.findRepository(name)` over
+   `Repository.list(client)`.
+
+### `MojitoClient` vs `Server`
+
+Keep them separate:
+
+| Type | Role |
+|------|------|
+| `MojitoClient` | Session and transport: host, auth, `call`, version helpers. Not a domain container. |
+| `Server` | Domain root for one Mojito instance. Collections and whole-server actions. |
+
+Do **not** merge them. Mixing transport/`call` with every top-level collection
+turns the client into a god object and blurs “session” vs “what this Mojito
+contains.” Callers write:
+
+```ts
+const client = new MojitoClient(/* … */);
+const server = client.server; // or client.getServer()
+const repos = await server.repositories();
+```
+
+`Server` holds a reference to the same `MojitoClient` as every other model
+object. Future whole-server automation (for example fan-out AI translate)
+belongs on `Server`, not on `MojitoClient`.
 
 ## 1. Object model
 
@@ -86,6 +120,7 @@ localization engineer thinks about, not Spring controller tags.
 | Public type | Meaning |
 |-------------|---------|
 | `MojitoClient` | Session: connection, auth, and `call` |
+| `Server` | One Mojito instance; root container for top-level collections |
 | `Repository` | A translation project |
 | `RepositoryType` | Shared configuration a repository can use |
 | `Drop` | A vendor translation batch |
@@ -95,22 +130,31 @@ localization engineer thinks about, not Spring controller tags.
 | `Translation` | That string in one locale (`TMTextUnitVariant` on the wire) |
 | `Screenshot` | Visual context for translators |
 | `MojitoLocale` | A repository locale and its Mojito inheritance configuration |
-| `User` | The authenticated account |
+| `User` | An account (`server.me()` for the authenticated profile) |
+
+Integrity checkers are **not** domain objects. They are configuration data on
+`RepositoryType` (and similarly on assets in the wire API): each entry is an
+extension plus a checker type (`MESSAGE_FORMAT`, `PRINTF_LIKE`, …). Running a
+check is a method that returns a result value, not a long-lived resource. Do
+not introduce an `IntegrityCheck` class.
 
 ### Object containment hierarchy
 
-Solid arrows show containment or an owned collection. Dashed arrows show a
-reference to another object. Every object-model instance also stores the same
-`MojitoClient` session; those session references are omitted for clarity.
+Solid arrows show containment or an owned collection. `1+` means one or more.
+Dashed arrows show an optional reference or a convenience listing that is not
+ownership. Every object-model instance also stores the same `MojitoClient`
+session; those session references are omitted for clarity.
+
+A source locale is a plain `Locale` from `ilib-locale`, not a separate class.
 
 ```mermaid
 flowchart TD
+    Server["Server"]
     Repository["Repository"]
     RepositoryType["RepositoryType"]
-    SourceLocale["Locale<br/>(source; ilib-locale)"]
-    MojitoLocale["MojitoLocale<br/>(target + inheritance)"]
-    TargetLocale["Locale<br/>(target; ilib-locale)"]
-    ParentLocale["Locale<br/>(optional parent; ilib-locale)"]
+    User["User"]
+    Locale["Locale<br/>(ilib-locale)"]
+    MojitoLocale["MojitoLocale"]
     Asset["Asset"]
     Branch["Branch"]
     Drop["Drop"]
@@ -118,22 +162,44 @@ flowchart TD
     SourceString["SourceString"]
     Translation["Translation"]
 
-    Repository -. "configuration" .-> RepositoryType
-    Repository -->|"source locale"| SourceLocale
-    Repository -->|"target locales"| MojitoLocale
-    MojitoLocale -->|"locale"| TargetLocale
-    MojitoLocale -. "inherits from" .-> ParentLocale
-    MojitoLocale -. "inherits when no parent" .-> SourceLocale
-    Repository -->|"assets"| Asset
-    Repository -->|"branches"| Branch
+    Server -->|"1+ repositories"| Repository
+    Server -->|"1+ repository types"| RepositoryType
+    Server -->|"users"| User
+    Server -.->|"list / search"| Screenshot
+    Repository -->|"repository type"| RepositoryType
+    Repository -->|"source locale"| Locale
+    Repository -->|"1+ target locales"| MojitoLocale
+    MojitoLocale -->|"locale"| Locale
+    MojitoLocale -.->|"optional parent"| Locale
+    Repository -->|"1+ assets"| Asset
+    Repository -->|"1+ branches"| Branch
     Repository -->|"drops"| Drop
-    Repository -->|"screenshots"| Screenshot
+    Repository -.->|"list by repo"| Screenshot
     Asset -->|"source strings"| SourceString
-    SourceString -->|"translations"| Translation
+    SourceString -->|"1+ translations"| Translation
+    SourceString -->|"1+ screenshots"| Screenshot
 ```
 
-`User` is a top-level session resource and is not contained by another domain
-object.
+`MojitoClient` is outside this diagram: it is the session, not a contained
+resource. Callers reach `Server` from the client.
+
+**Translations.** A `SourceString` owns many `Translation`s — typically one
+current translation per target locale. Collection access belongs on
+`SourceString` (for example `translations()`), not as a top-level static list.
+
+**Translation history.** Mojito stores each past wording as another
+`TMTextUnitVariant`. That is the same wire type as a current `Translation`,
+not a separate history resource. Model history as a **method that returns
+`Translation[]`** for one locale (today: `SourceString.getTranslationHistory`),
+ordered oldest→newest or newest→oldest as the API returns. Do not add a
+`TranslationHistory` or `Revision` class unless history rows need behavior that
+current translations do not share. Enrich `Translation` with fields the history
+DTO already has (`createdDate`, `createdByUser`, variant comments) when callers
+need them; those fields are simply often unset on “current” search rows.
+
+**Screenshots.** Ownership is `SourceString` → `Screenshot`.
+`Repository.screenshots()` is a convenience filter across the repo (dashed
+edge); it does not mean the repository owns screenshots in the object model.
 
 Plain locales are instances of `Locale` from the `ilib-locale` package. The
 SDK does not define another fundamental locale class. `MojitoLocale` wraps an
@@ -150,10 +216,11 @@ repository's `MojitoLocale` entries. `Repository.getSourceLocale()` and
 `Repository.setSourceLocale()` use a plain ilib `Locale`, because a source
 locale does not inherit.
 
-Actions are methods, not extra types. AI translation lives on `SourceString`
-(`translateWithAi`). AI review lives on `Translation` (`reviewWithAi`).
-Localizing a file lives on `Asset` (`localize`, `pseudoLocalize`,
-`importLocalized`).
+Actions are methods, not extra types. Per-string AI translation lives on
+`SourceString` (`translateWithAi`); repository-scoped AI translate belongs on
+`Repository`; whole-server fan-out (when automated) belongs on `Server`. AI
+review lives on `Translation` (`reviewWithAi`). Localizing a file lives on
+`Asset` (`localize`, `pseudoLocalize`, `importLocalized`).
 
 Long-running Mojito jobs are **not** first-class objects. `PollableTask` is an
 implementation detail of the HTTP API. Public methods return `Promise`s, poll

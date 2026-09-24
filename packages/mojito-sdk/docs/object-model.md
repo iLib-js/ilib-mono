@@ -18,25 +18,33 @@ Transport, generated DTOs, and auth providers are not part of that surface.
 Generated DTOs are implementation details. Adding an OpenAPI operation or
 schema does not automatically add anything to the public object model.
 
-Every object-model class stores a `MojitoClient`. Static collection methods on
-top-level types take that client as their first argument. Nested collections
-are methods on the containing object.
+Every object-model class stores a `MojitoClient`. Collections are always
+methods on the containing object (rule 6 in Architecture.md). Top-level
+collections live on `Server` (`client.server`), not as statics on
+`Repository` / `User` / ….
 
 ## Resources
 
 | Class | Mojito concept | Key methods |
 |-------|----------------|-------------|
-| `MojitoClient` | SDK session | `call` |
-| `Repository` | Translation project | `list`, `find`, `get`, `create`, `update`, `delete`, `assets`, `branches`, `drops`, `exportDrop`, `screenshots`, `getLocales`, `setLocales`, `getSourceLocale`, `setSourceLocale` |
-| `RepositoryType` | Reusable repository configuration | `list`, `get`, `create`, `update`, `delete` |
-| `Drop` | Vendor translation batch | `list`, `export`, `import`, `cancel`, `complete` |
+| `MojitoClient` | SDK session | `call`, `server` / `getServer()` |
+| `Server` | One Mojito instance (domain root) | `repositories`, `findRepository`, `getRepository`, `createRepository`, repository types, users, `me`, session/health-style ops |
+| `Repository` | Translation project | `update`, `delete`, `assets`, `branches`, `drops`, `exportDrop`, `screenshots`, `getLocales`, `setLocales`, `getSourceLocale`, `setSourceLocale` |
+| `RepositoryType` | Reusable repository configuration | `update`, `delete` (list/get/create on `Server`) |
+| `Drop` | Vendor translation batch | `export`, `import`, `cancel`, `complete` (list on `Repository`) |
 | `Asset` | Source file or virtual asset | `sourceStrings`, `localize`, `pseudoLocalize`, `importLocalized`, `delete` |
 | `Branch` | Repository branch | `delete` |
-| `SourceString` | Source-language string | `getTranslationHistory`, `translateWithAi` |
-| `Translation` | Locale-specific translation | `reviewWithAi` |
-| `Screenshot` | Visual context for strings | `list`, `update`, `delete` |
+| `SourceString` | Source-language string | `getTranslationHistory`, `translateWithAi`; contains 1+ `Translation` and 1+ `Screenshot` |
+| `Translation` | Locale-specific translation (including past variants in history) | `reviewWithAi` |
+| `Screenshot` | Visual context for strings | `update`, `delete`; owned by `SourceString` |
 | `MojitoLocale` | Repository locale inheritance | locale, parent, inheritance state |
-| `User` | Account / session | `me`, `isSessionActive` |
+| `User` | Account | profile fields; create/update/list via `Server` |
+
+Integrity checkers stay as configuration on `RepositoryType` (plain
+`RepositoryTypeIntegrityChecker` values), not as a domain class. Translation
+history is `SourceString.getTranslationHistory(locale)` → `Translation[]`
+(same type as current translations; Mojito stores each revision as another
+variant).
 
 Mojito pollable tasks remain internal. Long-running methods return Promises,
 poll until the server operation finishes, and support timeout/cancellation
