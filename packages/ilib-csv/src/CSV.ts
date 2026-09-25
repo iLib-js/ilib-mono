@@ -26,9 +26,9 @@ export interface ColumnSpec {
 export interface CSVOptions {
     /** Path to the CSV file (for metadata; caller handles file I/O) */
     pathName?: string;
-    /** Row separator regex for parsing (default: /[\n\r\f]+/) */
+    /** Row separator regex for parsing (default: /[\n\r\f]+/). Applied only outside quotes. */
     rowSeparator?: string | RegExp;
-    /** Alternative: regex for row separation */
+    /** Alternative: regex for row separation. Applied only outside quotes. */
     rowSeparatorRegex?: RegExp;
     /** Row separator for output (default: '\n') */
     outputRowSeparator?: string;
@@ -44,47 +44,168 @@ export interface CSVOptions {
 export type CSVRecord = Record<string, string>;
 
 /**
- * Split a single CSV line into fields, handling quoted strings and escaped separators.
+ * Length of `regex` matching `data` at `index`, or 0. Empty matches are ignored.
  */
-function splitLine(line: string, columnSeparator: string): string[] {
-    const results: string[] = [];
-    let current = "";
-    let inQuotes = false;
-    const len = line.length;
+function matchLengthAt(regex: RegExp, data: string, index: number): number {
+    const flags = `${regex.flags.replace(/[gy]/g, "")}y`;
+    const sticky = new RegExp(regex.source, flags);
+    sticky.lastIndex = index;
+    const match = sticky.exec(data);
+    return match && match[0].length > 0 ? match[0].length : 0;
+}
 
-    for (let i = 0; i < len; i++) {
-        const ch = line[i];
-        if (inQuotes) {
-            if (ch === '"') {
-                if (i + 1 < len && line[i + 1] === '"') {
-                    current += '"';
-                    i++;
-                } else {
-                    inQuotes = false;
-                }
-            } else {
-                current += ch;
-            }
-        } else {
-            if (ch === '"') {
-                inQuotes = true;
-            } else if (
-                ch === "\\" &&
-                i + 1 < len &&
-                line[i + 1] === columnSeparator
-            ) {
-                current += columnSeparator;
-                i++;
-            } else if (ch === columnSeparator) {
-                results.push(current.trim());
-                current = "";
-            } else {
-                current += ch;
-            }
-        }
+function rowSeparatorFromOptions(options: CSVOptions): RegExp {
+    if (options.rowSeparatorRegex) {
+        return options.rowSeparatorRegex;
     }
-    results.push(current.trim());
-    return results;
+    if (options.rowSeparator instanceof RegExp) {
+        return options.rowSeparator;
+    }
+    if (typeof options.rowSeparator === "string") {
+        return new RegExp(
+            options.rowSeparator.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+        );
+    }
+    return /[\n\r\f]+/;
+}
+
+/**
+ * Split CSV text into rows of fields. Quote state spans row separators so
+ * CR/LF/CRLF/FF inside quotes are field data. Quoted fields are not trimmed;
+ * unquoted fields are.
+ */
+function parseRows(
+    data: string,
+    columnSeparator: string,
+    rowSeparatorRegex: RegExp
+): string[][] {
+    const rows: string[][] = [];
+    let row: string[] = [];
+    let field = "";
+    let inQuotes = false;
+    let fieldQuoted = false;
+    let rowHasQuoted = false;
+    let sawColumnSeparator = false;
+    let i = 0;
+    const len = data.length;
+    const sepLen = columnSeparator.length;
+
+    /* Close the current field and append it to the row. Quoted text is kept
+     * as-is; unquoted text is trimmed.
+     */
+    const pushField = () => {
+        row.push(fieldQuoted ? field : field.trim());
+        field = "";
+        fieldQuoted = false;
+    };
+
+    /* Close the last field of the row and emit the row unless it is blank
+     * (no column separators, no quoted fields, every value empty).
+     */
+    const finishRow = () => {
+        pushField();
+        const blank =
+            !rowHasQuoted &&
+            !sawColumnSeparator &&
+            row.every((value) => value.length === 0);
+        if (!blank) {
+            rows.push(row);
+        }
+        row = [];
+        sawColumnSeparator = false;
+        rowHasQuoted = false;
+    };
+
+    // Walk the string once. Accumulate the current field; a column separator
+    // outside quotes finishes that field and pushes it onto the row immediately.
+    // A row separator outside quotes finishes the last field and commits the
+    // row. A backslash before the column separator outside quotes inserts that
+    // separator as field data. Quotes only change whether separators are syntax
+    // or field data: "" is one literal quote, and CR/LF/CRLF inside quotes stay
+    // in the field. Unquoted space or tab around a quoted field is skipped;
+    // whitespace inside the quotes is kept.
+
+    while (i < len) {
+        const ch = data[i];
+
+        if (inQuotes) {
+            if (ch === '"' && i + 1 < len && data[i + 1] === '"') {
+                field += '"';
+                i += 2;
+                continue;
+            }
+            if (ch === '"') {
+                inQuotes = false;
+                i++;
+                continue;
+            }
+            field += ch;
+            i++;
+            continue;
+        }
+
+        const rowSepLen = matchLengthAt(rowSeparatorRegex, data, i);
+        if (rowSepLen > 0) {
+            finishRow();
+            i += rowSepLen;
+            continue;
+        }
+
+        if (ch === '"') {
+            inQuotes = true;
+            fieldQuoted = true;
+            rowHasQuoted = true;
+            if (field.trim() === "") {
+                field = "";
+            }
+            i++;
+            continue;
+        }
+
+        if (
+            ch === "\\" &&
+            sepLen > 0 &&
+            i + 1 < len &&
+            data.startsWith(columnSeparator, i + 1)
+        ) {
+            field += columnSeparator;
+            i += 1 + sepLen;
+            continue;
+        }
+
+        if (sepLen > 0 && data.startsWith(columnSeparator, i)) {
+            pushField();
+            sawColumnSeparator = true;
+            i += sepLen;
+            continue;
+        }
+
+        // Unquoted padding after a quoted field. Never skip the column
+        // separator itself (a tab in TSV is a field break, not padding).
+        if (
+            fieldQuoted &&
+            (ch === " " || ch === "\t") &&
+            ch !== columnSeparator
+        ) {
+            i++;
+            continue;
+        }
+
+        field += ch;
+        i++;
+    }
+
+    if (
+        inQuotes ||
+        fieldQuoted ||
+        field.length > 0 ||
+        row.length > 0 ||
+        sawColumnSeparator
+    ) {
+        finishRow();
+    }
+
+    return rows;
 }
 
 /**
@@ -123,6 +244,11 @@ export class CSV {
     /**
      * Parse CSV/TSV text and return an array of records.
      *
+     * Quoted fields may contain row separators (including CR, LF, and CRLF)
+     * and keep leading and trailing whitespace inside the quotes. Unquoted
+     * fields are trimmed, as is unquoted space or tab around a quoted field.
+     * `columnSeparator` and the row separator apply only outside of quotes.
+     *
      * @param data - The string to parse
      * @returns Array of record objects
      */
@@ -152,23 +278,13 @@ export class CSV {
             return [];
         }
 
-        const rowSeparatorRegex =
-            options.rowSeparatorRegex ??
-            (options.rowSeparator
-                ? new RegExp(
-                        typeof options.rowSeparator === "string"
-                            ? options.rowSeparator.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-                            : String(options.rowSeparator)
-                    )
-                : /[\n\r\f]+/);
+        const rowSeparatorRegex = rowSeparatorFromOptions(options);
         const columnSeparator = options.columnSeparator ?? ",";
         const headerRow =
             typeof options.headerRow === "boolean" ? options.headerRow : true;
         let columns = options.columns;
 
-        const lines = data
-            .split(rowSeparatorRegex)
-            .filter((line) => line && line.trim().length > 0);
+        const lines = parseRows(data, columnSeparator, rowSeparatorRegex);
 
         if (lines.length === 0) {
             return [];
@@ -176,7 +292,7 @@ export class CSV {
 
         if (headerRow) {
             if (!columns) {
-                const names = splitLine(lines[0], columnSeparator);
+                const names = lines[0];
                 if (names && names.length) {
                     columns = names.map((name) => ({ name }));
                 }
@@ -188,8 +304,7 @@ export class CSV {
             return [];
         }
 
-        return lines.map((line) => {
-            const fields = splitLine(line, columnSeparator);
+        return lines.map((fields) => {
             const record: CSVRecord = {};
             columns!.forEach((col, i) => {
                 const name = typeof col === "string" ? col : col.name;
