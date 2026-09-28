@@ -1951,6 +1951,29 @@ describe("XLIFF 2.0", () => {
         expect(tu.comment).toBe("Toolbar button\nShown on the editor chrome");
     });
 
+    test('should deserialize a sole empty note as an empty string comment', () => {
+        const x = new Xliff({version: 2.0});
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="2.0" srcLang="en-US" xmlns:l="http://ilib-js.com/loctool">\n' +
+            '  <file original="foo/bar/asdf.java" l:project="webapp">\n' +
+            '    <unit id="1" name="save.button" type="res:string">\n' +
+            '      <notes>\n' +
+            '        <note appliesTo="source"></note>\n' +
+            '      </notes>\n' +
+            '      <segment>\n' +
+            '        <source>Save</source>\n' +
+            '      </segment>\n' +
+            '    </unit>\n' +
+            '  </file>\n' +
+            '</xliff>');
+
+        const tu = x.getTranslationUnits()[0];
+        expect(tu.comment).toBe("");
+    });
+
     test('should serialize a comment containing multiple notes as a single note', () => {
         const x = new Xliff({version: 2.0});
         const tu = new TranslationUnit({

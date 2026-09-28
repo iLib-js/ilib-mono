@@ -2317,6 +2317,27 @@ describe("XLIFF 1.2", () => {
         expect(tu.comment).toBe("\nShown on the editor chrome");
     });
 
+    test('should deserialize a sole empty note as an empty string comment', () => {
+        const x = new Xliff();
+        expect(x).toBeTruthy();
+
+        x.deserialize(
+            '<?xml version="1.0" encoding="utf-8"?>\n' +
+            '<xliff version="1.2">\n' +
+            '  <file original="foo/bar/asdf.java" source-language="en-US" product-name="webapp">\n' +
+            '    <body>\n' +
+            '      <trans-unit id="1" resname="save.button" restype="string">\n' +
+            '        <source>Save</source>\n' +
+            '        <note></note>\n' +
+            '      </trans-unit>\n' +
+            '    </body>\n' +
+            '  </file>\n' +
+            '</xliff>');
+
+        const tu = x.getTranslationUnits()[0];
+        expect(tu.comment).toBe("");
+    });
+
     test('should serialize a comment containing multiple notes as a single note', () => {
         const x = new Xliff();
         const tu = new TranslationUnit({
