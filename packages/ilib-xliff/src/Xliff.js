@@ -1,7 +1,7 @@
 /*
  * Xliff.js - model an xliff file
  *
- * Copyright © 2016-2017, 2019-2025 HealthTap, Inc. and JEDLSoft
+ * Copyright © 2016-2017, 2019-2026 HealthTap, Inc. and JEDLSoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,39 @@ function versionString(num) {
  */
 function makeArray(arrayOrObject) {
     return Array.isArray(arrayOrObject) ? arrayOrObject : [ arrayOrObject ];
+}
+
+/**
+ * Return the text of all of the `<note>` elements on an XLIFF 1.2 trans-unit
+ * joined with newlines, or undefined if there are no notes. A trans-unit may
+ * have any number of notes, and the text of all of them is kept.
+ *
+ * @private
+ * @param {Element} tu
+ * @returns {string | undefined}
+ */
+function getNoteText12(tu) {
+    const notes = getChildren(tu, "note") ?? [];
+    if (notes.length === 0) {
+        return undefined;
+    }
+    return notes.map((note) => getText(note) ?? "").join("\n");
+}
+
+/**
+ * Return the text of all of the `<note>` elements within the `<notes>` element
+ * of an XLIFF 2.0 unit joined with newlines, or undefined if there are no
+ * notes.
+ *
+ * @private
+ * @param {Object} tu the compact json representation of the unit
+ * @returns {string | undefined}
+ */
+function getNoteText20(tu) {
+    if (!tu.notes || !tu.notes.note) {
+        return undefined;
+    }
+    return makeArray(tu.notes.note).map((note) => note["_text"] ?? "").join("\n");
 }
 
 /**
@@ -707,7 +740,7 @@ class Xliff {
                     ? false
                     : undefined;
                 const context = getAttr(tu, "x-context");
-                const comment = getText(getChildren(tu, "note")?.[0]);
+                const comment = getNoteText12(tu);
                 const resType = getAttr(tu, "restype");
                 const datatype = getAttr(tu, "datatype");
 
@@ -818,15 +851,10 @@ class Xliff {
                         const transUnits = makeArray(unitsElement[j].unit);
                         const unitElementName = unitsElement[j]["_attributes"].name;
                         transUnits.forEach((tu) => {
-                            let comment, state, translate, location;
+                            let state, translate, location;
                             const datatype = tu._attributes["l:datatype"] || unitElementName;
                             let source = "", target = "";
-
-                            if (tu.notes && tu.notes.note) {
-                                comment = Array.isArray(tu.notes.note) ?
-                                    tu.notes.note[0]["_text"] :
-                                    tu.notes.note["_text"];
-                            }
+                            const comment = getNoteText20(tu);
 
                             let resname = tu._attributes.name;
                             let restype = "string";
