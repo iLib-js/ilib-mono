@@ -44,11 +44,18 @@ export interface CSVOptions {
 export type CSVRecord = Record<string, string>;
 
 /**
- * Length of `regex` matching `data` at `index`, or 0. Empty matches are ignored.
+ * Sticky copy of `regex` for repeated matching at successive indexes.
+ * Empty matches are ignored by callers that check length.
  */
-function matchLengthAt(regex: RegExp, data: string, index: number): number {
+function stickyRowSeparator(regex: RegExp): RegExp {
     const flags = `${regex.flags.replace(/[gy]/g, "")}y`;
-    const sticky = new RegExp(regex.source, flags);
+    return new RegExp(regex.source, flags);
+}
+
+/**
+ * Length of sticky `regex` matching `data` at `index`, or 0.
+ */
+function matchLengthAt(sticky: RegExp, data: string, index: number): number {
     sticky.lastIndex = index;
     const match = sticky.exec(data);
     return match && match[0].length > 0 ? match[0].length : 0;
@@ -72,7 +79,9 @@ function rowSeparatorFromOptions(options: CSVOptions): RegExp {
 /**
  * Split CSV text into rows of fields. Quote state spans row separators so
  * CR/LF/CRLF/FF inside quotes are field data. Quoted fields are not trimmed;
- * unquoted fields are.
+ * unquoted fields are. A `"` opens a quoted field only at field start (after
+ * optional whitespace); elsewhere it is literal. Text after a closing quote
+ * in the same field is kept. Throws if the input ends while still in quotes.
  */
 function parseRows(
     data: string,
@@ -89,6 +98,7 @@ function parseRows(
     let i = 0;
     const len = data.length;
     const sepLen = columnSeparator.length;
+    const stickySep = stickyRowSeparator(rowSeparatorRegex);
 
     /* Close the current field and append it to the row. Quoted text is kept
      * as-is; unquoted text is trimmed.
@@ -122,8 +132,10 @@ function parseRows(
     // row. A backslash before the column separator outside quotes inserts that
     // separator as field data. Quotes only change whether separators are syntax
     // or field data: "" is one literal quote, and CR/LF/CRLF inside quotes stay
-    // in the field. Unquoted space or tab around a quoted field is skipped;
-    // whitespace inside the quotes is kept.
+    // in the field. A quote opens a field only when the field is empty or
+    // whitespace so far; a mid-field quote is literal. After a closing quote,
+    // further characters stay in the field. Unquoted space or tab around a
+    // quoted field is skipped; whitespace inside the quotes is kept.
 
     while (i < len) {
         const ch = data[i];
@@ -144,20 +156,19 @@ function parseRows(
             continue;
         }
 
-        const rowSepLen = matchLengthAt(rowSeparatorRegex, data, i);
+        const rowSepLen = matchLengthAt(stickySep, data, i);
         if (rowSepLen > 0) {
             finishRow();
             i += rowSepLen;
             continue;
         }
 
-        if (ch === '"') {
+        // Open a quoted field only at field start (empty or padding only).
+        if (ch === '"' && field.trim() === "") {
             inQuotes = true;
             fieldQuoted = true;
             rowHasQuoted = true;
-            if (field.trim() === "") {
-                field = "";
-            }
+            field = "";
             i++;
             continue;
         }
@@ -182,6 +193,7 @@ function parseRows(
 
         // Unquoted padding after a quoted field. Never skip the column
         // separator itself (a tab in TSV is a field break, not padding).
+        // Non-space text after the closing quote is kept in the field.
         if (
             fieldQuoted &&
             (ch === " " || ch === "\t") &&
@@ -195,8 +207,11 @@ function parseRows(
         i++;
     }
 
+    if (inQuotes) {
+        throw new Error("Unterminated quoted field in CSV input");
+    }
+
     if (
-        inQuotes ||
         fieldQuoted ||
         field.length > 0 ||
         row.length > 0 ||
@@ -247,6 +262,9 @@ export class CSV {
      * Quoted fields may contain row separators (including CR, LF, and CRLF)
      * and keep leading and trailing whitespace inside the quotes. Unquoted
      * fields are trimmed, as is unquoted space or tab around a quoted field.
+     * A quote opens a field only at field start; a mid-field quote is literal.
+     * Text after a closing quote in the same field is kept. Throws an Error
+     * if a quoted field is not closed before the end of the input.
      * `columnSeparator` and the row separator apply only outside of quotes.
      *
      * @param data - The string to parse

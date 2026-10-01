@@ -30,6 +30,10 @@ import { CSV } from "../src/index";
  * - inner whitespace in a quoted field is kept, including padding inside the quotes
  * - unquoted whitespace around a quoted field is trimmed; padding inside quotes is not
  * - generate() then parse() preserves newline, quote, separator, and spaces
+ * - a stray mid-field quote is literal and does not swallow later rows
+ * - an unterminated quote at EOF throws
+ * - text after a closing quote stays in the field
+ * - lone CR output separators and custom RegExp rowSeparators work
  */
 
 describe("quoted fields", () => {
@@ -201,6 +205,58 @@ describe("quoted fields", () => {
                 name: "quoted name with, comma in it",
                 description: "description with, comma in it",
             });
+        });
+    });
+
+    describe("malformed and edge quotes", () => {
+        test("stray quote inside an unquoted field is literal", () => {
+            const records = new CSV().parse('A,B\n5" screen,x\ny,z\nw,v');
+            expect(records).toHaveLength(3);
+            expect(records[0]).toEqual({ A: '5" screen', B: "x" });
+            expect(records[1]).toEqual({ A: "y", B: "z" });
+            expect(records[2]).toEqual({ A: "w", B: "v" });
+        });
+
+        test("stray quote at end of an unquoted field is literal", () => {
+            const records = new CSV().parse('A,B\n5 screen",x\ny,z\nw,v');
+            expect(records).toHaveLength(3);
+            expect(records[0]).toEqual({ A: '5 screen"', B: "x" });
+            expect(records[1]).toEqual({ A: "y", B: "z" });
+            expect(records[2]).toEqual({ A: "w", B: "v" });
+        });
+
+
+        test("throws on unterminated quoted field", () => {
+            expect(() => new CSV().parse('A,B\nx,"oops\ny,z')).toThrow(
+                "Unterminated quoted field in CSV input"
+            );
+        });
+
+        test("text after a closing quote stays in the field", () => {
+            const records = new CSV().parse('A,B\n"ab"cd,x\n');
+            expect(records).toHaveLength(1);
+            expect(records[0]).toEqual({ A: "abcd", B: "x" });
+        });
+    });
+
+    describe("row separators", () => {
+        test("generate/parse round-trip with lone CR output separator", () => {
+            const csv = new CSV({
+                columns: ["A", "B"],
+                outputRowSeparator: "\r",
+            });
+            const records = [{ A: "x", B: "y" }];
+            const text = csv.generate(records);
+            expect(text).toBe("A,B\rx,y");
+            expect(new CSV().parse(text)).toEqual(records);
+        });
+
+        test("custom RegExp rowSeparator splits outside quotes only", () => {
+            const csv = new CSV({ rowSeparator: /\|+/ });
+            const records = csv.parse('A,B|x,"a|b"|y,z');
+            expect(records).toHaveLength(2);
+            expect(records[0]).toEqual({ A: "x", B: "a|b" });
+            expect(records[1]).toEqual({ A: "y", B: "z" });
         });
     });
 
