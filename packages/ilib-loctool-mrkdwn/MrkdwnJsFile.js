@@ -335,7 +335,7 @@ MrkdwnJsFile.prototype.parseMrkdwnString = function(key, str, comment) {
 };
 
 var commentRe = /^\s*\/\/(.*)$/g;
-var lineRe = /^\s*('([^']*)'|"([^"]*)")\s*:\s*('([^']*)'|"([^"]*)")\s*,?$/g;
+var lineRe = /^\s*('([^']*)'|"([^"]*)")\s*:\s*('((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*,?$/g;
 
 /**
  * Parse the data string looking for the localizable strings and add them to the

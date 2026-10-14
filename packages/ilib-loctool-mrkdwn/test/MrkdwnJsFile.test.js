@@ -279,6 +279,74 @@ describe("mrkdwn", function() {
         expect(r.getKey()).toBe("id2");
     });
 
+    test("MrkdwnJsFileParse value with escaped double quotes", function() {
+        expect.assertions(5);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "id1": "The link was updated to \\"People in your company can view\\".",\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource('The link was updated to "People in your company can view".');
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('The link was updated to "People in your company can view".');
+        expect(r.getKey()).toBe("id1");
+    });
+
+    test("MrkdwnJsFileParse value with escaped single quotes", function() {
+        expect.assertions(5);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            "    'id1': 'It\\'s a test',\n" +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set).toBeTruthy();
+        var r = set.getBySource("It's a test");
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe("It's a test");
+        expect(r.getKey()).toBe("id1");
+    });
+
+    test("MrkdwnJsFileParse value with escaped quotes does not affect neighbouring strings", function() {
+        expect.assertions(6);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    // first comment\n' +
+            '    "id1": "This is a test",\n' +
+            '    // comment for the quoted string\n' +
+            '    "id2": "Your setting has been updated to \\"{label}\\"",\n' +
+            '    "id3": "This is a test too"\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set).toBeTruthy();
+        expect(set.size()).toBe(3);
+        var r = set.get(ResourceString.hashKey("foo", "en-US", "id2", "mrkdwn"));
+        expect(r).toBeTruthy();
+        expect(r.getSource()).toBe('Your setting has been updated to "{label}"');
+        expect(r.getComment()).toBe(" comment for the quoted string");
+    });
+
     test("MrkdwnJsFileParseNonBreakingEmphasis", function() {
         expect.assertions(5);
         var mjf = new MrkdwnJsFile({
@@ -813,6 +881,37 @@ describe("mrkdwn", function() {
         var expected =
             'export default messages = {\n' +
             '    "id1": "Ceci est un essai"\n' +
+            '};\n';
+        expect(actual).toBe(expected);
+    });
+
+    test("MrkdwnJsFileLocalizeText with escaped double quotes", function() {
+        expect.assertions(2);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "id1": "\\"Ask Box AI\\" cannot be used here",\n' +
+            '};\n'
+        );
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "id1",
+            source: '"Ask Box AI" cannot be used here',
+            sourceLocale: "en-US",
+            target: '« Ask Box AI » ne peut pas être utilisé ici, "vraiment"',
+            targetLocale: "fr-FR",
+            datatype: "mrkdwn"
+        }));
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected =
+            'export default messages = {\n' +
+            '    "id1": "« Ask Box AI » ne peut pas être utilisé ici, \\"vraiment\\""\n' +
             '};\n';
         expect(actual).toBe(expected);
     });
