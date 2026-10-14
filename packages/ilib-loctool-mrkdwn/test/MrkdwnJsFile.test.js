@@ -322,7 +322,7 @@ describe("mrkdwn", function() {
     });
 
     test("MrkdwnJsFileParse value with escaped quotes does not affect neighbouring strings", function() {
-        expect.assertions(6);
+        expect.assertions(8);
         var mjf = new MrkdwnJsFile({
             project: p,
             type: mdft
@@ -345,6 +345,139 @@ describe("mrkdwn", function() {
         expect(r).toBeTruthy();
         expect(r.getSource()).toBe('Your setting has been updated to "{label}"');
         expect(r.getComment()).toBe(" comment for the quoted string");
+
+        // a comment applies to every following string until the next comment
+        r = set.get(ResourceString.hashKey("foo", "en-US", "id3", "mrkdwn"));
+        expect(r).toBeTruthy();
+        expect(r.getComment()).toBe(" comment for the quoted string");
+    });
+
+    test("MrkdwnJsFileParse escaped quote of the other kind", function() {
+        expect.assertions(3);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            "    'id1': 'Say \\\"hello\\\" to the team',\n" +
+            '    "id2": "It\\\'s a test"\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "id1", "mrkdwn")).getSource()).toBe('Say "hello" to the team');
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "id2", "mrkdwn")).getSource()).toBe("It's a test");
+    });
+
+    test("MrkdwnJsFileParse escaped backslash before the closing quote", function() {
+        expect.assertions(3);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "id1": "This ends with a backslash \\\\",\n' +
+            '    "id2": "This is a test"\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "id1", "mrkdwn")).getSource()).toBe("This ends with a backslash \\");
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "id2", "mrkdwn")).getSource()).toBe("This is a test");
+    });
+
+    test("MrkdwnJsFileParse escaped backslash followed by an escaped quote", function() {
+        expect.assertions(2);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "id1": "A backslash then a quote \\\\\\" here"\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "id1", "mrkdwn")).getSource()).toBe('A backslash then a quote \\" here');
+    });
+
+    test("MrkdwnJsFileParse escaped backslash followed by n is not a newline", function() {
+        expect.assertions(2);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "id1": "Save it to C:\\\\new folder"\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "id1", "mrkdwn")).getSource()).toBe("Save it to C:\\new folder");
+    });
+
+    test("MrkdwnJsFileParse unicode escapes", function() {
+        expect.assertions(2);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "id1": "Caf\\u00e9 and caf\\xe9"\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "id1", "mrkdwn")).getSource()).toBe("Café and café");
+    });
+
+    test("MrkdwnJsFileParse empty value does not stop parsing", function() {
+        expect.assertions(3);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            "    'id1': '',\n" +
+            '    "id2": "",\n' +
+            '    "id3": "This is a test"\n' +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set.size()).toBe(1);
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "id3", "mrkdwn")).getSource()).toBe("This is a test");
+    });
+
+    test("MrkdwnJsFileParse key with escaped quotes", function() {
+        expect.assertions(3);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "say \\"hi\\"": "Say hi",\n' +
+            "    'it\\'s': 'It is'\n" +
+            '};\n'
+        );
+        var set = mjf.getTranslationSet();
+        expect(set.get(ResourceString.hashKey("foo", "en-US", 'say "hi"', "mrkdwn")).getSource()).toBe("Say hi");
+        expect(set.get(ResourceString.hashKey("foo", "en-US", "it's", "mrkdwn")).getSource()).toBe("It is");
     });
 
     test("MrkdwnJsFileParseNonBreakingEmphasis", function() {
@@ -912,6 +1045,68 @@ describe("mrkdwn", function() {
         var expected =
             'export default messages = {\n' +
             '    "id1": "« Ask Box AI » ne peut pas être utilisé ici, \\"vraiment\\""\n' +
+            '};\n';
+        expect(actual).toBe(expected);
+    });
+
+    test("MrkdwnJsFileLocalizeText single-quoted value with escaped single quotes", function() {
+        expect.assertions(2);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            "    'id1': 'It\\'s a test',\n" +
+            '};\n'
+        );
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "id1",
+            source: "It's a test",
+            sourceLocale: "en-US",
+            target: "C'est un essai",
+            targetLocale: "fr-FR",
+            datatype: "mrkdwn"
+        }));
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected =
+            'export default messages = {\n' +
+            '    "id1": "C\'est un essai"\n' +
+            '};\n';
+        expect(actual).toBe(expected);
+    });
+
+    test("MrkdwnJsFileLocalizeText with escaped backslashes", function() {
+        expect.assertions(2);
+        var mjf = new MrkdwnJsFile({
+            project: p,
+            type: mdft
+        });
+
+        expect(mjf).toBeTruthy();
+        mjf.parse(
+            'export default messages = {\n' +
+            '    "id1": "Save it to C:\\\\new folder",\n' +
+            '};\n'
+        );
+        var translations = new TranslationSet();
+        translations.add(new ResourceString({
+            project: "foo",
+            key: "id1",
+            source: "Save it to C:\\new folder",
+            sourceLocale: "en-US",
+            target: "Enregistrez-le dans C:\\new folder",
+            targetLocale: "fr-FR",
+            datatype: "mrkdwn"
+        }));
+        var actual = mjf.localizeText(translations, "fr-FR");
+        var expected =
+            'export default messages = {\n' +
+            '    "id1": "Enregistrez-le dans C:\\\\new folder"\n' +
             '};\n';
         expect(actual).toBe(expected);
     });
