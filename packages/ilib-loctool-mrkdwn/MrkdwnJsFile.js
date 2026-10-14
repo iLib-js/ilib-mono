@@ -34,18 +34,33 @@ var NodeType = SMP.NodeType;
  * do the following unescapes:
  * "\n" -> newline char
  * "\t" -> tab char
+ * "\r" -> carriage return char
  * "\"" -> double quote char
  * "\'" -> single quote char
+ * "\\" -> backslash char
+ * "\uXXXX" and "\xXX" -> the character with that code
+ * Any other escaped character is replaced by the character itself.
+ * The string is decoded in a single pass, so "\\n" becomes a backslash
+ * followed by "n" rather than a backslash followed by a newline.
  *
  * @param {string} str the string to unescape
  * @returns {string} the unescaped string
  */
 function unescape(str) {
-   return str.
-       replace(/\\n/g, "\n").
-       replace(/\\t/g, "\t").
-       replace(/\\'/g, "'").
-       replace(/\\"/g, '"');
+    return str.replace(/\\(u[0-9a-fA-F]{4}|x[0-9a-fA-F]{2}|.)/g, function(match, esc) {
+        switch (esc.charAt(0)) {
+            case "n": return "\n";
+            case "t": return "\t";
+            case "r": return "\r";
+            case "u":
+            case "x":
+                if (esc.length > 1) {
+                    return String.fromCharCode(parseInt(esc.substring(1), 16));
+                }
+                return esc;
+            default: return esc;
+        }
+    });
 }
 
 /**
@@ -335,7 +350,7 @@ MrkdwnJsFile.prototype.parseMrkdwnString = function(key, str, comment) {
 };
 
 var commentRe = /^\s*\/\/(.*)$/g;
-var lineRe = /^\s*('([^']*)'|"([^"]*)")\s*:\s*('([^']*)'|"([^"]*)")\s*,?$/g;
+var lineRe = /^\s*('((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*:\s*('((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*,?$/g;
 
 /**
  * Parse the data string looking for the localizable strings and add them to the
@@ -361,8 +376,8 @@ MrkdwnJsFile.prototype.parse = function(data) {
             lineRe.lastIndex = 0;
             match = lineRe.exec(line);
             if (match) {
-                var key = match[2] || match[3];
-                var value = match[5] || match[6];
+                var key = unescape(match[2] !== undefined ? match[2] : match[3]);
+                var value = match[5] !== undefined ? match[5] : match[6];
                 this.contents[key] = {
                     value: value,
                     comment: lastComment,
