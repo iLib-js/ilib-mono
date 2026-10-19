@@ -1,0 +1,11 @@
+# Mini tzdata excerpt for ilib-zic sample (from tzdata2026e)
+# Contains: Asia/Tokyo
+
+# Rule	NAME	FROM	TO	-	IN	ON	AT	SAVE	LETTER
+Rule	Japan	1948	only	-	May	Sat>=1	24:00	1:00	D
+Rule	Japan	1948	1951	-	Sep	Sat>=8	25:00	0	S
+Rule	Japan	1949	only	-	Apr	Sat>=1	24:00	1:00	D
+Rule	Japan	1950	1951	-	May	Sat>=1	24:00	1:00	D
+
+Zone	Asia/Tokyo	9:18:59	-	LMT	1887 Dec 31 15:00u
+			9:00	Japan	J%sT
