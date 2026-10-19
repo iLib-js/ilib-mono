@@ -29,7 +29,7 @@ describe("Repository", () => {
         ]);
         const client = createTestClient(fetchImpl);
 
-        const repos = await Repository.list(client, { name: "alpha", extra: true });
+        const repos = await client.server.repositories({ name: "alpha", extra: true });
         expect(repos).toHaveLength(2);
         expect(repos[0]).toBeInstanceOf(Repository);
         expect(repos[0].id).toBe(1);
@@ -45,7 +45,7 @@ describe("Repository", () => {
         const { fetchImpl, getLastRequest } = createJsonFetch(() => [{ id: 3, name: "demo" }]);
         const client = createTestClient(fetchImpl);
 
-        const repos = await Repository.find(client, "demo", { includeDeleted: false });
+        const repos = await client.server.findRepository("demo", { includeDeleted: false });
         expect(repos[0].name).toBe("demo");
         const url = new URL(getLastRequest().url);
         expect(url.searchParams.get("name")).toBe("demo");
@@ -59,7 +59,7 @@ describe("Repository", () => {
         }));
         const client = createTestClient(fetchImpl);
 
-        const repo = await Repository.get(client, 42);
+        const repo = await client.server.getRepository(42);
         expect(repo.id).toBe(42);
         expect(repo.name).toBe("loaded");
         expect(new URL(getLastRequest().url).pathname).toBe("/api/repositories/42");
@@ -72,7 +72,7 @@ describe("Repository", () => {
         }));
         const client = createTestClient(fetchImpl);
 
-        const repo = await Repository.create(client, {
+        const repo = await client.server.createRepository({
             name: "created",
             description: "desc",
             futureFlag: 1,
@@ -137,6 +137,67 @@ describe("Repository", () => {
         expect(url.pathname).toBe("/api/assets");
         expect(url.searchParams.get("repositoryId")).toBe("11");
         expect(url.searchParams.get("path")).toBe("messages.json");
+    });
+
+    test("createAsset imports a source file, waits for extraction, and returns the asset", async () => {
+        const paths: string[] = [];
+        let createBody: string | undefined;
+        const { fetchImpl } = createJsonFetch((url, init) => {
+            const { pathname } = new URL(url);
+            paths.push(pathname);
+            if (pathname === "/api/assets") {
+                createBody = init?.body !== undefined ? String(init.body) : undefined;
+                return {
+                    addedAssetId: 88,
+                    path: "messages.properties",
+                    pollableTask: { id: 9, allFinished: false },
+                };
+            }
+            if (pathname === "/api/pollableTasks/9") {
+                return { id: 9, allFinished: true };
+            }
+            return {};
+        });
+        const repo = new Repository(createTestClient(fetchImpl), { id: 11 });
+
+        const asset = await repo.createAsset({
+            path: "messages.properties",
+            content: "hello=Hello",
+            wait: { pollIntervalMs: 1 },
+        });
+
+        expect(asset.id).toBe(88);
+        expect(asset.path).toBe("messages.properties");
+        expect(asset.isVirtual).toBe(false);
+        expect(JSON.parse(String(createBody))).toEqual({
+            repositoryId: 11,
+            path: "messages.properties",
+            content: "hello=Hello",
+        });
+        expect(paths).toEqual([
+            "/api/assets",
+            "/api/pollableTasks/9",
+            "/api/pollableTasks/9/output",
+        ]);
+    });
+
+    test("createVirtualAsset posts to the virtual asset endpoint", async () => {
+        const { fetchImpl, getLastRequest } = createJsonFetch(() => ({
+            id: 15,
+            path: "virtual/messages",
+            repositoryId: 11,
+        }));
+        const repo = new Repository(createTestClient(fetchImpl), { id: 11 });
+
+        const asset = await repo.createVirtualAsset({ path: "virtual/messages" });
+
+        expect(asset.id).toBe(15);
+        expect(asset.isVirtual).toBe(true);
+        expect(new URL(getLastRequest().url).pathname).toBe("/api/virtualAssets");
+        expect(JSON.parse(String(getLastRequest().init?.body))).toEqual({
+            repositoryId: 11,
+            path: "virtual/messages",
+        });
     });
 
     test("getLocales maps all three Mojito inheritance forms", async () => {

@@ -18,18 +18,26 @@
 
 export { Asset } from "./Asset";
 export type {
+    AssetCreateParams,
+    AssetFilterConfigId,
     AssetImportLocalizedParams,
     AssetListParams,
     AssetLocalizeParams,
+    AssetProps,
     AssetPseudoLocalizeParams,
+    AssetUpdateParams,
+    SourceStringBatchOptions,
+    SourceStringCreateParams,
+    VirtualAssetCreateParams,
 } from "./Asset";
 export { Branch } from "./Branch";
-export type { BranchListParams } from "./Branch";
+export type { BranchListParams, BranchProps } from "./Branch";
 export { Drop } from "./Drop";
 export type {
     DropExportParams,
     DropImportParams,
     DropListParams,
+    DropProps,
 } from "./Drop";
 export { MojitoClient } from "./MojitoClient";
 export type {
@@ -37,31 +45,63 @@ export type {
     MojitoClientOptions,
     MojitoConnectionConfig,
 } from "./MojitoClient";
+export { Server } from "./Server";
+export type {
+    DatabaseLatency,
+    LatencyMeasurement,
+    LatencySeries,
+} from "./Server";
 export { MojitoLocale } from "./MojitoLocale";
 export type { MojitoLocaleOptions } from "./MojitoLocale";
 export { Repository } from "./Repository";
 export type {
     RepositoryCreateParams,
     RepositoryListParams,
+    RepositoryProps,
     RepositoryUpdateParams,
 } from "./Repository";
 export { RepositoryType } from "./RepositoryType";
 export type {
+    IntegrityCheckerType,
     RepositoryTypeCreateParams,
     RepositoryTypeIntegrityChecker,
+    RepositoryTypeListParams,
+    RepositoryTypeProps,
     RepositoryTypeUpdateParams,
 } from "./RepositoryType";
 export { Screenshot } from "./Screenshot";
-export type { ScreenshotListParams, ScreenshotUpdateParams } from "./Screenshot";
+export type {
+    ScreenshotCreateParams,
+    ScreenshotListParams,
+    ScreenshotProps,
+    ScreenshotSearchType,
+    ScreenshotStatus,
+    ScreenshotUpdateParams,
+} from "./Screenshot";
 export { SourceString } from "./SourceString";
-export type { AiTranslationOptions, SourceStringSearchParams } from "./SourceString";
+export type {
+    AiTranslationOptions,
+    SourceStringProps,
+    SourceStringSearchParams,
+    SourceStringUpdateParams,
+} from "./SourceString";
 export { Translation } from "./Translation";
 export type {
     AiReviewResult,
+    TranslationAuthor,
+    TranslationComment,
+    TranslationCreateParams,
     TranslationProps,
     TranslationStatus,
 } from "./Translation";
 export { User } from "./User";
+export type {
+    UserCreateParams,
+    UserListParams,
+    UserProps,
+    UserRole,
+    UserUpdateParams,
+} from "./User";
 export type {
     AsyncOperationOptions,
     ForwardCompatParams,

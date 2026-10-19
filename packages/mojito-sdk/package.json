@@ -51,6 +51,8 @@
         "generate:operations": "node scripts/generate-spec-meta.js",
         "generate:types": "openapi-typescript openapi/openapi.json --output src/generated/openapi.ts --immutable",
         "test": "node node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:unit": "pnpm test",
+        "test:integration": "node node_modules/jest/bin/jest.js --config jest.integration.config.cjs --runInBand",
         "test:e2e": "node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js",
         "test:watch": "pnpm test --watch",
         "types": "tsc"

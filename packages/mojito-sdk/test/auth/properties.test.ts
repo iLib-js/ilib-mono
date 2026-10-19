@@ -1,5 +1,5 @@
 /*
- * properties.test.ts - unit tests for Mojito CLI properties loading
+ * properties.test.ts - unit tests for Spring-style properties parsing
  *
  * Copyright © 2026 JEDLSoft
  *
@@ -16,64 +16,78 @@
  * limitations under the License.
  */
 
-import {
-    buildBaseUrl,
-    connectionConfigFromProperties,
-    parseProperties,
-    resolveConnectionConfig,
-} from "../../src/auth/properties";
+import { Properties } from "../../src/auth/properties";
 
-describe("parseProperties", () => {
-    test("parses keys, ignores comments, supports colon separator", () => {
-        const props = parseProperties(`
+describe("Properties", () => {
+    test("parses keys, ignores comments, and supports a colon separator", () => {
+        const props = Properties.parse(`
 # comment
 l10n.resttemplate.host=example.com
 l10n.resttemplate.port: 443
 ! another comment
+
+not a pair
+=nokey
 `);
-        expect(props["l10n.resttemplate.host"]).toBe("example.com");
-        expect(props["l10n.resttemplate.port"]).toBe("443");
+        expect(props.get("l10n.resttemplate.host")).toBe("example.com");
+        expect(props.get("l10n.resttemplate.port")).toBe("443");
+        expect(props.has("l10n.resttemplate.host")).toBe(true);
+        expect(props.get("missing")).toBeUndefined();
+        expect(props.size).toBe(2);
     });
-});
 
-describe("connectionConfigFromProperties", () => {
-    test("maps CLI property keys including header maps", () => {
-        const config = connectionConfigFromProperties({
-            "l10n.resttemplate.scheme": "https",
-            "l10n.resttemplate.host": "mojito.example",
+    test("keeps the first separator so the value may contain = or :", () => {
+        const props = Properties.parse(`
+url=http://example.com:8080/path
+token:abc=def:ghi
+`);
+        expect(props.get("url")).toBe("http://example.com:8080/path");
+        expect(props.get("token")).toBe("abc=def:ghi");
+    });
+
+    test("trims keys and values and lets a later key win", () => {
+        const props = Properties.parse(`
+  host = first 
+host=second
+empty=
+`);
+        expect(props.get("host")).toBe("second");
+        expect(props.get("empty")).toBe("");
+        expect(props.has("empty")).toBe(true);
+        expect(props.entries()).toEqual([
+            ["host", "second"],
+            ["empty", ""],
+        ]);
+    });
+
+    test("from and toRecord round-trip the parsed map", () => {
+        const props = Properties.from({
+            "l10n.resttemplate.host": "example.com",
             "l10n.resttemplate.port": "443",
-            "l10n.resttemplate.authentication-mode": "HEADER",
-            "l10n.resttemplate.authentication.username": "alice",
-            "l10n.resttemplate.authentication.password": "secret",
-            "l10n.resttemplate.header.headers.CF-Access-Client-Id": "id",
-            "l10n.resttemplate.header.headers.CF-Access-Client-Secret": "secret2",
         });
-        expect(config.scheme).toBe("https");
-        expect(config.host).toBe("mojito.example");
-        expect(config.port).toBe(443);
-        expect(config.authenticationMode).toBe("HEADER");
-        expect(config.username).toBe("alice");
-        expect(config.headers?.["CF-Access-Client-Id"]).toBe("id");
-    });
-});
-
-describe("resolveConnectionConfig / buildBaseUrl", () => {
-    test("applies defaults without loading CLI files", () => {
-        const config = resolveConnectionConfig({}, { loadCliConfig: false });
-        expect(config.scheme).toBe("http");
-        expect(config.host).toBe("localhost");
-        expect(config.port).toBe(8080);
-        expect(config.authenticationMode).toBe("STATEFUL");
-        expect(buildBaseUrl(config)).toBe("http://localhost:8080");
+        expect(props.toRecord()).toEqual({
+            "l10n.resttemplate.host": "example.com",
+            "l10n.resttemplate.port": "443",
+        });
+        props.toRecord()["l10n.resttemplate.host"] = "mutated";
+        expect(props.get("l10n.resttemplate.host")).toBe("example.com");
     });
 
-    test("omits default https port from authority", () => {
-        expect(
-            buildBaseUrl({
-                scheme: "https",
-                host: "mojito.example",
-                port: 443,
-            }),
-        ).toBe("https://mojito.example");
+    test("merge lets the other set override overlapping keys", () => {
+        const base = Properties.parse("host=base\nport=8080\n");
+        const overlay = Properties.parse("host=overlay\nscheme=https\n");
+        const merged = base.merge(overlay);
+
+        expect(merged.get("host")).toBe("overlay");
+        expect(merged.get("port")).toBe("8080");
+        expect(merged.get("scheme")).toBe("https");
+        expect(base.get("host")).toBe("base");
+    });
+
+    test("empty has no keys", () => {
+        const props = Properties.empty();
+        expect(props.size).toBe(0);
+        expect(props.toRecord()).toEqual({});
+        expect(props.entries()).toEqual([]);
     });
 });

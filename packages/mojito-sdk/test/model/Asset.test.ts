@@ -156,4 +156,90 @@ describe("Asset", () => {
         await expect(asset.pseudoLocalize({ content: "a" }))
             .rejects.toThrow("Asset.pseudoLocalize requires an asset id");
     });
+
+    test("createSourceString posts a text unit for this asset", async () => {
+        const { fetchImpl, getLastRequest } = createJsonFetch(() => ({
+            tmTextUnitId: 21,
+            name: "greeting",
+            source: "Hello",
+            assetId: 5,
+        }));
+        const asset = new Asset(createTestClient(fetchImpl), {
+            id: 5,
+            path: "virtual/messages",
+            repositoryId: 11,
+        });
+
+        const created = await asset.createSourceString({
+            name: "greeting",
+            content: "Hello",
+            comment: "ui",
+        });
+
+        expect(created.id).toBe(21);
+        expect(created.name).toBe("greeting");
+        expect(JSON.parse(String(getLastRequest().init?.body))).toEqual({
+            assetId: 5,
+            name: "greeting",
+            source: "Hello",
+            comment: "ui",
+            assetPath: "virtual/messages",
+        });
+    });
+
+    test("createSourceStrings waits for the virtual-asset batch task", async () => {
+        const paths: string[] = [];
+        const { fetchImpl } = createJsonFetch((url, init) => {
+            const { pathname } = new URL(url);
+            paths.push(pathname);
+            if (pathname === "/api/virtualAssets/5/textUnits" && init?.method === "POST") {
+                expect(JSON.parse(String(init.body))).toEqual([
+                    { name: "a", content: "A" },
+                ]);
+                return { id: 3, allFinished: false };
+            }
+            if (pathname === "/api/pollableTasks/3") {
+                return { id: 3, allFinished: true };
+            }
+            return {};
+        });
+        const asset = new Asset(createTestClient(fetchImpl), { id: 5 });
+
+        await asset.createSourceStrings(
+            [{ name: "a", content: "A" }],
+            { wait: { pollIntervalMs: 1 } },
+        );
+
+        expect(paths).toEqual([
+            "/api/virtualAssets/5/textUnits",
+            "/api/pollableTasks/3",
+            "/api/pollableTasks/3/output",
+        ]);
+    });
+
+    test("update rewrites a virtual asset", async () => {
+        const { fetchImpl, getLastRequest } = createJsonFetch(() => ({
+            id: 5,
+            path: "virtual/renamed",
+            repositoryId: 11,
+            deleted: false,
+        }));
+        const asset = new Asset(createTestClient(fetchImpl), {
+            id: 5,
+            path: "virtual/messages",
+            repositoryId: 11,
+            virtual: true,
+        });
+
+        const updated = await asset.update({ path: "virtual/renamed" });
+
+        expect(updated.path).toBe("virtual/renamed");
+        expect(updated.isVirtual).toBe(true);
+        expect(new URL(getLastRequest().url).pathname).toBe("/api/virtualAssets");
+        expect(JSON.parse(String(getLastRequest().init?.body))).toEqual({
+            id: 5,
+            repositoryId: 11,
+            path: "virtual/renamed",
+        });
+    });
 });

@@ -31,43 +31,63 @@ export type BranchListParams = ForwardCompatParams<{
     translated?: boolean;
 }>;
 
+/** Domain fields used to construct a branch. */
+export type BranchProps = {
+    id?: number;
+    name?: string;
+    deleted?: boolean;
+    repositoryId?: number;
+};
+
 /** A source-control/content branch within a Mojito repository. */
 export class Branch {
     private readonly client: MojitoClient;
-    private readonly repositoryId: number | undefined;
-    private readonly dto: BranchDto;
+    private readonly props: BranchProps;
 
     /**
      * @param client SDK session.
-     * @param data Branch payload from the API.
-     * @param repositoryId Repository that owns this branch.
+     * @param props Domain fields for this branch.
      */
-    constructor(client: MojitoClient, data: BranchDto = {}, repositoryId?: number) {
+    constructor(client: MojitoClient, props: BranchProps = {}) {
         this.client = client;
-        this.dto = data;
-        this.repositoryId = repositoryId ?? data.repository?.id;
+        this.props = { ...props };
     }
 
     get id(): number | undefined {
-        return this.dto.id;
+        return this.props.id;
     }
 
     get name(): string | undefined {
-        return this.dto.name;
+        return this.props.name;
     }
 
     get isDeleted(): boolean {
-        return !!this.dto.deleted;
+        return !!this.props.deleted;
     }
 
     async delete(options: AsyncOperationOptions = {}): Promise<void> {
-        if (this.repositoryId === undefined || this.id === undefined) {
+        const repositoryId = this.props.repositoryId;
+        if (repositoryId === undefined || this.id === undefined) {
             throw new Error("Branch.delete requires a repository id and branch id");
         }
         const task = await this.client.call<PollableTaskDto>("deleteBranch", {
-            repositoryId: this.repositoryId,
+            repositoryId,
             branchId: this.id,
         });
         await waitForTask(this.client, task, options);
     }
+}
+
+/** Map a branch payload onto {@link Branch}. */
+export function branchFromDto(
+    client: MojitoClient,
+    data: BranchDto,
+    repositoryId?: number,
+): Branch {
+    return new Branch(client, {
+        id: data.id,
+        name: data.name,
+        deleted: data.deleted,
+        repositoryId: repositoryId ?? data.repository?.id,
+    });
 }

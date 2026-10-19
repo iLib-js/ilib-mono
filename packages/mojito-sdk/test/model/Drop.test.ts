@@ -17,6 +17,7 @@
  */
 
 import { Drop } from "../../src/model/Drop";
+import { Repository } from "../../src/model/Repository";
 import { createJsonFetch, createTestClient } from "./testClient";
 import Locale from "./ilibLocale";
 
@@ -27,7 +28,7 @@ describe("Drop", () => {
         }));
         const client = createTestClient(fetchImpl);
 
-        const drops = await Drop.list(client, { repositoryId: 5 });
+        const drops = await new Repository(client, { id: 5 }).drops();
         expect(drops).toHaveLength(2);
         expect(drops[0]).toBeInstanceOf(Drop);
         expect(drops[0].id).toBe(1);
@@ -38,8 +39,7 @@ describe("Drop", () => {
         const { fetchImpl, getLastRequest } = createJsonFetch(() => ({ dropId: 99 }));
         const client = createTestClient(fetchImpl);
 
-        const result = await Drop.export(client, {
-            repositoryId: 7,
+        const result = await new Repository(client, { id: 7 }).exportDrop({
             locales: [new Locale("fr-FR")],
             customVendorFlag: true,
         });
@@ -55,7 +55,7 @@ describe("Drop", () => {
     test("import uses this drop id and repository from the instance", async () => {
         const { fetchImpl, getLastRequest } = createJsonFetch(() => ({ dropId: 4 }));
         const client = createTestClient(fetchImpl);
-        const drop = new Drop(client, { id: 4, repository: { id: 7 } });
+        const drop = new Drop(client, { id: 4, repositoryId: 7 });
 
         const imported = await drop.import({ status: "APPROVED" });
         expect(imported.id).toBe(4);

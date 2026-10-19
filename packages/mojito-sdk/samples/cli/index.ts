@@ -19,10 +19,7 @@
  */
 
 import {
-    Drop,
     MojitoClient,
-    Repository,
-    User,
     getApiInfo,
     getCompatibleMojitoRange,
     getMojitoVersion,
@@ -35,7 +32,7 @@ function printUsage(): void {
     console.log("Commands:");
     console.log("  version              Print SDK and OpenAPI versions");
     console.log("  repos list [name]    List repositories (optional name filter)");
-    console.log("  drops list [--repository-id <id>]");
+    console.log("  drops list --repository-id <id>");
     console.log("  me                   Print the current Mojito user");
 }
 
@@ -67,10 +64,11 @@ async function main(): Promise<void> {
     }
 
     const client = new MojitoClient();
+    const server = client.server;
 
     if (command === "repos" && args[1] === "list") {
         const name = args[2];
-        const repos = await Repository.list(client, name ? { name } : {});
+        const repos = await server.repositories(name ? { name } : {});
         for (const repo of repos) {
             console.log(`${repo.id}\t${repo.name ?? ""}`);
         }
@@ -79,9 +77,15 @@ async function main(): Promise<void> {
 
     if (command === "drops" && args[1] === "list") {
         const repositoryIdRaw = getFlag(args, "--repository-id");
-        const drops = await Drop.list(client, {
-            repositoryId: repositoryIdRaw ? Number(repositoryIdRaw) : undefined,
-        });
+        const repositoryId = repositoryIdRaw ? Number(repositoryIdRaw) : Number.NaN;
+        if (!Number.isInteger(repositoryId)) {
+            console.error("drops list requires --repository-id");
+            printUsage();
+            process.exitCode = 1;
+            return;
+        }
+        const repo = await server.getRepository(repositoryId);
+        const drops = await repo.drops();
         for (const drop of drops) {
             console.log(`${drop.id}\t${drop.name ?? ""}`);
         }
@@ -89,8 +93,8 @@ async function main(): Promise<void> {
     }
 
     if (command === "me") {
-        const me = await User.me(client);
-        console.log(JSON.stringify(me, null, 2));
+        const me = await server.me();
+        console.log([me.username, me.commonName].filter((part) => part).join("\t"));
         return;
     }
 

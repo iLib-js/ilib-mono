@@ -18,77 +18,178 @@
 
 import type { components } from "../generated/openapi";
 import type { MojitoClient } from "./MojitoClient";
-import type { ForwardCompatParams } from "./types";
+import type { ForwardCompatParams, Pageable } from "./types";
 
+type UserDto = components["schemas"]["User"];
 type UserProfileDto = components["schemas"]["UserProfile"];
+type UserPageDto = components["schemas"]["PageUser"];
+
+/** Mojito account role. */
+export type UserRole = "ROLE_PM" | "ROLE_TRANSLATOR" | "ROLE_ADMIN" | "ROLE_USER";
+
+/** Domain fields used to construct a user. */
+export type UserProps = {
+    id?: number;
+    username?: string;
+    givenName?: string;
+    surname?: string;
+    commonName?: string;
+    role?: UserRole;
+    enabled?: boolean;
+    canTranslateAllLocales?: boolean;
+};
+
+/** Fields for creating an account. `password` is sent once and not stored on the result. */
+export type UserCreateParams = ForwardCompatParams<{
+    username: string;
+    password?: string;
+    givenName?: string;
+    surname?: string;
+    commonName?: string;
+    enabled?: boolean;
+    canTranslateAllLocales?: boolean;
+}>;
+
+/** Fields that may be changed on an account. */
+export type UserUpdateParams = ForwardCompatParams<Partial<UserCreateParams>>;
+
+/** Filters for listing accounts. */
+export type UserListParams = ForwardCompatParams<{
+    username?: string;
+    pageable?: Pageable;
+}>;
 
 /**
  * A Mojito user.
  */
 export class User {
-    readonly client: MojitoClient;
-    private readonly dto: UserProfileDto;
+    private readonly client: MojitoClient;
+    private readonly props: UserProps;
 
     /**
      * @param client SDK session.
-     * @param data User profile payload.
+     * @param props Domain fields for this account.
      */
-    constructor(client: MojitoClient, data: UserProfileDto = {}) {
+    constructor(client: MojitoClient, props: UserProps = {}) {
         this.client = client;
-        this.dto = data;
+        this.props = { ...props };
+    }
+
+    get id(): number | undefined {
+        return this.props.id;
     }
 
     get username(): string | undefined {
-        return this.dto.username;
+        return this.props.username;
     }
 
     get givenName(): string | undefined {
-        return this.dto.givenName;
+        return this.props.givenName;
     }
 
     get surname(): string | undefined {
-        return this.dto.surname;
+        return this.props.surname;
     }
 
     get commonName(): string | undefined {
-        return this.dto.commonName;
+        return this.props.commonName;
     }
 
-    get role(): UserProfileDto["role"] {
-        return this.dto.role;
+    get role(): UserRole | undefined {
+        return this.props.role;
     }
 
-    /**
-     * Return the currently authenticated user profile.
-     *
-     * @param client SDK session.
-     * @param extras Extra forwarded parameters.
-     */
-    static async me(
-        client: MojitoClient,
-        extras: ForwardCompatParams = {},
-    ): Promise<User> {
-        const result = await client.call<UserProfileDto>("getCurrentUser", extras);
-        return new User(client, result ?? {});
+    get enabled(): boolean | undefined {
+        return this.props.enabled;
+    }
+
+    get canTranslateAllLocales(): boolean | undefined {
+        return this.props.canTranslateAllLocales;
     }
 
     /**
-     * Check whether the current session is active.
+     * Update this account.
      *
-     * @param client SDK session.
-     * @param extras Extra forwarded parameters.
+     * @param params Fields to change.
      */
-    static async isSessionActive(
-        client: MojitoClient,
-        extras: ForwardCompatParams = {},
-    ): Promise<boolean> {
-        const result = await client.call<boolean | { active?: boolean }>(
-            "isSessionActive",
-            extras,
-        );
-        if (typeof result === "boolean") {
-            return result;
+    async update(params: UserUpdateParams): Promise<void> {
+        if (this.id === undefined) {
+            throw new Error("User.update requires a user id");
         }
-        return !!(result && (result as { active?: boolean }).active);
+        await this.client.call("updateUserByUserId", {
+            userId: this.id,
+            body: params,
+        });
     }
+
+    /** Delete this account. */
+    async delete(): Promise<void> {
+        if (this.id === undefined) {
+            throw new Error("User.delete requires a user id");
+        }
+        await this.client.call("deleteUserByUserId", { userId: this.id });
+    }
+}
+
+type UserWire = UserDto | UserProfileDto;
+
+/** Map a user or profile payload onto {@link User}, dropping secrets such as password. */
+export function userFromDto(client: MojitoClient, data: UserWire): User {
+    const record = data as UserDto & UserProfileDto;
+    return new User(client, {
+        id: record.id,
+        username: record.username,
+        givenName: record.givenName,
+        surname: record.surname,
+        commonName: record.commonName,
+        role: record.role,
+        enabled: record.enabled,
+        canTranslateAllLocales: record.canTranslateAllLocales,
+    });
+}
+
+/** List accounts. Pageable defaults to the first page of 50. */
+export async function listUsers(
+    client: MojitoClient,
+    params: UserListParams = {},
+): Promise<User[]> {
+    const { pageable, ...rest } = params;
+    const page = await client.call<UserPageDto>("getUsers", {
+        ...rest,
+        pageable: pageable ?? { page: 0, size: 50 },
+    });
+    return (page?.content ?? []).map((item) => userFromDto(client, item));
+}
+
+/** Create an account. */
+export async function insertUser(
+    client: MojitoClient,
+    params: UserCreateParams,
+): Promise<User> {
+    const result = await client.call<UserDto>("createUser", { body: params });
+    return userFromDto(client, result ?? {});
+}
+
+/** Load the authenticated account profile. */
+export async function loadCurrentUser(
+    client: MojitoClient,
+    extras: ForwardCompatParams = {},
+): Promise<User> {
+    const result = await client.call<UserProfileDto>("getCurrentUser", extras);
+    return userFromDto(client, result ?? {});
+}
+
+/** Whether the current session is active. */
+export async function loadSessionActive(
+    client: MojitoClient,
+    extras: ForwardCompatParams = {},
+): Promise<boolean> {
+    const result = await client.call<boolean | { active?: boolean }>(
+        "isSessionActive",
+        extras,
+    );
+    if (typeof result === "boolean") {
+        return result;
+    }
+    return !!(result && result.active);
 }

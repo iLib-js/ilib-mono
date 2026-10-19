@@ -24,24 +24,20 @@ import type { MojitoClient } from "./MojitoClient";
 import type { AsyncOperationOptions, ForwardCompatParams, Pageable } from "./types";
 
 type DropDto = components["schemas"]["Drop_DropSummary"];
-type DropPageDto = components["schemas"]["PageDrop_DropSummary"];
-type ExportDropDto = components["schemas"]["ExportDropConfig"];
 type ImportDropDto = components["schemas"]["ImportDropConfig"];
 type CancelDropDto = components["schemas"]["CancelDropConfig"];
 
-/** Parameters for listing drops. */
+/** Parameters for listing drops of one repository. */
 export type DropListParams = ForwardCompatParams<{
-    repositoryId?: number;
     imported?: boolean;
     canceled?: boolean;
     pageable?: Pageable;
 }>;
 
-/** Parameters for exporting a drop. */
+/** Parameters for exporting a drop from the repository that owns it. */
 export type DropExportParams = ForwardCompatParams<{
-    repositoryId: number;
     type?: "TRANSLATION" | "REVIEW";
-    locales?: Locale[];
+    locales?: readonly Locale[];
     useInheritance?: boolean;
     uploadTime?: string;
     wait?: AsyncOperationOptions;
@@ -54,82 +50,42 @@ export type DropImportParams = ForwardCompatParams<{
     wait?: AsyncOperationOptions;
 }>;
 
+/** Domain fields used to construct a drop. */
+export type DropProps = {
+    id?: number;
+    name?: string;
+    canceled?: boolean;
+    repositoryId?: number;
+};
+
 /**
  * A Mojito drop: a batch of strings exported to a translation vendor.
  */
 export class Drop {
     private readonly client: MojitoClient;
-    private readonly dto: DropDto;
+    private readonly props: DropProps;
 
     /**
      * @param client SDK session.
-     * @param data Drop payload from the API.
+     * @param props Domain fields for this drop.
      */
-    constructor(client: MojitoClient, data: DropDto = {}) {
+    constructor(client: MojitoClient, props: DropProps = {}) {
         this.client = client;
-        this.dto = data;
+        this.props = { ...props };
     }
 
     /** Numeric drop id when present. */
     get id(): number | undefined {
-        return this.dto.id;
+        return this.props.id;
     }
 
     /** Drop name when present. */
     get name(): string | undefined {
-        return this.dto.name;
+        return this.props.name;
     }
 
     get isCanceled(): boolean {
-        return !!this.dto.canceled;
-    }
-
-    /**
-     * List drops, optionally filtered by repository / import state.
-     *
-     * Unknown extra parameters are forwarded to the backend.
-     *
-     * @param client SDK session.
-     * @param params List filters and pageable options.
-     */
-    static async list(
-        client: MojitoClient,
-        params: DropListParams = {},
-    ): Promise<Drop[]> {
-        const pageable = params.pageable ?? { page: 0, size: 50 };
-        const page = await client.call<DropPageDto>("getDrops", {
-            ...params,
-            pageable,
-        });
-        return (page?.content ?? []).map((item) => new Drop(client, item));
-    }
-
-    /**
-     * Export a new drop for translation.
-     *
-     * Prefer {@link Repository.exportDrop} when you already have a repository
-     * instance.
-     *
-     * @param client SDK session.
-     * @param params Export configuration (`repositoryId` required).
-     * @returns The exported drop after Mojito finishes the background operation.
-     */
-    static async export(
-        client: MojitoClient,
-        params: DropExportParams,
-    ): Promise<Drop> {
-        const { wait, locales, ...body } = params;
-        const response = await client.call<ExportDropDto>("exportDrop", {
-            body: {
-                ...body,
-                locales: locales?.map((locale) => locale.getSpec()),
-            },
-        });
-        await waitForTask(client, response?.pollableTask, wait);
-        return new Drop(client, {
-            id: response?.dropId,
-            repository: { id: params.repositoryId },
-        });
+        return !!this.props.canceled;
     }
 
     /**
@@ -142,7 +98,7 @@ export class Drop {
         if (this.id === undefined) {
             throw new Error("Drop.import requires a drop id");
         }
-        const repositoryId = params.repositoryId ?? this.dto.repository?.id;
+        const repositoryId = params.repositoryId ?? this.props.repositoryId;
         if (repositoryId === undefined) {
             throw new Error("Drop.import requires a repository id");
         }
@@ -153,7 +109,9 @@ export class Drop {
         await waitForTask(this.client, response?.pollableTask, wait);
         return new Drop(this.client, {
             id: this.id,
-            repository: { id: repositoryId },
+            name: this.name,
+            canceled: this.props.canceled,
+            repositoryId,
         });
     }
 
@@ -183,4 +141,18 @@ export class Drop {
         }
         await this.client.call("completeDropById", { dropId: this.id, ...params });
     }
+}
+
+/** Map a drop payload onto {@link Drop}. */
+export function dropFromDto(
+    client: MojitoClient,
+    data: DropDto,
+    repositoryId?: number,
+): Drop {
+    return new Drop(client, {
+        id: data.id,
+        name: data.name,
+        canceled: data.canceled,
+        repositoryId: repositoryId ?? data.repository?.id,
+    });
 }

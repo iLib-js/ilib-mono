@@ -19,32 +19,33 @@ Generated DTOs are implementation details. Adding an OpenAPI operation or
 schema does not automatically add anything to the public object model.
 
 Every object-model class stores a `MojitoClient`. Collections are always
-methods on the containing object (rule 6 in Architecture.md). Top-level
-collections live on `Server` (`client.server`), not as statics on
-`Repository` / `User` / ….
+methods on the containing object, which must cover full CRUD for that
+collection (rules 6–7 in Architecture.md). Top-level collections live on
+`Server` (`client.server`), not as statics on `Repository` / `User` / ….
 
 ## Resources
 
 | Class | Mojito concept | Key methods |
 |-------|----------------|-------------|
 | `MojitoClient` | SDK session | `call`, `server` / `getServer()` |
-| `Server` | One Mojito instance (domain root) | `repositories`, `findRepository`, `getRepository`, `createRepository`, repository types, users, `me`, session/health-style ops |
-| `Repository` | Translation project | `update`, `delete`, `assets`, `branches`, `drops`, `exportDrop`, `screenshots`, `getLocales`, `setLocales`, `getSourceLocale`, `setSourceLocale` |
-| `RepositoryType` | Reusable repository configuration | `update`, `delete` (list/get/create on `Server`) |
-| `Drop` | Vendor translation batch | `export`, `import`, `cancel`, `complete` (list on `Repository`) |
-| `Asset` | Source file or virtual asset | `sourceStrings`, `localize`, `pseudoLocalize`, `importLocalized`, `delete` |
+| `Server` | One Mojito instance (domain root) | `repositories`, `findRepository`, `getRepository`, `createRepository`, `repositoryTypes`, `findRepositoryType`, `getRepositoryType`, `createRepositoryType`, `users`, `findUser`, `createUser`, `me`, `isSessionActive`, `screenshots`, `searchSourceStrings`, `databaseLatency` |
+| `Repository` | Translation project | `update`, `delete`, `assets`, `createAsset`, `createVirtualAsset`, `branches`, `drops`, `exportDrop`, `screenshots`, `getLocales`, `setLocales`, `getSourceLocale`, `setSourceLocale` |
+| `RepositoryType` | Reusable repository configuration | `update`, `delete` |
+| `Drop` | Vendor translation batch | `import`, `cancel`, `complete` |
+| `Asset` | Source file or virtual asset | `sourceStrings`, `createSourceString`, `createSourceStrings`, `replaceSourceStrings`, `update`, `localize`, `pseudoLocalize`, `importLocalized`, `delete` |
 | `Branch` | Repository branch | `delete` |
-| `SourceString` | Source-language string | `getTranslationHistory`, `translateWithAi`; contains 1+ `Translation` and 1+ `Screenshot` |
-| `Translation` | Locale-specific translation (including past variants in history) | `reviewWithAi` |
-| `Screenshot` | Visual context for strings | `update`, `delete`; owned by `SourceString` |
+| `SourceString` | Source-language string | `translations`, `createTranslation`, `screenshots`, `createScreenshot`, `update`, `delete`, `getTranslationHistory`, `translateWithAi` |
+| `Translation` | Locale-specific translation (including past variants in history) | `reviewWithAi`, `delete` |
+| `Screenshot` | Visual context for strings | `update`, `delete` |
 | `MojitoLocale` | Repository locale inheritance | locale, parent, inheritance state |
-| `User` | Account | profile fields; create/update/list via `Server` |
+| `User` | Account | profile fields, `update`, `delete` |
 
 Integrity checkers stay as configuration on `RepositoryType` (plain
-`RepositoryTypeIntegrityChecker` values), not as a domain class. Translation
-history is `SourceString.getTranslationHistory(locale)` → `Translation[]`
-(same type as current translations; Mojito stores each revision as another
-variant).
+`RepositoryTypeIntegrityChecker` values), not as a domain class. Current
+translations for one string are `SourceString.translations()`, and its
+screenshots are `SourceString.screenshots()`. Translation history is
+`SourceString.getTranslationHistory(locale)` → `Translation[]` (same type as
+current translations; Mojito stores each revision as another variant).
 
 Mojito pollable tasks remain internal. Long-running methods return Promises,
 poll until the server operation finishes, and support timeout/cancellation

@@ -17,6 +17,7 @@
  */
 
 import { MojitoClient } from "../../src/model/MojitoClient";
+import { Server } from "../../src/model/Server";
 import { createJsonFetch, createTestClient } from "./testClient";
 
 describe("MojitoClient", () => {
@@ -42,5 +43,12 @@ describe("MojitoClient", () => {
 
         const me = await client.call("getCurrentUser");
         expect(me).toEqual({ username: "bob" });
+    });
+
+    test("server returns one domain root for the session", () => {
+        const client = createTestClient(async () => new Response("{}", { status: 200 }));
+
+        expect(client.server).toBeInstanceOf(Server);
+        expect(client.getServer()).toBe(client.server);
     });
 });

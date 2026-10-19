@@ -8,10 +8,11 @@
   CLI-compatible auth, generated internal DTOs, and a domain object model for
   repositories, repository types, drops, assets, branches, source strings,
   translations, screenshots, locales, and users.
-- Shape the object model so clients only construct `MojitoClient` and domain
-  objects: each model class stores the session, nested collections live on
-  their container, and the package entrypoint no longer exports transport or
-  auth classes.
+- Shape the object model so clients construct `MojitoClient` and use
+  `client.server` as the domain root. Resource collections live on the
+  owning object (`Server`, `Repository`, `Asset`, `SourceString`), and the
+  package entrypoint exports that object model plus `MojitoHttpError` and
+  version helpers.
 - Report the Mojito version this SDK was generated against (`info.version` in
   the cached OpenAPI spec) and treat live Mojito servers as compatible when
   they satisfy that version’s npm caret range.

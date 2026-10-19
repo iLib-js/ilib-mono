@@ -75,8 +75,20 @@ published API. Application code constructs a `MojitoClient`, obtains the
    Instance methods read or change that resource.
 
 6. **Collections always belong to the container.** There are no static
-   collection or factory methods on resource classes. List, find, get, and
-   create live on the object that owns the collection:
+   collection or factory methods on resource classes. The object that owns
+   the collection is responsible for covering that collection’s full CRUD
+   surface in some form:
+
+   - **Create** and **Read** (list, find, get) live on the collection owner.
+   - **Update** and **Delete** live on the instance (rule 5), which callers
+     obtain only through the owner’s Read methods.
+
+   Every owned collection must expose Create, Read, Update, and Delete
+   somehow — either as methods on the owner or as methods on the instances
+   the owner returns. Do not leave a CRUD verb unimplemented when the
+   Mojito API supports it for that resource.
+
+   Owners today:
 
    - `Server` owns top-level collections: repositories, repository types,
      users, global screenshots search, cross-repo source-string search, and
@@ -88,6 +100,21 @@ published API. Application code constructs a `MojitoClient`, obtains the
 
    Prefer `server.repositories()` / `server.findRepository(name)` over
    `Repository.list(client)`.
+
+7. **Create and Read parameter shapes.** Collection-owner Create and Read
+   methods follow fixed parameter rules:
+
+   - **Create.** The owner’s create method takes every parameter required
+     to construct the new domain object (everything the resource
+     constructor needs beyond the session `MojitoClient`). Optional
+     constructor fields may appear as optional create parameters. Do not
+     make callers assemble a half-built instance and then “save” it.
+   - **Read.** List, find, and get take only search criteria — identifiers,
+     names, filters, pagination, and similar selectors. Those criteria are
+     defined as an explicit TypeScript type (for example
+     `RepositoryListParams`, `UserListParams`), not an anonymous inline
+     object type repeated at each call site. Read methods do not take
+     fields that belong on a constructed instance after it is loaded.
 
 ### `MojitoClient` vs `Server`
 

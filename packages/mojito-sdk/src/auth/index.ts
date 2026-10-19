@@ -16,11 +16,8 @@
  * limitations under the License.
  */
 
-import {
-    buildBaseUrl,
-    resolveConnectionConfig,
-} from "./properties";
 import { HeaderAuth } from "./header-auth";
+import { MojitoConfig } from "./mojito-config";
 import { createStatefulAuthFromConfig } from "./stateful-auth";
 import type { AuthProvider, MojitoConnectionConfig } from "./types";
 
@@ -31,14 +28,9 @@ export type {
     MojitoConnectionConfig,
 } from "./types";
 export { CookieJar } from "./cookie-jar";
-export {
-    buildBaseUrl,
-    connectionConfigFromProperties,
-    defaultCliConfigDir,
-    loadPropertiesFromDir,
-    parseProperties,
-    resolveConnectionConfig,
-} from "./properties";
+export { DEFAULT_CLI_PROFILES, MojitoConfig } from "./mojito-config";
+export type { MojitoConfigLoadOptions } from "./mojito-config";
+export { Properties } from "./properties";
 export { HeaderAuth } from "./header-auth";
 export {
     StatefulFormLoginAuth,
@@ -58,12 +50,19 @@ export function createAuthProvider(
     overrides: MojitoConnectionConfig = {},
     options: {
         configDir?: string;
+        configFiles?: readonly string[];
+        profiles?: readonly string[];
         loadCliConfig?: boolean;
         fetchImpl?: typeof fetch;
     } = {},
-): { baseUrl: string; auth: AuthProvider; config: ReturnType<typeof resolveConnectionConfig> } {
-    const config = resolveConnectionConfig(overrides, options);
-    const baseUrl = buildBaseUrl(config);
+): { baseUrl: string; auth: AuthProvider; config: MojitoConfig } {
+    const config = MojitoConfig.resolve(overrides, {
+        configDir: options.configDir,
+        configFiles: options.configFiles,
+        profiles: options.profiles,
+        loadCliConfig: options.loadCliConfig,
+    });
+    const baseUrl = config.baseUrl();
 
     if (config.authenticationMode === "HEADER") {
         return {

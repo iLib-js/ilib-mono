@@ -19,7 +19,6 @@
 import { Asset } from "../../src/model/Asset";
 import { Branch } from "../../src/model/Branch";
 import { RepositoryType } from "../../src/model/RepositoryType";
-import { Screenshot } from "../../src/model/Screenshot";
 import { Translation } from "../../src/model/Translation";
 import { createJsonFetch, createTestClient } from "./testClient";
 import Locale from "./ilibLocale";
@@ -29,7 +28,8 @@ describe("domain objects", () => {
         const { fetchImpl, getLastRequest } = createJsonFetch(() => [
             { id: 3, name: "web", aiPrompt: "Preserve UI terminology." },
         ]);
-        const types = await RepositoryType.list(createTestClient(fetchImpl), { name: "web" });
+        const client = createTestClient(fetchImpl);
+        const types = await client.server.repositoryTypes({ name: "web" });
 
         expect(types[0]).toBeInstanceOf(RepositoryType);
         expect(types[0].name).toBe("web");
@@ -40,14 +40,15 @@ describe("domain objects", () => {
         const client = createTestClient(async () => new Response("{}", { status: 200 }));
         expect(new Asset(client, { id: 1, path: "messages.json", virtual: false }).path)
             .toBe("messages.json");
-        expect(new Branch(client, { id: 2, name: "main" }, 1).name).toBe("main");
+        expect(new Branch(client, { id: 2, name: "main", repositoryId: 1 }).name).toBe("main");
     });
 
     test("Screenshot maps clean filters to Mojito query names", async () => {
         const { fetchImpl, getLastRequest } = createJsonFetch(() => [
             { id: 4, name: "settings" },
         ]);
-        const screenshots = await Screenshot.list(createTestClient(fetchImpl), {
+        const client = createTestClient(fetchImpl);
+        const screenshots = await client.server.screenshots({
             repositoryIds: [7],
             locales: [new Locale("fr-FR")],
             name: "settings",

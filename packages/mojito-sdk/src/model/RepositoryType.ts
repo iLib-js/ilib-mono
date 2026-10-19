@@ -21,12 +21,35 @@ import type { MojitoClient } from "./MojitoClient";
 import type { ForwardCompatParams } from "./types";
 
 type RepositoryTypeDto = components["schemas"]["RepoType_RepoType"];
-type IntegrityCheckerDto = components["schemas"]["RepoTypeIntegrityChecker_RepoType"];
+
+/** Checker Mojito runs against strings in assets of a given extension. */
+export type IntegrityCheckerType =
+    | "MESSAGE_FORMAT"
+    | "FLUENT"
+    | "MESSAGE_FORMAT_DOUBLE_BRACES"
+    | "PRINTF_LIKE"
+    | "SIMPLE_PRINTF_LIKE"
+    | "PRINTF_LIKE_IGNORE_PERCENTAGE_AFTER_BRACKETS"
+    | "PRINTF_LIKE_VARIABLE_TYPE"
+    | "PRINTF_LIKE_ADD_PARAMETER_SPECIFIER"
+    | "COMPOSITE_FORMAT"
+    | "WHITESPACE"
+    | "TRAILING_WHITESPACE"
+    | "HTML_TAG"
+    | "ELLIPSIS"
+    | "BACKQUOTE"
+    | "EMPTY_TARGET_NOT_EMPTY_SOURCE"
+    | "MARKDOWN_LINKS"
+    | "PYTHON_FPRINT"
+    | "EMAIL"
+    | "URL"
+    | "FORBIDS_CONTROL_CHARACTERS"
+    | "MISC_AI_TRANSLATE";
 
 /** Integrity rule applied to matching asset extensions. */
 export type RepositoryTypeIntegrityChecker = {
     assetExtension?: string;
-    integrityCheckerType?: IntegrityCheckerDto["integrityCheckerType"];
+    integrityCheckerType?: IntegrityCheckerType;
 };
 
 type RepositoryTypeFields = {
@@ -42,64 +65,56 @@ export type RepositoryTypeCreateParams = ForwardCompatParams<RepositoryTypeField
 /** Fields that may be changed on a repository type. */
 export type RepositoryTypeUpdateParams = ForwardCompatParams<Partial<RepositoryTypeFields>>;
 
+/** Search criteria for listing repository types. */
+export type RepositoryTypeListParams = ForwardCompatParams<{
+    /** Optional exact repository type name filter. */
+    name?: string;
+}>;
+
+/** Domain fields used to construct a repository type. */
+export type RepositoryTypeProps = {
+    id?: number;
+    name?: string;
+    description?: string;
+    aiPrompt?: string;
+    integrityCheckers?: readonly RepositoryTypeIntegrityChecker[];
+};
+
 /** A named repository configuration, including AI and integrity-check settings. */
 export class RepositoryType {
     private readonly client: MojitoClient;
-    private readonly dto: RepositoryTypeDto;
+    private readonly props: RepositoryTypeProps;
 
     /**
      * @param client SDK session.
-     * @param data Repository type payload from the API.
+     * @param props Domain fields for this repository type.
      */
-    constructor(client: MojitoClient, data: RepositoryTypeDto = {}) {
+    constructor(client: MojitoClient, props: RepositoryTypeProps = {}) {
         this.client = client;
-        this.dto = data;
+        this.props = {
+            ...props,
+            integrityCheckers: props.integrityCheckers ? [...props.integrityCheckers] : undefined,
+        };
     }
 
     get id(): number | undefined {
-        return this.dto.id;
+        return this.props.id;
     }
 
     get name(): string | undefined {
-        return this.dto.name;
+        return this.props.name;
     }
 
     get description(): string | undefined {
-        return this.dto.description;
+        return this.props.description;
     }
 
     get aiPrompt(): string | undefined {
-        return this.dto.aiPrompt;
+        return this.props.aiPrompt;
     }
 
     get integrityCheckers(): readonly RepositoryTypeIntegrityChecker[] {
-        return this.dto.integrityCheckers ?? [];
-    }
-
-    static async list(
-        client: MojitoClient,
-        params: ForwardCompatParams<{ name?: string }> = {},
-    ): Promise<RepositoryType[]> {
-        const result = await client.call<readonly RepositoryTypeDto[]>("getRepoTypes", params);
-        return (result ?? []).map((item) => new RepositoryType(client, item));
-    }
-
-    static async get(
-        client: MojitoClient,
-        repositoryTypeId: number,
-    ): Promise<RepositoryType> {
-        const result = await client.call<RepositoryTypeDto>("getRepoTypeById", {
-            repoTypeId: repositoryTypeId,
-        });
-        return new RepositoryType(client, result ?? {});
-    }
-
-    static async create(
-        client: MojitoClient,
-        params: RepositoryTypeCreateParams,
-    ): Promise<RepositoryType> {
-        const result = await client.call<RepositoryTypeDto>("createRepoType", { body: params });
-        return new RepositoryType(client, result ?? {});
+        return this.props.integrityCheckers ?? [];
     }
 
     async update(params: RepositoryTypeUpdateParams): Promise<void> {
@@ -118,4 +133,50 @@ export class RepositoryType {
         }
         await this.client.call("deleteRepoType", { repoTypeId: this.id });
     }
+}
+
+/** Map a repository-type payload onto {@link RepositoryType}. */
+export function repositoryTypeFromDto(
+    client: MojitoClient,
+    data: RepositoryTypeDto,
+): RepositoryType {
+    return new RepositoryType(client, {
+        id: data.id,
+        name: data.name,
+        description: data.description,
+        aiPrompt: data.aiPrompt,
+        integrityCheckers: data.integrityCheckers?.map((checker) => ({
+            assetExtension: checker.assetExtension,
+            integrityCheckerType: checker.integrityCheckerType,
+        })),
+    });
+}
+
+/** List repository types, optionally filtered by name. */
+export async function listRepositoryTypes(
+    client: MojitoClient,
+    params: RepositoryTypeListParams = {},
+): Promise<RepositoryType[]> {
+    const result = await client.call<readonly RepositoryTypeDto[]>("getRepoTypes", params);
+    return (result ?? []).map((item) => repositoryTypeFromDto(client, item));
+}
+
+/** Load one repository type by id. */
+export async function loadRepositoryType(
+    client: MojitoClient,
+    repositoryTypeId: number,
+): Promise<RepositoryType> {
+    const result = await client.call<RepositoryTypeDto>("getRepoTypeById", {
+        repoTypeId: repositoryTypeId,
+    });
+    return repositoryTypeFromDto(client, result ?? {});
+}
+
+/** Create a repository type. */
+export async function insertRepositoryType(
+    client: MojitoClient,
+    params: RepositoryTypeCreateParams,
+): Promise<RepositoryType> {
+    const result = await client.call<RepositoryTypeDto>("createRepoType", { body: params });
+    return repositoryTypeFromDto(client, result ?? {});
 }

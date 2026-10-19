@@ -21,16 +21,34 @@ import {
     type MojitoConnectionConfig,
 } from "../auth";
 import { LowLevelClient } from "../lowlevel/client";
+import { Server } from "./Server";
 
 export type { AuthenticationMode, MojitoConnectionConfig } from "../auth";
 
 export type MojitoClientOptions = MojitoConnectionConfig & {
     /** Optional absolute base URL override (skips host/port assembly). */
     baseUrl?: string;
-    /** Load `~/.l10n/config/cli` properties. Default true. */
+    /**
+     * Load Mojito CLI property files. Default true.
+     * Uses {@link configFiles}, or Spring-style {@link configDir} + {@link profiles}.
+     */
     loadCliConfig?: boolean;
-    /** Override CLI config directory. */
+    /**
+     * Directory for Spring-style `application[-profile].properties` lookup.
+     * Default: `~/.l10n/config/cli`. Ignored when {@link configFiles} is set
+     * except as the base for relative paths in that list.
+     */
     configDir?: string;
+    /**
+     * Explicit property files to layer, in order (later wins). Prefer this when
+     * environments share a directory but use different filenames.
+     */
+    configFiles?: readonly string[];
+    /**
+     * Spring profiles used when {@link configFiles} is omitted.
+     * Default: `cli`, `formlogincredentialprovider` (same as the local `mojito` wrapper).
+     */
+    profiles?: readonly string[];
     /** Optional fetch implementation (useful in tests). */
     fetchImpl?: typeof fetch;
 };
@@ -45,6 +63,7 @@ export class MojitoClient {
     /** Resolved absolute Mojito base URL. */
     readonly baseUrl: string;
     private readonly transport: LowLevelClient;
+    private serverInstance?: Server;
 
     /**
      * @param options Connection overrides and optional test hooks.
@@ -52,6 +71,8 @@ export class MojitoClient {
     constructor(options: MojitoClientOptions = {}) {
         const { auth, baseUrl } = createAuthProvider(options, {
             configDir: options.configDir,
+            configFiles: options.configFiles,
+            profiles: options.profiles,
             loadCliConfig: options.loadCliConfig,
             fetchImpl: options.fetchImpl,
         });
@@ -61,6 +82,21 @@ export class MojitoClient {
             auth,
             fetchImpl: options.fetchImpl,
         });
+    }
+
+    /**
+     * Domain root for this session. Repeated access returns the same instance.
+     */
+    get server(): Server {
+        return this.getServer();
+    }
+
+    /**
+     * Domain root for this session. Same instance as {@link MojitoClient.server}.
+     */
+    getServer(): Server {
+        this.serverInstance ??= new Server(this);
+        return this.serverInstance;
     }
 
     /**
