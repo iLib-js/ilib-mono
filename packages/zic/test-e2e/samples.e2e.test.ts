@@ -26,14 +26,21 @@ import { expectFileToMatchSnapshot, FSSnapshot } from "ilib-internal";
 const execFileAsync = promisify(execFile);
 
 const sampleDir = path.resolve(__dirname, "..", "samples", "cli");
-const zoneinfoDir = path.join(sampleDir, "zoneinfo");
+const localeDir = path.join(sampleDir, "locale");
+const zoneinfoDir = path.join(localeDir, "zoneinfo");
 
 describe("samples", () => {
     describe("cli", () => {
         let fsSnapshot: FSSnapshot;
 
         beforeAll(async () => {
-            fsSnapshot = FSSnapshot.create([zoneinfoDir]);
+            fsSnapshot = FSSnapshot.create([localeDir]);
+
+            // Ensure the package lib/ matches src/ before the sample imports it.
+            await execFileAsync("pnpm", ["build"], {
+                cwd: path.resolve(__dirname, ".."),
+                env: { ...process.env },
+            });
 
             const { stdout, stderr } = await execFileAsync(
                 "pnpm",
@@ -45,8 +52,8 @@ describe("samples", () => {
             );
 
             expect(stderr).toBe("");
-            expect(stdout).toContain("Wrote 3 zone(s)");
-        }, 60000);
+            expect(stdout).toContain("Wrote 4 zone(s)");
+        }, 120000);
 
         afterAll(() => {
             fsSnapshot.restore();
@@ -67,6 +74,26 @@ describe("samples", () => {
         it("should produce Asia/Tokyo.json", () => {
             expectFileToMatchSnapshot(
                 path.join(zoneinfoDir, "Asia", "Tokyo.json")
+            );
+        });
+
+        it("should produce America/Sao_Paulo.json with %z expanded", () => {
+            expectFileToMatchSnapshot(
+                path.join(zoneinfoDir, "America", "Sao_Paulo.json")
+            );
+        });
+
+        it("should produce zonetab.json", () => {
+            expectFileToMatchSnapshot(path.join(zoneinfoDir, "zonetab.json"));
+        });
+
+        it("should produce root timezone.jf", () => {
+            expectFileToMatchSnapshot(path.join(localeDir, "timezone.jf"));
+        });
+
+        it("should produce und/US/timezone.jf", () => {
+            expectFileToMatchSnapshot(
+                path.join(localeDir, "und", "US", "timezone.jf")
             );
         });
     });

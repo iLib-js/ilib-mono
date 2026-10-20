@@ -1,0 +1,8 @@
+# Mini tzdata excerpt for ilib-zic sample (from tzdata2026e)
+# Contains: America/Sao_Paulo — FORMAT %z (numeric abbrev after compile)
+
+# Rule	NAME	FROM	TO	-	IN	ON	AT	SAVE	LETTER
+Rule	Brazil	2007	max	-	Oct	Sun>=15	0:00	1:00	-
+Rule	Brazil	2007	max	-	Feb	Sun>=15	0:00	0	-
+
+Zone	America/Sao_Paulo	-3:00	Brazil	%z

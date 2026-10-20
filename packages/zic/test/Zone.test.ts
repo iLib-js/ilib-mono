@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Rule } from "../src/Rule";
 import { RuleSet } from "../src/RuleSet";
 import { Zone } from "../src/Zone";
 
@@ -63,5 +64,30 @@ describe("Zone", () => {
         );
         expect(zone.getName()).toBe("Africa/Lome");
         expect(zone.getOffsets().length).toBe(1);
+    });
+
+    test("getJson expands %z FORMAT to -03/-02 style for Sao_Paulo-like zone", () => {
+        expect.assertions(2);
+        // Patterned on tzdata main form: Zone … -3:00 Brazil %z
+        const ruleSets = new Map<string, RuleSet>();
+        const zone = new Zone(
+            "Zone\tAmerica/Sao_Paulo\t-3:00\tBrazil\t%z",
+            ruleSets
+        );
+        const brazil = ruleSets.get("Brazil")!;
+        brazil.add(
+            new Rule(
+                "Rule\tBrazil\t2007\tmax\t-\tOct\tSun>=15\t0:00\t1:00\t-"
+            )
+        );
+        brazil.add(
+            new Rule(
+                "Rule\tBrazil\t2007\tmax\t-\tFeb\tSun>=15\t0:00\t0\t-"
+            )
+        );
+
+        const json = zone.getJson(true);
+        expect(json).not.toBeNull();
+        expect(json!.f).toBe("-03/-02");
     });
 });

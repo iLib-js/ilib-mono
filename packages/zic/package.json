@@ -52,7 +52,11 @@
         "node": ">=12 <23"
     },
     "dependencies": {
-        "ilib-ctype": "workspace:^"
+        "cldr-core": "^48.2.0",
+        "ilib-common": "workspace:^",
+        "ilib-ctype": "workspace:^",
+        "ilib-data-utils": "workspace:^",
+        "json-stable-stringify": "^1.3.0"
     },
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
@@ -74,6 +78,7 @@
     "devDependencies": {
         "@tsconfig/node12": "^12.1.4",
         "@types/jest": "^29.5.14",
+        "@types/json-stable-stringify": "^1.0.36",
         "@types/node": "12",
         "ilib-internal": "workspace:^",
         "jest": "^29.7.0",

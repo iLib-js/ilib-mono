@@ -19,6 +19,7 @@
 
 import { Offset } from "../src/Offset";
 import { RelativeDate, StartRule } from "../src/RelativeDate";
+import { Rule } from "../src/Rule";
 import { RuleSet } from "../src/RuleSet";
 
 describe("Offset", () => {
@@ -273,5 +274,107 @@ describe("Offset", () => {
         }
         expect(offsets[11].endDate).not.toBeNull();
         expect(offsets[11].endDate!.year).toBe(-1);
+    });
+
+    describe("abbreviation format %z", () => {
+        /**
+         * Build an offset like America/Sao_Paulo's current line:
+         * `-3:00 Brazil %z` with DST rules that apply through `max`.
+         */
+        function saoPauloStyleOffset(): Offset {
+            const ruleSets = new Map<string, RuleSet>();
+            const offset = new Offset(
+                "\t\t-3:00\tBrazil\t%z",
+                ruleSets,
+                "America/Sao_Paulo"
+            );
+            const brazil = ruleSets.get("Brazil")!;
+            // LETTER is "-" (unused when FORMAT is %z); SAVE drives the abbrev
+            brazil.add(
+                new Rule(
+                    "Rule\tBrazil\t2007\tmax\t-\tOct\tSun>=15\t0:00\t1:00\t-"
+                )
+            );
+            brazil.add(
+                new Rule(
+                    "Rule\tBrazil\t2007\tmax\t-\tFeb\tSun>=15\t0:00\t0\t-"
+                )
+            );
+            return offset;
+        }
+
+        test("expands %z with DST to std/dst slash form like -03/-02", () => {
+            expect.assertions(2);
+            const json = saoPauloStyleOffset().getJson(true);
+            // zic abbroffset: -3h → "-03"; -3h+1h → "-02"
+            expect(json.f).toBe("-03/-02");
+            expect(json.o).toBe("-3:0");
+        });
+
+        test("expands %z without rules to a single numeric abbrev", () => {
+            expect.assertions(1);
+            const ruleSets = new Map<string, RuleSet>();
+            const offset = new Offset(
+                "\t\t-3:00\t-\t%z",
+                ruleSets,
+                "America/Argentina/Salta"
+            );
+            expect(offset.getJson(true).f).toBe("-03");
+        });
+
+        test("expands %z with positive offset and minutes like +0530", () => {
+            expect.assertions(1);
+            const ruleSets = new Map<string, RuleSet>();
+            const offset = new Offset(
+                "\t\t5:30\t-\t%z",
+                ruleSets,
+                "Asia/Colombo"
+            );
+            expect(offset.getJson(true).f).toBe("+0530");
+        });
+
+        test("expands %z with DST and minutes to slash form like +1245/+1345", () => {
+            expect.assertions(1);
+            const ruleSets = new Map<string, RuleSet>();
+            const offset = new Offset(
+                "\t\t12:45\tChatham\t%z",
+                ruleSets,
+                "Pacific/Chatham"
+            );
+            const chatham = ruleSets.get("Chatham")!;
+            chatham.add(
+                new Rule(
+                    "Rule\tChatham\t2007\tmax\t-\tSep\tlastSun\t2:45\t1:00\t-"
+                )
+            );
+            chatham.add(
+                new Rule(
+                    "Rule\tChatham\t2008\tmax\t-\tApr\tSun>=1\t2:45\t0\t-"
+                )
+            );
+            expect(offset.getJson(true).f).toBe("+1245/+1345");
+        });
+
+        test("still converts %s to {c} when FORMAT is letter-based", () => {
+            expect.assertions(1);
+            const ruleSets = new Map<string, RuleSet>();
+            const offset = new Offset(
+                "\t\t-5:00\tUS\tE%sT",
+                ruleSets,
+                "America/New_York"
+            );
+            const us = ruleSets.get("US")!;
+            us.add(
+                new Rule(
+                    "Rule\tUS\t2007\tmax\t-\tMar\tSun>=8\t2:00\t1:00\tD"
+                )
+            );
+            us.add(
+                new Rule(
+                    "Rule\tUS\t2007\tmax\t-\tNov\tSun>=1\t2:00\t0\tS"
+                )
+            );
+            expect(offset.getJson(true).f).toBe("E{c}T");
+        });
     });
 });

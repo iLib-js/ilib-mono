@@ -20,30 +20,30 @@
  */
 
 import * as path from "path";
-import { ZoneInfoCompiler } from "ilib-zic";
+import { ZoneInfoPipeline } from "ilib-zic";
 
 /**
  * Demo entry point.
  *
- * With no args, compiles the bundled mini tzdata under `data/` into
- * `./zoneinfo`. Optional positional args override src and dest.
+ * With no args, runs compile → enrich → write on the bundled mini tzdata
+ * under `data/` into `./locale` (zoneinfo/, timezone.jf, und/).
+ * Optional positional args override src and localeDir.
  */
 function main(argv: string[]): void {
     console.log("ilib-zic sample");
 
     const positionals = argv.filter((arg) => !arg.startsWith("-"));
     const srcDir = positionals[0] || path.join(__dirname, "data");
-    const destDir = positionals[1] || path.join(__dirname, "zoneinfo");
+    const localeDir = positionals[1] || path.join(__dirname, "locale");
 
-    console.log(`Compiling ${srcDir} -> ${destDir}`);
+    console.log(`Compiling ${srcDir} -> ${localeDir}`);
 
-    const compiler = new ZoneInfoCompiler({
+    const result = new ZoneInfoPipeline({
         srcDir,
-        destDir,
+        localeDir,
         verbose: true,
-    });
-    const result = compiler.compile();
-    console.log(`Wrote ${result.zoneCount} zone(s) to ${result.destDir}`);
+    }).run();
+    console.log(`Wrote ${result.zoneCount} zone(s) to ${result.localeDir}`);
 }
 
 main(process.argv.slice(2));

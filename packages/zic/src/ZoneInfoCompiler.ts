@@ -1,5 +1,5 @@
 /*
- * ZoneInfoCompiler.ts - compile IANA tzdata into ilib JSON zoneinfo
+ * ZoneInfoCompiler.ts - compile IANA tzdata into in-memory zoneinfo JSON
  *
  * Copyright © 2014, 2026 JEDLSoft
  *
@@ -21,9 +21,9 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { RuleSet } from "./RuleSet";
+import type { ZoneInfo } from "./types";
 import { Zone } from "./Zone";
 import { ZoneInfoFile } from "./ZoneInfoFile";
-import { createZoneWriter } from "./ZoneWriterFactory";
 
 /**
  * Options for {@link ZoneInfoCompiler}.
@@ -36,11 +36,6 @@ export interface ZoneInfoCompilerOptions {
     srcDir: string;
 
     /**
-     * Directory where compiled JSON zoneinfo files will be written.
-     */
-    destDir: string;
-
-    /**
      * When true, emit progress messages to stdout.
      */
     verbose?: boolean;
@@ -50,102 +45,71 @@ export interface ZoneInfoCompilerOptions {
      * DST rules for each zone, not historical offsets.
      */
     currentOnly?: boolean;
-
-    /**
-     * Output file type. Currently only `"json"` is supported.
-     */
-    format?: string;
 }
 
 /**
- * Summary of a successful compile run.
+ * In-memory result of a successful compile run.
+ *
+ * No files are written; use {@link LocaleDataWriter} after enrichment.
  */
 export interface CompileResult {
-    /** Number of zone files written. */
-    zoneCount: number;
+    /** Zone id → compiler JSON (`o`, `f`, optional `s`/`e`). */
+    zones: Record<string, ZoneInfo>;
 
-    /** Absolute path to the output directory. */
-    destDir: string;
+    /** Number of zones in {@link CompileResult.zones}. */
+    zoneCount: number;
 }
 
 /**
- * Compiles IANA tzdata zone sources into JSON zoneinfo files for ilib.
+ * Compiles IANA tzdata zone sources into an in-memory zoneinfo map.
  *
  * TypeScript port of the Java tool in `com.ilib.tools.zic.ZoneInfoCompiler`
- * from the monolithic ilib package.
+ * from the monolithic ilib package. Writing is intentionally separate so
+ * enrichment can run before any disk I/O.
  */
 export class ZoneInfoCompiler {
-    /**
-     * Directory containing unpacked IANA tzdata source files.
-     */
     private readonly srcDir: string;
-
-    /**
-     * Directory where compiled JSON zoneinfo files will be written.
-     */
-    private readonly destDir: string;
 
     /**
      * When true, emit progress messages to stdout.
      */
     private readonly verbose: boolean;
-
-    /**
-     * When true, only emit the currently applicable offset and DST rules.
-     */
     private readonly currentOnly: boolean;
-
-    /**
-     * Output file type (currently only `"json"`).
-     */
-    private readonly format: string;
 
     /**
      * Create a new compiler instance.
      *
-     * @param options Source and destination directories for compilation
+     * @param options Source directory and compile flags
      */
     constructor(options: ZoneInfoCompilerOptions) {
-        if (!options || !options.srcDir || !options.destDir) {
-            throw new Error("srcDir and destDir are required");
+        if (!options || !options.srcDir) {
+            throw new Error("srcDir is required");
         }
         this.srcDir = options.srcDir;
-        this.destDir = options.destDir;
         this.verbose = Boolean(options.verbose);
         this.currentOnly =
             options.currentOnly === undefined ? true : Boolean(options.currentOnly);
-        this.format = options.format || "json";
     }
 
     /**
-     * Compile zone info from the configured source directory into JSON
-     * files under the destination directory.
+     * Parse tzdata sources and return zone JSON in memory.
      *
-     * @returns Summary of the compile run
+     * Does not create directories or write files. Zones whose
+     * `getJson(currentOnly)` returns `null` are omitted.
+     *
+     * @returns Compiled zone map and count
+     * @throws Error when `srcDir` is missing or is not a directory
      */
     compile(): CompileResult {
         const infoDir = path.resolve(this.srcDir);
-        const outputDir = path.resolve(this.destDir);
 
         if (this.verbose) {
             console.log("Reading zone info directory: " + infoDir);
             console.log("Only output current rules: " + this.currentOnly);
-            console.log("File type is: " + this.format);
-            console.log("Output dir name: " + outputDir);
         }
 
         if (!fs.existsSync(infoDir) || !fs.statSync(infoDir).isDirectory()) {
             throw new Error(infoDir + " is not a directory.");
-        }
-
-        if (fs.existsSync(outputDir)) {
-            if (!fs.statSync(outputDir).isDirectory()) {
-                throw new Error(
-                    outputDir + " exists, but is not a directory."
-                );
-            }
-        } else {
-            fs.mkdirSync(outputDir, { recursive: true });
         }
 
         const zones = new Map<string, Zone>();
@@ -168,26 +132,29 @@ export class ZoneInfoCompiler {
             } catch (e) {
                 if (this.verbose) {
                     console.warn(
-                        "Skipping file " + filePath + ": " +
+                        "Skipping file " +
+                            filePath +
+                            ": " +
                             (e instanceof Error ? e.message : e)
                     );
                 }
             }
         }
 
-        const writer = createZoneWriter(
-            this.format,
-            outputDir,
-            this.verbose
-        );
-        if (!writer) {
-            throw new Error("Unsupported output format: " + this.format);
+        const resultZones: Record<string, ZoneInfo> = {};
+        for (const [zoneName, zone] of zones) {
+            if (!zoneName) {
+                continue;
+            }
+            const json = zone.getJson(this.currentOnly);
+            if (json !== null) {
+                resultZones[zoneName] = json as unknown as ZoneInfo;
+            }
         }
-        const zoneCount = writer.writeZones(zones, this.currentOnly);
 
         return {
-            zoneCount,
-            destDir: outputDir,
+            zones: resultZones,
+            zoneCount: Object.keys(resultZones).length,
         };
     }
 }

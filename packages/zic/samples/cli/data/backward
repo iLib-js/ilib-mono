@@ -1,0 +1,3 @@
+# Link	TARGET		LINK-NAME
+# Mini backward file for the ilib-zic sample (curated from IANA backward)
+Link	America/New_York	US/Eastern

@@ -17,11 +17,21 @@
  * limitations under the License.
  */
 
-import { ZoneInfoCompiler } from "../src/index";
+import {
+    COUNTRY_EXCEPTIONS,
+    LocaleDataWriter,
+    ZoneInfoCompiler,
+    ZoneInfoEnricher,
+    ZoneInfoPipeline,
+} from "../src/index";
 
 describe("package exports", () => {
-    test("exports the public API", () => {
-        expect.assertions(1);
+    test("exports the public pipeline API", () => {
+        expect.assertions(5);
         expect(typeof ZoneInfoCompiler).toBe("function");
+        expect(typeof ZoneInfoEnricher).toBe("function");
+        expect(typeof LocaleDataWriter).toBe("function");
+        expect(typeof ZoneInfoPipeline).toBe("function");
+        expect(COUNTRY_EXCEPTIONS["America/Coral_Harbour"]).toBe("CA");
     });
 });

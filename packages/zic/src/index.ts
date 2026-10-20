@@ -20,13 +20,45 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { ZoneInfoCompiler } from "./ZoneInfoCompiler";
+
+import { ZoneInfoPipeline } from "./ZoneInfoPipeline";
 
 export { ZoneInfoCompiler } from "./ZoneInfoCompiler";
 export type {
     ZoneInfoCompilerOptions,
     CompileResult,
 } from "./ZoneInfoCompiler";
+
+export { ZoneInfoEnricher } from "./ZoneInfoEnricher";
+export type { ZoneInfoEnricherOptions } from "./ZoneInfoEnricher";
+
+export { LocaleDataWriter } from "./LocaleDataWriter";
+export type {
+    LocaleDataWriterOptions,
+    WriteResult,
+} from "./LocaleDataWriter";
+
+export { ZoneInfoPipeline } from "./ZoneInfoPipeline";
+export type {
+    ZoneInfoPipelineOptions,
+    PipelineResult,
+} from "./ZoneInfoPipeline";
+
+export {
+    COUNTRY_EXCEPTIONS,
+    BACKWARDS_EXCEPTIONS,
+    DEFAULT_TIMEZONE_ID,
+    POSIX_ZONE_IDS,
+} from "./defaults";
+
+export type {
+    DstRuleInfo,
+    ZoneInfo,
+    LocaleTimezoneInfo,
+    EnrichedTzData,
+    WindowsZoneMapZone,
+    WindowsZonesData,
+} from "./types";
 
 export { ParseException } from "./ParseException";
 export { RelativeDate, StartRule } from "./RelativeDate";
@@ -43,17 +75,18 @@ export { createZoneWriter } from "./ZoneWriterFactory";
  * Print the usage banner to stdout.
  */
 function printHelp(): void {
-    console.log(`Usage: ilib-zic [options] <src> <dest>
-  Compile IANA tzdata sources into JSON zoneinfo for ilib.
+    console.log(`Usage: ilib-zic [options] <src> <localeDir>
+  Compile IANA tzdata into ilib locale timezone data (compile → enrich → write).
 
   Arguments:
     src              Directory containing IANA tzdata source files
-    dest             Directory to write compiled JSON zoneinfo
+    localeDir        Locale root to write (zoneinfo/, timezone.jf, und/)
 
   Options:
     -h, --help       Show this help message
     -V, --version    Print the ilib-zic version and exit
-    -v, --verbose    Print progress information during compilation`);
+    -v, --verbose    Print progress information
+    --compile-only   Skip enrichment; write raw zoneinfo JSON only`);
 }
 
 /**
@@ -68,7 +101,7 @@ function getVersion(): string {
 }
 
 /**
- * Parse argv and run the zone info compiler.
+ * Parse argv and run the timezone data pipeline.
  *
  * @param argv Arguments after the node/script path
  * @returns Exit code (0 on success)
@@ -77,6 +110,7 @@ function runCli(argv: string[]): number {
     let help = false;
     let version = false;
     let verbose = false;
+    let compileOnly = false;
     const positionals: string[] = [];
 
     for (let i = 0; i < argv.length; i++) {
@@ -93,6 +127,9 @@ function runCli(argv: string[]): number {
             case "-v":
             case "--verbose":
                 verbose = true;
+                break;
+            case "--compile-only":
+                compileOnly = true;
                 break;
             default:
                 if (arg.startsWith("-")) {
@@ -114,22 +151,26 @@ function runCli(argv: string[]): number {
     }
 
     if (positionals.length !== 2) {
-        console.error("Error: both <src> and <dest> are required.");
+        console.error("Error: both <src> and <localeDir> are required.");
         printHelp();
         return 1;
     }
 
-    const [srcDir, destDir] = positionals;
+    const [srcDir, localeDir] = positionals;
 
-    const compiler = new ZoneInfoCompiler({
+    const pipeline = new ZoneInfoPipeline({
         srcDir,
-        destDir,
+        localeDir,
         verbose,
+        compileOnly,
     });
 
-    const result = compiler.compile();
+    const result = pipeline.run();
     if (verbose) {
-        console.log(`Wrote ${result.zoneCount} zone(s) to ${result.destDir}`);
+        console.log(
+            `Wrote ${result.zoneCount} zone(s) to ${result.localeDir}` +
+                (result.compileOnly ? " (compile-only)" : "")
+        );
     }
     return 0;
 }

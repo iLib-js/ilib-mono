@@ -49,7 +49,12 @@ export class Offset {
     rules: RuleSet | null = null;
 
     /**
-     * Abbreviation format string (for example `"E%sT"` or `"GMT"`).
+     * Abbreviation format string from tzdata FORMAT column
+     * (for example `"E%sT"`, `"%z"`, `"GMT"`, or `"-03/-02"`).
+     *
+     * When serializing, `%s` becomes `{c}` and `%z` becomes a numeric
+     * UT-offset abbreviation (`-03` or `-03/-02` for std/DST), matching
+     * IANA zic's `abbroffset` rules.
      */
     format: string | null = null;
 
@@ -164,14 +169,17 @@ export class Offset {
         const json: Record<string, unknown> = {};
 
         json.o = this.offsetHours + ":" + this.offsetMinutes;
-        json.f = (this.format || "").replace("%s", "{c}");
+        const format = this.format || "";
+        json.f = format.replace("%s", "{c}");
+
+        let startRule: Rule | null = null;
+        let endRule: Rule | null = null;
+        let lastRule: Rule | undefined;
 
         if (currentOnly && this.rules !== null) {
             const year = new Date().getFullYear();
             const rulesList = this.rules.getRules();
-            let startRule: Rule | null = null;
-            let endRule: Rule | null = null;
-            const lastRule = rulesList[rulesList.length - 1];
+            lastRule = rulesList[rulesList.length - 1];
 
             for (let i = 0; i < rulesList.length; i++) {
                 const rule = rulesList[i];
@@ -218,14 +226,91 @@ export class Offset {
                 json.e = wallTime.getJson(currentOnly);
             }
 
-            if ((this.format || "").trim() === "%s") {
+            if (format.trim() === "%s" && lastRule) {
                 json.f = lastRule.character;
-            } else if (startRule === null && endRule === null) {
+            } else if (
+                format.indexOf("%s") !== -1 &&
+                startRule === null &&
+                endRule === null
+            ) {
                 // no DST — replace stray %s with S for Standard time
-                json.f = (this.format || "").replace("%s", "S");
+                json.f = format.replace("%s", "S");
             }
+        }
+
+        if (format.trim() === "%z" || format.indexOf("%z") !== -1) {
+            json.f = this.formatPercentZ(startRule);
         }
 
         return json;
     }
+
+    /**
+     * Expand IANA `%z` FORMAT using zic's `abbroffset` rules:
+     * `±hh`, `±hhmm`, or `±hhmmss` (shortest form that keeps precision).
+     * With a DST savings rule, emit `std/dst` slash form (e.g. `-03/-02`).
+     *
+     * @param startRule Current DST-start rule with savings, if any
+     * @returns Numeric abbreviation string for `f`
+     */
+    private formatPercentZ(startRule: Rule | null): string {
+        const stdSeconds = offsetComponentsToSeconds(
+            this.offsetHours,
+            this.offsetMinutes,
+            this.offsetSeconds
+        );
+        const stdAbbrev = abbroffset(stdSeconds);
+        if (startRule !== null && startRule.hasSavings()) {
+            const saveSeconds = offsetComponentsToSeconds(
+                Math.max(startRule.saveHours, 0),
+                Math.max(startRule.saveMinutes, 0),
+                Math.max(startRule.saveSeconds, 0)
+            );
+            return stdAbbrev + "/" + abbroffset(stdSeconds + saveSeconds);
+        }
+        return stdAbbrev;
+    }
+}
+
+/**
+ * Convert signed hours plus unsigned minutes/seconds to total seconds.
+ */
+function offsetComponentsToSeconds(
+    hours: number,
+    minutes: number,
+    seconds: number
+): number {
+    const h = hours || 0;
+    const m = minutes > 0 ? minutes : 0;
+    const s = seconds > 0 ? seconds : 0;
+    const sign = h < 0 ? -1 : 1;
+    return sign * (Math.abs(h) * 3600 + m * 60 + s);
+}
+
+/**
+ * Port of zic.c `abbroffset`: format a UT offset as a numeric abbreviation.
+ *
+ * @param offsetSeconds Offset east of UT in seconds
+ * @returns Abbreviation such as `-03`, `+0530`, or `+0545`
+ */
+function abbroffset(offsetSeconds: number): string {
+    const sign = offsetSeconds < 0 ? "-" : "+";
+    let abs = Math.abs(offsetSeconds);
+    const hours = Math.floor(abs / 3600);
+    abs -= hours * 3600;
+    const minutes = Math.floor(abs / 60);
+    const seconds = abs - minutes * 60;
+    let out =
+        sign +
+        String(Math.floor(hours / 10)) +
+        String(hours % 10);
+    if (minutes !== 0 || seconds !== 0) {
+        out +=
+            String(Math.floor(minutes / 10)) + String(minutes % 10);
+        if (seconds !== 0) {
+            out +=
+                String(Math.floor(seconds / 10)) + String(seconds % 10);
+        }
+    }
+    return out;
 }
