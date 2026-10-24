@@ -98,12 +98,19 @@ export class ZoneInfoFile {
      * Parse this file, merging results into the shared maps.
      *
      * Handles `Zone` (with continuation offsets), `Rule`, and `Link` lines.
-     * Links only succeed when the target zone is already present in `zones`.
+     * `Link` lines are appended to `pendingLinks` so the compiler can apply
+     * them after every source file has been parsed (targets in later files
+     * such as `northamerica` are not yet present when `backward` is read).
      *
      * @param zones Accumulator of zone id → {@link Zone}
      * @param ruleSets Accumulator of rule-set name → {@link RuleSet}
+     * @param pendingLinks Accumulator of `{ target, alias }` from `Link` lines
      */
-    parse(zones: Map<string, Zone>, ruleSets: Map<string, RuleSet>): void {
+    parse(
+        zones: Map<string, Zone>,
+        ruleSets: Map<string, RuleSet>,
+        pendingLinks: Array<{ target: string; alias: string }>
+    ): void {
         let line = this.getLine();
 
         while (line !== null) {
@@ -140,10 +147,10 @@ export class ZoneInfoFile {
             } else if (line.startsWith("Link")) {
                 const tokens = line.split(/[ \t]+/);
                 if (tokens.length > 2) {
-                    const zone = zones.get(tokens[1]);
-                    if (zone) {
-                        zones.set(tokens[2], zone);
-                    }
+                    pendingLinks.push({
+                        target: tokens[1],
+                        alias: tokens[2],
+                    });
                 }
                 line = this.getLine();
             } else {

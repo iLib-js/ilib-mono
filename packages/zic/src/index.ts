@@ -67,9 +67,6 @@ export { RuleSet } from "./RuleSet";
 export { Offset } from "./Offset";
 export { Zone } from "./Zone";
 export { ZoneInfoFile } from "./ZoneInfoFile";
-export { ZoneWriter } from "./ZoneWriter";
-export { JsonZoneWriter } from "./JsonZoneWriter";
-export { createZoneWriter } from "./ZoneWriterFactory";
 
 /**
  * Print the usage banner to stdout.

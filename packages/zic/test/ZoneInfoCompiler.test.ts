@@ -76,6 +76,8 @@ describe("ZoneInfoCompiler", () => {
     test("compile returns zones in memory and does not write files", () => {
         expect.assertions(6);
         const srcDir = writeTzDataDir(root, {
+            // No Link aliases — this test only covers the Zone path
+            backward: "# no links\n",
             sources: {
                 northamerica: [
                     "# sample fixture",
@@ -102,6 +104,7 @@ describe("ZoneInfoCompiler", () => {
     test("compile skips files that have extensions", () => {
         expect.assertions(1);
         const srcDir = writeTzDataDir(root, {
+            backward: "# no links\n",
             sources: {
                 "readme.txt": "Zone\tFake/Zone\t0:00\t-\tGMT\n",
                 northamerica: "Zone\tAmerica/New_York\t-5:00\t-\tEST\n",
@@ -145,5 +148,79 @@ describe("ZoneInfoCompiler", () => {
         const result = new ZoneInfoCompiler({ srcDir }).compile();
         expect(result.zones["America/Sao_Paulo"]).toBeDefined();
         expect(result.zones["America/Sao_Paulo"].f).toBe("-03/-02");
+    });
+
+    test("compile applies Link aliases even when backward is parsed before the target file", () => {
+        expect.assertions(4);
+        // Alphabetical readdir processes `backward` before `northamerica`.
+        // Links must be deferred until all Zone lines are loaded.
+        const srcDir = writeTzDataDir(root, {
+            backward: "Link\tAmerica/New_York\tUS/Eastern\n",
+            sources: {
+                northamerica: [
+                    "Rule\tUS\t2007\tmax\t-\tMar\tSun>=8\t2:00\t1:00\tD",
+                    "Rule\tUS\t2007\tmax\t-\tNov\tSun>=1\t2:00\t0\tS",
+                    "Zone\tAmerica/New_York\t-5:00\tUS\tE%sT",
+                ].join("\n"),
+            },
+        });
+
+        const result = new ZoneInfoCompiler({ srcDir }).compile();
+        expect(result.zoneCount).toBe(2);
+        expect(Object.keys(result.zones).sort()).toEqual([
+            "America/New_York",
+            "US/Eastern",
+        ]);
+        expect(result.zones["US/Eastern"]).toEqual(
+            result.zones["America/New_York"]
+        );
+        expect(result.zones["US/Eastern"].f).toBe("E{c}T");
+    });
+
+    test("compile warns on parse errors even when verbose is false", () => {
+        expect.assertions(3);
+        const srcDir = writeTzDataDir(root, {
+            backward: "# no links\n",
+            sources: {
+                // Not enough fields → ParseException while parsing the Zone line
+                broken: "Zone\tToo/Short\t-5:00\n",
+                northamerica: "Zone\tAmerica/New_York\t-5:00\t-\tEST\n",
+            },
+        });
+        const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+        try {
+            const result = new ZoneInfoCompiler({
+                srcDir,
+                verbose: false,
+            }).compile();
+            expect(Object.keys(result.zones)).toEqual(["America/New_York"]);
+            expect(warn).toHaveBeenCalled();
+            expect(String(warn.mock.calls[0][0])).toMatch(/Skipping file/);
+        } finally {
+            warn.mockRestore();
+        }
+    });
+
+    test("compile emits both s and e for negative-SAVE zones like Europe/Dublin", () => {
+        expect.assertions(5);
+        // Patterned on IANA Eire rules: zone base is IST (+1), winter SAVE is -1:00
+        const srcDir = writeTzDataDir(root, {
+            sources: {
+                europe: [
+                    "Rule\tEire\t1981\tmax\t-\tMar\tlastSun\t1:00u\t0\t-",
+                    "Rule\tEire\t1996\tmax\t-\tOct\tlastSun\t1:00u\t-1:00\t-",
+                    "Zone\tEurope/Dublin\t1:00\tEire\tIST/GMT",
+                ].join("\n"),
+            },
+        });
+
+        const result = new ZoneInfoCompiler({ srcDir }).compile();
+        const dublin = result.zones["Europe/Dublin"];
+        expect(dublin).toBeDefined();
+        expect(dublin.o).toBe("1:0");
+        expect(dublin.f).toBe("IST/GMT");
+        expect(dublin.s).toBeDefined();
+        expect(dublin.e).toBeDefined();
     });
 });

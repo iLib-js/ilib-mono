@@ -114,6 +114,7 @@ export class ZoneInfoCompiler {
 
         const zones = new Map<string, Zone>();
         const ruleSets = new Map<string, RuleSet>();
+        const pendingLinks: Array<{ target: string; alias: string }> = [];
 
         const infoFiles = fs.readdirSync(infoDir);
         for (const name of infoFiles) {
@@ -127,19 +128,21 @@ export class ZoneInfoCompiler {
             }
             try {
                 const zif = new ZoneInfoFile(filePath);
-                zif.parse(zones, ruleSets);
+                zif.parse(zones, ruleSets, pendingLinks);
                 zif.close();
             } catch (e) {
-                if (this.verbose) {
-                    console.warn(
-                        "Skipping file " +
-                            filePath +
-                            ": " +
-                            (e instanceof Error ? e.message : e)
-                    );
-                }
+                // Always warn: a single bad line can drop the rest of a
+                // continent file, and silent success is worse than noise.
+                console.warn(
+                    "Skipping file " +
+                        filePath +
+                        ": " +
+                        (e instanceof Error ? e.message : e)
+                );
             }
         }
+
+        this.applyLinks(zones, pendingLinks);
 
         const resultZones: Record<string, ZoneInfo> = {};
         for (const [zoneName, zone] of zones) {
@@ -156,5 +159,45 @@ export class ZoneInfoCompiler {
             zones: resultZones,
             zoneCount: Object.keys(resultZones).length,
         };
+    }
+
+    /**
+     * Resolve deferred `Link` lines onto the zone map.
+     *
+     * Retries while progress is made so Link→Link chains resolve. Unresolved
+     * targets are reported with a warning.
+     *
+     * @param zones Zone map to mutate
+     * @param pendingLinks Links collected while parsing source files
+     */
+    private applyLinks(
+        zones: Map<string, Zone>,
+        pendingLinks: Array<{ target: string; alias: string }>
+    ): void {
+        const remaining = pendingLinks.slice();
+        let progress = true;
+        while (progress && remaining.length > 0) {
+            progress = false;
+            for (let i = remaining.length - 1; i >= 0; i--) {
+                const { target, alias } = remaining[i];
+                const zone = zones.get(target);
+                if (zone) {
+                    zones.set(alias, zone);
+                    remaining.splice(i, 1);
+                    progress = true;
+                }
+            }
+        }
+        if (this.verbose) {
+            for (let i = 0; i < remaining.length; i++) {
+                console.warn(
+                    "Unresolved Link " +
+                        remaining[i].alias +
+                        " → " +
+                        remaining[i].target +
+                        " (target not found)"
+                );
+            }
+        }
     }
 }

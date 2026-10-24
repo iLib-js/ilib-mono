@@ -55,31 +55,6 @@ describe("RuleSet", () => {
         expect(rules[1]).toBe(newer);
     });
 
-    test("sortRules orders by end year ascending", () => {
-        expect.assertions(4);
-        const ruleSet = new RuleSet();
-        const max = new Rule(
-            "Rule\tUS\t2007\tmax\t-\tNov\tSun>=1\t2:00\t0\tS"
-        );
-        const mid = new Rule(
-            "Rule\tUS\t1967\t2006\t-\tOct\tlastSun\t2:00\t0\tS"
-        );
-        const only = new Rule(
-            "Rule\tUS\t1920\tonly\t-\tMar\tlastSun\t2:00\t1:00\tD"
-        );
-
-        ruleSet.add(max);
-        ruleSet.add(mid);
-        ruleSet.add(only);
-        ruleSet.sortRules();
-
-        const rules = ruleSet.getRules();
-        expect(rules.length).toBe(3);
-        expect(rules[0]).toBe(only);
-        expect(rules[1]).toBe(mid);
-        expect(rules[2]).toBe(max);
-    });
-
     test("getRules returns the live internal list", () => {
         expect.assertions(2);
         const ruleSet = new RuleSet();

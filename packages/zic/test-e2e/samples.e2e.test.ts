@@ -52,7 +52,8 @@ describe("samples", () => {
             );
 
             expect(stderr).toBe("");
-            expect(stdout).toContain("Wrote 4 zone(s)");
+            // 4 canonical zones + US/Eastern Link alias from backward
+            expect(stdout).toContain("Wrote 5 zone(s)");
         }, 120000);
 
         afterAll(() => {
@@ -62,6 +63,12 @@ describe("samples", () => {
         it("should produce America/New_York.json", () => {
             expectFileToMatchSnapshot(
                 path.join(zoneinfoDir, "America", "New_York.json")
+            );
+        });
+
+        it("should produce US/Eastern.json as a Link alias of America/New_York", () => {
+            expectFileToMatchSnapshot(
+                path.join(zoneinfoDir, "US", "Eastern.json")
             );
         });
 

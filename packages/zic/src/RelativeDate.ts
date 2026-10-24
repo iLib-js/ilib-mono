@@ -19,6 +19,8 @@
 
 import { isDigit } from "ilib-ctype";
 
+import { ParseException } from "./ParseException";
+
 /**
  * How a day-of-week rule locates a calendar day within a month.
  */
@@ -155,6 +157,7 @@ export class RelativeDate {
      *
      * @param fields Tokenized line fields
      * @param startIndex Index of the optional year field
+     * @throws {ParseException} If a month or weekday token is unrecognized
      */
     parse(fields: string[], startIndex: number): void {
         if (fields.length <= startIndex) {
@@ -170,11 +173,15 @@ export class RelativeDate {
         }
 
         if (fields.length > startIndex + 1 && fields[startIndex + 1].length > 0) {
-            if (!(fields[startIndex + 1] in months)) {
-                // syntax error -- not a real zone info file
-                return;
+            const monthToken = fields[startIndex + 1];
+            if (!(monthToken in months)) {
+                throw new ParseException(
+                    "Unrecognized month token \"" +
+                        monthToken +
+                        "\" in relative date"
+                );
             }
-            this.month = months[fields[startIndex + 1]];
+            this.month = months[monthToken];
 
             if (fields.length > startIndex + 2) {
                 const dayStr = fields[startIndex + 2];
@@ -183,12 +190,21 @@ export class RelativeDate {
                     this.dayOfMonth = parseInt(dayStr, 10);
                 } else if (dayStr.startsWith("last")) {
                     this.rule = StartRule.LAST;
-                    this.dayOfWeek = weekDays[dayStr.substring(4)];
+                    this.dayOfWeek = this.parseWeekDay(
+                        dayStr.substring(4),
+                        dayStr
+                    );
                 } else if (dayStr.startsWith("first")) {
                     this.rule = StartRule.FIRST;
-                    this.dayOfWeek = weekDays[dayStr.substring(5)];
+                    this.dayOfWeek = this.parseWeekDay(
+                        dayStr.substring(5),
+                        dayStr
+                    );
                 } else {
-                    this.dayOfWeek = weekDays[dayStr.substring(0, 3)];
+                    this.dayOfWeek = this.parseWeekDay(
+                        dayStr.substring(0, 3),
+                        dayStr
+                    );
                     if (dayStr.charAt(4) === "=") {
                         this.rule =
                             dayStr.charAt(3) === "<"
@@ -241,6 +257,27 @@ export class RelativeDate {
                 }
             }
         }
+    }
+
+    /**
+     * Look up a weekday abbreviation (`Sun`…`Sat`) or throw.
+     *
+     * @param token Weekday abbreviation extracted from an ON field
+     * @param dayStr Full ON field (for the error message)
+     * @returns Zero-based weekday index (Sunday = 0)
+     * @throws {ParseException} If `token` is not a known weekday
+     */
+    private parseWeekDay(token: string, dayStr: string): number {
+        if (!(token in weekDays)) {
+            throw new ParseException(
+                "Unrecognized weekday token \"" +
+                    token +
+                    "\" in relative date ON field \"" +
+                    dayStr +
+                    "\""
+            );
+        }
+        return weekDays[token];
     }
 
     /**

@@ -326,4 +326,54 @@ describe("Rule", () => {
         const other = rule.clone();
         expect(rd).not.toBe(other.transitionTime);
     });
+
+    test("hasSavings is false for an empty rule", () => {
+        expect.assertions(1);
+        expect(new Rule().hasSavings()).toBe(false);
+    });
+
+    test("hasSavings is false for zero SAVE", () => {
+        expect.assertions(1);
+        const rule = new Rule(
+            "Rule\tUS\t2007\tmax\t-\tNov\tSun>=1\t2:00\t0\tS"
+        );
+        expect(rule.hasSavings()).toBe(false);
+    });
+
+    test("hasSavings is true for positive SAVE", () => {
+        expect.assertions(1);
+        const rule = new Rule(
+            "Rule\tUS\t2007\tmax\t-\tMar\tSun>=8\t2:00\t1:00\tD"
+        );
+        expect(rule.hasSavings()).toBe(true);
+    });
+
+    test("hasSavings is true for negative SAVE (Ireland-style)", () => {
+        expect.assertions(3);
+        const rule = new Rule(
+            "Rule\tEire\t1996\tmax\t-\tOct\tlastSun\t1:00u\t-1:00\t-"
+        );
+        expect(rule.saveHours).toBe(-1);
+        expect(rule.saveMinutes).toBe(0);
+        expect(rule.hasSavings()).toBe(true);
+    });
+
+    test("getJson includes negative SAVE in v", () => {
+        expect.assertions(1);
+        const rule = new Rule(
+            "Rule\tEire\t1996\tmax\t-\tOct\tlastSun\t1:00u\t-1:00\t-"
+        );
+        expect(rule.getJson(true).v).toBe("-1:0");
+    });
+
+    test("SAVE of dash means zero savings", () => {
+        expect.assertions(4);
+        const rule = new Rule(
+            "Rule\tEire\t1981\tmax\t-\tMar\tlastSun\t1:00u\t-\t-"
+        );
+        expect(rule.saveHours).toBe(0);
+        expect(rule.saveMinutes).toBe(0);
+        expect(rule.saveSeconds).toBe(0);
+        expect(rule.hasSavings()).toBe(false);
+    });
 });

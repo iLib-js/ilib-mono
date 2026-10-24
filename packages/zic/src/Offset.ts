@@ -261,10 +261,18 @@ export class Offset {
         );
         const stdAbbrev = abbroffset(stdSeconds);
         if (startRule !== null && startRule.hasSavings()) {
+            // Preserve negative SAVE (e.g. Ireland `-1:00`); treat the
+            // constructor "unset" sentinel (-1 on minutes/seconds only when
+            // that component was omitted) as zero for that component.
+            const saveHours = startRule.saveHours;
+            const saveMinutes =
+                startRule.saveMinutes === -1 ? 0 : startRule.saveMinutes;
+            const saveSecondsComp =
+                startRule.saveSeconds === -1 ? 0 : startRule.saveSeconds;
             const saveSeconds = offsetComponentsToSeconds(
-                Math.max(startRule.saveHours, 0),
-                Math.max(startRule.saveMinutes, 0),
-                Math.max(startRule.saveSeconds, 0)
+                saveHours,
+                saveMinutes,
+                saveSecondsComp
             );
             return stdAbbrev + "/" + abbroffset(stdSeconds + saveSeconds);
         }

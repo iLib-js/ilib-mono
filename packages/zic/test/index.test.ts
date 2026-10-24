@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import * as zic from "../src/index";
 import {
     COUNTRY_EXCEPTIONS,
     LocaleDataWriter,
@@ -33,5 +34,12 @@ describe("package exports", () => {
         expect(typeof LocaleDataWriter).toBe("function");
         expect(typeof ZoneInfoPipeline).toBe("function");
         expect(COUNTRY_EXCEPTIONS["America/Coral_Harbour"]).toBe("CA");
+    });
+
+    test("does not export the legacy ZoneWriter API", () => {
+        expect.assertions(3);
+        expect(zic).not.toHaveProperty("ZoneWriter");
+        expect(zic).not.toHaveProperty("JsonZoneWriter");
+        expect(zic).not.toHaveProperty("createZoneWriter");
     });
 });

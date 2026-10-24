@@ -30,8 +30,7 @@ export class RuleSet {
     name: string | null = null;
 
     /**
-     * Rules belonging to this set, in insertion order until
-     * {@link sortRules} is called.
+     * Rules belonging to this set, in insertion order.
      */
     private rules: Rule[] = [];
 
@@ -56,13 +55,6 @@ export class RuleSet {
      */
     add(rule: Rule): void {
         this.rules.push(rule);
-    }
-
-    /**
-     * Sort rules by end year ascending via {@link Rule.compareTo}.
-     */
-    sortRules(): void {
-        this.rules.sort((a, b) => a.compareTo(b));
     }
 
     /**

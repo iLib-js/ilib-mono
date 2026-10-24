@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { ParseException } from "../src/ParseException";
 import { RelativeDate, StartRule } from "../src/RelativeDate";
 
 function expectEmptyDefaults(rd: RelativeDate): void {
@@ -581,5 +582,25 @@ describe("RelativeDate", () => {
         expect(rd.second).toBe(-1);
         expect(rd.zoneChar).toBe("w");
         expect(rd.rule).toBe(StartRule.GREATER);
+    });
+
+    test("parse throws ParseException on unrecognized month", () => {
+        expect.assertions(2);
+        const rd = new RelativeDate();
+        expect(() => rd.parse(["1920", "Foo"], 0)).toThrow(ParseException);
+        expect(() => rd.parse(["1920", "Foo"], 0)).toThrow(
+            /Unrecognized month token "Foo"/
+        );
+    });
+
+    test("parse throws ParseException on unrecognized weekday", () => {
+        expect.assertions(2);
+        const rd = new RelativeDate();
+        expect(() => rd.parse(["1920", "Feb", "lastXxx"], 0)).toThrow(
+            ParseException
+        );
+        expect(() => rd.parse(["1920", "Feb", "lastXxx"], 0)).toThrow(
+            /Unrecognized weekday token "Xxx"/
+        );
     });
 });

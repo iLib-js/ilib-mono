@@ -115,13 +115,20 @@ export class Rule {
         this.transitionTime.parse(fields, 4);
 
         if (fields[8].length > 0) {
-            const parts = fields[8].trim().split(":");
-            if (parts.length > 0) {
-                this.saveHours = parseInt(parts[0], 10);
-                if (parts.length > 1) {
-                    this.saveMinutes = parseInt(parts[1], 10);
-                    if (parts.length > 2) {
-                        this.saveSeconds = parseInt(parts[2], 10);
+            // IANA SAVE of `-` means zero savings (not "unset")
+            if (fields[8].trim() === "-") {
+                this.saveHours = 0;
+                this.saveMinutes = 0;
+                this.saveSeconds = 0;
+            } else {
+                const parts = fields[8].trim().split(":");
+                if (parts.length > 0) {
+                    this.saveHours = parseInt(parts[0], 10);
+                    if (parts.length > 1) {
+                        this.saveMinutes = parseInt(parts[1], 10);
+                        if (parts.length > 2) {
+                            this.saveSeconds = parseInt(parts[2], 10);
+                        }
                     }
                 }
             }
@@ -131,12 +138,30 @@ export class Rule {
     }
 
     /**
-     * @returns `true` if this rule applies a non-zero DST savings
+     * @returns `true` if this rule applies a non-zero DST savings (positive
+     *     or negative; e.g. Europe/Dublin winter SAVE of `-1:00`)
      */
     hasSavings(): boolean {
-        return (
-            this.saveHours > 0 || this.saveMinutes > 0 || this.saveSeconds > 0
-        );
+        // Constructor defaults leave all three at -1 ("unset"). After a
+        // successful parse of `-1:00`, saveHours is -1 with saveMinutes 0 —
+        // that is a real negative one-hour SAVE, not unset.
+        if (
+            this.saveHours === -1 &&
+            this.saveMinutes === -1 &&
+            this.saveSeconds === -1
+        ) {
+            return false;
+        }
+        const hours = !Number.isFinite(this.saveHours) ? 0 : this.saveHours;
+        const minutes =
+            this.saveMinutes === -1 || !Number.isFinite(this.saveMinutes)
+                ? 0
+                : this.saveMinutes;
+        const seconds =
+            this.saveSeconds === -1 || !Number.isFinite(this.saveSeconds)
+                ? 0
+                : this.saveSeconds;
+        return hours !== 0 || minutes !== 0 || seconds !== 0;
     }
 
     /**
@@ -180,13 +205,13 @@ export class Rule {
             this.transitionTime.addJson(json);
         }
 
-        // zero savings is implied by omitting "v"
-        if (this.saveHours > 0 || this.saveMinutes > 0 || this.saveSeconds > 0) {
-            let save =
-                String(this.saveHours) +
-                ":" +
-                (this.saveMinutes !== -1 ? String(this.saveMinutes) : "00");
-            if (this.saveSeconds !== -1) {
+        // zero savings is implied by omitting "v"; include negative SAVE
+        // (e.g. Ireland `-1:00`) so consumers see the real offset delta
+        if (this.hasSavings()) {
+            const hours = this.saveHours;
+            const minutes = this.saveMinutes === -1 ? 0 : this.saveMinutes;
+            let save = String(hours) + ":" + String(minutes);
+            if (this.saveSeconds !== -1 && this.saveSeconds !== 0) {
                 save +=
                     ":" +
                     (this.saveSeconds < 10
