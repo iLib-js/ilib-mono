@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples cli should produce America/New_York.json 1`] = `
+"{
+    "c": "US",
+    "e": {
+        "c": "S",
+        "m": 11,
+        "r": "0>1",
+        "t": "2:0"
+    },
+    "f": "E{c}T",
+    "n": "Eastern {c} Time",
+    "o": "-5:0",
+    "s": {
+        "c": "D",
+        "m": 3,
+        "r": "0>8",
+        "t": "2:0",
+        "v": "1:0"
+    }
+}"
+`;
+
+exports[`samples cli should produce America/Sao_Paulo.json with %z expanded 1`] = `
+"{
+    "c": "BR",
+    "e": {
+        "m": 2,
+        "r": "0>15",
+        "t": "0:0"
+    },
+    "f": "-03/-02",
+    "n": "E. South America {c} Time",
+    "o": "-3:0",
+    "s": {
+        "m": 10,
+        "r": "0>15",
+        "t": "0:0",
+        "v": "1:0"
+    }
+}"
+`;
+
+exports[`samples cli should produce Asia/Tokyo.json 1`] = `
+"{
+    "c": "JP",
+    "f": "JST",
+    "n": "Tokyo {c} Time",
+    "o": "9:0"
+}"
+`;
+
+exports[`samples cli should produce Europe/Paris.json 1`] = `
+"{
+    "c": "FR",
+    "e": {
+        "m": 10,
+        "r": "l0",
+        "t": "3:0"
+    },
+    "f": "CE{c}T",
+    "n": "Romance {c} Time",
+    "o": "1:0",
+    "s": {
+        "c": "S",
+        "m": 3,
+        "r": "l0",
+        "t": "2:0",
+        "v": "1:0"
+    }
+}"
+`;
+
+exports[`samples cli should produce US/Eastern.json as a Link alias of America/New_York 1`] = `
+"{
+    "c": "US",
+    "e": {
+        "c": "S",
+        "m": 11,
+        "r": "0>1",
+        "t": "2:0"
+    },
+    "f": "E{c}T",
+    "n": "Eastern {c} Time",
+    "o": "-5:0",
+    "s": {
+        "c": "D",
+        "m": 3,
+        "r": "0>8",
+        "t": "2:0",
+        "v": "1:0"
+    }
+}"
+`;
+
+exports[`samples cli should produce root timezone.jf 1`] = `
+"{
+    "timezone": "Etc/UTC"
+}"
+`;
+
+exports[`samples cli should produce und/US/timezone.jf 1`] = `
+"{
+    "timezone": "America/New_York"
+}"
+`;
+
+exports[`samples cli should produce zonetab.json 1`] = `
+"{
+    "BR": [
+        "America/Sao_Paulo"
+    ],
+    "FR": [
+        "Europe/Paris"
+    ],
+    "JP": [
+        "Asia/Tokyo"
+    ],
+    "US": [
+        "America/New_York",
+        "US/Eastern"
+    ]
+}"
+`;

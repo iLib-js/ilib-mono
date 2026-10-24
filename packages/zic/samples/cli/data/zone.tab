@@ -1,0 +1,6 @@
+# country	coordinates	TZ	comments
+# Mini zone.tab for the ilib-zic sample (curated from IANA zone.tab)
+US	+404251-0740023	America/New_York
+FR	+4852+00220	Europe/Paris
+JP	+353916+1394441	Asia/Tokyo
+BR	-2332-04637	America/Sao_Paulo

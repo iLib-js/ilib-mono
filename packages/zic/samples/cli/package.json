@@ -1,0 +1,20 @@
+{
+  "name": "ilib-zic-cli-sample",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Command-line sample app demonstrating the ilib-zic zone info compiler",
+  "main": "index.ts",
+  "scripts": {
+    "run:sample": "tsx index.ts"
+  },
+  "dependencies": {
+    "ilib-zic": "workspace:^"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
