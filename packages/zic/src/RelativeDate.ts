@@ -186,31 +186,39 @@ export class RelativeDate {
             if (fields.length > startIndex + 2) {
                 const dayStr = fields[startIndex + 2];
 
-                if (isDigit(dayStr.charAt(0))) {
-                    this.dayOfMonth = parseInt(dayStr, 10);
-                } else if (dayStr.startsWith("last")) {
-                    this.rule = StartRule.LAST;
-                    this.dayOfWeek = this.parseWeekDay(
-                        dayStr.substring(4),
-                        dayStr
-                    );
-                } else if (dayStr.startsWith("first")) {
-                    this.rule = StartRule.FIRST;
-                    this.dayOfWeek = this.parseWeekDay(
-                        dayStr.substring(5),
-                        dayStr
-                    );
-                } else {
-                    this.dayOfWeek = this.parseWeekDay(
-                        dayStr.substring(0, 3),
-                        dayStr
-                    );
-                    if (dayStr.charAt(4) === "=") {
-                        this.rule =
-                            dayStr.charAt(3) === "<"
-                                ? StartRule.LESS
-                                : StartRule.GREATER;
-                        this.dayOfMonth = parseInt(dayStr.substring(5), 10);
+                // Year+month UNTIL (e.g. "1919 Mar") is valid in tzdata.
+                // Trailing whitespace on the line often yields an empty final
+                // token after split — treat that as "no day", not an error.
+                if (dayStr.length > 0) {
+                    if (isDigit(dayStr.charAt(0))) {
+                        this.dayOfMonth = parseInt(dayStr, 10);
+                    } else if (dayStr.startsWith("last")) {
+                        this.rule = StartRule.LAST;
+                        this.dayOfWeek = this.parseWeekDay(
+                            dayStr.substring(4),
+                            dayStr
+                        );
+                    } else if (dayStr.startsWith("first")) {
+                        this.rule = StartRule.FIRST;
+                        this.dayOfWeek = this.parseWeekDay(
+                            dayStr.substring(5),
+                            dayStr
+                        );
+                    } else {
+                        this.dayOfWeek = this.parseWeekDay(
+                            dayStr.substring(0, 3),
+                            dayStr
+                        );
+                        if (dayStr.charAt(4) === "=") {
+                            this.rule =
+                                dayStr.charAt(3) === "<"
+                                    ? StartRule.LESS
+                                    : StartRule.GREATER;
+                            this.dayOfMonth = parseInt(
+                                dayStr.substring(5),
+                                10
+                            );
+                        }
                     }
                 }
 

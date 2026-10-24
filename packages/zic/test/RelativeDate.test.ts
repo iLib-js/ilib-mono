@@ -603,4 +603,25 @@ describe("RelativeDate", () => {
             /Unrecognized weekday token "Xxx"/
         );
     });
+
+    test("parse year and month only (no day) is valid", () => {
+        expect.assertions(4);
+        const rd = new RelativeDate();
+        rd.parse(["1919", "Mar"], 0);
+        expect(rd.year).toBe(1919);
+        expect(rd.month).toBe(2);
+        expect(rd.dayOfMonth).toBe(-1);
+        expect(rd.dayOfWeek).toBe(-1);
+    });
+
+    test("parse year and month ignores trailing empty day token from whitespace split", () => {
+        expect.assertions(5);
+        // Mimics "\t\t\t-0:43:08 -\tMMT\t1919 Mar ".split(/[ \t]+/) UNTIL fields
+        const rd = new RelativeDate();
+        expect(() => rd.parse(["1919", "Mar", ""], 0)).not.toThrow();
+        expect(rd.year).toBe(1919);
+        expect(rd.month).toBe(2);
+        expect(rd.dayOfMonth).toBe(-1);
+        expect(rd.dayOfWeek).toBe(-1);
+    });
 });

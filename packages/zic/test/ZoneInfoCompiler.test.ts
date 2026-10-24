@@ -223,4 +223,38 @@ describe("ZoneInfoCompiler", () => {
         expect(dublin.s).toBeDefined();
         expect(dublin.e).toBeDefined();
     });
+
+    test("compile keeps current offset when UNTIL is year+month with trailing spaces", () => {
+        expect.assertions(3);
+        // Patterned on Africa/Monrovia: a year+month UNTIL line with trailing
+        // whitespace must not abort the file or leave only the LMT offset.
+        const srcDir = writeTzDataDir(root, {
+            backward: "# no links\n",
+            sources: {
+                africa: [
+                    "Zone\tAfrica/Monrovia\t-0:43:08\t-\tLMT\t1882",
+                    "\t\t\t-0:43:08 -\tMMT\t1919 Mar ",
+                    "\t\t\t-0:44:30 -\tMMT\t1972 Jan 7",
+                    "\t\t\t 0:00\t-\tGMT",
+                    "Zone\tAfrica/Abidjan\t0:00\t-\tGMT",
+                ].join("\n"),
+            },
+        });
+
+        const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        try {
+            const result = new ZoneInfoCompiler({ srcDir }).compile();
+            expect(result.zones["Africa/Monrovia"]).toEqual({
+                o: "0:0",
+                f: "GMT",
+            });
+            expect(result.zones["Africa/Abidjan"]).toEqual({
+                o: "0:0",
+                f: "GMT",
+            });
+            expect(warn).not.toHaveBeenCalled();
+        } finally {
+            warn.mockRestore();
+        }
+    });
 });

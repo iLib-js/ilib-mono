@@ -95,6 +95,25 @@ describe("Offset", () => {
         expect(rd.rule).toBe(StartRule.EQUAL);
     });
 
+    test("setFields end date year month with trailing whitespace does not throw", () => {
+        expect.assertions(5);
+        // Patterned on tzdata Africa/Monrovia: "... MMT 1919 Mar "
+        const o = new Offset();
+        const ruleSets = new Map<string, RuleSet>();
+        expect(() =>
+            o.setFields(
+                "\t\t\t-0:43:08 -\tMMT\t1919 Mar ",
+                ruleSets,
+                "Africa/Monrovia"
+            )
+        ).not.toThrow();
+        const rd = o.endDate as RelativeDate;
+        expect(rd.year).toBe(1919);
+        expect(rd.month).toBe(2);
+        expect(rd.dayOfMonth).toBe(-1);
+        expect(o.format).toBe("MMT");
+    });
+
     test("setFields end date year month day", () => {
         expect.assertions(9);
         const o = new Offset();
