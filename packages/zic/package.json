@@ -1,0 +1,92 @@
+{
+    "name": "ilib-zic",
+    "version": "0.0.0",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "bin": {
+        "ilib-zic": "./lib/index.js",
+        "ilib-zic.bat": "./ilib-zic.bat"
+    },
+    "description": "Zone info compiler that converts IANA tzdata sources into JSON zoneinfo used by ilib",
+    "keywords": [
+        "internationalization",
+        "i18n",
+        "localization",
+        "l10n",
+        "globalization",
+        "g11n",
+        "timezone",
+        "tzdata",
+        "zoneinfo",
+        "zic",
+        "ilib"
+    ],
+    "homepage": "https://github.com/iLib-js/ilib-mono/blob/main/packages/zic",
+    "bugs": "https://github.com/iLib-js/ilib-mono/issues",
+    "email": "edwin@translationcircle.com",
+    "license": "Apache-2.0",
+    "author": {
+        "name": "Edwin Hoogerbeets",
+        "web": "http://www.translationcircle.com/",
+        "email": "edwin@translationcircle.com"
+    },
+    "contributors": [
+        {
+            "name": "Edwin Hoogerbeets",
+            "email": "ehoogerbeets@gmail.com"
+        }
+    ],
+    "files": [
+        "lib",
+        "src",
+        "ilib-zic.bat",
+        "README.md",
+        "CHANGELOG.md",
+        "LICENSE"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iLib-js/ilib-mono"
+    },
+    "engines": {
+        "node": ">=12 <23"
+    },
+    "dependencies": {
+        "cldr-core": "^48.2.0",
+        "ilib-common": "workspace:^",
+        "ilib-ctype": "workspace:^",
+        "ilib-data-utils": "workspace:^",
+        "json-stable-stringify": "^1.3.0"
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.build.json",
+        "clean": "rm -rf lib coverage",
+        "coverage": "pnpm test --coverage",
+        "debug": "node --inspect-brk node_modules/jest/bin/jest.js --testEnvironment node -i",
+        "doc": "npm-run-all --npm-path pnpm doc:md doc:html",
+        "doc:md": "mkdir -p docs && typedoc --entryFileName index --plugin typedoc-plugin-markdown --skipErrorChecking --cleanOutputDir false --readme none --out docs src/index.ts",
+        "doc:html": "mkdir -p docs && typedoc --out docs --skipErrorChecking --cleanOutputDir false src/index.ts",
+        "test": "pnpm test:cli",
+        "test:cli": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node",
+        "test:e2e": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js",
+        "test:e2e:watch": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js --watch",
+        "test:e2e:snapshot": "LANG=en_US.UTF8 node node_modules/jest/bin/jest.js --testEnvironment node --config test-e2e/jest.config.js --updateSnapshot",
+        "test:all": "npm-run-all --npm-path pnpm test:cli test:e2e",
+        "test:watch": "pnpm test:cli --watch",
+        "types": "tsc"
+    },
+    "devDependencies": {
+        "@tsconfig/node12": "^12.1.4",
+        "@types/jest": "^29.5.14",
+        "@types/json-stable-stringify": "^1.0.36",
+        "@types/node": "12",
+        "ilib-internal": "workspace:^",
+        "jest": "^29.7.0",
+        "npm-run-all": "^4.1.5",
+        "ts-jest": "^29.2.5",
+        "tsx": "^4.20.5",
+        "typedoc": "^0.26.11",
+        "typedoc-plugin-markdown": "^4.2.10",
+        "typescript": "^5.9.2"
+    }
+}

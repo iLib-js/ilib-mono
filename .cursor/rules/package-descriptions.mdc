@@ -21,6 +21,7 @@ Instructions for Cursor:
 - **ilib-scanner**: Command-line utility that generates a webpack metafile to include only those ilib classes that your code actually needs.
 - **loctool**: Reads source files in various formats, extracts strings for translation, and writes out the translated strings in various resource file formats needed by each project.
 - **tmxtool**: A command-line tool to diff, merge, or split tmx files.
+- **zic**: Zone info compiler that converts IANA tzdata sources into JSON zoneinfo used by ilib (TypeScript port of the Java tool in monolithic ilib).
 
 ### Libraries
 
@@ -286,3 +287,11 @@ Instructions for Cursor:
 
 ### message-accumulator
 - MessageAccumulator (main export)
+
+### zic
+- ZoneInfoCompiler
+- ZoneInfoCompilerOptions
+- CompileResult
+- runCli
+- VERSION
+

@@ -1,0 +1,77 @@
+# Mini tzdata excerpt for ilib-zic sample (from tzdata2026e)
+# Contains: Europe/Paris
+
+# Rule	NAME	FROM	TO	-	IN	ON	AT	SAVE	LETTER
+Rule	EU	1977	1980	-	Apr	Sun>=1	 1:00u	1:00	S
+Rule	EU	1977	only	-	Sep	lastSun	 1:00u	0	-
+Rule	EU	1978	only	-	Oct	 1	 1:00u	0	-
+Rule	EU	1979	1995	-	Sep	lastSun	 1:00u	0	-
+Rule	EU	1981	max	-	Mar	lastSun	 1:00u	1:00	S
+Rule	EU	1996	max	-	Oct	lastSun	 1:00u	0	-
+Rule	C-Eur	1916	only	-	Apr	30	23:00	1:00	S
+Rule	C-Eur	1916	only	-	Oct	 1	 1:00	0	-
+Rule	C-Eur	1917	1918	-	Apr	Mon>=15	 2:00s	1:00	S
+Rule	C-Eur	1917	1918	-	Sep	Mon>=15	 2:00s	0	-
+Rule	C-Eur	1940	only	-	Apr	 1	 2:00s	1:00	S
+Rule	C-Eur	1942	only	-	Nov	 2	 2:00s	0	-
+Rule	C-Eur	1943	only	-	Mar	29	 2:00s	1:00	S
+Rule	C-Eur	1943	only	-	Oct	 4	 2:00s	0	-
+Rule	C-Eur	1944	1945	-	Apr	Mon>=1	 2:00s	1:00	S
+Rule	C-Eur	1944	only	-	Oct	 2	 2:00s	0	-
+Rule	C-Eur	1945	only	-	Sep	16	 2:00s	0	-
+Rule	C-Eur	1977	1980	-	Apr	Sun>=1	 2:00s	1:00	S
+Rule	C-Eur	1977	only	-	Sep	lastSun	 2:00s	0	-
+Rule	C-Eur	1978	only	-	Oct	 1	 2:00s	0	-
+Rule	C-Eur	1979	1995	-	Sep	lastSun	 2:00s	0	-
+Rule	C-Eur	1981	max	-	Mar	lastSun	 2:00s	1:00	S
+Rule	C-Eur	1996	max	-	Oct	lastSun	 2:00s	0	-
+Rule	France	1916	only	-	Jun	14	23:00s	1:00	S
+Rule	France	1916	1919	-	Oct	Sun>=1	23:00s	0	-
+Rule	France	1917	only	-	Mar	24	23:00s	1:00	S
+Rule	France	1918	only	-	Mar	 9	23:00s	1:00	S
+Rule	France	1919	only	-	Mar	 1	23:00s	1:00	S
+Rule	France	1920	only	-	Feb	14	23:00s	1:00	S
+Rule	France	1920	only	-	Oct	23	23:00s	0	-
+Rule	France	1921	only	-	Mar	14	23:00s	1:00	S
+Rule	France	1921	only	-	Oct	25	23:00s	0	-
+Rule	France	1922	only	-	Mar	25	23:00s	1:00	S
+Rule	France	1922	1938	-	Oct	Sat>=1	23:00s	0	-
+Rule	France	1923	only	-	May	26	23:00s	1:00	S
+Rule	France	1924	only	-	Mar	29	23:00s	1:00	S
+Rule	France	1925	only	-	Apr	 4	23:00s	1:00	S
+Rule	France	1926	only	-	Apr	17	23:00s	1:00	S
+Rule	France	1927	only	-	Apr	 9	23:00s	1:00	S
+Rule	France	1928	only	-	Apr	14	23:00s	1:00	S
+Rule	France	1929	only	-	Apr	20	23:00s	1:00	S
+Rule	France	1930	only	-	Apr	12	23:00s	1:00	S
+Rule	France	1931	only	-	Apr	18	23:00s	1:00	S
+Rule	France	1932	only	-	Apr	 2	23:00s	1:00	S
+Rule	France	1933	only	-	Mar	25	23:00s	1:00	S
+Rule	France	1934	only	-	Apr	 7	23:00s	1:00	S
+Rule	France	1935	only	-	Mar	30	23:00s	1:00	S
+Rule	France	1936	only	-	Apr	18	23:00s	1:00	S
+Rule	France	1937	only	-	Apr	 3	23:00s	1:00	S
+Rule	France	1938	only	-	Mar	26	23:00s	1:00	S
+Rule	France	1939	only	-	Apr	15	23:00s	1:00	S
+Rule	France	1939	only	-	Nov	18	23:00s	0	-
+Rule	France	1940	only	-	Feb	25	 2:00	1:00	S
+Rule	France	1941	only	-	May	 5	 0:00	2:00	M # Midsummer
+Rule	France	1941	only	-	Oct	 6	 0:00	1:00	S
+Rule	France	1942	only	-	Mar	 9	 0:00	2:00	M
+Rule	France	1942	only	-	Nov	 2	 3:00	1:00	S
+Rule	France	1943	only	-	Mar	29	 2:00	2:00	M
+Rule	France	1943	only	-	Oct	 4	 3:00	1:00	S
+Rule	France	1944	only	-	Apr	 3	 2:00	2:00	M
+Rule	France	1944	only	-	Oct	 8	 1:00	1:00	S
+Rule	France	1945	only	-	Apr	 2	 2:00	2:00	M
+Rule	France	1945	only	-	Sep	16	 3:00	0	-
+Rule	France	1976	only	-	Mar	28	 1:00	1:00	S
+Rule	France	1976	only	-	Sep	26	 1:00	0	-
+
+Zone	Europe/Paris	0:09:21 -	LMT	1891 Mar 16
+			0:09:21	-	PMT	1911 Mar 11 # Paris Mean Time
+			0:00	France	WE%sT	1940 Jun 14 23:00
+			1:00	C-Eur	CE%sT	1944 Aug 25
+			0:00	France	WE%sT	1945 Sep 16  3:00
+			1:00	France	CE%sT	1977
+			1:00	EU	CE%sT
