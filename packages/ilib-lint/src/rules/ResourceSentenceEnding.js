@@ -216,6 +216,15 @@ class ResourceSentenceEnding extends ResourceRule {
         // Languages for which this rule is turned off entirely (`"ja-JP": false`)
         this.disabledLanguages = new Set();
 
+        // Per-violation-kind autoFix toggles, eg. `{ "ellipsis_mismatch": false }`.
+        // Only gates whether a `fix` is attached to a Result -- the warning
+        // itself is still reported either way. Unspecified kinds default to
+        // enabled, so this is purely opt-out and doesn't change behavior for
+        // configs that don't set it.
+        this.subRuleFixEnabled = (param && typeof param === 'object' && param.rules && typeof param.rules === 'object')
+            ? param.rules
+            : {};
+
         if (param && typeof param === 'object' && !Array.isArray(param)) {
             // param is an object with locale codes as keys and punctuation mappings as values
             // Merge the default punctuation with the custom punctuation so that the custom
@@ -1014,6 +1023,19 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
+     * Whether autoFix is enabled for a named violation kind, eg. "ellipsis_mismatch".
+     * Defaults to `true` when the kind is not mentioned in the `rules` config,
+     * so this only ever restricts fixes relative to today's behavior, never
+     * expands it.
+     *
+     * @param {string} subRuleName - Violation kind to check, eg. "ellipsis_mismatch"
+     * @returns {boolean} - `false` only when explicitly disabled in config
+     */
+    _isSubRuleFixEnabled(subRuleName) {
+        return this.subRuleFixEnabled[subRuleName] !== false;
+    }
+
+    /**
      * Match the source and target strings for sentence ending punctuation issues
      * @param {Object} params - Parameters object
      * @param {string} params.source - The source string
@@ -1465,6 +1487,25 @@ class ResourceSentenceEnding extends ResourceRule {
                 }
             } else {
                 fix = this.createPunctuationFix(resource, target, targetEnding.original, expectedPunctuation, index, category, targetLocaleObj);
+            }
+
+            // Ellipsis mismatch is exactly three ASCII dots ("...", not four or
+            // more) in the target where the locale expects "…" (Unicode ellipsis).
+            // `targetEnding.original` is always the literal string "..." whenever
+            // the target ends in three-or-more dots (see getEndingPunctuation's
+            // `endsWith('...')` check above), so the actual dot count has to be
+            // verified against the target text itself here. Four-or-more trailing
+            // dots are intentionally left out of scope for now -- see the rule's
+            // docs for why -- so they keep today's (pre-toggle) fix behavior
+            // regardless of the `ellipsis_mismatch` setting.
+            const trimmedTarget = target.trimEnd();
+            const isEllipsisMismatch = targetEnding.type === 'ellipsis' &&
+                targetEnding.original === '...' &&
+                expectedPunctuation === '…' &&
+                trimmedTarget.endsWith('...') &&
+                !trimmedTarget.endsWith('....');
+            if (isEllipsisMismatch && !this._isSubRuleFixEnabled('ellipsis_mismatch')) {
+                fix = undefined;
             }
 
             // Add prefix for array/plural resources

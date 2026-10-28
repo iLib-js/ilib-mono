@@ -313,6 +313,44 @@ This configuration:
 - Adds German-specific exceptions for common abbreviations
 - Overrides French ellipsis behavior
 
+### Per-Violation-Kind AutoFix Toggle
+
+By default, `--fix` auto-fixes every violation this rule can fix. To opt a specific
+kind of violation out of auto-fixing (while still reporting it as a warning), set
+it to `false` under `rules`:
+
+```json
+{
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "rules": {
+          "ellipsis_mismatch": false
+        }
+      }
+    }
+  }
+}
+```
+
+With this configuration, a target ending in `"..."` where `"…"` is expected is
+still reported as a warning, but `--fix` will not rewrite it — useful when a
+downstream process (e.g. a translator-facing report, or a separate fix script)
+handles that specific case instead. Omitting `rules`, or setting a kind to `true`,
+keeps today's default behavior (auto-fix whenever possible).
+
+Currently supported kinds:
+
+| Kind | Covers |
+|------|--------|
+| `ellipsis_mismatch` | Target ends in **exactly three** ASCII dots (`...`) where the locale expects the Unicode ellipsis (`…`) |
+
+**Note:** Four or more trailing dots (`....`, `.....`, ...) are intentionally
+out of scope for `ellipsis_mismatch` for now, and are unaffected by this
+setting -- they keep whatever the rule's default fix behavior produces today.
+Deciding how those should be fixed (e.g. collapsing every three dots into one
+`…`) is left for a follow-up.
+
 ### Supported Punctuation Types
 
 The following punctuation types can be customized:
