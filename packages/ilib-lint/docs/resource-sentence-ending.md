@@ -294,6 +294,9 @@ Here's a comprehensive example showing all configuration options together:
         },
         "fr-FR": {
           "ellipsis": "..."
+        },
+        "rules": {
+          "ellipsis_mismatch": false
         }
       }
     }
@@ -312,10 +315,12 @@ This configuration:
 - Configures Japanese punctuation and adds Japanese-specific exceptions
 - Adds German-specific exceptions for common abbreviations
 - Overrides French ellipsis behavior
+- Reports `...` → `…` mismatches without auto-fixing them (see [Per-Violation-Kind AutoFix Toggle](#per-violation-kind-autofix-toggle))
 
 ### Per-Violation-Kind AutoFix Toggle
 
-By default, `--fix` auto-fixes every violation this rule can fix. To opt a specific
+When auto-fixing is on (the `--fix` command-line option, or `"autofix": true` in
+the config file), this rule fixes every violation it can. To opt a specific
 kind of violation out of auto-fixing (while still reporting it as a warning), set
 it to `false` under `rules`:
 
@@ -337,9 +342,15 @@ With this configuration, a target ending in `"..."` where `"…"` is expected is
 still reported as a warning, but `--fix` will not rewrite it — useful when a
 downstream process (e.g. a translator-facing report, or a separate fix script)
 handles that specific case instead. Omitting `rules`, or setting a kind to `true`,
-keeps today's default behavior (auto-fix whenever possible).
+keeps the default behavior (auto-fix whenever possible).
 
-#### Fixing only selected kinds
+**Note:** `rules` goes **inside** the `resource-sentence-ending` object, at the
+same level as `minimumLength` and the locale keys. It is unrelated to the
+top-level `rules` array in `ilib-lint-config.json`, which declares
+regular-expression-based rules, and it must not be nested again
+(`"rules": { "rules": { ... } }` has no effect).
+
+#### Fixing Only Selected Kinds
 
 The `default` key sets the autoFix behavior for every violation that is not
 listed by name, including violations that don't have a kind name yet. To
@@ -376,8 +387,7 @@ Currently supported kinds:
 
 | Kind | Covers |
 |------|--------|
-| `default` | Every violation not listed by name |
-| `ellipsis_mismatch` | Target ends in **exactly three** ASCII dots (`...`) where the locale expects the Unicode ellipsis (`…`) |
+| `ellipsis_mismatch` | Target ends in **exactly three** ASCII dots (`...`) where the locale expects the Unicode ellipsis (`…`). Trailing quotes and whitespace are ignored, so `「待って...」` and `"Wait..."` are covered too. |
 
 **Note:** Four or more trailing dots (`....`, `.....`, ...) are intentionally
 out of scope for `ellipsis_mismatch` for now. They are not affected by the
@@ -483,12 +493,21 @@ Replace `...` with the appropriate character for your language:
 
 ## Disabling the Rule
 
-If you need to disable this rule for specific cases, add it to your ignore list:
+To turn this rule off entirely, set it to `false` in a rule set:
 
 ```json
 {
-  "rules": {
-    "resource-sentence-ending": false
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": false
+    }
   }
 }
 ```
+
+If another rule set used by the same file type turns it on (for example, the
+built-in `punctuation-checks` set), list the set that turns it off **after** it
+in the file type's `ruleset` array, since later sets override earlier ones.
+
+To turn it off for only some languages, see
+[Disabling the Rule for a Locale](#disabling-the-rule-for-a-locale).
