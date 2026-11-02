@@ -339,15 +339,49 @@ downstream process (e.g. a translator-facing report, or a separate fix script)
 handles that specific case instead. Omitting `rules`, or setting a kind to `true`,
 keeps today's default behavior (auto-fix whenever possible).
 
+#### Fixing only selected kinds
+
+The `default` key sets the autoFix behavior for every violation that is not
+listed by name, including violations that don't have a kind name yet. To
+auto-fix **only** the ellipsis mismatch and leave every other violation as a
+warning without a fix:
+
+```json
+{
+  "rulesets": {
+    "myset": {
+      "resource-sentence-ending": {
+        "rules": {
+          "default": false,
+          "ellipsis_mismatch": true
+        }
+      }
+    }
+  }
+}
+```
+
+A kind listed by name always uses its own setting; everything else follows
+`default`. When `default` is omitted it is `true`, so existing configurations
+are unaffected.
+
+| `rules` config | `...` → `…` | Other violations |
+|----------------|-------------|------------------|
+| *(omitted)* | fixed | fixed |
+| `{ "ellipsis_mismatch": false }` | warning only | fixed |
+| `{ "default": false }` | warning only | warning only |
+| `{ "default": false, "ellipsis_mismatch": true }` | fixed | warning only |
+
 Currently supported kinds:
 
 | Kind | Covers |
 |------|--------|
+| `default` | Every violation not listed by name |
 | `ellipsis_mismatch` | Target ends in **exactly three** ASCII dots (`...`) where the locale expects the Unicode ellipsis (`…`) |
 
 **Note:** Four or more trailing dots (`....`, `.....`, ...) are intentionally
-out of scope for `ellipsis_mismatch` for now, and are unaffected by this
-setting -- they keep whatever the rule's default fix behavior produces today.
+out of scope for `ellipsis_mismatch` for now. They are not affected by the
+`ellipsis_mismatch` setting and follow `default` like other unnamed violations.
 Deciding how those should be fixed (e.g. collapsing every three dots into one
 `…`) is left for a follow-up.
 

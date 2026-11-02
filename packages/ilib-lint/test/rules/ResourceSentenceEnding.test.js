@@ -1385,6 +1385,158 @@ describe("ResourceSentenceEnding rule", function() {
                 }
             );
         });
+
+        describe("targets ending in a closing quote", () => {
+            function matchQuoted(rule, quotedTarget) {
+                const resource = new ResourceString({
+                    key: "ellipsis.quoted",
+                    sourceLocale: "en-US",
+                    source: 'He said "Wait..."',
+                    targetLocale: "ja-JP",
+                    target: quotedTarget,
+                    pathName: "a/b/c.xliff",
+                    lineNumber: 1
+                });
+                return rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+            }
+
+            test.each([
+                "彼は「待って...」",
+                "彼は『待って...』",
+                '彼は"待って..."'
+            ])("exactly three dots before the quote in %s: fix is suppressed when ellipsis_mismatch is disabled", (quotedTarget) => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({ param: { rules: { ellipsis_mismatch: false } } });
+                const actual = matchQuoted(rule, quotedTarget);
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeUndefined();
+            });
+
+            test("exactly three dots before the quote: still fixed when no rules config is given", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding();
+                const actual = matchQuoted(rule, "彼は「待って...」");
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeTruthy();
+            });
+
+            test("four dots before the quote: still fixed even when ellipsis_mismatch is disabled, since it's out of scope", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({ param: { rules: { ellipsis_mismatch: false } } });
+                const actual = matchQuoted(rule, "彼は「待って....」");
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeTruthy();
+            });
+        });
+
+        describe("rules.default", () => {
+            function match(rule, { source, target, targetLocale = "ja-JP" }) {
+                const resource = new ResourceString({
+                    key: "rules.default",
+                    sourceLocale: "en-US",
+                    source,
+                    targetLocale,
+                    target,
+                    pathName: "a/b/c.xliff",
+                    lineNumber: 1
+                });
+                return rule.matchString({
+                    source: resource.getSource(),
+                    target: resource.getTarget(),
+                    resource,
+                    file: "a/b/c.xliff"
+                });
+            }
+
+            // One case per Result-producing path in matchString
+            const otherViolations = [
+                ["period mismatch", { source: "This is a sentence.", target: "これは文です." }],
+                ["missing punctuation", { source: "This is a sentence.", target: "これは文です" }],
+                ["extra punctuation", { source: "This is a sentence", target: "これは文です。" }],
+                ["four trailing dots", { source: "This is incomplete...", target: "これは不完全です...." }],
+                ["Spanish inverted punctuation", { source: "Is this a question?", target: "Es esto una pregunta?", targetLocale: "es-ES" }],
+                ["French non-breaking space", { source: "Is this a question?", target: "Est-ce une question ?", targetLocale: "fr-FR" }]
+            ];
+
+            test.each(otherViolations)("default: false omits the fix for %s but still warns", (label, params) => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({ param: { minimumLength: 0, rules: { default: false } } });
+                const actual = match(rule, params);
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeUndefined();
+            });
+
+            test.each(otherViolations)("default omitted still fixes %s", (label, params) => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({ param: { minimumLength: 0, rules: { ellipsis_mismatch: false } } });
+                const actual = match(rule, params);
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeTruthy();
+            });
+
+            test("default: false omits the ellipsis fix when ellipsis_mismatch is not listed", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({ param: { rules: { default: false } } });
+                const actual = matchJapaneseEllipsis(rule);
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeUndefined();
+            });
+
+            test("default: false with ellipsis_mismatch: true fixes only the ellipsis mismatch", () => {
+                expect.assertions(4);
+
+                const rule = new ResourceSentenceEnding({ param: { rules: { default: false, ellipsis_mismatch: true } } });
+
+                const ellipsis = matchJapaneseEllipsis(rule);
+                expect(ellipsis).toBeTruthy();
+                expect(ellipsis?.fix).toBeTruthy();
+
+                const period = match(rule, { source: "This is a sentence.", target: "これは文です." });
+                expect(period).toBeTruthy();
+                expect(period?.fix).toBeUndefined();
+            });
+
+            test("default: true with ellipsis_mismatch: false behaves like ellipsis_mismatch: false alone", () => {
+                expect.assertions(4);
+
+                const rule = new ResourceSentenceEnding({ param: { rules: { default: true, ellipsis_mismatch: false } } });
+
+                const ellipsis = matchJapaneseEllipsis(rule);
+                expect(ellipsis).toBeTruthy();
+                expect(ellipsis?.fix).toBeUndefined();
+
+                const period = match(rule, { source: "This is a sentence.", target: "これは文です." });
+                expect(period).toBeTruthy();
+                expect(period?.fix).toBeTruthy();
+            });
+        });
+
+        test("ignores a non-object rules config", () => {
+            expect.assertions(2);
+
+            const rule = new ResourceSentenceEnding({ param: { rules: ["ellipsis_mismatch"] } });
+            const actual = matchJapaneseEllipsis(rule);
+
+            expect(actual).toBeTruthy();
+            expect(actual?.fix).toBeTruthy();
+        });
     });
 
     // Test for highlight property functionality
