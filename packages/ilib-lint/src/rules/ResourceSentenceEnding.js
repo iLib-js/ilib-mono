@@ -216,6 +216,16 @@ class ResourceSentenceEnding extends ResourceRule {
         // Languages for which this rule is turned off entirely (`"ja-JP": false`)
         this.disabledLanguages = new Set();
 
+        // Per-violation-kind autoFix toggles, eg. `{ "ellipsis_mismatch": false }`,
+        // or `{ "default": false, "ellipsis_mismatch": true }` to fix only that kind.
+        // Only gates whether a `fix` is attached to a Result -- the warning
+        // itself is still reported either way. Kinds not listed fall back to
+        // `default`, which is `true` when unset, so configs that don't set
+        // `rules` keep today's behavior.
+        this.subRuleFixEnabled = (param && typeof param === 'object' && param.rules && typeof param.rules === 'object' && !Array.isArray(param.rules))
+            ? param.rules
+            : {};
+
         if (param && typeof param === 'object' && !Array.isArray(param)) {
             // param is an object with locale codes as keys and punctuation mappings as values
             // Merge the default punctuation with the custom punctuation so that the custom
@@ -1014,6 +1024,37 @@ class ResourceSentenceEnding extends ResourceRule {
     }
 
     /**
+     * Whether autoFix is enabled for a violation kind, eg. "ellipsis_mismatch".
+     * A kind listed in the `rules` config uses its own setting. Any other kind,
+     * including violations that don't have a kind name yet, falls back to
+     * `rules.default`, which itself defaults to `true`. So a config that
+     * doesn't set `rules` keeps today's behavior (fix everything fixable).
+     *
+     * @param {string} [subRuleName] - Violation kind to check, eg. "ellipsis_mismatch".
+     *     Omit for violations that don't have a kind name.
+     * @returns {boolean} - `false` only when disabled in config
+     */
+    _isSubRuleFixEnabled(subRuleName) {
+        if (subRuleName && Object.prototype.hasOwnProperty.call(this.subRuleFixEnabled, subRuleName)) {
+            return this.subRuleFixEnabled[subRuleName] !== false;
+        }
+        return this.subRuleFixEnabled.default !== false;
+    }
+
+    /**
+     * Return the given fix if autoFix is enabled for the violation kind, or
+     * `undefined` otherwise. The Result is still reported either way.
+     *
+     * @param {ResourceFix|undefined} fix - Fix to attach to the Result
+     * @param {string} [subRuleName] - Violation kind, eg. "ellipsis_mismatch".
+     *     Omit for violations that don't have a kind name.
+     * @returns {ResourceFix|undefined} - The fix, or `undefined` when disabled
+     */
+    _applyFixToggle(fix, subRuleName) {
+        return this._isSubRuleFixEnabled(subRuleName) ? fix : undefined;
+    }
+
+    /**
      * Match the source and target strings for sentence ending punctuation issues
      * @param {Object} params - Parameters object
      * @param {string} params.source - The source string
@@ -1130,7 +1171,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 highlight,
                 pathName: file,
                 locale: targetLocale,
-                fix: this.createPunctuationFix(resource, target, targetEnding.original, '', index, category, targetLocaleObj),
+                fix: this._applyFixToggle(this.createPunctuationFix(resource, target, targetEnding.original, '', index, category, targetLocaleObj)),
                 lineNumber: resource.getLocation()?.line
             });
         }
@@ -1176,7 +1217,7 @@ class ResourceSentenceEnding extends ResourceRule {
                 highlight,
                 pathName: file,
                 locale: targetLocale,
-                fix: this.createPunctuationFix(resource, target, deleteString, insertString, index, category, targetLocaleObj),
+                fix: this._applyFixToggle(this.createPunctuationFix(resource, target, deleteString, insertString, index, category, targetLocaleObj)),
                 lineNumber: resource.getLocation()?.line
             });
         }
@@ -1250,7 +1291,7 @@ class ResourceSentenceEnding extends ResourceRule {
                         highlight,
                         pathName: file,
                         locale: targetLocale,
-                        fix: this.createFixForSpanishInvertedPunctuation(resource, target, lastSentence, invertedChar, index, category, targetLocaleObj),
+                        fix: this._applyFixToggle(this.createFixForSpanishInvertedPunctuation(resource, target, lastSentence, invertedChar, index, category, targetLocaleObj)),
                         lineNumber: resource.getLocation()?.line
                     });
                 }
@@ -1319,7 +1360,7 @@ class ResourceSentenceEnding extends ResourceRule {
                             highlight,
                             pathName: file,
                             locale: targetLocale,
-                            fix,
+                            fix: this._applyFixToggle(fix),
                             lineNumber: resource.getLocation()?.line
                         });
                     }
@@ -1466,6 +1507,25 @@ class ResourceSentenceEnding extends ResourceRule {
             } else {
                 fix = this.createPunctuationFix(resource, target, targetEnding.original, expectedPunctuation, index, category, targetLocaleObj);
             }
+
+            // Ellipsis mismatch is exactly three ASCII dots ("...", not four or
+            // more) in the target where the locale expects "…" (Unicode ellipsis).
+            // `targetEnding.original` is always the literal string "..." whenever
+            // the target ends in three-or-more dots (see getEndingPunctuation's
+            // `endsWith('...')` check above), so the actual dot count has to be
+            // verified here. Use the same text getEndingPunctuation inspected
+            // (lastSentence with trailing quotes/whitespace stripped) so targets
+            // like `「待って...」` are handled the same as unquoted ones.
+            // Four-or-more trailing dots are intentionally left out of scope for
+            // now -- see the rule's docs for why -- so they keep today's
+            // (pre-toggle) fix behavior regardless of the `ellipsis_mismatch` setting,
+            // and are governed by `rules.default` like other unnamed violations.
+            const strippedEnding = ResourceSentenceEnding.stripTrailingQuotesAndWhitespace(lastSentence.trim());
+            const isEllipsisMismatch = targetEnding.type === 'ellipsis' &&
+                targetEnding.original === '...' &&
+                expectedPunctuation === '…' &&
+                !strippedEnding.endsWith('....');
+            fix = this._applyFixToggle(fix, isEllipsisMismatch ? 'ellipsis_mismatch' : undefined);
 
             // Add prefix for array/plural resources
             highlight = this._addResourcePrefix(highlight, index, category);
