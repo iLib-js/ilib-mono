@@ -54,11 +54,20 @@ class RegexBasedEscaper extends Escaper {
 
     /**
      * @override
+     * Run unescape rules repeatedly until the string stabilizes. This ensures
+     * correct C-string / PO semantics: when rules are ordered with quote rules
+     * (e.g. \") before backslash rules (\\), we unescape \" first (to "), then
+     * \\ (to \). Multiple passes also reduce consecutive backslashes (e.g. \\\\
+     * → \\ → \) correctly.
      */
     unescape(string) {
         let unescaped = string;
-        for (const [key, value] of Object.entries(this.escapeMap.unescape)) {
-            unescaped = unescaped.replace(new RegExp(key, "g"), value);
+        let prev;
+        while (prev !== unescaped) {
+            prev = unescaped;
+            for (const [key, value] of Object.entries(this.escapeMap.unescape)) {
+                unescaped = unescaped.replace(new RegExp(key, "g"), value);
+            }
         }
         return unescaped;
     }
