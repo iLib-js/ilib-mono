@@ -39,10 +39,11 @@ export const BACKWARDS_EXCEPTIONS: Record<string, string> = {
 };
 
 /**
- * Legacy POSIX / Factory-style zone ids that are Links onto a real zone but
- * are not country-local names. They must not inherit `c`, must not appear in
- * `countryToZones` / zonetab under the target's country, and must not copy
- * Windows `n` from the link target (e.g. EST → America/Panama).
+ * Legacy POSIX / Factory-style zone ids that are not country-local names.
+ * Whether they appear as Links or as real Zone lines (e.g. CST6CDT in
+ * tzdata 2026e), they must not inherit `c`, must not appear in
+ * `countryToZones` / zonetab under a geographic target's country, and must
+ * not copy Windows `n` from a link target (e.g. EST → America/Panama).
  */
 export const POSIX_ZONE_IDS: ReadonlySet<string> = new Set([
     "EST",
@@ -52,7 +53,24 @@ export const POSIX_ZONE_IDS: ReadonlySet<string> = new Set([
     "MST",
     "HST",
     "WET",
+    "CST6CDT",
+    "EST5EDT",
+    "MST7MDT",
+    "PST8PDT",
 ]);
+
+/**
+ * Long display-name templates (`n`) for POSIX / US factory zone ids that
+ * CLDR `windowsZones` does not list. When these ids are real Zones (not
+ * Links onto America/Chicago etc.), the enricher cannot copy `n` from a
+ * modern target, so they must be set explicitly.
+ */
+export const POSIX_LONG_NAMES: Readonly<Record<string, string>> = {
+    CST6CDT: "Central {c} Time",
+    EST5EDT: "Eastern {c} Time",
+    MST7MDT: "Mountain {c} Time",
+    PST8PDT: "Pacific {c} Time",
+};
 
 /**
  * Preferred default timezone for multi-zone countries.
