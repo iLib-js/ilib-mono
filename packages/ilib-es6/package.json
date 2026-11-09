@@ -48,7 +48,7 @@
         "url": "https://github.com/iLib-js/ilib-mono"
     },
     "engines": {
-        "node": ">=12 <27"
+        "node": ">=12 <23"
     },
     "scripts": {
         "coverage": "pnpm test --coverage",

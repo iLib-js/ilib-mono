@@ -7,7 +7,6 @@
 "ilib-ctype": patch
 "ilib-data-utils": patch
 "ilib-env": patch
-"ilib-es6": patch
 "ilib-glyphstring": patch
 "ilib-istring": patch
 "ilib-lint": patch
