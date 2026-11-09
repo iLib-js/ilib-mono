@@ -1263,7 +1263,7 @@ describe("ResourceSentenceEnding rule", function() {
         });
     });
 
-    describe("ellipsis_mismatch autoFix toggle", () => {
+    describe("ellipsis_mismatch toggle", () => {
         const source = "This is incomplete...";
         const target = "これは不完全です...";
         const expectedDescription = "Sentence ending should be \"…\" (U+2026) for ja-JP locale instead of \"...\" (U+002E U+002E U+002E)";
@@ -1297,15 +1297,13 @@ describe("ResourceSentenceEnding rule", function() {
             expect(actual?.fix).toBeTruthy();
         });
 
-        test("still warns but omits the fix when ellipsis_mismatch is disabled", () => {
-            expect.assertions(3);
+        test("does not warn or fix when ellipsis_mismatch is disabled", () => {
+            expect.assertions(1);
 
             const rule = new ResourceSentenceEnding({ param: { rules: { ellipsis_mismatch: false } } });
             const actual = matchJapaneseEllipsis(rule);
 
-            expect(actual).toBeTruthy();
-            expect(actual?.description).toBe(expectedDescription);
-            expect(actual?.fix).toBeUndefined();
+            expect(actual).toBeUndefined();
         });
 
         test("still fixes when ellipsis_mismatch is explicitly enabled", () => {
@@ -1362,14 +1360,13 @@ describe("ResourceSentenceEnding rule", function() {
                 });
             }
 
-            test("exactly three dots: fix is suppressed when ellipsis_mismatch is disabled", () => {
-                expect.assertions(2);
+            test("exactly three dots: not reported when ellipsis_mismatch is disabled", () => {
+                expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({ param: { rules: { ellipsis_mismatch: false } } });
                 const actual = matchDots(rule, 3);
 
-                expect(actual).toBeTruthy();
-                expect(actual?.fix).toBeUndefined();
+                expect(actual).toBeUndefined();
             });
 
             test.each([4, 5, 6])(
@@ -1409,14 +1406,13 @@ describe("ResourceSentenceEnding rule", function() {
                 "彼は「待って...」",
                 "彼は『待って...』",
                 '彼は"待って..."'
-            ])("exactly three dots before the quote in %s: fix is suppressed when ellipsis_mismatch is disabled", (quotedTarget) => {
-                expect.assertions(2);
+            ])("exactly three dots before the quote in %s: not reported when ellipsis_mismatch is disabled", (quotedTarget) => {
+                expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({ param: { rules: { ellipsis_mismatch: false } } });
                 const actual = matchQuoted(rule, quotedTarget);
 
-                expect(actual).toBeTruthy();
-                expect(actual?.fix).toBeUndefined();
+                expect(actual).toBeUndefined();
             });
 
             test("exactly three dots before the quote: still fixed when no rules config is given", () => {
@@ -1469,14 +1465,13 @@ describe("ResourceSentenceEnding rule", function() {
                 ["French non-breaking space", { source: "Is this a question?", target: "Est-ce une question ?", targetLocale: "fr-FR" }]
             ];
 
-            test.each(otherViolations)("default: false omits the fix for %s but still warns", (label, params) => {
-                expect.assertions(2);
+            test.each(otherViolations)("default: false does not report %s", (label, params) => {
+                expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({ param: { minimumLength: 0, rules: { default: false } } });
                 const actual = match(rule, params);
 
-                expect(actual).toBeTruthy();
-                expect(actual?.fix).toBeUndefined();
+                expect(actual).toBeUndefined();
             });
 
             test.each(otherViolations)("default omitted still fixes %s", (label, params) => {
@@ -1489,18 +1484,17 @@ describe("ResourceSentenceEnding rule", function() {
                 expect(actual?.fix).toBeTruthy();
             });
 
-            test("default: false omits the ellipsis fix when ellipsis_mismatch is not listed", () => {
-                expect.assertions(2);
+            test("default: false does not report the ellipsis mismatch when ellipsis_mismatch is not listed", () => {
+                expect.assertions(1);
 
                 const rule = new ResourceSentenceEnding({ param: { rules: { default: false } } });
                 const actual = matchJapaneseEllipsis(rule);
 
-                expect(actual).toBeTruthy();
-                expect(actual?.fix).toBeUndefined();
+                expect(actual).toBeUndefined();
             });
 
-            test("default: false with ellipsis_mismatch: true fixes only the ellipsis mismatch", () => {
-                expect.assertions(4);
+            test("default: false with ellipsis_mismatch: true reports and fixes only the ellipsis mismatch", () => {
+                expect.assertions(3);
 
                 const rule = new ResourceSentenceEnding({ param: { rules: { default: false, ellipsis_mismatch: true } } });
 
@@ -1509,18 +1503,16 @@ describe("ResourceSentenceEnding rule", function() {
                 expect(ellipsis?.fix).toBeTruthy();
 
                 const period = match(rule, { source: "This is a sentence.", target: "これは文です." });
-                expect(period).toBeTruthy();
-                expect(period?.fix).toBeUndefined();
+                expect(period).toBeUndefined();
             });
 
-            test("default: true with ellipsis_mismatch: false behaves like ellipsis_mismatch: false alone", () => {
-                expect.assertions(4);
+            test("default: true with ellipsis_mismatch: false suppresses the ellipsis entirely but still fixes others", () => {
+                expect.assertions(3);
 
                 const rule = new ResourceSentenceEnding({ param: { rules: { default: true, ellipsis_mismatch: false } } });
 
                 const ellipsis = matchJapaneseEllipsis(rule);
-                expect(ellipsis).toBeTruthy();
-                expect(ellipsis?.fix).toBeUndefined();
+                expect(ellipsis).toBeUndefined();
 
                 const period = match(rule, { source: "This is a sentence.", target: "これは文です." });
                 expect(period).toBeTruthy();
@@ -1536,6 +1528,52 @@ describe("ResourceSentenceEnding rule", function() {
 
             expect(actual).toBeTruthy();
             expect(actual?.fix).toBeTruthy();
+        });
+
+        describe("non-boolean rules values are ignored and fall back to the default", () => {
+            // Non-boolean values are rejected in the constructor, so a value like
+            // `{ "default": 0 }` behaves as if the key were not listed (enabled).
+
+            test("ellipsis_mismatch: 0 does not disable the ellipsis mismatch (still warns and fixes)", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({ param: { rules: { ellipsis_mismatch: 0 } } });
+                const actual = matchJapaneseEllipsis(rule);
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeTruthy();
+            });
+
+            test("ellipsis_mismatch: \"false\" (string) is ignored and does not disable the kind", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({ param: { rules: { ellipsis_mismatch: "false" } } });
+                const actual = matchJapaneseEllipsis(rule);
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeTruthy();
+            });
+
+            test("default: 0 does not turn off the rules — ellipsis is still fixed", () => {
+                expect.assertions(2);
+
+                const rule = new ResourceSentenceEnding({ param: { rules: { default: 0 } } });
+                const actual = matchJapaneseEllipsis(rule);
+
+                expect(actual).toBeTruthy();
+                expect(actual?.fix).toBeTruthy();
+            });
+
+            test("a valid boolean alongside an invalid value: the valid one still applies", () => {
+                expect.assertions(1);
+
+                // ellipsis_mismatch is a real boolean (false -> suppressed);
+                // default is invalid (0) and must be ignored, not crash.
+                const rule = new ResourceSentenceEnding({ param: { rules: { default: 0, ellipsis_mismatch: false } } });
+                const actual = matchJapaneseEllipsis(rule);
+
+                expect(actual).toBeUndefined();
+            });
         });
     });
 

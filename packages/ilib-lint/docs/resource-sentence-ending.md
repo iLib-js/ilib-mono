@@ -315,14 +315,15 @@ This configuration:
 - Configures Japanese punctuation and adds Japanese-specific exceptions
 - Adds German-specific exceptions for common abbreviations
 - Overrides French ellipsis behavior
-- Reports `...` → `…` mismatches without auto-fixing them (see [Per-Violation-Kind AutoFix Toggle](#per-violation-kind-autofix-toggle))
+- Turns off `...` → `…` mismatch detection entirely — neither reported nor auto-fixed (see [Per-Violation-Kind Toggle](#per-violation-kind-toggle))
 
-### Per-Violation-Kind AutoFix Toggle
+### Per-Violation-Kind Toggle
 
-When auto-fixing is on (the `--fix` command-line option, or `"autofix": true` in
-the config file), this rule fixes every violation it can. To opt a specific
-kind of violation out of auto-fixing (while still reporting it as a warning), set
-it to `false` under `rules`:
+By default this rule reports every violation it finds, and fixes them when
+auto-fixing is on (the `--fix` command-line option, or `"autofix": true` in the
+config file). To turn a specific kind of violation off entirely — so it is
+**neither reported as a warning nor auto-fixed** — set it to `false` under
+`rules`:
 
 ```json
 {
@@ -339,10 +340,10 @@ it to `false` under `rules`:
 ```
 
 With this configuration, a target ending in `"..."` where `"…"` is expected is
-still reported as a warning, but `--fix` will not rewrite it — useful when a
-downstream process (e.g. a translator-facing report, or a separate fix script)
-handles that specific case instead. Omitting `rules`, or setting a kind to `true`,
-keeps the default behavior (auto-fix whenever possible).
+**not reported at all** and `--fix` will not rewrite it — useful when that
+specific case is handled elsewhere (e.g. a separate fix script) and you don't
+want it surfaced as a warning. Omitting `rules`, or setting a kind to `true`,
+keeps the default behavior (report and auto-fix whenever possible).
 
 **Note:** `rules` goes **inside** the `resource-sentence-ending` object, at the
 same level as `minimumLength` and the locale keys. It is unrelated to the
@@ -350,12 +351,15 @@ top-level `rules` array in `ilib-lint-config.json`, which declares
 regular-expression-based rules, and it must not be nested again
 (`"rules": { "rules": { ... } }` has no effect).
 
-#### Fixing Only Selected Kinds
+#### Checking Only Selected Kinds
 
-The `default` key sets the autoFix behavior for every violation that is not
-listed by name, including violations that don't have a kind name yet. To
-auto-fix **only** the ellipsis mismatch and leave every other violation as a
-warning without a fix:
+A kind listed by name under `rules` (such as `ellipsis_mismatch`) uses its own
+setting. The special `default` key applies to every violation that is *not*
+listed by name, including violations that don't have a kind name yet. Either
+way, `false` turns the violation off entirely. When `default` is omitted it is
+`true`, so existing configurations are unaffected.
+
+To check **only** the ellipsis mismatch and turn every other violation off:
 
 ```json
 {
@@ -372,16 +376,21 @@ warning without a fix:
 }
 ```
 
-A kind listed by name always uses its own setting; everything else follows
-`default`. When `default` is omitted it is `true`, so existing configurations
-are unaffected.
-
 | `rules` config | `...` → `…` | Other violations |
 |----------------|-------------|------------------|
-| *(omitted)* | fixed | fixed |
-| `{ "ellipsis_mismatch": false }` | warning only | fixed |
-| `{ "default": false }` | warning only | warning only |
-| `{ "default": false, "ellipsis_mismatch": true }` | fixed | warning only |
+| *(omitted)* | reported & fixed | reported & fixed |
+| `{ "ellipsis_mismatch": false }` | **not reported** | reported & fixed |
+| `{ "default": false }` | **not reported** | **not reported** |
+| `{ "default": false, "ellipsis_mismatch": true }` | reported & fixed | **not reported** |
+
+Each value under `rules` must be a boolean (`true` or `false`). A non-boolean
+value (e.g. `0`, `"false"`) is rejected with a warning and ignored, so that key
+falls back to its default rather than being silently coerced. For example,
+`{ "default": 0 }` does **not** turn off anything — `default` stays at its
+default of `true`.
+
+To turn the whole rule off, disable `resource-sentence-ending` in the ruleset
+rather than setting `{ "default": false }`.
 
 Currently supported kinds:
 
