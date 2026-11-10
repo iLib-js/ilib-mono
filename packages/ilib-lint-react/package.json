@@ -18,7 +18,7 @@
         "LICENSE"
     ],
     "engines": {
-        "node": ">=12 <23"
+        "node": ">=12 <27"
     },
     "scripts": {
         "coverage": "pnpm test --coverage",

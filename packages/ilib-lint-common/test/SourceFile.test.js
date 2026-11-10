@@ -286,6 +286,11 @@ describe("SourceFile", () => {
         expect(newSourceFile.write()).toBe(true);
         expect(fs.existsSync(filePath6)).toBe(true);
 
-        fs.rmdirSync("./test/testfiles/a", { recursive: true });
+        // Prefer rmSync: Node 26 removed { recursive } from rmdirSync.
+        if (typeof fs.rmSync === "function") {
+            fs.rmSync("./test/testfiles/a", { recursive: true, force: true });
+        } else {
+            fs.rmdirSync("./test/testfiles/a", { recursive: true });
+        }
     });
 });

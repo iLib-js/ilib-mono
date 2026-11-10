@@ -47,7 +47,7 @@
         "debug": "node --experimental-vm-modules --inspect-brk node_modules/jest/bin/jest.js -i"
     },
     "engines": {
-        "node": ">=16 <23"
+        "node": ">=16 <27"
     },
     "dependencies": {
         "ilib": "^14.21.2",
