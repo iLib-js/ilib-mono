@@ -1,6 +1,6 @@
 {
     "name": "ilib-scanner",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "main": "./ilib-scanner.js",
     "bin": {
         "ilib-scanner": "./ilib-scanner.js",

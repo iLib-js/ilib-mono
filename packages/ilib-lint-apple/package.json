@@ -1,6 +1,6 @@
 {
     "name": "ilib-lint-apple",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "ilib-lint plugin for Apple platform string parameter validation",
     "main": "src/index.js",
     "module": "src/index.js",
