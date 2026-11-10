@@ -460,6 +460,117 @@ describe("ZoneInfoEnricher", () => {
         expect(result.zones["America/Montreal"].n).toBe("Eastern {c} Time");
     });
 
+    test("sets explicit long names on US POSIX factory Zones missing from CLDR", () => {
+        // tzdata 2026e: CST6CDT / EST5EDT / MST7MDT / PST8PDT are Zones again
+        // (not Links), and windowsZones does not list them — without
+        // POSIX_LONG_NAMES, regenerated JSON loses "n".
+        expect.assertions(12);
+        const customTz = writeTzDataDir(path.join(root, "posix-us-n"), {
+            zoneTab: [
+                "US\t+4151-08739\tAmerica/Chicago",
+                "US\t+404251-0740023\tAmerica/New_York",
+                "US\t+394421-1045903\tAmerica/Denver",
+                "US\t+340308-1181434\tAmerica/Los_Angeles",
+            ].join("\n"),
+            // No Links for the factory ids — mirrors 2026e Zone lines.
+            backward: "# no factory Links\n",
+        });
+        const windowsZones = {
+            supplemental: {
+                windowsZones: {
+                    mapTimezones: [
+                        {
+                            mapZone: {
+                                "@other": "Central Standard Time",
+                                "@type": "America/Chicago",
+                            },
+                        },
+                        {
+                            mapZone: {
+                                "@other": "Eastern Standard Time",
+                                "@type": "America/New_York",
+                            },
+                        },
+                        {
+                            mapZone: {
+                                "@other": "Mountain Standard Time",
+                                "@type": "America/Denver",
+                            },
+                        },
+                        {
+                            mapZone: {
+                                "@other": "Pacific Standard Time",
+                                "@type": "America/Los_Angeles",
+                            },
+                        },
+                    ],
+                },
+            },
+        };
+        const result = new ZoneInfoEnricher({
+            tzDataDir: customTz,
+            windowsZones,
+        }).enrich({
+            "America/Chicago": { o: "-6:0", f: "C{c}T" },
+            "America/New_York": { o: "-5:0", f: "E{c}T" },
+            "America/Denver": { o: "-7:0", f: "M{c}T" },
+            "America/Los_Angeles": { o: "-8:0", f: "P{c}T" },
+            CST6CDT: { o: "-6:0", f: "C{c}T" },
+            EST5EDT: { o: "-5:0", f: "E{c}T" },
+            MST7MDT: { o: "-7:0", f: "M{c}T" },
+            PST8PDT: { o: "-8:0", f: "P{c}T" },
+        });
+
+        expect(result.zones.CST6CDT.n).toBe("Central {c} Time");
+        expect(result.zones.EST5EDT.n).toBe("Eastern {c} Time");
+        expect(result.zones.MST7MDT.n).toBe("Mountain {c} Time");
+        expect(result.zones.PST8PDT.n).toBe("Pacific {c} Time");
+        expect(result.zones.CST6CDT.c).toBeUndefined();
+        expect(result.zones.EST5EDT.c).toBeUndefined();
+        expect(result.zones.MST7MDT.c).toBeUndefined();
+        expect(result.zones.PST8PDT.c).toBeUndefined();
+        expect(result.countryToZones.US).not.toContain("CST6CDT");
+        expect(result.countryToZones.US).not.toContain("EST5EDT");
+        expect(result.countryToZones.US).not.toContain("MST7MDT");
+        expect(result.countryToZones.US).not.toContain("PST8PDT");
+    });
+
+    test("POSIX US factory Links get explicit n without inheriting target country", () => {
+        // If tzdata Link them onto America/* again, POSIX_ZONE_IDS still
+        // blocks country inheritance; POSIX_LONG_NAMES still supplies "n".
+        expect.assertions(4);
+        const customTz = writeTzDataDir(path.join(root, "posix-us-link"), {
+            zoneTab: "US\t+4151-08739\tAmerica/Chicago\n",
+            backward: "Link\tAmerica/Chicago\tCST6CDT\n",
+        });
+        const windowsZones = {
+            supplemental: {
+                windowsZones: {
+                    mapTimezones: [
+                        {
+                            mapZone: {
+                                "@other": "Central Standard Time",
+                                "@type": "America/Chicago",
+                            },
+                        },
+                    ],
+                },
+            },
+        };
+        const result = new ZoneInfoEnricher({
+            tzDataDir: customTz,
+            windowsZones,
+        }).enrich({
+            "America/Chicago": { o: "-6:0", f: "C{c}T" },
+            CST6CDT: { o: "-6:0", f: "C{c}T" },
+        });
+
+        expect(result.zones.CST6CDT.n).toBe("Central {c} Time");
+        expect(result.zones.CST6CDT.c).toBeUndefined();
+        expect(result.zones["America/Chicago"].c).toBe("US");
+        expect(result.countryToZones.US).not.toContain("CST6CDT");
+    });
+
     test("does not add POSIX Link ids to countryToZones / zonetab lists", () => {
         expect.assertions(3);
         const customTz = writeTzDataDir(path.join(root, "posix-zonetab"), {

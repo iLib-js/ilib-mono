@@ -21,6 +21,7 @@ import {
     BACKWARDS_EXCEPTIONS,
     COUNTRY_EXCEPTIONS,
     DEFAULT_TIMEZONE_ID,
+    POSIX_LONG_NAMES,
     POSIX_ZONE_IDS,
 } from "../src/defaults";
 
@@ -49,10 +50,22 @@ describe("defaults", () => {
         expect(DEFAULT_TIMEZONE_ID.FM).toBe("Pacific/Pohnpei");
     });
 
-    test("POSIX_ZONE_IDS lists factory-style Links that are not country-local", () => {
-        expect.assertions(3);
+    test("POSIX_ZONE_IDS lists factory-style ids that are not country-local", () => {
+        expect.assertions(7);
         expect(POSIX_ZONE_IDS.has("EST")).toBe(true);
         expect(POSIX_ZONE_IDS.has("CET")).toBe(true);
+        expect(POSIX_ZONE_IDS.has("CST6CDT")).toBe(true);
+        expect(POSIX_ZONE_IDS.has("EST5EDT")).toBe(true);
+        expect(POSIX_ZONE_IDS.has("MST7MDT")).toBe(true);
+        expect(POSIX_ZONE_IDS.has("PST8PDT")).toBe(true);
         expect(POSIX_ZONE_IDS.has("NZ")).toBe(false);
+    });
+
+    test("POSIX_LONG_NAMES covers US factory ids missing from CLDR windowsZones", () => {
+        expect.assertions(4);
+        expect(POSIX_LONG_NAMES.CST6CDT).toBe("Central {c} Time");
+        expect(POSIX_LONG_NAMES.EST5EDT).toBe("Eastern {c} Time");
+        expect(POSIX_LONG_NAMES.MST7MDT).toBe("Mountain {c} Time");
+        expect(POSIX_LONG_NAMES.PST8PDT).toBe("Pacific {c} Time");
     });
 });

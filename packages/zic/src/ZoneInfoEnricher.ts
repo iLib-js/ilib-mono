@@ -26,6 +26,7 @@ import {
     BACKWARDS_EXCEPTIONS,
     COUNTRY_EXCEPTIONS,
     DEFAULT_TIMEZONE_ID,
+    POSIX_LONG_NAMES,
     POSIX_ZONE_IDS,
 } from "./defaults";
 import { loadJsonFile } from "./loadJson";
@@ -310,6 +311,15 @@ export class ZoneInfoEnricher {
                 !outZones[oldzone].n
             ) {
                 outZones[oldzone].n = outZones[newzone].n;
+            }
+        }
+
+        // Factory / POSIX US ids (CST6CDT, …) are often real Zones again in
+        // recent tzdata, so the Link alias copy above never runs. CLDR does
+        // not list them either — apply explicit long-name templates.
+        for (const zoneId of Object.keys(POSIX_LONG_NAMES)) {
+            if (outZones[zoneId]) {
+                outZones[zoneId].n = POSIX_LONG_NAMES[zoneId];
             }
         }
 
