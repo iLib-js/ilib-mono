@@ -316,9 +316,11 @@ export class ZoneInfoEnricher {
 
         // Factory / POSIX US ids (CST6CDT, …) are often real Zones again in
         // recent tzdata, so the Link alias copy above never runs. CLDR does
-        // not list them either — apply explicit long-name templates.
+        // not list them either — fill missing long-name templates only.
+        // Do not overwrite `.n` already set via windowsZones (or a future
+        // CLDR entry); caller/CLDR-supplied names take precedence.
         for (const zoneId of Object.keys(POSIX_LONG_NAMES)) {
-            if (outZones[zoneId]) {
+            if (outZones[zoneId] && !outZones[zoneId].n) {
                 outZones[zoneId].n = POSIX_LONG_NAMES[zoneId];
             }
         }

@@ -44,6 +44,8 @@ export const BACKWARDS_EXCEPTIONS: Record<string, string> = {
  * tzdata 2026e), they must not inherit `c`, must not appear in
  * `countryToZones` / zonetab under a geographic target's country, and must
  * not copy Windows `n` from a link target (e.g. EST → America/Panama).
+ * This applies even when a Link target happens to be the "right" country
+ * (CST6CDT → America/Chicago / US): factory ids are not geographic zones.
  */
 export const POSIX_ZONE_IDS: ReadonlySet<string> = new Set([
     "EST",

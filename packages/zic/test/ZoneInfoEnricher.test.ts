@@ -538,6 +538,10 @@ describe("ZoneInfoEnricher", () => {
     test("POSIX US factory Links get explicit n without inheriting target country", () => {
         // If tzdata Link them onto America/* again, POSIX_ZONE_IDS still
         // blocks country inheritance; POSIX_LONG_NAMES still supplies "n".
+        // Intentional even when the Link target is the "correct" country
+        // (America/Chicago → US): these ids are factory/POSIX names, not
+        // geographic zone ids, so they must not gain `c` or appear under
+        // countryToZones — same rule as EST→Panama for a wrong-country Link.
         expect.assertions(4);
         const customTz = writeTzDataDir(path.join(root, "posix-us-link"), {
             zoneTab: "US\t+4151-08739\tAmerica/Chicago\n",
@@ -569,6 +573,37 @@ describe("ZoneInfoEnricher", () => {
         expect(result.zones.CST6CDT.c).toBeUndefined();
         expect(result.zones["America/Chicago"].c).toBe("US");
         expect(result.countryToZones.US).not.toContain("CST6CDT");
+    });
+
+    test("POSIX_LONG_NAMES does not overwrite n already set via windowsZones", () => {
+        expect.assertions(2);
+        const customTz = writeTzDataDir(path.join(root, "posix-us-cldr-n"), {
+            zoneTab: "US\t+4151-08739\tAmerica/Chicago\n",
+            backward: "# no factory Links\n",
+        });
+        const windowsZones = {
+            supplemental: {
+                windowsZones: {
+                    mapTimezones: [
+                        {
+                            mapZone: {
+                                "@other": "Central America Standard Time",
+                                "@type": "CST6CDT",
+                            },
+                        },
+                    ],
+                },
+            },
+        };
+        const result = new ZoneInfoEnricher({
+            tzDataDir: customTz,
+            windowsZones,
+        }).enrich({
+            CST6CDT: { o: "-6:0", f: "C{c}T" },
+        });
+
+        expect(result.zones.CST6CDT.n).toBe("Central America {c} Time");
+        expect(result.zones.CST6CDT.c).toBeUndefined();
     });
 
     test("does not add POSIX Link ids to countryToZones / zonetab lists", () => {
