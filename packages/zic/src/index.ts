@@ -49,6 +49,7 @@ export {
     BACKWARDS_EXCEPTIONS,
     DEFAULT_TIMEZONE_ID,
     POSIX_ZONE_IDS,
+    POSIX_LONG_NAMES,
 } from "./defaults";
 
 export type {
